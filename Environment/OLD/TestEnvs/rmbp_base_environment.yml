@@ -1,0 +1,42 @@
+name: base
+channels:
+  - defaults
+dependencies:
+  - conda
+  - python=3.8
+  - python.app
+  - conda-env
+  - conda-build
+  - conda-verify
+  - _ipyw_jlab_nb_ext_conf
+  - anaconda
+  - anaconda-navigator
+  - navigator-updater
+  - pygithub
+  - ghapi
+  - clang
+  - libclang
+  - opencv
+  - replay_trajectory_classification
+  - pythreejs
+  - ipyvolume
+  - matlab_kernel
+  - ipywidgets
+  - hdf5storage
+  - ipympl
+  - jupyter-packaging
+  - mamba
+  - ipygany
+  - ca-certificates
+  - certifi
+  - openssl
+  - sphinx_rtd_theme
+  - jupyter_sphinx
+  - conda-tree
+  - vaex
+  - yarn
+  - nodejs[version='>12']
+  - pyvista
+  - ipyvtklink
+  - panel
+prefix: /Users/pho/opt/anaconda3
