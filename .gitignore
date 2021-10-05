@@ -5,3 +5,7 @@ data/RoyMaze1/positionAnalysis.mat
 **/__pycache__/**
 **/.DS_Store
 PhoPyPlaceCellReplayAnalysis/PhoScripts/dask-worker-space
+PhoPyPlaceCellReplayAnalysis/PhoScripts/PhoOutputs
+output/test_plotting.mp4
+output/complete_plotting.mp4
+output/top_view.vtkjs
