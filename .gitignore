@@ -1,3 +1,5 @@
 .ipynb_checkpoints
 Environment/GreatLakes/viz3d
 data/RoyMaze1/positionAnalysis.mat
+.vscode/settings.json
+**/__pycache__/**

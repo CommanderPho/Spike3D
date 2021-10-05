@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+@author: pho
+"""
+import sys
+import numpy as np
+import scipy
+from scipy.ndimage.filters import gaussian_filter
+import matplotlib.cm as cm
+from matplotlib.colors import Normalize
+
+
+def process_positionalAnalysis_data(data):
+    t = np.squeeze(data['positionalAnalysis']['track_position']['t'])
+    x = np.squeeze(data['positionalAnalysis']['track_position']['x'])
+    y = np.squeeze(data['positionalAnalysis']['track_position']['y'])
+    speeds = np.squeeze(data['positionalAnalysis']['track_position']['speeds'])
+    dt = np.squeeze(data['positionalAnalysis']['displacement']['dt'])
+    dx = np.squeeze(data['positionalAnalysis']['displacement']['dx'])
+    dy = np.squeeze(data['positionalAnalysis']['displacement']['dy'])
+    return t,x,y,speeds,dt,dx,dy
+
+
+def gen_2d_histrogram(x, y, sigma, bins=80):
+    heatmap, xedges, yedges = np.histogram2d(x, y, bins=bins, density=False)
+    heatmap = gaussian_filter(heatmap, sigma=sigma)
+    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+    return heatmap.T, extent, xedges, yedges
+
+
+def get_heatmap_color_vectors(point_heatmap_value):
+    # Convert the values into a actual color vectors
+    cmap = cm.jet
+    norm = Normalize(vmin=np.min(point_heatmap_value), vmax=np.max(point_heatmap_value))
+    point_colors = cmap(norm(point_heatmap_value))
+    return cmap, norm, point_colors
+
+
+
+def process_chunk_equal_poritions_data(t, x, y, speeds, dt, dx, dy, curr_view_window_length=30):
+    # Split the position data into equal sized chunks to be displayed at a single time. These will look like portions of the trajectory and be used to animate. # Chunk the data to create the animation.
+    # curr_view_window_length = 150 # View 5 seconds at a time (30fps)
+    # curr_view_window_length = 30 # View 5 seconds at a time (30fps)
+    # The original length 324574 / 30 = 10819
+
+
+    trimmed_elements = np.remainder(np.size(x), curr_view_window_length) # Compute the number of elements that need to be droppped to be able to evently divide the original arrays into evenly sized chunks of length `curr_view_window_length`
+    # e.g. np.remainder(324574, 150) = 124
+    # drop 124 extra elements that make it no wrap evenly
+    trimmed_length = np.size(x) - trimmed_elements
+    # e.g. trimmed_length = 324574 - 124 # 324574 - 124
+    other_reshaped_dimension = np.floor_divide(np.size(x), curr_view_window_length) # e.g. 2163
+
+    t_fixedSegements = t[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
+    x_fixedSegements = x[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
+    y_fixedSegements = y[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
+
+    speeds_fixedSegements = speeds[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
+    dt_fixedSegements = dt[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
+    dx_fixedSegements = dx[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
+    dy_fixedSegements = dy[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
+
+    return t_fixedSegements,x_fixedSegements,y_fixedSegements,speeds_fixedSegements,dt_fixedSegements,dx_fixedSegements,dy_fixedSegements
