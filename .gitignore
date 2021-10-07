@@ -11,3 +11,4 @@ output/complete_plotting.mp4
 output/top_view.vtkjs
 complete_plotting.mp4
 .idea
+*.asv
