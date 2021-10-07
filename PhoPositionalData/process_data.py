@@ -22,6 +22,18 @@ def process_positionalAnalysis_data(data):
     return t,x,y,speeds,dt,dx,dy
 
 
+#todo:
+def process_finalSpikingDatasitionalAnalysis_data(data):
+    t = np.squeeze(data['positionalAnalysis']['track_position']['t'])
+    x = np.squeeze(data['positionalAnalysis']['track_position']['x'])
+    y = np.squeeze(data['positionalAnalysis']['track_position']['y'])
+    speeds = np.squeeze(data['positionalAnalysis']['track_position']['speeds'])
+    dt = np.squeeze(data['positionalAnalysis']['displacement']['dt'])
+    dx = np.squeeze(data['positionalAnalysis']['displacement']['dx'])
+    dy = np.squeeze(data['positionalAnalysis']['displacement']['dy'])
+    return t,x,y,speeds,dt,dx,dy
+
+
 def gen_2d_histrogram(x, y, sigma, bins=80):
     heatmap, xedges, yedges = np.histogram2d(x, y, bins=bins, density=False)
     heatmap = gaussian_filter(heatmap, sigma=sigma)
@@ -36,6 +48,10 @@ def get_heatmap_color_vectors(point_heatmap_value):
     point_colors = cmap(norm(point_heatmap_value))
     return cmap, norm, point_colors
 
+def bin_edges_to_midpoints(x):
+    # Takes a set of N+1 edges and gets the N midpoints centered between each pair
+    # See https://stackoverflow.com/questions/23855976/middle-point-of-each-pair-of-an-numpy-array
+    return (x[1:] + x[:-1]) / 2
 
 
 def process_chunk_equal_poritions_data(t, x, y, speeds, dt, dx, dy, curr_view_window_length=30):
@@ -43,8 +59,6 @@ def process_chunk_equal_poritions_data(t, x, y, speeds, dt, dx, dy, curr_view_wi
     # curr_view_window_length = 150 # View 5 seconds at a time (30fps)
     # curr_view_window_length = 30 # View 5 seconds at a time (30fps)
     # The original length 324574 / 30 = 10819
-
-
     trimmed_elements = np.remainder(np.size(x), curr_view_window_length) # Compute the number of elements that need to be droppped to be able to evently divide the original arrays into evenly sized chunks of length `curr_view_window_length`
     # e.g. np.remainder(324574, 150) = 124
     # drop 124 extra elements that make it no wrap evenly
@@ -62,3 +76,13 @@ def process_chunk_equal_poritions_data(t, x, y, speeds, dt, dx, dy, curr_view_wi
     dy_fixedSegements = dy[0:trimmed_length].reshape(other_reshaped_dimension, curr_view_window_length)
 
     return t_fixedSegements,x_fixedSegements,y_fixedSegements,speeds_fixedSegements,dt_fixedSegements,dx_fixedSegements,dy_fixedSegements
+
+def extract_spike_timeseries(spike_cell):
+    return spike_cell[:,1] # Extract only the first column that refers to the data.
+    
+def get_filtered_window(spike_list, spike_positions_list, min_timestep=0, max_timestep=400):
+    num_cells = len(spike_list)
+    active_spike_indices = [np.squeeze(np.where((min_timestep <= spike_timeseries) & (spike_timeseries <= max_timestep))) for spike_timeseries in spike_list]
+    active_spike_list = [spike_list[i][active_spike_indices[i]] for i in np.arange(num_cells)]
+    active_spike_positions_list = [spike_positions_list[i][:, active_spike_indices[i].T] for i in np.arange(num_cells)]
+    return active_spike_indices, active_spike_list, active_spike_positions_list
