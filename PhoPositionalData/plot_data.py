@@ -117,3 +117,48 @@ def make_mp4_from_plotter(active_plotter, active_frame_range, update_callback, f
         
     print('done.')
     
+# Plot raster plot:
+# Set different colors for each neuron
+def plot_raster_plot(spike_list, spike_positions_list):
+    min_timestep = 0
+    max_timestep = 4000
+    active_spike_indices, active_spike_list, active_spike_positions_list = get_filtered_window(spike_list, spike_positions_list, min_timestep=0, max_timestep=400)
+
+    # cmap = get_cmap(num_cells)
+    cmap = generate_colormap(num_cells)
+
+    plt.figure()
+    for i, cell_spike_positions in enumerate(spike_positions_list):
+       plt.scatter(cell_spike_positions[0,:], cell_spike_positions[1,:], s=0.1, color=cmap(i), alpha=0.2)
+
+    plt.title('Spike positions')
+    plt.show()
+
+def plot_eventplot_raster_plot(active_spike_list, cmap):
+    num_cells = len(active_spike_list)
+    colorCodes = np.broadcast_to(np.array([[0, 0, 0],
+                            [1, 0, 0],
+                            [0, 1, 0],
+                            [0, 0, 1],
+                            [1, 1, 0],
+                            [1, 0, 1],
+                            [0, 1, 1],
+                            [1, 0, 1]]), (num_cells, 3))
+    # print(np.shape(colorCodes))                    
+    # Set spike colors for each neuron
+    lineSize = [0.4, 0.3, 0.2, 0.8, 0.5, 0.6, 0.7, 0.9]                                  
+
+    # Draw a spike raster plot
+    # plt.eventplot(spike_cells[0])
+    colorCodes = [cmap(i) for i in np.arange(num_cells)]
+    plt.eventplot(active_spike_list, color=colorCodes)
+    # plt.eventplot(spike_matrix)    
+    # plt.eventplot(spike_matrix, color=colorCodes, linelengths = lineSize)     
+    # Provide the title for the spike raster plot
+    plt.title('Spike raster plot')
+    # Give x axis label for the spike raster plot
+    plt.xlabel('Neuron')
+    # Give y axis label for the spike raster plot
+    plt.ylabel('Spike')
+    # Display the spike raster plot
+    plt.show()
