@@ -7,8 +7,6 @@ load('PhoResults_Expt1_RoyMaze1.mat', 'active_processing')
 %active_processing.processed_array{1, 1}.all.binned_spike_counts
 
 [is_period_track_active] = fnFilterPeriodsWithCriteria(active_processing, {'track'}, {'active'}); % Only get the active periods on the track
-
-
 binned_spike_count_matrix = cell2mat(active_processing.processed_array{1, 1}.all.binned_spike_counts); % NumTimestamps x NumCells
 
 total_spike_counts = sum(binned_spike_count_matrix, 1);
