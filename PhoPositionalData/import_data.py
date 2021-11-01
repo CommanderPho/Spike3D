@@ -17,7 +17,7 @@ from PhoPositionalData.process_data import process_positionalAnalysis_data, extr
 def perform_import_spikes(t, x, y, mat_import_parent_path=Path(r'C:\Share\data\RoyMaze1')):
     # Import the spikes
     # spikes_mat_import_file = mat_import_parent_path.joinpath('spikesTable.mat')
-    spikes_mat_import_file = mat_import_parent_path.joinpath('ExportedData\spikesAnalysis.mat')
+    spikes_mat_import_file = mat_import_parent_path.joinpath('ExportedData', 'spikesAnalysis.mat')
     spikes_data = import_mat_file(mat_import_file=spikes_mat_import_file)
     # print(spikes_data.keys())
     spike_matrix = spikes_data['spike_matrix']
@@ -42,7 +42,7 @@ def perform_import_spikes(t, x, y, mat_import_parent_path=Path(r'C:\Share\data\R
 
 
 def perform_import_positions(mat_import_parent_path=Path(r'C:\Share\data\RoyMaze1')):
-    position_mat_import_file = mat_import_parent_path.joinpath('ExportedData\positionAnalysis.mat')
+    position_mat_import_file = mat_import_parent_path.joinpath('ExportedData','positionAnalysis.mat')
     data = import_mat_file(mat_import_file=position_mat_import_file)
 
     # # KevinMaze1
@@ -71,11 +71,11 @@ def perform_import_positions(mat_import_parent_path=Path(r'C:\Share\data\RoyMaze
 
 def perform_import_extras(mat_import_parent_path=Path(r'C:\Share\data\RoyMaze1')):
     
-    extras_mat_import_file = mat_import_parent_path.joinpath('ExportedData\extrasAnalysis.mat')
+    extras_mat_import_file = mat_import_parent_path.joinpath('ExportedData','extrasAnalysis.mat')
     
-    ripple_mat_import_file = mat_import_parent_path.joinpath('ExportedData\RippleManualExport.h5')
+    ripple_mat_import_file = mat_import_parent_path.joinpath('ExportedData', 'RippleManualExport.h5')
     #periods_mat_import_file = mat_import_parent_path.joinpath('ExportedData\BehavioralPeriodsManualExport.h5')
-    periods_mat_import_file = mat_import_parent_path.joinpath('ExportedData\extrasAnalysis.mat')
+    periods_mat_import_file = mat_import_parent_path.joinpath('ExportedData', 'extrasAnalysis.mat')
     
     #source_data.behavior.RoyMaze1.list
     
