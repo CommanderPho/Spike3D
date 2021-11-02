@@ -22,6 +22,7 @@ def perform_import_spikes(t, x, y, mat_import_parent_path=Path(r'C:\Share\data\R
     # print(spikes_data.keys())
     spike_matrix = spikes_data['spike_matrix']
     spike_cells = spikes_data['spike_cells'][0]
+    cell_ids = spikes_data['spike_cells_ids']
     # print('spike_matrix: {}, spike_cells: {}'.format(np.shape(spike_matrix), np.shape(spike_cells)))
     num_cells = np.shape(spike_matrix)[0]
     # extract_spike_timeseries(spike_cells[8])
@@ -37,7 +38,12 @@ def perform_import_spikes(t, x, y, mat_import_parent_path=Path(r'C:\Share\data\R
         
     print(np.shape(spike_positions_list[0])) # (2, 9297)
     
-    return spike_matrix, spike_cells, num_cells, spike_list, spike_positions_list
+    flat_cell_ids = [int(cell_id[0]) for cell_id in cell_ids]
+    # flat_cell_ids
+    linear_flitered_ids = np.arange(len(cell_ids))
+    reverse_cellID_idx_lookup_map = dict(zip(flat_cell_ids, linear_flitered_ids)) # Allows reverse indexing into the linear imported array using the original cell ID indicies
+
+    return spike_matrix, spike_cells, num_cells, spike_list, spike_positions_list, cell_ids, reverse_cellID_idx_lookup_map
 
 
 
