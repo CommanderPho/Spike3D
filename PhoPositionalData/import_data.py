@@ -14,6 +14,23 @@ from PhoPositionalData.load_exported import import_mat_file
 from PhoPositionalData.process_data import process_positionalAnalysis_data, extract_spike_timeseries
 
 
+def build_spike_positions_list(spike_list, t, x, y):
+     # Determine the x and y positions each spike occured for each cell
+    num_cells = len(spike_list)
+    spike_positions_list = list()
+    for cell_id in np.arange(num_cells):
+        spike_positions_list.append(np.vstack((np.interp(spike_list[cell_id], t, x), np.interp(spike_list[cell_id], t, y))))
+        # spike_positions_list.append(np.hstack(x[spike_list[cell_id]], y[spike_list[cell_id]]))
+        # spike_speed = speeds[spike_list[cell_id]]
+    return spike_positions_list
+
+def build_cellID_reverse_lookup_map(cell_ids):
+     # Allows reverse indexing into the linear imported array using the original cell ID indicies
+    flat_cell_ids = [int(cell_id) for cell_id in cell_ids] # ensures integer indexes for IDs
+    linear_flitered_ids = np.arange(len(cell_ids))
+    return dict(zip(flat_cell_ids, linear_flitered_ids))
+
+
 def perform_import_spikes(t, x, y, mat_import_parent_path=Path(r'C:\Share\data\RoyMaze1')):
     # Import the spikes
     # spikes_mat_import_file = mat_import_parent_path.joinpath('spikesTable.mat')
@@ -23,6 +40,8 @@ def perform_import_spikes(t, x, y, mat_import_parent_path=Path(r'C:\Share\data\R
     spike_matrix = spikes_data['spike_matrix']
     spike_cells = spikes_data['spike_cells'][0]
     cell_ids = spikes_data['spike_cells_ids'][:,0].T
+    flat_cell_ids = [int(cell_id) for cell_id in cell_ids] 
+
     # print('spike_matrix: {}, spike_cells: {}'.format(np.shape(spike_matrix), np.shape(spike_cells)))
     num_cells = np.shape(spike_matrix)[0]
     # extract_spike_timeseries(spike_cells[8])
@@ -31,24 +50,13 @@ def perform_import_spikes(t, x, y, mat_import_parent_path=Path(r'C:\Share\data\R
     
 #     print('np.shape(cell_ids): {}, cell_ids: {}'.format(np.shape(cell_ids), cell_ids))
     # Determine the x and y positions each spike occured for each cell
-    spike_positions_list = list()
-    for cell_id in np.arange(num_cells):
-        spike_positions_list.append(np.vstack((np.interp(spike_list[cell_id], t, x), np.interp(spike_list[cell_id], t, y))))
-        # spike_positions_list.append(np.hstack(x[spike_list[cell_id]], y[spike_list[cell_id]]))
-        # spike_speed = speeds[spike_list[cell_id]]
-        
+    spike_positions_list = build_spike_positions_list(spike_list, t, x, y)    
 #     print(np.shape(spike_positions_list[0])) # (2, 9297)
     
-#     flat_cell_ids = [int(cell_id[0]) for cell_id in cell_ids]
-    flat_cell_ids = [int(cell_id) for cell_id in cell_ids]   
-#     flat_cell_ids = int(cell_ids)
-    # flat_cell_ids
-    linear_flitered_ids = np.arange(len(cell_ids))
-    reverse_cellID_idx_lookup_map = dict(zip(flat_cell_ids, linear_flitered_ids)) # Allows reverse indexing into the linear imported array using the original cell ID indicies
+     # reverse_cellID_idx_lookup_map: Allows reverse indexing into the linear imported array using the original cell ID indicies
+    reverse_cellID_idx_lookup_map = build_cellID_reverse_lookup_map(cell_ids)
 
     return spike_matrix, spike_cells, num_cells, spike_list, spike_positions_list, flat_cell_ids, reverse_cellID_idx_lookup_map
-
-#     return spike_matrix, spike_cells, num_cells, spike_list, spike_positions_list, flat_cell_ids, reverse_cellID_idx_lookup_map
 
 
 
