@@ -89,13 +89,13 @@ def lines_from_points(points):
     return poly
 
 ## Save out to MP4 Movie
-def make_mp4_from_plotter(active_plotter, active_frame_range, update_callback, filename='sphere-shrinking.mp4'):
+def make_mp4_from_plotter(active_plotter, active_frame_range, update_callback, filename='sphere-shrinking.mp4', framerate=30):
     # Open a movie file
     print('active_frame_range: {}'.format(active_frame_range))
     try:
         # Further file processing goes here
         print('Trying to open mp4 movie file at {}...\n'.format(filename))
-        active_plotter.open_movie(filename)
+        active_plotter.open_movie(filename, framerate=framerate)
         active_plotter.show()
         # active_plotter.show(auto_close=False)  # only necessary for an off-screen movie
         # Run through each frame
@@ -107,7 +107,7 @@ def make_mp4_from_plotter(active_plotter, active_frame_range, update_callback, f
             # print('\t Frame[{} of {}]'.format(i, total_number_frames))
             # Call the provided update_callback function:
             update_callback(i)
-            active_plotter.add_text(f"Iteration: {i}", name='time-label')
+            # active_plotter.add_text(f"Iteration: {i}", name='time-label')
             active_plotter.write_frame()  # Write this frame
 
     finally:
