@@ -39,7 +39,8 @@ def runAnalysis_PCAandICA(active_session_Neurons, bin_size=0.250, frate_thresh=0
     # print('np.shape(template): {}, np.shape(zsc_template): {}'.format(np.shape(template), np.shape(zsc_template)))
     if should_plot:
         plt.figure()
-        plt.scatter(zsc_template[:, 0], zsc_template[:, 1], c=active_cells_colormap[active_neuron_ids_include_mask], s=30)
+        # plt.scatter(zsc_template[:, 0], zsc_template[:, 1], c=active_cells_colormap[active_neuron_ids_include_mask], s=30)
+        plt.scatter(template[:, 0], template[:, 1], c=active_cells_colormap[active_neuron_ids_include_mask], s=30)
         plt.title('Original Neuronal Data prior to PCA Decomposition')
         plt.show()
 
