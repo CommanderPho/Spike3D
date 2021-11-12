@@ -48,3 +48,39 @@ def make_mp4_from_plotter(active_plotter, active_frame_range, update_callback, f
         print('File reader closed!')
         
     print('done.')
+    
+    
+
+###########################    
+## Batched/Ghosting Plotting Methods:
+def test_on_time_update_mesh(currTime):
+    print('main_spikes_mesh.array_names: {}\n shape of main_spikes_mesh[times]: {}'.format(main_spikes_mesh.array_names, np.shape(main_spikes_mesh['times'])))
+    print('currTime: {}'.format(currTime))
+    curr_ghosts = np.argwhere(main_spikes_mesh['times'] > currTime) # any times greater than the currTime
+    print('shape of curr_ghosts: {}'.format(np.shape(curr_ghosts)))
+    # This will act on the mesh inplace to mark those cell indices as ghosts
+    # main_spikes_mesh.remove_cells(curr_ghosts)
+    thresholded_main_spikes_mesh = main_spikes_mesh.threshold(value=(0.0, currTime), scalars='times', continuous=True, preference='point')
+    # thresholded_main_spikes_mesh.plot(cmap='gist_earth_r', show_scalar_bar=False, show_edges=True)
+    print('thresholded_main_spikes_mesh: {}'.format(thresholded_main_spikes_mesh))
+    if thresholded_main_spikes_mesh.n_points >= 1:
+            # main_spikes_mesh_actor = p.add_mesh(spikes_pc, name='spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, render=False)
+            main_spikes_mesh_actor = p.add_mesh(thresholded_main_spikes_mesh, name='spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, render=False)
+
+    
+def test_batch_plot_all_spikes():
+    # plots all the spikes at once but sets them invisible, revealing them as needed
+    active_included_indicies = np.isfinite(flattened_spikes.flattened_spike_times) # Accumulate Spikes mode. All spikes occuring prior to the end of the frame (meaning the current time) are plotted
+    active_flattened_spike_times = flattened_spikes.flattened_spike_times[active_included_indicies]
+    # active_flattened_spike_identities = flattened_spikes.flattened_spike_identities[active_included_indicies] # actual UnitID is the identity for each spike
+    active_flattened_spike_identities = flattened_spike_active_unitIdentities[active_included_indicies] # a relative index starting at 0 and going up to the number of active units is the identity for each spike
+    active_flattened_spike_positions_list = flattened_spike_positions_list[:, active_included_indicies]
+    spikes_pdata, spikes_pc = build_active_spikes_plot_data(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list)
+    spikes_pc_grid_mesh = spikes_pc.cast_to_unstructured_grid()
+    # main_spikes_mesh = p.add_mesh(spikes_pc, name='spikes_main', scalars='cellID', cmap='rainbow', show_scalar_bar=True) # , color=active_cells_colormap[original_cell_id]
+    if spikes_pc.n_points >= 1:
+        # main_spikes_mesh_actor = p.add_mesh(spikes_pc, name='spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, render=False)
+        main_spikes_mesh_actor = p.add_mesh(spikes_pc_grid_mesh, name='spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, render=False)
+        
+    # main_spikes_mesh = main_spikes_mesh.cast_to_unstructured_grid()
+    return spikes_pc_grid_mesh, main_spikes_mesh_actor
