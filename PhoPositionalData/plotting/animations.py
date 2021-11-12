@@ -86,3 +86,10 @@ def test_batch_plot_all_spikes():
         
     # main_spikes_mesh = main_spikes_mesh.cast_to_unstructured_grid()
     return spikes_pc_grid_mesh, main_spikes_mesh_actor
+
+
+# ### UNUSED
+# if should_use_test_batch_plotting_methods:
+#     # main_spikes_mesh = test_batch_plot_all_spikes()
+#     main_spikes_mesh, main_spikes_mesh_actor = test_batch_plot_all_spikes()
+    
