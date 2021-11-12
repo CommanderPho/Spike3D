@@ -50,3 +50,26 @@ def build_active_spikes_plot_data(active_flattened_spike_times, active_flattened
     # create many spheres from the point cloud
     spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy())
     return spike_history_pdata, spike_history_pc
+
+
+## This light effect occurs when a spike happens to indicate its presence
+light_spawn_constant_z_offset = 2.5
+light_spawn_constant_z_focal_position = -0.5 # by default, the light focuses under the floor
+
+def build_spike_spawn_effect_light_actor(p, spike_position, spike_unit_color='white'):
+    # spike_position: should be a tuple like (0, 0, 10)
+    light_source_position = spike_position
+    light_source_position[3] = light_source_position[3] + light_spawn_constant_z_offset
+    light_focal_point = spike_position
+    light_focal_point[3] = light_focal_point[3] + light_spawn_constant_z_focal_position
+    
+    SpikeSpawnEffectLight = pv.Light(position=light_source_position, focal_point=light_focal_point, color=spike_unit_color)
+    SpikeSpawnEffectLight.positional = True
+    SpikeSpawnEffectLight.cone_angle = 40
+    SpikeSpawnEffectLight.exponent = 10
+    SpikeSpawnEffectLight.intensity = 3
+    SpikeSpawnEffectLight.show_actor()
+    p.add_light(SpikeSpawnEffectLight)
+    return SpikeSpawnEffectLight # return the light actor for removal later
+
+

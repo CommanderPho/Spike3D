@@ -1,0 +1,29 @@
+import pyvista as pv
+
+def print_controls_helper_text():
+    print(['[f] - Focus and zoom in on the last clicked point',
+        'shift+click - Drag to pan the rendering scene',
+        'ctrl+click - Rotate the scene in 2D'])
+    
+def _customize_default_slider_gui_style(my_theme):
+    my_theme.slider_styles.modern.slider_length = 0.01
+    my_theme.slider_styles.modern.slider_width = 0.05 # the height of the slider releative to the bar
+    my_theme.slider_styles.modern.slider_color = (0.13, 0.14, 0.15) # (0.43, 0.44, 0.45)
+    my_theme.slider_styles.modern.tube_width = 0.02
+    my_theme.slider_styles.modern.tube_color = (0.69, 0.40, 0.109)
+    my_theme.slider_styles.modern.cap_opacity = 0.0
+    my_theme.slider_styles.modern.cap_length = 0.01
+    my_theme.slider_styles.modern.cap_width = 0.02
+    return my_theme
+
+def customize_default_pyvista_theme():
+    my_theme = pv.themes.DefaultTheme()
+    my_theme = _customize_default_slider_gui_style(my_theme)
+    my_theme.window_size = [1920, 1080]
+    ## Apply the theme as the active pyvista theme
+    print('Applying custom Pyvista theme.')
+    pv.global_theme.load_theme(my_theme)
+    # pv.global_theme.nan_opacity=0.0
+    print('done.')
+    
+    
