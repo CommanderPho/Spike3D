@@ -99,3 +99,4 @@ def get_filtered_window(spike_list, spike_positions_list, min_timestep=0, max_ti
     active_spike_list = [spike_list[i][active_spike_indices[i]] for i in np.arange(num_cells)]
     active_spike_positions_list = [spike_positions_list[i][:, active_spike_indices[i].T] for i in np.arange(num_cells)]
     return active_spike_indices, active_spike_list, active_spike_positions_list
+

@@ -53,6 +53,8 @@ def make_mp4_from_plotter(active_plotter, active_frame_range, update_callback, f
 
 ###########################    
 ## Batched/Ghosting Plotting Methods:
+
+### UNUSED
 def test_on_time_update_mesh(currTime):
     print('main_spikes_mesh.array_names: {}\n shape of main_spikes_mesh[times]: {}'.format(main_spikes_mesh.array_names, np.shape(main_spikes_mesh['times'])))
     print('currTime: {}'.format(currTime))
@@ -67,7 +69,7 @@ def test_on_time_update_mesh(currTime):
             # main_spikes_mesh_actor = p.add_mesh(spikes_pc, name='spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, render=False)
             main_spikes_mesh_actor = p.add_mesh(thresholded_main_spikes_mesh, name='spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, render=False)
 
-    
+### UNUSED
 def test_batch_plot_all_spikes():
     # plots all the spikes at once but sets them invisible, revealing them as needed
     active_included_indicies = np.isfinite(flattened_spikes.flattened_spike_times) # Accumulate Spikes mode. All spikes occuring prior to the end of the frame (meaning the current time) are plotted
