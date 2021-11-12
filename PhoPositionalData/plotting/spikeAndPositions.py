@@ -24,7 +24,7 @@ spike_geom_circle = pv.Circle(radius=0.4)
 # Call with:
 # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
 # p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
-def build_flat_map_plot_data():
+def build_flat_map_plot_data(x, y):
     # Builds the flat base maze map that the other data will be plot on top of
     ## Implicitly relies on: x, y
     z = np.zeros_like(x)
