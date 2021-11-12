@@ -88,35 +88,6 @@ def lines_from_points(points):
     poly.lines = cells
     return poly
 
-## Save out to MP4 Movie
-def make_mp4_from_plotter(active_plotter, active_frame_range, update_callback, filename='sphere-shrinking.mp4', framerate=30):
-    # Open a movie file
-    print('active_frame_range: {}'.format(active_frame_range))
-    try:
-        # Further file processing goes here
-        print('Trying to open mp4 movie file at {}...\n'.format(filename))
-        active_plotter.open_movie(filename, framerate=framerate)
-        active_plotter.show()
-        # active_plotter.show(auto_close=False)  # only necessary for an off-screen movie
-        # Run through each frame
-        active_plotter.write_frame()  # write initial data
-        total_number_frames = np.size(active_frame_range)
-        print('\t opened. Planning to write {} frames...\n'.format(total_number_frames))
-        # Update scalars on each frame
-        for i in active_frame_range:
-            # print('\t Frame[{} of {}]'.format(i, total_number_frames))
-            # Call the provided update_callback function:
-            update_callback(i)
-            # active_plotter.add_text(f"Iteration: {i}", name='time-label')
-            active_plotter.write_frame()  # Write this frame
-
-    finally:
-        # Be sure to close the plotter when finished
-        active_plotter.close()
-        print('File reader closed!')
-        
-    print('done.')
-    
 # Plot raster plot:
 # Set different colors for each neuron
 def plot_raster_plot(spike_list, spike_positions_list):
