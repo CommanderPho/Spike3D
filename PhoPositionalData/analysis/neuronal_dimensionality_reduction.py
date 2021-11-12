@@ -17,7 +17,7 @@ def runAnalysis_PCAandICA(active_session_Neurons, bin_size=0.250, frate_thresh=0
     ## TODO: not sure if I want plotting in here, this was just factored out of the Jupyter-lab notebook
     from neuropy.analyses.reactivation import NeuronEnsembles
     # active_epoch_placefields.frate_thresh
-    active_session_ensembles = NeuronEnsembles(active_session_Neurons, bin_size=0.250, frate_thresh=0.1)
+    active_session_ensembles = NeuronEnsembles(active_session_Neurons, bin_size=bin_size, frate_thresh=frate_thresh)
     active_neuron_ids_include_mask = active_session_ensembles.neuron_included_indx_thresh
     if should_plot:
         # show the ensembles plot:
