@@ -57,7 +57,8 @@ def apply_camera_view(p, desired_camera_position_matrix):
     previous_camera_position = p.camera_position
     print('previous_camera_position: {}'.format(previous_camera_position))
     p.camera_position = desired_camera_position_matrix
-    p.update()
+    # p.update()
+    p.render()
     return previous_camera_position
 
 def apply_close_perspective_camera_view(p):
