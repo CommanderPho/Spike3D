@@ -121,15 +121,18 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
 
         # surf = poly.delaunay_2d()
         # pTuningCurves.add_mesh(surf, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
-        pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
-        # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color="white", line_width=5)
+        pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, 
+                                                                            #  show_edges=True, edge_color=curr_active_neuron_color, line_width=3.0, render_lines_as_tubes=True, 
+                                                                            #  nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
+                                                                             show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
+        # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color=curr_active_neuron_color, line_width=1, name='{}_contours'.format(curr_active_neuron_pf_identifier))
         tuningCurvePlotActors.append(pdata_currActiveNeuronTuningCurve_plotActor)
         
     legendActor = pTuningCurves.add_legend(name='tuningCurvesLegend', origin=[0.9, 0.0], size=[0.1, 1.0]) # vtk.vtkLegendBoxActor
     pTuningCurves.show_grid()
     pTuningCurves.add_axes(line_width=5, labels_off=False)
     pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
-    # pTuningCurves.enable_3_lights()
+    pTuningCurves.enable_3_lights()
     # pTuningCurves.enable_shadows()
     return pTuningCurves, tuningCurvePlotActors, legendActor
 

@@ -1,9 +1,12 @@
 import pyvista as pv
 
 def print_controls_helper_text():
-    print(['[f] - Focus and zoom in on the last clicked point',
+    controls_helper_text_strings = ['[f] - Focus and zoom in on the last clicked point',
         'shift+click - Drag to pan the rendering scene',
-        'ctrl+click - Rotate the scene in 2D'])
+        'ctrl+click - Rotate the scene in 2D']
+    controls_helper_text = '\n'.join(controls_helper_text_strings)
+    print(controls_helper_text)
+    return controls_helper_text
     
 def _customize_default_slider_gui_style(my_theme):
     my_theme.slider_styles.modern.slider_length = 0.01
