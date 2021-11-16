@@ -76,6 +76,80 @@ def build_spike_spawn_effect_light_actor(p, spike_position, spike_unit_color='wh
 
 
 
+def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFactor=10.0):
+    # Plots 2D Placefields in a 3D PyVista plot
+    curr_tuning_curves = active_epoch_placefields.ratemap.tuning_curves
+    # curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves
+    # curr_tuning_curves[curr_tuning_curves < 0.1] = np.nan
+    # curr_tuning_curves = curr_tuning_curves * zScalingFactor
+    
+    num_curr_tuning_curves = len(curr_tuning_curves)
+    # Get the cell IDs that have a good place field mapping:
+    good_placefield_neuronIDs = np.array(active_placefields.ratemap.neuron_ids) # in order of ascending ID
+    tuningCurvePlot_x, tuningCurvePlot_y = np.meshgrid(active_placefields.ratemap.xbin_centers, active_placefields.ratemap.ybin_centers)
+    # tuningCurvePlot_x, tuningCurvePlot_y = np.meshgrid(active_placefields.ratemap.xbin, active_placefields.ratemap.ybin)
+    # tuningCurvePlot_x, tuningCurvePlot_y = active_placefields.ratemap.xbin_centers, active_placefields.ratemap.ybin_centers
+    # Loop through the tuning curves and plot them:
+    print('num_curr_tuning_curves: {}'.format(num_curr_tuning_curves))
+    tuningCurvePlotActors = []
+    for i in np.arange(num_curr_tuning_curves):
+    # for i in [1]:
+        curr_active_neuron_ID = good_placefield_neuronIDs[i]
+        curr_active_neuron_color = pf_colors[:, i]
+        curr_active_neuron_pf_identifier = 'pf[{}]'.format(curr_active_neuron_ID)
+        curr_active_neuron_tuning_Curve = np.squeeze(curr_tuning_curves[i,:,:]).T.copy() # A single tuning curve
+        # point_cloud_fixedSegements_positionTrail = np.column_stack((x[active_window_sample_indicies], y[active_window_sample_indicies], z_fixed))
+        # pdata_positionTrail = pv.PolyData(point_cloud_fixedSegements_positionTrail.copy()) # a mesh
+        
+        # Get the points as a 2D NumPy array (N by 3)
+        # curr_active_neuron_tuning_Curve_points = np.c_[tuningCurvePlot_x.reshape(-1), tuningCurvePlot_y.reshape(-1), curr_active_neuron_tuning_Curve.reshape(-1)]
+        # curr_active_neuron_tuning_Curve_cloud = pv.wrap(curr_active_neuron_tuning_Curve_points)
+        # simply pass the numpy points to the PolyData constructor
+        # poly = pv.PolyData(curr_active_neuron_tuning_Curve_points)
+        # poly.plot(point_size=15)
+
+        # pdata_currActiveNeuronTuningCurve.points = curr_active_neuron_tuning_Curve.ravel(order="F") # Set the coordinates from the numpy array
+        # pdata_currActiveNeuronTuningCurve.dimensions = [np.shape(curr_active_neuron_tuning_Curve)[0], np.shape(curr_active_neuron_tuning_Curve)[1], 1] # set the dimensions
+        
+        # curr_active_neuron_tuning_Curve[curr_active_neuron_tuning_Curve < 0.1] = np.nan
+        pdata_currActiveNeuronTuningCurve = pv.StructuredGrid(tuningCurvePlot_x, tuningCurvePlot_y, curr_active_neuron_tuning_Curve)
+        pdata_currActiveNeuronTuningCurve["Elevation"] = curr_active_neuron_tuning_Curve.ravel(order="F")
+        
+        # contours_currActiveNeuronTuningCurve = pdata_currActiveNeuronTuningCurve.contour()
+        # pdata_currActiveNeuronTuningCurve.plot(show_edges=True, show_grid=True, cpos='xy', scalars=curr_active_neuron_tuning_Curve.T)        
+        # actor_currActiveNeuronTuningCurve = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, use_transparency=True)
+
+        # surf = poly.delaunay_2d()
+        # pTuningCurves.add_mesh(surf, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
+        pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
+        # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color="white", line_width=5)
+        tuningCurvePlotActors.append(pdata_currActiveNeuronTuningCurve_plotActor)
+        
+    legendActor = pTuningCurves.add_legend(name='tuningCurvesLegend', origin=[0.9, 0.0], size=[0.1, 1.0]) # vtk.vtkLegendBoxActor
+    pTuningCurves.show_grid()
+    pTuningCurves.add_axes(line_width=5, labels_off=False)
+    pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
+    # pTuningCurves.enable_3_lights()
+    # pTuningCurves.enable_shadows()
+    return pTuningCurves, tuningCurvePlotActors, legendActor
+
+def update_plotVisiblePlacefields2D(tuningCurvePlotActors, isTuningCurveVisible):
+    # Updates the visible placefields. Complements plot_placefields2D
+    num_active_tuningCurveActors = len(tuningCurvePlotActors)
+    for i in np.arange(num_active_tuningCurveActors):
+        # tuningCurvePlotActors[i].SetVisibility(isTuningCurveVisible[i])
+        if isTuningCurveVisible[i]:
+            # tuningCurvePlotActors[i].show_actor()
+            # tuningCurvePlotActors[i].SetVisibility(True)
+            tuningCurvePlotActors[i].VisibilityOn()
+        else:
+            tuningCurvePlotActors[i].VisibilityOff()
+            # tuningCurvePlotActors[i].hide_actor()
+    
+    
+
+
+
 class InteractiveSliderWrapper:
 
     # instance attributes
