@@ -25,9 +25,10 @@ class VideoOutputModeConfig:
     
 
 class PlottingConfig:
-    def __init__(self, output_subplots_shape=(1,1), output_parent_dir=None): 
+    def __init__(self, output_subplots_shape=(1,1), output_parent_dir=None, use_age_proportional_spike_scale=False): 
         # output_subplots_shape="3|1" means 3 plots on the left and 1 on the right,
         # output_subplots_shape="4/2" means 4 plots on top of 2 at bottom.
+        # use_age_proportional_spike_scale: if True, the scale of the recent spikes is inversely proportional to their age.
         if output_subplots_shape is None:
             output_subplots_shape = (1,1) # By default, only a single plot is needed
         self.subplots_shape = output_subplots_shape
@@ -35,6 +36,8 @@ class PlottingConfig:
             self.active_output_parent_dir = Path('output')
         else:
             self.active_output_parent_dir = output_parent_dir
+
+        self.use_age_proportional_spike_scale = use_age_proportional_spike_scale
         
 
 

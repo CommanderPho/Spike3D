@@ -39,8 +39,8 @@ def build_flat_map_plot_data(x, y):
 
 
 # TODO: brought in from old file, finish implementation
-def build_active_spikes_plot_data(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list, spike_geom):
-    spike_series_times = active_flattened_spike_times # currently unused
+def build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list):
+    # spike_series_times = active_flattened_spike_times # currently unused
     spike_series_identities = active_flattened_spike_identities # currently unused
     spike_series_positions = active_flattened_spike_positions_list
     # z = np.zeros_like(spike_series_positions[0,:])
@@ -49,9 +49,15 @@ def build_active_spikes_plot_data(active_flattened_spike_times, active_flattened
     spike_history_pdata = pv.PolyData(spike_history_point_cloud)
     # spike_history_pdata['times'] = spike_series_times
     spike_history_pdata['cellID'] = spike_series_identities
+    return spike_history_pdata
+
+def build_active_spikes_plot_data(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list, spike_geom):
+    # spike_series_times = active_flattened_spike_times # currently unused
+    spike_history_pdata = build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list)
     # create many spheres from the point cloud
     spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy())
     return spike_history_pdata, spike_history_pc
+
 
 
 ## This light effect occurs when a spike happens to indicate its presence
