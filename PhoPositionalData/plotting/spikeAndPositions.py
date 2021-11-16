@@ -78,10 +78,10 @@ def build_spike_spawn_effect_light_actor(p, spike_position, spike_unit_color='wh
 
 def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFactor=10.0):
     # Plots 2D Placefields in a 3D PyVista plot
-    curr_tuning_curves = active_epoch_placefields.ratemap.tuning_curves
-    # curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves
+    # curr_tuning_curves = active_placefields.ratemap.tuning_curves
+    curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves
     # curr_tuning_curves[curr_tuning_curves < 0.1] = np.nan
-    # curr_tuning_curves = curr_tuning_curves * zScalingFactor
+    curr_tuning_curves = curr_tuning_curves * zScalingFactor
     
     num_curr_tuning_curves = len(curr_tuning_curves)
     # Get the cell IDs that have a good place field mapping:
