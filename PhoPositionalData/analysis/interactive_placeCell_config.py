@@ -24,15 +24,26 @@ class VideoOutputModeConfig:
         self.active_video_output_fullpath = self.active_video_output_parent_dir.joinpath(self.active_video_output_filename)
     
 
+class PlottingConfig:
+    def __init__(self, output_subplots_shape=(1,1)): 
+        # output_subplots_shape="3|1" means 3 plots on the left and 1 on the right,
+        # output_subplots_shape="4/2" means 4 plots on top of 2 at bottom.
+        if output_subplots_shape is None:
+            output_subplots_shape = (1,1) # By default, only a single plot is needed
+        self.subplots_shape = output_subplots_shape
+        
+
+
 class InteractivePlaceCellConfig:
     
     # class attribute
-    species = 'bird'
+    # species = 'bird'
 
     # instance attribute
-    def __init__(self, active_epochs, video_output_config):
+    def __init__(self, active_epochs, video_output_config, plotting_config):
         self.active_epochs = active_epochs
         self.video_output_config = video_output_config
+        self.plotting_config = plotting_config
 
 
 
