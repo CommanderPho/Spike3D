@@ -140,24 +140,3 @@ class InteractiveSliderWrapper:
     def step_prev_index(self):
         return self.step_index(-1) 
 
-
-# class InteractiveSliderState:
-
-#     # instance attributes
-#     def __init__(self, indexRange, startIndex):
-#         self.indexRange = indexRange
-#         self.startIndex = startIndex
-
-#     # instance method
-#     def sing(self, song):
-#         return '{} sings {}'.format(self.name, song)
-
-#     def dance(self):
-#         return '{} is now dancing'.format(self.name)
-
-
-# # instantiate the object
-# blu = Parrot('Blu', 10)
-# # call our instance methods
-# print(blu.sing('Happy'))
-# print(blu.dance())
