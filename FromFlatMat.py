@@ -92,3 +92,28 @@ def import_data_dir_with_flattened_spikes_mats(basedir = r'R:\data\KDIBA\gor01\o
     return curr_Neurons_obj, position_obj
     
 neurons_obj, position_obj = import_data_dir_with_flattened_spikes_mats(basedir)
+
+np.isnan
+
+print (spikes_df.x.first_valid_index()) # 20
+print (spikes_df.x.loc[spikes_df.x.first_valid_index()]) #0.8059081439677763
+
+print (spikes_df.y.first_valid_index()) # 20
+print (spikes_df.y.loc[spikes_df.y.first_valid_index()]) #0.4936032096919495
+
+print (spikes_df.x.last_valid_index()) # 1006874
+print (spikes_df.x.loc[spikes_df.x.last_valid_index()]) #0.7592097744851032
+
+print (spikes_df.y.last_valid_index()) # 1006874
+print (spikes_df.y.loc[spikes_df.y.last_valid_index()]) #0.49604708929347086
+
+
+# Range of the maze epoch (where position is valid):
+
+t_start = spikes_df.t.loc[spikes_df.x.first_valid_index()] # 1048
+t_end = spikes_df.t.loc[spikes_df.x.last_valid_index()] # 68159707
+
+
+spikes_df.t.min() # 88
+spikes_df.t.max() # 68624338
+
