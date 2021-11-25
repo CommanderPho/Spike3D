@@ -37,6 +37,15 @@ def build_flat_map_plot_data(x, y):
     pc = pdata.glyph(scale=False, geom=geo)
     return pdata, pc
 
+def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
+    pdata_maze, pc_maze = build_flat_map_plot_data(x, y)
+    p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", render=True)    
+    # bShowSequenceTraversalGradient
+    if bShowSequenceTraversalGradient:
+        traversal_order_scalars = np.arange(len(x))
+        p.add_mesh(pc_maze, name='maze_bg', label='maze', scalars=traversal_order_scalars, render=True)
+
+
 
 # TODO: brought in from old file, finish implementation
 def build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list):
@@ -141,6 +150,8 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
     pTuningCurves.enable_3_lights()
     # pTuningCurves.enable_shadows()
     return pTuningCurves, tuningCurvePlotActors, legendActor
+
+
 
 def update_plotVisiblePlacefields2D(tuningCurvePlotActors, isTuningCurveVisible):
     # Updates the visible placefields. Complements plot_placefields2D
