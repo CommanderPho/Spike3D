@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+@author: pho
+User Interface Rendering and interactivity helpers
+"""
+
 import pyvista as pv
 
 def print_controls_helper_text():
@@ -30,3 +37,17 @@ def customize_default_pyvista_theme():
     print('done.')
     
     
+
+class SetVisibilityCallback:
+    """Helper callback to keep a reference to the actor being modified. 
+    Usage:
+        # Make a separate callback for each widget
+        callback = SetVisibilityCallback(actor)
+    """
+    def __init__(self, actor):
+        self.actor = actor
+
+    def __call__(self, state):
+        self.actor.SetVisibility(state)
+        
+        
