@@ -163,6 +163,37 @@ class SetUICheckboxValueCallback:
         self.checkbox_widget_actor.GetRepresentation().SetState(state)
       
 
+class OnUICheckboxChangedCallback:
+    """Helper callback to keep a reference to both the checkbox widget and the index which it represents and allow it perform a custom callback when its value is changed interactively
+    callback: a function that takes (widget_index: Int, state: Bool)
+    Usage:
+        def _update_mutually_exclusive_callback(widget_index, state):
+            debug_console_widget.add_line_to_buffer('_update_mutually_exclusive_callback(widget[{}]): updated value {})'.format(widget_index, state))
+            mutually_exclusive_radiobutton_group[widget_index] = state # set the mutually exclusive active element using the widget changed callback
+        
+        # add the function that responds to user initiated changes by clicking on the value
+        checkbox_changed_callbacks = list()            
+        for i, a_checkbox_widget_actor in enumerate(checkboxWidgetActors):
+            curr_checkbox_changed_callback = OnUICheckboxChangedCallback(a_checkbox_widget_actor, i, _update_mutually_exclusive_callback, is_debug=is_debug)
+            a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, curr_checkbox_changed_callback)
+            checkbox_changed_callbacks.append(curr_checkbox_changed_callback)
+    """
+    def __init__(self, checkbox_widget_actor, widget_index, on_update_callback, is_debug=False):
+        self.is_debug=is_debug
+        self.checkbox_widget_actor = checkbox_widget_actor
+        self.widget_index = widget_index
+        self.callback = on_update_callback
+    
+    def __call__(self, widget, event):
+        """ Called automatically when the checkbox emits a StateChangedEvent (when the user clicks it) """
+        state = bool(widget.GetRepresentation().GetState())
+        if self.is_debug:
+            print('OnUICheckboxChangedCallback(widget[{}]): updated value {})'.format(self.widget_index, state))
+        widget.ProcessEventsOff()
+        self.callback(self.widget_index, state) # perform the callback that will update the mutually exclusive active element using the widget changed callback
+        widget.ProcessEventsOn()
+      
+
 class CallbackSequence:
     """ Helper class to call a list of callbacks with the same argument sequentally """
     def __init__(self, callbacks_list, is_debug=False):
@@ -217,7 +248,6 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
         curr_start_pos = curr_start_pos + widget_size + (widget_size // 10)
     return checkboxWidgetActors, visibility_callbacks
 
-
 # def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False):
 #     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
 #     num_checkboxes = len(placemap_actors)
@@ -258,15 +288,16 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
 #     # build the mutually exclusive group:
 #     mutually_exclusive_radiobutton_group = MutuallyExclusiveRadioButtonGroup(len(combined_callbacks), active_element_idx=active_element_idx, on_element_state_changed_callbacks=combined_callbacks, require_active_selection=require_active_selection, is_debug=is_debug)
     
+#     def _update_mutually_exclusive_callback(widget_index, state):
+#         debug_console_widget.add_line_to_buffer('_update_mutually_exclusive_callback(widget[{}]): updated value {})'.format(widget_index, state))
+#         mutually_exclusive_radiobutton_group[widget_index] = state # set the mutually exclusive active element using the widget changed callback
+
 #     # add the function that responds to user initiated changes by clicking on the value
+#     # checkbox_changed_callbacks = list()
 #     for i, a_checkbox_widget_actor in enumerate(checkboxWidgetActors):
-#         def _on_checkbox_widget_isChecked_changed_callback(widget, event):
-#             state = widget.GetRepresentation().GetState()
-#             if is_debug:
-#                 print('_on_checkbox_widget_isChecked_changed_callback(widget[{}]): updated value {})'.format(i, bool(state)))
-#             # widget.ProcessEventsOff()
-#             mutually_exclusive_radiobutton_group[i] = bool(state) # set the mutually exclusive active element using the widget changed callback
-#             # widget.ProcessEventsOn()
-#         a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, _on_checkbox_widget_isChecked_changed_callback)
-    
+#         curr_checkbox_changed_callback = OnUICheckboxChangedCallback(a_checkbox_widget_actor, i, _update_mutually_exclusive_callback, is_debug=is_debug)
+#         a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, curr_checkbox_changed_callback)
+#         # checkbox_changed_callbacks.append(curr_checkbox_changed_callback)
+        
 #     return checkboxWidgetActors, combined_callbacks, mutually_exclusive_radiobutton_group
+
