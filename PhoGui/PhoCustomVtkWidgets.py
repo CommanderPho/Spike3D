@@ -1,6 +1,7 @@
 """Module dedicated to custom VTK widgets."""
 
 import numpy as np
+import collections
 
 import pyvista
 from pyvista import _vtk
@@ -11,6 +12,52 @@ from pyvista.plotting.tools import parse_color, FONTS
 from PhoGui import vtk_ui
 # import vtk_ui
 
+
+class MultilineTextBuffer:
+    """ A fixed-length circular text buffer class which allows the user to add lines to the end of the buffer and loses the oldest ones once full.
+        Useful for implementing a scrolling/overflowing text console or printing debug messages within a fixed space.
+        Usage:
+            test_buffer = MultilineTextBuffer()
+            print(test_buffer)
+            test_buffer.add_lines_to_buffer(['line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 7', 'line 8'])
+            print(test_buffer)
+            test_buffer.add_lines_to_buffer(['line 9'])
+            print(test_buffer)
+            test_buffer.add_lines_to_buffer(['line 10'])
+            print(test_buffer)
+            print('test_buffer.joined_text: {}'.format(test_buffer.joined_text))
+    """
+    def __init__(self, max_num_lines=5, is_debug=False):
+        self.max_num_lines = max_num_lines # the maximum number of lines to store in the buffer
+        self.is_debug=is_debug        
+        # Allocate the circular buffer that indicates which element is active
+        self._circular_buffer = collections.deque(np.full([max_num_lines,], ''), maxlen=self.max_num_lines)
+    
+    @property
+    def buffer_text_strings(self):
+        """The buffer_text_strings property."""
+        return [item for item in self._circular_buffer]
+    @property    
+    def joined_text(self):
+        controls_helper_text = '\n'.join(self._circular_buffer)
+        # controls_helper_text = '\n'.join(self._circular_buffer)
+        return controls_helper_text
+    
+    def add_line_to_buffer(self, new_line):
+        """Adds the new_line to the end of the circular buffer"""
+        self._circular_buffer.append(new_line)
+
+    def add_lines_to_buffer(self, iterable_lines):
+        """Adds the iterable_lines to the end of the circular buffer"""
+        for a_line in iterable_lines:
+            self.add_line_to_buffer(a_line)        
+            
+    def __repr__(self) -> str:
+        return f"<MultilineTextBuffer: max_num_lines: {self.max_num_lines}>: {self.buffer_text_strings}"
+    def __str__(self) -> str:
+        return f"<MultilineTextBuffer: max_num_lines: {self.max_num_lines}>: {self.buffer_text_strings}"
+ 
+ 
 class PhoWidgetHelper:
     """An internal class to manage widgets.
 
