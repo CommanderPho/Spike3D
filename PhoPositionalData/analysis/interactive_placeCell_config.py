@@ -7,6 +7,15 @@ import sys
 import numpy as np
 from pathlib import Path
 
+from PhoGui.general_helpers import OrderedMeta
+
+class PlacefieldComputationParameters(metaclass=OrderedMeta):
+    def __init__(self, speed_thresh=3, grid_bin=2, smooth=2):
+        self.speed_thresh = speed_thresh
+        self.grid_bin = grid_bin
+        self.smooth = smooth   
+
+
 class VideoOutputModeConfig:
     
     def __init__(self, active_frame_range, video_output_parent_dir, active_is_video_output_mode): 
@@ -47,10 +56,11 @@ class InteractivePlaceCellConfig:
     # species = 'bird'
 
     # instance attribute
-    def __init__(self, active_epochs, video_output_config, plotting_config):
+    def __init__(self, active_epochs, video_output_config, plotting_config, computation_config=None):
         self.active_epochs = active_epochs
         self.video_output_config = video_output_config
         self.plotting_config = plotting_config
+        self.computation_config = computation_config
 
 
 
