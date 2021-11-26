@@ -220,34 +220,6 @@ class SetVisibilityCallback:
         self.actor.SetVisibility(state)
         
         
-        
-# def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3):
-#     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
-#     if type(widget_check_states)==bool:
-#         widget_check_states = np.full([len(placemap_actors),], widget_check_states)
-        
-#     curr_start_pos = widget_start_pos
-    
-#     visibility_callbacks = list()
-#     checkboxWidgetActors = list()
-    
-#     for i, an_actor in enumerate(placemap_actors):
-#         # Make a separate callback for each widget
-#         callback = SetVisibilityCallback(an_actor)
-#         callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
-#         visibility_callbacks.append(callback)
-#         curr_widget_actor = p.add_checkbox_button_widget(callback, value=widget_check_states[i],
-#                 position=(5.0, curr_start_pos), size=widget_size,
-#                 border_size=widget_border_size,
-#                 color_on=colors[:,i],
-#                 color_off='grey',
-#                 background_color=colors[:,i] # background_color is used for the border
-#             ) 
-#         checkboxWidgetActors.append(curr_widget_actor)
-#         # compute updated start position
-#         curr_start_pos = curr_start_pos + widget_size + (widget_size // 10)
-#     return checkboxWidgetActors, visibility_callbacks
-
 
 
 def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3):
