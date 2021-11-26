@@ -39,32 +39,20 @@ def customize_default_pyvista_theme():
     
 ###########################    
 ## Playback Timestamp Slider Adjustments Programmatically Methods:
-
 class MutuallyExclusiveRadioButtonGroup:
     """Enforces the constraint that exactly one is active at a time
-    Usage:
-
-        
-        # Make a separate callback for each widget
-        callback = SetVisibilityCallback(actor)
-        callbacks
-        
+    Usage:       
         mutually_exclusive_radiobutton_group = MutuallyExclusiveRadioButtonGroup(len(callbacks), active_element_idx=0, on_element_state_changed_callbacks=callbacks)
         mutually_exclusive_radiobutton_group[5] = True # activate element 5
     """
-    
-    # def __init__(self, num_elements, active_element_idx=0, on_activate_element_callbacks=None, on_deactivate_element_callbacks=None):    
-    #     if on_activate_element_callbacks is not None:
-    #         self._on_activate_element_callbacks = on_activate_element_callbacks
-            
-    #     if on_deactivate_element_callbacks is not None:
-    #         self._on_deactivate_element_callbacks = on_deactivate_element_callbacks
-        
-    def __init__(self, num_elements, active_element_idx=0, on_element_state_changed_callbacks=None):
+    def __init__(self, num_elements, active_element_idx=None, on_element_state_changed_callbacks=None, require_active_selection=False, is_debug=False):
         # on_element_state_changed_callbacks: a list of callbacks for each of the num_elements that accept one boolean argument indicating the udpated state of that element. Called upon change.
+        # require_active_selection: if True, ensures that at least one active_element_idx is always selected, otherwise, allows active_element_idx to be None
+        self.is_debug=is_debug
+        self.num_elements = num_elements
+        self.require_active_selection = require_active_selection
         self._on_element_state_changed_callbacks = on_element_state_changed_callbacks
-        
-                
+     
         # Allocate the boolean array that indicates which element is active
         self._is_element_active = np.full([num_elements,], False)
         
@@ -72,6 +60,13 @@ class MutuallyExclusiveRadioButtonGroup:
         self._is_element_active[self._active_element_idx] = True # set one element to true                
         self.perform_callback(active_element_idx)
         
+
+        if self.is_debug:
+            print('MutuallyExclusiveRadioButtonGroup(num_elements: {}, active_element_idx: {}, require_active_selection): Initialized'.format(num_elements, self._active_element_idx, require_active_selection))
+            
+        # Need to update all elements using the callback since they were all initialized to either False/True values:
+        for i in np.arange(self.num_elements):
+            self.perform_callback(i)
     def __getitem__(self, index):
         return self._is_element_active[index]
     
@@ -88,14 +83,24 @@ class MutuallyExclusiveRadioButtonGroup:
                 # only when the index to be deactivated is the active one will anything actually happen
                 pass
         
-        
+    def __repr__(self) -> str:
+        return f"<MutuallyExclusiveRadioButtonGroup: num_elements: {self.num_elements}, active_element_idx: {self.active_element_idx}>: {self.is_element_active}"
+
+    def __str__(self) -> str:
+        return f"<MutuallyExclusiveRadioButtonGroup: num_elements: {self.num_elements}, active_element_idx: {self.active_element_idx}>: {self.is_element_active}"
+
+    
     def set_element_active(self, proposed_active_element_idx=0):
         if self._active_element_idx == proposed_active_element_idx:
             # element unchanged
+            if self.is_debug:
+                print('MutuallyExclusiveRadioButtonGroup.set_element_active({}): Active index unchanged'.format(proposed_active_element_idx))
             pass
         else:
             # element changing
             prev_active_element_idx = self._active_element_idx
+            if self.is_debug:
+                print('MutuallyExclusiveRadioButtonGroup.set_element_active({}): Active index changing from {} to {}'.format(proposed_active_element_idx, prev_active_element_idx, proposed_active_element_idx))
             # Inactivate the old element:
             self._is_element_active[prev_active_element_idx] = False # set prev element to false
             self.perform_callback(prev_active_element_idx)
@@ -108,6 +113,8 @@ class MutuallyExclusiveRadioButtonGroup:
     def perform_callback(self, callback_idx):
         if self._on_element_state_changed_callbacks is not None:
                 curr_callback = self._on_element_state_changed_callbacks[callback_idx]
+                if self.is_debug:
+                    print('MutuallyExclusiveRadioButtonGroup.perform_callback({}): {}'.format(callback_idx, self._is_element_active[callback_idx]))
                 curr_callback(self._is_element_active[callback_idx]) # pass the new state to the callback
 
     @property
@@ -116,7 +123,7 @@ class MutuallyExclusiveRadioButtonGroup:
 
     @active_element_idx.setter
     def active_element_idx(self, proposed_active_element_idx):
-        """active_element_index ensures consistency on set"""
+        """active_element_index ensures consistency on set"""                
         self.set_element_active(proposed_active_element_idx)
 
     @property
@@ -128,6 +135,36 @@ class MutuallyExclusiveRadioButtonGroup:
         return self._is_element_active
 
 
+class SetUICheckboxValueCallback:
+    """Helper callback to keep a reference to a checkbox widget and allow it to be updated programmatically 
+    Usage:
+        # Make a separate callback for each widget
+        callback = SetUICheckboxValueCallback(actor)
+    """
+    def __init__(self, checkbox_widget_actor, is_debug=False):
+        self.is_debug=is_debug
+        self.checkbox_widget_actor = checkbox_widget_actor
+
+    def __call__(self, state=None):
+        if state is None:
+            # if no state provided, toggle the current state:
+            prev_state = self.checkbox_widget_actor.GetRepresentation().GetState()
+            state = not prev_state
+        self.checkbox_widget_actor.GetRepresentation().SetState(state)
+      
+
+class CallbackSequence:
+    """ Helper class to call a list of callbacks with the same argument sequentally """
+    def __init__(self, callbacks_list, is_debug=False):
+        self.is_debug=is_debug
+        self.callbacks_list = callbacks_list
+
+    def __call__(self, state):    
+        # call the callbacks in order
+        for i in np.arange(len(self.callbacks_list)):
+            self.callbacks_list[i](state)
+      
+        
 
 class SetVisibilityCallback:
     """Helper callback to keep a reference to the actor being modified. 
@@ -172,3 +209,49 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
 
 
 
+# def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False):
+#     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
+#     num_checkboxes = len(placemap_actors)
+#     # start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.arange(num_checkboxes))
+#     start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.flip(np.arange(num_checkboxes)))
+    
+#     checkboxWidgetActors = list()
+#     # callbacks
+#     visibility_callbacks = list()
+#     checkboxWidget_IsChecked_callbacks = list()
+#     combined_callbacks = list()
+    
+#     for i, an_actor in enumerate(placemap_actors):
+#         curr_widget_position = (5.0, start_positions[i])
+#         # Make a separate callback for each widget
+#         curr_visibility_callback = SetVisibilityCallback(an_actor)
+#         # curr_visibility_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
+#         visibility_callbacks.append(curr_visibility_callback)
+#         curr_widget_actor = p.add_checkbox_button_widget(curr_visibility_callback, value=False,
+#                 position=curr_widget_position, size=widget_size,
+#                 border_size=widget_border_size,
+#                 color_on=colors[:,i],
+#                 color_off='grey',
+#                 background_color=colors[:,i] # background_color is used for the border
+#             ) 
+#         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
+#         checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
+#         curr_combined_callback = CallbackSequence([curr_checkbox_checked_callback, curr_visibility_callback])
+#         combined_callbacks.append(curr_combined_callback)
+#         checkboxWidgetActors.append(curr_widget_actor)
+    
+#     # build the mutually exclusive group:
+#     mutually_exclusive_radiobutton_group = MutuallyExclusiveRadioButtonGroup(len(combined_callbacks), active_element_idx=active_element_idx, on_element_state_changed_callbacks=combined_callbacks, require_active_selection=require_active_selection, is_debug=is_debug)
+    
+#     # add the function that responds to user initiated changes by clicking on the value
+#     for i, a_checkbox_widget_actor in enumerate(checkboxWidgetActors):
+#         def _on_checkbox_widget_isChecked_changed_callback(widget, event):
+#             state = widget.GetRepresentation().GetState()
+#             if is_debug:
+#                 print('_on_checkbox_widget_isChecked_changed_callback(widget[{}]): updated value {})'.format(i, bool(state)))
+#             widget.ProcessEventsOff()
+#             mutually_exclusive_radiobutton_group[i] = bool(state) # set the mutually exclusive active element using the widget changed callback
+#             widget.ProcessEventsOn()
+#         a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, _on_checkbox_widget_isChecked_changed_callback)
+    
+#     return checkboxWidgetActors, combined_callbacks, mutually_exclusive_radiobutton_group
