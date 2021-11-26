@@ -65,7 +65,7 @@ class MutuallyExclusiveRadioButtonGroup:
         self._on_element_state_changed_callbacks = on_element_state_changed_callbacks
         
                 
-        # num_elements = len(placemap_actors)
+        # Allocate the boolean array that indicates which element is active
         self._is_element_active = np.full([num_elements,], False)
         
         self._active_element_idx = active_element_idx        
@@ -98,15 +98,11 @@ class MutuallyExclusiveRadioButtonGroup:
             prev_active_element_idx = self._active_element_idx
             # Inactivate the old element:
             self._is_element_active[prev_active_element_idx] = False # set prev element to false
-            if self._on_element_state_changed_callbacks is not None:
-                curr_callback = self._on_element_state_changed_callbacks[prev_active_element_idx]
-                curr_callback(self._is_element_active[prev_active_element_idx]) # pass the new state to the callback
+            self.perform_callback(prev_active_element_idx)
             # Activate the new element:
             self._active_element_idx = proposed_active_element_idx
             self._is_element_active[self._active_element_idx] = True # set new active element to true
-            if self._on_element_state_changed_callbacks is not None:
-                curr_callback = self._on_element_state_changed_callbacks[self._active_element_idx]
-                curr_callback(self._is_element_active[self._active_element_idx]) # pass the new state to the callback
+            self.perform_callback(self._active_element_idx)
                 
                 
     def perform_callback(self, callback_idx):
@@ -122,6 +118,15 @@ class MutuallyExclusiveRadioButtonGroup:
     def active_element_idx(self, proposed_active_element_idx):
         """active_element_index ensures consistency on set"""
         self.set_element_active(proposed_active_element_idx)
+
+    @property
+    def is_element_active(self):
+        """
+        Returns:
+            [Bool]: [Returns a boolean array indicating where each element is active]
+        """
+        return self._is_element_active
+
 
 
 class SetVisibilityCallback:
@@ -144,11 +149,15 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
         widget_check_states = np.full([len(placemap_actors),], widget_check_states)
         
     curr_start_pos = widget_start_pos
+    
+    visibility_callbacks = list()
     checkboxWidgetActors = list()
+    
     for i, an_actor in enumerate(placemap_actors):
         # Make a separate callback for each widget
         callback = SetVisibilityCallback(an_actor)
         callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
+        visibility_callbacks.append(callback)
         curr_widget_actor = p.add_checkbox_button_widget(callback, value=widget_check_states[i],
                 position=(5.0, curr_start_pos), size=widget_size,
                 border_size=widget_border_size,
@@ -159,7 +168,7 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
         checkboxWidgetActors.append(curr_widget_actor)
         # compute updated start position
         curr_start_pos = curr_start_pos + widget_size + (widget_size // 10)
-    return checkboxWidgetActors
+    return checkboxWidgetActors, visibility_callbacks
 
 
 
