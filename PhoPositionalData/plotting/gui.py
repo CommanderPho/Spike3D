@@ -221,83 +221,133 @@ class SetVisibilityCallback:
         
         
         
-def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3):
-    # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
-    if type(widget_check_states)==bool:
-        widget_check_states = np.full([len(placemap_actors),], widget_check_states)
-        
-    curr_start_pos = widget_start_pos
-    
-    visibility_callbacks = list()
-    checkboxWidgetActors = list()
-    
-    for i, an_actor in enumerate(placemap_actors):
-        # Make a separate callback for each widget
-        callback = SetVisibilityCallback(an_actor)
-        callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
-        visibility_callbacks.append(callback)
-        curr_widget_actor = p.add_checkbox_button_widget(callback, value=widget_check_states[i],
-                position=(5.0, curr_start_pos), size=widget_size,
-                border_size=widget_border_size,
-                color_on=colors[:,i],
-                color_off='grey',
-                background_color=colors[:,i] # background_color is used for the border
-            ) 
-        checkboxWidgetActors.append(curr_widget_actor)
-        # compute updated start position
-        curr_start_pos = curr_start_pos + widget_size + (widget_size // 10)
-    return checkboxWidgetActors, visibility_callbacks
-
-# def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False):
+# def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3):
 #     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
-#     num_checkboxes = len(placemap_actors)
-#     # start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.arange(num_checkboxes))
-#     start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.flip(np.arange(num_checkboxes)))
+#     if type(widget_check_states)==bool:
+#         widget_check_states = np.full([len(placemap_actors),], widget_check_states)
+        
+#     curr_start_pos = widget_start_pos
     
-#     checkboxWidgetActors = list()
-#     labelWidgetActors = list()
-    
-#     # callbacks
 #     visibility_callbacks = list()
-#     checkboxWidget_IsChecked_callbacks = list()
-#     combined_callbacks = list()
+#     checkboxWidgetActors = list()
     
 #     for i, an_actor in enumerate(placemap_actors):
-#         curr_widget_position = (5.0, start_positions[i])
 #         # Make a separate callback for each widget
-#         curr_visibility_callback = SetVisibilityCallback(an_actor)
-#         # curr_visibility_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
-#         curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=False,
-#                 position=curr_widget_position, size=widget_size,
+#         callback = SetVisibilityCallback(an_actor)
+#         callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
+#         visibility_callbacks.append(callback)
+#         curr_widget_actor = p.add_checkbox_button_widget(callback, value=widget_check_states[i],
+#                 position=(5.0, curr_start_pos), size=widget_size,
 #                 border_size=widget_border_size,
 #                 color_on=colors[:,i],
 #                 color_off='grey',
 #                 background_color=colors[:,i] # background_color is used for the border
-#         )
-#         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
-#         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
-#         curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
-#         # append the callbacks to the lists:
-#         visibility_callbacks.append(curr_visibility_callback)
-#         checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
-#         combined_callbacks.append(curr_combined_callback)
-#         # append actors to lists:
-#         labelWidgetActors.append(curr_widget_label_actor)
+#             ) 
 #         checkboxWidgetActors.append(curr_widget_actor)
-    
-#     # build the mutually exclusive group:
-#     mutually_exclusive_radiobutton_group = MutuallyExclusiveRadioButtonGroup(len(combined_callbacks), active_element_idx=active_element_idx, on_element_state_changed_callbacks=combined_callbacks, require_active_selection=require_active_selection, is_debug=is_debug)
-    
-#     def _update_mutually_exclusive_callback(widget_index, state):
-#         debug_console_widget.add_line_to_buffer('_update_mutually_exclusive_callback(widget[{}]): updated value {})'.format(widget_index, state))
-#         mutually_exclusive_radiobutton_group[widget_index] = state # set the mutually exclusive active element using the widget changed callback
+#         # compute updated start position
+#         curr_start_pos = curr_start_pos + widget_size + (widget_size // 10)
+#     return checkboxWidgetActors, visibility_callbacks
 
-#     # add the function that responds to user initiated changes by clicking on the value
-#     # checkbox_changed_callbacks = list()
-#     for i, a_checkbox_widget_actor in enumerate(checkboxWidgetActors):
-#         curr_checkbox_changed_callback = OnUICheckboxChangedCallback(a_checkbox_widget_actor, i, _update_mutually_exclusive_callback, is_debug=is_debug)
-#         a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, curr_checkbox_changed_callback)
-#         # checkbox_changed_callbacks.append(curr_checkbox_changed_callback)
+
+
+def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3):
+    # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
+    """ Adds a list of toggle checkboxes to turn on and off each placemap
+    Usage:
+        checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks = add_placemap_toggle_checkboxes(pActiveTuningCurvesPlotter, tuningCurvePlotActors, pf_colors, widget_check_states=True, is_debug=False)
+    """
+    num_checkboxes = len(placemap_actors)
+    if type(widget_check_states)==bool:
+        widget_check_states = np.full([num_checkboxes,], widget_check_states)
+
+    start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.flip(np.arange(num_checkboxes)))
+    checkboxWidgetActors = list()
+    labelWidgetActors = list()
+    
+    # callbacks
+    visibility_callbacks = list()
+    checkboxWidget_IsChecked_callbacks = list()
+    combined_callbacks = list()
+    
+    for i, an_actor in enumerate(placemap_actors):
+        curr_widget_position = (5.0, start_positions[i])
+        # Make a separate callback for each widget
+        curr_visibility_callback = SetVisibilityCallback(an_actor)
+        curr_visibility_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
+        curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=widget_check_states[i],
+                position=curr_widget_position, size=widget_size,
+                border_size=widget_border_size,
+                color_on=colors[:,i],
+                color_off='grey',
+                background_color=colors[:,i] # background_color is used for the border
+        )
+        curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
+        curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
+        curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
+        # append the callbacks to the lists:
+        visibility_callbacks.append(curr_visibility_callback)
+        checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
+        combined_callbacks.append(curr_combined_callback)
+        # append actors to lists:
+        labelWidgetActors.append(curr_widget_label_actor)
+        checkboxWidgetActors.append(curr_widget_actor)
+
+    return checkboxWidgetActors, combined_callbacks
+
+
+
+def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False, debug_console_widget=None):
+    """ Adds a list of toggle checkboxes that only allows one at a time to be selected to turn on and off each placemap
+    Usage:
+        checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks, mutually_exclusive_radiobutton_group = add_placemap_toggle_mutually_exclusive_checkboxes(pActiveTuningCurvesPlotter, tuningCurvePlotActors, pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False)
+    """
+    num_checkboxes = len(placemap_actors)
+    # start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.arange(num_checkboxes))
+    start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.flip(np.arange(num_checkboxes)))
+    
+    checkboxWidgetActors = list()
+    labelWidgetActors = list()
+    
+    # callbacks
+    visibility_callbacks = list()
+    checkboxWidget_IsChecked_callbacks = list()
+    combined_callbacks = list()
+    
+    for i, an_actor in enumerate(placemap_actors):
+        curr_widget_position = (5.0, start_positions[i])
+        # Make a separate callback for each widget
+        curr_visibility_callback = SetVisibilityCallback(an_actor)
+        curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=False,
+                position=curr_widget_position, size=widget_size,
+                border_size=widget_border_size,
+                color_on=colors[:,i],
+                color_off='grey',
+                background_color=colors[:,i] # background_color is used for the border
+        )
+        curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
+        curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
+        curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
+        # append the callbacks to the lists:
+        visibility_callbacks.append(curr_visibility_callback)
+        checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
+        combined_callbacks.append(curr_combined_callback)
+        # append actors to lists:
+        labelWidgetActors.append(curr_widget_label_actor)
+        checkboxWidgetActors.append(curr_widget_actor)
+    
+    # build the mutually exclusive group:
+    mutually_exclusive_radiobutton_group = MutuallyExclusiveRadioButtonGroup(len(combined_callbacks), active_element_idx=active_element_idx, on_element_state_changed_callbacks=combined_callbacks, require_active_selection=require_active_selection, is_debug=is_debug)
+    
+    def _update_mutually_exclusive_callback(widget_index, state):
+        if debug_console_widget is not None:
+            debug_console_widget.add_line_to_buffer('_update_mutually_exclusive_callback(widget[{}]): updated value {})'.format(widget_index, state))
+        mutually_exclusive_radiobutton_group[widget_index] = state # set the mutually exclusive active element using the widget changed callback
+
+    # add the function that responds to user initiated changes by clicking on the value
+    # checkbox_changed_callbacks = list()
+    for i, a_checkbox_widget_actor in enumerate(checkboxWidgetActors):
+        curr_checkbox_changed_callback = OnUICheckboxChangedCallback(a_checkbox_widget_actor, i, _update_mutually_exclusive_callback, is_debug=is_debug)
+        a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, curr_checkbox_changed_callback)
+        # checkbox_changed_callbacks.append(curr_checkbox_changed_callback)
         
-#     return checkboxWidgetActors, combined_callbacks, mutually_exclusive_radiobutton_group
-
+    return checkboxWidgetActors, combined_callbacks, mutually_exclusive_radiobutton_group
