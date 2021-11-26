@@ -7,6 +7,8 @@ User Interface Rendering and interactivity helpers
 import numpy as np
 import pyvista as pv
 
+from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
+
 def print_controls_helper_text():
     controls_helper_text_strings = ['[f] - Focus and zoom in on the last clicked point',
         'shift+click - Drag to pan the rendering scene',
@@ -216,7 +218,6 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
     return checkboxWidgetActors, visibility_callbacks
 
 
-
 # def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False):
 #     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
 #     num_checkboxes = len(placemap_actors)
@@ -224,6 +225,8 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
 #     start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.flip(np.arange(num_checkboxes)))
     
 #     checkboxWidgetActors = list()
+#     labelWidgetActors = list()
+    
 #     # callbacks
 #     visibility_callbacks = list()
 #     checkboxWidget_IsChecked_callbacks = list()
@@ -234,18 +237,22 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
 #         # Make a separate callback for each widget
 #         curr_visibility_callback = SetVisibilityCallback(an_actor)
 #         # curr_visibility_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
-#         visibility_callbacks.append(curr_visibility_callback)
-#         curr_widget_actor = p.add_checkbox_button_widget(curr_visibility_callback, value=False,
+#         curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=False,
 #                 position=curr_widget_position, size=widget_size,
 #                 border_size=widget_border_size,
 #                 color_on=colors[:,i],
 #                 color_off='grey',
 #                 background_color=colors[:,i] # background_color is used for the border
-#             ) 
+#         )
+#         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
 #         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
+#         curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
+#         # append the callbacks to the lists:
+#         visibility_callbacks.append(curr_visibility_callback)
 #         checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
-#         curr_combined_callback = CallbackSequence([curr_checkbox_checked_callback, curr_visibility_callback])
 #         combined_callbacks.append(curr_combined_callback)
+#         # append actors to lists:
+#         labelWidgetActors.append(curr_widget_label_actor)
 #         checkboxWidgetActors.append(curr_widget_actor)
     
 #     # build the mutually exclusive group:
@@ -257,9 +264,9 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
 #             state = widget.GetRepresentation().GetState()
 #             if is_debug:
 #                 print('_on_checkbox_widget_isChecked_changed_callback(widget[{}]): updated value {})'.format(i, bool(state)))
-#             widget.ProcessEventsOff()
+#             # widget.ProcessEventsOff()
 #             mutually_exclusive_radiobutton_group[i] = bool(state) # set the mutually exclusive active element using the widget changed callback
-#             widget.ProcessEventsOn()
+#             # widget.ProcessEventsOn()
 #         a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, _on_checkbox_widget_isChecked_changed_callback)
     
 #     return checkboxWidgetActors, combined_callbacks, mutually_exclusive_radiobutton_group
