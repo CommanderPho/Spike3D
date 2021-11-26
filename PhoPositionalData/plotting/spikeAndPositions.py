@@ -22,6 +22,27 @@ spike_geom_circle = pv.Circle(radius=0.4)
 spike_geom_box = pv.Box(bounds=[-0.2, 0.2, -0.2, 0.2, -0.05, 0.05])
 # pv.Cylinder
 
+# noinspection PyUnresolvedReferences
+import vtkmodules.vtkRenderingOpenGL2
+from vtkmodules.vtkCommonCore import vtkLookupTable # required for build_custom_placefield_maps_lookup_table(...)
+
+def build_custom_placefield_maps_lookup_table(curr_active_neuron_color, num_opacity_tiers, opacity_tier_values):
+    """
+    Usage:
+        build_custom_placefield_maps_lookup_table(curr_active_neuron_color, 3, [0.0, 0.6, 1.0])
+    """
+    # opacity_tier_values: [0.0, 0.6, 1.0]
+    # Build a simple lookup table of the curr_active_neuron_color with varying opacities
+    lut = vtkLookupTable()
+    lut.SetNumberOfTableValues(num_opacity_tiers)
+    for i in np.arange(num_opacity_tiers):
+        map_curr_active_neuron_color = curr_active_neuron_color.copy()
+        map_curr_active_neuron_color[3] = opacity_tier_values[i]
+        # print('map_curr_active_neuron_color: {}'.format(map_curr_active_neuron_color))
+        lut.SetTableValue(i, map_curr_active_neuron_color)
+    return lut
+
+
 
 # Call with:
 # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
@@ -91,7 +112,7 @@ def build_spike_spawn_effect_light_actor(p, spike_position, spike_unit_color='wh
 
 
 
-def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFactor=10.0):
+def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFactor=10.0, show_legend=False):
     # Plots 2D Placefields in a 3D PyVista plot
     # curr_tuning_curves = active_placefields.ratemap.tuning_curves
     curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves
@@ -140,13 +161,25 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
                                                                             #  show_edges=True, edge_color=curr_active_neuron_color, line_width=3.0, render_lines_as_tubes=True, 
                                                                             #  nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
                                                                             #  show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True, render=False)
-                                                                            show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, scalars='Elevation', opacity='sigmoid', use_transparency=False, smooth_shading=True, render=False)                                                                        
+                                                                            show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, scalars='Elevation', opacity='sigmoid', use_transparency=False, smooth_shading=True, show_scalar_bar=False, render=False)                                                                     
         
-        
+        ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
+            #   pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().ScalarVisibilityOff() # Scalars not used to color objects
+        # Is NOT Sufficient, as it disables any opacity at all seemingly
+        # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color, 3, [0.0, 0.6, 1.0])
+        lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color, 5, [0.0, 0.0, 0.3, 0.5, 0.1])
+        lut.SetTableRange(pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().GetScalarRange())
+        lut.Build()
+        pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().SetLookupTable(lut)
+        pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().SetScalarModeToUsePointData()
         # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color=curr_active_neuron_color, line_width=1, name='{}_contours'.format(curr_active_neuron_pf_identifier))
         tuningCurvePlotActors.append(pdata_currActiveNeuronTuningCurve_plotActor)
         
-    legendActor = pTuningCurves.add_legend(name='tuningCurvesLegend', origin=[0.9, 0.0], size=[0.1, 1.0]) # vtk.vtkLegendBoxActor
+    if show_legend:
+        legendActor = pTuningCurves.add_legend(name='tuningCurvesLegend', origin=[0.9, 0.0], size=[0.1, 1.0]) # vtk.vtkLegendBoxActor
+    else:
+        legendActor = None
+    
     pTuningCurves.show_grid()
     pTuningCurves.add_axes(line_width=5, labels_off=False)
     pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)

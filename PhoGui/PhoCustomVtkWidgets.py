@@ -12,7 +12,6 @@ from pyvista.plotting.tools import parse_color, FONTS
 from PhoGui import vtk_ui
 # import vtk_ui
 
-
 class MultilineTextBuffer:
     """ A fixed-length circular text buffer class which allows the user to add lines to the end of the buffer and loses the oldest ones once full.
         Useful for implementing a scrolling/overflowing text console or printing debug messages within a fixed space.
