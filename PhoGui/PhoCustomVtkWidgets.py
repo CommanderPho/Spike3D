@@ -184,3 +184,129 @@ class PhoWidgetHelper:
             for widget in self.button_widgets:
                 widget.Off()
             del self.button_widgets
+
+
+    @staticmethod(function)
+    def perform_add_text(p, text, position='upper_left', font_size=18, color=None,
+                font=None, shadow=False, name=None, viewport=False):
+        """Add text to plot object in the top left corner by default.
+        Parameters
+        ----------
+        text : str
+            The text to add the rendering.
+
+        position : str, tuple(float), optional
+            Position to place the bottom left corner of the text box.
+            If tuple is used, the position of the text uses the pixel
+            coordinate system (default). In this case,
+            it returns a more general `vtkOpenGLTextActor`.
+            If string name is used, it returns a `vtkCornerAnnotation`
+            object normally used for fixed labels (like title or xlabel).
+            Default is to find the top left corner of the rendering window
+            and place text box up there. Available position: ``'lower_left'``,
+            ``'lower_right'``, ``'upper_left'``, ``'upper_right'``,
+            ``'lower_edge'``, ``'upper_edge'``, ``'right_edge'``, and
+            ``'left_edge'``.
+
+        font_size : float, optional
+            Sets the size of the title font.  Defaults to 18.
+
+        color : str or sequence, optional
+            Either a string, RGB list, or hex color string.  For example:
+
+            * ``color='white'``
+            * ``color='w'``
+            * ``color=[1, 1, 1]``
+            * ``color='#FFFFFF'``
+
+            Defaults to :attr:`pyvista.global_theme.font.color <pyvista.themes._Font.color>`.
+
+        font : str, optional
+            Font name may be ``'courier'``, ``'times'``, or ``'arial'``.
+
+        shadow : bool, optional
+            Adds a black shadow to the text.  Defaults to ``False``.
+
+        name : str, optional
+            The name for the added actor so that it can be easily updated.
+            If an actor of this name already exists in the rendering window, it
+            will be replaced by the new actor.
+
+        viewport : bool, optional
+            If ``True`` and position is a tuple of float, uses the
+            normalized viewport coordinate system (values between 0.0
+            and 1.0 and support for HiDPI).
+
+        Returns
+        -------
+        vtk.vtkTextActor
+            Text actor added to plot.
+
+        Examples
+        --------
+        >>> import pyvista
+        >>> pl = pyvista.Plotter()
+        >>> actor = PhoWidgetHelper.perform_add_text(pl, 'Sample Text', position='upper_right', color='blue',
+        ...                     shadow=True, font_size=26)
+        >>> pl.show()
+        
+        """
+        if font is None:
+            font = p._theme.font.family
+        if font_size is None:
+            font_size = p._theme.font.size
+        if color is None:
+            color = p._theme.font.color
+        if position is None:
+            # Set the position of the text to the top left corner
+            window_size = p.window_size
+            x = (window_size[0] * 0.02) / p.shape[0]
+            y = (window_size[1] * 0.85) / p.shape[0]
+            position = [x, y]
+
+        corner_mappings = {
+            'lower_left': _vtk.vtkCornerAnnotation.LowerLeft,
+            'lower_right': _vtk.vtkCornerAnnotation.LowerRight,
+            'upper_left': _vtk.vtkCornerAnnotation.UpperLeft,
+            'upper_right': _vtk.vtkCornerAnnotation.UpperRight,
+            'lower_edge': _vtk.vtkCornerAnnotation.LowerEdge,
+            'upper_edge': _vtk.vtkCornerAnnotation.UpperEdge,
+            'left_edge': _vtk.vtkCornerAnnotation.LeftEdge,
+            'right_edge': _vtk.vtkCornerAnnotation.RightEdge,
+
+        }
+        corner_mappings['ll'] = corner_mappings['lower_left']
+        corner_mappings['lr'] = corner_mappings['lower_right']
+        corner_mappings['ul'] = corner_mappings['upper_left']
+        corner_mappings['ur'] = corner_mappings['upper_right']
+        corner_mappings['top'] = corner_mappings['upper_edge']
+        corner_mappings['bottom'] = corner_mappings['lower_edge']
+        corner_mappings['right'] = corner_mappings['right_edge']
+        corner_mappings['r'] = corner_mappings['right_edge']
+        corner_mappings['left'] = corner_mappings['left_edge']
+        corner_mappings['l'] = corner_mappings['left_edge']
+
+        if isinstance(position, (int, str, bool)):
+            if isinstance(position, str):
+                position = corner_mappings[position]
+            elif position is True:
+                position = corner_mappings['upper_left']
+            p.textActor = _vtk.vtkCornerAnnotation()
+            # This is how you set the font size with this actor
+            p.textActor.SetLinearFontScaleFactor(font_size // 2)
+            p.textActor.SetText(position, text)
+        else:
+            p.textActor = _vtk.vtkTextActor()
+            p.textActor.SetInput(text)
+            p.textActor.SetPosition(position)
+            if viewport:
+                p.textActor.GetActualPositionCoordinate().SetCoordinateSystemToNormalizedViewport()
+                p.textActor.GetActualPosition2Coordinate().SetCoordinateSystemToNormalizedViewport()
+            p.textActor.GetTextProperty().SetFontSize(int(font_size * 2))
+
+        p.textActor.GetTextProperty().SetColor(parse_color(color))
+        p.textActor.GetTextProperty().SetFontFamily(FONTS[font].value)
+        p.textActor.GetTextProperty().SetShadow(shadow)
+
+        p.add_actor(p.textActor, reset_camera=False, name=name, pickable=False)
+        return p.textActor
