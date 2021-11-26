@@ -56,6 +56,60 @@ class MultilineTextBuffer:
         return f"<MultilineTextBuffer: max_num_lines: {self.max_num_lines}>: {self.buffer_text_strings}"
     def __str__(self) -> str:
         return f"<MultilineTextBuffer: max_num_lines: {self.max_num_lines}>: {self.buffer_text_strings}"
+    
+    
+
+class MultilineTextConsoleWidget(object):
+    """ A fixed-length circular text buffer class which allows the user to add lines to the end of the buffer and loses the oldest ones once full.
+        Useful for implementing a scrolling/overflowing text console or printing debug messages within a fixed space.
+        Usage:
+            test_buffer = MultilineTextBuffer()
+            print(test_buffer)
+            test_buffer.add_lines_to_buffer(['line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 7', 'line 8'])
+            print(test_buffer)
+            test_buffer.add_lines_to_buffer(['line 9'])
+            print(test_buffer)
+            test_buffer.add_lines_to_buffer(['line 10'])
+            print(test_buffer)
+            print('test_buffer.joined_text: {}'.format(test_buffer.joined_text))
+    """
+    def __init__(self, p, max_num_lines=5, name='lblDebugLoggingConsole', is_debug=False):
+        self.is_debug=is_debug        
+        # Allocate the internal text buffer object
+        self._text_buffer = MultilineTextBuffer(max_num_lines=max_num_lines, is_debug=is_debug)
+        self._debug_logging_console_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, self._text_buffer.joined_text, (0.5, 0.0), font_size=6, color=[1, 1, 1], shadow=False, name=name, viewport=True)
+        
+    @property
+    def max_num_lines(self):
+        return self._text_buffer.max_num_lines
+    @property
+    def buffer_text_strings(self):
+        return self._text_buffer.buffer_text_strings
+    @property    
+    def joined_text(self):
+        return self._text_buffer.joined_text
+    
+    def add_line_to_buffer(self, new_line):
+        """Adds the new_line to the end of the circular buffer"""
+        self._text_buffer.add_line_to_buffer(new_line)
+        self.on_update_buffer()
+        
+    def add_lines_to_buffer(self, iterable_lines):
+        """Adds the iterable_lines to the end of the circular buffer"""
+        for a_line in iterable_lines:
+            self._text_buffer.add_lines_to_buffer(a_line)      
+        self.on_update_buffer()
+            
+    def on_update_buffer(self):
+        """Called when the internal buffer object changes to update the label actor with the new text"""
+        self._debug_logging_console_label_actor.SetInput(self.joined_text)
+        
+    def __repr__(self) -> str:
+        return f"<MultilineTextConsoleWidget: max_num_lines: {self.max_num_lines}>: {self.buffer_text_strings}"
+    def __str__(self) -> str:
+        return f"<MultilineTextConsoleWidget: max_num_lines: {self.max_num_lines}>: {self.buffer_text_strings}"
+    
+    
  
  
 class PhoWidgetHelper:
@@ -232,8 +286,23 @@ class PhoWidgetHelper:
                 widget.Off()
             del self.button_widgets
 
+    @staticmethod
+    def perform_add_button_text_label(p, text, position, font_size=18, color=[1, 1, 1], font='courier', shadow=False, name=None, viewport=False):
+        text_actor = _vtk.vtkTextActor()
+        text_actor.SetInput(text)
+        text_actor.SetPosition(position)
+        if viewport:
+            text_actor.GetActualPositionCoordinate().SetCoordinateSystemToNormalizedViewport()
+            text_actor.GetActualPosition2Coordinate().SetCoordinateSystemToNormalizedViewport()
+        text_actor.GetTextProperty().SetFontSize(int(font_size * 2))
 
-    @staticmethod(function)
+        text_actor.GetTextProperty().SetColor(color)
+        text_actor.GetTextProperty().SetFontFamily(FONTS[font].value)
+        text_actor.GetTextProperty().SetShadow(shadow)
+        p.add_actor(text_actor, reset_camera=False, name=name, pickable=False)
+        return text_actor        
+
+    @staticmethod
     def perform_add_text(p, text, position='upper_left', font_size=18, color=None,
                 font=None, shadow=False, name=None, viewport=False):
         """Add text to plot object in the top left corner by default.
