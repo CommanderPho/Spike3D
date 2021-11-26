@@ -60,18 +60,12 @@ class MultilineTextBuffer:
     
 
 class MultilineTextConsoleWidget(object):
-    """ A fixed-length circular text buffer class which allows the user to add lines to the end of the buffer and loses the oldest ones once full.
+    """ A text widget that renders in the viewport to display a fixed-length circular text buffer class which allows the user to add lines to the end of the buffer and loses the oldest ones once full.
         Useful for implementing a scrolling/overflowing text console or printing debug messages within a fixed space.
         Usage:
-            test_buffer = MultilineTextBuffer()
-            print(test_buffer)
-            test_buffer.add_lines_to_buffer(['line 1', 'line 2', 'line 3', 'line 4', 'line 5', 'line 7', 'line 8'])
-            print(test_buffer)
-            test_buffer.add_lines_to_buffer(['line 9'])
-            print(test_buffer)
-            test_buffer.add_lines_to_buffer(['line 10'])
-            print(test_buffer)
-            print('test_buffer.joined_text: {}'.format(test_buffer.joined_text))
+            # Adds a multi-line debug console to the GUI for output logging:
+            debug_console_widget = MultilineTextConsoleWidget(pActiveTuningCurvesPlotter)
+            debug_console_widget.add_line_to_buffer('test log')
     """
     def __init__(self, p, max_num_lines=5, name='lblDebugLoggingConsole', is_debug=False):
         self.is_debug=is_debug        
