@@ -56,10 +56,14 @@ class MutuallyExclusiveRadioButtonGroup:
         # Allocate the boolean array that indicates which element is active
         self._is_element_active = np.full([num_elements,], False)
         
-        self._active_element_idx = active_element_idx        
-        self._is_element_active[self._active_element_idx] = True # set one element to true                
-        self.perform_callback(active_element_idx)
+        if self.require_active_selection:
+            if active_element_idx is None:
+                # if requires an active_selection, set self._active_element_idx to zero if it is None
+                active_element_idx = 0
+        self._active_element_idx = active_element_idx          
         
+        if self._active_element_idx is not None:      
+            self._is_element_active[self._active_element_idx] = True # set one element to true
 
         if self.is_debug:
             print('MutuallyExclusiveRadioButtonGroup(num_elements: {}, active_element_idx: {}, require_active_selection): Initialized'.format(num_elements, self._active_element_idx, require_active_selection))
@@ -67,6 +71,7 @@ class MutuallyExclusiveRadioButtonGroup:
         # Need to update all elements using the callback since they were all initialized to either False/True values:
         for i in np.arange(self.num_elements):
             self.perform_callback(i)
+
     def __getitem__(self, index):
         return self._is_element_active[index]
     
@@ -76,7 +81,7 @@ class MutuallyExclusiveRadioButtonGroup:
             self.set_element_active(index)
         else:
             # unusual case, an item is set to be inactivated
-            if index == self._active_element_idx:
+            if self.require_active_selection and (index == self._active_element_idx):
                 # The index to be deactivated is the active one, so change the active index to 0
                 self.set_element_active() # set the default (0) element active since the active one is being inactivated
             else:
@@ -102,12 +107,15 @@ class MutuallyExclusiveRadioButtonGroup:
             if self.is_debug:
                 print('MutuallyExclusiveRadioButtonGroup.set_element_active({}): Active index changing from {} to {}'.format(proposed_active_element_idx, prev_active_element_idx, proposed_active_element_idx))
             # Inactivate the old element:
-            self._is_element_active[prev_active_element_idx] = False # set prev element to false
-            self.perform_callback(prev_active_element_idx)
+            if prev_active_element_idx is not None:
+                self._is_element_active[prev_active_element_idx] = False # set prev element to false
+                self.perform_callback(prev_active_element_idx)
+            
             # Activate the new element:
             self._active_element_idx = proposed_active_element_idx
-            self._is_element_active[self._active_element_idx] = True # set new active element to true
-            self.perform_callback(self._active_element_idx)
+            if self._active_element_idx is not None:
+                self._is_element_active[self._active_element_idx] = True # set new active element to true
+                self.perform_callback(self._active_element_idx)
                 
                 
     def perform_callback(self, callback_idx):
