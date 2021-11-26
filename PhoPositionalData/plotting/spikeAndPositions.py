@@ -161,13 +161,13 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
                                                                             #  show_edges=True, edge_color=curr_active_neuron_color, line_width=3.0, render_lines_as_tubes=True, 
                                                                             #  nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
                                                                             #  show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True, render=False)
-                                                                            show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, scalars='Elevation', opacity='sigmoid', use_transparency=False, smooth_shading=True, show_scalar_bar=False, render=False)                                                                     
+                                                                            show_edges=False, nan_opacity=0.0, scalars='Elevation', opacity='sigmoid', use_transparency=False, smooth_shading=True, show_scalar_bar=False, render=False)                                                                     
         
         ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
             #   pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().ScalarVisibilityOff() # Scalars not used to color objects
         # Is NOT Sufficient, as it disables any opacity at all seemingly
-        # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color, 3, [0.0, 0.6, 1.0])
-        lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color, 5, [0.0, 0.0, 0.3, 0.5, 0.1])
+        lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
+        # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
         lut.SetTableRange(pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().GetScalarRange())
         lut.Build()
         pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().SetLookupTable(lut)
