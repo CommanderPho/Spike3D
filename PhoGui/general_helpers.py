@@ -3,6 +3,14 @@
 from typing import OrderedDict # for OrderedMeta
 
 
+# def print_class_helper(obj):
+#     return f"<{obj.__class__.__name__}: {obj.__dict__};>"
+
+class SimplePrintable:
+    """ Adds the default print method for classes that displays the class name and its dictionary. """
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self.__dict__};>"
+
 class OrderedMeta(type):
     """ Replaces the inheriting object's dict of attributes with an OrderedDict that preserves enumeration order
     Reference: https://stackoverflow.com/questions/11296010/iterate-through-class-members-in-order-of-their-declaration
