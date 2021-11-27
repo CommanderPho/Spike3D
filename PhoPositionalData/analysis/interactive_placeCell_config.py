@@ -97,7 +97,7 @@ def get_subsession_for_epoch(sess, active_epoch_name, active_epoch_times):
     active_epoch_pos = sess.position.time_slice(active_epoch_times[0], active_epoch_times[1]) # active_epoch_pos's .time and start/end are all valid
     # have active_epoch_position_times: the actual times each position sample occured in seconds, active_epoch_relative_position_times: the same as active_epoch_position_times but starting at zero. Finally, have a complete active_epoch_pos object
     print_subsession_neuron_differences(sess.neurons, active_epoch_session_Neurons)
-    return active_epoch_session_Neurons, active_epoch_pos
+    return active_epoch_session_Neurons, active_epoch_pos, active_epoch_position_times
 
 
 
