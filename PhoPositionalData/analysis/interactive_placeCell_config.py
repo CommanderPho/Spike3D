@@ -16,18 +16,20 @@ class NamedEpoch(metaclass=OrderedMeta):
         
         
 class SessionConfig(metaclass=OrderedMeta):
-    def __init__(self, basepath, session_name=None):
+    def __init__(self, basepath, session_spec, session_name=None):
         """[summary]
         Args:
-            active_epoch (NamedEpoch): [description]
-            basepath (Path): [description].
+            basepath (pathlib.Path): [description].
+            session_spec (SessionFolderSpec): used to load the files
             session_name (str, optional): [description].
         """
         self.basepath = basepath
         if session_name is None:
-            session_name = Path(basepath).parts[-1]
+            session_name = Path(basepath).parts[-1] # extract from basepath if session_name is not provided
         self.session_name = session_name
-        # self.active_epoch = active_epoch
+        # Session spec:
+        self.session_spec=session_spec
+        self.is_resolved, self.resolved_required_files, self.resolved_optional_files = self.session_spec.validate(self.basepath)
 
 class PlacefieldComputationParameters(metaclass=OrderedMeta):
     def __init__(self, speed_thresh=3, grid_bin=2, smooth=2):
