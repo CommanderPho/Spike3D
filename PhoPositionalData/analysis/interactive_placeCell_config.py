@@ -9,27 +9,6 @@ from pathlib import Path
 
 from PhoGui.general_helpers import OrderedMeta, SimplePrintable
 
-class NamedEpoch(SimplePrintable, metaclass=OrderedMeta):
-    def __init__(self, name, start_end_times):
-        self.name = name
-        self.start_end_times = start_end_times
-        
-class SessionConfig(SimplePrintable, metaclass=OrderedMeta):
-    def __init__(self, basepath, session_spec, session_name=None):
-        """[summary]
-        Args:
-            basepath (pathlib.Path): [description].
-            session_spec (SessionFolderSpec): used to load the files
-            session_name (str, optional): [description].
-        """
-        self.basepath = basepath
-        if session_name is None:
-            session_name = Path(basepath).parts[-1] # extract from basepath if session_name is not provided
-        self.session_name = session_name
-        # Session spec:
-        self.session_spec=session_spec
-        self.is_resolved, self.resolved_required_files, self.resolved_optional_files = self.session_spec.validate(self.basepath)
-
 
 class PlacefieldComputationParameters(SimplePrintable, metaclass=OrderedMeta):
     def __init__(self, speed_thresh=3, grid_bin=2, smooth=2):
