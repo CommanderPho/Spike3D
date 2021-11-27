@@ -7,15 +7,14 @@ import sys
 import numpy as np
 from pathlib import Path
 
-from PhoGui.general_helpers import OrderedMeta
+from PhoGui.general_helpers import OrderedMeta, SimplePrintable
 
-class NamedEpoch(metaclass=OrderedMeta):
+class NamedEpoch(SimplePrintable, metaclass=OrderedMeta):
     def __init__(self, name, start_end_times):
         self.name = name
         self.start_end_times = start_end_times
         
-        
-class SessionConfig(metaclass=OrderedMeta):
+class SessionConfig(SimplePrintable, metaclass=OrderedMeta):
     def __init__(self, basepath, session_spec, session_name=None):
         """[summary]
         Args:
@@ -31,14 +30,15 @@ class SessionConfig(metaclass=OrderedMeta):
         self.session_spec=session_spec
         self.is_resolved, self.resolved_required_files, self.resolved_optional_files = self.session_spec.validate(self.basepath)
 
-class PlacefieldComputationParameters(metaclass=OrderedMeta):
+
+class PlacefieldComputationParameters(SimplePrintable, metaclass=OrderedMeta):
     def __init__(self, speed_thresh=3, grid_bin=2, smooth=2):
         self.speed_thresh = speed_thresh
         self.grid_bin = grid_bin
         self.smooth = smooth   
 
 
-class VideoOutputModeConfig:
+class VideoOutputModeConfig(SimplePrintable):
     
     def __init__(self, active_frame_range, video_output_parent_dir, active_is_video_output_mode): 
         self.active_is_video_output_mode = active_is_video_output_mode
@@ -55,7 +55,7 @@ class VideoOutputModeConfig:
         self.active_video_output_fullpath = self.active_video_output_parent_dir.joinpath(self.active_video_output_filename)
     
 
-class PlottingConfig:
+class PlottingConfig(SimplePrintable):
     def __init__(self, output_subplots_shape=(1,1), output_parent_dir=None, use_age_proportional_spike_scale=False): 
         # output_subplots_shape="3|1" means 3 plots on the left and 1 on the right,
         # output_subplots_shape="4/2" means 4 plots on top of 2 at bottom.
@@ -73,7 +73,7 @@ class PlottingConfig:
 
 
 # class InteractivePlaceCellConfig:
-class InteractivePlaceCellConfig:
+class InteractivePlaceCellConfig(SimplePrintable):
     def __init__(self, active_session_config=None, active_epochs=None, video_output_config=None, plotting_config=None, computation_config=None):
         self.active_session_config = active_session_config
         self.active_epochs = active_epochs
