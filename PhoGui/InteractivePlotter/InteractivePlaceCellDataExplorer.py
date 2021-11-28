@@ -10,7 +10,7 @@ import pyvista as pv
 
 
 from PhoPositionalData.plotting.spikeAndPositions import plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
-from PhoPositionalData.plotting.gui import SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
+from PhoPositionalData.plotting.gui import SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes, customize_default_pyvista_theme, print_controls_helper_text
 from PhoPositionalData.plotting.animations import make_mp4_from_plotter
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
@@ -22,6 +22,14 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 
 from PhoGui.InteractivePlotter.shared_helpers import InteractivePyvistaPlotterBuildIfNeededMixin
 
+from PhoPositionalData.plotting.visualization_window import VisualizationWindow # Used to build "Windows" into the data points such as the window defining the fixed time period preceeding the current time where spikes had recently fired, etc.
+from numpy.lib.stride_tricks import sliding_window_view
+
+class VisualizationParameters:
+    def __init__(self, name) -> None:
+        self.name = name
+        
+
 class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin):
 # show_legend = True
     def __init__(self, active_config, active_session, t, x, y, num_time_points, extant_plotter=None):
@@ -31,12 +39,14 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         self.t = t
         self.x = x
         self.y = y
+        self.z_fixed = None
         
         # active_epoch_session_Neurons, active_epoch_pos, active_epoch_position_times = self.active_session.neurons, self.active_session.position, self.active_session.position.time
         # Position variables: t, x, y
         t = self.active_session.position.time
         x = self.active_session.position.x
         y = self.active_session.position.y
+        
         linear_pos = self.active_session.position.linear_pos
         speeds = self.active_session.position.speed 
 
@@ -68,7 +78,105 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # curr_max_value = self.slider_obj.GetRepresentation().GetMaximumValue()
         # curr_value = self.slider_obj.GetRepresentation().GetValue()
         self.p = extant_plotter
+        
+        self.params = VisualizationParameters('')
+        self.__setup_variables()
+        self.__setup_visualization()
+        self.__setup_pyvista_theme()
+        
 
+
+    @staticmethod
+    def __unpack_variables(active_session):
+        # Spike variables: num_cells, spike_list, cell_ids, flattened_spikes
+        num_cells = active_session.neurons.n_neurons
+        spike_list = active_session.neurons.spiketrains
+        cell_ids = active_session.neurons.neuron_ids
+        # Gets the flattened spikes, sorted in ascending timestamp for all cells. Returns a FlattenedSpiketrains object
+        flattened_spike_identities = np.concatenate([np.full((active_session.neurons.n_spikes[i],), active_session.neurons.neuron_ids[i]) for i in np.arange(active_session.neurons.n_neurons)]) # repeat the neuron_id for each spike that belongs to that neuron
+        flattened_spike_times = np.concatenate(active_session.neurons.spiketrains)
+        # Get the indicies required to sort the flattened_spike_times
+        flattened_sort_indicies = np.argsort(flattened_spike_times)
+        t_start = active_session.neurons.t_start
+        reverse_cellID_idx_lookup_map = active_session.neurons.reverse_cellID_index_map
+
+        # Position variables: t, x, y
+        t = active_session.position.time
+        x = active_session.position.x
+        y = active_session.position.y
+        linear_pos = active_session.position.linear_pos
+        speeds = active_session.position.speed 
+        flattened_spike_positions_list = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        return num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, flattened_spike_positions_list
+
+    def __setup_variables(self):
+        num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractivePlaceCellDataExplorer.__unpack_variables(self.active_session)
+
+        
+        
+        
+    def __setup_visualization(self):        
+        # Split the position data into equal sized chunks to be displayed at a single time. These will look like portions of the trajectory and be used to animate. # Chunk the data to create the animation.
+        self.params.curr_plot_update_step = 1 # Update every frame
+        self.params.curr_plot_update_frequency = self.params.curr_plot_update_step * self.active_session.position.sampling_rate # number of updates per second (Hz)
+        self.params.num_time_points = self.active_session.position.n_frames / self.params.curr_plot_update_step
+        print('active_epoch_pos.sampling_rate (Hz): {}'.format(self.active_session.position.sampling_rate))
+
+        # curr_window_duration = 2.5 # in seconds
+        # curr_view_window_length_samples = int(np.floor(curr_window_duration * active_epoch_pos.sampling_rate)) # number of samples the window should last
+        # recent_spikes_window = VisualizationWindow(duration_seconds=curr_window_duration, duration_num_frames=curr_view_window_length_samples)
+
+        # curr_recently_window_duration = 0.5 # in seconds
+        # curr_view_window_length_samples = int(np.floor(curr_window_duration * active_epoch_pos.sampling_rate)) # number of samples the window should last
+
+        ## Simplified with just two windows:
+        self.params.longer_spikes_window = VisualizationWindow(duration_seconds=1024.0, sampling_rate=self.active_session.position.sampling_rate) # have it start clearing spikes more than 30 seconds old
+        self.params.curr_view_window_length_samples = self.params.longer_spikes_window.duration_num_frames # number of samples the window should last
+        print('longer_spikes_window - curr_view_window_length_samples - {}'.format(self.params.curr_view_window_length_samples))
+
+        self.params.recent_spikes_window = VisualizationWindow(duration_seconds=1.0, sampling_rate=self.active_session.position.sampling_rate)
+        self.params.curr_view_window_length_samples = self.params.recent_spikes_window.duration_num_frames # number of samples the window should last
+        print('recent_spikes_window - curr_view_window_length_samples - {}'.format(self.params.curr_view_window_length_samples))
+
+        ## Build the sliding windows:
+        
+        # build a sliding window to be able to retreive the correct flattened indicies for any given timestep
+        self.params.active_epoch_position_linear_indicies = np.arange(np.size(self.active_session.position.time))
+        self.params.pre_computed_window_sample_indicies = self.params.recent_spikes_window.build_sliding_windows(self.params.active_epoch_position_linear_indicies)
+        # print('pre_computed_window_sample_indicies: {}\n shape: {}'.format(pre_computed_window_sample_indicies, np.shape(pre_computed_window_sample_indicies)))
+
+        ## New Pre Computed Indicies Way:
+        self.z_fixed = np.full((self.params.recent_spikes_window.duration_num_frames,), 1.1)
+        
+        
+        ## Opacity Helpers:
+        last_only_opacity_values = np.zeros([self.params.curr_view_window_length_samples,])
+        last_only_opacity_values[-1] = 1.0
+        # gradually_fading_opacity_values = np.arange(curr_view_window_length_samples)
+        gradually_fading_opacity_values = np.linspace(0.0, 1.0, self.params.curr_view_window_length_samples)
+        long_gradually_fading_opacity_values = np.linspace(0.0, 1.0, self.params.longer_spikes_window.duration_num_frames)
+        sharply_fading_opacity_values = np.linspace(0.0, 0.6, self.params.curr_view_window_length_samples)
+        # sharply_fading_opacity_values[-1] = 0.1 # last element (corresponding to current position) is set to 1.0
+
+        # active_trail_opacity_values = last_only_opacity_values.copy()
+        # active_trail_opacity_values = gradually_fading_opacity_values.copy()
+        self.params.active_trail_opacity_values = sharply_fading_opacity_values.copy()
+        # print('active_trail_opacity_values: {}\n'.format(np.shape(active_trail_opacity_values)))
+        # active_trail_size_values = np.full([curr_view_window_length_samples,], 0.6) # all have a scale of 0.6
+        self.params.active_trail_size_values = np.linspace(0.2, 0.6, self.params.curr_view_window_length_samples) # fade from a scale of 0.2 to 0.6
+        # active_trail_size_values[-1] = 6.0 # except for the end (current) point, which has a scale of 1.0
+        # active_trail_size_values = sharply_fading_opacity_values.copy()
+
+
+    def __setup_pyvista_theme(self):
+        customize_default_pyvista_theme() # Sets the default theme values to those specified in my imported file
+        # This defines the position of the vertical/horizontal splitting, in this case 40% of the vertical/horizontal dimension of the window
+        # pv.global_theme.multi_rendering_splitting_position = 0.40
+        pv.global_theme.multi_rendering_splitting_position = 0.80
+
+        
+    
+    
     ######################
     # General Plotting Method:    
     # pre_computed_window_sample_indicies, longer_spikes_window,
@@ -79,11 +187,11 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
     # active_trail_opacity_values, active_trail_size_values
     def on_slider_update_mesh(self, value):
         curr_i = int(value)    
-        active_window_sample_indicies = np.squeeze(pre_computed_window_sample_indicies[curr_i,:]) # Get the current precomputed indicies for this curr_i
+        active_window_sample_indicies = np.squeeze(self.params.pre_computed_window_sample_indicies[curr_i,:]) # Get the current precomputed indicies for this curr_i
 
         ## Spike Plotting:
         # Get the times that fall within the current plot window:
-        curr_time_fixedSegments = t[active_window_sample_indicies] # New Way
+        curr_time_fixedSegments = self.t[active_window_sample_indicies] # New Way
         t_start = curr_time_fixedSegments[0]
         t_stop = curr_time_fixedSegments[-1]
         # print('Constraining to curr_time_fixedSegments with times (start: {}, end: {})'.format(t_start, t_stop))
@@ -93,32 +201,43 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
 
         ## Historical Spikes:
         # active_included_all_historical_indicies = (flattened_spikes.flattened_spike_times < t_stop) # Accumulate Spikes mode. All spikes occuring prior to the end of the frame (meaning the current time) are plotted
-        historical_t_start = (t_stop - longer_spikes_window.duration_seconds) # Get the earliest time that will be included in the search
-        active_included_all_historical_indicies = ((flattened_spikes.flattened_spike_times > historical_t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
-        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data(flattened_spikes.flattened_spike_times[active_included_all_historical_indicies],
+        historical_t_start = (t_stop - self.params.longer_spikes_window.duration_seconds) # Get the earliest time that will be included in the search
+        
+        temp_flattened_spike_times = self.active_session.flattened_spiketrains.flattened_spike_times
+        # flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.spikes_df['unit_id'].values()
+        flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.flattened_spike_identities
+        
+        flattened_spike_positions_list = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        
+        
+        active_included_all_historical_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @historical_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
+        # active_included_all_historical_indicies = ((flattened_spikes.flattened_spike_times > historical_t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
+        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data(temp_flattened_spike_times[active_included_all_historical_indicies],
                                                                                         flattened_spike_active_unitIdentities[active_included_all_historical_indicies],
                                                                                         flattened_spike_positions_list[:, active_included_all_historical_indicies],
                                                                                         spike_geom=spike_geom_box.copy())
         if historical_spikes_pc.n_points >= 1:
-            historical_main_spikes_mesh = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+            historical_main_spikes_mesh = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
 
         ## Actively Firing Spikes:
-        recent_spikes_t_start = (t_stop - recent_spikes_window.duration_seconds) # Get the earliest time that will be included in the recent spikes
+        recent_spikes_t_start = (t_stop - self.params.recent_spikes_window.duration_seconds) # Get the earliest time that will be included in the recent spikes
         # print('recent_spikes_t_start: {}; t_start: {}'.format(recent_spikes_t_start, t_start))
-        active_included_recent_only_indicies = ((flattened_spikes.flattened_spike_times > recent_spikes_t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
+        
+        active_included_recent_only_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @recent_spikes_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
+        # active_included_recent_only_indicies = ((flattened_spikes.flattened_spike_times > recent_spikes_t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
         # active_included_recent_only_indicies = ((flattened_spikes.flattened_spike_times > t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
-        recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data(flattened_spikes.flattened_spike_times[active_included_recent_only_indicies],
+        recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data(temp_flattened_spike_times[active_included_recent_only_indicies],
                                                                                         flattened_spike_active_unitIdentities[active_included_recent_only_indicies],
                                                                                         flattened_spike_positions_list[:, active_included_recent_only_indicies],
                                                                                         spike_geom=spike_geom_cone.copy())
         if recent_only_spikes_pc.n_points >= 1:
-            recent_only_main_spikes_mesh = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
+            recent_only_main_spikes_mesh = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
 
         ## Animal Position and Location Trail Plotting:
-        point_cloud_fixedSegements_positionTrail = np.column_stack((self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], z_fixed))
+        point_cloud_fixedSegements_positionTrail = np.column_stack((self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed))
         pdata_positionTrail = pv.PolyData(point_cloud_fixedSegements_positionTrail.copy()) # a mesh
-        pdata_positionTrail.point_data['pho_fade_values'] = active_trail_opacity_values
-        pdata_positionTrail.point_data['pho_size_values'] = active_trail_size_values
+        pdata_positionTrail.point_data['pho_fade_values'] = self.params.active_trail_opacity_values
+        pdata_positionTrail.point_data['pho_size_values'] = self.params.active_trail_size_values
         # create many spheres from the point cloud
         pc_positionTrail = pdata_positionTrail.glyph(scale='pho_size_values', geom=animal_location_trail_circle)
         animal_location_trail_mesh = self.p.add_mesh(pc_positionTrail, name='animal_location_trail', ambient=0.6, opacity='linear_r', scalars='pho_fade_values', nan_opacity=0.0,
@@ -169,7 +288,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
         
         # Legend:
-        legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
+        legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
         if self.active_config.plotting_config.show_legend:
             legendActor = self.p.add_legend(legend_entries, name='interactiveSpikesPositionLegend', 
                                         bcolor=(0.05, 0.05, 0.05), border=True,
