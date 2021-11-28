@@ -52,3 +52,4 @@ class PhoInteractivePlotter(AnimationStateMixin):
     #         self.active_timestamp_slider_wrapper.step_index(15) # TODO: allow variable step size
     #         pass
 
+

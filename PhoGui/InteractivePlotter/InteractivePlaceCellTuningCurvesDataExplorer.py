@@ -18,10 +18,10 @@ from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, build_flat_map_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
 #
 
-# InteractivePlaceCellDataExplorer
+from PhoGui.InteractivePlotter.shared_helpers import InteractivePyvistaPlotterBuildIfNeededMixin
 
 # needs perform_plot_flat_arena
-class InteractivePlaceCellTuningCurvesDataExplorer:
+class InteractivePlaceCellTuningCurvesDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin):
     show_legend = True
 
     def __init__(self, active_config, x, y, active_epoch_placefields, pf_colors, extant_plotter=None):
@@ -35,34 +35,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer:
         # self.debug_console_widget = None
         self.pActiveTuningCurvesPlotter = extant_plotter
         
-    @staticmethod
-    def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None):
-        if (pActiveTuningCurvesPlotter is not None):
-            if isinstance(pActiveTuningCurvesPlotter, BackgroundPlotter):
-                if pActiveTuningCurvesPlotter.app_window.isHidden():
-                    print('No open BackgroundPlotter')
-                    pActiveTuningCurvesPlotter.close() # Close it to start over fresh
-                    pActiveTuningCurvesPlotter = None
-                    needs_create_new_backgroundPlotter = True
-                else:
-                    print('BackgroundPlotter already open, reusing it.. NOT Forcing creation of a new one!')            
-                    pActiveTuningCurvesPlotter.close() # Close it to start over fresh
-                    pActiveTuningCurvesPlotter = None
-                    needs_create_new_backgroundPlotter = True
-            else:
-                print('No open BackgroundPlotter, p is a Plotter object')
-                pActiveTuningCurvesPlotter.close()
-                pActiveTuningCurvesPlotter = None
-                needs_create_new_backgroundPlotter = True
-        else:
-            print('No extant BackgroundPlotter')
-            needs_create_new_backgroundPlotter = True
-
-        if needs_create_new_backgroundPlotter:
-            print('Creating a new BackgroundPlotter')
-            pActiveTuningCurvesPlotter = BackgroundPlotter(window_size=(1920, 1080), shape=(1,1), off_screen=False) # Use just like you would a pv.Plotter() instance
-            print('done.')
-        return pActiveTuningCurvesPlotter
+    
             
         
     def plot(self, pActiveTuningCurvesPlotter=None):

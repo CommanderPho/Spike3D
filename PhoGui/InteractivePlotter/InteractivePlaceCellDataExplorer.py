@@ -7,7 +7,7 @@
 """
 import numpy as np
 import pyvista as pv
-from pyvistaqt import BackgroundPlotter
+
 
 from PhoPositionalData.plotting.spikeAndPositions import plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
 from PhoPositionalData.plotting.gui import SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
@@ -20,7 +20,9 @@ from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, build_flat_map_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
 
-class InteractivePlaceCellDataExplorer:
+from PhoGui.InteractivePlotter.shared_helpers import InteractivePyvistaPlotterBuildIfNeededMixin
+
+class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin):
     
     def plot():
         ################################################
