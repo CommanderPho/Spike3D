@@ -24,6 +24,7 @@ def build_spike_positions_list(spike_list, t, x, y):
         # spike_speed = speeds[spike_list[cell_id]]
     return spike_positions_list
 
+## TO REMOVE:
 def build_cellID_reverse_lookup_map(cell_ids):
      # Allows reverse indexing into the linear imported array using the original cell ID indicies
     flat_cell_ids = [int(cell_id) for cell_id in cell_ids] # ensures integer indexes for IDs
