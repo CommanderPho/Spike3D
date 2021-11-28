@@ -1,4 +1,6 @@
-
+""" 
+Not yet used anywhere.
+"""
 
 class StartEndDatetimeMixin(DateTimeRenderMixin, object):
 
@@ -14,12 +16,6 @@ class StartEndDatetimeMixin(DateTimeRenderMixin, object):
     def StartEndDatetimeMixin_get_JSON(self):
         return {"start_date":self.get_full_long_date_time_string(self.get_start_date()), "end_date":self.get_full_long_date_time_string(self.get_end_date())}
 
-
-
-
-
-
-pActiveTuningCurvesPlotter.picked_cells
 
 class GlobalUserSelectionsManager:
     """
