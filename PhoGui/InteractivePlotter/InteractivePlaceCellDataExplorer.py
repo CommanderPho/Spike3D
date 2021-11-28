@@ -32,7 +32,7 @@ class VisualizationParameters:
 
 class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin):
 # show_legend = True
-    def __init__(self, active_config, active_session, t, x, y, num_time_points, extant_plotter=None):
+    def __init__(self, active_config, active_session, t, x, y, extant_plotter=None):
         self.active_config = active_config
         self.active_session = active_session
         # self.active_config = self.active_session.config
@@ -73,7 +73,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # self.active_trail_opacity_values = active_trail_opacity_values
         # self.active_trail_size_values = active_trail_size_values
         
-        self.num_time_points = num_time_points
+        # self.num_time_points = num_time_points
         # curr_min_value = self.slider_obj.GetRepresentation().GetMinimumValue()
         # curr_max_value = self.slider_obj.GetRepresentation().GetMaximumValue()
         # curr_value = self.slider_obj.GetRepresentation().GetValue()
@@ -276,7 +276,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
 
         if (not self.active_config.video_output_config.active_is_video_output_mode):
             #Interactive Mode: Enable interactive controls:
-            interactive_timestamp_slider_actor = self.p.add_slider_widget(self.on_slider_update_mesh, [0, (self.num_time_points-1)], title='Trajectory Timestep', event_type='always', style='modern', pointa=(0.025, 0.1), pointb=(0.98, 0.1), fmt='%0.2f') # fmt="%0.2f"
+            interactive_timestamp_slider_actor = self.p.add_slider_widget(self.on_slider_update_mesh, [0, (self.params.num_time_points-1)], title='Trajectory Timestep', event_type='always', style='modern', pointa=(0.025, 0.1), pointb=(0.98, 0.1), fmt='%0.2f') # fmt="%0.2f"
             # interactive_timestamp_slider_wrapper = InteractiveSliderWrapper(interactive_timestamp_slider_actor)    
             # interactive_plotter = PhoGui.InteractivePlotter.PhoInteractivePlotter.PhoInteractivePlotter(pyvista_plotter=p, interactive_timestamp_slider_actor=interactive_timestamp_slider_actor)
             interactive_plotter = PhoInteractivePlotter(pyvista_plotter=self.p, interactive_timestamp_slider_actor=interactive_timestamp_slider_actor)
