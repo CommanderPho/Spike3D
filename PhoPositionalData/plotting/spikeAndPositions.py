@@ -175,10 +175,19 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
         # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color=curr_active_neuron_color, line_width=1, name='{}_contours'.format(curr_active_neuron_pf_identifier))
         tuningCurvePlotActors.append(pdata_currActiveNeuronTuningCurve_plotActor)
         
+    # Legend:
+    legend_entries = [['pf[{}]'.format(good_placefield_neuronIDs[i]), pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]
     if show_legend:
-        legendActor = pTuningCurves.add_legend(name='tuningCurvesLegend', origin=[0.9, 0.0], size=[0.1, 1.0]) # vtk.vtkLegendBoxActor
+        legendActor = pTuningCurves.add_legend(legend_entries, name='tuningCurvesLegend', 
+                                bcolor=(0.05, 0.05, 0.05), border=True,
+                                origin=[0.95, 0.1], size=[0.05, 0.85]) # vtk.vtkLegendBoxActor
     else:
         legendActor = None
+        
+    # if show_legend:
+    #     legendActor = pTuningCurves.add_legend(name='tuningCurvesLegend', origin=[0.9, 0.0], size=[0.1, 1.0]) # vtk.vtkLegendBoxActor
+    # else:
+    #     legendActor = None
     
     pTuningCurves.show_grid()
     pTuningCurves.add_axes(line_width=5, labels_off=False)
