@@ -7,6 +7,7 @@ import sys
 import pyvista as pv
 import pyvistaqt as pvqt
 import numpy as np
+import pandas as pd
 from pathlib import Path
 
 
@@ -67,8 +68,30 @@ def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
         p.add_mesh(pc_maze, name='maze_bg', label='maze', scalars=traversal_order_scalars, render=True)
 
 
+# # dataframe version of the build_active_spikes_plot_pointdata(...) function
+# def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
+#     # spike_series_times = active_flattened_spike_times # currently unused
+#     spike_series_identities = active_flattened_spike_identities # currently unused
+#     spike_series_positions = active_flattened_spike_positions_list
+#     # z = np.zeros_like(spike_series_positions[0,:])
+#     z_fixed = np.full_like(spike_series_positions[0,:], 1.1) # Offset a little bit in the z-direction so we can see it
+#     spike_history_point_cloud = np.vstack((spike_series_positions[0,:], spike_series_positions[1,:], z_fixed)).T
+#     spike_history_pdata = pv.PolyData(spike_history_point_cloud)
+#     # spike_history_pdata['times'] = spike_series_times
+#     spike_history_pdata['cellID'] = spike_series_identities
+#     return spike_history_pdata
 
-# TODO: brought in from old file, finish implementation
+
+# # dataframe versions of the build_active_spikes_plot_data(...) function
+# def build_active_spikes_plot_data_df(active_flat_df: pd.DataFrame, spike_geom):
+#     # spike_series_times = active_flattened_spike_times # currently unused
+#     spike_history_pdata = build_active_spikes_plot_pointdata_df(active_flat_df)
+#     # create many spheres from the point cloud
+#     spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy())
+#     return spike_history_pdata, spike_history_pc
+
+
+## compatability with pre 2021-11-28 implementations
 def build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list):
     # spike_series_times = active_flattened_spike_times # currently unused
     spike_series_identities = active_flattened_spike_identities # currently unused
@@ -81,6 +104,7 @@ def build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flat
     spike_history_pdata['cellID'] = spike_series_identities
     return spike_history_pdata
 
+## compatability with pre 2021-11-28 implementations
 def build_active_spikes_plot_data(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list, spike_geom):
     # spike_series_times = active_flattened_spike_times # currently unused
     spike_history_pdata = build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list)

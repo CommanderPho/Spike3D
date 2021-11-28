@@ -203,19 +203,24 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # active_included_all_historical_indicies = (flattened_spikes.flattened_spike_times < t_stop) # Accumulate Spikes mode. All spikes occuring prior to the end of the frame (meaning the current time) are plotted
         historical_t_start = (t_stop - self.params.longer_spikes_window.duration_seconds) # Get the earliest time that will be included in the search
         
-        temp_flattened_spike_times = self.active_session.flattened_spiketrains.flattened_spike_times
+        flattened_spike_times = self.active_session.flattened_spiketrains.flattened_spike_times
         # flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.spikes_df['unit_id'].values()
         flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.flattened_spike_identities
-        
         flattened_spike_positions_list = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
-        
-        
-        active_included_all_historical_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @historical_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
-        # active_included_all_historical_indicies = ((flattened_spikes.flattened_spike_times > historical_t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
-        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data(temp_flattened_spike_times[active_included_all_historical_indicies],
+                
+        # evaluated as column names
+        active_included_all_historical_indicies = ((flattened_spike_times > historical_t_start) & (flattened_spike_times < t_stop)) # Two Sided Range Mode
+        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data(flattened_spike_times[active_included_all_historical_indicies],
                                                                                         flattened_spike_active_unitIdentities[active_included_all_historical_indicies],
                                                                                         flattened_spike_positions_list[:, active_included_all_historical_indicies],
                                                                                         spike_geom=spike_geom_box.copy())
+        
+        # active_included_all_historical_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @historical_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are 
+        # historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(flattened_spike_times[active_included_all_historical_indicies],
+        #                                                                                 flattened_spike_active_unitIdentities[active_included_all_historical_indicies],
+        #                                                                                 flattened_spike_positions_list[:, active_included_all_historical_indicies],
+        #                                                                                 spike_geom=spike_geom_box.copy())
+        
         if historical_spikes_pc.n_points >= 1:
             historical_main_spikes_mesh = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
 
@@ -223,13 +228,19 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         recent_spikes_t_start = (t_stop - self.params.recent_spikes_window.duration_seconds) # Get the earliest time that will be included in the recent spikes
         # print('recent_spikes_t_start: {}; t_start: {}'.format(recent_spikes_t_start, t_start))
         
-        active_included_recent_only_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @recent_spikes_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
-        # active_included_recent_only_indicies = ((flattened_spikes.flattened_spike_times > recent_spikes_t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
+        active_included_recent_only_indicies = ((flattened_spike_times > recent_spikes_t_start) & (flattened_spike_times < t_stop)) # Two Sided Range Mode
         # active_included_recent_only_indicies = ((flattened_spikes.flattened_spike_times > t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
-        recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data(temp_flattened_spike_times[active_included_recent_only_indicies],
+        recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data(flattened_spike_times[active_included_recent_only_indicies],
                                                                                         flattened_spike_active_unitIdentities[active_included_recent_only_indicies],
                                                                                         flattened_spike_positions_list[:, active_included_recent_only_indicies],
                                                                                         spike_geom=spike_geom_cone.copy())
+        
+        # active_included_recent_only_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @recent_spikes_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
+        # recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data_df(flattened_spike_times[active_included_recent_only_indicies],
+        #                                                                                 flattened_spike_active_unitIdentities[active_included_recent_only_indicies],
+        #                                                                                 flattened_spike_positions_list[:, active_included_recent_only_indicies],
+        #                                                                                 spike_geom=spike_geom_cone.copy())
+        
         if recent_only_spikes_pc.n_points >= 1:
             recent_only_main_spikes_mesh = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
 
