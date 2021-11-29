@@ -46,58 +46,19 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
     def __init__(self, active_config, active_session, extant_plotter=None):
         self.active_config = active_config
         self.active_session = active_session
-        # self.active_config = self.active_session.config
-        # self.t = t
-        # self.x = x
-        # self.y = y
         self.z_fixed = None
-        
-        # active_epoch_session_Neurons, active_epoch_pos, active_epoch_position_times = self.active_session.neurons, self.active_session.position, self.active_session.position.time
         # Position variables: t, x, y
         self.t = self.active_session.position.time
         self.x = self.active_session.position.x
         self.y = self.active_session.position.y
-        
-        # self.linear_pos = self.active_session.position.linear_pos
-        # self.speeds = self.active_session.position.speed 
-
-        ## for plot(...):
-        # pf_colors, active_config
-        
-        ## for on_slider_update_mesh(...):
-        # pre_computed_window_sample_indicies, longer_spikes_window,
-        # flattened_spikes.flattened_spike_times, flattened_spike_active_unitIdentities, flattened_spike_positions_list,
-        # active_cells_listed_colormap
-        # recent_spikes_window
-        # z_fixed, 
-        # active_trail_opacity_values, active_trail_size_values
-
-        # self.active_epoch_session = active_epoch_session
-    
-        # self.pre_computed_window_sample_indicies = pre_computed_window_sample_indicies
-        # self.active_window_sample_indicies = active_window_sample_indicies
-        # self.flattened_spikes = flattened_spikes
-        # self.flattened_spike_active_unitIdentities = flattened_spike_active_unitIdentities
-        # self.flattened_spike_positions_list = flattened_spike_positions_list
-        # self.active_cells_listed_colormap = active_cells_listed_colormap
-    
-        # self.active_trail_opacity_values = active_trail_opacity_values
-        # self.active_trail_size_values = active_trail_size_values
-        
-        # self.num_time_points = num_time_points
-        # curr_min_value = self.slider_obj.GetRepresentation().GetMinimumValue()
-        # curr_max_value = self.slider_obj.GetRepresentation().GetMaximumValue()
-        # curr_value = self.slider_obj.GetRepresentation().GetValue()
         self.p = extant_plotter
-        
+        # Helper variables
         self.params = VisualizationParameters('')
         self.debug = DebugHelper('')
         self.__setup_variables()
         self.__setup_visualization()
         self.__setup_pyvista_theme()
         
-
-
     @staticmethod
     def __unpack_variables(active_session):
         # Spike variables: num_cells, spike_list, cell_ids, flattened_spikes
@@ -118,31 +79,21 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         y = active_session.position.y
         linear_pos = active_session.position.linear_pos
         speeds = active_session.position.speed 
-        # flattened_spike_positions_list = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
-        
-        # flattened_spike_positions_list = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
         
         
         ### Build the flattened spike positions list
         # Determine the x and y positions each spike occured for each cell
         ## new_df style:
         flattened_spike_positions_list_new = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
-        print('\n flattened_spike_positions_list_new: {}, {}'.format(np.shape(flattened_spike_positions_list_new), flattened_spike_positions_list_new))
+        # print('\n flattened_spike_positions_list_new: {}, {}'.format(np.shape(flattened_spike_positions_list_new), flattened_spike_positions_list_new))
         # flattened_spike_positions_list_new: (2, 17449), [[ nan 0.37450201 0.37450201 ... 0.86633532 0.86632449 0.86632266], [ nan 0.33842111 0.33842111 ... 0.47504852 0.47503917 0.47503759]]
         flattened_spike_positions_list_new
         
         ## old-style:
-        spike_positions_list = build_spike_positions_list(spike_list, t, x, y)
-        ## build_spike_positions_list(...) is defined:
-        # num_cells = len(spike_list)
-        # spike_positions_list = list()
-        # for cell_id in np.arange(num_cells):
-        #     spike_positions_list.append(np.vstack((np.interp(spike_list[cell_id], t, x), np.interp(spike_list[cell_id], t, y))))
-        
-        
+        spike_positions_list = build_spike_positions_list(spike_list, t, x, y) 
         flattened_spike_positions_list = np.concatenate(tuple(spike_positions_list), axis=1) # needs tuple(...) to conver the list into a tuple, which is the format it expects
         flattened_spike_positions_list = flattened_spike_positions_list[:, flattened_sort_indicies] # ensure the positions are ordered the same as the other flattened items so they line up
-        print('\n flattened_spike_positions_list_old: {}, {}\n\n'.format(np.shape(flattened_spike_positions_list), flattened_spike_positions_list))
+        # print('\n flattened_spike_positions_list_old: {}, {}\n\n'.format(np.shape(flattened_spike_positions_list), flattened_spike_positions_list))
         #  flattened_spike_positions_list_old: (2, 17449), [[103.53295196 100.94485182 100.86902972 ... 210.99778204 210.87296572 210.85173243]
 
         return num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, flattened_spike_positions_list
@@ -159,11 +110,6 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
         
 
-
-
-        
-        
-        
     def __setup_visualization(self):        
         # Split the position data into equal sized chunks to be displayed at a single time. These will look like portions of the trajectory and be used to animate. # Chunk the data to create the animation.
         self.params.curr_plot_update_step = 1 # Update every frame
@@ -216,16 +162,13 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # active_trail_size_values[-1] = 6.0 # except for the end (current) point, which has a scale of 1.0
         # active_trail_size_values = sharply_fading_opacity_values.copy()
 
-
     def __setup_pyvista_theme(self):
         customize_default_pyvista_theme() # Sets the default theme values to those specified in my imported file
         # This defines the position of the vertical/horizontal splitting, in this case 40% of the vertical/horizontal dimension of the window
         # pv.global_theme.multi_rendering_splitting_position = 0.40
         pv.global_theme.multi_rendering_splitting_position = 0.80
 
-        
-    
-    
+
     ######################
     # General Plotting Method:    
     # pre_computed_window_sample_indicies, longer_spikes_window,
@@ -319,10 +262,6 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # self.p.update()
         # self.p.app.processEvents() # not needed probably
         return
-
-    # curr_active_neuron_pf_identifier = 'pf[{}]'.format(curr_active_neuron_ID)
-    # label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier
-
 
     # pf_colors, active_config
     def plot(self, pActivePlotter=None):
