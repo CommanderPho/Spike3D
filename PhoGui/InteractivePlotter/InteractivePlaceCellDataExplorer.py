@@ -25,30 +25,41 @@ from PhoGui.InteractivePlotter.shared_helpers import InteractivePyvistaPlotterBu
 from PhoPositionalData.plotting.visualization_window import VisualizationWindow # Used to build "Windows" into the data points such as the window defining the fixed time period preceeding the current time where spikes had recently fired, etc.
 from numpy.lib.stride_tricks import sliding_window_view
 
+
+
+from PhoPositionalData.import_data import build_spike_positions_list # used for old-style interpolation testing
+
+
 class VisualizationParameters:
     def __init__(self, name) -> None:
         self.name = name
         
-
+class DebugHelper():
+    def __init__(self, name) -> None:
+        self.name = name
+    
+        
+    
 class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin):
 # show_legend = True
-    def __init__(self, active_config, active_session, t, x, y, extant_plotter=None):
+    # def __init__(self, active_config, active_session, t, x, y, extant_plotter=None):
+    def __init__(self, active_config, active_session, extant_plotter=None):
         self.active_config = active_config
         self.active_session = active_session
         # self.active_config = self.active_session.config
-        self.t = t
-        self.x = x
-        self.y = y
+        # self.t = t
+        # self.x = x
+        # self.y = y
         self.z_fixed = None
         
         # active_epoch_session_Neurons, active_epoch_pos, active_epoch_position_times = self.active_session.neurons, self.active_session.position, self.active_session.position.time
         # Position variables: t, x, y
-        t = self.active_session.position.time
-        x = self.active_session.position.x
-        y = self.active_session.position.y
+        self.t = self.active_session.position.time
+        self.x = self.active_session.position.x
+        self.y = self.active_session.position.y
         
-        linear_pos = self.active_session.position.linear_pos
-        speeds = self.active_session.position.speed 
+        # self.linear_pos = self.active_session.position.linear_pos
+        # self.speeds = self.active_session.position.speed 
 
         ## for plot(...):
         # pf_colors, active_config
@@ -80,6 +91,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         self.p = extant_plotter
         
         self.params = VisualizationParameters('')
+        self.debug = DebugHelper('')
         self.__setup_variables()
         self.__setup_visualization()
         self.__setup_pyvista_theme()
@@ -106,11 +118,48 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         y = active_session.position.y
         linear_pos = active_session.position.linear_pos
         speeds = active_session.position.speed 
-        flattened_spike_positions_list = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        # flattened_spike_positions_list = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        
+        # flattened_spike_positions_list = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        
+        
+        ### Build the flattened spike positions list
+        # Determine the x and y positions each spike occured for each cell
+        ## new_df style:
+        flattened_spike_positions_list_new = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        print('\n flattened_spike_positions_list_new: {}, {}'.format(np.shape(flattened_spike_positions_list_new), flattened_spike_positions_list_new))
+        # flattened_spike_positions_list_new: (2, 17449), [[ nan 0.37450201 0.37450201 ... 0.86633532 0.86632449 0.86632266], [ nan 0.33842111 0.33842111 ... 0.47504852 0.47503917 0.47503759]]
+        flattened_spike_positions_list_new
+        
+        ## old-style:
+        spike_positions_list = build_spike_positions_list(spike_list, t, x, y)
+        ## build_spike_positions_list(...) is defined:
+        # num_cells = len(spike_list)
+        # spike_positions_list = list()
+        # for cell_id in np.arange(num_cells):
+        #     spike_positions_list.append(np.vstack((np.interp(spike_list[cell_id], t, x), np.interp(spike_list[cell_id], t, y))))
+        
+        
+        flattened_spike_positions_list = np.concatenate(tuple(spike_positions_list), axis=1) # needs tuple(...) to conver the list into a tuple, which is the format it expects
+        flattened_spike_positions_list = flattened_spike_positions_list[:, flattened_sort_indicies] # ensure the positions are ordered the same as the other flattened items so they line up
+        print('\n flattened_spike_positions_list_old: {}, {}\n\n'.format(np.shape(flattened_spike_positions_list), flattened_spike_positions_list))
+        #  flattened_spike_positions_list_old: (2, 17449), [[103.53295196 100.94485182 100.86902972 ... 210.99778204 210.87296572 210.85173243]
+
         return num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, flattened_spike_positions_list
 
     def __setup_variables(self):
+        
         num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractivePlaceCellDataExplorer.__unpack_variables(self.active_session)
+        ### Build the flattened spike positions list
+        # Determine the x and y positions each spike occured for each cell
+        ## new_df style:
+        self.debug.flattened_spike_positions_list_new = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        
+        ## old-style:
+        self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
+        
+
+
 
         
         
@@ -134,7 +183,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         self.params.curr_view_window_length_samples = self.params.longer_spikes_window.duration_num_frames # number of samples the window should last
         print('longer_spikes_window - curr_view_window_length_samples - {}'.format(self.params.curr_view_window_length_samples))
 
-        self.params.recent_spikes_window = VisualizationWindow(duration_seconds=1.0, sampling_rate=self.active_session.position.sampling_rate)
+        self.params.recent_spikes_window = VisualizationWindow(duration_seconds=10.0, sampling_rate=self.active_session.position.sampling_rate) # increasing this increases the length of the position tail
         self.params.curr_view_window_length_samples = self.params.recent_spikes_window.duration_num_frames # number of samples the window should last
         print('recent_spikes_window - curr_view_window_length_samples - {}'.format(self.params.curr_view_window_length_samples))
 
@@ -146,7 +195,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # print('pre_computed_window_sample_indicies: {}\n shape: {}'.format(pre_computed_window_sample_indicies, np.shape(pre_computed_window_sample_indicies)))
 
         ## New Pre Computed Indicies Way:
-        self.z_fixed = np.full((self.params.recent_spikes_window.duration_num_frames,), 1.1)
+        self.z_fixed = np.full((self.params.recent_spikes_window.duration_num_frames,), 1.1) # this seems to be about position, not spikes
         
         
         ## Opacity Helpers:
@@ -192,6 +241,8 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         ## Spike Plotting:
         # Get the times that fall within the current plot window:
         curr_time_fixedSegments = self.t[active_window_sample_indicies] # New Way
+        # I think there's a problem here, because self.t contains the sampled position value timestamps if I'm not mistaken....
+        
         t_start = curr_time_fixedSegments[0]
         t_stop = curr_time_fixedSegments[-1]
         # print('Constraining to curr_time_fixedSegments with times (start: {}, end: {})'.format(t_start, t_stop))
@@ -206,7 +257,9 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         flattened_spike_times = self.active_session.flattened_spiketrains.flattened_spike_times
         # flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.spikes_df['unit_id'].values()
         flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.flattened_spike_identities
-        flattened_spike_positions_list = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        # flattened_spike_positions_list = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        
+        flattened_spike_positions_list = self.params.flattened_spike_positions_list
                 
         # evaluated as column names
         active_included_all_historical_indicies = ((flattened_spike_times > historical_t_start) & (flattened_spike_times < t_stop)) # Two Sided Range Mode
@@ -295,6 +348,11 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
             helper_controls_text = print_controls_helper_text()
             self.p.add_text(helper_controls_text, position='upper_left', name='lblControlsHelperText', color='grey', font_size=8.0)
             
+            # Adds a multi-line debug console to the GUI for output logging:
+            # debug_console_widget = MultilineTextConsoleWidget(pActiveTuningCurvesPlotter)
+            # debug_console_widget.add_line_to_buffer('test log')
+            # debug_console_widget.add_line_to_buffer('test log 2')
+
         # Plot the flat arena
         perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
         
