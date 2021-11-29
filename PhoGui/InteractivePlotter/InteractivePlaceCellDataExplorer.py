@@ -98,8 +98,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
 
         return num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, flattened_spike_positions_list
 
-    def __setup_variables(self):
-        
+    def __setup_variables(self):       
         num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractivePlaceCellDataExplorer.__unpack_variables(self.active_session)
         ### Build the flattened spike positions list
         # Determine the x and y positions each spike occured for each cell
@@ -168,7 +167,86 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # pv.global_theme.multi_rendering_splitting_position = 0.40
         pv.global_theme.multi_rendering_splitting_position = 0.80
 
+    # legacy compatability properties:
+    @property
+    def flattened_spike_times(self):
+        return self.active_session.flattened_spiketrains.flattened_spike_times
+    @property
+    def flattened_spike_active_unitIdentities(self):
+        return self.active_session.flattened_spiketrains.flattened_spike_identities
+    @property
+    def flattened_spike_positions_list(self):
+        return self.params.flattened_spike_positions_list
+    
 
+    def on_programmatic_data_update(self, active_included_all_historical_indicies=None, active_included_recent_only_indicies=None, active_window_sample_indicies=None):
+        """ Called to programmatically update the interactive plot. """
+        
+        needs_render = False # needs_render is only set to True if one of the items plots/changes successfully
+        # TODO: enable updating the text data:
+        # curr_text_rendering_string = 'curr_i: {:d}; (t_start: {:.2f}, t_stop: {:.2f})'.format(curr_i, t_start, t_stop) # :.3f
+        # self.p.add_text(curr_text_rendering_string, name='lblCurrent_spike_range', position='lower_right', color='white', shadow=True, font_size=10)
+
+        ## Historical Spikes:
+                
+        if active_included_all_historical_indicies is not None:
+            historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data(self.flattened_spike_times[active_included_all_historical_indicies],
+                                                                                            self.flattened_spike_active_unitIdentities[active_included_all_historical_indicies],
+                                                                                            self.flattened_spike_positions_list[:, active_included_all_historical_indicies],
+                                                                                            spike_geom=spike_geom_box.copy())
+            
+            # active_included_all_historical_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @historical_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are 
+            # historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(flattened_spike_times[active_included_all_historical_indicies],
+            #                                                                                 flattened_spike_active_unitIdentities[active_included_all_historical_indicies],
+            #                                                                                 flattened_spike_positions_list[:, active_included_all_historical_indicies],
+            #                                                                                 spike_geom=spike_geom_box.copy())
+            
+            if historical_spikes_pc.n_points >= 1:
+                historical_main_spikes_mesh = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+                needs_render = True
+
+        if active_included_recent_only_indicies is not None:
+            ## Actively Firing Spikes:
+            recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data(self.flattened_spike_times[active_included_recent_only_indicies],
+                                                                                            self.flattened_spike_active_unitIdentities[active_included_recent_only_indicies],
+                                                                                            self.flattened_spike_positions_list[:, active_included_recent_only_indicies],
+                                                                                            spike_geom=spike_geom_cone.copy())            
+            # active_included_recent_only_indicies = self.active_session.flattened_spiketrains.spikes_df.eval('(t_seconds > @recent_spikes_t_start) & (t_seconds < @t_stop)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
+            # recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data_df(flattened_spike_times[active_included_recent_only_indicies],
+            #                                                                                 flattened_spike_active_unitIdentities[active_included_recent_only_indicies],
+            #                                                                                 flattened_spike_positions_list[:, active_included_recent_only_indicies],
+            #                                                                                 spike_geom=spike_geom_cone.copy())
+            if recent_only_spikes_pc.n_points >= 1:
+                recent_only_main_spikes_mesh = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
+                needs_render = True
+
+
+        if active_window_sample_indicies is not None:
+            ## Animal Position and Location Trail Plotting:
+            point_cloud_fixedSegements_positionTrail = np.column_stack((self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed))
+            pdata_positionTrail = pv.PolyData(point_cloud_fixedSegements_positionTrail.copy()) # a mesh
+            pdata_positionTrail.point_data['pho_fade_values'] = self.params.active_trail_opacity_values
+            pdata_positionTrail.point_data['pho_size_values'] = self.params.active_trail_size_values
+            # create many spheres from the point cloud
+            pc_positionTrail = pdata_positionTrail.glyph(scale='pho_size_values', geom=animal_location_trail_circle)
+            animal_location_trail_mesh = self.p.add_mesh(pc_positionTrail, name='animal_location_trail', ambient=0.6, opacity='linear_r', scalars='pho_fade_values', nan_opacity=0.0,
+                                                    show_edges=False, render_lines_as_tubes=True, show_scalar_bar=False, use_transparency=True, render=False) # works to render a heat colored (most recent==hotter) position
+
+
+            ## Animal Current Position:
+            curr_animal_point = point_cloud_fixedSegements_positionTrail[-1,:].copy() # Get the last point
+            pdata_current_point = pv.PolyData(curr_animal_point) # a mesh
+            pc_current_point = pdata_current_point.glyph(scale=False, geom=animal_location_circle)
+            animal_current_location_point_mesh = self.p.add_mesh(pc_current_point, name='animal_location', color='green', ambient=0.6, opacity=0.5,
+                                                            show_edges=True, edge_color=[0.05, 0.8, 0.08], line_width=3.0, nan_opacity=0.0, render_lines_as_tubes=True,
+                                                            show_scalar_bar=False, use_transparency=True, render=False) # works to render a heat colored (most recent==hotter) position
+            needs_render = True
+
+        if needs_render:
+            self.p.render() # renders to ensure it's updated after changing the ScalarVisibility above    
+        
+        
+        
     ######################
     # General Plotting Method:    
     # pre_computed_window_sample_indicies, longer_spikes_window,
@@ -197,11 +275,11 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # active_included_all_historical_indicies = (flattened_spikes.flattened_spike_times < t_stop) # Accumulate Spikes mode. All spikes occuring prior to the end of the frame (meaning the current time) are plotted
         historical_t_start = (t_stop - self.params.longer_spikes_window.duration_seconds) # Get the earliest time that will be included in the search
         
+        # TODO: replace with properties that I implemented
         flattened_spike_times = self.active_session.flattened_spiketrains.flattened_spike_times
         # flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.spikes_df['unit_id'].values()
         flattened_spike_active_unitIdentities = self.active_session.flattened_spiketrains.flattened_spike_identities
         # flattened_spike_positions_list = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
-        
         flattened_spike_positions_list = self.params.flattened_spike_positions_list
                 
         # evaluated as column names
