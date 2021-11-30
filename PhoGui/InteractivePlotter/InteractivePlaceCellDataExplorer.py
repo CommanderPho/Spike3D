@@ -372,27 +372,12 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
             self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
 
         ## Animal Position and Location Trail Plotting:
-        # point_cloud_fixedSegements_positionTrail = np.column_stack((self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed))
-        # pdata_positionTrail = pv.PolyData(point_cloud_fixedSegements_positionTrail.copy()) # a mesh
-        # pdata_positionTrail.point_data['pho_fade_values'] = self.params.active_trail_opacity_values
-        # pdata_positionTrail.point_data['pho_size_values'] = self.params.active_trail_size_values
-        # # create many spheres from the point cloud
-        # pc_positionTrail = pdata_positionTrail.glyph(scale='pho_size_values', geom=animal_location_trail_circle)
-        # self.plots['animal_location_trail'] = self.p.add_mesh(pc_positionTrail, name='animal_location_trail', ambient=0.6, opacity='linear_r', scalars='pho_fade_values', nan_opacity=0.0,
-        #                                         show_edges=False, render_lines_as_tubes=True, show_scalar_bar=False, use_transparency=True, render=False) # works to render a heat colored (most recent==hotter) position
         self.perform_plot_location_trail('animal_location_trail', self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed,
                                              trail_fade_values=self.params.active_trail_opacity_values, trail_point_size_values=self.params.active_trail_size_values,
                                              render=False)
         
 
         ## Animal Current Position:
-        # curr_animal_point = point_cloud_fixedSegements_positionTrail[-1,:].copy() # Get the last point
-        # pdata_current_point = pv.PolyData(curr_animal_point) # a mesh
-        # pc_current_point = pdata_current_point.glyph(scale=False, geom=animal_location_circle)
-        # self.plots['animal_current_location_point'] = self.p.add_mesh(pc_current_point, name='animal_location', color='green', ambient=0.6, opacity=0.5,
-        #                                                 show_edges=True, edge_color=[0.05, 0.8, 0.08], line_width=3.0, nan_opacity=0.0, render_lines_as_tubes=True,
-        #                                                 show_scalar_bar=False, use_transparency=True, render=False) # works to render a heat colored (most recent==hotter) position
-
         curr_animal_point = [self.x[active_window_sample_indicies[-1]], self.y[active_window_sample_indicies[-1]], self.z_fixed[-1]]
         self.perform_plot_location_point('animal_current_location_point', curr_animal_point, render=False)
         
