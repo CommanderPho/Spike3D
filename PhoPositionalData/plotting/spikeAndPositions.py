@@ -138,6 +138,18 @@ def build_spike_spawn_effect_light_actor(p, spike_position, spike_unit_color='wh
 
 
 
+def force_plot_ignore_scalar_as_color(plot_mesh_actor, lookup_table):
+        """The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
+        Args:
+            plot_mesh_actor ([type]): [description]
+            lookup_table ([type]): a lookup_table as might be built with: `build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])`
+        """
+        # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
+        lookup_table.SetTableRange(plot_mesh_actor.GetMapper().GetScalarRange())
+        lookup_table.Build()
+        plot_mesh_actor.GetMapper().SetLookupTable(lookup_table)
+        plot_mesh_actor.GetMapper().SetScalarModeToUsePointData()
+
 def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFactor=10.0, show_legend=False):
     # Plots 2D Placefields in a 3D PyVista plot
     # curr_tuning_curves = active_placefields.ratemap.tuning_curves
@@ -189,15 +201,14 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
                                                                             #  show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True, render=False)
                                                                             show_edges=False, nan_opacity=0.0, scalars='Elevation', opacity='sigmoid', use_transparency=False, smooth_shading=True, show_scalar_bar=False, render=False)                                                                     
         
+        # Force custom colors:
         ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
             #   pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().ScalarVisibilityOff() # Scalars not used to color objects
         # Is NOT Sufficient, as it disables any opacity at all seemingly
         lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
         # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
-        lut.SetTableRange(pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().GetScalarRange())
-        lut.Build()
-        pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().SetLookupTable(lut)
-        pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().SetScalarModeToUsePointData()
+        force_plot_ignore_scalar_as_color(pdata_currActiveNeuronTuningCurve_plotActor, lut)
+        
         # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color=curr_active_neuron_color, line_width=1, name='{}_contours'.format(curr_active_neuron_pf_identifier))
         tuningCurvePlotActors.append(pdata_currActiveNeuronTuningCurve_plotActor)
         
