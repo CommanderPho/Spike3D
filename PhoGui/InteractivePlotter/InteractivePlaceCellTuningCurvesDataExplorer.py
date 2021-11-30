@@ -30,6 +30,8 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         super(InteractivePlaceCellTuningCurvesDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='InteractivePlaceCellTuningCurvesDataExplorer')
         self.params.active_epoch_placefields = active_epoch_placefields
         self.params.pf_colors = pf_colors
+        
+        
         self._setup()
 
     
@@ -44,8 +46,9 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
 
 
-    def _setup_visualization(self):        
-        pass
+    def _setup_visualization(self): 
+        self.params.use_mutually_exclusive_placefield_checkboxes = False       
+        self.params.show_legend = True
     
     
 
@@ -58,21 +61,23 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         # Plot the flat arena
         self.plots['maze_bg'] = perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
         
-        self.p, tuningCurvePlotActors, tuningCurvePlotLegendActor = plot_placefields2D(self.p, self.params.active_epoch_placefields, self.params.pf_colors, zScalingFactor=10.0, show_legend=True) 
+        self.p, tuningCurvePlotActors, tuningCurvePlotLegendActor = plot_placefields2D(self.p, self.params.active_epoch_placefields, self.params.pf_colors, zScalingFactor=10.0, show_legend=self.params.show_legend) 
 
         # Adds a multi-line debug console to the GUI for output logging:
         debug_console_widget = MultilineTextConsoleWidget(self.p)
         debug_console_widget.add_line_to_buffer('test log')
         # debug_console_widget.add_line_to_buffer('test log 2')
         # Adds a list of toggle checkboxe widgets to turn on and off each placemap
-        use_mutually_exclusive_placefield_checkboxes = True
-        if use_mutually_exclusive_placefield_checkboxes:
+        self.setup_visibility_checkboxes(tuningCurvePlotActors)
+        return self.p
+    
+    
+    def setup_visibility_checkboxes(self, tuningCurvePlotActors):
+        if self.params.use_mutually_exclusive_placefield_checkboxes:
             checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks, mutually_exclusive_radiobutton_group = add_placemap_toggle_mutually_exclusive_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False)
         else:
             mutually_exclusive_radiobutton_group = None
             checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks = add_placemap_toggle_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, widget_check_states=False)
-        return self.p
-    
     
     # def rough_add_spikes(self, sesssion):
         

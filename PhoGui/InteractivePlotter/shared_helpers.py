@@ -107,8 +107,6 @@ class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, I
         self.params = VisualizationParameters('')
         self.debug = DebugHelper('')
         self.plots = dict()
-
-        self._setup()
         
     @staticmethod
     def _unpack_variables(active_session):
@@ -157,14 +155,6 @@ class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, I
 
     def _setup_variables(self):
         raise NotImplementedError
-        # num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase.__unpack_variables(self.active_session)
-        # ### Build the flattened spike positions list
-        # # Determine the x and y positions each spike occured for each cell
-        # ## new_df style:
-        # self.debug.flattened_spike_positions_list_new = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
-
-        # ## old-style:
-        # self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
 
         
     def _setup_visualization(self):
