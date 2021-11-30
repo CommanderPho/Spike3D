@@ -195,18 +195,23 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
     def animal_current_location_point(self):
         return self.plots.get('animal_current_location_point', None)
 
-    def perform_plot_location_point(self, plot_name, curr_animal_point, render=True):
+    def perform_plot_location_point(self, plot_name, curr_animal_point, render=True, **kwargs):
         """ will render a flat indicator of a single point like is used for the animal's current location. 
         Updates the existing plot if the same plot_name is reused. """
+        ## COMPAT: merge operator '|'requires Python 3.9
+        # new_dict = default_dict | {'color':'red'}
         pdata_current_point = pv.PolyData(curr_animal_point) # a mesh
         pc_current_point = pdata_current_point.glyph(scale=False, geom=animal_location_circle)
-        self.plots[plot_name] = self.p.add_mesh(pc_current_point, name=plot_name, color='green', ambient=0.6, opacity=0.5,
-                                    show_edges=True, edge_color=[0.05, 0.8, 0.08], line_width=3.0, nan_opacity=0.0, render_lines_as_tubes=True,
-                                    show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position
+        # self.plots[plot_name] = self.p.add_mesh(pc_current_point, name=plot_name, color='green', ambient=0.6, opacity=0.5,
+        #                             show_edges=True, edge_color=[0.05, 0.8, 0.08], line_width=3.0, nan_opacity=0.0, render_lines_as_tubes=True,
+        #                             show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position   
+        self.plots[plot_name] = self.p.add_mesh(pc_current_point, name=plot_name, render=render, **({'color':'green', 'ambient':0.6, 'opacity':0.5,
+                        'show_edges':True, 'edge_color':[0.05, 0.8, 0.08], 'line_width':3.0, 'nan_opacity':0.0, 'render_lines_as_tubes':True,
+                        'show_scalar_bar':False, 'use_transparency':True} | kwargs))
         return self.plots[plot_name]
 
 
-    def perform_plot_location_trail(self, plot_name, arr_x, arr_y, arr_z, trail_fade_values=None, trail_point_size_values=None, render=True):
+    def perform_plot_location_trail(self, plot_name, arr_x, arr_y, arr_z, render=True, trail_fade_values=None, trail_point_size_values=None, **kwargs):
         """ will render a series of points as a trajectory/path given arr_x, arr_y, and arr_z vectors of the same length.
         indicator of a single point like is used for the animal's current location. 
         Updates the existing plot if the same plot_name is reused. """
@@ -225,8 +230,10 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         
         # create many spheres from the point cloud
         pc_positionTrail = pdata_positionTrail.glyph(scale=point_size_scale_arg, geom=animal_location_trail_circle)
-        self.plots[plot_name] = self.p.add_mesh(pc_positionTrail, name=plot_name, ambient=0.6, opacity='linear_r', scalars=scalars_arg, nan_opacity=0.0,
-                                                show_edges=False, render_lines_as_tubes=True, show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position
+        # self.plots[plot_name] = self.p.add_mesh(pc_positionTrail, name=plot_name, ambient=0.6, opacity='linear_r', scalars=scalars_arg, nan_opacity=0.0,
+        #                                         show_edges=False, render_lines_as_tubes=True, show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position       
+        self.plots[plot_name] = self.p.add_mesh(pc_positionTrail, name=plot_name, render=render, **({'ambient':0.6, 'opacity':'linear_r', 'scalars':scalars_arg, 'nan_opacity':0.0,
+                                                'show_edges':False, 'render_lines_as_tubes':True, 'show_scalar_bar':False, 'use_transparency':True} | kwargs))
         return self.plots[plot_name]
             
     def on_programmatic_data_update(self, active_included_all_historical_indicies=None, active_included_recent_only_indicies=None, active_window_sample_indicies=None, curr_animal_point=None):
