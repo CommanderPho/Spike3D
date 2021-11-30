@@ -18,7 +18,7 @@ from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotte
 from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
 from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
 
-from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, build_flat_map_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
+from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
 
 from PhoGui.InteractivePlotter.shared_helpers import InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin
 
@@ -296,7 +296,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
             self.p.render() # renders to ensure it's updated after changing the ScalarVisibility above
             # self.p.update()
 
-
+    
 
     ######################
     # General Plotting Method:

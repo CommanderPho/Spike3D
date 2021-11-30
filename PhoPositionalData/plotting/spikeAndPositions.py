@@ -45,22 +45,24 @@ def build_custom_placefield_maps_lookup_table(curr_active_neuron_color, num_opac
 
 
 
-# Call with:
-# pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
-# p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
-def build_flat_map_plot_data(x, y):
-    # Builds the flat base maze map that the other data will be plot on top of
-    ## Implicitly relies on: x, y
-    z = np.zeros_like(x)
-    point_cloud = np.vstack((x, y, z)).T
-    pdata = pv.PolyData(point_cloud)
-    pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
-    geo = pv.Circle(radius=0.5)
-    pc = pdata.glyph(scale=False, geom=geo)
-    return pdata, pc
+
 
 def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
-    pdata_maze, pc_maze = build_flat_map_plot_data(x, y)
+    # Call with:
+    # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
+    # p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
+    def __build_flat_map_plot_data(x, y):
+        # Builds the flat base maze map that the other data will be plot on top of
+        ## Implicitly relies on: x, y
+        z = np.zeros_like(x)
+        point_cloud = np.vstack((x, y, z)).T
+        pdata = pv.PolyData(point_cloud)
+        pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
+        geo = pv.Circle(radius=0.5)
+        pc = pdata.glyph(scale=False, geom=geo)
+        return pdata, pc
+
+    pdata_maze, pc_maze = __build_flat_map_plot_data(x, y)
     return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", render=True)    
     # bShowSequenceTraversalGradient
     if bShowSequenceTraversalGradient:

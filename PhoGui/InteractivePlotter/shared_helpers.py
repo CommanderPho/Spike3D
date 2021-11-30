@@ -66,9 +66,3 @@ class InteractivePyvistaPlotter_ObjectManipulationMixin:
         return InteractivePyvistaPlotter_ObjectManipulationMixin.__toggle_visibility(self.safe_get_plot(plot_id))
 
 
-def print_seconds(seconds):
-    """ prints the seconds arguments as a human-redable time. """
-    m, s = divmod(seconds, 60)
-    h, m = divmod(m, 60)
-    print('{:d}:{:02d}:{:02d}'.format(h, m, s)) # Python 3
-    return h, m, s
