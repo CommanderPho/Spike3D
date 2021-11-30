@@ -61,11 +61,11 @@ def build_flat_map_plot_data(x, y):
 
 def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
     pdata_maze, pc_maze = build_flat_map_plot_data(x, y)
-    p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", render=True)    
+    return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", render=True)    
     # bShowSequenceTraversalGradient
     if bShowSequenceTraversalGradient:
         traversal_order_scalars = np.arange(len(x))
-        p.add_mesh(pc_maze, name='maze_bg', label='maze', scalars=traversal_order_scalars, render=True)
+        return p.add_mesh(pc_maze, name='maze_bg', label='maze', scalars=traversal_order_scalars, render=True)
 
 
 # # dataframe version of the build_active_spikes_plot_pointdata(...) function
