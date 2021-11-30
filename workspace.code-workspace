@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\NeuroPy"
+		},
+		{
+			"path": "R:\\data\\KDIBA\\gor01\\one"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "C:\\Users\\Pho\\anaconda3\\envs\\phoviz\\python.exe"
+	}
+}
