@@ -27,7 +27,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
     show_legend = True
 
     def __init__(self, active_config, active_session, active_epoch_placefields, pf_colors, extant_plotter=None):
-        super(InteractivePlaceCellTuningCurvesDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='InteractivePlaceCellTuningCurvesDataExplorer')
+        super(InteractivePlaceCellTuningCurvesDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='TuningMapDataExplorer')
         self.params.active_epoch_placefields = active_epoch_placefields
         self.params.pf_colors = pf_colors
         
@@ -57,7 +57,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         
     def plot(self, pActivePlotter=None):
         ## Build the new BackgroundPlotter:
-        self.p = InteractivePlaceCellTuningCurvesDataExplorer.build_new_plotter_if_needed(pActivePlotter)
+        self.p = InteractivePlaceCellTuningCurvesDataExplorer.build_new_plotter_if_needed(pActivePlotter, title=self.data_explorer_name)
         # Plot the flat arena
         self.plots['maze_bg'] = perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
         

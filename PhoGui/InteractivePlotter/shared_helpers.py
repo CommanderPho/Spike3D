@@ -27,7 +27,7 @@ class DebugHelper():
 
 class InteractivePyvistaPlotterBuildIfNeededMixin:
     @staticmethod
-    def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None, shape=(1,1)):
+    def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None, shape=(1,1), **kwargs):
         if (pActiveTuningCurvesPlotter is not None):
             if isinstance(pActiveTuningCurvesPlotter, BackgroundPlotter):
                 if pActiveTuningCurvesPlotter.app_window.isHidden():
@@ -51,8 +51,10 @@ class InteractivePyvistaPlotterBuildIfNeededMixin:
 
         if needs_create_new_backgroundPlotter:
             print('Creating a new BackgroundPlotter')
-            pActiveTuningCurvesPlotter = BackgroundPlotter(window_size=(1920, 1080), shape=(1,1), off_screen=False) # Use just like you would a pv.Plotter() instance
-            print('done.')
+            
+            
+            # pActiveTuningCurvesPlotter = BackgroundPlotter(window_size=(1920, 1080), shape=(1,1), off_screen=False) # Use just like you would a pv.Plotter() instance
+            pActiveTuningCurvesPlotter = BackgroundPlotter(**({'window_size':(1920, 1080), 'shape':(1,1), 'off_screen':False} | kwargs)) # Use just like you would a pv.Plotter() instance 
         return pActiveTuningCurvesPlotter
 
 

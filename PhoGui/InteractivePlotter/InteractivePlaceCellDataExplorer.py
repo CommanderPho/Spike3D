@@ -27,7 +27,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
     """
     def __init__(self, active_config, active_session, extant_plotter=None):
         # super().__init__(active_config, active_session, extant_plotter)
-        super(InteractivePlaceCellDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='InteractivePlaceCellDataExplorer')
+        super(InteractivePlaceCellDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='CellSpikePositionDataExplorer')
         self._setup()
 
     
@@ -286,7 +286,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
             ## Video mode should use a regular plotter object
             self.p = pv.Plotter(notebook=False, shape=self.active_config.plotting_config.subplots_shape, window_size=([1280, 720]), off_screen=True) # , line_smoothing=True, polygon_smoothing=True, multi_samples=8
         else:
-            self.p = InteractivePlaceCellDataExplorer.build_new_plotter_if_needed(pActivePlotter, shape=self.active_config.plotting_config.subplots_shape)
+            self.p = InteractivePlaceCellDataExplorer.build_new_plotter_if_needed(pActivePlotter, shape=self.active_config.plotting_config.subplots_shape, title=self.data_explorer_name)
 
         # p.background_color = 'black'
 

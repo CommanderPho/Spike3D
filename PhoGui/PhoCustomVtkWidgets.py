@@ -9,7 +9,7 @@ from pyvista.utilities import (NORMALS, generate_plane, get_array,
                                try_callback, get_array_association)
 from pyvista.plotting.tools import parse_color, FONTS
 
-from PhoGui import vtk_ui
+# from PhoGui import vtk_ui
 # import vtk_ui
 
 
