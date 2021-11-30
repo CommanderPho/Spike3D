@@ -233,8 +233,6 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
     # pTuningCurves.enable_shadows()
     return pTuningCurves, tuningCurvePlotActors, legendActor
 
-
-
 def update_plotVisiblePlacefields2D(tuningCurvePlotActors, isTuningCurveVisible):
     # Updates the visible placefields. Complements plot_placefields2D
     num_active_tuningCurveActors = len(tuningCurvePlotActors)

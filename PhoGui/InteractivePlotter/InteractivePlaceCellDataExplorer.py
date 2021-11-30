@@ -22,27 +22,12 @@ from PhoPositionalData.plotting.visualization_window import VisualizationWindow 
 from numpy.lib.stride_tricks import sliding_window_view
 
 
-class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin, InteractiveDataExplorerBase):
-# show_legend = True
-    # def __init__(self, active_config, active_session, t, x, y, extant_nplotter=None):
+class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
+    """[summary]
+    """
     def __init__(self, active_config, active_session, extant_plotter=None):
         # super().__init__(active_config, active_session, extant_plotter)
         super(InteractivePlaceCellDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='InteractivePlaceCellDataExplorer')
-        # self.active_config = active_config
-        # self.active_session = active_session
-        # self.z_fixed = None
-        # # Position variables: t, x, y
-        # self.t = self.active_session.position.time
-        # self.x = self.active_session.position.x
-        # self.y = self.active_session.position.y
-        # self.p = extant_plotter
-        # Helper variables
-        # self.params = VisualizationParameters('')
-        # self.debug = DebugHelper('')
-        # self.plots = dict()
-        # self._setup_variables()
-        # self._setup_visualization()
-        # self._setup_pyvista_theme()
         self._setup()
 
     
@@ -186,14 +171,6 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         ## Animal Trajectory Trail:
         if active_window_sample_indicies is not None:
             ## Animal Position and Location Trail Plotting:
-            # point_cloud_fixedSegements_positionTrail = np.column_stack((self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed))
-            # pdata_positionTrail = pv.PolyData(point_cloud_fixedSegements_positionTrail.copy()) # a mesh
-            # pdata_positionTrail.point_data['pho_fade_values'] = self.params.active_trail_opacity_values
-            # pdata_positionTrail.point_data['pho_size_values'] = self.params.active_trail_size_values
-            # # create many spheres from the point cloud
-            # pc_positionTrail = pdata_positionTrail.glyph(scale='pho_size_values', geom=animal_location_trail_circle)
-            # self.plots['animal_location_trail'] = self.p.add_mesh(pc_positionTrail, name='animal_location_trail', ambient=0.6, opacity='linear_r', scalars='pho_fade_values', nan_opacity=0.0,
-            #                                         show_edges=False, render_lines_as_tubes=True, show_scalar_bar=False, use_transparency=True, render=False) # works to render a heat colored (most recent==hotter) position
             self.perform_plot_location_trail('animal_location_trail', self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed,
                                              trail_fade_values=self.params.active_trail_opacity_values, trail_point_size_values=self.params.active_trail_size_values,
                                              render=False)
@@ -324,7 +301,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
             self.p.add_text(helper_controls_text, position='upper_left', name='lblControlsHelperText', color='grey', font_size=8.0)
 
             # Adds a multi-line debug console to the GUI for output logging:
-            # debug_console_widget = MultilineTextConsoleWidget(pActiveTuningCurvesPlotter)
+            # debug_console_widget = MultilineTextConsoleWidget(p)
             # debug_console_widget.add_line_to_buffer('test log')
             # debug_console_widget.add_line_to_buffer('test log 2')
 
