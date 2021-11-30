@@ -18,10 +18,10 @@ from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
 #
 
-from PhoGui.InteractivePlotter.shared_helpers import InteractivePyvistaPlotterBuildIfNeededMixin
+from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase, InteractivePyvistaPlotterBuildIfNeededMixin
 
 # needs perform_plot_flat_arena
-class InteractivePlaceCellTuningCurvesDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin):
+class InteractivePlaceCellTuningCurvesDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin, InteractiveDataExplorerBase):
     show_legend = True
 
     def __init__(self, active_config, x, y, active_epoch_placefields, pf_colors, extant_plotter=None):
@@ -32,6 +32,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractivePyvistaPlotterBuil
         self.pf_colors = pf_colors
         
         # Initial setup
+        self.plots = dict()
         # self.debug_console_widget = None
         self.pActiveTuningCurvesPlotter = extant_plotter
         
@@ -59,3 +60,13 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractivePyvistaPlotterBuil
         return self.pActiveTuningCurvesPlotter
     
     
+    # def rough_add_spikes(self, sesssion):
+        
+    #     active_included_recent_only_indicies = ((flattened_spike_times > recent_spikes_t_start) & (flattened_spike_times < t_stop)) # Two Sided Range Mode
+    #     # active_included_recent_only_indicies = ((flattened_spikes.flattened_spike_times > t_start) & (flattened_spikes.flattened_spike_times < t_stop)) # Two Sided Range Mode
+    #     recent_only_spikes_pdata, recent_only_spikes_pc = build_active_spikes_plot_data(flattened_spike_times[active_included_recent_only_indicies],
+    #                                                                                     flattened_spike_active_unitIdentities[active_included_recent_only_indicies],
+    #                                                                                     flattened_spike_positions_list[:, active_included_recent_only_indicies],
+    #                                                                                     spike_geom=spike_geom_cone.copy())
+    #     if recent_only_spikes_pc.n_points >= 1:
+    #         self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'

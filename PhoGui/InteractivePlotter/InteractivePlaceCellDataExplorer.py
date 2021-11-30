@@ -8,9 +8,6 @@
 import numpy as np
 import pyvista as pv
 
-
-from PhoPositionalData.plotting.spikeAndPositions import plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
-from PhoPositionalData.plotting.gui import SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes, customize_default_pyvista_theme, print_controls_helper_text
 from PhoPositionalData.plotting.animations import make_mp4_from_plotter
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
@@ -18,89 +15,39 @@ from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotte
 from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
 from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
 
+from PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
-
-from PhoGui.InteractivePlotter.shared_helpers import InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin
-
+from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase, InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin
 from PhoPositionalData.plotting.visualization_window import VisualizationWindow # Used to build "Windows" into the data points such as the window defining the fixed time period preceeding the current time where spikes had recently fired, etc.
 from numpy.lib.stride_tricks import sliding_window_view
 
 
-
-from PhoPositionalData.import_data import build_spike_positions_list # used for old-style interpolation testing
-
-
-class VisualizationParameters:
-    def __init__(self, name) -> None:
-        self.name = name
-
-class DebugHelper():
-    def __init__(self, name) -> None:
-        self.name = name
-
-
-
-class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin):
+class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin, InteractiveDataExplorerBase):
 # show_legend = True
-    # def __init__(self, active_config, active_session, t, x, y, extant_plotter=None):
+    # def __init__(self, active_config, active_session, t, x, y, extant_nplotter=None):
     def __init__(self, active_config, active_session, extant_plotter=None):
-        self.active_config = active_config
-        self.active_session = active_session
-        self.z_fixed = None
-        # Position variables: t, x, y
-        self.t = self.active_session.position.time
-        self.x = self.active_session.position.x
-        self.y = self.active_session.position.y
-        self.p = extant_plotter
+        # super().__init__(active_config, active_session, extant_plotter)
+        super(InteractivePlaceCellDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='InteractivePlaceCellDataExplorer')
+        # self.active_config = active_config
+        # self.active_session = active_session
+        # self.z_fixed = None
+        # # Position variables: t, x, y
+        # self.t = self.active_session.position.time
+        # self.x = self.active_session.position.x
+        # self.y = self.active_session.position.y
+        # self.p = extant_plotter
         # Helper variables
-        self.params = VisualizationParameters('')
-        self.debug = DebugHelper('')
-        self.plots = dict()
-        self.__setup_variables()
-        self.__setup_visualization()
-        self.__setup_pyvista_theme()
+        # self.params = VisualizationParameters('')
+        # self.debug = DebugHelper('')
+        # self.plots = dict()
+        # self._setup_variables()
+        # self._setup_visualization()
+        # self._setup_pyvista_theme()
+        self._setup()
 
-    @staticmethod
-    def __unpack_variables(active_session):
-        # Spike variables: num_cells, spike_list, cell_ids, flattened_spikes
-        num_cells = active_session.neurons.n_neurons
-        spike_list = active_session.neurons.spiketrains
-        cell_ids = active_session.neurons.neuron_ids
-        # Gets the flattened spikes, sorted in ascending timestamp for all cells. Returns a FlattenedSpiketrains object
-        flattened_spike_identities = np.concatenate([np.full((active_session.neurons.n_spikes[i],), active_session.neurons.neuron_ids[i]) for i in np.arange(active_session.neurons.n_neurons)]) # repeat the neuron_id for each spike that belongs to that neuron
-        flattened_spike_times = np.concatenate(active_session.neurons.spiketrains)
-        # Get the indicies required to sort the flattened_spike_times
-        flattened_sort_indicies = np.argsort(flattened_spike_times)
-        t_start = active_session.neurons.t_start
-        reverse_cellID_idx_lookup_map = active_session.neurons.reverse_cellID_index_map
-
-        # Position variables: t, x, y
-        t = active_session.position.time
-        x = active_session.position.x
-        y = active_session.position.y
-        linear_pos = active_session.position.linear_pos
-        speeds = active_session.position.speed
-
-
-        ### Build the flattened spike positions list
-        # Determine the x and y positions each spike occured for each cell
-        ## new_df style:
-        flattened_spike_positions_list_new = active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
-        # print('\n flattened_spike_positions_list_new: {}, {}'.format(np.shape(flattened_spike_positions_list_new), flattened_spike_positions_list_new))
-        # flattened_spike_positions_list_new: (2, 17449), [[ nan 0.37450201 0.37450201 ... 0.86633532 0.86632449 0.86632266], [ nan 0.33842111 0.33842111 ... 0.47504852 0.47503917 0.47503759]]
-        flattened_spike_positions_list_new
-
-        ## old-style:
-        spike_positions_list = build_spike_positions_list(spike_list, t, x, y)
-        flattened_spike_positions_list = np.concatenate(tuple(spike_positions_list), axis=1) # needs tuple(...) to conver the list into a tuple, which is the format it expects
-        flattened_spike_positions_list = flattened_spike_positions_list[:, flattened_sort_indicies] # ensure the positions are ordered the same as the other flattened items so they line up
-        # print('\n flattened_spike_positions_list_old: {}, {}\n\n'.format(np.shape(flattened_spike_positions_list), flattened_spike_positions_list))
-        #  flattened_spike_positions_list_old: (2, 17449), [[103.53295196 100.94485182 100.86902972 ... 210.99778204 210.87296572 210.85173243]
-
-        return num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, flattened_spike_positions_list
-
-    def __setup_variables(self):
-        num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractivePlaceCellDataExplorer.__unpack_variables(self.active_session)
+    
+    def _setup_variables(self):
+        num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
         ### Build the flattened spike positions list
         # Determine the x and y positions each spike occured for each cell
         ## new_df style:
@@ -110,7 +57,7 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
 
 
-    def __setup_visualization(self):
+    def _setup_visualization(self):
         # Split the position data into equal sized chunks to be displayed at a single time. These will look like portions of the trajectory and be used to animate. # Chunk the data to create the animation.
         self.params.curr_plot_update_step = 1 # Update every frame
         self.params.curr_plot_update_frequency = self.params.curr_plot_update_step * self.active_session.position.sampling_rate # number of updates per second (Hz)
@@ -162,11 +109,11 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
         # active_trail_size_values[-1] = 6.0 # except for the end (current) point, which has a scale of 1.0
         # active_trail_size_values = sharply_fading_opacity_values.copy()
 
-    def __setup_pyvista_theme(self):
-        customize_default_pyvista_theme() # Sets the default theme values to those specified in my imported file
-        # This defines the position of the vertical/horizontal splitting, in this case 40% of the vertical/horizontal dimension of the window
-        # pv.global_theme.multi_rendering_splitting_position = 0.40
-        pv.global_theme.multi_rendering_splitting_position = 0.80
+    # def _setup_pyvista_theme(self):
+    #     customize_default_pyvista_theme() # Sets the default theme values to those specified in my imported file
+    #     # This defines the position of the vertical/horizontal splitting, in this case 40% of the vertical/horizontal dimension of the window
+    #     # pv.global_theme.multi_rendering_splitting_position = 0.40
+    #     pv.global_theme.multi_rendering_splitting_position = 0.80
 
     # legacy compatability properties:
     @property
@@ -195,47 +142,6 @@ class InteractivePlaceCellDataExplorer(InteractivePyvistaPlotterBuildIfNeededMix
     def animal_current_location_point(self):
         return self.plots.get('animal_current_location_point', None)
 
-    def perform_plot_location_point(self, plot_name, curr_animal_point, render=True, **kwargs):
-        """ will render a flat indicator of a single point like is used for the animal's current location. 
-        Updates the existing plot if the same plot_name is reused. """
-        ## COMPAT: merge operator '|'requires Python 3.9
-        # new_dict = default_dict | {'color':'red'}
-        pdata_current_point = pv.PolyData(curr_animal_point) # a mesh
-        pc_current_point = pdata_current_point.glyph(scale=False, geom=animal_location_circle)
-        # self.plots[plot_name] = self.p.add_mesh(pc_current_point, name=plot_name, color='green', ambient=0.6, opacity=0.5,
-        #                             show_edges=True, edge_color=[0.05, 0.8, 0.08], line_width=3.0, nan_opacity=0.0, render_lines_as_tubes=True,
-        #                             show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position   
-        self.plots[plot_name] = self.p.add_mesh(pc_current_point, name=plot_name, render=render, **({'color':'green', 'ambient':0.6, 'opacity':0.5,
-                        'show_edges':True, 'edge_color':[0.05, 0.8, 0.08], 'line_width':3.0, 'nan_opacity':0.0, 'render_lines_as_tubes':True,
-                        'show_scalar_bar':False, 'use_transparency':True} | kwargs))
-        return self.plots[plot_name]
-
-
-    def perform_plot_location_trail(self, plot_name, arr_x, arr_y, arr_z, render=True, trail_fade_values=None, trail_point_size_values=None, **kwargs):
-        """ will render a series of points as a trajectory/path given arr_x, arr_y, and arr_z vectors of the same length.
-        indicator of a single point like is used for the animal's current location. 
-        Updates the existing plot if the same plot_name is reused. """
-        point_cloud_fixedSegements_positionTrail = np.column_stack((arr_x, arr_y, arr_z))
-        pdata_positionTrail = pv.PolyData(point_cloud_fixedSegements_positionTrail.copy()) # a mesh
-        if trail_fade_values is not None:
-            pdata_positionTrail.point_data['pho_fade_values'] = trail_fade_values
-            scalars_arg = 'pho_fade_values'
-        else:
-            scalars_arg = None
-        if trail_point_size_values is not None:
-            pdata_positionTrail.point_data['pho_size_values'] = trail_point_size_values
-            point_size_scale_arg = 'pho_size_values'
-        else:
-            point_size_scale_arg = None
-        
-        # create many spheres from the point cloud
-        pc_positionTrail = pdata_positionTrail.glyph(scale=point_size_scale_arg, geom=animal_location_trail_circle)
-        # self.plots[plot_name] = self.p.add_mesh(pc_positionTrail, name=plot_name, ambient=0.6, opacity='linear_r', scalars=scalars_arg, nan_opacity=0.0,
-        #                                         show_edges=False, render_lines_as_tubes=True, show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position       
-        self.plots[plot_name] = self.p.add_mesh(pc_positionTrail, name=plot_name, render=render, **({'ambient':0.6, 'opacity':'linear_r', 'scalars':scalars_arg, 'nan_opacity':0.0,
-                                                'show_edges':False, 'render_lines_as_tubes':True, 'show_scalar_bar':False, 'use_transparency':True} | kwargs))
-        return self.plots[plot_name]
-            
     def on_programmatic_data_update(self, active_included_all_historical_indicies=None, active_included_recent_only_indicies=None, active_window_sample_indicies=None, curr_animal_point=None):
         """ Called to programmatically update the interactive plot. """
 
