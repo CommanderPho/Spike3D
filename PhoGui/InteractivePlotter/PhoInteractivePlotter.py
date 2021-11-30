@@ -14,7 +14,7 @@ from PhoGui.InteractivePlotter.InterfaceProperties import InterfaceProperties
 # from PhoPositionalData.plotting.spikeAndPositions import InteractiveSliderWrapper
 # import InterfaceProperties
 
-class AnimationStateMixin(object):
+class AnimationStateMixin:
     # define the animation switch
     def toggle_animation(self, state):
         self.interface_properties.animation_state = state # updates the animation state to the new value
@@ -36,7 +36,7 @@ class PhoInteractivePlotter(AnimationStateMixin):
     # def __init__(self, pyvista_plotter=None, **kwargs):
     def __init__(self, pyvista_plotter, interactive_timestamp_slider_actor):
         # interactive_timestamp_slider_actor: the slider actor object to use for the interactive slider
-        super(PhoInteractivePlotter, self).__init__() # Call the inherited classes __init__ method
+        # super(PhoInteractivePlotter, self).__init__() # Call the inherited classes __init__ method
         
         self.p = pyvista_plotter # The actual plotter object, must be either a pyvista.plotter or pyvistaqt.BackgroundPlotter
         # self.animation_state = False # Whether it's playing or not
@@ -44,6 +44,7 @@ class PhoInteractivePlotter(AnimationStateMixin):
         self.interface_properties = InterfaceProperties(interactive_timestamp_slider_wrapper)
         self.add_ui()
         # An unused constant-time callback that calls back every so often to perform updates
+        # self.p.add_callback(self.interface_properties, interval=16)  # to be smooth on 60Hz
         self.p.add_callback(self.interface_properties, interval=16)  # to be smooth on 60Hz
 
     # def __call__(self):
@@ -51,5 +52,4 @@ class PhoInteractivePlotter(AnimationStateMixin):
     #         # only if animation is currently active:
     #         self.active_timestamp_slider_wrapper.step_index(15) # TODO: allow variable step size
     #         pass
-
 
