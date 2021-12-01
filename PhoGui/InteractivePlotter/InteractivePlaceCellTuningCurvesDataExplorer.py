@@ -150,23 +150,27 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         return mesh
     
     
-    def _update_placefield_spike_visibility(self, active_cell_local_index, active_is_visible):
-        print('_update_placefield_spike_visibility(active_cell_local_index: {}, active_is_visible: {})'.format(active_cell_local_index, active_is_visible))
+    def _update_placefield_spike_visibility(self, active_cell_local_index, invert=True):
+        print('_update_placefield_spike_visibility(active_cell_local_index: {}, invert: {})'.format(active_cell_local_index, invert))
         found_cell_unit_IDs = self.get_cell_original_id(active_cell_local_index)
         print('\t found_cell_unit_IDs: {}. Calling update_placefield_spike_visibility(...) with these values.'.format(found_cell_unit_IDs))
-        return self.update_placefield_spike_visibility(found_cell_unit_IDs, active_is_visible)
+        return self.update_placefield_spike_visibility(found_cell_unit_IDs, invert)
     
-    def update_placefield_spike_visibility(self, active_original_cell_unit_ids, active_is_visible):
-        print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, active_is_visible: {})'.format(active_original_cell_unit_ids, active_is_visible))
+    def update_placefield_spike_visibility(self, active_original_cell_unit_ids, invert=True):
+        """ Updates the visibility of the spikes for the provided unit_ids. This is useful for toggling display of a unit (such as with a checkbox). It currently requires specifying in complete format the units you want to display the spikes for, for example to display ONLY spikes for units 53 and 54, the command would be the following:
+            ipcDataExplorer.update_placefield_spike_visibility([53, 44], True)
+        Another features is the ability to take the provided items as a blacklist, and plot the complement of them (meaning hiding those specified units and plotting all of the rest):
+            ipcDataExplorer.update_placefield_spike_visibility([53, 44], False)
+        Args:
+            active_original_cell_unit_ids ([iterable]): [description]
+            invert ([Bool]): [description]
+        """
+        print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, invert: {})'.format(active_original_cell_unit_ids, invert))
         print('\t active_original_cell_unit_ids: {}'.format(active_original_cell_unit_ids))
-        is_cell_included = np.isin(self.active_session.neurons.neuron_ids, active_original_cell_unit_ids) # check if each cell_id is included in the neurons' active set of cells
+        is_cell_included = np.isin(self.active_session.neurons.neuron_ids, active_original_cell_unit_ids, invert=(not invert)) # check if each cell_id is included in the neurons' active set of cells
         print('\t is_cell_included: {}'.format(is_cell_included))
         
-        if active_is_visible:
-            # mesh = self.plots_data['spikes_pf_active']['historical_spikes_pc'].cast_to_unstructured_grid()
-            mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=True)
-        else:
-            mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=False)
+        mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=invert)
         
         # Compute revised colormap for only the visible cells:
         active_only_pf_colormap = self.active_config.plotting_config.pf_colors[:,is_cell_included].T # [n_neurons x 4]
