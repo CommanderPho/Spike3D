@@ -154,8 +154,10 @@ def force_plot_ignore_scalar_as_color(plot_mesh_actor, lookup_table):
         plot_mesh_actor.GetMapper().SetLookupTable(lookup_table)
         plot_mesh_actor.GetMapper().SetScalarModeToUsePointData()
 
-def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFactor=10.0, show_legend=False):
+def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray, zScalingFactor=10.0, show_legend=False):
     # Plots 2D Placefields in a 3D PyVista plot
+    # active_placefields: Pf2D
+    
     # curr_tuning_curves = active_placefields.ratemap.tuning_curves
     curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves
     # curr_tuning_curves[curr_tuning_curves < 0.1] = np.nan
@@ -170,6 +172,7 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
     # Loop through the tuning curves and plot them:
     print('num_curr_tuning_curves: {}'.format(num_curr_tuning_curves))
     tuningCurvePlotActors = []
+    tuningCurvePlotData = []
     for i in np.arange(num_curr_tuning_curves):
     # for i in [1]:
         curr_active_neuron_ID = good_placefield_neuronIDs[i]
@@ -193,17 +196,19 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
         pdata_currActiveNeuronTuningCurve = pv.StructuredGrid(tuningCurvePlot_x, tuningCurvePlot_y, curr_active_neuron_tuning_Curve)
         pdata_currActiveNeuronTuningCurve["Elevation"] = curr_active_neuron_tuning_Curve.ravel(order="F")
         
+        curr_active_neuron_plot_data = {'curr_active_neuron_ID':curr_active_neuron_ID,
+                                         'curr_active_neuron_pf_identifier':curr_active_neuron_pf_identifier,
+                                         'curr_active_neuron_tuning_Curve':curr_active_neuron_tuning_Curve,'pdata_currActiveNeuronTuningCurve':pdata_currActiveNeuronTuningCurve}
+        
         # contours_currActiveNeuronTuningCurve = pdata_currActiveNeuronTuningCurve.contour()
         # pdata_currActiveNeuronTuningCurve.plot(show_edges=True, show_grid=True, cpos='xy', scalars=curr_active_neuron_tuning_Curve.T)        
         # actor_currActiveNeuronTuningCurve = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, use_transparency=True)
 
         # surf = poly.delaunay_2d()
         # pTuningCurves.add_mesh(surf, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
-        pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, 
-                                                                            #  show_edges=True, edge_color=curr_active_neuron_color, line_width=3.0, render_lines_as_tubes=True, 
-                                                                            #  nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
-                                                                            #  show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True, render=False)
+        pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier,
                                                                             show_edges=False, nan_opacity=0.0, scalars='Elevation', opacity='sigmoid', use_transparency=False, smooth_shading=True, show_scalar_bar=False, render=False)                                                                     
+        
         
         # Force custom colors:
         ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
@@ -211,10 +216,12 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
         # Is NOT Sufficient, as it disables any opacity at all seemingly
         lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
         # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
+        curr_active_neuron_plot_data['lut'] = lut
         force_plot_ignore_scalar_as_color(pdata_currActiveNeuronTuningCurve_plotActor, lut)
         
         # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color=curr_active_neuron_color, line_width=1, name='{}_contours'.format(curr_active_neuron_pf_identifier))
         tuningCurvePlotActors.append(pdata_currActiveNeuronTuningCurve_plotActor)
+        tuningCurvePlotData.append(curr_active_neuron_plot_data)
         
     # Legend:
     legend_entries = [['pf[{}]'.format(good_placefield_neuronIDs[i]), pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]
@@ -235,7 +242,7 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors, zScalingFac
     pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
     pTuningCurves.enable_3_lights()
     # pTuningCurves.enable_shadows()
-    return pTuningCurves, tuningCurvePlotActors, legendActor
+    return pTuningCurves, tuningCurvePlotActors, tuningCurvePlotData, legendActor
 
 def update_plotVisiblePlacefields2D(tuningCurvePlotActors, isTuningCurveVisible):
     # Updates the visible placefields. Complements plot_placefields2D
