@@ -206,7 +206,6 @@ class CallbackSequence:
             self.callbacks_list[i](state)
       
         
-
 class SetVisibilityCallback:
     """Helper callback to keep a reference to the actor being modified. 
     Usage:
@@ -222,7 +221,7 @@ class SetVisibilityCallback:
         
 
 
-def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3, additional_callback_actions=None):
+def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3, additional_callback_actions=None, labels=None):
     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
     """ Adds a list of toggle checkboxes to turn on and off each placemap
     Usage:
@@ -274,7 +273,7 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
 
 
 
-def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False, debug_console_widget=None, additional_callback_actions=None):
+def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False, debug_console_widget=None, additional_callback_actions=None, labels=None):
     """ Adds a list of toggle checkboxes that only allows one at a time to be selected to turn on and off each placemap
     Usage:
         checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks, mutually_exclusive_radiobutton_group = add_placemap_toggle_mutually_exclusive_checkboxes(pActiveTuningCurvesPlotter, tuningCurvePlotActors, pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False)
@@ -308,7 +307,13 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors
                 color_off='grey',
                 background_color=colors[:,i] # background_color is used for the border
         )
-        curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
+        
+        if labels is None:
+            curr_widget_label = '{}'.format(i)
+        else:
+            curr_widget_label = labels[i]
+            
+        curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, curr_widget_label, curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
         curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
         if curr_custom_callback is not None:

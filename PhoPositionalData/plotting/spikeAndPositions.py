@@ -154,6 +154,7 @@ def force_plot_ignore_scalar_as_color(plot_mesh_actor, lookup_table):
         plot_mesh_actor.GetMapper().SetLookupTable(lookup_table)
         plot_mesh_actor.GetMapper().SetScalarModeToUsePointData()
 
+
 def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray, zScalingFactor=10.0, show_legend=False):
     # Plots 2D Placefields in a 3D PyVista plot
     # active_placefields: Pf2D
@@ -214,7 +215,8 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
         ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
             #   pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().ScalarVisibilityOff() # Scalars not used to color objects
         # Is NOT Sufficient, as it disables any opacity at all seemingly
-        lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
+        lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.2, 0.6, 1.0])
+        # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
         # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
         curr_active_neuron_plot_data['lut'] = lut
         force_plot_ignore_scalar_as_color(pdata_currActiveNeuronTuningCurve_plotActor, lut)
@@ -224,9 +226,12 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
         tuningCurvePlotData.append(curr_active_neuron_plot_data)
         
     # Legend:
-    legend_entries = [['pf[{}]'.format(good_placefield_neuronIDs[i]), pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]
+    plots_data = {'good_placefield_neuronIDs': good_placefield_neuronIDs,
+                'unit_labels': ['{}'.format(good_placefield_neuronIDs[i]) for i in np.arange(num_curr_tuning_curves)],
+                 'legend_entries': [['pf[{}]'.format(good_placefield_neuronIDs[i]), pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]}
+
     if show_legend:
-        legendActor = pTuningCurves.add_legend(legend_entries, name='tuningCurvesLegend', 
+        legendActor = pTuningCurves.add_legend(plots_data['legend_entries'], name='tuningCurvesLegend', 
                                 bcolor=(0.05, 0.05, 0.05), border=True,
                                 origin=[0.95, 0.1], size=[0.05, 0.85]) # vtk.vtkLegendBoxActor
     else:
@@ -242,7 +247,7 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
     pTuningCurves.enable_3_lights()
     # pTuningCurves.enable_shadows()
-    return pTuningCurves, tuningCurvePlotActors, tuningCurvePlotData, legendActor
+    return pTuningCurves, tuningCurvePlotActors, tuningCurvePlotData, legendActor, plots_data
 
 def update_plotVisiblePlacefields2D(tuningCurvePlotActors, isTuningCurveVisible):
     # Updates the visible placefields. Complements plot_placefields2D

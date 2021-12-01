@@ -38,7 +38,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
 
     
     def _setup_variables(self):
-        num_cells, spike_list, cell_ids, self.params.flattened_spike_identities, self.params.flattened_spike_times, flattened_sort_indicies, t_start, self.params.reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
+        num_cells, spike_list, self.params.cell_ids, self.params.flattened_spike_identities, self.params.flattened_spike_times, flattened_sort_indicies, t_start, self.params.reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
         ## Ensure we have the 'unit_id' property
         try:
             test = self.active_session.spikes_df['unit_id']
@@ -52,8 +52,10 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         self.params.show_legend = True
     
     
-
-
+    @property
+    def pf_names(self):
+        return self.params.cell_ids
+        # return self.active_session.neurons.neuron_ids
             
         
     def plot(self, pActivePlotter=None):
@@ -62,9 +64,10 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         # Plot the flat arena
         self.plots['maze_bg'] = perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
         
-        self.p, self.plots['tuningCurvePlotActors'], self.plots_data['tuningCurvePlotData'], self.plots['tuningCurvePlotLegendActor'] = plot_placefields2D(self.p, self.params.active_epoch_placefields, self.params.pf_colors, zScalingFactor=10.0, show_legend=self.params.show_legend) 
-
-
+        self.p, self.plots['tuningCurvePlotActors'], self.plots_data['tuningCurvePlotData'], self.plots['tuningCurvePlotLegendActor'], temp_plots_data = plot_placefields2D(self.p, self.params.active_epoch_placefields, self.params.pf_colors, zScalingFactor=10.0, show_legend=self.params.show_legend) 
+        # Build the widget labels:
+        self.params.unit_labels = temp_plots_data['unit_labels'] # fetch the unit labels from the extra data dict.
+        self.params.pf_unit_ids = temp_plots_data['good_placefield_neuronIDs'] # fetch the unit labels from the extra data dict.
         ## TODO: For these, we actually want the placefield value as the Z-positions, will need to unwrap them or something (maybe .ravel(...)?)
         ## TODO: also need to add in the checkbox functionality to hide/show only the spikes for the highlighted units
         # .threshold().elevation()
@@ -99,12 +102,11 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         # self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda is_visible: self.update_placefield_spike_visibility([i], is_visible) for i in np.arange(len(tuningCurvePlotActors))]
         self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda is_visible, i_copy=i: self._update_placefield_spike_visibility([i_copy], is_visible) for i in np.arange(len(tuningCurvePlotActors))]
         
-                
         if self.params.use_mutually_exclusive_placefield_checkboxes:
-            self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'], self.gui['mutually_exclusive_radiobutton_group'] = add_placemap_toggle_mutually_exclusive_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'])
+            self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'], self.gui['mutually_exclusive_radiobutton_group'] = add_placemap_toggle_mutually_exclusive_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'], labels=self.params.unit_labels)
         else:
             self.gui['mutually_exclusive_radiobutton_group'] = None
-            self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'] = add_placemap_toggle_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, widget_check_states=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'])
+            self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'] = add_placemap_toggle_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, widget_check_states=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'], labels=self.params.unit_labels)
             
        
     
@@ -144,19 +146,19 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         return np.array([self.active_session.neurons.neuron_ids[a_local_idx] for a_local_idx in cell_local_indicies])
             
     def hide_placefield_spikes(self, active_original_cell_unit_ids, should_invert=True):
-        print('hide_placefield_spikes(active_index: {}, should_invert: {})'.format(active_original_cell_unit_ids, should_invert))
+        # print('hide_placefield_spikes(active_index: {}, should_invert: {})'.format(active_original_cell_unit_ids, should_invert))
         mesh = self.plots_data['spikes_pf_active']['historical_spikes_pc'].cast_to_unstructured_grid()
         num_mesh_cells = mesh.n_cells
         ghosts = np.argwhere(np.isin(mesh["cellID"], active_original_cell_unit_ids, invert=should_invert))
         num_ghosts = len(ghosts)
-        print('\t num_mesh_cells: {}, num_ghosts: {}'.format(num_mesh_cells, num_ghosts))
+        # print('\t num_mesh_cells: {}, num_ghosts: {}'.format(num_mesh_cells, num_ghosts))
         # This will act on the mesh inplace to mark those cell indices as ghosts
         mesh.remove_cells(ghosts)
         return mesh
     
     
     def _update_placefield_spike_visibility(self, active_cell_local_index, invert=True):
-        print('_update_placefield_spike_visibility(active_cell_local_index: {}, invert: {})'.format(active_cell_local_index, invert))
+        # print('_update_placefield_spike_visibility(active_cell_local_index: {}, invert: {})'.format(active_cell_local_index, invert))
         found_cell_unit_IDs = self.get_cell_original_id(active_cell_local_index)
         # print('\t found_cell_unit_IDs: {}. Calling update_placefield_spike_visibility(...) with these values.'.format(found_cell_unit_IDs))
         return self.update_placefield_spike_visibility(found_cell_unit_IDs, invert)
@@ -170,8 +172,8 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
             active_original_cell_unit_ids ([iterable]): [description]
             invert ([Bool]): [description]
         """
-        print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, invert: {})'.format(active_original_cell_unit_ids, invert))
-        print('\t active_original_cell_unit_ids: {}'.format(active_original_cell_unit_ids))
+        # print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, invert: {})'.format(active_original_cell_unit_ids, invert))
+        # print('\t active_original_cell_unit_ids: {}'.format(active_original_cell_unit_ids))
         is_cell_included = np.isin(self.active_session.neurons.neuron_ids, active_original_cell_unit_ids, invert=(not invert)) # check if each cell_id is included in the neurons' active set of cells
         # print('\t is_cell_included: {}'.format(is_cell_included))
         mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=invert)
@@ -181,12 +183,13 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         active_only_pf_listed_colormap = ListedColormap(active_only_pf_colormap.copy())
         needs_render = False
         if mesh.n_points >= 1:
-            print('\t updating plot!')
+            # print('\t updating plot!')
             self.plots['spikes_pf_active'] = self.p.add_mesh(mesh, name='spikes_pf_active', scalars='cellID', cmap=active_only_pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
-            self.plots['spikes_pf_active'].SetVisibility(True)
+            # self.plots['spikes_pf_active'].SetVisibility(True)
             needs_render = True
         else:
             print('\t WARNING: mesh is empty!')
-            self.plots['spikes_pf_active'].SetVisibility(False) 
+            # self.plots['spikes_pf_active'].SetVisibility(False) 
 
         self.p.render()
+        self.p.update()
