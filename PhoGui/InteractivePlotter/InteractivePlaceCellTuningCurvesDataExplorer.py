@@ -148,20 +148,25 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         # This will act on the mesh inplace to mark those cell indices as ghosts
         mesh.remove_cells(ghosts)
         return mesh
-        
-    def update_placefield_spike_visibility(self, active_index, active_is_visible):
-        print('update_placefield_spike_visibility(active_index: {}, active_is_visible: {})'.format(active_index, active_is_visible))
-        # local_found_cell_indicies = self.get_cell_local_index(active_index)
-        found_cell_unit_IDs = self.get_cell_original_id(active_index)
-        print('found_cell_unit_IDs: {}'.format(found_cell_unit_IDs))
-        is_cell_included = np.isin(self.active_session.neurons.neuron_ids, found_cell_unit_IDs) # check if each cell_id is included in the neurons' active set of cells
-        print('is_cell_included: {}'.format(is_cell_included))
+    
+    
+    def _update_placefield_spike_visibility(self, active_cell_local_index, active_is_visible):
+        print('_update_placefield_spike_visibility(active_cell_local_index: {}, active_is_visible: {})'.format(active_cell_local_index, active_is_visible))
+        found_cell_unit_IDs = self.get_cell_original_id(active_cell_local_index)
+        print('\t found_cell_unit_IDs: {}. Calling update_placefield_spike_visibility(...) with these values.'.format(found_cell_unit_IDs))
+        return self.update_placefield_spike_visibility(found_cell_unit_IDs, active_is_visible)
+    
+    def update_placefield_spike_visibility(self, active_original_cell_unit_ids, active_is_visible):
+        print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, active_is_visible: {})'.format(active_original_cell_unit_ids, active_is_visible))
+        print('\t active_original_cell_unit_ids: {}'.format(active_original_cell_unit_ids))
+        is_cell_included = np.isin(self.active_session.neurons.neuron_ids, active_original_cell_unit_ids) # check if each cell_id is included in the neurons' active set of cells
+        print('\t is_cell_included: {}'.format(is_cell_included))
         
         if active_is_visible:
             # mesh = self.plots_data['spikes_pf_active']['historical_spikes_pc'].cast_to_unstructured_grid()
-            mesh = self.hide_placefield_spikes(found_cell_unit_IDs, should_invert=True)
+            mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=True)
         else:
-            mesh = self.hide_placefield_spikes(found_cell_unit_IDs, should_invert=False)
+            mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=False)
         
         # Compute revised colormap for only the visible cells:
         active_only_pf_colormap = self.active_config.plotting_config.pf_colors[:,is_cell_included].T # [n_neurons x 4]
