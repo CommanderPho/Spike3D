@@ -6,6 +6,7 @@
 
 
 class InterfaceProperties(object):
+    """ Holds user interface state, such as the current animation status or the slider's values """
     def __init__(self, active_timestamp_slider_wrapper):
         # self.curr_plot_update_step = 1 # Update every frame
         # self.curr_plot_update_frequency = self.curr_plot_update_step * active_epoch_pos.sampling_rate # number of updates per second (Hz)

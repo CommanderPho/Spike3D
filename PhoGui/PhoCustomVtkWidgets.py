@@ -134,7 +134,7 @@ class PhoWidgetHelper:
     def perform_add_custom_button_widget(p, callback, value=False,
                             position=(10., 10.), size=50, border_size=5,
                             color_on='blue', color_off='grey',
-                            background_color='white'):
+                            background_color='white', render=True):
         """Add a custom button widget to the scene.
 
         This is useless without a callback function. You can pass a callable
@@ -259,7 +259,8 @@ class PhoWidgetHelper:
         button_widget.SetInteractor(p.iren.interactor)
         button_widget.SetRepresentation(button_rep)
         button_widget.SetCurrentRenderer(p.renderer)
-        button_widget.On()
+        if render:
+            button_widget.On()
         
         # # custom button widget
         # button_widget = vtk_ui.Button(self.iren.interactor, label="Font Test", font=font, top=ind * 25, size=sizes[ind])

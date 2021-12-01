@@ -256,7 +256,8 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
                 border_size=widget_border_size,
                 color_on=colors[:,i],
                 color_off='grey',
-                background_color=colors[:,i] # background_color is used for the border
+                background_color=colors[:,i], # background_color is used for the border
+                render=False
         )
         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
@@ -307,7 +308,8 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors
                 border_size=widget_border_size,
                 color_on=colors[:,i],
                 color_off='grey',
-                background_color=colors[:,i] # background_color is used for the border
+                background_color=colors[:,i], # background_color is used for the border
+                render=False
         )
         
         if labels is None:

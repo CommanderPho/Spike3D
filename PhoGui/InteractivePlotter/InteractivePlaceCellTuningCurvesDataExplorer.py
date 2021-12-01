@@ -10,6 +10,7 @@ import pandas as pd
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 from matplotlib.colors import ListedColormap
+from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
 from PhoPositionalData.plotting.gui import SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
@@ -50,6 +51,8 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
     def _setup_visualization(self): 
         self.params.use_mutually_exclusive_placefield_checkboxes = True       
         self.params.show_legend = True
+        
+        self.params.use_unit_id_slider_instead_of_checkboxes = True
     
     
     @property
@@ -92,12 +95,19 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         self.gui['debug_console_widget'].add_line_to_buffer('test log')
         # debug_console_widget.add_line_to_buffer('test log 2')
         # Adds a list of toggle checkboxe widgets to turn on and off each placemap
-        self.setup_visibility_checkboxes(self.plots['tuningCurvePlotActors'])
+        # self.setup_visibility_checkboxes(self.plots['tuningCurvePlotActors'])
+        
+        if self.params.use_unit_id_slider_instead_of_checkboxes:
+            # use the discrete slider widget instead of the checkboxes
+            self.__setup_visibility_slider_widget(self.plots['tuningCurvePlotActors'])
+        else:
+             # checkbox mode for unit ID selection: 
+            self.__setup_visibility_checkboxes(self.plots['tuningCurvePlotActors'])
         
         return self.p
     
     
-    def setup_visibility_checkboxes(self, tuningCurvePlotActors):
+    def __setup_visibility_checkboxes(self, tuningCurvePlotActors):
         # self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda i: self.hide_placefield_spikes(i) for i in np.arange(len(tuningCurvePlotActors))]
         # self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda is_visible: self.update_placefield_spike_visibility([i], is_visible) for i in np.arange(len(tuningCurvePlotActors))]
         self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda is_visible, i_copy=i: self._update_placefield_spike_visibility([i_copy], is_visible) for i in np.arange(len(tuningCurvePlotActors))]
@@ -105,11 +115,18 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         if self.params.use_mutually_exclusive_placefield_checkboxes:
             self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'], self.gui['mutually_exclusive_radiobutton_group'] = add_placemap_toggle_mutually_exclusive_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'], labels=self.params.unit_labels)
         else:
-            self.gui['mutually_exclusive_radiobutton_group'] = None
+            self.gui['mutually_exclusive_radiobutton_group'] = None           
             self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'] = add_placemap_toggle_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, widget_check_states=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'], labels=self.params.unit_labels)
-            
+        
        
-    
+    def __setup_visibility_slider_widget(self, tuningCurvePlotActors):
+        safe_integer_wrapper = lambda integer_local_idx: self._update_placefield_spike_visibility([int(integer_local_idx)])
+        self.gui['interactive_unitID_slider_actor'] = PhoWidgetHelper.add_discrete_slider_widget(self.p, safe_integer_wrapper, [0, (len(tuningCurvePlotActors)-1)], value=0, title='Selected Unit',event_type='end')
+        ## I don't think this does anything:
+        interactive_plotter = PhoInteractivePlotter(pyvista_plotter=self.p, interactive_timestamp_slider_actor=self.gui['interactive_unitID_slider_actor'])
+        
+        
+        
     # def rough_add_spikes(self, sesssion):
         
     #     active_included_recent_only_indicies = ((flattened_spike_times > recent_spikes_t_start) & (flattened_spike_times < t_stop)) # Two Sided Range Mode
