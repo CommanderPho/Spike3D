@@ -222,7 +222,7 @@ class SetVisibilityCallback:
         
 
 
-def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3):
+def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3, additional_callback_actions=None):
     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
     """ Adds a list of toggle checkboxes to turn on and off each placemap
     Usage:
@@ -245,6 +245,10 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
         curr_widget_position = (5.0, start_positions[i])
         # Make a separate callback for each widget
         curr_visibility_callback = SetVisibilityCallback(an_actor)
+        if additional_callback_actions is not None:
+            curr_custom_callback = additional_callback_actions[i]
+        else:
+            curr_custom_callback = None
         curr_visibility_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
         curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=widget_check_states[i],
                 position=curr_widget_position, size=widget_size,
@@ -256,6 +260,8 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
         curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
+        if curr_custom_callback is not None:
+            curr_combined_callback.callbacks_list.append(curr_custom_callback) 
         # append the callbacks to the lists:
         visibility_callbacks.append(curr_visibility_callback)
         checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
@@ -268,7 +274,7 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
 
 
 
-def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False, debug_console_widget=None):
+def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False, debug_console_widget=None, additional_callback_actions=None):
     """ Adds a list of toggle checkboxes that only allows one at a time to be selected to turn on and off each placemap
     Usage:
         checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks, mutually_exclusive_radiobutton_group = add_placemap_toggle_mutually_exclusive_checkboxes(pActiveTuningCurvesPlotter, tuningCurvePlotActors, pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False)
@@ -289,6 +295,12 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors
         curr_widget_position = (5.0, start_positions[i])
         # Make a separate callback for each widget
         curr_visibility_callback = SetVisibilityCallback(an_actor)
+        
+        if additional_callback_actions is not None:
+            curr_custom_callback = additional_callback_actions[i]
+        else:
+            curr_custom_callback = None
+            
         curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=False,
                 position=curr_widget_position, size=widget_size,
                 border_size=widget_border_size,
@@ -299,6 +311,9 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors
         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
         curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
+        if curr_custom_callback is not None:
+            curr_combined_callback.callbacks_list.append(curr_custom_callback) 
+        
         # append the callbacks to the lists:
         visibility_callbacks.append(curr_visibility_callback)
         checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
