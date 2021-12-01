@@ -94,7 +94,7 @@ def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
 
 
 ## compatability with pre 2021-11-28 implementations
-def build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list):
+def build_active_spikes_plot_pointdata(active_flattened_spike_identities, active_flattened_spike_positions_list):
     # spike_series_times = active_flattened_spike_times # currently unused
     spike_series_identities = active_flattened_spike_identities # currently unused
     spike_series_positions = active_flattened_spike_positions_list
@@ -107,9 +107,9 @@ def build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flat
     return spike_history_pdata
 
 ## compatability with pre 2021-11-28 implementations
-def build_active_spikes_plot_data(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list, spike_geom):
+def build_active_spikes_plot_data(active_flattened_spike_identities, active_flattened_spike_positions_list, spike_geom):
     # spike_series_times = active_flattened_spike_times # currently unused
-    spike_history_pdata = build_active_spikes_plot_pointdata(active_flattened_spike_times, active_flattened_spike_identities, active_flattened_spike_positions_list)
+    spike_history_pdata = build_active_spikes_plot_pointdata(active_flattened_spike_identities, active_flattened_spike_positions_list)
     # create many spheres from the point cloud
     spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy())
     return spike_history_pdata, spike_history_pc

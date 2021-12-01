@@ -15,6 +15,14 @@ from PhoPositionalData.process_data import process_positionalAnalysis_data, extr
 
 
 def build_spike_positions_list(spike_list, t, x, y):
+    """Interpolate the positions that a spike occurred for each spike timestamp
+
+    Args:
+        spike_list ([type]): [description]
+        t ([type]): [description]
+        x ([type]): [description]
+        y ([type]): [description]
+    """
      # Determine the x and y positions each spike occured for each cell
     num_cells = len(spike_list)
     spike_positions_list = list()

@@ -6,6 +6,7 @@
 
 """
 import numpy as np
+import pandas as pd
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 
@@ -36,14 +37,27 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
 
     
     def _setup_variables(self):
-        num_cells, spike_list, cell_ids, flattened_spike_identities, flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
+        num_cells, spike_list, cell_ids, self.params.flattened_spike_identities, self.params.flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
+        
+        # self.params.flattened_spike_positions_list: [2, 17449]
+        # print('self.params.flattened_spike_positions_list: {}'.format(self.params.flattened_spike_positions_list))
+        
+        # active_session.neurons.spiketrains
+        
+        # self.params.flattened_spike_df = pd.DataFrame(self.params.flattened_spike_times, self.params.flattened_spike_identities, self.params.flattened_spike_positions_list[:,0], self.params.flattened_spike_positions_list[:,1])
+        # self.params.flattened_spike_df = pd.DataFrame(self.params.flattened_spike_times, self.params.flattened_spike_identities, self.params.flattened_spike_positions_list)
+        
+        
+        
+        ## self.params.flattened_spike_positions_list (2, 17449)
+        
         ### Build the flattened spike positions list
         # Determine the x and y positions each spike occured for each cell
         ## new_df style:
-        self.debug.flattened_spike_positions_list_new = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
+        # self.debug.flattened_spike_positions_list_new = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
 
         ## old-style:
-        self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
+        # self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
 
 
     def _setup_visualization(self): 
