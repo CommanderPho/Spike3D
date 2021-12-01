@@ -16,15 +16,6 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 
 
 
-class VisualizationParameters:
-    def __init__(self, name) -> None:
-        self.name = name
-
-class DebugHelper():
-    def __init__(self, name) -> None:
-        self.name = name
-
-
 class InteractivePyvistaPlotterBuildIfNeededMixin:
     @staticmethod
     def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None, shape=(1,1), **kwargs):
@@ -74,19 +65,40 @@ class InteractivePyvistaPlotter_ObjectManipulationMixin:
         mesh.SetVisibility(new_vis)
         # return new_vis
 
-    def safe_get_plot(self, plot_id):
-        a_plot = self.plots.get(plot_id, None)
+    def safe_get_plot(self, plot_key):
+        a_plot = self.plots.get(plot_key, None)
         if a_plot is not None:
             return a_plot
         else:
             raise IndexError
 
 
-    def set_plot_visibility(self, plot_id, is_visibie):
-        self.safe_get_plot(plot_id).SetVisibility(is_visibie)
+    def set_plot_visibility(self, plot_key, is_visibie):
+        self.safe_get_plot(plot_key).SetVisibility(is_visibie)
 
-    def toggle_plot_visibility(self, plot_id):
-        return InteractivePyvistaPlotter_ObjectManipulationMixin.__toggle_visibility(self.safe_get_plot(plot_id))
+    def toggle_plot_visibility(self, plot_key):
+        return InteractivePyvistaPlotter_ObjectManipulationMixin.__toggle_visibility(self.safe_get_plot(plot_key))
+
+
+
+class VisualizationParameters:
+    def __init__(self, name) -> None:
+        self.name = name
+
+class DebugHelper():
+    def __init__(self, name) -> None:
+        self.name = name
+
+
+class PlotGroupWrapper(InteractivePyvistaPlotter_ObjectManipulationMixin):
+    def __init__(self, name, plots_dict=dict(), gui_dict=dict()) -> None:
+        self.name = name
+        self.plots = plots_dict
+        self.plots_data = dict()
+        self.gui_dict = gui_dict
+        
+        
+
 
 
 class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin):
@@ -108,7 +120,10 @@ class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, I
         # Helper variables
         self.params = VisualizationParameters('')
         self.debug = DebugHelper('')
+
+        self.plots_data = dict()
         self.plots = dict()
+        self.gui = dict()
         
     @staticmethod
     def _unpack_variables(active_session):
@@ -157,8 +172,7 @@ class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, I
 
     def _setup_variables(self):
         raise NotImplementedError
-
-        
+   
     def _setup_visualization(self):
         raise NotImplementedError
 
@@ -179,13 +193,12 @@ class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, I
         # new_dict = default_dict | {'color':'red'}
         pdata_current_point = pv.PolyData(curr_animal_point) # a mesh
         pc_current_point = pdata_current_point.glyph(scale=False, geom=animal_location_circle)
-        # self.plots[plot_name] = self.p.add_mesh(pc_current_point, name=plot_name, color='green', ambient=0.6, opacity=0.5,
-        #                             show_edges=True, edge_color=[0.05, 0.8, 0.08], line_width=3.0, nan_opacity=0.0, render_lines_as_tubes=True,
-        #                             show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position   
+        
+        self.plots_data[plot_name] = {'pdata_current_point':pdata_current_point, 'pc_current_point':pc_current_point}
         self.plots[plot_name] = self.p.add_mesh(pc_current_point, name=plot_name, render=render, **({'color':'green', 'ambient':0.6, 'opacity':0.5,
                         'show_edges':True, 'edge_color':[0.05, 0.8, 0.08], 'line_width':3.0, 'nan_opacity':0.0, 'render_lines_as_tubes':True,
                         'show_scalar_bar':False, 'use_transparency':True} | kwargs))
-        return self.plots[plot_name]
+        return self.plots[plot_name], self.plots_data[plot_name]
 
 
     def perform_plot_location_trail(self, plot_name, arr_x, arr_y, arr_z, render=True, trail_fade_values=None, trail_point_size_values=None, **kwargs):
@@ -207,11 +220,10 @@ class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, I
         
         # create many spheres from the point cloud
         pc_positionTrail = pdata_positionTrail.glyph(scale=point_size_scale_arg, geom=animal_location_trail_circle)
-        # self.plots[plot_name] = self.p.add_mesh(pc_positionTrail, name=plot_name, ambient=0.6, opacity='linear_r', scalars=scalars_arg, nan_opacity=0.0,
-        #                                         show_edges=False, render_lines_as_tubes=True, show_scalar_bar=False, use_transparency=True, render=render) # works to render a heat colored (most recent==hotter) position       
+        self.plots_data[plot_name] = {'point_cloud_fixedSegements_positionTrail':point_cloud_fixedSegements_positionTrail, 'pdata_positionTrail':pdata_positionTrail, 'pc_positionTrail':pc_positionTrail}
         self.plots[plot_name] = self.p.add_mesh(pc_positionTrail, name=plot_name, render=render, **({'ambient':0.6, 'opacity':'linear_r', 'scalars':scalars_arg, 'nan_opacity':0.0,
                                                 'show_edges':False, 'render_lines_as_tubes':True, 'show_scalar_bar':False, 'use_transparency':True} | kwargs))
-        return self.plots[plot_name]
+        return self.plots[plot_name], self.plots_data[plot_name]
             
             
             
