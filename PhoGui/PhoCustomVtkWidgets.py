@@ -177,7 +177,7 @@ class PhoWidgetHelper:
         if not hasattr(p, "button_widgets"):
             p.button_widgets = []
         
-        def create_button(color1, color2, color3, dims=[size, size, 1]):
+        def _create_button(color1, color2, color3, dims=[size, size, 1]):
             color1 = np.array(parse_color(color1)) * 255
             color2 = np.array(parse_color(color2)) * 255
             color3 = np.array(parse_color(color3)) * 255
@@ -234,8 +234,8 @@ class PhoWidgetHelper:
         # 	# # text_widget.SetCurrentRenderer(self.renderer) # maybe needed?
         # 	# text_widget.SelectableOff()
         
-        button_on = create_button(color_on, background_color, color_on)
-        button_off = create_button(color_on, background_color, color_off)
+        button_on = _create_button(color_on, background_color, color_on)
+        button_off = _create_button(color_on, background_color, color_off)
 
         bounds = [
             position[0], position[0] + size,
