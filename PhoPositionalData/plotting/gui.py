@@ -248,7 +248,9 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
             curr_custom_callback = additional_callback_actions[i]
         else:
             curr_custom_callback = None
+            
         curr_visibility_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
+        
         curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=widget_check_states[i],
                 position=curr_widget_position, size=widget_size,
                 border_size=widget_border_size,
