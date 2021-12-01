@@ -90,7 +90,9 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         self.params.active_trail_opacity_values = sharply_fading_opacity_values.copy()
         # print('active_trail_opacity_values: {}\n'.format(np.shape(active_trail_opacity_values)))
         # active_trail_size_values = np.full([curr_view_window_length_samples,], 0.6) # all have a scale of 0.6
-        self.params.active_trail_size_values = np.linspace(0.2, 0.6, self.params.curr_view_window_length_samples) # fade from a scale of 0.2 to 0.6
+        # self.params.active_trail_size_values = np.linspace(0.2, 0.6, self.params.curr_view_window_length_samples) # fade from a scale of 0.2 to 0.6
+        
+        self.params.active_trail_size_values = np.linspace(1.2, 0.4, self.params.curr_view_window_length_samples) # fade from a scale of 0.2 to 0.6
         # active_trail_size_values[-1] = 6.0 # except for the end (current) point, which has a scale of 1.0
         # active_trail_size_values = sharply_fading_opacity_values.copy()
 
@@ -223,7 +225,6 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
 
         # evaluated as column names
         active_included_all_historical_indicies = ((flattened_spike_times > historical_t_start) & (flattened_spike_times < t_stop)) # Two Sided Range Mode
-
         historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data(flattened_spike_active_unitIdentities[active_included_all_historical_indicies],
                                                                                         flattened_spike_positions_list[:, active_included_all_historical_indicies],
                                                                                         spike_geom=spike_geom_box.copy())
