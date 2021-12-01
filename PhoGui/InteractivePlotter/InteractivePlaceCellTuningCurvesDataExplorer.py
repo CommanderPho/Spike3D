@@ -10,7 +10,7 @@ import pandas as pd
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 
-from PhoPositionalData.plotting.spikeAndPositions import plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
+from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
 from PhoPositionalData.plotting.gui import SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
 
 from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
@@ -38,27 +38,13 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
     
     def _setup_variables(self):
         num_cells, spike_list, cell_ids, self.params.flattened_spike_identities, self.params.flattened_spike_times, flattened_sort_indicies, t_start, reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
+        ## Ensure we have the 'unit_id' property
+        try:
+            test = self.active_session.spikes_df['unit_id']
+        except KeyError as e:
+            # build the valid key:
+            self.active_session.spikes_df['unit_id'] = np.array([int(self.active_session.neurons.reverse_cellID_index_map[original_cellID]) for original_cellID in self.active_session.spikes_df['aclu'].values])
         
-        # self.params.flattened_spike_positions_list: [2, 17449]
-        # print('self.params.flattened_spike_positions_list: {}'.format(self.params.flattened_spike_positions_list))
-        
-        # active_session.neurons.spiketrains
-        
-        # self.params.flattened_spike_df = pd.DataFrame(self.params.flattened_spike_times, self.params.flattened_spike_identities, self.params.flattened_spike_positions_list[:,0], self.params.flattened_spike_positions_list[:,1])
-        # self.params.flattened_spike_df = pd.DataFrame(self.params.flattened_spike_times, self.params.flattened_spike_identities, self.params.flattened_spike_positions_list)
-        
-        
-        
-        ## self.params.flattened_spike_positions_list (2, 17449)
-        
-        ### Build the flattened spike positions list
-        # Determine the x and y positions each spike occured for each cell
-        ## new_df style:
-        # self.debug.flattened_spike_positions_list_new = self.active_session.flattened_spiketrains.spikes_df[["x", "y"]].to_numpy().T
-
-        ## old-style:
-        # self.debug.spike_positions_list_old = self.params.flattened_spike_positions_list
-
 
     def _setup_visualization(self): 
         self.params.use_mutually_exclusive_placefield_checkboxes = False       
@@ -77,12 +63,27 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         
         self.p, tuningCurvePlotActors, tuningCurvePlotLegendActor = plot_placefields2D(self.p, self.params.active_epoch_placefields, self.params.pf_colors, zScalingFactor=10.0, show_legend=self.params.show_legend) 
 
+        ## TODO: For these, we actually want the placefield value as the Z-positions, will need to unwrap them or something (maybe .ravel(...)?)
+        ## TODO: also need to add in the checkbox functionality to hide/show only the spikes for the highlighted units
+        
+        # active_spike_index = 4
+        # active_included_place_cell_spikes_indicies = self.active_session.spikes_df.eval('(unit_id == @active_spike_index)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
+        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df, spike_geom=spike_geom_cone.copy())
+        # historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df[active_included_place_cell_spikes_indicies], spike_geom=spike_geom_box.copy())
+        if historical_spikes_pc.n_points >= 1:
+            self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+            needs_render = True
+
+        if needs_render:
+            self.p.render()
+
         # Adds a multi-line debug console to the GUI for output logging:
         debug_console_widget = MultilineTextConsoleWidget(self.p)
         debug_console_widget.add_line_to_buffer('test log')
         # debug_console_widget.add_line_to_buffer('test log 2')
         # Adds a list of toggle checkboxe widgets to turn on and off each placemap
         self.setup_visibility_checkboxes(tuningCurvePlotActors)
+        
         return self.p
     
     
