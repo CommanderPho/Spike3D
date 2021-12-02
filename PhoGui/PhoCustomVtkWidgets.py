@@ -8,6 +8,7 @@ from pyvista import _vtk
 from pyvista.utilities import (NORMALS, generate_plane, get_array,
                                try_callback, get_array_association)
 from pyvista.plotting.tools import parse_color, FONTS
+# from ConfigurationFunctions import SIGNAL
 
 # from PhoGui import vtk_ui
 # import vtk_ui
@@ -423,3 +424,128 @@ class PhoWidgetHelper:
 
         p.add_actor(p.textActor, reset_camera=False, name=name, pickable=False)
         return p.textActor
+    
+    
+    
+    # def getScalars( image_data, x, y ):
+    #     comp_data = [ int( image_data.GetScalarComponentAsFloat ( x, y, 0, ic ) ) for ic in range( 4 ) ]
+    #     return str( comp_data )
+
+
+    @staticmethod
+    def add_discrete_slider_widget(p, callback, range=(0.0, 1.0), **kwargs):
+        # Plots a discrete slider that can be used to select from a series of discrete values, like place cells
+        return p.add_slider_widget(callback, range, **({'title':'Trajectory Timestep', 'pass_widget':False, 'event_type':'always', 'style':'modern', 'pointa':(0.025, 0.1), 'pointb':(0.98, 0.1), 'fmt':'%0.2f'} | kwargs))
+        
+        
+
+# class MyCustomRoutine():
+#     def __init__(self, mesh):
+#         self.output = mesh # Expected PyVista mesh type
+#         # default parameters
+#         self.kwargs = {
+#             'radius': 0.5,
+#             'theta_resolution': 30,
+#             'phi_resolution': 30,
+#         }
+
+#     def __call__(self, param, value):
+#         self.kwargs[param] = value
+#         self.update()
+
+#     def update(self):
+#         # This is where you call your simulation
+#         result = pv.Sphere(**self.kwargs)
+#         self.output.overwrite(result)
+#         return
+
+# class ListWidget:
+
+#     def __init__( self, interactor, **args ):
+#         self.StateChangedSignal = SIGNAL('StateChanged')
+#         self.buttonRepresentation = None
+#         self.interactor = interactor
+#         self.buttons = {}
+#         self.visible = False
+#         self.windowSize = self.interactor.GetRenderWindow().GetSize()
+
+#     def processStateChangeEvent( self, button, event ):
+#         button_rep = button.GetSliderRepresentation()
+#         state = button_rep.GetState()
+#         button_specs = self.buttons[ button ]
+#         button_id = button_specs[ 0 ]
+#         self.StateChangedSignal( button, [ button_id, state ] )
+
+#     def getButton( self, **args ):
+#         button_id, buttonRepresentation = self.getButtonRepresentation( **args )
+#         buttonRepresentation.SetPlaceFactor( args.get( 'scale', 1 ) )
+#         position = args.get( 'position', [ 1.0, 1.0 ] )
+#         size = args.get( 'size', [ 100.0, 20.0 ] )
+#         buttonRepresentation.PlaceWidget( self.computeBounds(position,size) )
+#         buttonWidget = _vtk.vtkButtonWidget()
+#         buttonWidget.SetInteractor(self.interactor)
+#         buttonWidget.SetRepresentation(buttonRepresentation)
+#         buttonWidget.AddObserver( 'StateChangedEvent', self.processStateChangeEvent )
+#         self.buttons[ buttonWidget ] = [ button_id, position, size ]
+#         return buttonWidget
+
+#     def checkWindowSizeChange( self ):
+#         new_window_size = self.interactor.GetRenderWindow().GetSize()
+#         if ( self.windowSize[0] != new_window_size[0] ) or ( self.windowSize[1] != new_window_size[1] ):
+#             self.windowSize = new_window_size
+#             return True
+#         else:
+#             return False
+
+#     def updatePositions(self):
+#         if self.checkWindowSizeChange():
+#             for button_item in self.buttons.items():
+#                 button = button_item[0]
+#                 [ button_id, position, size ] = button_item[1]
+#                 brep = button.GetRepresentation()
+#                 brep.PlaceWidget( self.computeBounds(position,size) )
+#                 brep.Modified()
+#                 button.Modified()
+
+#     def build(self):
+#         pass
+
+#     def getButtonRepresentation(self):
+#         return None, None
+
+#     def show(self):
+#         self.visible = True
+#         for button in self.buttons.keys():
+#             button.On()
+# #            button.Render()
+
+#     def hide(self):
+#         self.visible = False
+#         for button in self.buttons.keys():
+#             button.Off()
+
+#     def toggleVisibility( self, **args ):
+#         state = args.get( 'state', None )
+#         if state != None: self.visible = True if ( state == 0 ) else False
+#         if self.visible:
+#             self.hide()
+#         else:
+#             self.updatePositions()
+#             self.show()
+
+#     def getRenderer(self):
+#         rw = self.interactor.GetRenderWindow()
+#         return rw.GetRenderers().GetFirstRenderer ()
+
+#     def computeBounds( self, normalized_display_position, size ):
+#         renderer = self.getRenderer()
+#         upperRight = _vtk.vtkCoordinate()
+#         upperRight.SetCoordinateSystemToNormalizedDisplay()
+#         upperRight.SetValue( normalized_display_position[0], normalized_display_position[1] )
+#         bds = [0.0]*6
+#         bds[0] = upperRight.GetComputedDisplayValue(renderer)[0] - size[0]
+#         bds[1] = bds[0] + size[0]
+#         bds[2] = upperRight.GetComputedDisplayValue(renderer)[1] - size[1]
+#         bds[3] = bds[2] + size[1]
+#         return bds
+

@@ -13,7 +13,7 @@ from matplotlib.colors import ListedColormap
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
-from PhoPositionalData.plotting.gui import SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
+from PhoPositionalData.plotting.gui import CallbackSequence, SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
 
 from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
 from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
@@ -97,6 +97,9 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         # Adds a list of toggle checkboxe widgets to turn on and off each placemap
         # self.setup_visibility_checkboxes(self.plots['tuningCurvePlotActors'])
         
+        # build the visibility callbacks that will be used to update the meshes from the UI elements:
+        self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'] = self.__build_callbacks(self.plots['tuningCurvePlotActors'])
+        
         if self.params.use_unit_id_slider_instead_of_checkboxes:
             # use the discrete slider widget instead of the checkboxes
             self.__setup_visibility_slider_widget(self.plots['tuningCurvePlotActors'])
@@ -106,17 +109,27 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         
         return self.p
     
+    def __build_callbacks(self, tuningCurvePlotActors):
+        combined_active_pf_update_callbacks = []
+        for i, an_actor in enumerate(tuningCurvePlotActors):
+            # Make a separate callback for each widget
+            curr_visibility_callback = SetVisibilityCallback(an_actor)
+            curr_spikes_update_callback = (lambda is_visible, i_copy=i: self._update_placefield_spike_visibility([i_copy], is_visible))
+            combined_active_pf_update_callbacks.append(CallbackSequence([curr_visibility_callback, curr_spikes_update_callback]))
+        return combined_active_pf_update_callbacks
+            
+            
     
     def __setup_visibility_checkboxes(self, tuningCurvePlotActors):
         # self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda i: self.hide_placefield_spikes(i) for i in np.arange(len(tuningCurvePlotActors))]
         # self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda is_visible: self.update_placefield_spike_visibility([i], is_visible) for i in np.arange(len(tuningCurvePlotActors))]
-        self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda is_visible, i_copy=i: self._update_placefield_spike_visibility([i_copy], is_visible) for i in np.arange(len(tuningCurvePlotActors))]
+        # self.gui['tuningCurveSpikeVisibilityCallbacks'] = [lambda is_visible, i_copy=i: self._update_placefield_spike_visibility([i_copy], is_visible) for i in np.arange(len(tuningCurvePlotActors))]
         
         if self.params.use_mutually_exclusive_placefield_checkboxes:
-            self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'], self.gui['mutually_exclusive_radiobutton_group'] = add_placemap_toggle_mutually_exclusive_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'], labels=self.params.unit_labels)
+            self.gui['checkboxWidgetActors'], self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'], self.gui['mutually_exclusive_radiobutton_group'] = add_placemap_toggle_mutually_exclusive_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False, additional_callback_actions=self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'], labels=self.params.unit_labels)
         else:
             self.gui['mutually_exclusive_radiobutton_group'] = None           
-            self.gui['checkboxWidgetActors'], self.gui['tuningCurvePlotActorVisibilityCallbacks'] = add_placemap_toggle_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, widget_check_states=False, additional_callback_actions=self.gui['tuningCurveSpikeVisibilityCallbacks'], labels=self.params.unit_labels)
+            self.gui['checkboxWidgetActors'], self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'] = add_placemap_toggle_checkboxes(self.p, tuningCurvePlotActors, self.params.pf_colors, widget_check_states=False, additional_callback_actions=self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'], labels=self.params.unit_labels)
         
        
     def __setup_visibility_slider_widget(self, tuningCurvePlotActors):
@@ -192,6 +205,8 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         # print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, invert: {})'.format(active_original_cell_unit_ids, invert))
         # print('\t active_original_cell_unit_ids: {}'.format(active_original_cell_unit_ids))
         is_cell_included = np.isin(self.active_session.neurons.neuron_ids, active_original_cell_unit_ids, invert=(not invert)) # check if each cell_id is included in the neurons' active set of cells
+        active_only_num_cells_included = np.sum(is_cell_included)
+        print('\t num_cells_included: {}'.format(active_only_num_cells_included))
         # print('\t is_cell_included: {}'.format(is_cell_included))
         mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=invert)
         
@@ -199,14 +214,19 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         active_only_pf_colormap = self.active_config.plotting_config.pf_colors[:,is_cell_included].T # [n_neurons x 4]
         active_only_pf_listed_colormap = ListedColormap(active_only_pf_colormap.copy())
         needs_render = False
+        ## It seems to be working now, so we probably don't need this, but this was what I was looking for to set the color limts before:
+        # color_map_limits_override = [0.0, (active_only_num_cells_included - 1)] # , clim=color_map_limits_override
+        
         if mesh.n_points >= 1:
             # print('\t updating plot!')
             self.plots['spikes_pf_active'] = self.p.add_mesh(mesh, name='spikes_pf_active', scalars='cellID', cmap=active_only_pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
             # self.plots['spikes_pf_active'].SetVisibility(True)
             needs_render = True
         else:
-            print('\t WARNING: mesh is empty!')
+            print('\t WARNING: mesh is empty! Removing the actor!')
+            self.p.remove_actor(self.plots['spikes_pf_active'])
             # self.plots['spikes_pf_active'].SetVisibility(False) 
+            needs_render = False # a render isn't needed because remove_actor forces a render by default
 
-        self.p.render()
-        self.p.update()
+        if needs_render:
+            self.p.update()

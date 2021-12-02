@@ -168,8 +168,6 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     # Get the cell IDs that have a good place field mapping:
     good_placefield_neuronIDs = np.array(active_placefields.ratemap.neuron_ids) # in order of ascending ID
     tuningCurvePlot_x, tuningCurvePlot_y = np.meshgrid(active_placefields.ratemap.xbin_centers, active_placefields.ratemap.ybin_centers)
-    # tuningCurvePlot_x, tuningCurvePlot_y = np.meshgrid(active_placefields.ratemap.xbin, active_placefields.ratemap.ybin)
-    # tuningCurvePlot_x, tuningCurvePlot_y = active_placefields.ratemap.xbin_centers, active_placefields.ratemap.ybin_centers
     # Loop through the tuning curves and plot them:
     print('num_curr_tuning_curves: {}'.format(num_curr_tuning_curves))
     tuningCurvePlotActors = []
@@ -180,18 +178,6 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
         curr_active_neuron_color = pf_colors[:, i]
         curr_active_neuron_pf_identifier = 'pf[{}]'.format(curr_active_neuron_ID)
         curr_active_neuron_tuning_Curve = np.squeeze(curr_tuning_curves[i,:,:]).T.copy() # A single tuning curve
-        # point_cloud_fixedSegements_positionTrail = np.column_stack((x[active_window_sample_indicies], y[active_window_sample_indicies], z_fixed))
-        # pdata_positionTrail = pv.PolyData(point_cloud_fixedSegements_positionTrail.copy()) # a mesh
-        
-        # Get the points as a 2D NumPy array (N by 3)
-        # curr_active_neuron_tuning_Curve_points = np.c_[tuningCurvePlot_x.reshape(-1), tuningCurvePlot_y.reshape(-1), curr_active_neuron_tuning_Curve.reshape(-1)]
-        # curr_active_neuron_tuning_Curve_cloud = pv.wrap(curr_active_neuron_tuning_Curve_points)
-        # simply pass the numpy points to the PolyData constructor
-        # poly = pv.PolyData(curr_active_neuron_tuning_Curve_points)
-        # poly.plot(point_size=15)
-
-        # pdata_currActiveNeuronTuningCurve.points = curr_active_neuron_tuning_Curve.ravel(order="F") # Set the coordinates from the numpy array
-        # pdata_currActiveNeuronTuningCurve.dimensions = [np.shape(curr_active_neuron_tuning_Curve)[0], np.shape(curr_active_neuron_tuning_Curve)[1], 1] # set the dimensions
         
         # curr_active_neuron_tuning_Curve[curr_active_neuron_tuning_Curve < 0.1] = np.nan
         pdata_currActiveNeuronTuningCurve = pv.StructuredGrid(tuningCurvePlot_x, tuningCurvePlot_y, curr_active_neuron_tuning_Curve)
