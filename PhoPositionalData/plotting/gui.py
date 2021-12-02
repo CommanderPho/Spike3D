@@ -280,13 +280,13 @@ class SetVisibilityCallback:
 
 
 
-def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3, additional_callback_actions=None, labels=None):
+def add_placemap_toggle_checkboxes(p, active_idx_updated_callbacks, colors, widget_check_states=False, widget_size=20, widget_start_pos=12, widget_border_size=3, additional_callback_actions=None, labels=None):
     # """ Adds a list of toggle checkboxes to turn on and off each placemap"""
     """ Adds a list of toggle checkboxes to turn on and off each placemap
     Usage:
         checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks = add_placemap_toggle_checkboxes(pActiveTuningCurvesPlotter, tuningCurvePlotActors, pf_colors, widget_check_states=True, is_debug=False)
     """
-    num_checkboxes = len(placemap_actors)
+    num_checkboxes = len(active_idx_updated_callbacks)
     if type(widget_check_states)==bool:
         widget_check_states = np.full([num_checkboxes,], widget_check_states)
 
@@ -295,22 +295,19 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
     labelWidgetActors = list()
     
     # callbacks
-    visibility_callbacks = list()
-    checkboxWidget_IsChecked_callbacks = list()
-    combined_callbacks = list()
+    final_combined_callbacks = list()
     
-    for i, an_actor in enumerate(placemap_actors):
+    for i, curr_callback in enumerate(active_idx_updated_callbacks):
         curr_widget_position = (5.0, start_positions[i])
         # Make a separate callback for each widget
-        curr_visibility_callback = SetVisibilityCallback(an_actor)
         if additional_callback_actions is not None:
             curr_custom_callback = additional_callback_actions[i]
         else:
             curr_custom_callback = None
             
-        curr_visibility_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
+        curr_callback(widget_check_states[i]) # perform the callback to update the initial visibility based on the correct state for this object
         
-        curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=widget_check_states[i],
+        curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_callback, value=widget_check_states[i],
                 position=curr_widget_position, size=widget_size,
                 border_size=widget_border_size,
                 color_on=colors[:,i],
@@ -320,27 +317,31 @@ def add_placemap_toggle_checkboxes(p, placemap_actors, colors, widget_check_stat
         )
         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
-        curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
+        if isinstance(curr_callback, CallbackSequence):
+            curr_combined_callback = curr_callback
+            curr_combined_callback.callbacks_list.append(curr_checkbox_checked_callback)
+        else:
+            curr_combined_callback = CallbackSequence([curr_callback, curr_checkbox_checked_callback]) # otherwise if it isn't a CallbackSequence, we just have to wrap it in one
+            
         if curr_custom_callback is not None:
             curr_combined_callback.callbacks_list.append(curr_custom_callback) 
         # append the callbacks to the lists:
-        visibility_callbacks.append(curr_visibility_callback)
-        checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
-        combined_callbacks.append(curr_combined_callback)
+        
+        final_combined_callbacks.append(curr_combined_callback)
         # append actors to lists:
         labelWidgetActors.append(curr_widget_label_actor)
         checkboxWidgetActors.append(curr_widget_actor)
 
-    return checkboxWidgetActors, combined_callbacks
+    return checkboxWidgetActors, final_combined_callbacks
 
 
 
-def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False, debug_console_widget=None, additional_callback_actions=None, labels=None):
+def add_placemap_toggle_mutually_exclusive_checkboxes(p, active_idx_updated_callbacks, colors, active_element_idx=0, widget_size=20, widget_start_pos=12, widget_border_size=3, require_active_selection=False, is_debug=False, debug_console_widget=None, additional_callback_actions=None, labels=None):
     """ Adds a list of toggle checkboxes that only allows one at a time to be selected to turn on and off each placemap
     Usage:
         checkboxWidgetActors, tuningCurvePlotActorVisibilityCallbacks, mutually_exclusive_radiobutton_group = add_placemap_toggle_mutually_exclusive_checkboxes(pActiveTuningCurvesPlotter, tuningCurvePlotActors, pf_colors, active_element_idx=4, require_active_selection=False, is_debug=False)
     """
-    num_checkboxes = len(placemap_actors)
+    num_checkboxes = len(active_idx_updated_callbacks)
     # start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.arange(num_checkboxes))
     start_positions = widget_start_pos + ((widget_size + (widget_size // 10)) * np.flip(np.arange(num_checkboxes)))
     
@@ -352,7 +353,7 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, placemap_actors, colors
     checkboxWidget_IsChecked_callbacks = list()
     combined_callbacks = list()
     
-    for i, an_actor in enumerate(placemap_actors):
+    for i, an_actor in enumerate(active_idx_updated_callbacks):
         curr_widget_position = (5.0, start_positions[i])
         # Make a separate callback for each widget
         curr_visibility_callback = SetVisibilityCallback(an_actor)
