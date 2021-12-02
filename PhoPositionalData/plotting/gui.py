@@ -313,7 +313,7 @@ def add_placemap_toggle_checkboxes(p, active_idx_updated_callbacks, colors, widg
                 color_on=colors[:,i],
                 color_off='grey',
                 background_color=colors[:,i], # background_color is used for the border
-                render=False
+                render=True
         )
         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, '{}'.format(i), curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
@@ -349,27 +349,22 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, active_idx_updated_call
     labelWidgetActors = list()
     
     # callbacks
-    visibility_callbacks = list()
-    checkboxWidget_IsChecked_callbacks = list()
-    combined_callbacks = list()
+    final_combined_callbacks = list()
     
-    for i, an_actor in enumerate(active_idx_updated_callbacks):
+    for i, curr_callback in enumerate(active_idx_updated_callbacks):
         curr_widget_position = (5.0, start_positions[i])
-        # Make a separate callback for each widget
-        curr_visibility_callback = SetVisibilityCallback(an_actor)
-        
         if additional_callback_actions is not None:
             curr_custom_callback = additional_callback_actions[i]
         else:
             curr_custom_callback = None
             
-        curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_visibility_callback, value=False,
+        curr_widget_actor = PhoWidgetHelper.perform_add_custom_button_widget(p, curr_callback, value=False,
                 position=curr_widget_position, size=widget_size,
                 border_size=widget_border_size,
                 color_on=colors[:,i],
                 color_off='grey',
                 background_color=colors[:,i], # background_color is used for the border
-                render=False
+                render=True
         )
         
         if labels is None:
@@ -379,20 +374,24 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, active_idx_updated_call
             
         curr_widget_label_actor = PhoWidgetHelper.perform_add_button_text_label(p, curr_widget_label, curr_widget_position, font_size=6, color=[1, 1, 1], shadow=False, name='lblPlacemapCheckboxLabel[{}]'.format(i), viewport=False)        
         curr_checkbox_checked_callback = SetUICheckboxValueCallback(curr_widget_actor)
-        curr_combined_callback = CallbackSequence([curr_visibility_callback, curr_checkbox_checked_callback])
+        if isinstance(curr_callback, CallbackSequence):
+            curr_combined_callback = curr_callback
+            curr_combined_callback.callbacks_list.append(curr_checkbox_checked_callback)
+        else:
+            curr_combined_callback = CallbackSequence([curr_callback, curr_checkbox_checked_callback]) # otherwise if it isn't a CallbackSequence, we just have to wrap it in one
+            
         if curr_custom_callback is not None:
             curr_combined_callback.callbacks_list.append(curr_custom_callback) 
-        
         # append the callbacks to the lists:
-        visibility_callbacks.append(curr_visibility_callback)
-        checkboxWidget_IsChecked_callbacks.append(curr_checkbox_checked_callback)
-        combined_callbacks.append(curr_combined_callback)
+        
+        final_combined_callbacks.append(curr_combined_callback)
         # append actors to lists:
         labelWidgetActors.append(curr_widget_label_actor)
         checkboxWidgetActors.append(curr_widget_actor)
+
     
     # build the mutually exclusive group:
-    mutually_exclusive_radiobutton_group = MutuallyExclusiveRadioButtonGroup(len(combined_callbacks), active_element_idx=active_element_idx, on_element_state_changed_callbacks=combined_callbacks, require_active_selection=require_active_selection, is_debug=is_debug)
+    mutually_exclusive_radiobutton_group = MutuallyExclusiveRadioButtonGroup(len(final_combined_callbacks), active_element_idx=active_element_idx, on_element_state_changed_callbacks=final_combined_callbacks, require_active_selection=require_active_selection, is_debug=is_debug)
     
     def _update_mutually_exclusive_callback(widget_index, state):
         if debug_console_widget is not None:
@@ -406,4 +405,4 @@ def add_placemap_toggle_mutually_exclusive_checkboxes(p, active_idx_updated_call
         a_checkbox_widget_actor.AddObserver(pv._vtk.vtkCommand.StateChangedEvent, curr_checkbox_changed_callback)
         # checkbox_changed_callbacks.append(curr_checkbox_changed_callback)
         
-    return checkboxWidgetActors, combined_callbacks, mutually_exclusive_radiobutton_group
+    return checkboxWidgetActors, final_combined_callbacks, mutually_exclusive_radiobutton_group

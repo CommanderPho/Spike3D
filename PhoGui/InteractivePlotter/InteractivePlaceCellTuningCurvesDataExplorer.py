@@ -52,7 +52,8 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         self.params.use_mutually_exclusive_placefield_checkboxes = True       
         self.params.show_legend = True
         
-        self.params.use_unit_id_slider_instead_of_checkboxes = True
+        # self.params.use_unit_id_slider_instead_of_checkboxes = True
+        self.params.use_unit_id_slider_instead_of_checkboxes = False
     
     
     @property
@@ -131,6 +132,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
             self.gui['mutually_exclusive_radiobutton_group'] = None           
             self.gui['checkboxWidgetActors'], self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'] = add_placemap_toggle_checkboxes(self.p, self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'], self.params.pf_colors, widget_check_states=False, additional_callback_actions=None, labels=self.params.unit_labels)
         
+
        
     def __setup_visibility_slider_widget(self):
         # safe_integer_wrapper = lambda integer_local_idx: self._update_placefield_spike_visibility([int(integer_local_idx)])
