@@ -11,7 +11,7 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\Users\\Pho\\anaconda3\\envs\\phoviz\\python.exe",
+		"python.pythonPath": "C:\\Users\\Pho\\anaconda3\\envs\\phoviz_test\\python.exe",
 		"jupyter.jupyterServerType": "local"
 	}
 }
