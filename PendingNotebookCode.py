@@ -1,6 +1,7 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
 
 from matplotlib.colors import ListedColormap
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import pyvista as pv
@@ -28,13 +29,13 @@ def debug_print_spike_counts(session):
     print(len(uniques)) # 69 
     
     
-def compute_placefields_as_needed(active_session, computation_config=None, active_epoch_placefields1D = None, active_epoch_placefields2D = None, should_force_recompute_placefields=False, should_display_2D_plots=False):
+def compute_placefields_as_needed(active_session, computation_config=None, general_config: InteractivePlaceCellConfig=None, active_epoch_placefields1D = None, active_epoch_placefields2D = None, should_force_recompute_placefields=False, should_display_2D_plots=False):
     if computation_config is None:
         computation_config = PlacefieldComputationParameters(speed_thresh=9, grid_bin=2, smooth=0.5)
     active_epoch_placefields1D, active_epoch_placefields2D = perform_compute_placefields(active_session.neurons, active_session.position, computation_config, active_epoch_placefields1D, active_epoch_placefields2D, should_force_recompute_placefields=True)
     # Plot the placefields computed and save them out to files:
     if should_display_2D_plots:
-        ax_pf_1D, occupancy_fig, active_pf_2D_figures = plot_all_placefields(active_epoch_placefields1D, active_epoch_placefields2D, active_session.config)
+        ax_pf_1D, occupancy_fig, active_pf_2D_figures = plot_all_placefields(active_epoch_placefields1D, active_epoch_placefields2D, general_config)
     else:
         print('skipping 2D placefield plots')
     return active_epoch_placefields1D, active_epoch_placefields2D
