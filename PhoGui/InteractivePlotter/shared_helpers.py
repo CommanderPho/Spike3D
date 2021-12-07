@@ -18,7 +18,7 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 
 class InteractivePyvistaPlotterBuildIfNeededMixin:
     @staticmethod
-    def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None, shape=(1,1), **kwargs):
+    def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None, **kwargs):
         if (pActiveTuningCurvesPlotter is not None):
             if isinstance(pActiveTuningCurvesPlotter, BackgroundPlotter):
                 if pActiveTuningCurvesPlotter.app_window.isHidden():
