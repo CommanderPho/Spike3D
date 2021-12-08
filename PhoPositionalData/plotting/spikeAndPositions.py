@@ -19,6 +19,7 @@ animal_location_trail_circle = pv.Circle(radius=2.3)
 
 ## Spike indicator geometry:
 spike_geom_cone = pv.Cone(direction=(0.0, 0.0, -1.0), height=10.0, radius=0.2) # The spike geometry that is only displayed for a short while after the spike occurs
+# spike_geom_cone = pv.Cone(direction=(0.0, 0.0, 1.0), height=15.0, radius=0.2) # The spike geometry that is only displayed for a short while after the spike occurs
 spike_geom_circle = pv.Circle(radius=0.4)
 spike_geom_box = pv.Box(bounds=[-0.2, 0.2, -0.2, 0.2, -0.05, 0.05])
 # pv.Cylinder
@@ -83,6 +84,7 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
     # spike_history_point_cloud = np.vstack((spike_series_positions[0,:], spike_series_positions[1,:], z_fixed)).T
     spike_history_pdata = pv.PolyData(spike_history_point_cloud)
     # spike_history_pdata['times'] = spike_series_times
+    # spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
     spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
     return spike_history_pdata
 
