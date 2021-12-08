@@ -86,12 +86,16 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         if historical_spikes_pc.n_points >= 1:
             self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
             needs_render = True
+        else:
+            # self.plots['spikes_pf_active'] = self.p.add_mesh(
+            self.p.remove_actor(self.plots['spikes_pf_active'])
+            needs_render = True
+
 
         if needs_render:
             self.p.render()
 
-        # Adds a multi-line debug console to the GUI for output logging:
-        
+        # Adds a multi-line debug console to the GUI for output logging:        
         self.gui['debug_console_widget'] = MultilineTextConsoleWidget(self.p)
         self.gui['debug_console_widget'].add_line_to_buffer('test log')
         # debug_console_widget.add_line_to_buffer('test log 2')
