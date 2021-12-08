@@ -15,3 +15,4 @@ complete_plotting.mp4
 output
 .spyproject
 data/ExportedData
+*.pkl
