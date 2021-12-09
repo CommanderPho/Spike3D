@@ -7,10 +7,11 @@ import pandas as pd
 import pyvista as pv
 import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 
-from PhoPositionalData.analysis.interactive_placeCell_config import InteractivePlaceCellConfig, VideoOutputModeConfig, PlottingConfig, PlacefieldComputationParameters  # VideoOutputModeConfig, InteractivePlaceCellConfigs
+from PhoPositionalData.analysis.interactive_placeCell_config import InteractivePlaceCellConfig, VideoOutputModeConfig, PlottingConfig  # VideoOutputModeConfig, InteractivePlaceCellConfigs
 from PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
 from neuropy.analyses import perform_compute_placefields, plot_all_placefields
+from neuropy.analyses.placefields import PlacefieldComputationParameters
 from neuropy.plotting.spikes import get_neuron_colors
 
 should_force_recompute_placefields = True
@@ -29,16 +30,16 @@ def debug_print_spike_counts(session):
     print(len(uniques)) # 69 
     
     
-def compute_placefields_as_needed(active_session, computation_config=None, general_config: InteractivePlaceCellConfig=None, active_epoch_placefields1D = None, active_epoch_placefields2D = None, should_force_recompute_placefields=False, should_display_2D_plots=False):
+def compute_placefields_as_needed(active_session, computation_config=None, general_config: InteractivePlaceCellConfig=None, active_placefields1D = None, active_placefields2D = None, included_epochs=None, should_force_recompute_placefields=False, should_display_2D_plots=False):
     if computation_config is None:
         computation_config = PlacefieldComputationParameters(speed_thresh=9, grid_bin=2, smooth=0.5)
-    active_epoch_placefields1D, active_epoch_placefields2D = perform_compute_placefields(active_session.neurons, active_session.position, computation_config, active_epoch_placefields1D, active_epoch_placefields2D, should_force_recompute_placefields=True)
+    active_placefields1D, active_placefields2D = perform_compute_placefields(active_session.neurons, active_session.position, computation_config, active_placefields1D, active_placefields2D, included_epochs=included_epochs, should_force_recompute_placefields=True)
     # Plot the placefields computed and save them out to files:
     if should_display_2D_plots:
-        ax_pf_1D, occupancy_fig, active_pf_2D_figures = plot_all_placefields(active_epoch_placefields1D, active_epoch_placefields2D, general_config)
+        ax_pf_1D, occupancy_fig, active_pf_2D_figures = plot_all_placefields(active_placefields1D, active_placefields2D, general_config)
     else:
         print('skipping 2D placefield plots')
-    return active_epoch_placefields1D, active_epoch_placefields2D
+    return active_placefields1D, active_placefields2D
 
 ## Plotting Colors:
 def build_units_colormap(session):

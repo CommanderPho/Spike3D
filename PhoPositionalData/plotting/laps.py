@@ -8,8 +8,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
+from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena
+from PhoGui.InteractivePlotter.LapsVisualizationMixin import LapsVisualizationMixin
+from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
+import pyvista as pv
+import pyvistaqt as pvqt
 
-def add_arrow(line, position=None, position_mode='rel', direction='right', size=15, color=None):
+def _plot_helper_add_arrow(line, position=None, position_mode='rel', direction='right', size=15, color=None):
     """
     add an arrow to a Matplotlib line object, such as a line2D.
 
@@ -81,6 +86,83 @@ def add_arrow(line, position=None, position_mode='rel', direction='right', size=
     )
 
 
+
+def plot_lap_trajectories_3d(sess, curr_num_subplots=5, active_page_index=0):
+    """ Plots a PyVista Qt Multiplotter with several overhead 3D views, each showing a specific lap over the maze in one of its subplots 
+    Usage: 
+        p, laps_pages = plot_lap_trajectories_3d(sess, curr_num_subplots=10, active_page_index=1)
+        p.show()
+    """
+    def _chunks(iterable, size=10):
+        iterator = iter(iterable)
+        for first in iterator:    # stops when iterator is depleted
+            def chunk():          # construct generator for next chunk
+                yield first       # yield element from for loop
+                for more in islice(iterator, size - 1):
+                    yield more    # yield more elements from the iterator
+            yield chunk()         # in outer generator, yield next chunk
+
+    def _compute_laps_position_data(sess):
+        curr_position_df = sess.compute_position_laps()
+        lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in sess.laps.lap_id] # dataframes split for each ID:
+        return curr_position_df, lap_specific_position_dfs
+        
+    def _build_laps_multiplotter(nfields, linear_plot_data=None):
+        linear_plotter_indicies = np.arange(nfields)
+        fixed_columns = 5
+        needed_rows = int(np.ceil(nfields / fixed_columns))
+        row_column_indicies = np.unravel_index(linear_plotter_indicies, (needed_rows, fixed_columns)) # inverse is: np.ravel_multi_index(row_column_indicies, (needed_rows, fixed_columns))
+        mp = pvqt.MultiPlotter(nrows=needed_rows, ncols=fixed_columns, show=False, title='Laps Muliplotter', toolbar=False, menu_bar=False, editor=False)
+        # print('linear_plotter_indicies: {}\n row_column_indicies: {}\n'.format(linear_plotter_indicies, row_column_indicies))
+        for a_linear_index in linear_plotter_indicies:
+            # print('a_linear_index: {}, row_column_indicies[0][a_linear_index]: {}, row_column_indicies[1][a_linear_index]: {}'.format(a_linear_index, row_column_indicies[0][a_linear_index], row_column_indicies[1][a_linear_index]))
+            curr_row = row_column_indicies[0][a_linear_index]
+            curr_col = row_column_indicies[1][a_linear_index]
+            if linear_plot_data is None:
+                mp[curr_row, curr_col].add_mesh(pv.Sphere())
+            else:
+                mp[curr_row, curr_col].add_mesh(linear_plot_data[a_linear_index], name='maze_bg', color="black", render=False)
+        return mp, linear_plotter_indicies, row_column_indicies
+
+    # Plot the flat arena
+    def __build_flat_map_plot_data(x, y):
+        # Builds the flat base maze map that the other data will be plot on top of
+        z = np.zeros_like(x)
+        point_cloud = np.vstack((x, y, z)).T
+        pdata = pv.PolyData(point_cloud)
+        pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
+        geo = pv.Circle(radius=0.5)
+        pc = pdata.glyph(scale=False, geom=geo)
+        return pdata, pc
+    
+    def _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range):
+        # Add the lap trajectory:
+        for a_linear_index in linear_plotter_indicies:
+            curr_lap_id = active_page_laps_ids[a_linear_index]
+            curr_row = row_column_indicies[0][a_linear_index]
+            curr_col = row_column_indicies[1][a_linear_index]
+            LapsVisualizationMixin.plot_lap_trajectory_path_spline(p[curr_row, curr_col], curr_lap_position_traces[curr_lap_id], a_linear_index)
+            curr_lap_label_text = 'Lap[{}]: t({:.2f}, {:.2f})'.format(curr_lap_id, curr_lap_time_range[curr_lap_id][0], curr_lap_time_range[curr_lap_id][1]) 
+            PhoWidgetHelper.perform_add_text(p[curr_row, curr_col], curr_lap_label_text, name='lblLapIdIndicator')
+
+    # Compute required data from session:
+    curr_position_df, lap_specific_position_dfs = _compute_laps_position_data(sess)
+    curr_lap_position_traces = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df in lap_specific_position_dfs]
+    curr_lap_time_range = [[lap_pos_df[['t']].to_numpy()[0].item(), lap_pos_df[['t']].to_numpy()[-1].item()] for lap_pos_df in lap_specific_position_dfs]
+
+    all_maze_positions = curr_position_df[['x','y']].to_numpy().T # (2, 59308)
+    # np.shape(all_maze_positions)
+    pdata_maze_shared, pc_maze_shared = __build_flat_map_plot_data(all_maze_positions[0,:], all_maze_positions[1,:])
+    all_maze_data = np.full((curr_num_subplots,), pc_maze_shared) # repeat the maze data for each subplot
+    p, linear_plotter_indicies, row_column_indicies = _build_laps_multiplotter(curr_num_subplots, all_maze_data)
+    # generate the pages
+    laps_pages = [list(chunk) for chunk in _chunks(sess.laps.lap_id, curr_num_subplots)]
+    active_page_laps_ids = laps_pages[active_page_index]
+    _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range)
+    return p, laps_pages
+
+
+
 def plot_lap_trajectories_2d(sess, curr_num_subplots=5, active_page_index=0):
     """ Plots a MatplotLib 2D Figure with each lap being shown in one of its subplots """
     def _chunks(iterable, size=10):
@@ -137,9 +219,9 @@ def plot_lap_trajectories_2d(sess, curr_num_subplots=5, active_page_index=0):
             else:
                 line = axs[curr_row][curr_col].plot(laps_position_traces[curr_lap_id][0,:], laps_position_traces[curr_lap_id][1,:], c='k', alpha=0.85)
                 # curr_lap_endpoint = curr_lap_position_traces[curr_lap_id][:,-1].T
-                add_arrow(line[0], position=0, position_mode='index', direction='right', size=20, color='green') # start
-                add_arrow(line[0], position=None, position_mode='index', direction='right', size=20, color='yellow') # middle
-                add_arrow(line[0], position=curr_lap_num_points, position_mode='index', direction='right', size=20, color='red') # end
+                _plot_helper_add_arrow(line[0], position=0, position_mode='index', direction='right', size=20, color='green') # start
+                _plot_helper_add_arrow(line[0], position=None, position_mode='index', direction='right', size=20, color='yellow') # middle
+                _plot_helper_add_arrow(line[0], position=curr_lap_num_points, position_mode='index', direction='right', size=20, color='red') # end
                 # add_arrow(line[0], position=curr_lap_endpoint, position_mode='abs', direction='right', size=50, color='blue')
                 # add_arrow(line[0], position=None, position_mode='rel', direction='right', size=50, color='blue')
             # add lap text label

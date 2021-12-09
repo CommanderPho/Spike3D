@@ -81,7 +81,7 @@ def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_ind
         # plot the orange lines that span across the position plot to the right
         axs0.hlines(y=curr_cell_interpolated_spike_positions, xmin=curr_cell_spike_times, xmax=curr_cell_spike_times[-1],
                     linestyles='solid', color='orange', alpha=spike_indicator_lines_alpha, linewidth=spike_indcator_lines_linewidth) # plot the lines that underlie the spike points
-    axs0.set_xlim((0, curr_cell_spike_times[-1]))
+    axs0.set_xlim((np.min(curr_cell_spike_times), np.max(curr_cell_spike_times)))
 
     ## The computed placefield on the right-hand side:
     axs1 = plot_placefield_tuning_curve(active_epoch_placefields1D.ratemap.xbin_centers, curr_cell_normalized_tuning_curve, axs1, is_horizontal=True)
