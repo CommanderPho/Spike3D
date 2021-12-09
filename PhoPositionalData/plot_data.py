@@ -23,6 +23,8 @@ from matplotlib.cm import hsv
 
 import ipywidgets as widgets
 
+from PhoPositionalData.process_data import get_filtered_window
+
 
 def get_cmap(n, name='hsv'):
     '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
