@@ -9,12 +9,12 @@ from pathlib import Path
 
 from PhoGui.general_helpers import OrderedMeta, SimplePrintable
 
-
-class PlacefieldComputationParameters(SimplePrintable, metaclass=OrderedMeta):
-    def __init__(self, speed_thresh=3, grid_bin=2, smooth=2):
-        self.speed_thresh = speed_thresh
-        self.grid_bin = grid_bin
-        self.smooth = smooth   
+# refactored to neuropy.analyses.placefields
+# class PlacefieldComputationParameters(SimplePrintable, metaclass=OrderedMeta):
+#     def __init__(self, speed_thresh=3, grid_bin=2, smooth=2):
+#         self.speed_thresh = speed_thresh
+#         self.grid_bin = grid_bin
+#         self.smooth = smooth   
 
 
 class VideoOutputModeConfig(SimplePrintable):
