@@ -32,8 +32,13 @@ def _plot_helper_setup_gridlines(ax, bin_edges, bin_centers):
 
 
 # 2d Placefield comparison figure:
-def plot_1D_placecell_validation(active_epoch_placefields1D, curr_cell_id):
-    """ A cell-by-cell method of analyzing 1D placefields and the spikes that create them """
+def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_index):
+    """ A cell-by-cell method of analyzing 1D placefields and the spikes that create them 
+    
+    placefield_cell_index: an flat index into active_epoch_placefields1D.cell_ids. Must be between 0 and len(active_epoch_placefields1D.cell_ids). NOT the cell's original ID!
+    """
+    
+    curr_cell_id = active_epoch_placefields1D.cell_ids[placefield_cell_index]
     # jitter the curve_value for each spike based on the time it occured along the curve:
     jitter_multiplier = 0.05
     # feature_range = (-1, 1)
@@ -56,17 +61,16 @@ def plot_1D_placecell_validation(active_epoch_placefields1D, curr_cell_id):
     axs1.set_yticklabels([])
 
     ## The main position vs. spike curve:
-    active_epoch_placefields1D.plotRaw_v_time(curr_cell_id, ax=axs0)
+    active_epoch_placefields1D.plotRaw_v_time(placefield_cell_index, ax=axs0)
     axs0.set_title("Cell " + str(curr_cell_id), fontsize='22')
     # axs0.yaxis.grid(True, color = 'green', linestyle = '--', linewidth = 0.5)
     if should_plot_bins_grid:
         _plot_helper_setup_gridlines(axs0, active_epoch_placefields1D.ratemap.xbin, active_epoch_placefields1D.ratemap.xbin_centers)
 
     ## The individual spike lines:
-    curr_cell_spike_times = active_epoch_placefields1D.ratemap_spiketrains[curr_cell_id]  # (271,)
-    curr_cell_spike_positions = active_epoch_placefields1D.ratemap_spiketrains_pos[curr_cell_id]  # (271,)
-    curr_cell_normalized_tuning_curve = active_epoch_placefields1D.ratemap.normalized_tuning_curves[curr_cell_id, :].squeeze()
-    # print(np.shape(active_epoch_placefields1D.ratemap_spiketrains_pos[curr_cell_id])) # (271,)
+    curr_cell_spike_times = active_epoch_placefields1D.ratemap_spiketrains[placefield_cell_index]  # (271,)
+    curr_cell_spike_positions = active_epoch_placefields1D.ratemap_spiketrains_pos[placefield_cell_index]  # (271,)
+    curr_cell_normalized_tuning_curve = active_epoch_placefields1D.ratemap.normalized_tuning_curves[placefield_cell_index, :].squeeze()
 
     # Interpolate the tuning curve for all the spike values:
     curr_cell_interpolated_spike_positions = np.interp(curr_cell_spike_positions, active_epoch_placefields1D.ratemap.xbin_centers, active_epoch_placefields1D.ratemap.xbin_centers) # (271,)

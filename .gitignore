@@ -16,3 +16,4 @@ output
 .spyproject
 data/ExportedData
 *.pkl
+pf1D-*.png
