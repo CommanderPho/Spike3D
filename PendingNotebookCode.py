@@ -58,7 +58,7 @@ def process_by_good_placefields(session, active_config, active_placefields):
     ## Filter by neurons with good placefields only:
     good_placefields_session = session.get_by_id(good_placefield_neuronIDs) # Filter by good placefields only, and this fetch also ensures they're returned in the order of sorted ascending index ([ 2  3  5  7  9 12 18 21 22 23 26 27 29 34 38 45 48 53 57])
 
-    pf_sort_ind, pf_colors, pf_colormap, pf_listed_colormap = build_units_colormap(session)
+    pf_sort_ind, pf_colors, pf_colormap, pf_listed_colormap = build_units_colormap(good_placefields_session)
     active_config.plotting_config.pf_sort_ind = pf_sort_ind
     active_config.plotting_config.pf_colors = pf_colors
     active_config.plotting_config.active_cells_colormap = pf_colormap
