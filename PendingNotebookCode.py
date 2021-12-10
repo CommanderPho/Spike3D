@@ -41,6 +41,9 @@ def compute_placefields_as_needed(active_session, computation_config=None, gener
         print('skipping 2D placefield plots')
     return active_placefields1D, active_placefields2D
 
+
+
+
 ## Plotting Colors:
 def build_units_colormap(session):
     pf_sort_ind = np.array([int(i) for i in np.arange(len(session.neuron_ids))]) # convert to integer scalar array
