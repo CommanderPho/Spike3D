@@ -49,7 +49,20 @@ class PlottingConfig(SimplePrintable):
 
         self.use_age_proportional_spike_scale = use_age_proportional_spike_scale
         
+    @property
+    def figure_output_directory(self):
+        return self.active_output_parent_dir     
 
+    def get_figure_save_path(self, *args):
+        # print('get_figure_save_path(...):')
+        args_list = list(args)
+        basename = args_list.pop()
+        subdirectories = args_list
+        # print(f'\tsubdirectories: {subdirectories}\n basename: {basename}')
+        curr_parent_out_path = self.active_output_parent_dir.joinpath(*subdirectories)
+        # print(f'\t curr_parent_out_path: {curr_parent_out_path}')
+        curr_parent_out_path.mkdir(parents=True, exist_ok=True)
+        return curr_parent_out_path.joinpath(basename)        
 
 # class InteractivePlaceCellConfig:
 class InteractivePlaceCellConfig(SimplePrintable):

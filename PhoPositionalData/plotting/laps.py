@@ -14,6 +14,17 @@ from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
 import pyvista as pv
 import pyvistaqt as pvqt
 
+""" 
+from PhoPositionalData.plotting.laps import plot_lap_trajectories_2d
+# Complete Version:
+fig, axs, laps_pages = plot_lap_trajectories_2d(sess, curr_num_subplots=len(sess.laps.lap_id), active_page_index=0)
+# Paginated Version:
+fig, axs, laps_pages = plot_lap_trajectories_2d(sess, curr_num_subplots=22, active_page_index=0)
+fig, axs, laps_pages = plot_lap_trajectories_2d(sess, curr_num_subplots=22, active_page_index=1)
+
+
+
+"""
 def _plot_helper_add_arrow(line, position=None, position_mode='rel', direction='right', size=15, color=None):
     """
     add an arrow to a Matplotlib line object, such as a line2D.

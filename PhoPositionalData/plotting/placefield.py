@@ -4,6 +4,8 @@ from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import minmax_scale
 
+from PhoPositionalData.plotting.saving import save_to_multipage_pdf
+
 def plot_placefield_tuning_curve(xbin_centers, tuning_curve, ax, is_horizontal=False, color='g'):
     """ Plots the 1D Normalized Tuning Curve in a 2D Plot
     Usage:
@@ -32,39 +34,20 @@ def _plot_helper_setup_gridlines(ax, bin_edges, bin_centers):
     ax.yaxis.grid(True, which='major', color = 'grey', linewidth = 0.5) # , color = 'green', linestyle = '--', linewidth = 0.5
     ax.yaxis.grid(True, which='minor', color = 'grey', linestyle = '--', linewidth = 0.25)
 
-# Create the PdfPages object to which we will save the pages:
-# The with statement makes sure that the PdfPages object is closed properly at
-# the end of the block, even if an Exception occurs.
-def save_to_multipage_pdf(figures_list, save_file_path='multipage_pdf.pdf'):
-    num_figures_to_save = len(figures_list)
-    with PdfPages(save_file_path) as pdf:
-        print('trying to save multipage PDF of {} figures to {}...'.format(num_figures_to_save, str(save_file_path)))
-        plt.rc('text', usetex=False)
-        for a_figure in figures_list:
-            pdf.savefig(a_figure)
-            
-        # We can also set the file's metadata via the PdfPages object:
-        d = pdf.infodict()
-        d['Title'] = 'Multipage PDF Example'
-        d['Author'] = 'Pho Hale'
-        d['Subject'] = 'How to create a multipage pdf file and set its metadata'
-        d['Keywords'] = 'PdfPages multipage keywords author title subject'
-        d['CreationDate'] = datetime.datetime.today()
-        d['ModDate'] = datetime.datetime.today()
-        print('\t done.')
 
         
         
-        
 def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_save=False, modifier_string='', save_mode='separate_files'):
-    """ 
+    """ Plots a series of plots, one for each potential placecell, that allows you to see how the spiking corresponds to the animal's position/lap and how that contributes to the computed placemap
+    
     Usage:
         plot_1d_placecell_validations(active_epoch_placefields1D, should_save=True)
         plot_1d_placecell_validations(active_epoch_placefields1D, modifier_string='lap_only', should_save=False)
 
     """
-    def _filename_for_placefield(active_epoch_placefields1D, curr_cell_id):
-        return active_epoch_placefields1D.str_for_filename(is_2D=False) + '-cell_{:02d}'.format(curr_cell_id)
+    # def _filename_for_placefield(active_epoch_placefields1D, curr_cell_id):
+    #     return active_epoch_placefields1D.str_for_filename(is_2D=False) + '-cell_{:02d}'.format(curr_cell_id)
+    
     n_cells = active_placefields1D.ratemap.n_neurons
     out_figures_list = []
     
@@ -79,17 +62,28 @@ def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_
 
     # once done, save out as specified
     if should_save:
+        common_basename = active_placefields1D.str_for_filename(prefix_string=modifier_string)
         if save_mode == 'separate_files':
+            # make a subdirectory for this run (with these parameters and such)
+            curr_specific_parent_out_path = curr_parent_out_path.joinpath(common_basename)
+            curr_specific_parent_out_path.mkdir(parents=True, exist_ok=True)
+            print(f'Attempting to write {n_cells} separate figures to {str(curr_specific_parent_out_path)}')
             for i in np.arange(n_cells):
                 print('Saving figure {} of {}...'.format(i, n_cells))
                 curr_cell_id = active_placefields1D.cell_ids[i]
                 fig = out_figures_list[i]
-                curr_cell_filename = 'pf1D-' + modifier_string + _filename_for_placefield(active_placefields1D, curr_cell_id) + '.png'
-                active_pf_curr_cell_output_filepath = curr_parent_out_path.joinpath(curr_cell_filename)
+                # curr_cell_filename = 'pf1D-' + modifier_string + _filename_for_placefield(active_placefields1D, curr_cell_id) + '.png'
+                curr_cell_basename = '-'.join([common_basename, f'cell_{curr_cell_id:02d}'])
+                # add the file extension
+                curr_cell_filename = f'{curr_cell_basename}.png'
+                active_pf_curr_cell_output_filepath = curr_specific_parent_out_path.joinpath(curr_cell_filename)
                 fig.savefig(active_pf_curr_cell_output_filepath)
         elif save_mode == 'pdf':
             print('saving multipage pdf...')
-            pdf_save_path = curr_parent_out_path.joinpath('multipage_pdf.pdf')
+            curr_cell_basename = common_basename
+            # add the file extension
+            curr_cell_filename = f'{curr_cell_basename}-multipage_pdf.pdf'
+            pdf_save_path = curr_parent_out_path.joinpath(curr_cell_filename)
             save_to_multipage_pdf(out_figures_list, save_file_path=pdf_save_path)
         else:
             raise ValueError
@@ -127,7 +121,21 @@ def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_ind
 
     ## The main position vs. spike curve:
     active_epoch_placefields1D.plotRaw_v_time(placefield_cell_index, ax=axs0)
-    axs0.set_title("Cell " + str(curr_cell_id), fontsize='22')
+    
+    # f'cell_{curr_cell_id:02d}'
+    # f'Cell {curr_cell_id:02d}'
+    # title_string = ' '.join(['pf1D', f'Cell {curr_cell_id:02d}', f'{active_epoch_placefields1D.config.str_for_display(False)}'])
+    # axs0.set_title(title_string, fontsize='22')
+    
+    
+    
+    title_string = ' '.join(['pf1D', f'Cell {curr_cell_id:02d}'])
+    subtitle_string = ' '.join([f'{active_epoch_placefields1D.config.str_for_display(False)}'])
+    
+    fig.suptitle(title_string, fontsize='22')
+    axs0.set_title(subtitle_string, fontsize='16')
+    
+    
     # axs0.yaxis.grid(True, color = 'green', linestyle = '--', linewidth = 0.5)
     if should_plot_bins_grid:
         _plot_helper_setup_gridlines(axs0, active_epoch_placefields1D.ratemap.xbin, active_epoch_placefields1D.ratemap.xbin_centers)
