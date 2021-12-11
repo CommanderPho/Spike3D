@@ -1,4 +1,6 @@
+import datetime
 import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import minmax_scale
 
@@ -30,6 +32,69 @@ def _plot_helper_setup_gridlines(ax, bin_edges, bin_centers):
     ax.yaxis.grid(True, which='major', color = 'grey', linewidth = 0.5) # , color = 'green', linestyle = '--', linewidth = 0.5
     ax.yaxis.grid(True, which='minor', color = 'grey', linestyle = '--', linewidth = 0.25)
 
+# Create the PdfPages object to which we will save the pages:
+# The with statement makes sure that the PdfPages object is closed properly at
+# the end of the block, even if an Exception occurs.
+def save_to_multipage_pdf(figures_list, save_file_path='multipage_pdf.pdf'):
+    num_figures_to_save = len(figures_list)
+    with PdfPages(save_file_path) as pdf:
+        print('trying to save multipage PDF of {} figures to {}...'.format(num_figures_to_save, str(save_file_path)))
+        plt.rc('text', usetex=False)
+        for a_figure in figures_list:
+            pdf.savefig(a_figure)
+            
+        # We can also set the file's metadata via the PdfPages object:
+        d = pdf.infodict()
+        d['Title'] = 'Multipage PDF Example'
+        d['Author'] = 'Pho Hale'
+        d['Subject'] = 'How to create a multipage pdf file and set its metadata'
+        d['Keywords'] = 'PdfPages multipage keywords author title subject'
+        d['CreationDate'] = datetime.datetime.today()
+        d['ModDate'] = datetime.datetime.today()
+        print('\t done.')
+
+        
+        
+        
+def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_save=False, modifier_string='', save_mode='separate_files'):
+    """ 
+    Usage:
+        plot_1d_placecell_validations(active_epoch_placefields1D, should_save=True)
+        plot_1d_placecell_validations(active_epoch_placefields1D, modifier_string='lap_only', should_save=False)
+
+    """
+    def _filename_for_placefield(active_epoch_placefields1D, curr_cell_id):
+        return active_epoch_placefields1D.str_for_filename(is_2D=False) + '-cell_{:02d}'.format(curr_cell_id)
+    n_cells = active_placefields1D.ratemap.n_neurons
+    out_figures_list = []
+    
+    if should_save:
+        curr_parent_out_path = plotting_config.active_output_parent_dir.joinpath('1d Placecell Validation')
+        curr_parent_out_path.mkdir(parents=True, exist_ok=True)        
+        
+    for i in np.arange(n_cells):
+        curr_cell_id = active_placefields1D.cell_ids[i]
+        fig, axs = plot_1D_placecell_validation(active_placefields1D, i)
+        out_figures_list.append(fig)
+
+    # once done, save out as specified
+    if should_save:
+        if save_mode == 'separate_files':
+            for i in np.arange(n_cells):
+                print('Saving figure {} of {}...'.format(i, n_cells))
+                curr_cell_id = active_placefields1D.cell_ids[i]
+                fig = out_figures_list[i]
+                curr_cell_filename = 'pf1D-' + modifier_string + _filename_for_placefield(active_placefields1D, curr_cell_id) + '.png'
+                active_pf_curr_cell_output_filepath = curr_parent_out_path.joinpath(curr_cell_filename)
+                fig.savefig(active_pf_curr_cell_output_filepath)
+        elif save_mode == 'pdf':
+            print('saving multipage pdf...')
+            pdf_save_path = curr_parent_out_path.joinpath('multipage_pdf.pdf')
+            save_to_multipage_pdf(out_figures_list, save_file_path=pdf_save_path)
+        else:
+            raise ValueError
+        print('\t done.')
+    return out_figures_list
 
 # 2d Placefield comparison figure:
 def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_index):

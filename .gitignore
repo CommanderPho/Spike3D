@@ -17,3 +17,4 @@ output
 data/ExportedData
 *.pkl
 pf1D-*.png
+multipage_pdf.pdf
