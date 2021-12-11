@@ -176,8 +176,7 @@ def import_data_dir_with_flattened_spikes_mats(basedir = r'R:\data\KDIBA\gor01\o
             neuron_type=cell_type,
             shank_ids=shank_ids
     )
-    temp_position_traces = np.vstack((flat_spikes_out_dict['t'], flat_spikes_out_dict['x'], flat_spikes_out_dict['y'])) # (3 x Nf)
-    position_obj = Position(traces=temp_position_traces)
+    position_obj = Position.from_separate_arrays(flat_spikes_out_dict['t'], flat_spikes_out_dict['x'], flat_spikes_out_dict['y'])
     print('done.')
     return curr_Neurons_obj, position_obj
     
