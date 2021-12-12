@@ -18,3 +18,4 @@ data/ExportedData
 *.pkl
 pf1D-*.png
 multipage_pdf.pdf
+neurons_zeta_results_list.npz
