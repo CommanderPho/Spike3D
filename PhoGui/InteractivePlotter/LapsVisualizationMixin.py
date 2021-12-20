@@ -78,4 +78,4 @@ class LapsVisualizationMixin:
         line["scalars"] = np.arange(line.n_points)
         tube = line.tube(radius=0.2)
         # tube.plot(smooth_shading=True)
-        p.add_mesh(tube, name=plot_name, render_lines_as_tubes=False, show_scalar_bar=False, cmap='fire', lighting=False, render=False)
+        p.add_mesh(tube, name=plot_name, render_lines_as_tubes=False, show_scalar_bar=False, cmap='bmy', lighting=False, render=False)
