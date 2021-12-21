@@ -114,16 +114,28 @@ def _plot_helper_add_span_where_ranges(pos_t: np.ndarray, pos_where_even_lap_ind
     curr_ax.add_collection(collection)
     
 def _build_included_mask(mask_shape, crossing_beginings, crossing_endings):
+    """Builds a Boolean mask with mask_shape from the set of ranges
+
+    Args:
+        mask_shape ([type]): [description]
+        crossing_beginings ([numpy.ndarray]): [description]
+        crossing_endings ([numpy.ndarray]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     # included_mask = np.full_like(pos_df['x'], False)
     included_mask = np.full(mask_shape, False) 
     num_items = len(crossing_beginings)
+    # .astype(int)
+    
     included_index_ranges = [np.arange(crossing_beginings[i], crossing_endings[i]) for i in np.arange(num_items)]
     for aRange in included_index_ranges:
         included_mask[aRange] = True
     return included_mask, included_index_ranges
 
 
-def _plot_helper_render_laps(pos_t_rel_seconds, pos_value, crossing_beginings, crossing_midpoints, crossing_endings, color='g', ax=None):
+def _plot_helper_render_laps(pos_t_rel_seconds, pos_value, crossing_beginings, crossing_midpoints, crossing_endings, color='g', include_highlight=False, ax=None):
     """ renders a set of estimated laps with the provided settings
     Usage:
         fig, out_axes_list = plot_position_curves_figure(position_obj, include_velocity=False, include_accel=False)
@@ -146,8 +158,10 @@ def _plot_helper_render_laps(pos_t_rel_seconds, pos_value, crossing_beginings, c
     ax.add_collection(collection)
     
      # Add highlight/overlay
-    ax.scatter(pos_t_rel_seconds[curr_included_mask], pos_value[curr_included_mask], s=0.5, c=color)
-    
+    if include_highlight:
+        curr_highlight_indicies = np.where(curr_included_mask)[0]
+        ax.scatter(pos_t_rel_seconds[curr_highlight_indicies], pos_value[curr_highlight_indicies], s=0.5, c=color)
+        # ax.scatter(pos_t_rel_seconds[curr_included_mask], pos_value[curr_included_mask], s=0.5, c=color)
 
 def plot_position_curves_figure(position_obj, include_velocity=True, include_accel=False, figsize=(24, 10)):
     """ Renders a figure with a position curve and optionally its higher-order derivatives """
@@ -197,30 +211,47 @@ def plot_position_curves_figure(position_obj, include_velocity=True, include_acc
 
     
     
-def plot_laps_2d(sess):
+def plot_laps_2d(sess, legacy_plotting_mode=True):
     pos_df = sess.compute_position_laps() # ensures the laps are computed if they need to be:
     position_obj = sess.position
     position_obj.compute_higher_order_derivatives()
     pos_df = position_obj.to_dataframe()
     
-    
-    ## non-pre-filtered version, also doesn't create a duplicate dataframe:
-    pos_df_is_nonNaN_lap = np.logical_not(np.isnan(pos_df.lap))
-    pos_df_is_even_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) == 0))
-    pos_df_is_odd_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) != 0))
+    curr_laps_df = sess.laps.to_dataframe()
     
     fig, out_axes_list = plot_position_curves_figure(position_obj, include_velocity=True, include_accel=True, figsize=(24, 10))    
 
     ## Draw on top of the existing position curves with the lap colors:
-    curr_even_lap_dir_points = pos_df[pos_df_is_even_lap][['t','x']].to_numpy()
-    out_axes_list[0].scatter(curr_even_lap_dir_points[:,0], curr_even_lap_dir_points[:,1], s=0.5, c='g')
-    curr_odd_lap_dir_points = pos_df[pos_df_is_odd_lap][['t','x']].to_numpy()
-    out_axes_list[0].scatter(curr_odd_lap_dir_points[:,0], curr_odd_lap_dir_points[:,1], s=0.5, c='r')
+    if legacy_plotting_mode:
+        ## non-pre-filtered version, also doesn't create a duplicate dataframe:
+        pos_df_is_nonNaN_lap = np.logical_not(np.isnan(pos_df.lap))
+        pos_df_is_even_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) == 0))
+        pos_df_is_odd_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) != 0))
+        
+        curr_even_lap_dir_points = pos_df[pos_df_is_even_lap][['t','x']].to_numpy()
+        out_axes_list[0].scatter(curr_even_lap_dir_points[:,0], curr_even_lap_dir_points[:,1], s=0.5, c='g')
+        curr_odd_lap_dir_points = pos_df[pos_df_is_odd_lap][['t','x']].to_numpy()
+        out_axes_list[0].scatter(curr_odd_lap_dir_points[:,0], curr_odd_lap_dir_points[:,1], s=0.5, c='r')
+    
     
     ## Draw the horizontal spans for each subplot:
-    _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, out_axes_list[0])
-    _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, out_axes_list[1])
-    _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, out_axes_list[2])
+    # _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, out_axes_list[0])
+    # _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, out_axes_list[1])
+    # _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, out_axes_list[2])
+    for an_axis in out_axes_list:
+        if legacy_plotting_mode:
+            _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, an_axis)
+        else:
+            _plot_helper_render_laps(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(),
+                                curr_laps_df.loc[(curr_laps_df.lap_dir == 0), 'start_position_index'].to_numpy(),
+                                None, 
+                                curr_laps_df.loc[(curr_laps_df.lap_dir == 0),'end_position_index'].to_numpy(), color='r', include_highlight=True, ax=an_axis)
+
+            _plot_helper_render_laps(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(),
+                                    curr_laps_df.loc[(curr_laps_df.lap_dir == 1), 'start_position_index'].to_numpy(),
+                                    None, 
+                                    curr_laps_df.loc[(curr_laps_df.lap_dir == 1),'end_position_index'].to_numpy(), color='g', include_highlight=True, ax=an_axis)
+            
     
     # _plot_helper_render_lap(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(), desc_crossing_beginings, None, desc_crossing_endings, color='r', ax=out_axes_list[0])
     # _plot_helper_render_lap(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(), asc_crossing_beginings, None, asc_crossing_endings, color='g', ax=out_axes_list[0])
