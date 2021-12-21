@@ -215,6 +215,7 @@ def plot_laps_2d(sess, legacy_plotting_mode=True):
     pos_df = sess.compute_position_laps() # ensures the laps are computed if they need to be:
     position_obj = sess.position
     position_obj.compute_higher_order_derivatives()
+    pos_df = position_obj.compute_smoothed_position_info(N=20) ## Smooth the velocity curve to apply meaningful logic to it
     pos_df = position_obj.to_dataframe()
     
     curr_laps_df = sess.laps.to_dataframe()
@@ -258,7 +259,7 @@ def plot_laps_2d(sess, legacy_plotting_mode=True):
     
     out_axes_list[0].set_title('Laps')
     # fig.suptitle('Laps', fontsize=22)
-
+    return fig, out_axes_list
 
 
 def plot_lap_trajectories_3d(sess, curr_num_subplots=5, active_page_index=0):
