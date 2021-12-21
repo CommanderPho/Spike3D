@@ -6,7 +6,7 @@
 from itertools import islice # for Pagination class
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.collections import LineCollection
+from matplotlib.collections import LineCollection, BrokenBarHCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena
 from PhoGui.InteractivePlotter.LapsVisualizationMixin import LapsVisualizationMixin
@@ -95,6 +95,79 @@ def _plot_helper_add_arrow(line, position=None, position_mode='rel', direction='
         arrowprops=dict(arrowstyle="->", color=color),
         size=size
     )
+
+def _plot_helper_add_span_where_ranges(pos_t: np.ndarray, pos_where_even_lap_indicies, pos_where_odd_lap_indicies, curr_ax: plt.axes):
+    """ Span_where implementation: Draws colored spans indicating the lap that is active during a given time interval. 
+    
+    Usage Example:
+        pos_df_is_nonNaN_lap = np.logical_not(np.isnan(pos_df.lap))
+        pos_df_is_even_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) == 0))
+        pos_df_is_odd_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) != 0))
+    """
+    curr_span_ymin = curr_ax.get_ylim()[0]
+    curr_span_ymax = curr_ax.get_ylim()[1]
+    collection = BrokenBarHCollection.span_where(
+        pos_t, ymin=curr_span_ymin, ymax=curr_span_ymax, where=pos_where_even_lap_indicies, facecolor='green', alpha=0.25)
+    curr_ax.add_collection(collection)
+    collection = BrokenBarHCollection.span_where(
+        pos_t, ymin=curr_span_ymin, ymax=curr_span_ymax, where=pos_where_odd_lap_indicies, facecolor='red', alpha=0.25)
+    curr_ax.add_collection(collection)
+    
+    
+    
+def plot_laps_2d(sess):
+    position_obj = sess.position
+    position_obj.compute_higher_order_derivatives()
+    pos_df = position_obj.to_dataframe()
+    ## non-pre-filtered version, also doesn't create a duplicate dataframe:
+    pos_df_is_nonNaN_lap = np.logical_not(np.isnan(pos_df.lap))
+    pos_df_is_even_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) == 0))
+    pos_df_is_odd_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) != 0))
+    
+    figsize=(24, 10)
+    subplots=(3, 1)
+    fig = plt.figure(figsize=figsize, clear=True)
+    gs = plt.GridSpec(subplots[0], subplots[1], figure=fig, hspace=0.02)
+    # fig.subplots_adjust(hspace=0.4)
+    # position_obj = active_epoch_session.position
+
+    ax0 = fig.add_subplot(gs[0])
+    # ax0.plot(position_obj.time, position_obj.linear_pos)
+    # ax0.set_ylabel('linear_pos')
+    ax0.plot(position_obj.time, position_obj.x, 'k')
+    ax0.set_ylabel('pos_x')
+
+
+    ax1 = fig.add_subplot(gs[1])
+    ax1.plot(position_obj.time, pos_df['velocity_x'], 'k')
+    ax1.set_ylabel('Velocity_x')
+    
+    ax2 = fig.add_subplot(gs[2])
+    # ax2.plot(position_obj.time, position_obj.velocity)
+    # ax2.plot(position_obj.time, pos_df['velocity_x'])
+    ax2.plot(position_obj.time, pos_df['acceleration_x'], 'k')
+    # ax2.plot(position_obj.time, pos_df['velocity_y'])
+    ax2.set_ylabel('Higher Order Terms')
+
+    # Shared:
+    ax0.get_shared_x_axes().join(ax0, ax1, ax2)
+    ax0.set_xticklabels([])
+    ax1.set_xticklabels([])
+    ax0.set_xlim([position_obj.time[0], position_obj.time[-1]])
+    ## end plot.
+    
+    ## Draw on top of the existing position curves with the lap colors:
+    curr_even_lap_dir_points = pos_df[pos_df_is_even_lap][['t','x']].to_numpy()
+    ax0.scatter(curr_even_lap_dir_points[:,0], curr_even_lap_dir_points[:,1], s=0.5, c='g')
+    curr_odd_lap_dir_points = pos_df[pos_df_is_odd_lap][['t','x']].to_numpy()
+    ax0.scatter(curr_odd_lap_dir_points[:,0], curr_odd_lap_dir_points[:,1], s=0.5, c='r')
+
+    ## Draw the horizontal spans for each subplot:
+    _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, ax0)
+    _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, ax1)
+    _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, ax2)
+
+
 
 
 
