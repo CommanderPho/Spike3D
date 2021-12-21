@@ -20,7 +20,7 @@ def save_to_multipage_pdf(figures_list, save_file_path='multipage_pdf.pdf'):
     """
     num_figures_to_save = len(figures_list)
     with PdfPages(save_file_path) as pdf:
-        print('trying to save multipage PDF of {} figures to {}...'.format(num_figures_to_save, str(save_file_path)))
+        print('trying to save multipage PDF of {} figures to {}...'.format(num_figures_to_save, str(save_file_path)), end='')
         plt.rc('text', usetex=False)
         for a_figure in figures_list:
             pdf.savefig(a_figure)
