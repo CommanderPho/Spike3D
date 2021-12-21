@@ -116,9 +116,12 @@ def _plot_helper_add_span_where_ranges(pos_t: np.ndarray, pos_where_even_lap_ind
     
     
 def plot_laps_2d(sess):
+    pos_df = sess.compute_position_laps() # ensures the laps are computed if they need to be:
     position_obj = sess.position
     position_obj.compute_higher_order_derivatives()
     pos_df = position_obj.to_dataframe()
+    
+    
     ## non-pre-filtered version, also doesn't create a duplicate dataframe:
     pos_df_is_nonNaN_lap = np.logical_not(np.isnan(pos_df.lap))
     pos_df_is_even_lap = np.logical_and(pos_df_is_nonNaN_lap, (np.remainder(pos_df.lap, 2) == 0))
@@ -166,8 +169,8 @@ def plot_laps_2d(sess):
     _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, ax0)
     _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, ax1)
     _plot_helper_add_span_where_ranges(pos_df.t.to_numpy(), pos_df_is_even_lap, pos_df_is_odd_lap, ax2)
-
-
+    ax0.set_title('Laps')
+    # fig.suptitle('Laps', fontsize=22)
 
 
 
