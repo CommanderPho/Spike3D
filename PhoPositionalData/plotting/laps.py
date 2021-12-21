@@ -113,6 +113,81 @@ def _plot_helper_add_span_where_ranges(pos_t: np.ndarray, pos_where_even_lap_ind
         pos_t, ymin=curr_span_ymin, ymax=curr_span_ymax, where=pos_where_odd_lap_indicies, facecolor='red', alpha=0.25)
     curr_ax.add_collection(collection)
     
+def _build_included_mask(mask_shape, crossing_beginings, crossing_endings):
+    # included_mask = np.full_like(pos_df['x'], False)
+    included_mask = np.full(mask_shape, False) 
+    num_items = len(crossing_beginings)
+    included_index_ranges = [np.arange(crossing_beginings[i], crossing_endings[i]) for i in np.arange(num_items)]
+    for aRange in included_index_ranges:
+        included_mask[aRange] = True
+    return included_mask, included_index_ranges
+
+
+def _plot_helper_render_laps(pos_t_rel_seconds, pos_value, crossing_beginings, crossing_midpoints, crossing_endings, color='g', ax=None):
+    """ renders a set of estimated laps with the provided settings
+    Usage:
+        fig, out_axes_list = plot_position_curves_figure(position_obj, include_velocity=False, include_accel=False)
+        _plot_helper_render_lap(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(), desc_crossing_beginings, desc_crossing_midpoints, desc_crossing_endings, color='r', ax=out_axes_list[0])
+        _plot_helper_render_lap(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(), asc_crossing_beginings, asc_crossing_midpoints, asc_crossing_endings, color='g', ax=out_axes_list[0])
+    """
+    if ax is None:
+        ax = plt.gca()
+    # Plots the computed midpoint center-crossing for each lap. This is the basis of the calculation initially.
+    ax.scatter(pos_t_rel_seconds[crossing_midpoints], pos_value[crossing_midpoints], s=15, c=color)    
+    # Plots the concrete vertical lines denoting the start/end of each lap
+    ax.vlines(pos_t_rel_seconds[crossing_beginings], 0, 1, transform=ax.get_xaxis_transform(), colors=color)
+    ax.vlines(pos_t_rel_seconds[crossing_endings], 0, 1, transform=ax.get_xaxis_transform(), colors=color)
+    # Plot the ranges for the ascending and descending laps:
+    curr_included_mask, curr_included_index_ranges = _build_included_mask(np.shape(pos_value), crossing_beginings, crossing_endings)
+    collection = BrokenBarHCollection.span_where(pos_t_rel_seconds, ymin=0, ymax=1, transform=ax.get_xaxis_transform(), where=curr_included_mask, facecolor=color, alpha=0.35)
+    ax.add_collection(collection)
+
+def plot_position_curves_figure(position_obj, include_velocity=True, include_accel=False, figsize=(24, 10)):
+    """ Renders a figure with a position curve and optionally its higher-order derivatives """
+    num_subplots = 1
+    out_axes_list = []
+    if include_velocity:
+        num_subplots = num_subplots + 1
+    if include_accel:
+        num_subplots = num_subplots + 1
+    subplots=(num_subplots, 1)
+    fig = plt.figure(figsize=figsize, clear=True)
+    gs = plt.GridSpec(subplots[0], subplots[1], figure=fig, hspace=0.02)
+    
+    ax0 = fig.add_subplot(gs[0])
+    ax0.plot(position_obj.time, position_obj.x, 'k')
+    ax0.set_ylabel('pos_x')
+    out_axes_list.append(ax0)
+    
+    if include_velocity:
+        ax1 = fig.add_subplot(gs[1])
+        # ax1.plot(position_obj.time, pos_df['velocity_x'], 'grey')
+        # ax1.plot(position_obj.time, pos_df['velocity_x_smooth'], 'r')
+        ax1.plot(position_obj.time, position_obj._data['velocity_x_smooth'], 'k')
+        ax1.set_ylabel('Velocity_x')
+        ax0.set_xticklabels([]) # this is intensionally ax[i-1], as we want to disable the tick labels on above plots        
+        out_axes_list.append(ax1)
+
+    if include_accel:  
+        ax2 = fig.add_subplot(gs[2])
+        # ax2.plot(position_obj.time, position_obj.velocity)
+        # ax2.plot(position_obj.time, pos_df['velocity_x'])
+        ax2.plot(position_obj.time, position_obj._data['acceleration_x'], 'k')
+        # ax2.plot(position_obj.time, pos_df['velocity_y'])
+        ax2.set_ylabel('Higher Order Terms')
+        ax1.set_xticklabels([]) # this is intensionally ax[i-1], as we want to disable the tick labels on above plots
+        out_axes_list.append(ax2)
+    
+    # Shared:
+    # ax0.get_shared_x_axes().join(ax0, ax1)
+    ax0.get_shared_x_axes().join(*out_axes_list)
+    ax0.set_xticklabels([])
+    ax0.set_xlim([position_obj.time[0], position_obj.time[-1]])
+
+    return fig, out_axes_list
+
+    
+
     
     
 def plot_laps_2d(sess):
