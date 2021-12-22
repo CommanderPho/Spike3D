@@ -5,6 +5,7 @@
 
 
 """
+from copy import deepcopy
 import numpy as np
 import pandas as pd
 import pyvista as pv
@@ -34,9 +35,11 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
 
     def __init__(self, active_config, active_session, active_epoch_placefields, pf_colors, extant_plotter=None):
         super(InteractivePlaceCellTuningCurvesDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='TuningMapDataExplorer')
-        self.params.active_epoch_placefields = active_epoch_placefields
-        self.params.pf_colors = pf_colors
+        self.params.active_epoch_placefields = deepcopy(active_epoch_placefields)
+        self.params.pf_colors = deepcopy(pf_colors)
         self.gui = dict()
+        
+        self.use_unit_id_as_cell_id = False # if False, uses the normal 'aclu' value as the cell id (which I think is correct)
         
         self._setup()
 
@@ -44,19 +47,22 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
     def _setup_variables(self):
         num_cells, spike_list, self.params.cell_ids, self.params.flattened_spike_identities, self.params.flattened_spike_times, flattened_sort_indicies, t_start, self.params.reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
         ## Ensure we have the 'unit_id' property
-        try:
-            test = self.active_session.spikes_df['unit_id']
-        except KeyError as e:
-            # build the valid key:
-            self.active_session.spikes_df['unit_id'] = np.array([int(self.active_session.neurons.reverse_cellID_index_map[original_cellID]) for original_cellID in self.active_session.spikes_df['aclu'].values])
-        
+        if self.use_unit_id_as_cell_id:
+            try:
+                test = self.active_session.spikes_df['unit_id']
+            except KeyError as e:
+                # build the valid key:
+                self.active_session.spikes_df['unit_id'] = np.array([int(self.active_session.neurons.reverse_cellID_index_map[original_cellID]) for original_cellID in self.active_session.spikes_df['aclu'].values])
+        else:
+            assert ('aclu' in self.active_session.spikes_df.columns), "self.active_session.spikes_df must contain the 'aclu' column! Something is wrong!"     
+
 
     def _setup_visualization(self): 
         self.params.debug_disable_all_gui_controls = True
         
         self.params.enable_placefield_aligned_spikes = True # If True, the spikes are aligned to the z-position of their respective place field, so they visually sit on top of the placefield surface
         # self.params.zScalingFactor = 10.0
-        self.params.zScalingFactor = 1.0
+        self.params.zScalingFactor = 10.0
         
         self.params.use_mutually_exclusive_placefield_checkboxes = True       
         self.params.show_legend = True
