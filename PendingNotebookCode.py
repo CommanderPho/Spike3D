@@ -13,8 +13,10 @@ from PhoPositionalData.analysis.interactive_placeCell_config import print_subses
 
 from neuropy.core import Laps
 
-from neuropy.analyses import perform_compute_placefields
+# from neuropy.analyses import perform_compute_placefields
 from neuropy.analyses.placefields import PlacefieldComputationParameters
+from neuropy.analyses.pho_custom_placefields import PfND
+
 from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
 
 from neuropy.plotting.spikes import get_neuron_colors
@@ -38,6 +40,51 @@ def debug_print_spike_counts(session):
     print(len(uniques)) # 69 
     
     
+
+def perform_compute_placefields(active_session_spikes_df, active_pos, computation_config: PlacefieldComputationParameters, active_epoch_placefields1D=None, active_epoch_placefields2D=None, included_epochs=None, should_force_recompute_placefields=True):
+    """ Computes both 1D and 2D placefields.
+    active_epoch_session_Neurons: 
+    active_epoch_pos: a Position object
+    included_epochs: a Epoch object to filter with, only included epochs are included in the PF calculations
+    active_epoch_placefields1D (Pf1D, optional) & active_epoch_placefields2D (Pf2D, optional): allow you to pass already computed Pf1D and Pf2D objects from previous runs and it won't recompute them so long as should_force_recompute_placefields=False, which is useful in interactive Notebooks/scripts
+    Usage:
+        active_epoch_placefields1D, active_epoch_placefields2D = perform_compute_placefields(active_epoch_session_Neurons, active_epoch_pos, active_epoch_placefields1D, active_epoch_placefields2D, active_config.computation_config, should_force_recompute_placefields=True)
+    """
+    ## Linearized (1D) Position Placefields:
+    if ((active_epoch_placefields1D is None) or should_force_recompute_placefields):
+        print('Recomputing active_epoch_placefields...', end=' ')
+        # active_epoch_placefields1D = Pf1D(neurons=active_session_Neurons, position=deepcopy(active_pos.linear_pos_obj), epochs=included_epochs,
+        #                                   speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
+        #                                   grid_bin=computation_config.grid_bin_1D, smooth=computation_config.smooth_1D)
+        # PfND version:
+        active_epoch_placefields1D = PfND(deepcopy(active_session_spikes_df), deepcopy(active_pos.linear_pos_obj), epochs=included_epochs,
+                                          speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
+                                          grid_bin=computation_config.grid_bin, smooth=computation_config.smooth)
+
+        print('\t done.')
+    else:
+        print('active_epoch_placefields1D already exists, reusing it.')
+
+    ## 2D Position Placemaps:
+    if ((active_epoch_placefields2D is None) or should_force_recompute_placefields):
+        print('Recomputing active_epoch_placefields2D...', end=' ')
+        # active_epoch_placefields2D = Pf2D(neurons=active_session_Neurons, position=deepcopy(active_pos), epochs=included_epochs,
+        #                                   speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
+        #                                   grid_bin=computation_config.grid_bin, smooth=computation_config.smooth)
+        # PfND version:
+        active_epoch_placefields2D = PfND(deepcopy(active_session_spikes_df), deepcopy(active_pos), epochs=included_epochs,
+                                          speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
+                                          grid_bin=computation_config.grid_bin, smooth=computation_config.smooth)
+
+        print('\t done.')
+    else:
+        print('active_epoch_placefields2D already exists, reusing it.')
+    
+    return active_epoch_placefields1D, active_epoch_placefields2D
+
+
+
+
 def compute_placefields_as_needed(active_session, computation_config=None, general_config: InteractivePlaceCellConfig=None, active_placefields1D = None, active_placefields2D = None, included_epochs=None, should_force_recompute_placefields=False, should_display_2D_plots=False):
     if computation_config is None:
         computation_config = PlacefieldComputationParameters(speed_thresh=9, grid_bin=2, smooth=0.5)
