@@ -80,6 +80,7 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
     
     if 'z' in active_flat_df.columns:
         # use custom override z-values
+        print('build_active_spikes_plot_pointdata_df(...): Found custom z column! Using Data!!')
         assert np.shape(active_flat_df['z']) == np.shape(active_flat_df['x']), "custom z values must be the same shape as the x column"
         spike_history_point_cloud = active_flat_df[['x','y','z']].to_numpy()
     else:
