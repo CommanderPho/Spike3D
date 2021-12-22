@@ -75,9 +75,18 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
     # spike_series_times = active_flattened_spike_times # currently unused
     # spike_series_identities = active_flat_df['unit_id'] # currently unused
     # z = np.zeros_like(spike_series_positions[0,:])
-    active_flat_df['z_fixed'] = np.full_like(active_flat_df['x'].values, 1.1) # Offset a little bit in the z-direction so we can see it
+    
     # spike_history_point_cloud = np.vstack((active_flat_df['x'].values, active_flat_df['y'].values, active_flat_df['z_fixed'].values)).T    
-    spike_history_point_cloud = active_flat_df[['x','y','z_fixed']].to_numpy()
+    
+    if 'z' in active_flat_df.columns:
+        # use custom override z-values
+        assert np.shape(active_flat_df['z']) == np.shape(active_flat_df['x']), "custom z values must be the same shape as the x column"
+        spike_history_point_cloud = active_flat_df[['x','y','z']].to_numpy()
+    else:
+        # no provided custom z value
+        active_flat_df['z_fixed'] = np.full_like(active_flat_df['x'].values, 1.1) # Offset a little bit in the z-direction so we can see it
+        spike_history_point_cloud = active_flat_df[['x','y','z_fixed']].to_numpy()
+        
     ## Old way:
     # spike_series_positions = active_flattened_spike_positions_list
     # z_fixed = np.full_like(spike_series_positions[0,:], 1.1) # Offset a little bit in the z-direction so we can see it

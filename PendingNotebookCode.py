@@ -101,12 +101,14 @@ def compute_placefields_as_needed(active_session, computation_config=None, gener
 
 
 ## Plotting Colors:
-def build_units_colormap(session):
-    pf_sort_ind = np.array([int(i) for i in np.arange(len(session.neuron_ids))]) # convert to integer scalar array
+def build_units_colormap(neuron_ids):
+    pf_sort_ind = np.array([int(i) for i in np.arange(len(neuron_ids))]) # convert to integer scalar array
     pf_colors = get_neuron_colors(pf_sort_ind) # [4 x n_neurons]: colors are by ascending index ID
     pf_colormap = pf_colors.T # [n_neurons x 4] Make the colormap from the listed colors, used seemingly only by 'runAnalysis_PCAandICA(...)'
     pf_listed_colormap = ListedColormap(pf_colormap)
     return pf_sort_ind, pf_colors, pf_colormap, pf_listed_colormap
+
+
 
 def process_by_good_placefields(session, active_config, active_placefields):
     """  Filters the session by the units in active_placefields that have good placefields and return an updated session. Also adds generated colors for each good unit to active_config """
@@ -117,7 +119,7 @@ def process_by_good_placefields(session, active_config, active_placefields):
     ## Filter by neurons with good placefields only:
     good_placefields_session = session.get_by_id(good_placefield_neuronIDs) # Filter by good placefields only, and this fetch also ensures they're returned in the order of sorted ascending index ([ 2  3  5  7  9 12 18 21 22 23 26 27 29 34 38 45 48 53 57])
 
-    pf_sort_ind, pf_colors, pf_colormap, pf_listed_colormap = build_units_colormap(good_placefields_session)
+    pf_sort_ind, pf_colors, pf_colormap, pf_listed_colormap = build_units_colormap(good_placefield_neuronIDs)
     active_config.plotting_config.pf_sort_ind = pf_sort_ind
     active_config.plotting_config.pf_colors = pf_colors
     active_config.plotting_config.active_cells_colormap = pf_colormap
