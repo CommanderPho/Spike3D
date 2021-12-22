@@ -27,8 +27,63 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 
 from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
 
+
+class CellIDAccessingMixin:
+    @property
+    def cell_ids(self):
+        """ e.g. return np.array(active_epoch_placefields2D.cell_ids) """
+        raise NotImplementedError
+    
+    def get_cell_id_and_idx(self, cell_i=None, cell_id=None):
+        assert (cell_i is not None) or (cell_id is not None), "You must specify either cell_i or cell_id, and the other will be returned"
+        if cell_i is not None:
+            cell_i = int(cell_i)
+            cell_id = self.cell_ids[cell_i]
+        elif cell_id is not None:
+            cell_id = int(cell_id)
+            cell_i = np.where(self.cell_ids == cell_id)[0].item()
+        # print(f'cell_i: {cell_i}, cell_id: {cell_id}')
+        return cell_i, cell_id
+
+
+class HideShowSpikeRenderingMixin:
+    def update_active_spikes(self, spike_opacity_mask):
+        """ 
+        Usage: 
+            included_cell_ids = [48, 61]
+            
+            ipcDataExplorer.update_active_spikes(np.isin(ipcDataExplorer.active_session.spikes_df['aclu'], included_cell_ids)) # actives only the spikes that have aclu values (cell ids) in the included_cell_ids array.
+        """
+        assert np.shape(self.active_session.spikes_df['render_opacity']) == np.shape(spike_opacity_mask), "spike_opacity_mask must have one value for every spike in self.active_session.spikes_df, specifying its opacity"
+        self.active_session.spikes_df['render_opacity'] = spike_opacity_mask
+        self.update_spikes()
+        
+class HideShowPlacefieldsRenderingMixin(CellIDAccessingMixin):
+    def update_active_placefields(self, placefield_indicies):
+        """ 
+        Usage: 
+            included_cell_ids = [48, 61]
+            included_cell_INDEXES = [ipcDataExplorer.get_cell_id_and_idx(cell_id=an_included_cell_ID)[0] for an_included_cell_ID in included_cell_ids] # get the indexes from the cellIDs
+            ipcDataExplorer.update_active_placefields(included_cell_INDEXES) # actives only the placefields that have aclu values (cell ids) in the included_cell_ids array.
+        """
+        self._hide_all_tuning_curves() # hide all tuning curves to begin with (for a fresh slate)
+        for a_pf_idx in placefield_indicies:
+            self._show_tuning_curve(a_pf_idx)
+        
+    def _hide_all_tuning_curves(self):
+        # Works to hide all turning curve plots:
+        for aTuningCurveActor in self.plots['tuningCurvePlotActors']:
+            aTuningCurveActor.SetVisibility(0)
+            
+    def _show_tuning_curve(self, show_index):
+        # Works to show the specified tuning curve plots:
+        self.plots['tuningCurvePlotActors'][show_index].SetVisibility(1)
+
+
+        
+        
 # needs perform_plot_flat_arena
-class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase): 
+class InteractivePlaceCellTuningCurvesDataExplorer(HideShowPlacefieldsRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
     """[summary]
     """
     show_legend = True
@@ -43,6 +98,12 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         
         self._setup()
 
+    # from CellIDAccessingMixin
+    @property
+    def cell_ids(self):
+        """ e.g. the list of valid cell_ids (unique aclu values) """
+        return np.array(self.params.cell_ids) 
+    
     
     def _setup_variables(self):
         num_cells, spike_list, self.params.cell_ids, self.params.flattened_spike_identities, self.params.flattened_spike_times, flattened_sort_indicies, t_start, self.params.reverse_cellID_idx_lookup_map, t, x, y, linear_pos, speeds, self.params.flattened_spike_positions_list = InteractiveDataExplorerBase._unpack_variables(self.active_session)
@@ -160,7 +221,6 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         self.plots_data['spikes_pf_active']['historical_spikes_pc'] = self.plots_data['spikes_pf_active']['historical_spikes_pdata'].glyph(scale=False, geom=spike_geom_cone.copy()) 
         # spike_history_pdata['render_opacity'] = active_flat_df['render_opacity'].values
         
-        
         if self.plots_data['spikes_pf_active']['historical_spikes_pc'].n_points >= 1:
             # self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
             self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, opacity='render_opacity', show_scalar_bar=False, lighting=True, render=False)
@@ -273,16 +333,6 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
     #     return mesh
     
     
-    def _hide_all_tuning_curves(self):
-        # Works to hide all turning curve plots:
-        for aTuningCurveActor in self.plots['tuningCurvePlotActors']:
-            aTuningCurveActor.SetVisibility(0)
-            
-    def _show_tuning_curve(self, show_index):
-        # Works to show the specified tuning curve plots:
-        self.plots['tuningCurvePlotActors'][show_index].SetVisibility(1)
-
-
 
     
     def _update_placefield_spike_visibility(self, active_cell_local_index, invert=True):
@@ -328,3 +378,6 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
 
         if needs_render:
             self.p.update()
+            
+            
+            

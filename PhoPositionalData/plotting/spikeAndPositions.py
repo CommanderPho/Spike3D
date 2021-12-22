@@ -180,9 +180,8 @@ def force_plot_ignore_scalar_as_color(plot_mesh_actor, lookup_table):
 
 def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray, zScalingFactor=10.0, show_legend=False):
     """ Plots 2D Placefields in a 3D PyVista plot """
-    # active_placefields: Pf2D
-    
-    should_force_placefield_custom_color = False
+    # active_placefields: Pf2D    
+    should_force_placefield_custom_color = True
     should_use_normalized_tuning_curves = False
     should_pdf_normalize_manually = False
     
