@@ -95,7 +95,14 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
     spike_history_pdata = pv.PolyData(spike_history_point_cloud)
     # spike_history_pdata['times'] = spike_series_times
     # spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
-    spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
+    # spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
+    spike_history_pdata['cellID'] = active_flat_df['aclu'].values
+    
+    if 'render_opacity' in active_flat_df.columns:
+        spike_history_pdata['render_opacity'] = active_flat_df['render_opacity'].values
+    else:
+        print('no custom render_opacity set on dataframe.')
+        
     return spike_history_pdata
 
 

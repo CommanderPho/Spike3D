@@ -49,6 +49,8 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         
 
     def _setup_visualization(self): 
+        self.params.debug_disable_all_gui_controls = True
+        
         self.params.use_mutually_exclusive_placefield_checkboxes = True       
         self.params.show_legend = True
         
@@ -85,7 +87,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
         if historical_spikes_pc.n_points >= 1:
             # self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
-            self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False)
+            self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, opacity='render_opacity', show_scalar_bar=False, lighting=False, render=False)
             needs_render = True
         else:
             # self.plots['spikes_pf_active'] = self.p.add_mesh(
@@ -103,17 +105,46 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         # Adds a list of toggle checkboxe widgets to turn on and off each placemap
         # self.setup_visibility_checkboxes(self.plots['tuningCurvePlotActors'])
         
-        # build the visibility callbacks that will be used to update the meshes from the UI elements:
-        self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'] = self.__build_callbacks(self.plots['tuningCurvePlotActors'])
-        
-        if self.params.use_unit_id_slider_instead_of_checkboxes:
-            # use the discrete slider widget instead of the checkboxes
-            self.__setup_visibility_slider_widget()
+        if not self.params.debug_disable_all_gui_controls:
+            # build the visibility callbacks that will be used to update the meshes from the UI elements:
+            self.gui['tuningCurveCombinedAllPlotActorsVisibilityCallbacks'] = self.__build_callbacks(self.plots['tuningCurvePlotActors'])
+            
+            if self.params.use_unit_id_slider_instead_of_checkboxes:
+                # use the discrete slider widget instead of the checkboxes
+                self.__setup_visibility_slider_widget()
+            else:
+                # checkbox mode for unit ID selection: 
+                self.__setup_visibility_checkboxes()
         else:
-             # checkbox mode for unit ID selection: 
-            self.__setup_visibility_checkboxes()
+            print('self.params.debug_disable_all_gui_controls is True, so no gui controls will be built.')
         
         return self.p
+    
+    
+    def update_spikes(self):
+        """ Called to programmatically update the rendered spikes by replotting after changing their visibility/opacity/postion/etc """
+        # full rebuild (to be safe):
+        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df, spike_geom=spike_geom_cone.copy())
+        self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
+        
+        # Update just the values that could change:
+        self.plots_data['spikes_pf_active']['historical_spikes_pdata']['render_opacity'] = self.active_session.spikes_df['render_opacity'].values
+        # ?? Is this rebuild needed after updating the pdata to see the changes in the pc_data (which is what is actually plotted)???
+        self.plots_data['spikes_pf_active']['historical_spikes_pc'] = self.plots_data['spikes_pf_active']['historical_spikes_pdata'].glyph(scale=False, geom=spike_geom_cone.copy()) 
+        # spike_history_pdata['render_opacity'] = active_flat_df['render_opacity'].values
+        
+        
+        if self.plots_data['spikes_pf_active']['historical_spikes_pc'].n_points >= 1:
+            # self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+            self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, opacity='render_opacity', show_scalar_bar=False, lighting=False, render=False)
+            needs_render = True
+        else:
+            # self.plots['spikes_pf_active'] = self.p.add_mesh(
+            self.p.remove_actor(self.plots['spikes_pf_active'])
+            needs_render = True
+
+        if needs_render:
+            self.p.render()
     
     def __build_callbacks(self, tuningCurvePlotActors):
         combined_active_pf_update_callbacks = []
