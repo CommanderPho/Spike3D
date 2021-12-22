@@ -92,7 +92,7 @@ def compute_placefields_as_needed(active_session, computation_config=None, gener
     active_placefields1D, active_placefields2D = perform_compute_placefields(active_session.spikes_df, active_session.position, computation_config, active_placefields1D, active_placefields2D, included_epochs=included_epochs, should_force_recompute_placefields=True)
     # Plot the placefields computed and save them out to files:
     if should_display_2D_plots:
-        ax_pf_1D, occupancy_fig, active_pf_2D_figures = plot_all_placefields(active_placefields1D, active_placefields2D, general_config)
+        ax_pf_1D, occupancy_fig, active_pf_2D_figures, active_pf_2D_gs = plot_all_placefields(active_placefields1D, active_placefields2D, general_config)
     else:
         print('skipping 2D placefield plots')
     return active_placefields1D, active_placefields2D
