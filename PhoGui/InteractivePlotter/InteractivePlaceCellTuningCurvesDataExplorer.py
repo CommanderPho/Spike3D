@@ -10,6 +10,9 @@ import pandas as pd
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 from matplotlib.colors import ListedColormap
+
+from scipy.interpolate import RectBivariateSpline # for 2D spline interpolation
+
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
@@ -51,11 +54,24 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
     def _setup_visualization(self): 
         self.params.debug_disable_all_gui_controls = True
         
+        self.params.enable_placefield_aligned_spikes = True # If True, the spikes are aligned to the z-position of their respective place field, so they visually sit on top of the placefield surface
+        
         self.params.use_mutually_exclusive_placefield_checkboxes = True       
         self.params.show_legend = True
         
         # self.params.use_unit_id_slider_instead_of_checkboxes = True
         self.params.use_unit_id_slider_instead_of_checkboxes = False
+    
+        self.params.use_dynamic_spike_opacity_for_hiding = True
+        
+        if self.params.use_dynamic_spike_opacity_for_hiding:
+            self.active_session.spikes_df['render_opacity'] = 0.0 # Initialize all spikes to 0.0 opacity, meaning they won't be rendered.
+    
+        if self.params.enable_placefield_aligned_spikes:
+            # compute the spike z-positions from the placefield2D objects if that option is selected.
+            # self._compute_z_position_spike_offsets()
+            # self._compute_z_position_spike_offsets()
+            pass
     
     
     @property
@@ -77,6 +93,9 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         ## TODO: For these, we actually want the placefield value as the Z-positions, will need to unwrap them or something (maybe .ravel(...)?)
         ## TODO: also need to add in the checkbox functionality to hide/show only the spikes for the highlighted units
         # .threshold().elevation()
+        
+        # hide the tuning curves automatically on startup (they don't render correctly anyway):
+        self._hide_all_tuning_curves()
         
         # active_spike_index = 4
         # active_included_place_cell_spikes_indicies = self.active_session.spikes_df.eval('(unit_id == @active_spike_index)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
@@ -178,6 +197,27 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         interactive_plotter = PhoInteractivePlotter(pyvista_plotter=self.p, interactive_timestamp_slider_actor=self.gui['interactive_unitID_slider_actor'])
         
         
+    def _compute_z_position_spike_offsets(self):
+        ## Potentially successfully implemented the z-interpolation!!!: 2D interpolation where the (x,y) point of each spike is evaluated to determine the Z-position it would correspond to on the pf map.
+        # _spike_pf_heights_2D_splineAproximator = [RectBivariateSpline(active_epoch_placefields2D.ratemap.xbin_centers, active_epoch_placefields2D.ratemap.ybin_centers, active_epoch_placefields2D.ratemap.normalized_tuning_curves[i]) for i in np.arange(active_epoch_placefields2D.ratemap.n_neurons)] 
+        
+        _spike_pf_heights_2D_splineAproximator = [RectBivariateSpline(self.params.active_epoch_placefields.ratemap.xbin_centers, self.params.active_epoch_placefields.ratemap.ybin_centers, self.params.active_epoch_placefields.ratemap.tuning_curves[i]) for i in np.arange(self.params.active_epoch_placefields.ratemap.n_neurons)] 
+        # active_epoch_placefields2D.spk_pos[i][0] and active_epoch_placefields2D.spk_pos[i][1] seem to successfully get the x and y data for the spike_pos[i]
+        spike_pf_heights_2D = [_spike_pf_heights_2D_splineAproximator[i](self.params.active_epoch_placefields.spk_pos[i][0], self.params.active_epoch_placefields.spk_pos[i][1], grid=False) for i in np.arange(self.params.active_epoch_placefields.ratemap.n_neurons)] # the appropriately interpolated values for where the spikes should be on the tuning_curve
+
+        # Attempt to set the spike heights:
+        # Add a custom z override for the spikes but with the default value so nothing is changed:
+        self.active_session.spikes_df['z'] = np.full_like(self.active_session.spikes_df['x'].values, 1.1) # Offset a little bit in the z-direction so we can see it
+
+        for i in np.arange(self.params.active_epoch_placefields.ratemap.n_neurons):
+            curr_cell_id = self.params.active_epoch_placefields.cell_ids[i]
+            # set the z values for the current cell index to the heights offset for that cell:
+            self.active_session.spikes_df.loc[(self.active_session.spikes_df.aclu == curr_cell_id), 'z'] = spike_pf_heights_2D[i] # Set the spike heights to the appropriate z value
+
+        # when finished, self.active_session.spikes_df is modified with the updated 'z' values
+
+
+
     # def rough_add_spikes(self, sesssion):
         
     #     active_included_recent_only_indicies = ((flattened_spike_times > recent_spikes_t_start) & (flattened_spike_times < t_stop)) # Two Sided Range Mode
@@ -213,17 +253,29 @@ class InteractivePlaceCellTuningCurvesDataExplorer(InteractiveDataExplorerBase):
         """ Gets the cell's original ID from the local index into the neuron/cell array. Inverse of get_cell_local_index(...)  """
         return np.array([self.active_session.neurons.neuron_ids[a_local_idx] for a_local_idx in cell_local_indicies])
             
-    def hide_placefield_spikes(self, active_original_cell_unit_ids, should_invert=True):
-        # print('hide_placefield_spikes(active_index: {}, should_invert: {})'.format(active_original_cell_unit_ids, should_invert))
-        mesh = self.plots_data['spikes_pf_active']['historical_spikes_pc'].cast_to_unstructured_grid()
-        num_mesh_cells = mesh.n_cells
-        ghosts = np.argwhere(np.isin(mesh["cellID"], active_original_cell_unit_ids, invert=should_invert))
-        num_ghosts = len(ghosts)
-        # print('\t num_mesh_cells: {}, num_ghosts: {}'.format(num_mesh_cells, num_ghosts))
-        # This will act on the mesh inplace to mark those cell indices as ghosts
-        mesh.remove_cells(ghosts)
-        return mesh
+    # def hide_placefield_spikes(self, active_original_cell_unit_ids, should_invert=True):
+    #     # print('hide_placefield_spikes(active_index: {}, should_invert: {})'.format(active_original_cell_unit_ids, should_invert))
+    #     mesh = self.plots_data['spikes_pf_active']['historical_spikes_pc'].cast_to_unstructured_grid()
+    #     num_mesh_cells = mesh.n_cells
+    #     ghosts = np.argwhere(np.isin(mesh["cellID"], active_original_cell_unit_ids, invert=should_invert))
+    #     num_ghosts = len(ghosts)
+    #     # print('\t num_mesh_cells: {}, num_ghosts: {}'.format(num_mesh_cells, num_ghosts))
+    #     # This will act on the mesh inplace to mark those cell indices as ghosts
+    #     mesh.remove_cells(ghosts)
+    #     return mesh
     
+    
+    def _hide_all_tuning_curves(self):
+        # Works to hide all turning curve plots:
+        for aTuningCurveActor in self.plots['tuningCurvePlotActors']:
+            aTuningCurveActor.SetVisibility(0)
+            
+    def _show_tuning_curve(self, show_index):
+        # Works to show the specified tuning curve plots:
+        self.plots['tuningCurvePlotActors'][show_index].SetVisibility(1)
+
+
+
     
     def _update_placefield_spike_visibility(self, active_cell_local_index, invert=True):
         # print('_update_placefield_spike_visibility(active_cell_local_index: {}, invert: {})'.format(active_cell_local_index, invert))
