@@ -56,7 +56,8 @@ def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
     def __build_flat_map_plot_data(x, y):
         # Builds the flat base maze map that the other data will be plot on top of
         ## Implicitly relies on: x, y
-        z = np.zeros_like(x)
+        # z = np.zeros_like(x)
+        z = np.full_like(x, -0.01) # offset just slightly in the z direction to account for the thickness of the caps that are added upon extrude
         point_cloud = np.vstack((x, y, z)).T
         pdata = pv.PolyData(point_cloud)
         pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
@@ -64,7 +65,8 @@ def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
         # pc = pdata.glyph(scale=False, geom=geo)
         surf = pdata.delaunay_2d()
         surf = surf.extrude([0,0,-5], capping=True, inplace=True)
-        return pdata, surf
+        clipped_surf = surf.clip('-z', invert=False)
+        return pdata, clipped_surf
 
     pdata_maze, pc_maze = __build_flat_map_plot_data(x, y)
     # return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", show_edges=False, render=True)
@@ -182,16 +184,16 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     """ Plots 2D Placefields in a 3D PyVista plot """
     # active_placefields: Pf2D    
     should_force_placefield_custom_color = True
-    should_use_normalized_tuning_curves = False
+    should_use_normalized_tuning_curves = True
     should_pdf_normalize_manually = False
     
     if should_use_normalized_tuning_curves:
-        curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves
+        curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves.copy()
     else:
-        curr_tuning_curves = active_placefields.ratemap.tuning_curves
+        curr_tuning_curves = active_placefields.ratemap.tuning_curves.copy()
 
     # curr_tuning_curves[curr_tuning_curves < 0.1] = np.nan
-    curr_tuning_curves = curr_tuning_curves * zScalingFactor
+    # curr_tuning_curves = curr_tuning_curves * zScalingFactor
     
     num_curr_tuning_curves = len(curr_tuning_curves)
     # Get the cell IDs that have a good place field mapping:
@@ -202,7 +204,6 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     tuningCurvePlotActors = []
     tuningCurvePlotData = []
     for i in np.arange(num_curr_tuning_curves):
-    # for i in [1]:
         curr_active_neuron_ID = good_placefield_neuronIDs[i]
         curr_active_neuron_color = pf_colors[:, i]
         curr_active_neuron_pf_identifier = 'pf[{}]'.format(curr_active_neuron_ID)
@@ -211,10 +212,12 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
         if should_pdf_normalize_manually:
             # Normalize the area under the curve to 1.0 (like a probability density function)
             curr_active_neuron_tuning_Curve = curr_active_neuron_tuning_Curve / np.nansum(curr_active_neuron_tuning_Curve)
+            
+        curr_active_neuron_tuning_Curve = curr_active_neuron_tuning_Curve * zScalingFactor
         
         # curr_active_neuron_tuning_Curve[curr_active_neuron_tuning_Curve < 0.1] = np.nan
         pdata_currActiveNeuronTuningCurve = pv.StructuredGrid(tuningCurvePlot_x, tuningCurvePlot_y, curr_active_neuron_tuning_Curve)
-        pdata_currActiveNeuronTuningCurve["Elevation"] = curr_active_neuron_tuning_Curve.ravel(order="F")
+        pdata_currActiveNeuronTuningCurve["Elevation"] = (curr_active_neuron_tuning_Curve.ravel(order="F") * zScalingFactor)
         
         curr_active_neuron_plot_data = {'curr_active_neuron_ID':curr_active_neuron_ID,
                                          'curr_active_neuron_pf_identifier':curr_active_neuron_pf_identifier,
@@ -233,15 +236,22 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
             curr_opacity = None
             curr_smooth_shading = False
             
+        # curr_opacity = None
+        # curr_smooth_shading = False
+        
         pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier,
-                                                                            show_edges=False, nan_opacity=0.0, scalars='Elevation', opacity=curr_opacity, use_transparency=False, smooth_shading=curr_smooth_shading, show_scalar_bar=False, render=False)                                                                     
+                                                                            show_edges=True, edge_color=curr_active_neuron_color, nan_opacity=0.0, scalars='Elevation', opacity=curr_opacity, use_transparency=False, smooth_shading=curr_smooth_shading, show_scalar_bar=False, render=False)                                                                     
         
         # Force custom colors:
         if should_force_placefield_custom_color:
             ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
                 #   pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().ScalarVisibilityOff() # Scalars not used to color objects
             # Is NOT Sufficient, as it disables any opacity at all seemingly
-            lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.2, 0.6, 1.0])
+            # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 2, [0.2, 0.8])
+            
+            lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 1, [1.0])
+            
+            # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.2, 0.6, 1.0])
             # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
             # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
             curr_active_neuron_plot_data['lut'] = lut
@@ -263,10 +273,10 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     else:
         legendActor = None
         
-    pTuningCurves.show_grid()
-    pTuningCurves.add_axes(line_width=5, labels_off=False)
-    pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
-    pTuningCurves.enable_3_lights()
+    # pTuningCurves.show_grid()
+    # pTuningCurves.add_axes(line_width=5, labels_off=False)
+    # pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
+    # pTuningCurves.enable_3_lights()
     # pTuningCurves.enable_shadows()
     return pTuningCurves, tuningCurvePlotActors, tuningCurvePlotData, legendActor, plots_data
 

@@ -123,7 +123,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(HideShowPlacefieldsRenderingM
         
         self.params.enable_placefield_aligned_spikes = True # If True, the spikes are aligned to the z-position of their respective place field, so they visually sit on top of the placefield surface
         # self.params.zScalingFactor = 10.0
-        self.params.zScalingFactor = 10.0
+        self.params.zScalingFactor = 100.0
         
         self.params.use_mutually_exclusive_placefield_checkboxes = True       
         self.params.show_legend = True
