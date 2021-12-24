@@ -27,23 +27,23 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 
 from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
 
-
-class CellIDAccessingMixin:
+## TODO: this has been factored out and into neuropy.neuron_identities.NeuronIdentityAccessingMixin
+class NeuronIdentityAccessingMixin:
     @property
-    def cell_ids(self):
+    def neuron_ids(self):
         """ e.g. return np.array(active_epoch_placefields2D.cell_ids) """
         raise NotImplementedError
     
-    def get_cell_id_and_idx(self, cell_i=None, cell_id=None):
-        assert (cell_i is not None) or (cell_id is not None), "You must specify either cell_i or cell_id, and the other will be returned"
-        if cell_i is not None:
-            cell_i = int(cell_i)
-            cell_id = self.cell_ids[cell_i]
-        elif cell_id is not None:
-            cell_id = int(cell_id)
-            cell_i = np.where(self.cell_ids == cell_id)[0].item()
+    def get_neuron_id_and_idx(self, neuron_i=None, neuron_id=None):
+        assert (neuron_i is not None) or (neuron_id is not None), "You must specify either cell_i or cell_id, and the other will be returned"
+        if neuron_i is not None:
+            neuron_i = int(neuron_i)
+            neuron_id = self.neuron_ids[neuron_i]
+        elif neuron_id is not None:
+            neuron_id = int(neuron_id)
+            neuron_i = np.where(self.neuron_ids == neuron_id)[0].item()
         # print(f'cell_i: {cell_i}, cell_id: {cell_id}')
-        return cell_i, cell_id
+        return neuron_i, neuron_id
 
 
 class HideShowSpikeRenderingMixin:
@@ -58,12 +58,12 @@ class HideShowSpikeRenderingMixin:
         self.active_session.spikes_df['render_opacity'] = spike_opacity_mask
         self.update_spikes()
         
-class HideShowPlacefieldsRenderingMixin(CellIDAccessingMixin):
+class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
     def update_active_placefields(self, placefield_indicies):
         """ 
         Usage: 
             included_cell_ids = [48, 61]
-            included_cell_INDEXES = [ipcDataExplorer.get_cell_id_and_idx(cell_id=an_included_cell_ID)[0] for an_included_cell_ID in included_cell_ids] # get the indexes from the cellIDs
+            included_cell_INDEXES = [ipcDataExplorer.get_neuron_id_and_idx(cell_id=an_included_cell_ID)[0] for an_included_cell_ID in included_cell_ids] # get the indexes from the cellIDs
             ipcDataExplorer.update_active_placefields(included_cell_INDEXES) # actives only the placefields that have aclu values (cell ids) in the included_cell_ids array.
         """
         self._hide_all_tuning_curves() # hide all tuning curves to begin with (for a fresh slate)
@@ -98,7 +98,12 @@ class InteractivePlaceCellTuningCurvesDataExplorer(HideShowPlacefieldsRenderingM
         
         self._setup()
 
-    # from CellIDAccessingMixin
+    # from NeuronIdentityAccessingMixin
+    @property
+    def neuron_ids(self):
+        """ an alias for self.cell_ids required for NeuronIdentityAccessingMixin """
+        return self.cell_ids 
+    
     @property
     def cell_ids(self):
         """ e.g. the list of valid cell_ids (unique aclu values) """
@@ -312,13 +317,15 @@ class InteractivePlaceCellTuningCurvesDataExplorer(HideShowPlacefieldsRenderingM
         p.add_mesh(interpolated, scalars="Elevation")
         p.show()
         
-        
+    ## OBSOLITE:
     def get_cell_local_index(self, cell_ids):
         """ Gets the local index into the neuron/cell arrays (such as colors) from the cell's original ID. """
+        raise DeprecationWarning
         return np.array([self.params.reverse_cellID_idx_lookup_map[a_cell_idx] for a_cell_idx in cell_ids])
 
     def get_cell_original_id(self, cell_local_indicies):
         """ Gets the cell's original ID from the local index into the neuron/cell array. Inverse of get_cell_local_index(...)  """
+        raise DeprecationWarning
         return np.array([self.active_session.neurons.neuron_ids[a_local_idx] for a_local_idx in cell_local_indicies])
             
     # def hide_placefield_spikes(self, active_original_cell_unit_ids, should_invert=True):
