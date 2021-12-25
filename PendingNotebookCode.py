@@ -27,6 +27,38 @@ from PhoPositionalData.plotting.laps import plot_laps_2d
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+
+
+def debug_print_ratemap(ratemap):
+    # Get the cell IDs that have a good place field mapping:
+    good_placefield_neuronIDs = np.array(ratemap.neuron_ids) # in order of ascending ID
+    print('good_placefield_neuronIDs: {}; ({} good)'.format(good_placefield_neuronIDs, len(good_placefield_neuronIDs)))
+    
+def debug_print_placefield(active_epoch_placefield, short=True):
+    # Get the cell IDs that have a good place field mapping:
+    good_placefield_neuronIDs = np.array(active_epoch_placefield.ratemap.neuron_ids) # in order of ascending ID
+    num_spikes_per_spiketrain = np.array([np.shape(a_spk_train)[0] for a_spk_train in active_epoch_placefield.spk_t])
+    if short:
+        print('good_placefield_neuronIDs: ({} good)'.format(len(good_placefield_neuronIDs)), end='\n')
+        print('num_spikes: ({} total spikes)'.format(np.sum(num_spikes_per_spiketrain)), end='\n')
+    else:
+        print('good_placefield_neuronIDs: {}; ({} good)'.format(good_placefield_neuronIDs, len(good_placefield_neuronIDs)), end='\n')
+        print('num_spikes: {}; ({} total spikes)'.format(num_spikes_per_spiketrain, np.sum(num_spikes_per_spiketrain)), end='\n')
+    return pd.DataFrame({'neuronID':good_placefield_neuronIDs, 'num_spikes':num_spikes_per_spiketrain}).T
+
+
+def compute_placefields_masked_by_epochs(sess, active_config, included_epochs=None, should_display_2D_plots=False):
+    active_session = deepcopy(sess)
+    active_epoch_placefields1D, active_epoch_placefields2D = compute_placefields_as_needed(active_session, active_config.computation_config, active_config, None, None, included_epochs=included_epochs, should_force_recompute_placefields=True, should_display_2D_plots=should_display_2D_plots)
+    # Focus on the 2D placefields:
+    # active_epoch_placefields = active_epoch_placefields2D
+    # Get the updated session using the units that have good placefields
+    # active_session, active_config, good_placefield_neuronIDs = process_by_good_placefields(active_session, active_config, active_epoch_placefields)
+    # debug_print_spike_counts(active_session)
+    return active_epoch_placefields1D, active_epoch_placefields2D
+
+
+
 def debug_print_spike_counts(session):
     uniques, indicies, inverse_indicies, count_arr = np.unique(session.spikes_df['aclu'].values, return_index=True, return_inverse=True, return_counts=True)
     # count_arr = np.bincount(active_epoch_session.spikes_df['aclu'].values)
