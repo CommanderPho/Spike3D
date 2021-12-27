@@ -66,9 +66,18 @@ def plot_point_labels(p, active_points, point_labels=None):
     return plotActors, data_dict 
     
 def build_center_labels(p, xbin_centers, ybin_centers, data, zScalingFactor=1.0):
-    # point_cloud = np.vstack((xbin_center, ybin_center, data)).T
-    # pdata = pv.PolyData(point_cloud)
-    # pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
+    """[summary]
+
+    Args:
+        p ([type]): [description]
+        xbin_centers ([type]): [description]
+        ybin_centers ([type]): [description]
+        data ([type]): [description]
+        zScalingFactor (float, optional): [description]. Defaults to 1.0.
+
+    Returns:
+        [type]: [description]
+    """
     
     # build a structured grid out of the bins
     twoDimGrid_x, twoDimGrid_y = np.meshgrid(xbin_centers, ybin_centers)
@@ -96,7 +105,7 @@ def build_center_labels(p, xbin_centers, ybin_centers, data, zScalingFactor=1.0)
     # p.add_point_scalar_labels(mesh, "Labels", name='build_center_labels_test', point_size=20, font_size=36)
     
     points = grid.points
-    plotActors_labels, data_dict_labels = plot_point_labels(pActiveTuningCurvesPlotter, points)
+    plotActors_labels, data_dict_labels = plot_point_labels(p, points)
     
     plotActors = {'main': points_actor, 'labels': plotActors_labels['main']}
     data_dict = {
