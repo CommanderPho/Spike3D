@@ -26,11 +26,10 @@ def prepare_binned_data_for_3d_bars(xbin, ybin, data):
     
     
 def plot_3d_binned_data(plotter, xbin, ybin, data, zScalingFactor=1.0, drop_below_threshold: float=None):
-    """ 
-    
+    """ Plots a 3D bar-graph
     Usage:
-	    modified_xbin, modified_ybin, modified_data = prepare_binned_data_for_3d(active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy)
-		plot_3d_binned_data(pActiveTuningCurvesPlotter,modified_xbin, modified_ybin, modified_data)
+        modified_xbin, modified_ybin, modified_data = prepare_binned_data_for_3d(active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy)
+        plot_3d_binned_data(pActiveTuningCurvesPlotter,modified_xbin, modified_ybin, modified_data)
     """
     # build a structured grid out of the bins
     twoDimGrid_x, twoDimGrid_y = np.meshgrid(xbin, ybin)
@@ -39,9 +38,72 @@ def plot_3d_binned_data(plotter, xbin, ybin, data, zScalingFactor=1.0, drop_belo
     active_data = data[:,:].T.copy() # A single tuning curve
     mesh = pv.StructuredGrid(twoDimGrid_x, twoDimGrid_y, active_data)
     mesh["Elevation"] = (active_data.ravel(order="F") * zScalingFactor)
+    
     curr_opacity = None
     curr_smooth_shading = False
     plotActor = plotter.add_mesh(mesh, name='test', show_edges=True, edge_color='k', nan_opacity=0.0, scalars='Elevation', opacity=1.00, use_transparency=False, smooth_shading=False, show_scalar_bar=False, render=True)
     plotter.enable_depth_peeling() # this fixes bug where it appears transparent even when opacity is set to 1.00
-    return plotActor
     
+    plotActors = {'main': plotActor}
+    data_dict = {
+        'mesh':mesh, 
+        'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
+        'active_data': active_data
+    }
+    return plotActors, data_dict
+    
+    
+
+def plot_point_labels(p, active_points, point_labels=None):
+    if point_labels is None:
+        point_labels = [f'({a_point[0]:.2f}, {a_point[1]:.2f}, {a_point[2]:.2f})' for a_point in active_points]
+    assert (len(point_labels) == len(active_points)), "There must be one point label in point_labels for each point in active_points!"
+    points_labels_actor = p.add_point_labels(active_points, point_labels, point_size=8, font_size=10, name='build_center_labels_test', shape_opacity=0.8, show_points=False)
+    plotActors = {'main': points_labels_actor}
+    data_dict = {
+        'point_labels': point_labels
+    }
+    return plotActors, data_dict 
+    
+def build_center_labels(p, xbin_centers, ybin_centers, data, zScalingFactor=1.0):
+    # point_cloud = np.vstack((xbin_center, ybin_center, data)).T
+    # pdata = pv.PolyData(point_cloud)
+    # pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
+    
+    # build a structured grid out of the bins
+    twoDimGrid_x, twoDimGrid_y = np.meshgrid(xbin_centers, ybin_centers)
+    active_data = data[:,:].T.copy() # A single tuning curve
+    grid = pv.StructuredGrid(twoDimGrid_x, twoDimGrid_y, active_data)
+    grid["Elevation"] = (active_data.ravel(order="F") * zScalingFactor)
+    # points_actor = p.add_points(grid, name='build_center_labels_points', show_scalar_bar=False, render=True)
+    points_actor = None
+    # # mesh = pv.RectilinearGrid(twoDimGrid_x, twoDimGrid_y, active_data)
+    # points = grid.points
+    # mask = points[:, 0] > 0.1
+    # if point_mask is not None:
+    #     active_points = points[mask]
+    # else:
+    #     active_points = points.copy()
+    # plot_point_labels(p, points, point_mask=mask)
+    
+    # mesh["Labels"] = (active_data.ravel(order="F") * zScalingFactor)
+    # point_labels = [f'({a_point[0]:.2f}, {a_point[1]:.2f}, {a_point[2]:.2f})' for a_point in active_points]
+    
+    # Add string labels to the point data - this associates a label with every node:
+    # mesh["Labels"] = [f"Label {i}" for i in range(mesh.n_points)]
+    
+    # Add the points with scalar labels:
+    # p.add_point_scalar_labels(mesh, "Labels", name='build_center_labels_test', point_size=20, font_size=36)
+    
+    points = grid.points
+    plotActors_labels, data_dict_labels = plot_point_labels(pActiveTuningCurvesPlotter, points)
+    
+    plotActors = {'main': points_actor, 'labels': plotActors_labels['main']}
+    data_dict = {
+        'grid': grid, 
+        'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
+        'active_data': active_data
+    } | data_dict_labels
+    return plotActors, data_dict
+
+
