@@ -25,8 +25,6 @@ class NeuronIdentityAccessingMixin:
         """ e.g. return np.array(active_epoch_placefields2D.cell_ids) """
         raise NotImplementedError
     
-    
-    
     def get_neuron_id_and_idx(self, neuron_i=None, neuron_id=None):
         assert (neuron_i is not None) or (neuron_id is not None), "You must specify either cell_i or cell_id, and the other will be returned"
         if neuron_i is not None:
@@ -50,8 +48,53 @@ class HideShowSpikeRenderingMixin:
         self.active_session.spikes_df['render_opacity'] = spike_opacity_mask
         self.update_spikes()
         
+
+class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
+    
+    @property
+    def placefields(self):
+        return self.params.active_epoch_placefields
+    
+    @property
+    def ratemap(self):
+        return self.placefields.ratemap
+    
+    @property
+    def tuning_curves(self):
+        return self.ratemap.normalized_tuning_curves
+    
+    @property
+    def num_tuning_curves(self):
+        return len(self.tuning_curves)
+    
+    @property
+    def tuning_curve_indicies(self):
+        return np.arange(self.num_tuning_curves)
+    
+    @property
+    def active_tuning_curve_render_configs(self):
+        """The active_tuning_curve_render_configs property."""
+        return self.params.pf_active_configs
+    @active_tuning_curve_render_configs.setter
+    def active_tuning_curve_render_configs(self, value):
+        self.params.pf_active_configs = value
         
-class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
+    
+    def build_tuning_curve_configs(self):
+        # Get the cell IDs that have a good place field mapping:
+        good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
+        unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(self.num_tuning_curves)]
+        self.params.pf_active_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
+                
+# self.params.pf_colors
+# self.params.unit_labels
+# self.params.pf_unit_ids
+
+        
+    
+    
+        
+class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
     
     # active_pf_idx_list = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
     # # phase = param.Number(default=0, bounds=(0, np.pi))
@@ -104,13 +147,22 @@ class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
     def _show_tuning_curve(self, show_index):
         # Works to show the specified tuning curve plots:
         self.tuning_curve_plot_actors[show_index].SetVisibility(1)
+        
+        
+    def update_tuning_curve_configs(self):
+        for i, aTuningCurveActor in enumerate(self.tuning_curve_plot_actors):
+            self.params.pf_active_configs[i].isVisible = bool(aTuningCurveActor.GetVisibility())
+            
+    def apply_tuning_curve_configs(self):
+        for i, aTuningCurveActor in enumerate(self.tuning_curve_plot_actors):
+            aTuningCurveActor.SetVisibility(int(self.params.pf_active_configs[i].isVisible))
 
+        
 
-
+## Parameters (Param):
 class BaseClass(param.Parameterized):
     name = param.Parameter(default="Not editable", constant=True)
-    isVisible = param.Boolean(True, doc="Whether the plot is visible")
-    
+    isVisible = param.Boolean(False, doc="Whether the plot is visible")
 
 
 class ExampleExtended(BaseClass):
@@ -123,10 +175,9 @@ class ExampleExtended(BaseClass):
 # checkbutton_group = pn.widgets.CheckButtonGroup(name='Check Button Group', value=[], options=pf_options_list_strings) # checkbutton_group.value 
 # cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
 
-
 class SinglePlacefieldPlottingExtended(BaseClass):
-    color = param.Color(default='#FF0000')
-    spikesVisible = param.Boolean(True, doc="Whether the spikes are visible")
+    color = param.Color(default='#FF0000', doc="The placefield's Color")
+    spikesVisible = param.Boolean(False, doc="Whether the spikes are visible")
     extended_values_dictionary = param.Dict(default=dict())
     
     # def panel(self):

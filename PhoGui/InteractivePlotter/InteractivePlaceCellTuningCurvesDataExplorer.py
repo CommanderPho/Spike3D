@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
-from matplotlib.colors import ListedColormap
+from matplotlib.colors import ListedColormap, to_hex
 
 from scipy.interpolate import RectBivariateSpline # for 2D spline interpolation
 
@@ -40,6 +40,8 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         super(InteractivePlaceCellTuningCurvesDataExplorer, self).__init__(active_config, active_session, extant_plotter, data_explorer_name='TuningMapDataExplorer')
         self.params.active_epoch_placefields = deepcopy(active_epoch_placefields)
         self.params.pf_colors = deepcopy(pf_colors)
+        self.params.pf_colors_hex = None
+        self.params.pf_active_configs = None
         self.gui = dict()
         
         self.use_unit_id_as_cell_id = False # if False, uses the normal 'aclu' value as the cell id (which I think is correct)
@@ -94,7 +96,9 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
             # self._compute_z_position_spike_offsets()
             # self._compute_z_position_spike_offsets()
             pass
-    
+
+        self.params.pf_colors_hex = [to_hex(self.params.pf_colors[:,i], keep_alpha=False) for i in self.tuning_curve_indicies]
+        self.build_tuning_curve_configs()
     
     @property
     def pf_names(self):

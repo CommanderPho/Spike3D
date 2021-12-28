@@ -5,6 +5,9 @@ import pyvista as pv
 def build_3d_plot_identifier_name(*args):
     return '_'.join(list(args))    
 
+
+## 3D Binned Bar Plots:
+
 def prepare_binned_data_for_3d_bars(xbin, ybin, data, mask2d=None):
     """ Sequentally repeats xbin, ybin, and data entries to prepare for being plot in 3D bar-plot form.
     Does this by repeating the xbin and ybin except the first and last entries so that there is one entry for each vertex of a 2d rectangular polygon.
