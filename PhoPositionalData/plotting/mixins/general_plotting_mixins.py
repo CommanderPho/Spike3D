@@ -84,8 +84,8 @@ class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
         # Get the cell IDs that have a good place field mapping:
         good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
         unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(self.num_tuning_curves)]
-        self.params.pf_active_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
-                
+        # self.params.pf_active_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
+        self.active_tuning_curve_render_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
 # self.params.pf_colors
 # self.params.unit_labels
 # self.params.pf_unit_ids
@@ -148,14 +148,20 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
         # Works to show the specified tuning curve plots:
         self.tuning_curve_plot_actors[show_index].SetVisibility(1)
         
+    def on_update_tuning_curve_display_config(self, updated_config_indicies, updated_configs):
+        print(f'HideShowPlacefieldsRenderingMixin.on_update_tuning_curve_display_config(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        for an_updated_config_idx, an_updated_config in zip(updated_config_indicies, updated_configs):
+            self.active_tuning_curve_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
+            self.tuning_curve_plot_actors[an_updated_config_idx].SetVisibility(int(self.active_tuning_curve_render_configs[an_updated_config_idx].isVisible)) # update visibility of actor
+            ## TODO: apply spikes changes and stuff...
         
     def update_tuning_curve_configs(self):
         for i, aTuningCurveActor in enumerate(self.tuning_curve_plot_actors):
-            self.params.pf_active_configs[i].isVisible = bool(aTuningCurveActor.GetVisibility())
+            self.active_tuning_curve_render_configs[i].isVisible = bool(aTuningCurveActor.GetVisibility())
             
     def apply_tuning_curve_configs(self):
         for i, aTuningCurveActor in enumerate(self.tuning_curve_plot_actors):
-            aTuningCurveActor.SetVisibility(int(self.params.pf_active_configs[i].isVisible))
+            aTuningCurveActor.SetVisibility(int(self.active_tuning_curve_render_configs[i].isVisible))
 
         
 
@@ -181,6 +187,12 @@ class SinglePlacefieldPlottingExtended(BaseClass):
     color = param.Color(default='#FF0000', doc="The placefield's Color")
     spikesVisible = param.Boolean(default=False, doc="Whether the spikes are visible")
     extended_values_dictionary = param.Dict(default={}, doc="Extra values stored in a dictionary.")
+    
+    
+    # @param.depends(c.param.country, d.param.i, watch=True)
+    # def g(country, i):
+    #     print(f"g country={country} i={i}")
+    
     
     # def panel(self):
     #     return pn.Row(

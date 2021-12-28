@@ -33,12 +33,18 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
     # value = param.Range(doc="A numeric range.")
     # width = param.Integer(default=300)
     
-    def __init__(self, config=None, **params):
+    def __init__(self, config=None, callbacks=None, **params):
         if config is not None:
             self.name = config.name
             self.color = config.color
             self.isVisible = config.isVisible
             self.spikesVisible = config.spikesVisible
+            
+        if callbacks is not None:
+            self._callbacks = callbacks
+        else:
+            self._callbacks = None
+            raise ValueError
         
         # self._start_input = pn.widgets.FloatInput()
         # self._end_input = pn.widgets.FloatInput(align='end')
@@ -71,23 +77,38 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
         self._wgt_toggle_visible.value = self.isVisible
         self._wgt_toggle_spikes.value = self.spikesVisible
         
-    @param.depends('_wgt_color_picker.value', '_wgt_toggle_visible.value', '_wgt_toggle_spikes.value', watch=True)
+    @param.depends('_wgt_label_button.name', '_wgt_color_picker.value', '_wgt_toggle_visible.value', '_wgt_toggle_spikes.value', watch=True)
     def _sync_params(self):
+        self.name = self._wgt_label_button.name
         self.color = self._wgt_color_picker.value
         self.isVisible = self._wgt_toggle_visible.value
         self.spikesVisible = self._wgt_toggle_spikes.value
-
+        
+    @param.depends('_wgt_toggle_visible.value', watch=True)
+    def _on_toggle_plot_visible_changed(self):
+        print('_on_toggle_plot_visible_changed(...)')
+        if self._callbacks is not None:
+            self._callbacks(self.config_from_state()) # get the config from the updated state
+        else:
+            print('WARNING: no callback defined!')
+            
+    
+    @param.depends('_wgt_toggle_spikes.value', watch=True)
+    def _on_toggle_spikes_visible_changed(self):
+        print('_on_toggle_spikes_visible_changed(...)')
+    
     def update_from_config(self, config):
         self.name = config.name
         self.color = config.color
         self.isVisible = config.isVisible
         self.spikesVisible = config.spikesVisible
 
+    
     def config_from_state(self):
         return SinglePlacefieldPlottingExtended(name=self.name, isVisible=self.isVisible, color=self.color, spikesVisible=self.spikesVisible)
 
     @classmethod
-    def build_all_placefield_output_panels(cls, configs):
+    def build_all_placefield_output_panels(cls, configs, config_changed_callback):
         """[summary]
 
         Args:
@@ -100,7 +121,13 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
             out_panels = SingleEditablePlacefieldDisplayConfiguration.build_all_placefield_output_panels(ipcDataExplorer.active_tuning_curve_render_configs)
             pn.Row(*out_panels, height=120)        
         """
-        out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config) for a_config in configs]
+        
+        # @param.depends(c.param.country, d.param.i, watch=True)
+        # def g(country, i):
+        #     print(f"g country={country} i={i}")
+
+        out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config, callbacks=(lambda updated_config_copy=a_config, i_copy=i: config_changed_callback([i_copy], [updated_config_copy]))) for (i, a_config) in enumerate(configs)]
+        # out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config, callbacks=config_changed_callback) for a_config_idx, a_config in enumerate(configs)]
         return out_panels
         
 
@@ -108,7 +135,7 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
 def build_all_placefield_output_panels(ipcDataExplorer):
     # out_panels = [build_single_placefield_output_panel(a_config) for a_config in ipcDataExplorer.active_tuning_curve_render_configs]
     # out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config) for a_config in ipcDataExplorer.active_tuning_curve_render_configs]
-    out_panels = SingleEditablePlacefieldDisplayConfiguration.build_all_placefield_output_panels(ipcDataExplorer.active_tuning_curve_render_configs)
+    out_panels = SingleEditablePlacefieldDisplayConfiguration.build_all_placefield_output_panels(ipcDataExplorer.active_tuning_curve_render_configs, config_changed_callback=ipcDataExplorer.on_update_tuning_curve_display_config)
     out_panels = pn.Row(*out_panels, height=120)
     return out_panels
 
