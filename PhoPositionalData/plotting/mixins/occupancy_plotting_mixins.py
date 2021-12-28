@@ -1,5 +1,5 @@
 # occupancy_plotting_mixins.py
-from PhoGui.InteractivePlotter.shared_helpers import PlotGroupWrapper
+# from PhoGui.InteractivePlotter.shared_helpers import PlotGroupWrapper
 from PhoPositionalData.plotting.graphs import plot_3d_binned_bars, plot_point_labels
 
 class OccupancyPlottingMixin:
@@ -27,7 +27,7 @@ class OccupancyPlottingMixin:
     def ybin_centers(self):
         return self.ratemap.ybin_centers    
 
-    
+
     def plot_occupancy_bars(self):
         """Renders the internal occupancy map provided by self.occupancy as a series of bars spanning the xbin and ybins of the internal ratemap.
         Usage:
@@ -52,7 +52,7 @@ class OccupancyPlottingMixin:
         # print(f'plotActors_CenterLabels: {plotActors_CenterLabels}')
         plotActors = plotActors | plotActors_CenterLabels
         # print(f'plotActors: {plotActors}')      
-        occupancy_bars_plotGroup = PlotGroupWrapper('3d_Occupancy_bars', {'plot_3d_binned_bars_Occupancy':plotActors['plot_3d_binned_bars_Occupancy']['main'], 'plot_point_labels_OccupancyLabels':plotActors['plot_point_labels_OccupancyLabels']})
+        # occupancy_bars_plotGroup = PlotGroupWrapper('3d_Occupancy_bars', {'plot_3d_binned_bars_Occupancy':plotActors['plot_3d_binned_bars_Occupancy']['main'], 'plot_point_labels_OccupancyLabels':plotActors['plot_point_labels_OccupancyLabels']})
         return plotActors, (data_dict | data_dict_CenterLabels)
     
   

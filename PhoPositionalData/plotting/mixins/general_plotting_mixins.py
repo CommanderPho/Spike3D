@@ -3,12 +3,29 @@ import numpy as np
 import pandas as pd
 
 
+class OptionsListMixin:
+    @staticmethod
+    def options_to_str(options_list_ints):
+        return [f'{i}' for i in options_list_ints]
+    @staticmethod
+    def options_to_int(options_list_strings):
+        return [int(a_str) for a_str in options_list_strings]
+    @staticmethod
+    def build_pf_options_list(num_pfs=40):
+        pf_options_list_ints = np.arange(num_pfs)
+        pf_options_list_strings = OptionsListMixin.options_to_str(pf_options_list_ints) # [f'{i}' for i in pf_options_list_ints]
+        return pf_options_list_ints, pf_options_list_strings
+
+
+    
 ## TODO: this has been factored out and into neuropy.neuron_identities.NeuronIdentityAccessingMixin
 class NeuronIdentityAccessingMixin:
     @property
     def neuron_ids(self):
         """ e.g. return np.array(active_epoch_placefields2D.cell_ids) """
         raise NotImplementedError
+    
+    
     
     def get_neuron_id_and_idx(self, neuron_i=None, neuron_id=None):
         assert (neuron_i is not None) or (neuron_id is not None), "You must specify either cell_i or cell_id, and the other will be returned"
@@ -34,21 +51,40 @@ class HideShowSpikeRenderingMixin:
         self.update_spikes()
         
         
-        
-class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin, param.Parameterized):
+class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
     
-    active_pf_idx_list = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
-    # phase = param.Number(default=0, bounds=(0, np.pi))
-    # frequency = param.Number(default=1, bounds=(0.1, 2))
+    # active_pf_idx_list = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
+    # # phase = param.Number(default=0, bounds=(0, np.pi))
+    # # frequency = param.Number(default=1, bounds=(0.1, 2))
     
     
-    @param.depends('active_pf_idx_list')
-    def interact_update_active_placefields(self):
-        selected_placefield_indicies = self.active_pf_idx_list
-        print(f'selected_placefield_indicies: {selected_placefield_indicies}')
-        self.update_active_placefields(selected_placefield_indicies)
+    # @param.depends('active_pf_idx_list')
+    # def interact_update_active_placefields(self):
+    #     selected_placefield_indicies = self.active_pf_idx_list
+    #     print(f'selected_placefield_indicies: {selected_placefield_indicies}')
+    #     self.update_active_placefields(selected_placefield_indicies)
         
+    @property
+    def tuning_curve_plot_actors(self):
+        return self.plots['tuningCurvePlotActors']
+    
+    @property
+    def num_tuning_curve_plot_actors(self):
+        return len(self.tuning_curve_plot_actors)
+    
+    @property
+    def tuning_curve_is_visible(self):
+        return np.array([bool(an_actor.GetVisibility()) for an_actor in self.tuning_curve_plot_actors], dtype=bool)
         
+    @property
+    def tuning_curve_visibilities(self):
+        return np.array([int(an_actor.GetVisibility()) for an_actor in self.tuning_curve_plot_actors], dtype=int)
+
+    @property
+    def visible_tuning_curve_indicies(self):
+        all_indicies = np.arange(self.num_tuning_curve_plot_actors)
+        return all_indicies[self.tuning_curve_is_visible]
+    
     def update_active_placefields(self, placefield_indicies):
         """ 
         Usage: 
@@ -62,12 +98,12 @@ class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin, param.Para
         
     def _hide_all_tuning_curves(self):
         # Works to hide all turning curve plots:
-        for aTuningCurveActor in self.plots['tuningCurvePlotActors']:
+        for aTuningCurveActor in self.tuning_curve_plot_actors:
             aTuningCurveActor.SetVisibility(0)
             
     def _show_tuning_curve(self, show_index):
         # Works to show the specified tuning curve plots:
-        self.plots['tuningCurvePlotActors'][show_index].SetVisibility(1)
+        self.tuning_curve_plot_actors[show_index].SetVisibility(1)
 
 
 
@@ -96,8 +132,8 @@ class SinglePlacefieldPlottingExtended(BaseClass):
     
 
 
-class ActivePlacefieldsPlotting(param.Parameterized):
-    
+class ActivePlacefieldsPlotting(OptionsListMixin, param.Parameterized):
+    """ """
     # _on_hide_all_placefields = lambda x: print(f'_on_hide_all_placefields({x})')
     # _on_update_active_placefields = lambda x: print(f'_on_update_active_placefields({x})')
     
@@ -118,13 +154,9 @@ class ActivePlacefieldsPlotting(param.Parameterized):
         self.num_pfs = num_pfs
         # self.figure = figure(x_range=(-1, 1), y_range=(-1, 1))
         # self.renderer = self.figure.line(*self._get_coords())
-
-
-    @staticmethod
-    def build_pf_options_list(num_pfs=40):
-        pf_options_list_ints = np.arange(num_pfs)
-        pf_options_list_strings = [f'{i}' for i in pf_options_list_ints]
-        return pf_options_list_ints, pf_options_list_strings
+        
+   
+    
     
     def on_hide_all_placefields(self):
         print('on_hide_all_placefields()')

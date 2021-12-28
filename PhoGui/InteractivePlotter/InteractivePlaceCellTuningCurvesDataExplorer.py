@@ -15,7 +15,7 @@ from matplotlib.colors import ListedColormap
 from scipy.interpolate import RectBivariateSpline # for 2D spline interpolation
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronIdentityAccessingMixin
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import HideShowPlacefieldsRenderingMixin, HideShowSpikeRenderingMixin
 from PhoPositionalData.plotting.mixins.occupancy_plotting_mixins import OccupancyPlottingMixin
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
@@ -30,45 +30,6 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
 
 
-
-class HideShowSpikeRenderingMixin:
-    def update_active_spikes(self, spike_opacity_mask):
-        """ 
-        Usage: 
-            included_cell_ids = [48, 61]
-            
-            ipcDataExplorer.update_active_spikes(np.isin(ipcDataExplorer.active_session.spikes_df['aclu'], included_cell_ids)) # actives only the spikes that have aclu values (cell ids) in the included_cell_ids array.
-        """
-        assert np.shape(self.active_session.spikes_df['render_opacity']) == np.shape(spike_opacity_mask), "spike_opacity_mask must have one value for every spike in self.active_session.spikes_df, specifying its opacity"
-        self.active_session.spikes_df['render_opacity'] = spike_opacity_mask
-        self.update_spikes()
-        
-        
-class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
-    def update_active_placefields(self, placefield_indicies):
-        """ 
-        Usage: 
-            included_cell_ids = [48, 61]
-            included_cell_INDEXES = [ipcDataExplorer.get_neuron_id_and_idx(cell_id=an_included_cell_ID)[0] for an_included_cell_ID in included_cell_ids] # get the indexes from the cellIDs
-            ipcDataExplorer.update_active_placefields(included_cell_INDEXES) # actives only the placefields that have aclu values (cell ids) in the included_cell_ids array.
-        """
-        self._hide_all_tuning_curves() # hide all tuning curves to begin with (for a fresh slate)
-        for a_pf_idx in placefield_indicies:
-            self._show_tuning_curve(a_pf_idx)
-        
-    def _hide_all_tuning_curves(self):
-        # Works to hide all turning curve plots:
-        for aTuningCurveActor in self.plots['tuningCurvePlotActors']:
-            aTuningCurveActor.SetVisibility(0)
-            
-    def _show_tuning_curve(self, show_index):
-        # Works to show the specified tuning curve plots:
-        self.plots['tuningCurvePlotActors'][show_index].SetVisibility(1)
-
-
-
-
-        
 # needs perform_plot_flat_arena
 class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideShowPlacefieldsRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
     """[summary]
