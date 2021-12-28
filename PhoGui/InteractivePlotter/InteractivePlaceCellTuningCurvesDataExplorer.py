@@ -15,8 +15,9 @@ from matplotlib.colors import ListedColormap, to_hex
 from scipy.interpolate import RectBivariateSpline # for 2D spline interpolation
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import HideShowPlacefieldsRenderingMixin, HideShowSpikeRenderingMixin
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import HideShowPlacefieldsRenderingMixin
 from PhoPositionalData.plotting.mixins.occupancy_plotting_mixins import OccupancyPlottingMixin
+from PhoPositionalData.plotting.mixins.spikes_mixins import SpikeRenderingMixin, HideShowSpikeRenderingMixin
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
 from PhoPositionalData.plotting.gui import CallbackSequence, SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
@@ -31,7 +32,7 @@ from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
 
 
 # needs perform_plot_flat_arena
-class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideShowPlacefieldsRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
+class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideShowPlacefieldsRenderingMixin, SpikeRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
     """[summary]
     """
     show_legend = True
@@ -89,7 +90,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         self.params.use_dynamic_spike_opacity_for_hiding = True
         
         if self.params.use_dynamic_spike_opacity_for_hiding:
-            self.active_session.spikes_df['render_opacity'] = 0.0 # Initialize all spikes to 0.0 opacity, meaning they won't be rendered.
+            self.setup_hide_show_spike_rendering_mixin()
     
         if self.params.enable_placefield_aligned_spikes:
             # compute the spike z-positions from the placefield2D objects if that option is selected.
@@ -125,19 +126,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         
         # active_spike_index = 4
         # active_included_place_cell_spikes_indicies = self.active_session.spikes_df.eval('(unit_id == @active_spike_index)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
-        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df, spike_geom=spike_geom_cone.copy())
-        
-        # blocks = pv.MultiBlock()
-        
-        self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
-        if historical_spikes_pc.n_points >= 1:
-            # self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
-            self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, opacity='render_opacity', show_scalar_bar=False, lighting=True, render=False)
-            needs_render = True
-        else:
-            # self.plots['spikes_pf_active'] = self.p.add_mesh(
-            self.p.remove_actor(self.plots['spikes_pf_active'])
-            needs_render = True
+        needs_render = self.plot_spikes()
 
 
         if needs_render:
@@ -166,29 +155,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         return self.p
     
     
-    def update_spikes(self):
-        """ Called to programmatically update the rendered spikes by replotting after changing their visibility/opacity/postion/etc """
-        # full rebuild (to be safe):
-        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df, spike_geom=spike_geom_cone.copy())
-        self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
-        
-        # Update just the values that could change:
-        self.plots_data['spikes_pf_active']['historical_spikes_pdata']['render_opacity'] = self.active_session.spikes_df['render_opacity'].values
-        # ?? Is this rebuild needed after updating the pdata to see the changes in the pc_data (which is what is actually plotted)???
-        self.plots_data['spikes_pf_active']['historical_spikes_pc'] = self.plots_data['spikes_pf_active']['historical_spikes_pdata'].glyph(scale=False, geom=spike_geom_cone.copy()) 
-        # spike_history_pdata['render_opacity'] = active_flat_df['render_opacity'].values
-        
-        if self.plots_data['spikes_pf_active']['historical_spikes_pc'].n_points >= 1:
-            # self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
-            self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, opacity='render_opacity', show_scalar_bar=False, lighting=True, render=False)
-            needs_render = True
-        else:
-            # self.plots['spikes_pf_active'] = self.p.add_mesh(
-            self.p.remove_actor(self.plots['spikes_pf_active'])
-            needs_render = True
-
-        if needs_render:
-            self.p.render()
+    
     
     def __build_callbacks(self, tuningCurvePlotActors):
         combined_active_pf_update_callbacks = []
@@ -280,16 +247,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         raise DeprecationWarning
         return np.array([self.active_session.neurons.neuron_ids[a_local_idx] for a_local_idx in cell_local_indicies])
             
-    # def hide_placefield_spikes(self, active_original_cell_unit_ids, should_invert=True):
-    #     # print('hide_placefield_spikes(active_index: {}, should_invert: {})'.format(active_original_cell_unit_ids, should_invert))
-    #     mesh = self.plots_data['spikes_pf_active']['historical_spikes_pc'].cast_to_unstructured_grid()
-    #     num_mesh_cells = mesh.n_cells
-    #     ghosts = np.argwhere(np.isin(mesh["cellID"], active_original_cell_unit_ids, invert=should_invert))
-    #     num_ghosts = len(ghosts)
-    #     # print('\t num_mesh_cells: {}, num_ghosts: {}'.format(num_mesh_cells, num_ghosts))
-    #     # This will act on the mesh inplace to mark those cell indices as ghosts
-    #     mesh.remove_cells(ghosts)
-    #     return mesh
+    
     
     
 
