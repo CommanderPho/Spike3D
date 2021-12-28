@@ -33,9 +33,6 @@ class SpikeRenderingMixin:
         """The spikes_df property."""
         return self.active_session.spikes_df
 
-
-    
-    
     def plot_spikes(self):
         historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df, spike_geom=SpikeRenderingMixin.spike_geom_cone.copy())        
         self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
@@ -72,10 +69,17 @@ class SpikeRenderingMixin:
         if needs_render:
             self.p.render()
             
+    def build_flat_color_data(self):
+        # TODO: could also add in 'render_exclusion_mask'
+        self.params.flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in self.spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
+        print(f'SpikeRenderMixin.build_flat_color_data(): built combined rgb array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
+        return self.params.flat_spike_colors_array
+        
     
     # Testing:
     def test_toggle_cell_spikes_visibility(self, included_cell_ids):
         self.update_active_spikes(np.isin(self.spikes_df['aclu'], included_cell_ids))
+      
         
     # Testing: Split spikes plot
     def build_active_unit_split_spikes_data(self, active_flat_df: pd.DataFrame):
@@ -84,8 +88,14 @@ class SpikeRenderingMixin:
             spike_history_pdata, spike_history_pc = build_active_spikes_plot_data_df(a_split_df, SpikeRenderingMixin.spike_geom_cone.copy())
             # SingleCellSpikePlotData(point_data=spike_history_pdata, glyph_data=spike_history_pc)
             
-
-
+    def setup_spike_rendering_mixin(self):
+        # Add the required spike colors
+        included_cell_INDEXES = np.array([self.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in self.spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
+        self.spikes_df['cell_idx'] = included_cell_INDEXES.copy()
+        flat_spike_hex_colors = np.array([self.params.pf_colors_hex[i] for i in self.spikes_df['cell_idx'].to_numpy()])
+        self.spikes_df['rgb_hex'] = flat_spike_hex_colors.copy()
+        self.build_flat_color_data()
+        
 
 class HideShowSpikeRenderingMixin:
     
@@ -100,6 +110,9 @@ class HideShowSpikeRenderingMixin:
     def setup_hide_show_spike_rendering_mixin(self):
         self.active_session.spikes_df['render_opacity'] = 0.0 # Initialize all spikes to 0.0 opacity, meaning they won't be rendered.
         self.active_session.spikes_df['render_exclusion_mask'] = True # all are included (not in the exclusion mask) to begin. This does not mean that they will be visible because 'render_opacity' is still set to zero.
+        
+        
+
     
     
     def update_active_spikes(self, spike_opacity_mask, is_additive=False):
