@@ -210,9 +210,9 @@ class ActivePlacefieldsPlotting(OptionsListMixin, param.Parameterized):
     # active_pf_idx_list = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
     
     
-    def __init__(self, num_pfs, **params):
+    def __init__(self, **params):
         super(ActivePlacefieldsPlotting, self).__init__(**params)
-        self.num_pfs = num_pfs
+        # self.num_pfs = num_pfs
         # self.figure = figure(x_range=(-1, 1), y_range=(-1, 1))
         # self.renderer = self.figure.line(*self._get_coords())
         

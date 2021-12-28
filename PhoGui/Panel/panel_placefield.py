@@ -115,7 +115,7 @@ def build_all_placefield_output_panels(ipcDataExplorer):
 
 
 class ActivePlacefieldsPlottingPanel(ActivePlacefieldsPlotting):
-    """
+    """ Draws a selector for the active placefields to plot using two adjacent list controls.
     Usage:
         active_new_pf_panel = ActivePlacefieldsPlottingPanel(np.arange(ipcDataExplorer.num_tuning_curve_plot_actors), ipcDataExplorer.visible_tuning_curve_indicies)
         active_new_pf_panel.panel()
@@ -123,8 +123,16 @@ class ActivePlacefieldsPlottingPanel(ActivePlacefieldsPlotting):
     
     should_update_on_value_change = True
     
-    def __init__(self, pf_option_indicies, pf_option_selected_values, num_pfs=None, **params):
-        super(ActivePlacefieldsPlottingPanel, self).__init__(num_pfs=num_pfs, **params)
+    def __init__(self, pf_option_indicies, pf_option_selected_values, num_pfs=None, update_included_cell_Indicies_callback=None, **params):
+        # super(ActivePlacefieldsPlottingPanel, self).__init__(num_pfs=num_pfs, **params)
+        super(ActivePlacefieldsPlottingPanel, self).__init__(**params)
+        self.final_update_included_cell_Indicies_callback = None
+        if update_included_cell_Indicies_callback is not None:
+            if callable(update_included_cell_Indicies_callback):
+                self.final_update_included_cell_Indicies_callback = update_included_cell_Indicies_callback
+        
+        assert (self.final_update_included_cell_Indicies_callback is not None), "An update_included_cell_Indicies_callback(x) callback is needed."
+                
         if pf_option_indicies is not None:
             self.pf_option_indicies = pf_option_indicies
             self.num_pfs = len(pf_option_indicies)
@@ -139,12 +147,12 @@ class ActivePlacefieldsPlottingPanel(ActivePlacefieldsPlotting):
     def on_hide_all_placefields(self):
         print('on_hide_all_placefields()')
         self.pf_option_selected_values = []
-        update_included_cell_Indicies([])
+        self.final_update_included_cell_Indicies_callback([])
 
     def on_update_active_placefields(self, updated_pf_indicies):
         print(f'on_update_active_placefields({updated_pf_indicies})')
         self.pf_option_selected_values = updated_pf_indicies
-        update_included_cell_Indicies(updated_pf_indicies)
+        self.final_update_included_cell_Indicies_callback(updated_pf_indicies)
 
     def btn_hide_all_callback(self, event):
         print('btn_hide_all_callback(...)')
@@ -183,9 +191,8 @@ class ActivePlacefieldsPlottingPanel(ActivePlacefieldsPlotting):
 
         self.watcher = self.cross_selector.param.watch(self.index_selection_changed_callback, ['options', 'value'], onlychanged=False)
         # set initial
-        
         # active_new_pf_panel.set_initial(self.num_pfs, [0, 1, 5])
-        active_new_pf_panel.set_initial(self.pf_option_indicies, self.pf_option_selected_values, num_pfs=self.num_pfs)
+        self.set_initial(self.pf_option_indicies, self.pf_option_selected_values, num_pfs=self.num_pfs)
 
         return pn.Column(pn.Row(self.cross_selector, width=200, height=600),
                          pn.Spacer(width=200, height=10),
