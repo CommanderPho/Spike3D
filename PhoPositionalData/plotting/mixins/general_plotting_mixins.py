@@ -108,8 +108,8 @@ class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
 
 
 class BaseClass(param.Parameterized):
-    name                       = param.Parameter(default="Not editable", constant=True)
-    isVisible                 = param.Boolean(True, doc="Whether the plot is visible")
+    name = param.Parameter(default="Not editable", constant=True)
+    isVisible = param.Boolean(True, doc="Whether the plot is visible")
     
 
 
@@ -123,14 +123,22 @@ class ExampleExtended(BaseClass):
 # checkbutton_group = pn.widgets.CheckButtonGroup(name='Check Button Group', value=[], options=pf_options_list_strings) # checkbutton_group.value 
 # cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
 
-class SinglePlacefieldPlottingExtended(BaseClass):
-    color                   = param.Color(default='#FF0000')
-    # dictionary              = param.Dict(default={"a": 2, "b": 9})
-    select_string           = param.ObjectSelector(default="yellow", objects=["red", "yellow", "green"])
-    select_fn               = param.ObjectSelector(default=list,objects=[list, set, dict])
-    # active_pf_idx_list      = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
-    
 
+class SinglePlacefieldPlottingExtended(BaseClass):
+    color = param.Color(default='#FF0000')
+    spikesVisible = param.Boolean(True, doc="Whether the spikes are visible")
+    extended_values_dictionary = param.Dict(default=dict())
+    
+    # def panel(self):
+    #     return pn.Row(
+    #         pn.Column(
+    #             pn.Param(SinglePlacefieldPlottingExtended.param, name="SinglePlacefield", widgets= {
+    #                 'color': {'widget_type': pn.widgets.ColorPicker, 'name':'pf Color', 'value':'#99ef78', 'width': 50},
+    #             })
+    #         )
+    #     )
+        
+        
 
 class ActivePlacefieldsPlotting(OptionsListMixin, param.Parameterized):
     """ """
