@@ -33,6 +33,7 @@ class SpikeRenderingMixin:
         """The spikes_df property."""
         return self.active_session.spikes_df
 
+
     def plot_spikes(self):
         historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df, spike_geom=SpikeRenderingMixin.spike_geom_cone.copy())        
         self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
@@ -45,6 +46,7 @@ class SpikeRenderingMixin:
             self.p.remove_actor(self.plots['spikes_pf_active'])
             needs_render = True
         return needs_render
+
 
     def update_spikes(self):
         """ Called to programmatically update the rendered spikes by replotting after changing their visibility/opacity/postion/etc """
@@ -62,7 +64,6 @@ class SpikeRenderingMixin:
             # self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
             # self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, opacity='render_opacity', show_scalar_bar=False, lighting=True, render=False)
             self.plots['spikes_pf_active'] = self.p.add_mesh(self.plots_data['spikes_pf_active']['historical_spikes_pc'], name='spikes_pf_active', scalars='rgb', rgb=True, show_scalar_bar=False, lighting=True, render=False)
-            
             needs_render = True
         else:
             self.p.remove_actor(self.plots['spikes_pf_active'])
@@ -71,10 +72,20 @@ class SpikeRenderingMixin:
         if needs_render:
             self.p.render()
             
+            
     def build_flat_color_data(self):
         # TODO: could also add in 'render_exclusion_mask'
-        self.params.flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in self.spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
-        print(f'SpikeRenderMixin.build_flat_color_data(): built combined rgb array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
+        # RGB Version:
+        self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:-1, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3)
+        print(f'SpikeRenderMixin.build_flat_color_data(): built rgb array from pf_colors, droppping the alpha components: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
+
+        # Add the split RGB columns to the DataFrame
+        self.spikes_df[['R','G','B']] = self.params.flat_spike_colors_array
+        
+        # RGBA version:
+        # self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # np.shape(flat_spike_colors) # (77726, 4)
+        # self.params.flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in self.spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
+        # print(f'SpikeRenderMixin.build_flat_color_data(): built combined rgba array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
         return self.params.flat_spike_colors_array
         
     
@@ -99,8 +110,9 @@ class SpikeRenderingMixin:
         self.build_flat_color_data()
         
 
+
 class HideShowSpikeRenderingMixin:
-    
+    """ Implementors present spiking data with the option to hide/show/etc some of the outputs interactively. """    
     @property
     def spike_exclusion_mask(self):
         """The spike_exclusion_mask property."""
@@ -109,12 +121,12 @@ class HideShowSpikeRenderingMixin:
     def spike_exclusion_mask(self, value):
         self.active_session.spikes_df['render_exclusion_mask'] = value    
     
+    
     def setup_hide_show_spike_rendering_mixin(self):
         self.active_session.spikes_df['render_opacity'] = 0.0 # Initialize all spikes to 0.0 opacity, meaning they won't be rendered.
-        self.active_session.spikes_df['render_exclusion_mask'] = True # all are included (not in the exclusion mask) to begin. This does not mean that they will be visible because 'render_opacity' is still set to zero.
+        self.active_session.spikes_df['render_exclusion_mask'] = False # all are included (not in the exclusion mask) to begin. This does not mean that they will be visible because 'render_opacity' is still set to zero.
         
         
-
     
     
     def update_active_spikes(self, spike_opacity_mask, is_additive=False):
@@ -125,6 +137,7 @@ class HideShowSpikeRenderingMixin:
             ipcDataExplorer.update_active_spikes(np.isin(ipcDataExplorer.active_session.spikes_df['aclu'], included_cell_ids)) # actives only the spikes that have aclu values (cell ids) in the included_cell_ids array.
         """
         assert np.shape(self.spikes_df['render_opacity']) == np.shape(spike_opacity_mask), "spike_opacity_mask must have one value for every spike in self.spikes_df, specifying its opacity"
+        print(f'update_active_spikes(spike_opacity_mask: ..., is_additive: {is_additive})')
         if is_additive:
             # use the 'out' argument to re-assign it to the self.spikes_df['render_opacity'] array in-place:
             self.spikes_df['render_opacity'] = np.clip((self.spikes_df['render_opacity'] + spike_opacity_mask), 0.0, 1.0)
@@ -139,6 +152,13 @@ class HideShowSpikeRenderingMixin:
     
     
     def change_unit_spikes_included(self, cell_ids, are_included):
+        """[summary]
+
+        Args:
+            cell_ids ([type]): [description]
+            are_included ([type]): [description]
+        """
+        print(f'change_unit_spikes_included(cell_ids: {cell_ids}, are_included: {are_included})')
         if are_included:
             self.update_active_spikes(np.isin(self.spikes_df['aclu'], cell_ids), is_additive=True)
         else:
@@ -148,17 +168,18 @@ class HideShowSpikeRenderingMixin:
             remove_opacity[remove_opacity_specifier] = -1 # set to negative one, to ensure that regardless of the current opacity the clipped opacity will be removed for these items
             self.update_active_spikes(remove_opacity, is_additive=True)
         
+        
     def mask_spikes_from_render(self, excluded_cell_ids):
-        self.spike_exclusion_mask[np.isin(self.spike_exclusion_mask['aclu'], excluded_cell_ids)] = True
+        self.spike_exclusion_mask[np.isin(self.spikes_df['aclu'], excluded_cell_ids)] = True
         self.update_spikes()
         
     def unmask_spikes_from_render(self, excluded_cell_ids):
         # removes the specified spikes from the exclusion mask
-        self.spike_exclusion_mask[np.isin(self.spike_exclusion_mask['aclu'], excluded_cell_ids)] = False
+        self.spike_exclusion_mask[np.isin(self.spikes_df['aclu'], excluded_cell_ids)] = False
         self.update_spikes()
         
     def clear_spikes_exclusion_mask(self):
-        self.spike_exclusion_mask = True # all are included (not in the exclusion mask) to begin.
+        self.spike_exclusion_mask = False # all are included (not in the exclusion mask) to begin.
         self.update_spikes()
 
     # def change_active_spikes_exclusion_mask(self, included_cell_ids, is_visible):        

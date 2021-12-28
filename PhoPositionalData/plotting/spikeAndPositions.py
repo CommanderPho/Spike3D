@@ -31,13 +31,18 @@ from vtkmodules.vtkCommonCore import vtkLookupTable # required for build_custom_
 
 
 def build_repeated_spikes_color_array(spikes_df):
+    
+    
+    
+    spike_color_info.render_opacity
     flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
-    print(f'build_repeated_spikes_color_array(spikes_df): built combined rgb array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(flat_spike_colors_array)}')
+    
+    # flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
+    # print(f'build_repeated_spikes_color_array(spikes_df): built combined rgb array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(flat_spike_colors_array)}')
     # included_cell_INDEXES = np.array([ipcDataExplorer.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
     # included_cell_INDEXES = np.array([ipcDataExplorer.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
     # spikes_df['cell_idx'] = included_cell_INDEXES.copy()
     # flat_spike_colors = np.array([pv.parse_color(pf_colors_hex[i]) for i in spikes_df['cell_idx'].to_numpy()])
-    
     # return np.array([pv.parse_color(pf_colors_hex[i]) for i in spikes_df['aclu'].to_numpy()])
     return flat_spike_colors_array
     
@@ -120,13 +125,20 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
     else:
         print('no custom render_opacity set on dataframe.')
         
-        
-    if ('rgb_hex' in active_flat_df.columns) and ('render_opacity' in active_flat_df.columns):
-        spike_history_pdata['rgb'] = build_repeated_spikes_color_array(active_flat_df).copy()
-        print('successfully set custom rgb key in build_active_spikes_plot_pointdata_df(...).')
+    # rebuild the RGB data from the dataframe:
+    if (np.isin(['R','G','B','render_opacity'], active_flat_df.columns).all):
+        spike_history_pdata['rgb'] = active_flat_df[['R','G','B']].to_numpy()
+        # TODO: could easily add the spike_history_pdata['render_opacity'] here as RGBA if we wanted.
+        print('successfully set custom rgb key from separate R, G, B columns in dataframe.')
     else:
-        print('WARNING: rgb_hex or render_opacity key is missing from the dataframe!')
-        
+        print('WARNING: DATAFRAME LACKS RGB VALUES!')
+                
+    # if ('rgb_hex' in active_flat_df.columns) and ('render_opacity' in active_flat_df.columns):
+    #     spike_history_pdata['rgb'] = build_repeated_spikes_color_array(active_flat_df)
+    #     print('successfully set custom rgb key in build_active_spikes_plot_pointdata_df(...).')
+    # else:
+    #     print('WARNING: rgb_hex or render_opacity key is missing from the dataframe!')
+    
     # if 'rgb' in active_flat_df.columns:
     #     print(f'adding rgb array from complete rgb column:')
     #     spike_history_pdata['rgb'] = active_flat_df['rgb'].values
