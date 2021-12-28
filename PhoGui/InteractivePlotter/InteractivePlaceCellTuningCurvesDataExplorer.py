@@ -15,6 +15,7 @@ from matplotlib.colors import ListedColormap
 from scipy.interpolate import RectBivariateSpline # for 2D spline interpolation
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
+from PhoPositionalData.plotting.mixins.occupancy_plotting_mixins import OccupancyPlottingMixin
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
 from PhoPositionalData.plotting.gui import CallbackSequence, SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
@@ -26,6 +27,7 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 #
 
 from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
+
 
 ## TODO: this has been factored out and into neuropy.neuron_identities.NeuronIdentityAccessingMixin
 class NeuronIdentityAccessingMixin:
@@ -58,6 +60,7 @@ class HideShowSpikeRenderingMixin:
         self.active_session.spikes_df['render_opacity'] = spike_opacity_mask
         self.update_spikes()
         
+        
 class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
     def update_active_placefields(self, placefield_indicies):
         """ 
@@ -80,10 +83,11 @@ class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin):
         self.plots['tuningCurvePlotActors'][show_index].SetVisibility(1)
 
 
-        
+
+
         
 # needs perform_plot_flat_arena
-class InteractivePlaceCellTuningCurvesDataExplorer(HideShowPlacefieldsRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
+class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideShowPlacefieldsRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
     """[summary]
     """
     show_legend = True

@@ -66,14 +66,23 @@ def plot_3d_binned_bars(p, xbin, ybin, data, zScalingFactor=1.0, drop_below_thre
     plotActor = p.add_mesh(mesh,
                             **({'show_edges': True, 'edge_color': 'k', 'nan_opacity': 0.0, 'scalars': 'Elevation', 'opacity': 1.0, 'use_transparency': False, 'smooth_shading': False, 'show_scalar_bar': False, 'render': True} | kwargs)
                           )
-    p.enable_depth_peeling() # this fixes bug where it appears transparent even when opacity is set to 1.00
+    # p.enable_depth_peeling() # this fixes bug where it appears transparent even when opacity is set to 1.00
     
-    plotActors = {'main': plotActor}
-    data_dict = {
-        'name':plot_name,
-        'mesh':mesh, 
-        'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
-        'active_data': active_data
+    # plotActors = {'main': plotActor}
+    # data_dict = {
+    #     'name':plot_name,
+    #     'mesh':mesh, 
+    #     'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
+    #     'active_data': active_data
+    # }
+    
+    plotActors = {plot_name: {'main': plotActor}}
+    data_dict = {plot_name: { 
+            'name':plot_name,
+            'grid': mesh, 
+            'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
+            'active_data': active_data
+        }
     }
     return plotActors, data_dict
     
@@ -142,19 +151,22 @@ def plot_point_labels(p, xbin_centers, ybin_centers, data, point_labels=None, po
     grid = pv.StructuredGrid(twoDimGrid_x, twoDimGrid_y, active_data)
     points = grid.points
     
-    plot_name = build_3d_plot_identifier_name('plot_point_labels', kwargs.get('name', ''))
+    plot_name = build_3d_plot_identifier_name('plot_point_labels', kwargs.get('name', 'main'))
     kwargs['name'] = plot_name # this is the only one to overwrite in kwargs
     plotActors_labels, data_dict_labels = _perform_plot_point_labels(p, points, point_labels=point_labels, point_mask=point_mask,
                                                                         **({'point_size': 8, 'font_size': 10, 'name': 'build_center_labels_test', 'shape_opacity': 0.8, 'show_points': False} | kwargs)
                                                                     )
+    # plotActors = {'main': plotActors_labels['main']}
     
-    plotActors = {'main': plotActors_labels['main']}
-    data_dict = {
-        'name':plot_name,
-        'grid': grid, 
-        'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
-        'active_data': active_data
-    } | data_dict_labels
+    plotActors = {plot_name: plotActors_labels['main']}
+    data_dict = {plot_name: { 
+            'name':plot_name,
+            'grid': grid, 
+            'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
+            'active_data': active_data
+        } | data_dict_labels
+    }
+    
     return plotActors, data_dict
 
 
