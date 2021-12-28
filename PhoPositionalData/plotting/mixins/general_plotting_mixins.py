@@ -161,8 +161,10 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
 
 ## Parameters (Param):
 class BaseClass(param.Parameterized):
-    name = param.Parameter(default="Not editable", constant=True)
-    isVisible = param.Boolean(False, doc="Whether the plot is visible")
+    # name = param.Parameter(default="Not editable", constant=True)
+    name = param.String(default='name', doc='The name of the placefield')
+    # name = param.Parameter(default='name', doc='The name of the placefield')
+    isVisible = param.Boolean(default=False, doc="Whether the plot is visible")
 
 
 class ExampleExtended(BaseClass):
@@ -177,8 +179,8 @@ class ExampleExtended(BaseClass):
 
 class SinglePlacefieldPlottingExtended(BaseClass):
     color = param.Color(default='#FF0000', doc="The placefield's Color")
-    spikesVisible = param.Boolean(False, doc="Whether the spikes are visible")
-    extended_values_dictionary = param.Dict(default=dict())
+    spikesVisible = param.Boolean(default=False, doc="Whether the spikes are visible")
+    extended_values_dictionary = param.Dict(default={}, doc="Extra values stored in a dictionary.")
     
     # def panel(self):
     #     return pn.Row(
