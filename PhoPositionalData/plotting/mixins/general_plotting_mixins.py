@@ -36,17 +36,16 @@ class NeuronIdentityAccessingMixin:
         # print(f'cell_i: {cell_i}, cell_id: {cell_id}')
         return neuron_i, neuron_id
     
-class HideShowSpikeRenderingMixin:
-    def update_active_spikes(self, spike_opacity_mask):
-        """ 
-        Usage: 
-            included_cell_ids = [48, 61]
-            
-            ipcDataExplorer.update_active_spikes(np.isin(ipcDataExplorer.active_session.spikes_df['aclu'], included_cell_ids)) # actives only the spikes that have aclu values (cell ids) in the included_cell_ids array.
-        """
-        assert np.shape(self.active_session.spikes_df['render_opacity']) == np.shape(spike_opacity_mask), "spike_opacity_mask must have one value for every spike in self.active_session.spikes_df, specifying its opacity"
-        self.active_session.spikes_df['render_opacity'] = spike_opacity_mask
-        self.update_spikes()
+    
+# def __build_callbacks(self, tuningCurvePlotActors):
+#         combined_active_pf_update_callbacks = []
+#         for i, an_actor in enumerate(tuningCurvePlotActors):
+#             # Make a separate callback for each widget
+#             curr_visibility_callback = SetVisibilityCallback(an_actor)
+#             curr_spikes_update_callback = (lambda is_visible, i_copy=i: self._update_placefield_spike_visibility([i_copy], is_visible))
+#             combined_active_pf_update_callbacks.append(CallbackSequence([curr_visibility_callback, curr_spikes_update_callback]))
+#         return combined_active_pf_update_callbacks
+    
         
 
 class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
@@ -90,10 +89,7 @@ class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
 # self.params.unit_labels
 # self.params.pf_unit_ids
 
-        
     
-    
-        
 class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
     
     # active_pf_idx_list = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
@@ -166,14 +162,18 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
         
 
 ## Parameters (Param):
-class BaseClass(param.Parameterized):
+class BasePlotDataParams(param.Parameterized):
     # name = param.Parameter(default="Not editable", constant=True)
     name = param.String(default='name', doc='The name of the placefield')
     # name = param.Parameter(default='name', doc='The name of the placefield')
     isVisible = param.Boolean(default=False, doc="Whether the plot is visible")
 
+class ExtendedPlotDataParams(BasePlotDataParams):
+    color = param.Color(default='#FF0000', doc="The placefield's Color")
+    extended_values_dictionary = param.Dict(default={}, doc="Extra values stored in a dictionary.")
 
-class ExampleExtended(BaseClass):
+
+class ExampleExtended(BasePlotDataParams):
     color                   = param.Color(default='#BBBBBB')
     dictionary              = param.Dict(default={"a": 2, "b": 9})
     select_string           = param.ObjectSelector(default="yellow", objects=["red", "yellow", "green"])
@@ -183,10 +183,9 @@ class ExampleExtended(BaseClass):
 # checkbutton_group = pn.widgets.CheckButtonGroup(name='Check Button Group', value=[], options=pf_options_list_strings) # checkbutton_group.value 
 # cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
 
-class SinglePlacefieldPlottingExtended(BaseClass):
-    color = param.Color(default='#FF0000', doc="The placefield's Color")
+class SinglePlacefieldPlottingExtended(ExtendedPlotDataParams):
     spikesVisible = param.Boolean(default=False, doc="Whether the spikes are visible")
-    extended_values_dictionary = param.Dict(default={}, doc="Extra values stored in a dictionary.")
+    
     
     
     # @param.depends(c.param.country, d.param.i, watch=True)

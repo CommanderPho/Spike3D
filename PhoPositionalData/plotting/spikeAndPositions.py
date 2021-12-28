@@ -76,13 +76,10 @@ def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
         traversal_order_scalars = np.arange(len(x))
         return p.add_mesh(pc_maze, name='maze_bg', label='maze', scalars=traversal_order_scalars, render=True)
 
+
+
 # dataframe version of the build_active_spikes_plot_pointdata(...) function
 def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
-    # spike_series_times = active_flattened_spike_times # currently unused
-    # spike_series_identities = active_flat_df['unit_id'] # currently unused
-    # z = np.zeros_like(spike_series_positions[0,:])
-    
-    # spike_history_point_cloud = np.vstack((active_flat_df['x'].values, active_flat_df['y'].values, active_flat_df['z_fixed'].values)).T    
     
     if 'z' in active_flat_df.columns:
         # use custom override z-values
@@ -114,10 +111,12 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
 
 # dataframe versions of the build_active_spikes_plot_data(...) function
 def build_active_spikes_plot_data_df(active_flat_df: pd.DataFrame, spike_geom):
-    # spike_series_times = active_flattened_spike_times # currently unused
+    """ 
+    Usage:
+        spike_history_pdata, spike_history_pc = build_active_spikes_plot_data_df(active_flat_df, spike_geom)
+    """
     spike_history_pdata = build_active_spikes_plot_pointdata_df(active_flat_df)
-    # create many spheres from the point cloud
-    spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy())
+    spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy()) # create many glyphs from the point cloud
     return spike_history_pdata, spike_history_pc
 
 
