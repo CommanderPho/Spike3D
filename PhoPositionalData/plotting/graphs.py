@@ -1,13 +1,16 @@
+from copy import deepcopy
 import numpy as np
 import pyvista as pv
 
+def build_3d_plot_identifier_name(*args):
+    return '_'.join(list(args))    
 
 def prepare_binned_data_for_3d_bars(xbin, ybin, data, mask2d=None):
     """ Sequentally repeats xbin, ybin, and data entries to prepare for being plot in 3D bar-plot form.
     Does this by repeating the xbin and ybin except the first and last entries so that there is one entry for each vertex of a 2d rectangular polygon.
     Following that, it repeats in both dimensions the data values, so that each of the created verticies has the same height value.
     Usage:
-        modified_xbin, modified_ybin, modified_data = prepare_binned_data_for_3d(active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy)
+        modified_xbin, modified_ybin, modified_data = prepare_binned_data_for_3d_bars(active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy)
     """
     # duplicates every xbin value except for the first and last:
     modified_xbin = np.repeat(xbin, 2) # remove the first and last elements, which are duplicates
@@ -33,28 +36,41 @@ def prepare_binned_data_for_3d_bars(xbin, ybin, data, mask2d=None):
 def plot_3d_binned_bars(p, xbin, ybin, data, zScalingFactor=1.0, drop_below_threshold: float=None, **kwargs):
     """ Plots a 3D bar-graph
     Usage:
-        modified_xbin, modified_ybin, modified_data = prepare_binned_data_for_3d_bars(active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy)
-        plot_3d_binned_data(pActiveTuningCurvesPlotter,modified_xbin, modified_ybin, modified_data)
+        plotActors, data_dict = plot_3d_binned_data(pActiveTuningCurvesPlotter, active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy)
     """
-    modified_xbin, modified_ybin, modified_data = prepare_binned_data_for_3d_bars(xbin, ybin, data)
+    if drop_below_threshold is not None:
+        print(f'drop_below_threshold: {drop_below_threshold}')
+        # active_data[np.where(active_data < drop_below_threshold)] = np.nan
+        data_mask = (data.copy() < drop_below_threshold)
+    else:
+        data_mask = None
+    
+    modified_xbin, modified_ybin, modified_data, modified_mask2d = prepare_binned_data_for_3d_bars(xbin.copy(), ybin.copy(), data.copy(), mask2d=data_mask)
     # build a structured grid out of the bins
     twoDimGrid_x, twoDimGrid_y = np.meshgrid(modified_xbin, modified_ybin)
-    active_data = modified_data[:,:].T.copy() # A single tuning curve
+    active_data = deepcopy(modified_data[:,:].T) # A single tuning curve
     # active_data = modified_data[:,:].copy() # A single tuning curve
 
-
-    if drop_below_threshold is not None:
-        active_data[np.where(active_data < drop_below_threshold)] = np.nan
-
+    if modified_mask2d is not None:
+        active_data_mask = modified_mask2d[:,:].T.copy()
+        print(f'Masking {len(np.where(active_data_mask))} of {np.size(active_data)} elements.')
+        # apply the mask now:
+        active_data[active_data_mask] = np.nan
+    
     mesh = pv.StructuredGrid(twoDimGrid_x, twoDimGrid_y, active_data)
-    mesh["Elevation"] = (active_data.ravel(order="F") * zScalingFactor) 
+    mesh["Elevation"] = (active_data.ravel(order="F") * zScalingFactor)
+
+    plot_name = build_3d_plot_identifier_name('plot_3d_binned_bars', kwargs.get('name', ''))
+    kwargs['name'] = plot_name # this is the only one to overwrite in kwargs
+    print(f'name: {plot_name}')    
     plotActor = p.add_mesh(mesh,
-                            **({'name': 'test', 'show_edges': True, 'edge_color': 'k', 'nan_opacity': 0.0, 'scalars': 'Elevation', 'opacity': 1.0, 'use_transparency': False, 'smooth_shading': False, 'show_scalar_bar': False, 'render': True} | kwargs)
+                            **({'show_edges': True, 'edge_color': 'k', 'nan_opacity': 0.0, 'scalars': 'Elevation', 'opacity': 1.0, 'use_transparency': False, 'smooth_shading': False, 'show_scalar_bar': False, 'render': True} | kwargs)
                           )
     p.enable_depth_peeling() # this fixes bug where it appears transparent even when opacity is set to 1.00
     
     plotActors = {'main': plotActor}
     data_dict = {
+        'name':plot_name,
         'mesh':mesh, 
         'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
         'active_data': active_data
@@ -125,12 +141,16 @@ def plot_point_labels(p, xbin_centers, ybin_centers, data, point_labels=None, po
     active_data = data[:,:].T.copy() # A single tuning curve
     grid = pv.StructuredGrid(twoDimGrid_x, twoDimGrid_y, active_data)
     points = grid.points
+    
+    plot_name = build_3d_plot_identifier_name('plot_point_labels', kwargs.get('name', ''))
+    kwargs['name'] = plot_name # this is the only one to overwrite in kwargs
     plotActors_labels, data_dict_labels = _perform_plot_point_labels(p, points, point_labels=point_labels, point_mask=point_mask,
                                                                         **({'point_size': 8, 'font_size': 10, 'name': 'build_center_labels_test', 'shape_opacity': 0.8, 'show_points': False} | kwargs)
                                                                     )
     
     plotActors = {'main': plotActors_labels['main']}
     data_dict = {
+        'name':plot_name,
         'grid': grid, 
         'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
         'active_data': active_data
