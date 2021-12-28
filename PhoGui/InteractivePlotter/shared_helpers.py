@@ -6,14 +6,11 @@
 
 import numpy as np
 import pyvista as pv
-from pyvista.core.composite import MultiBlock
+# from pyvista.core.composite import MultiBlock
 from pyvistaqt import BackgroundPlotter
 
 from PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
 from PhoPositionalData.import_data import build_spike_positions_list
-
-
-from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
 
 
 
@@ -91,36 +88,36 @@ class DebugHelper():
         self.name = name
 
 
-class PlotGroup:
-    """
-        # can plot all at once using:
-        blocks.plot()
+# class PlotGroup:
+#     """
+#         # can plot all at once using:
+#         blocks.plot()
             
-        for name in blocks.keys():
-            block = blocks[name]
+#         for name in blocks.keys():
+#             block = blocks[name]
 
-        for block in blocks:
-            surf = block.extract_surface()  # Do something with each dataset
-    """
-    def __init__(self, name, plots):
-        self.name = name
-        self.plots = plots
-        self.blocks = pv.MultiBlock(self.plots)
+#         for block in blocks:
+#             surf = block.extract_surface()  # Do something with each dataset
+#     """
+#     def __init__(self, name, plots):
+#         self.name = name
+#         self.plots = plots
+#         self.blocks = pv.MultiBlock(self.plots)
 
         
-        # # Make a tree.
-        # root = vtkMultiBlockDataSet()
-        # # make the default branch:
-        # branch = vtkMultiBlockDataSet()        
-        # root.SetBlock(0, branch)
+#         # # Make a tree.
+#         # root = vtkMultiBlockDataSet()
+#         # # make the default branch:
+#         # branch = vtkMultiBlockDataSet()        
+#         # root.SetBlock(0, branch)
         
-        # # apply the list objects as leaves
-        # for i, a_plot in enumerate(plots_list):
-        #     # Make some leaves.
-        #     a_leaf = a_plot
-        #     a_leaf.SetCenter(0, 0, 0)
-        #     a_leaf.Update()
-        #     branch.SetBlock(0, a_leaf.GetOutput())
+#         # # apply the list objects as leaves
+#         # for i, a_plot in enumerate(plots_list):
+#         #     # Make some leaves.
+#         #     a_leaf = a_plot
+#         #     a_leaf.SetCenter(0, 0, 0)
+#         #     a_leaf.Update()
+#         #     branch.SetBlock(0, a_leaf.GetOutput())
         
 
 

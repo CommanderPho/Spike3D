@@ -15,6 +15,7 @@ from matplotlib.colors import ListedColormap
 from scipy.interpolate import RectBivariateSpline # for 2D spline interpolation
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronIdentityAccessingMixin
 from PhoPositionalData.plotting.mixins.occupancy_plotting_mixins import OccupancyPlottingMixin
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
@@ -28,24 +29,6 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 
 from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
 
-
-## TODO: this has been factored out and into neuropy.neuron_identities.NeuronIdentityAccessingMixin
-class NeuronIdentityAccessingMixin:
-    @property
-    def neuron_ids(self):
-        """ e.g. return np.array(active_epoch_placefields2D.cell_ids) """
-        raise NotImplementedError
-    
-    def get_neuron_id_and_idx(self, neuron_i=None, neuron_id=None):
-        assert (neuron_i is not None) or (neuron_id is not None), "You must specify either cell_i or cell_id, and the other will be returned"
-        if neuron_i is not None:
-            neuron_i = int(neuron_i)
-            neuron_id = self.neuron_ids[neuron_i]
-        elif neuron_id is not None:
-            neuron_id = int(neuron_id)
-            neuron_i = np.where(self.neuron_ids == neuron_id)[0].item()
-        # print(f'cell_i: {cell_i}, cell_id: {cell_id}')
-        return neuron_i, neuron_id
 
 
 class HideShowSpikeRenderingMixin:
