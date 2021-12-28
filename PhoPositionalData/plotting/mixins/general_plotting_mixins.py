@@ -1,7 +1,6 @@
 import param
 import numpy as np
 import pandas as pd
-import panel as pn
 
 
 ## TODO: this has been factored out and into neuropy.neuron_identities.NeuronIdentityAccessingMixin
@@ -71,6 +70,7 @@ class HideShowPlacefieldsRenderingMixin(NeuronIdentityAccessingMixin, param.Para
         self.plots['tuningCurvePlotActors'][show_index].SetVisibility(1)
 
 
+
 class BaseClass(param.Parameterized):
     name                       = param.Parameter(default="Not editable", constant=True)
     isVisible                 = param.Boolean(True, doc="Whether the plot is visible")
@@ -83,104 +83,150 @@ class ExampleExtended(BaseClass):
     select_string           = param.ObjectSelector(default="yellow", objects=["red", "yellow", "green"])
     select_fn               = param.ObjectSelector(default=list,objects=[list, set, dict])
     int_list                = param.ListSelector(default=[3, 5], objects=[1, 3, 5, 7, 9], precedence=0.5)
-    
 
+# checkbutton_group = pn.widgets.CheckButtonGroup(name='Check Button Group', value=[], options=pf_options_list_strings) # checkbutton_group.value 
+# cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
 
-class PlacefieldPlottingExtended(BaseClass):
+class SinglePlacefieldPlottingExtended(BaseClass):
     color                   = param.Color(default='#FF0000')
-    dictionary              = param.Dict(default={"a": 2, "b": 9})
+    # dictionary              = param.Dict(default={"a": 2, "b": 9})
     select_string           = param.ObjectSelector(default="yellow", objects=["red", "yellow", "green"])
     select_fn               = param.ObjectSelector(default=list,objects=[list, set, dict])
-    active_pf_idx_list                = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
-    hide_all_action       = param.Action(lambda x: update_active_placefields(dt.datetime.utcnow()), 
-                                           doc="""Hide All Placefields.""", precedence=0.7),
-    update_action       = param.Action(lambda x: x.timestamps.append(dt.datetime.utcnow()), 
-                                           doc="""Update Placefield Visibility.""", precedence=0.7),
-    update_action       = param.Action(lambda x: x.timestamps.append(dt.datetime.utcnow()), 
-                                           doc="""Update Placefield Visibility.""", precedence=0.7)
-
-
-
+    # active_pf_idx_list      = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
     
 
 
+class ActivePlacefieldsPlotting(param.Parameterized):
+    
+    # _on_hide_all_placefields = lambda x: print(f'_on_hide_all_placefields({x})')
+    # _on_update_active_placefields = lambda x: print(f'_on_update_active_placefields({x})')
+    
+    # pf_options_list_ints, pf_options_list_strings = ActivePlacefieldsPlotting.build_pf_options_list(40)
 
-class ActivePlacefieldsPlottingNew:
+    # curr_active_pf_idx_list_label = param.Parameter(default="[]", constant=True)
+    curr_active_pf_idx_list_label = param.Parameter(default="[]", constant=False)
+    active_pf_idx_list = param.ListSelector(default=[], objects= ['0', '1', '2'], precedence=0.5)
+    dictionary = param.Dict(default={"a": 2, "b": 9})
+    
+    # hide_all_action = param.Action(lambda selected_indicies: self.on_hide_all_placefields(), doc="""Hide All Placefields.""", precedence=0.7)
+    # update_action = param.Action(lambda selected_indicies: self.on_update_active_placefields([int(an_idx) for an_idx in selected_indicies]), doc="""Update Placefield Visibility.""", precedence=0.7)
+    # active_pf_idx_list = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
+    
     
     def __init__(self, num_pfs, **params):
-        super(ActivePlacefieldsPlottingNew, self).__init__(**params)
+        super(ActivePlacefieldsPlotting, self).__init__(**params)
         self.num_pfs = num_pfs
         # self.figure = figure(x_range=(-1, 1), y_range=(-1, 1))
         # self.renderer = self.figure.line(*self._get_coords())
-    
+
+
     @staticmethod
     def build_pf_options_list(num_pfs=40):
         pf_options_list_ints = np.arange(num_pfs)
         pf_options_list_strings = [f'{i}' for i in pf_options_list_ints]
         return pf_options_list_ints, pf_options_list_strings
     
-    # _on_hide_all_placefields = lambda x: print(f'_on_hide_all_placefields({x})')
-    # _on_update_active_placefields = lambda x: print(f'_on_update_active_placefields({x})')
-    
     def on_hide_all_placefields(self):
         print('on_hide_all_placefields()')
         # lambda x: print(f'_on_hide_all_placefields({x})')
-    
+
     def on_update_active_placefields(self, updated_pf_indicies):
         print(f'on_update_active_placefields({updated_pf_indicies})')
-        
-    def btn_hide_all_callback(self, event):
-        print('btn_hide_all_callback(...)')
-        self.on_hide_all_placefields()
-        
-    def btn_update_active_placefields(self, event):
-        print('btn_update_active_placefields(...)')
-        self.on_update_active_placefields(self.cross_selector.value)
-        
-    def callback(self, *events):
-        print(events)
-        for event in events:
-            if event.name == 'options':
-                self.selections.object = 'Possible options: %s' % ', '.join(event.new)
-            elif event.name == 'value':
-                self.selected.object = 'Selected: %s' % ','.join(event.new)
+ 
+    # def index_selection_changed_callback(self, *events):
+    #     print(events)
+    #     for event in events:
+    #         if event.name == 'options':
+    #             self.selections.object = 'Possible options: %s' % ', '.join(event.new)
+    #         elif event.name == 'value':
+    #             self.selected.object = 'Selected: %s' % ','.join(event.new)
+  
+    @param.depends('active_pf_idx_list', watch=True)
+    def _update_curr_active_pf_idx_list_label(self):        
+        flat_updated_idx_list_string = ','.join(self.active_pf_idx_list)
+        flat_updated_idx_list_string = f'[{flat_updated_idx_list_string}]'
+        print('flat_updated_idx_list_string: {flat_updated_idx_list_string}')
+        self.curr_active_pf_idx_list_label = flat_updated_idx_list_string
 
-    def panel(self):
-        # Panel pane and widget objects:
-        self.selections = pn.pane.Markdown(object='')
-        self.selected = pn.pane.Markdown(object='')
-        self.cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=['0', '1', '2'], height=600, width=200) # cross_selector.value
 
-        # Action Buttons:
-        self.button_hide_all = pn.widgets.Button(name='Hide All Placefields')
-        self.button_hide_all.on_click(self.btn_hide_all_callback)
-        self.button_update = pn.widgets.Button(name='Update Active Placefields', button_type='primary')
-        self.button_update.on_click(self.btn_update_active_placefields)
 
-        self.watcher = self.cross_selector.param.watch(self.callback, ['options', 'value'], onlychanged=False)
-        # set initial
-        active_new_pf_panel.set_initial(self.num_pfs, [0, 1, 5])
-        
-        return pn.Column(pn.Row(self.cross_selector, width=200, height=600),
-                         pn.Spacer(width=200, height=10),
-                         self.selections,
-                         pn.Spacer(width=200, height=10),
-                         self.selected,
-                         pn.Spacer(width=200, height=20),
-                         pn.Row(self.button_hide_all, self.button_update)
-                        )
+
+# class ActivePlacefieldsPlottingNew:
     
-        # return pn.Row(pn.Column(self.cross_selector, width=200, height=600), self.selections, pn.Spacer(width=50, height=600), self.selected)
+#     def __init__(self, num_pfs, **params):
+#         super(ActivePlacefieldsPlottingNew, self).__init__(**params)
+#         self.num_pfs = num_pfs
+#         # self.figure = figure(x_range=(-1, 1), y_range=(-1, 1))
+#         # self.renderer = self.figure.line(*self._get_coords())
+    
+#     @staticmethod
+#     def build_pf_options_list(num_pfs=40):
+#         pf_options_list_ints = np.arange(num_pfs)
+#         pf_options_list_strings = [f'{i}' for i in pf_options_list_ints]
+#         return pf_options_list_ints, pf_options_list_strings
+    
+#     # _on_hide_all_placefields = lambda x: print(f'_on_hide_all_placefields({x})')
+#     # _on_update_active_placefields = lambda x: print(f'_on_update_active_placefields({x})')
+    
+#     def on_hide_all_placefields(self):
+#         print('on_hide_all_placefields()')
+#         # lambda x: print(f'_on_hide_all_placefields({x})')
+    
+#     def on_update_active_placefields(self, updated_pf_indicies):
+#         print(f'on_update_active_placefields({updated_pf_indicies})')
+        
+#     def btn_hide_all_callback(self, event):
+#         print('btn_hide_all_callback(...)')
+#         self.on_hide_all_placefields()
+        
+#     def btn_update_active_placefields(self, event):
+#         print('btn_update_active_placefields(...)')
+#         self.on_update_active_placefields(self.cross_selector.value)
+        
+#     def callback(self, *events):
+#         print(events)
+#         for event in events:
+#             if event.name == 'options':
+#                 self.selections.object = 'Possible options: %s' % ', '.join(event.new)
+#             elif event.name == 'value':
+#                 self.selected.object = 'Selected: %s' % ','.join(event.new)
 
-    def set_initial(self, num_pfs, selected_values):
-        # set initial
-        # options = ['A','B','C','D']
-        # options = ['A','B','C','D']
-        pf_options_list_ints, pf_options_list_strings = ActivePlacefieldsPlotting.build_pf_options_list(num_pfs)
-        options = pf_options_list_strings
-        selected_values = [str(an_item) for an_item in selected_values]
-        # value=[]
-        # self.cross_selector.param.set_param(options=dict(zip(options,options)), value=['D'])
-        # self.cross_selector.param.set_param(options=dict(zip(options,options)), value=['D'])
-        self.cross_selector.param.set_param(options=dict(zip(options, options)), value=selected_values)
+#     def panel(self):
+#         # Panel pane and widget objects:
+#         self.selections = pn.pane.Markdown(object='')
+#         self.selected = pn.pane.Markdown(object='')
+#         self.cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=['0', '1', '2'], height=600, width=200) # cross_selector.value
+
+#         # Action Buttons:
+#         self.button_hide_all = pn.widgets.Button(name='Hide All Placefields')
+#         self.button_hide_all.on_click(self.btn_hide_all_callback)
+#         self.button_update = pn.widgets.Button(name='Update Active Placefields', button_type='primary')
+#         self.button_update.on_click(self.btn_update_active_placefields)
+
+#         self.watcher = self.cross_selector.param.watch(self.callback, ['options', 'value'], onlychanged=False)
+#         # set initial
+#         active_new_pf_panel.set_initial(self.num_pfs, [0, 1, 5])
+        
+#         return pn.Column(pn.Row(self.cross_selector, width=200, height=600),
+#                          pn.Spacer(width=200, height=10),
+#                          self.selections,
+#                          pn.Spacer(width=200, height=10),
+#                          self.selected,
+#                          pn.Spacer(width=200, height=20),
+#                          pn.Row(self.button_hide_all, self.button_update)
+#                         )
+    
+#         # return pn.Row(pn.Column(self.cross_selector, width=200, height=600), self.selections, pn.Spacer(width=50, height=600), self.selected)
+
+#     def set_initial(self, num_pfs, selected_values):
+#         # set initial
+#         # options = ['A','B','C','D']
+#         # options = ['A','B','C','D']
+#         pf_options_list_ints, pf_options_list_strings = ActivePlacefieldsPlotting.build_pf_options_list(num_pfs)
+#         options = pf_options_list_strings
+#         selected_values = [str(an_item) for an_item in selected_values]
+#         # value=[]
+#         # self.cross_selector.param.set_param(options=dict(zip(options,options)), value=['D'])
+#         # self.cross_selector.param.set_param(options=dict(zip(options,options)), value=['D'])
+#         self.cross_selector.param.set_param(options=dict(zip(options, options)), value=selected_values)
         
