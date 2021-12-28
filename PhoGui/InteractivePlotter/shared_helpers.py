@@ -3,14 +3,50 @@
 # from pyvistaqt import BackgroundPlotter
 
 # from neuropy
-
 import numpy as np
 import pyvista as pv
 # from pyvista.core.composite import MultiBlock
 from pyvistaqt import BackgroundPlotter
+from PhoGui.general_parameters import DebugHelper, VisualizationParameters
 
 from PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
 from PhoPositionalData.import_data import build_spike_positions_list
+
+
+
+# class PlotGroup:
+#     """
+#         # can plot all at once using:
+#         blocks.plot()
+            
+#         for name in blocks.keys():
+#             block = blocks[name]
+
+#         for block in blocks:
+#             surf = block.extract_surface()  # Do something with each dataset
+#     """
+#     def __init__(self, name, plots):
+#         self.name = name
+#         self.plots = plots
+#         self.blocks = pv.MultiBlock(self.plots)
+
+        
+#         # # Make a tree.
+#         # root = vtkMultiBlockDataSet()
+#         # # make the default branch:
+#         # branch = vtkMultiBlockDataSet()        
+#         # root.SetBlock(0, branch)
+        
+#         # # apply the list objects as leaves
+#         # for i, a_plot in enumerate(plots_list):
+#         #     # Make some leaves.
+#         #     a_leaf = a_plot
+#         #     a_leaf.SetCenter(0, 0, 0)
+#         #     a_leaf.Update()
+#         #     branch.SetBlock(0, a_leaf.GetOutput())
+        
+
+
 
 
 
@@ -70,55 +106,12 @@ class InteractivePyvistaPlotter_ObjectManipulationMixin:
         else:
             raise IndexError
 
-
     def set_plot_visibility(self, plot_key, is_visibie):
         self.safe_get_plot(plot_key).SetVisibility(is_visibie)
 
     def toggle_plot_visibility(self, plot_key):
         return InteractivePyvistaPlotter_ObjectManipulationMixin.__toggle_visibility(self.safe_get_plot(plot_key))
 
-
-
-class VisualizationParameters:
-    def __init__(self, name) -> None:
-        self.name = name
-
-class DebugHelper():
-    def __init__(self, name) -> None:
-        self.name = name
-
-
-# class PlotGroup:
-#     """
-#         # can plot all at once using:
-#         blocks.plot()
-            
-#         for name in blocks.keys():
-#             block = blocks[name]
-
-#         for block in blocks:
-#             surf = block.extract_surface()  # Do something with each dataset
-#     """
-#     def __init__(self, name, plots):
-#         self.name = name
-#         self.plots = plots
-#         self.blocks = pv.MultiBlock(self.plots)
-
-        
-#         # # Make a tree.
-#         # root = vtkMultiBlockDataSet()
-#         # # make the default branch:
-#         # branch = vtkMultiBlockDataSet()        
-#         # root.SetBlock(0, branch)
-        
-#         # # apply the list objects as leaves
-#         # for i, a_plot in enumerate(plots_list):
-#         #     # Make some leaves.
-#         #     a_leaf = a_plot
-#         #     a_leaf.SetCenter(0, 0, 0)
-#         #     a_leaf.Update()
-#         #     branch.SetBlock(0, a_leaf.GetOutput())
-        
 
 
 class PlotGroupWrapper(InteractivePyvistaPlotter_ObjectManipulationMixin):
@@ -140,8 +133,7 @@ class PlotGroupWrapper(InteractivePyvistaPlotter_ObjectManipulationMixin):
 
         
         
-
-
+        
 
 class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, InteractivePyvistaPlotter_ObjectManipulationMixin):
     """The common base class for building an interactive PyVistaQT BackgroundPlotter with extra GUI components and controls.
