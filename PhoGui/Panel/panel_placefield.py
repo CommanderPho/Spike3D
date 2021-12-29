@@ -1,7 +1,9 @@
 import param
 import panel as pn
 from panel.viewable import Viewer
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import ActivePlacefieldsPlotting, SinglePlacefieldPlottingExtended
+
+from PhoPositionalData.plotting.mixins.placefield_plotting_mixins import ActivePlacefieldsPlotting, SinglePlacefieldPlottingExtended
+
 
 
 def build_single_placefield_output_panel(render_config):
@@ -22,8 +24,7 @@ def build_single_placefield_output_panel(render_config):
 
 
 class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExtended, Viewer):
-    """ 
-    
+    """ Panel configuration for a single placefield display (as in for a single cell)
     Usage:
         single_editable_pf_custom_widget = SingleEditablePlacefieldDisplayConfiguration(ipcDataExplorer.active_tuning_curve_render_configs[2])
         single_editable_pf_custom_widget
@@ -139,7 +140,7 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
         
         out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config,
                                                                    callbacks={'pf':(lambda updated_config_copy=a_config, i_copy=idx: tuning_curve_config_changed_callback([i_copy], [updated_config_copy])),
-                                                                              'spikes': (lambda are_included, i_copy=idx: spikes_config_changed_callback([i_copy], are_included))
+                                                                              'spikes': (lambda are_included, i_copy=idx: spikes_config_changed_callback(cell_IDXs=[i_copy], cell_IDs=None, are_included=are_included))
                                                                               }) for (idx, a_config) in enumerate(configs)]
         # out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config, callbacks=config_changed_callback) for a_config_idx, a_config in enumerate(configs)]
         return out_panels

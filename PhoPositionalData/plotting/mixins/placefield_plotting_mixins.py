@@ -5,7 +5,6 @@ import pandas as pd
 from PhoPositionalData.plotting.mixins.general_plotting_mixins import ExtendedPlotDataParams, NeuronIdentityAccessingMixin, OptionsListMixin
 
 
-
 class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
     """ Implementor owns placefields and has access to their data and configuration objects """
     @property

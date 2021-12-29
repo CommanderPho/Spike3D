@@ -27,13 +27,18 @@ class SpikeRenderingMixin:
         return self.active_session.spikes_df
 
 
-
-    @staticmethod
     def find_matching_cell_IDXs(self, cell_IDXs):
+        """Finds the cell IDXs (not IDs) in the self.spikes_df's appropriate column
+        Args:
+            cell_IDXs ([type]): [description]
+        """
         return np.isin(self.spikes_df['cell_idx'], cell_IDXs)
     
-    @staticmethod
     def find_matching_cell_ids(self, cell_ids):
+        """Finds the cell original ID in the self.spikes_df's appropriate column
+        Args:
+            cell_ids ([type]): [description]
+        """
         return np.isin(self.spikes_df['aclu'], cell_ids)
 
 
@@ -106,7 +111,7 @@ class SpikeRenderingMixin:
         # Add the required spike colors
         included_cell_INDEXES = np.array([self.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in self.spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
         self.spikes_df['cell_idx'] = included_cell_INDEXES.copy()
-        flat_spike_hex_colors = np.array([self.params.pf_colors_hex[i] for i in self.spikes_df['cell_idx'].to_numpy()])
+        flat_spike_hex_colors = np.array([self.params.pf_colors_hex[cell_IDX] for cell_IDX in self.spikes_df['cell_idx'].to_numpy()])
         self.spikes_df['rgb_hex'] = flat_spike_hex_colors.copy()
         self._build_flat_color_data()
         
@@ -152,19 +157,40 @@ class HideShowSpikeRenderingMixin:
     
     
     
-    def change_unit_spikes_included(self, cell_ids, are_included):
+    def change_unit_spikes_included(self, cell_IDXs=None, cell_IDs=None, are_included=True):
         """[summary]
 
         Args:
             cell_ids ([type]): [description]
             are_included ([type]): [description]
         """
-        print(f'change_unit_spikes_included(cell_ids: {cell_ids}, are_included: {are_included})')
+        assert (cell_IDXs is not None) or (cell_IDs is not None), "You must specify either cell_IDXs or cell_IDs, but not both"
+        # TODO: could use the NeuronIdentityAccessingMixin helper class
+            # self.get_neuron_id_and_idx(neuron_i=cell_IDXs, cell_ids=cell_ids)
+        if cell_IDXs is not None:
+            # IDXs mode, preferred.
+            print(f'change_unit_spikes_included(cell_IDXs: {cell_IDXs}, are_included: {are_included}): (note use of Index mode)')
+            matching_rows = self.find_matching_cell_IDXs(cell_IDXs)
+        else:
+            # IDs mode.
+            print(f'change_unit_spikes_included(cell_IDs: {cell_IDs}, are_included: {are_included}): WARNING: cell_ID mode. Indexes are preferred.')
+            matching_rows = self.find_matching_cell_ids(cell_IDs)
+
+        self.change_spike_rows_included(matching_rows, are_included)
+        
+
+    def change_spike_rows_included(self, row_specifier_mask, are_included):
+        """change_spike_rows_included presents an IDX vs. ID agnostic interface with the self.spikes_df to allow the bulk of the code to work for both cases.
+
+        Args:
+            row_specifier_mask ([type]): the boolean mask indentifying rows of the dataframe.
+            are_included ([type]): [description]
+        """
         if are_included:
-            self.update_active_spikes(np.isin(self.spikes_df['aclu'], cell_ids), is_additive=True)
+            self.update_active_spikes(row_specifier_mask, is_additive=True)
         else:
             # in remove mode, make the values negative:
-            remove_opacity_specifier = np.isin(self.spikes_df['aclu'], cell_ids) # gets the only spikes that are included in the cell_ids
+            remove_opacity_specifier = row_specifier_mask # gets the only spikes that are included in the cell_ids
             remove_opacity = np.zeros(np.shape(remove_opacity_specifier))
             remove_opacity[remove_opacity_specifier] = -1 # set to negative one, to ensure that regardless of the current opacity the clipped opacity will be removed for these items
             self.update_active_spikes(remove_opacity, is_additive=True)

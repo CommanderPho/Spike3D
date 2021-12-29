@@ -1,8 +1,6 @@
 import param
 import panel as pn
 from panel.viewable import Viewer
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import ActivePlacefieldsPlotting, SinglePlacefieldPlottingExtended
-
 
 
 def build_carousel_scroller(items):
