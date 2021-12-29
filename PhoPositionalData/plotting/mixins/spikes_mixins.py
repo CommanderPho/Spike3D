@@ -16,7 +16,6 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 #     plot_data = SingleCellSpikePlotData.param
 
 
-
 class SpikeRenderingMixin:
     """ Implementors render spikes from neural data in 3D """
     spike_geom_cone = pv.Cone(direction=(0.0, 0.0, -1.0), height=10.0, radius=0.2) # The spike geometry that is only displayed for a short while after the spike occurs

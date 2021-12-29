@@ -19,7 +19,7 @@ from neuropy.analyses.pho_custom_placefields import PfND
 
 from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
 
-from neuropy.plotting.spikes import get_neuron_colors
+from neuropy.utils.colors_util import get_neuron_colors
 from neuropy.plotting.placemaps import plot_all_placefields
 
 from PhoPositionalData.plotting.laps import plot_laps_2d
@@ -134,8 +134,12 @@ def compute_placefields_as_needed(active_session, computation_config=None, gener
 
 ## Plotting Colors:
 def build_units_colormap(neuron_ids):
+    """ 
+    Usage:
+        pf_sort_ind, pf_colors, pf_colormap, pf_listed_colormap = build_units_colormap(good_placefield_neuronIDs)
+    """
     pf_sort_ind = np.array([int(i) for i in np.arange(len(neuron_ids))]) # convert to integer scalar array
-    pf_colors = get_neuron_colors(pf_sort_ind) # [4 x n_neurons]: colors are by ascending index ID
+    pf_colors = get_neuron_colors(pf_sort_ind, cmap=None) # [4 x n_neurons]: colors are by ascending index ID
     pf_colormap = pf_colors.T # [n_neurons x 4] Make the colormap from the listed colors, used seemingly only by 'runAnalysis_PCAandICA(...)'
     pf_listed_colormap = ListedColormap(pf_colormap)
     return pf_sort_ind, pf_colors, pf_colormap, pf_listed_colormap
