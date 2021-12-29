@@ -3,7 +3,7 @@
 from PhoPositionalData.plotting.graphs import plot_3d_binned_bars, plot_point_labels
 
 class OccupancyPlottingMixin:
-    
+    """ Implementor visually plots a 3D occupancy map """
     @property
     def ratemap(self):
         return self.params.active_epoch_placefields.ratemap
@@ -12,7 +12,6 @@ class OccupancyPlottingMixin:
     def occupancy(self):
         return self.params.active_epoch_placefields.ratemap.occupancy
             
-        
     # xbin & ybin properties  
     @property
     def xbin(self):

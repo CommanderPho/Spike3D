@@ -137,13 +137,10 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
 
         # ipcDataExplorer.update_active_spikes(np.isin(ipcDataExplorer.active_session.spikes_df['aclu'], included_cell_ids))
         
-        spikes_config_changed_callback
-        
-        
         out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config,
-                                                                   callbacks={'pf':(lambda updated_config_copy=a_config, i_copy=i: tuning_curve_config_changed_callback([i_copy], [updated_config_copy])),
-                                                                              'spikes': (lambda are_included, i_copy=i: spikes_config_changed_callback([i_copy], are_included))
-                                                                              }) for (i, a_config) in enumerate(configs)]
+                                                                   callbacks={'pf':(lambda updated_config_copy=a_config, i_copy=idx: tuning_curve_config_changed_callback([i_copy], [updated_config_copy])),
+                                                                              'spikes': (lambda are_included, i_copy=idx: spikes_config_changed_callback([i_copy], are_included))
+                                                                              }) for (idx, a_config) in enumerate(configs)]
         # out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config, callbacks=config_changed_callback) for a_config_idx, a_config in enumerate(configs)]
         return out_panels
         

@@ -15,8 +15,9 @@ from matplotlib.colors import ListedColormap, to_hex
 from scipy.interpolate import RectBivariateSpline # for 2D spline interpolation
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import HideShowPlacefieldsRenderingMixin
+# from PhoPositionalData.plotting.mixins.general_plotting_mixins
 from PhoPositionalData.plotting.mixins.occupancy_plotting_mixins import OccupancyPlottingMixin
+from PhoPositionalData.plotting.mixins.placefield_plotting_mixins import HideShowPlacefieldsRenderingMixin
 from PhoPositionalData.plotting.mixins.spikes_mixins import SpikeRenderingMixin, HideShowSpikeRenderingMixin
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
@@ -27,7 +28,6 @@ from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
 #
-
 from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
 
 
@@ -129,7 +129,6 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         # active_included_place_cell_spikes_indicies = self.active_session.spikes_df.eval('(unit_id == @active_spike_index)') # '@' prefix indicates a local variable. All other variables are evaluated as column names
         needs_render = self.plot_spikes()
 
-
         if needs_render:
             self.p.render()
 
@@ -190,7 +189,9 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         interactive_plotter = PhoInteractivePlotter(pyvista_plotter=self.p, interactive_timestamp_slider_actor=self.gui['interactive_unitID_slider_actor'])
         
         
+        
     def _compute_z_position_spike_offsets(self):
+        ## UNUSED?
         ## Potentially successfully implemented the z-interpolation!!!: 2D interpolation where the (x,y) point of each spike is evaluated to determine the Z-position it would correspond to on the pf map.
         # _spike_pf_heights_2D_splineAproximator = [RectBivariateSpline(active_epoch_placefields2D.ratemap.xbin_centers, active_epoch_placefields2D.ratemap.ybin_centers, active_epoch_placefields2D.ratemap.normalized_tuning_curves[i]) for i in np.arange(active_epoch_placefields2D.ratemap.n_neurons)] 
         
@@ -222,80 +223,67 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
     #     if recent_only_spikes_pc.n_points >= 1:
     #         self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
     
-    def setup_placefield_projected_spikes(self):
-        ## Does not work, seems to smooth the pf surface, not sample it at the spike locations
-        # from https://docs.pyvista.org/examples/01-filter/interpolate.html
-        # surface = self.plots_data['tuningCurvePlotData']['pdata_currActiveNeuronTuningCurve']
-        active_pf_index = 4
-        surface = self.plots_data['tuningCurvePlotData'][active_pf_index]['pdata_currActiveNeuronTuningCurve'] # StructuredGrid
-        # surface = self.plots_data['spikes_pf_active']['historical_spikes_pdata']
-        points = self.plots_data['spikes_pf_active']['historical_spikes_pc'] # Polydata
-        interpolated = surface.interpolate(points, radius=12.0) # StructuredGrid
+    # def setup_placefield_projected_spikes(self):
+    #     ## Does not work, seems to smooth the pf surface, not sample it at the spike locations
+    #     # from https://docs.pyvista.org/examples/01-filter/interpolate.html
+    #     # surface = self.plots_data['tuningCurvePlotData']['pdata_currActiveNeuronTuningCurve']
+    #     active_pf_index = 4
+    #     surface = self.plots_data['tuningCurvePlotData'][active_pf_index]['pdata_currActiveNeuronTuningCurve'] # StructuredGrid
+    #     # surface = self.plots_data['spikes_pf_active']['historical_spikes_pdata']
+    #     points = self.plots_data['spikes_pf_active']['historical_spikes_pc'] # Polydata
+    #     interpolated = surface.interpolate(points, radius=12.0) # StructuredGrid
         
-        p = pv.Plotter()
-        p.add_mesh(points, point_size=30.0, render_points_as_spheres=True)
-        p.add_mesh(interpolated, scalars="Elevation")
-        p.show()
+    #     p = pv.Plotter()
+    #     p.add_mesh(points, point_size=30.0, render_points_as_spheres=True)
+    #     p.add_mesh(interpolated, scalars="Elevation")
+    #     p.show()
         
-    ## OBSOLITE:
-    def get_cell_local_index(self, cell_ids):
-        """ Gets the local index into the neuron/cell arrays (such as colors) from the cell's original ID. """
-        raise DeprecationWarning
-        return np.array([self.params.reverse_cellID_idx_lookup_map[a_cell_idx] for a_cell_idx in cell_ids])
-
-    def get_cell_original_id(self, cell_local_indicies):
-        """ Gets the cell's original ID from the local index into the neuron/cell array. Inverse of get_cell_local_index(...)  """
-        raise DeprecationWarning
-        return np.array([self.active_session.neurons.neuron_ids[a_local_idx] for a_local_idx in cell_local_indicies])
-            
-    
-    
     
 
-    
-    def _update_placefield_spike_visibility(self, active_cell_local_index, invert=True):
-        # print('_update_placefield_spike_visibility(active_cell_local_index: {}, invert: {})'.format(active_cell_local_index, invert))
-        found_cell_unit_IDs = self.get_cell_original_id(active_cell_local_index)
-        # print('\t found_cell_unit_IDs: {}. Calling update_placefield_spike_visibility(...) with these values.'.format(found_cell_unit_IDs))
-        return self.update_placefield_spike_visibility(found_cell_unit_IDs, invert)
-    
-    def update_placefield_spike_visibility(self, active_original_cell_unit_ids, invert=True):
-        """ Updates the visibility of the spikes for the provided unit_ids. This is useful for toggling display of a unit (such as with a checkbox). It currently requires specifying in complete format the units you want to display the spikes for, for example to display ONLY spikes for units 53 and 54, the command would be the following:
-            ipcDataExplorer.update_placefield_spike_visibility([53, 44], True)
-        Another features is the ability to take the provided items as a blacklist, and plot the complement of them (meaning hiding those specified units and plotting all of the rest):
-            ipcDataExplorer.update_placefield_spike_visibility([53, 44], False)
-        Args:
-            active_original_cell_unit_ids ([iterable]): [description]
-            invert ([Bool]): [description]
-        """
-        # print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, invert: {})'.format(active_original_cell_unit_ids, invert))
-        # print('\t active_original_cell_unit_ids: {}'.format(active_original_cell_unit_ids))
-        is_cell_included = np.isin(self.active_session.neurons.neuron_ids, active_original_cell_unit_ids, invert=(not invert)) # check if each cell_id is included in the neurons' active set of cells
-        active_only_num_cells_included = np.sum(is_cell_included)
-        print('\t num_cells_included: {}'.format(active_only_num_cells_included))
-        # print('\t is_cell_included: {}'.format(is_cell_included))
-        mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=invert)
-        
-        # Compute revised colormap for only the visible cells:
-        active_only_pf_colormap = self.active_config.plotting_config.pf_colors[:,is_cell_included].T # [n_neurons x 4]
-        active_only_pf_listed_colormap = ListedColormap(active_only_pf_colormap.copy())
-        needs_render = False
-        ## It seems to be working now, so we probably don't need this, but this was what I was looking for to set the color limts before:
-        # color_map_limits_override = [0.0, (active_only_num_cells_included - 1)] # , clim=color_map_limits_override
-        
-        if mesh.n_points >= 1:
-            # print('\t updating plot!')
-            self.plots['spikes_pf_active'] = self.p.add_mesh(mesh, name='spikes_pf_active', scalars='cellID', cmap=active_only_pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
-            # self.plots['spikes_pf_active'].SetVisibility(True)
-            needs_render = True
-        else:
-            print('\t WARNING: mesh is empty! Removing the actor!')
-            self.p.remove_actor(self.plots['spikes_pf_active'])
-            # self.plots['spikes_pf_active'].SetVisibility(False) 
-            needs_render = False # a render isn't needed because remove_actor forces a render by default
+    # def _update_placefield_spike_visibility(self, active_cell_local_index, invert=True):
+    #     # print('_update_placefield_spike_visibility(active_cell_local_index: {}, invert: {})'.format(active_cell_local_index, invert))
+    #     found_cell_unit_IDs = self.get_cell_original_id(active_cell_local_index)
+    #     # print('\t found_cell_unit_IDs: {}. Calling update_placefield_spike_visibility(...) with these values.'.format(found_cell_unit_IDs))
+    #     return self.update_placefield_spike_visibility(found_cell_unit_IDs, invert)
 
-        if needs_render:
-            self.p.update()
+    
+    # def update_placefield_spike_visibility(self, active_original_cell_unit_ids, invert=True):
+    #     """ Updates the visibility of the spikes for the provided unit_ids. This is useful for toggling display of a unit (such as with a checkbox). It currently requires specifying in complete format the units you want to display the spikes for, for example to display ONLY spikes for units 53 and 54, the command would be the following:
+    #         ipcDataExplorer.update_placefield_spike_visibility([53, 44], True)
+    #     Another features is the ability to take the provided items as a blacklist, and plot the complement of them (meaning hiding those specified units and plotting all of the rest):
+    #         ipcDataExplorer.update_placefield_spike_visibility([53, 44], False)
+    #     Args:
+    #         active_original_cell_unit_ids ([iterable]): [description]
+    #         invert ([Bool]): [description]
+    #     """
+    #     # print('update_placefield_spike_visibility(active_original_cell_unit_ids: {}, invert: {})'.format(active_original_cell_unit_ids, invert))
+    #     # print('\t active_original_cell_unit_ids: {}'.format(active_original_cell_unit_ids))
+    #     is_cell_included = np.isin(self.active_session.neurons.neuron_ids, active_original_cell_unit_ids, invert=(not invert)) # check if each cell_id is included in the neurons' active set of cells
+    #     active_only_num_cells_included = np.sum(is_cell_included)
+    #     print('\t num_cells_included: {}'.format(active_only_num_cells_included))
+    #     # print('\t is_cell_included: {}'.format(is_cell_included))
+    #     mesh = self.hide_placefield_spikes(active_original_cell_unit_ids, should_invert=invert)
+        
+    #     # Compute revised colormap for only the visible cells:
+    #     active_only_pf_colormap = self.active_config.plotting_config.pf_colors[:,is_cell_included].T # [n_neurons x 4]
+    #     active_only_pf_listed_colormap = ListedColormap(active_only_pf_colormap.copy())
+    #     needs_render = False
+    #     ## It seems to be working now, so we probably don't need this, but this was what I was looking for to set the color limts before:
+    #     # color_map_limits_override = [0.0, (active_only_num_cells_included - 1)] # , clim=color_map_limits_override
+        
+    #     if mesh.n_points >= 1:
+    #         # print('\t updating plot!')
+    #         self.plots['spikes_pf_active'] = self.p.add_mesh(mesh, name='spikes_pf_active', scalars='cellID', cmap=active_only_pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+    #         # self.plots['spikes_pf_active'].SetVisibility(True)
+    #         needs_render = True
+    #     else:
+    #         print('\t WARNING: mesh is empty! Removing the actor!')
+    #         self.p.remove_actor(self.plots['spikes_pf_active'])
+    #         # self.plots['spikes_pf_active'].SetVisibility(False) 
+    #         needs_render = False # a render isn't needed because remove_actor forces a render by default
+
+    #     if needs_render:
+    #         self.p.update()
             
             
             

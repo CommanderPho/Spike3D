@@ -7,25 +7,18 @@ from PhoPositionalData.analysis.helpers import partition
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df
 
 
-class SingleCellSpikePlotData(param.Parameterized):
-    point_data = param.Array(doc='spike_history_pdata')
-    glyph_data = param.Array(doc='spike_history_pc')
-
-
-class SpikePlotData(param.Parameterized):
-    plot_data = SingleCellSpikePlotData.param
-
-
-# class SpikePlotData(ExtendedPlotDataParams):   
+# class SingleCellSpikePlotData(param.Parameterized):
 #     point_data = param.Array(doc='spike_history_pdata')
-#     # @param.output(
 #     glyph_data = param.Array(doc='spike_history_pc')
-    
-    
-    
-    
+
+
+# class SpikePlotData(param.Parameterized):
+#     plot_data = SingleCellSpikePlotData.param
+
+
 
 class SpikeRenderingMixin:
+    """ Implementors render spikes from neural data in 3D """
     spike_geom_cone = pv.Cone(direction=(0.0, 0.0, -1.0), height=10.0, radius=0.2) # The spike geometry that is only displayed for a short while after the spike occurs
     
     @property
@@ -34,8 +27,18 @@ class SpikeRenderingMixin:
         return self.active_session.spikes_df
 
 
+
+    @staticmethod
+    def find_matching_cell_IDXs(self, cell_IDXs):
+        return np.isin(self.spikes_df['cell_idx'], cell_IDXs)
+    
+    @staticmethod
+    def find_matching_cell_ids(self, cell_ids):
+        return np.isin(self.spikes_df['aclu'], cell_ids)
+
+
     def plot_spikes(self):
-        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.active_session.spikes_df, spike_geom=SpikeRenderingMixin.spike_geom_cone.copy())        
+        historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.spikes_df, spike_geom=SpikeRenderingMixin.spike_geom_cone.copy())        
         self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
         if historical_spikes_pc.n_points >= 1:
             # self.plots['spikes_pf_active'] = self.p.add_mesh(historical_spikes_pc, name='spikes_pf_active', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
@@ -73,15 +76,13 @@ class SpikeRenderingMixin:
             self.p.render()
             
             
-    def build_flat_color_data(self):
+    def _build_flat_color_data(self):
         # TODO: could also add in 'render_exclusion_mask'
         # RGB Version:
         self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:-1, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3)
         print(f'SpikeRenderMixin.build_flat_color_data(): built rgb array from pf_colors, droppping the alpha components: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
-
         # Add the split RGB columns to the DataFrame
         self.spikes_df[['R','G','B']] = self.params.flat_spike_colors_array
-        
         # RGBA version:
         # self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # np.shape(flat_spike_colors) # (77726, 4)
         # self.params.flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in self.spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
@@ -107,7 +108,7 @@ class SpikeRenderingMixin:
         self.spikes_df['cell_idx'] = included_cell_INDEXES.copy()
         flat_spike_hex_colors = np.array([self.params.pf_colors_hex[i] for i in self.spikes_df['cell_idx'].to_numpy()])
         self.spikes_df['rgb_hex'] = flat_spike_hex_colors.copy()
-        self.build_flat_color_data()
+        self._build_flat_color_data()
         
 
 
@@ -163,7 +164,7 @@ class HideShowSpikeRenderingMixin:
             self.update_active_spikes(np.isin(self.spikes_df['aclu'], cell_ids), is_additive=True)
         else:
             # in remove mode, make the values negative:
-            remove_opacity_specifier = np.isin(self.spikes_df['aclu'], cell_ids)
+            remove_opacity_specifier = np.isin(self.spikes_df['aclu'], cell_ids) # gets the only spikes that are included in the cell_ids
             remove_opacity = np.zeros(np.shape(remove_opacity_specifier))
             remove_opacity[remove_opacity_specifier] = -1 # set to negative one, to ensure that regardless of the current opacity the clipped opacity will be removed for these items
             self.update_active_spikes(remove_opacity, is_additive=True)
