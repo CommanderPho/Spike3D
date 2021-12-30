@@ -52,8 +52,8 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
         # self._end_input = pn.widgets.FloatInput(align='end')
         self._wgt_label_button = pn.widgets.Button(name=self.name, button_type='default', margin=0, height=20, sizing_mode='stretch_both', width_policy='min')
         self._wgt_color_picker = pn.widgets.ColorPicker(value=self.color, width=60, height=20, margin=0)
-        self._wgt_toggle_visible = pn.widgets.Toggle(name='isVisible', value=self.isVisible, margin=0)
-        self._wgt_toggle_spikes = pn.widgets.Toggle(name='SpikesVisible', value=self.spikesVisible, margin=0)
+        self._wgt_toggle_visible = pn.widgets.Toggle(name='pf', value=self.isVisible, margin=0)
+        self._wgt_toggle_spikes = pn.widgets.Toggle(name='Spikes', value=self.spikesVisible, margin=0)
         super().__init__(**params)
         # Output Grid:
         self._layout = pn.GridSpec(width=60, height=100, margin=0)
@@ -154,6 +154,7 @@ def build_all_placefield_output_panels(ipcDataExplorer):
 
 
 class ActivePlacefieldsPlottingPanel(ActivePlacefieldsPlotting):
+    ## TODO: not used
     """ Draws a selector for the active placefields to plot using two adjacent list controls.
     Usage:
         active_new_pf_panel = ActivePlacefieldsPlottingPanel(np.arange(ipcDataExplorer.num_tuning_curve_plot_actors), ipcDataExplorer.visible_tuning_curve_indicies)
