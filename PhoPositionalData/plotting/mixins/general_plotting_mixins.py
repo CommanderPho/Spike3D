@@ -56,6 +56,50 @@ class NeuronIdentityAccessingMixin:
         found_cell_INDEXES = [self.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in cell_ids] # get the indexes from the cellIDs
         return found_cell_INDEXES
     
+    
+    
+    
+class NeuronConfigOwningMixin:
+    
+    @property
+    def active_neuron_render_configs(self):
+        """The active_neuron_render_configs property."""
+        return self.params.pf_active_configs
+    @active_neuron_render_configs.setter
+    def active_neuron_render_configs(self, value):
+        self.params.pf_active_configs = value
+
+    @property
+    def num_neuron_configs(self):
+        return len(self.active_neuron_render_configs)
+
+    @property
+    def neuron_config_indicies(self):
+        return np.arange(self.num_neuron_configs)
+    
+        
+    # , cell_IDXs=None, cell_IDs=None
+    def update_neuron_render_configs(self, updated_config_indicies, updated_configs):
+        """Updates the configs for the cells with the specified updated_config_indicies
+        Args:
+            updated_config_indicies ([type]): [description]
+            updated_configs ([type]): [description]
+        """
+        print(f'NeuronConfigOwningMixin.update_cell_configs(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        for an_updated_config_idx, an_updated_config in zip(updated_config_indicies, updated_configs):
+            self.active_neuron_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
+            
+         
+    def build_neuron_render_configs(self):
+        ## TODO: should have code here that ensures this is only done once, so values don't get overwritten
+        # Get the cell IDs that have a good place field mapping:
+        good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
+        num_neurons = len(good_placefield_neuronIDs)
+        unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(num_neurons)]
+        self.active_neuron_render_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in np.arange(num_neurons)]
+        
+           
+        
 # def __build_callbacks(self, tuningCurvePlotActors):
 #         combined_active_pf_update_callbacks = []
 #         for i, an_actor in enumerate(tuningCurvePlotActors):
