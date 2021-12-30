@@ -20,69 +20,6 @@ class PrettyPrintable:
     def _ipython_key_completions_(self) -> List[Optional[str]]:
         return self.keys()
 
-    # def __setitem__(self, index: Union[Tuple[int, Optional[str]], int, str], data: DataSet):
-    #     """Set a block with a VTK data object.
-
-    #     To set the name simultaneously, pass a string name as the 2nd index.
-
-    #     Example
-    #     -------
-    #     >>> import pyvista
-    #     >>> multi = pyvista.MultiBlock()
-    #     >>> multi[0] = pyvista.PolyData()
-    #     >>> multi[1, 'foo'] = pyvista.UnstructuredGrid()
-    #     >>> multi['bar'] = pyvista.PolyData()
-    #     >>> multi.n_blocks
-    #     3
-
-    #     """
-    #     i: int = 0
-    #     name: Optional[str] = None
-    #     if isinstance(index, (np.ndarray, collections.abc.Sequence)) and not isinstance(index, str):
-    #         i, name = index[0], index[1]
-    #     elif isinstance(index, str):
-    #         try:
-    #             i = self.get_index_by_name(index)
-    #         except KeyError:
-    #             i = -1
-    #         name = index
-    #     else:
-    #         i, name = cast(int, index), None
-    #     if data is not None and not is_pyvista_dataset(data):
-    #         data = wrap(data)
-    #     if i == -1:
-    #         self.append(data)
-    #         i = self.n_blocks - 1
-    #     else:
-    #         self.SetBlock(i, data)
-    #     if name is None:
-    #         name = f'Block-{i:02}'
-    #     self.set_block_name(i, name) # Note that this calls self.Modified()
-    #     if data not in self.refs:
-    #         self.refs.append(data)
-
-    # def __delitem__(self, index: Union[int, str]):
-    #     """Remove a block at the specified index."""
-    #     if isinstance(index, str):
-    #         index = self.get_index_by_name(index)
-    #     self.RemoveBlock(index)
-
-    # def __iter__(self) -> 'MultiBlock':
-    #     """Return the iterator across all blocks."""
-    #     self._iter_n = 0
-    #     return self
-
-    # def next(self) -> Optional['MultiBlock']:
-    #     """Get the next block from the iterator."""
-    #     if self._iter_n < self.n_blocks:
-    #         result = self[self._iter_n]
-    #         self._iter_n += 1
-    #         return result
-    #     else:
-    #         raise StopIteration
-
-    # __next__ = next
-    
     def _repr_pretty_(self, p, cycle=False):
         """ The cycle parameter will be true if the representation recurses - e.g. if you put a container inside itself. """
         # p.text(self.__repr__() if not cycle else '...')
