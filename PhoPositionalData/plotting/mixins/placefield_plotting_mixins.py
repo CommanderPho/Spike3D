@@ -2,7 +2,7 @@ import param
 import numpy as np
 import pandas as pd
 
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import ExtendedPlotDataParams, NeuronConfigOwningMixin, NeuronIdentityAccessingMixin, OptionsListMixin
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronConfigOwningMixin, NeuronIdentityAccessingMixin, OptionsListMixin
 
 
 class PlacefieldOwningMixin(NeuronIdentityAccessingMixin, NeuronConfigOwningMixin):
@@ -54,7 +54,7 @@ class PlacefieldOwningMixin(NeuronIdentityAccessingMixin, NeuronConfigOwningMixi
     #     # Get the cell IDs that have a good place field mapping:
     #     good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
     #     unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(self.num_tuning_curves)]
-    #     self.active_tuning_curve_render_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
+    #     self.active_tuning_curve_render_configs = [SingleNeuronPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
 
 
 
@@ -124,23 +124,6 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
 
 
 
-class SinglePlacefieldPlottingExtended(ExtendedPlotDataParams):
-    spikesVisible = param.Boolean(default=False, doc="Whether the spikes are visible")
-    
-    # @param.depends(c.param.country, d.param.i, watch=True)
-    # def g(country, i):
-    #     print(f"g country={country} i={i}")
-    
-    
-    # def panel(self):
-    #     return pn.Row(
-    #         pn.Column(
-    #             pn.Param(SinglePlacefieldPlottingExtended.param, name="SinglePlacefield", widgets= {
-    #                 'color': {'widget_type': pn.widgets.ColorPicker, 'name':'pf Color', 'value':'#99ef78', 'width': 50},
-    #             })
-    #         )
-    #     )
-        
         
         
 class ActivePlacefieldsPlotting(OptionsListMixin, param.Parameterized):

@@ -1,9 +1,9 @@
 import param
 import panel as pn
 from panel.viewable import Viewer
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import SingleNeuronPlottingExtended
 
-from PhoPositionalData.plotting.mixins.placefield_plotting_mixins import ActivePlacefieldsPlotting, SinglePlacefieldPlottingExtended
-
+from PhoPositionalData.plotting.mixins.placefield_plotting_mixins import ActivePlacefieldsPlotting
 
 
 def build_single_placefield_output_panel(render_config):
@@ -23,13 +23,13 @@ def build_single_placefield_output_panel(render_config):
     return gspec
 
 
-class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExtended, Viewer):
+class SingleEditablePlacefieldDisplayConfiguration(SingleNeuronPlottingExtended, Viewer):
     """ Panel configuration for a single placefield display (as in for a single cell)
     Usage:
         single_editable_pf_custom_widget = SingleEditablePlacefieldDisplayConfiguration(ipcDataExplorer.active_tuning_curve_render_configs[2])
         single_editable_pf_custom_widget
     """
-    # config = SinglePlacefieldPlottingExtended()
+    # config = SingleNeuronPlottingExtended()
     
     # value = param.Range(doc="A numeric range.")
     # width = param.Integer(default=300)
@@ -115,7 +115,7 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
 
     
     def config_from_state(self):
-        return SinglePlacefieldPlottingExtended(name=self.name, isVisible=self.isVisible, color=self.color, spikesVisible=self.spikesVisible)
+        return SingleNeuronPlottingExtended(name=self.name, isVisible=self.isVisible, color=self.color, spikesVisible=self.spikesVisible)
 
     @classmethod
     def build_all_placefield_output_panels(cls, configs, tuning_curve_config_changed_callback, spikes_config_changed_callback):
@@ -258,8 +258,8 @@ class ActivePlacefieldsPlottingPanel(ActivePlacefieldsPlotting):
 
 
 
-# class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExtended, Viewer):
-#     # config = SinglePlacefieldPlottingExtended()
+# class SingleEditablePlacefieldDisplayConfiguration(SingleNeuronPlottingExtended, Viewer):
+#     # config = SingleNeuronPlottingExtended()
     
 #     # value = param.Range(doc="A numeric range.")
 #     # width = param.Integer(default=300)

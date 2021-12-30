@@ -2,9 +2,6 @@ import param
 import numpy as np
 import pandas as pd
 
-from PhoPositionalData.plotting.mixins.placefield_plotting_mixins import SinglePlacefieldPlottingExtended
-
-
 class OptionsListMixin:
     @staticmethod
     def options_to_str(options_list_ints):
@@ -98,7 +95,7 @@ class NeuronConfigOwningMixin:
         good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
         num_neurons = len(good_placefield_neuronIDs)
         unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(num_neurons)]
-        self.active_neuron_render_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in np.arange(num_neurons)]
+        self.active_neuron_render_configs = [SingleNeuronPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in np.arange(num_neurons)]
         
            
         
@@ -138,6 +135,22 @@ class ExampleExtended(BasePlotDataParams):
 # cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
 
 
-        
+class SingleNeuronPlottingExtended(ExtendedPlotDataParams):
+    spikesVisible = param.Boolean(default=False, doc="Whether the spikes are visible")
+    
+    # @param.depends(c.param.country, d.param.i, watch=True)
+    # def g(country, i):
+    #     print(f"g country={country} i={i}")
+    
+    
+    # def panel(self):
+    #     return pn.Row(
+    #         pn.Column(
+    #             pn.Param(SingleNeuronPlottingExtended.param, name="SinglePlacefield", widgets= {
+    #                 'color': {'widget_type': pn.widgets.ColorPicker, 'name':'pf Color', 'value':'#99ef78', 'width': 50},
+    #             })
+    #         )
+    #     )
+           
 
 
