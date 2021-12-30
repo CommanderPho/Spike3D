@@ -29,23 +29,6 @@ should_display_2D_plots = True
 
 
 
-def debug_print_ratemap(ratemap):
-    # Get the cell IDs that have a good place field mapping:
-    good_placefield_neuronIDs = np.array(ratemap.neuron_ids) # in order of ascending ID
-    print('good_placefield_neuronIDs: {}; ({} good)'.format(good_placefield_neuronIDs, len(good_placefield_neuronIDs)))
-    
-def debug_print_placefield(active_epoch_placefield, short=True):
-    # Get the cell IDs that have a good place field mapping:
-    good_placefield_neuronIDs = np.array(active_epoch_placefield.ratemap.neuron_ids) # in order of ascending ID
-    num_spikes_per_spiketrain = np.array([np.shape(a_spk_train)[0] for a_spk_train in active_epoch_placefield.spk_t])
-    if short:
-        print('good_placefield_neuronIDs: ({} good)'.format(len(good_placefield_neuronIDs)), end='\n')
-        print('num_spikes: ({} total spikes)'.format(np.sum(num_spikes_per_spiketrain)), end='\n')
-    else:
-        print('good_placefield_neuronIDs: {}; ({} good)'.format(good_placefield_neuronIDs, len(good_placefield_neuronIDs)), end='\n')
-        print('num_spikes: {}; ({} total spikes)'.format(num_spikes_per_spiketrain, np.sum(num_spikes_per_spiketrain)), end='\n')
-    return pd.DataFrame({'neuronID':good_placefield_neuronIDs, 'num_spikes':num_spikes_per_spiketrain}).T
-
 
 def compute_placefields_masked_by_epochs(sess, active_config, included_epochs=None, should_display_2D_plots=False):
     active_session = deepcopy(sess)
@@ -58,19 +41,6 @@ def compute_placefields_masked_by_epochs(sess, active_config, included_epochs=No
     return active_epoch_placefields1D, active_epoch_placefields2D
 
 
-
-def debug_print_spike_counts(session):
-    uniques, indicies, inverse_indicies, count_arr = np.unique(session.spikes_df['aclu'].values, return_index=True, return_inverse=True, return_counts=True)
-    # count_arr = np.bincount(active_epoch_session.spikes_df['aclu'].values)
-    print('active_epoch_session.spikes_df unique aclu values: {}'.format(uniques))
-    print('active_epoch_session.spikes_df unique aclu value counts: {}'.format(count_arr))
-    print(len(uniques)) # 69 
-    uniques, indicies, inverse_indicies, count_arr = np.unique(session.spikes_df['unit_id'].values, return_index=True, return_inverse=True, return_counts=True)
-    # count_arr = np.bincount(active_epoch_session.spikes_df['unit_id'].values)
-    print('active_epoch_session.spikes_df unique unit_id values: {}'.format(uniques))
-    print('active_epoch_session.spikes_df unique unit_id value counts: {}'.format(count_arr))
-    print(len(uniques)) # 69 
-    
     
 
 def perform_compute_placefields(active_session_spikes_df, active_pos, computation_config: PlacefieldComputationParameters, active_epoch_placefields1D=None, active_epoch_placefields2D=None, included_epochs=None, should_force_recompute_placefields=True):
