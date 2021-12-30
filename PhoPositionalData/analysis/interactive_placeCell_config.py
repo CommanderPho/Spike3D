@@ -7,7 +7,8 @@ import sys
 import numpy as np
 from pathlib import Path
 
-from PhoGui.general_helpers import OrderedMeta, SimplePrintable
+from pyphocorehelpers.general_helpers import SimplePrintable
+
 
 # refactored to neuropy.analyses.placefields
 # class PlacefieldComputationParameters(SimplePrintable, metaclass=OrderedMeta):

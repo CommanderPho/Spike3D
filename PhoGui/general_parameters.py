@@ -1,6 +1,5 @@
     
-from PhoGui.general_helpers import OrderedMeta, SimplePrintable, PrettyPrintable
-
+from pyphocorehelpers.general_helpers import OrderedMeta, SimplePrintable, PrettyPrintable
 
 class VisualizationParameters(PrettyPrintable, SimplePrintable, metaclass=OrderedMeta):
     def __init__(self, name) -> None:
