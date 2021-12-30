@@ -8,7 +8,12 @@ from PhoPositionalData.plotting.mixins.general_plotting_mixins import BasePlotDa
 class OccupancyPlottingConfig(BasePlotDataParams):
     debug_logging = False
 
-    config_update_watch_labels = ['barOpacity', 'labelsShowPoints', 'labelsOpacity', 'dropBelowThreshold']
+    @staticmethod
+    def _config_update_watch_labels():
+        return ['barOpacity', 'labelsShowPoints', 'labelsOpacity', 'dropBelowThreshold']
+    @staticmethod
+    def _config_visibility_watch_labels():
+        return ['labelsAreVisible', 'isVisible']
     
     # Overriding defaults from parent
     name = param.String(default='Occupancy')
@@ -94,7 +99,14 @@ class OccupancyPlottingMixin:
         
 
     def on_occupancy_plot_update_visibility(self, *arg):
-        assert (self.occupancy_plot_actor is not None), "occupancy_plot_actor hasn't been initialized yet!"
+        # assert (self.occupancy_plot_actor is not None), "occupancy_plot_actor hasn't been initialized yet!"
+        if (self.occupancy_plot_actor is None):
+            # Auto-setup this mixin when this function is called if no others have been
+            self.setup_occupancy_plotting_mixin()
+            self.plot_occupancy_bars()
+            # self.on_occupancy_plot_update_visibility() # call this to make sure the visibility is correct
+        
+        
         active_bars_actor_dict = self.occupancy_plot_actor.get('plot_3d_binned_bars_Occupancy', None)
         if active_bars_actor_dict is not None:
             active_bars_actor = active_bars_actor_dict.get('main', None)
@@ -166,12 +178,9 @@ class OccupancyPlottingMixin:
         self.occupancy_plotting_config = OccupancyPlottingConfig()
         self.plots['occupancyPlotActor'], self.plots_data['occupancyPlotData'] = None, None
         
-        # Setup watcher:    
-        self.occupancy_plotting_config.param.watch(self.plot_occupancy_bars, self.occupancy_plotting_config.config_update_watch_labels, queued=True)
-    
-        self.occupancy_plotting_config.param.watch(self.on_occupancy_plot_update_visibility, ['labelsAreVisible', 'isVisible'], queued=True)
-    
-    
+        # Setup watchers:    
+        self.occupancy_plotting_config.param.watch(self.plot_occupancy_bars, OccupancyPlottingConfig._config_update_watch_labels(), queued=True)
+        self.occupancy_plotting_config.param.watch(self.on_occupancy_plot_update_visibility, OccupancyPlottingConfig._config_visibility_watch_labels(), queued=True)
     
   
     @classmethod
