@@ -47,6 +47,7 @@ class SpikeRenderingMixin:
             self.find_rows_matching_cell_IDXs(self, cell_IDXs)
             self.find_rows_matching_cell_ids(self, cell_ids)
     """
+    debug_logging = False
     spike_geom_cone = pv.Cone(direction=(0.0, 0.0, -1.0), height=10.0, radius=0.2) # The spike geometry that is only displayed for a short while after the spike occurs
     
     def plot_spikes(self):
@@ -108,7 +109,8 @@ class SpikeRenderingMixin:
         # TODO: could also add in 'render_exclusion_mask'
         # RGB Version:
         self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:-1, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3)
-        print(f'SpikeRenderMixin.build_flat_color_data(): built rgb array from pf_colors, droppping the alpha components: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
+        if self.debug_logging:
+            print(f'SpikeRenderMixin.build_flat_color_data(): built rgb array from pf_colors, droppping the alpha components: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
         # Add the split RGB columns to the DataFrame
         self.spikes_df[['R','G','B']] = self.params.flat_spike_colors_array
         # RGBA version:
@@ -186,7 +188,7 @@ class HideShowSpikeRenderingMixin:
         self.change_spike_rows_included(matching_rows, are_included)
         
         # update the configs for these changed neurons:
-        assert isinstance(self, NeuronConfigOwningMixin), "self must be of type NeuronConfigOwningMixin to have access to its configs"
+        assert hasattr(self, 'update_neuron_render_configs'), "self must be of type NeuronConfigOwningMixin to have access to its configs"
         updated_configs = []
         for an_updated_config_idx in cell_IDXs:
             self.active_neuron_render_configs[an_updated_config_idx].spikesVisible = are_included # update the config

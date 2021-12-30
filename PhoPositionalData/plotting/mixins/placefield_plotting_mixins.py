@@ -7,6 +7,8 @@ from PhoPositionalData.plotting.mixins.general_plotting_mixins import ExtendedPl
 
 class PlacefieldOwningMixin(NeuronIdentityAccessingMixin, NeuronConfigOwningMixin):
     """ Implementor owns placefields and has access to their data and configuration objects """
+    debug_logging = False
+    
     @property
     def placefields(self):
         return self.params.active_epoch_placefields
@@ -59,16 +61,7 @@ class PlacefieldOwningMixin(NeuronIdentityAccessingMixin, NeuronConfigOwningMixi
     
 class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
     """ Implementor Visually Displays Placefield data and enables basic interactivity for it. """
-    # active_pf_idx_list = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
-    # # phase = param.Number(default=0, bounds=(0, np.pi))
-    # # frequency = param.Number(default=1, bounds=(0.1, 2))
-    
-    
-    # @param.depends('active_pf_idx_list')
-    # def interact_update_active_placefields(self):
-    #     selected_placefield_indicies = self.active_pf_idx_list
-    #     print(f'selected_placefield_indicies: {selected_placefield_indicies}')
-    #     self.update_active_placefields(selected_placefield_indicies)
+    debug_logging = False
         
     @property
     def tuning_curve_plot_actors(self):
@@ -112,11 +105,11 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
         self.tuning_curve_plot_actors[show_index].SetVisibility(1)
         
     def on_update_tuning_curve_display_config(self, updated_config_indicies, updated_configs):
-        print(f'HideShowPlacefieldsRenderingMixin.on_update_tuning_curve_display_config(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
-        assert isinstance(self, NeuronConfigOwningMixin), "self must be of type NeuronConfigOwningMixin to have access to its configs"
-        self.update_neuron_render_configs(updated_config_indicies, updated_configs) # update configs
+        if self.debug_logging:
+            print(f'HideShowPlacefieldsRenderingMixin.on_update_tuning_curve_display_config(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        assert hasattr(self, 'update_neuron_render_configs'), "self must be of type NeuronConfigOwningMixin to have access to its configs"
+        self.update_neuron_render_configs(updated_config_indicies, updated_configs) # update the config with the new values:
         for an_updated_config_idx, an_updated_config in zip(updated_config_indicies, updated_configs):
-            # self.active_tuning_curve_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
             self.tuning_curve_plot_actors[an_updated_config_idx].SetVisibility(int(self.active_tuning_curve_render_configs[an_updated_config_idx].isVisible)) # update visibility of actor
             
         

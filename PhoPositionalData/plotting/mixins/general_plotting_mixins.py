@@ -61,6 +61,8 @@ class NeuronIdentityAccessingMixin:
     
 class NeuronConfigOwningMixin:
     """ Implementors own a series of visual configurations for each neuron. """
+    debug_logging = False
+    
     @property
     def active_neuron_render_configs(self):
         """The active_neuron_render_configs property."""
@@ -85,11 +87,11 @@ class NeuronConfigOwningMixin:
             updated_config_indicies ([type]): [description]
             updated_configs ([type]): [description]
         """
-        print(f'NeuronConfigOwningMixin.update_cell_configs(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        if self.debug_logging:
+            print(f'NeuronConfigOwningMixin.update_cell_configs(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
         for an_updated_config_idx, an_updated_config in zip(updated_config_indicies, updated_configs):
             self.active_neuron_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
             
-         
     def build_neuron_render_configs(self):
         ## TODO: should have code here that ensures this is only done once, so values don't get overwritten
         # Get the cell IDs that have a good place field mapping:
@@ -118,6 +120,7 @@ class BasePlotDataParams(param.Parameterized):
     name = param.String(default='name', doc='The name of the placefield')
     # name = param.Parameter(default='name', doc='The name of the placefield')
     isVisible = param.Boolean(default=False, doc="Whether the plot is visible")
+
 
 class ExtendedPlotDataParams(BasePlotDataParams):
     color = param.Color(default='#FF0000', doc="The placefield's Color")

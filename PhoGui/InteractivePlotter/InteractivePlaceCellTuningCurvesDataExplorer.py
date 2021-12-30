@@ -101,6 +101,7 @@ class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideS
         self.params.pf_colors_hex = [to_hex(self.params.pf_colors[:,i], keep_alpha=False) for i in self.tuning_curve_indicies]
         self.setup_spike_rendering_mixin()
         self.build_tuning_curve_configs()
+        self.setup_occupancy_plotting_mixin()
     
     @property
     def pf_names(self):
