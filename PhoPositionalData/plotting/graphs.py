@@ -42,7 +42,7 @@ def plot_3d_binned_bars(p, xbin, ybin, data, zScalingFactor=1.0, drop_below_thre
         plotActors, data_dict = plot_3d_binned_data(pActiveTuningCurvesPlotter, active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy)
     """
     if drop_below_threshold is not None:
-        print(f'drop_below_threshold: {drop_below_threshold}')
+        # print(f'drop_below_threshold: {drop_below_threshold}')
         # active_data[np.where(active_data < drop_below_threshold)] = np.nan
         data_mask = (data.copy() < drop_below_threshold)
     else:
@@ -56,7 +56,7 @@ def plot_3d_binned_bars(p, xbin, ybin, data, zScalingFactor=1.0, drop_below_thre
 
     if modified_mask2d is not None:
         active_data_mask = modified_mask2d[:,:].T.copy()
-        print(f'Masking {len(np.where(active_data_mask))} of {np.size(active_data)} elements.')
+        # print(f'Masking {len(np.where(active_data_mask))} of {np.size(active_data)} elements.')
         # apply the mask now:
         active_data[active_data_mask] = np.nan
     
@@ -65,19 +65,11 @@ def plot_3d_binned_bars(p, xbin, ybin, data, zScalingFactor=1.0, drop_below_thre
 
     plot_name = build_3d_plot_identifier_name('plot_3d_binned_bars', kwargs.get('name', ''))
     kwargs['name'] = plot_name # this is the only one to overwrite in kwargs
-    print(f'name: {plot_name}')    
+    # print(f'name: {plot_name}')    
     plotActor = p.add_mesh(mesh,
                             **({'show_edges': True, 'edge_color': 'k', 'nan_opacity': 0.0, 'scalars': 'Elevation', 'opacity': 1.0, 'use_transparency': False, 'smooth_shading': False, 'show_scalar_bar': False, 'render': True} | kwargs)
                           )
     # p.enable_depth_peeling() # this fixes bug where it appears transparent even when opacity is set to 1.00
-    
-    # plotActors = {'main': plotActor}
-    # data_dict = {
-    #     'name':plot_name,
-    #     'mesh':mesh, 
-    #     'twoDimGrid_x':twoDimGrid_x, 'twoDimGrid_y':twoDimGrid_y, 
-    #     'active_data': active_data
-    # }
     
     plotActors = {plot_name: {'main': plotActor}}
     data_dict = {plot_name: { 

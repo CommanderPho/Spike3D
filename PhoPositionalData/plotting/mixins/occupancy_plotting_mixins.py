@@ -97,6 +97,21 @@ class OccupancyPlottingMixin:
         self.plots['occupancyPlotActor'], self.plots_data['occupancyPlotData'] = self._perform_plot_occupancy_bars(self.occupancy_plotting_config.to_bars_plot_config_dict(), self.occupancy_plotting_config.to_labels_plot_config_dict())
         self.p.enable_depth_peeling() # this fixes bug where it appears transparent even when opacity is set to 1.00
         
+    
+    def on_occupancy_plot_config_updated(self, event):
+        """ Called when the config is updated, such as by the panel GUI """
+        # print(f'event_arg: {event_arg}')
+        # event_arg.name
+        # event_arg.new # the new value
+        updated_config = event.obj
+        if event.name == 'isVisible':
+            # update the value in the internal config:
+            self.occupancy_plotting_config.isVisible = updated_config.isVisible
+        elif event.name == 'labelsAreVisible':
+            self.occupancy_plotting_config.labelsAreVisible = updated_config.labelsAreVisible
+        else:
+            print(f'WARNING: OccupancyPlottingMixin.on_occupancy_plot_config_updated(event): Unknown event {event.name}: {event}')
+            
 
     def on_occupancy_plot_update_visibility(self, *arg):
         # assert (self.occupancy_plot_actor is not None), "occupancy_plot_actor hasn't been initialized yet!"
@@ -141,19 +156,13 @@ class OccupancyPlottingMixin:
         """
         if bars_kwargs_dict is not None:        
             plotActors, data_dict = plot_3d_binned_bars(self.p, self.xbin, self.ybin, self.occupancy,
-                                                **({'drop_below_threshold': 1e-06, 'name': 'Occupancy', 'opacity': 0.75, 'render': False} | bars_kwargs_dict))
-        
-        
-        
-        
-        # , **({'drop_below_threshold': 1e-06, 'name': 'Occupancy', 'opacity': 0.75, 'render': False} | kwargs)
-
-        # The full point shown:
-        # point_labeling_function = lambda (a_point): return f'({a_point[0]:.2f}, {a_point[1]:.2f}, {a_point[2]:.2f})'
-        # Only the z-values
-        point_labeling_function = lambda a_point: f'{a_point[2]:.2f}'
-        # point_masking_function = lambda points: points[:, 2] > 20.0
-        point_masking_function = lambda points: points[:, 2] > 1E-6
+                                                **({'drop_below_threshold': 1e-06, 'name': 'Occupancy', 'opacity': 0.75, 'render': False} | bars_kwargs_dict))        
+        # # The full point shown:
+        # # point_labeling_function = lambda (a_point): return f'({a_point[0]:.2f}, {a_point[1]:.2f}, {a_point[2]:.2f})'
+        # # Only the z-values
+        # point_labeling_function = lambda a_point: f'{a_point[2]:.2f}'
+        # # point_masking_function = lambda points: points[:, 2] > 20.0
+        # point_masking_function = lambda points: points[:, 2] > 1E-6
 
         if (labels_kwargs_dict is not None) and self.occupancy_plotting_config.labelsAreVisible: 
             plotActors_CenterLabels, data_dict_CenterLabels = plot_point_labels(self.p, self.xbin_centers, self.ybin_centers, self.occupancy, 
@@ -163,7 +172,6 @@ class OccupancyPlottingMixin:
             plotActors_CenterLabels = dict()
             data_dict_CenterLabels = dict()
             
-                                
         plotActors = plotActors | plotActors_CenterLabels
 
         # print(f'plotActors: {plotActors}')        
