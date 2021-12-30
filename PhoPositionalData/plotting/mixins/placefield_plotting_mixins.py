@@ -2,10 +2,10 @@ import param
 import numpy as np
 import pandas as pd
 
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import ExtendedPlotDataParams, NeuronIdentityAccessingMixin, OptionsListMixin
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import ExtendedPlotDataParams, NeuronConfigOwningMixin, NeuronIdentityAccessingMixin, OptionsListMixin
 
 
-class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
+class PlacefieldOwningMixin(NeuronIdentityAccessingMixin, NeuronConfigOwningMixin):
     """ Implementor owns placefields and has access to their data and configuration objects """
     @property
     def placefields(self):
@@ -30,18 +30,29 @@ class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
     @property
     def active_tuning_curve_render_configs(self):
         """The active_tuning_curve_render_configs property."""
-        return self.params.pf_active_configs
+        return self.active_neuron_render_configs
     @active_tuning_curve_render_configs.setter
     def active_tuning_curve_render_configs(self, value):
-        self.params.pf_active_configs = value
+        self.active_neuron_render_configs = value
         
-    
     def build_tuning_curve_configs(self):
-        # Get the cell IDs that have a good place field mapping:
-        good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
-        unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(self.num_tuning_curves)]
-        # self.params.pf_active_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
-        self.active_tuning_curve_render_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
+        # call the parent function
+        self.build_neuron_render_configs()
+        # do any addition setup needed
+            
+    # @property
+    # def active_tuning_curve_render_configs(self):
+    #     """The active_tuning_curve_render_configs property."""
+    #     return self.params.pf_active_configs
+    # @active_tuning_curve_render_configs.setter
+    # def active_tuning_curve_render_configs(self, value):
+    #     self.params.pf_active_configs = value
+        
+    # def build_tuning_curve_configs(self):
+    #     # Get the cell IDs that have a good place field mapping:
+    #     good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
+    #     unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(self.num_tuning_curves)]
+    #     self.active_tuning_curve_render_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
 
 
 
@@ -102,10 +113,12 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
         
     def on_update_tuning_curve_display_config(self, updated_config_indicies, updated_configs):
         print(f'HideShowPlacefieldsRenderingMixin.on_update_tuning_curve_display_config(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        assert isinstance(self, NeuronConfigOwningMixin), "self must be of type NeuronConfigOwningMixin to have access to its configs"
+        self.update_neuron_render_configs(updated_config_indicies, updated_configs) # update configs
         for an_updated_config_idx, an_updated_config in zip(updated_config_indicies, updated_configs):
-            self.active_tuning_curve_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
+            # self.active_tuning_curve_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
             self.tuning_curve_plot_actors[an_updated_config_idx].SetVisibility(int(self.active_tuning_curve_render_configs[an_updated_config_idx].isVisible)) # update visibility of actor
-            ## TODO: apply spikes changes and stuff...
+            
         
     def update_tuning_curve_configs(self):
         for i, aTuningCurveActor in enumerate(self.tuning_curve_plot_actors):
