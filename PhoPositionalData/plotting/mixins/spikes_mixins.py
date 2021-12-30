@@ -130,7 +130,7 @@ class SpikeRenderingMixin:
 class HideShowSpikeRenderingMixin:
     """ Implementors present spiking data with the option to hide/show/etc some of the outputs interactively. """    
     debug_logging = False
-    
+        
     @property
     def spike_exclusion_mask(self):
         """The spike_exclusion_mask property."""
@@ -139,14 +139,12 @@ class HideShowSpikeRenderingMixin:
     def spike_exclusion_mask(self, value):
         self.active_session.spikes_df['render_exclusion_mask'] = value    
     
-    
     def setup_hide_show_spike_rendering_mixin(self):
         self.active_session.spikes_df['render_opacity'] = 0.0 # Initialize all spikes to 0.0 opacity, meaning they won't be rendered.
         self.active_session.spikes_df['render_exclusion_mask'] = False # all are included (not in the exclusion mask) to begin. This does not mean that they will be visible because 'render_opacity' is still set to zero.
         
-    
     def update_active_spikes(self, spike_opacity_mask, is_additive=False):
-        """ 
+        """ Main update callback function for visual changes. Updates the self.spikes_df.
         Usage: 
             included_cell_ids = [48, 61]
             
@@ -161,12 +159,7 @@ class HideShowSpikeRenderingMixin:
         else:
             self.spikes_df['render_opacity'] = spike_opacity_mask
         self.update_spikes()
-        
-    # def include_unit_spikes(self, included_cell_ids):
-    #     self.update_active_spikes(np.isin(self.spikes_df['aclu'], included_cell_ids), is_additive=True)
-    
-    
-    
+            
     def change_unit_spikes_included(self, cell_IDXs=None, cell_IDs=None, are_included=True):
         """ Called to update the set of visible spikes for specified cell indicies or IDs
         Args:
@@ -202,10 +195,12 @@ class HideShowSpikeRenderingMixin:
         self.update_neuron_render_configs(cell_IDXs, updated_configs) # update configs
         
 
-        
-        
-        
-            
+    def clear_all_spikes_included(self):
+        # removes all spikes from inclusion
+        if self.debug_logging:
+            print(f'HideShowSpikeRenderingMixin.clear_spikes_included(): clearing all spikes.')     
+        self.change_unit_spikes_included(cell_IDXs=self.neuron_config_indicies, are_included=False) # get all indicies, and set them all to excluded
+           
 
     def change_spike_rows_included(self, row_specifier_mask, are_included):
         """change_spike_rows_included presents an IDX vs. ID agnostic interface with the self.spikes_df to allow the bulk of the code to work for both cases.
