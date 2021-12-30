@@ -56,7 +56,7 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
         self._wgt_toggle_spikes = pn.widgets.Toggle(name='SpikesVisible', value=self.spikesVisible, margin=0)
         super().__init__(**params)
         # Output Grid:
-        self._layout = pn.GridSpec(width=100, height=100, margin=0)
+        self._layout = pn.GridSpec(width=60, height=100, margin=0)
         self._layout[0, :3] = self._wgt_label_button
         self._layout[1, :] = self._wgt_color_picker
         self._layout[2, :] = pn.Row(self._wgt_toggle_visible, margin=0, background='red')
@@ -136,20 +136,15 @@ class SingleEditablePlacefieldDisplayConfiguration(SinglePlacefieldPlottingExten
         # def g(country, i):
         #     print(f"g country={country} i={i}")
 
-        # ipcDataExplorer.update_active_spikes(np.isin(ipcDataExplorer.active_session.spikes_df['aclu'], included_cell_ids))
-        
         out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config,
                                                                    callbacks={'pf':(lambda updated_config_copy=a_config, i_copy=idx: tuning_curve_config_changed_callback([i_copy], [updated_config_copy])),
                                                                               'spikes': (lambda are_included, i_copy=idx: spikes_config_changed_callback(cell_IDXs=[i_copy], cell_IDs=None, are_included=are_included))
                                                                               }) for (idx, a_config) in enumerate(configs)]
-        # out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config, callbacks=config_changed_callback) for a_config_idx, a_config in enumerate(configs)]
         return out_panels
         
 
 
 def build_all_placefield_output_panels(ipcDataExplorer):
-    # out_panels = [build_single_placefield_output_panel(a_config) for a_config in ipcDataExplorer.active_tuning_curve_render_configs]
-    # out_panels = [SingleEditablePlacefieldDisplayConfiguration(config=a_config) for a_config in ipcDataExplorer.active_tuning_curve_render_configs]
     out_panels = SingleEditablePlacefieldDisplayConfiguration.build_all_placefield_output_panels(ipcDataExplorer.active_tuning_curve_render_configs,
                                                                                                  tuning_curve_config_changed_callback=ipcDataExplorer.on_update_tuning_curve_display_config,
                                                                                                  spikes_config_changed_callback=ipcDataExplorer.change_unit_spikes_included)

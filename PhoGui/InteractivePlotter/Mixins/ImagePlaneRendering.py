@@ -17,8 +17,19 @@ from neuropy.plotting.ratemaps import compute_data_extent, compute_data_aspect_r
 from PhoPositionalData.plot_data import get_cmap
 
 
+
 class ImagePlaneRendering:
-    """ Implementor renders a 2D image or plot on a plane in 3D space using pyvista """
+    """ Implementor renders a 2D image or plot on a plane in 3D space using pyvista
+    from PhoGui.InteractivePlotter.Mixins.ImagePlaneRendering import ImagePlaneRendering
+    
+    Standalone Usage:
+    # Texture from file:
+        image_file = r'output\2006-6-07_11-26-53\maze\speedThresh_0.00-gridBin_5.00_3.00-smooth_0.00_0.00-frateThresh_0.10\pf2D-Occupancy-maze-odd_laps-speedThresh_0.00-gridBin_5.00_3.00-smooth_0.00_0.00-frateThresh_0.png'
+        loaded_image_tex = pv.read_texture(image_file)
+
+        pActiveImageTestPlotter = pvqt.BackgroundPlotter()
+        ImagePlaneRendering.plot_3d_image(pActiveImageTestPlotter, active_epoch_placefields2D.ratemap.xbin, active_epoch_placefields2D.ratemap.ybin, active_epoch_placefields2D.ratemap.occupancy, loaded_image_tex=loaded_image_tex)
+    """
     
     @staticmethod
     def plot_3d_image(p, xpoints, ypoints, data, z_location=0.0, loaded_image_tex=None):
