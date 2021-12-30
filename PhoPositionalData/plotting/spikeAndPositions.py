@@ -28,6 +28,25 @@ spike_geom_box = pv.Box(bounds=[-0.2, 0.2, -0.2, 0.2, -0.05, 0.05])
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.vtkCommonCore import vtkLookupTable # required for build_custom_placefield_maps_lookup_table(...)
 
+
+
+def build_repeated_spikes_color_array(spikes_df):
+    
+    
+    
+    spike_color_info.render_opacity
+    flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
+    
+    # flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
+    # print(f'build_repeated_spikes_color_array(spikes_df): built combined rgb array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(flat_spike_colors_array)}')
+    # included_cell_INDEXES = np.array([ipcDataExplorer.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
+    # included_cell_INDEXES = np.array([ipcDataExplorer.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
+    # spikes_df['cell_idx'] = included_cell_INDEXES.copy()
+    # flat_spike_colors = np.array([pv.parse_color(pf_colors_hex[i]) for i in spikes_df['cell_idx'].to_numpy()])
+    # return np.array([pv.parse_color(pf_colors_hex[i]) for i in spikes_df['aclu'].to_numpy()])
+    return flat_spike_colors_array
+    
+    
 def build_custom_placefield_maps_lookup_table(curr_active_neuron_color, num_opacity_tiers, opacity_tier_values):
     """
     Usage:
@@ -49,35 +68,48 @@ def build_custom_placefield_maps_lookup_table(curr_active_neuron_color, num_opac
 
 
 def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
+    """ Upgraded to render a much better looking 3D extruded maze surface. """
     # Call with:
     # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
     # p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
     def __build_flat_map_plot_data(x, y):
         # Builds the flat base maze map that the other data will be plot on top of
         ## Implicitly relies on: x, y
-        z = np.zeros_like(x)
+        # z = np.zeros_like(x)
+        z = np.full_like(x, -0.01) # offset just slightly in the z direction to account for the thickness of the caps that are added upon extrude
         point_cloud = np.vstack((x, y, z)).T
         pdata = pv.PolyData(point_cloud)
         pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
-        geo = pv.Circle(radius=0.5)
-        pc = pdata.glyph(scale=False, geom=geo)
-        return pdata, pc
+        # geo = pv.Circle(radius=0.5)
+        # pc = pdata.glyph(scale=False, geom=geo)
+        surf = pdata.delaunay_2d()
+        surf = surf.extrude([0,0,-5], capping=True, inplace=True)
+        clipped_surf = surf.clip('-z', invert=False)
+        return pdata, clipped_surf
 
     pdata_maze, pc_maze = __build_flat_map_plot_data(x, y)
-    return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", render=True)    
+    # return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", show_edges=False, render=True)
+    return p.add_mesh(pc_maze, name='maze_bg', label='maze', color=[0.1, 0.1, 0.1, 1.0], pbr=True, metallic=0.8, roughness=0.5, diffuse=1, render=True)
     # bShowSequenceTraversalGradient
     if bShowSequenceTraversalGradient:
         traversal_order_scalars = np.arange(len(x))
         return p.add_mesh(pc_maze, name='maze_bg', label='maze', scalars=traversal_order_scalars, render=True)
 
+
+
 # dataframe version of the build_active_spikes_plot_pointdata(...) function
 def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
-    # spike_series_times = active_flattened_spike_times # currently unused
-    # spike_series_identities = active_flat_df['unit_id'] # currently unused
-    # z = np.zeros_like(spike_series_positions[0,:])
-    active_flat_df['z_fixed'] = np.full_like(active_flat_df['x'].values, 1.1) # Offset a little bit in the z-direction so we can see it
-    # spike_history_point_cloud = np.vstack((active_flat_df['x'].values, active_flat_df['y'].values, active_flat_df['z_fixed'].values)).T    
-    spike_history_point_cloud = active_flat_df[['x','y','z_fixed']].to_numpy()
+    
+    if 'z' in active_flat_df.columns:
+        # use custom override z-values
+        print('build_active_spikes_plot_pointdata_df(...): Found custom z column! Using Data!!')
+        assert np.shape(active_flat_df['z']) == np.shape(active_flat_df['x']), "custom z values must be the same shape as the x column"
+        spike_history_point_cloud = active_flat_df[['x','y','z']].to_numpy()
+    else:
+        # no provided custom z value
+        active_flat_df['z_fixed'] = np.full_like(active_flat_df['x'].values, 1.1) # Offset a little bit in the z-direction so we can see it
+        spike_history_point_cloud = active_flat_df[['x','y','z_fixed']].to_numpy()
+        
     ## Old way:
     # spike_series_positions = active_flattened_spike_positions_list
     # z_fixed = np.full_like(spike_series_positions[0,:], 1.1) # Offset a little bit in the z-direction so we can see it
@@ -85,16 +117,59 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
     spike_history_pdata = pv.PolyData(spike_history_point_cloud)
     # spike_history_pdata['times'] = spike_series_times
     # spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
-    spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
+    # spike_history_pdata['cellID'] = active_flat_df['unit_id'].values
+    spike_history_pdata['cellID'] = active_flat_df['aclu'].values
+    
+    if 'render_opacity' in active_flat_df.columns:
+        spike_history_pdata['render_opacity'] = active_flat_df['render_opacity'].values
+        # spike_history_pdata['render_opacity'] = np.expand_dims(active_flat_df['render_opacity'].values, axis=1)
+        # alternative might be repeating 4 times along the second dimension for no reason.
+    else:
+        print('no custom render_opacity set on dataframe.')
+        
+    # rebuild the RGB data from the dataframe:
+    if (np.isin(['R','G','B','render_opacity'], active_flat_df.columns).all):
+        # RGB Only:
+        # spike_history_pdata['rgb'] = active_flat_df[['R','G','B']].to_numpy()
+        # TODO: could easily add the spike_history_pdata['render_opacity'] here as RGBA if we wanted.
+        # RGB+A:
+        spike_history_pdata['rgb'] = active_flat_df[['R','G','B','render_opacity']].to_numpy()
+        print('successfully set custom rgb key from separate R, G, B columns in dataframe.')
+    else:
+        print('WARNING: DATAFRAME LACKS RGB VALUES!')
+                
+    # if ('rgb_hex' in active_flat_df.columns) and ('render_opacity' in active_flat_df.columns):
+    #     spike_history_pdata['rgb'] = build_repeated_spikes_color_array(active_flat_df)
+    #     print('successfully set custom rgb key in build_active_spikes_plot_pointdata_df(...).')
+    # else:
+    #     print('WARNING: rgb_hex or render_opacity key is missing from the dataframe!')
+    
+    # if 'rgb' in active_flat_df.columns:
+    #     print(f'adding rgb array from complete rgb column:')
+    #     spike_history_pdata['rgb'] = active_flat_df['rgb'].values
+    # else:
+    #     if 'rgb_hex' in active_flat_df.columns:
+    #         # active_flat_df['render_opacity'].values
+    #         flat_spike_colors_array = np.array([pv.parse_color(hex_color, opacity=1.0) for hex_color in active_flat_df['rgb_hex'].values])
+    #         print(f'adding rgb array from rgb_hex: np.shape(flat_spike_colors_array): {np.shape(flat_spike_colors_array)}')
+    #         spike_history_pdata['rgb'] = flat_spike_colors_array.copy()
+            
+    #         spike_history_pdata['rgb'] = build_repeated_spikes_color_array(active_flat_df).copy()
+            
+    #     else:
+    #         print('no custom rgb_hex key set on dataframe.')
+ 
     return spike_history_pdata
 
 
 # dataframe versions of the build_active_spikes_plot_data(...) function
 def build_active_spikes_plot_data_df(active_flat_df: pd.DataFrame, spike_geom):
-    # spike_series_times = active_flattened_spike_times # currently unused
+    """ 
+    Usage:
+        spike_history_pdata, spike_history_pc = build_active_spikes_plot_data_df(active_flat_df, spike_geom)
+    """
     spike_history_pdata = build_active_spikes_plot_pointdata_df(active_flat_df)
-    # create many spheres from the point cloud
-    spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy())
+    spike_history_pc = spike_history_pdata.glyph(scale=False, geom=spike_geom.copy()) # create many glyphs from the point cloud
     return spike_history_pdata, spike_history_pc
 
 
@@ -158,13 +233,19 @@ def force_plot_ignore_scalar_as_color(plot_mesh_actor, lookup_table):
 
 
 def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray, zScalingFactor=10.0, show_legend=False):
-    # Plots 2D Placefields in a 3D PyVista plot
-    # active_placefields: Pf2D
+    """ Plots 2D Placefields in a 3D PyVista plot """
+    # active_placefields: Pf2D    
+    should_force_placefield_custom_color = True
+    should_use_normalized_tuning_curves = True
+    should_pdf_normalize_manually = False
     
-    # curr_tuning_curves = active_placefields.ratemap.tuning_curves
-    curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves
+    if should_use_normalized_tuning_curves:
+        curr_tuning_curves = active_placefields.ratemap.normalized_tuning_curves.copy()
+    else:
+        curr_tuning_curves = active_placefields.ratemap.tuning_curves.copy()
+
     # curr_tuning_curves[curr_tuning_curves < 0.1] = np.nan
-    curr_tuning_curves = curr_tuning_curves * zScalingFactor
+    # curr_tuning_curves = curr_tuning_curves * zScalingFactor
     
     num_curr_tuning_curves = len(curr_tuning_curves)
     # Get the cell IDs that have a good place field mapping:
@@ -175,15 +256,20 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     tuningCurvePlotActors = []
     tuningCurvePlotData = []
     for i in np.arange(num_curr_tuning_curves):
-    # for i in [1]:
         curr_active_neuron_ID = good_placefield_neuronIDs[i]
         curr_active_neuron_color = pf_colors[:, i]
         curr_active_neuron_pf_identifier = 'pf[{}]'.format(curr_active_neuron_ID)
         curr_active_neuron_tuning_Curve = np.squeeze(curr_tuning_curves[i,:,:]).T.copy() # A single tuning curve
         
+        if should_pdf_normalize_manually:
+            # Normalize the area under the curve to 1.0 (like a probability density function)
+            curr_active_neuron_tuning_Curve = curr_active_neuron_tuning_Curve / np.nansum(curr_active_neuron_tuning_Curve)
+            
+        curr_active_neuron_tuning_Curve = curr_active_neuron_tuning_Curve * zScalingFactor
+        
         # curr_active_neuron_tuning_Curve[curr_active_neuron_tuning_Curve < 0.1] = np.nan
         pdata_currActiveNeuronTuningCurve = pv.StructuredGrid(tuningCurvePlot_x, tuningCurvePlot_y, curr_active_neuron_tuning_Curve)
-        pdata_currActiveNeuronTuningCurve["Elevation"] = curr_active_neuron_tuning_Curve.ravel(order="F")
+        pdata_currActiveNeuronTuningCurve["Elevation"] = (curr_active_neuron_tuning_Curve.ravel(order="F") * zScalingFactor)
         
         curr_active_neuron_plot_data = {'curr_active_neuron_ID':curr_active_neuron_ID,
                                          'curr_active_neuron_pf_identifier':curr_active_neuron_pf_identifier,
@@ -195,19 +281,33 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
 
         # surf = poly.delaunay_2d()
         # pTuningCurves.add_mesh(surf, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier, show_edges=False, nan_opacity=0.0, color=curr_active_neuron_color, opacity=0.9, use_transparency=False, smooth_shading=True)
-        pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier,
-                                                                            show_edges=False, nan_opacity=0.0, scalars='Elevation', opacity='sigmoid', use_transparency=False, smooth_shading=True, show_scalar_bar=False, render=False)                                                                     
+        if should_force_placefield_custom_color:
+            curr_opacity = 'sigmoid'
+            curr_smooth_shading = True
+        else:
+            curr_opacity = None
+            curr_smooth_shading = False
+            
+        # curr_opacity = None
+        # curr_smooth_shading = False
         
+        pdata_currActiveNeuronTuningCurve_plotActor = pTuningCurves.add_mesh(pdata_currActiveNeuronTuningCurve, label=curr_active_neuron_pf_identifier, name=curr_active_neuron_pf_identifier,
+                                                                            show_edges=True, edge_color=curr_active_neuron_color, nan_opacity=0.0, scalars='Elevation', opacity=curr_opacity, use_transparency=False, smooth_shading=curr_smooth_shading, show_scalar_bar=False, render=False)                                                                     
         
         # Force custom colors:
-        ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
-            #   pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().ScalarVisibilityOff() # Scalars not used to color objects
-        # Is NOT Sufficient, as it disables any opacity at all seemingly
-        lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.2, 0.6, 1.0])
-        # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
-        # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
-        curr_active_neuron_plot_data['lut'] = lut
-        force_plot_ignore_scalar_as_color(pdata_currActiveNeuronTuningCurve_plotActor, lut)
+        if should_force_placefield_custom_color:
+            ## The following custom lookup table solution is required to successfuly plot the surfaces with opacity dependant on their scalars property and still have a consistent color (instead of using the scalars for the color too). Note that the previous "fix" for the problem of the scalars determining the object's color when I don't want them to:
+                #   pdata_currActiveNeuronTuningCurve_plotActor.GetMapper().ScalarVisibilityOff() # Scalars not used to color objects
+            # Is NOT Sufficient, as it disables any opacity at all seemingly
+            # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 2, [0.2, 0.8])
+            
+            lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 1, [1.0])
+            
+            # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.2, 0.6, 1.0])
+            # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 3, [0.0, 0.6, 1.0])
+            # lut = build_custom_placefield_maps_lookup_table(curr_active_neuron_color.copy(), 5, [0.0, 0.0, 0.3, 0.5, 0.1])
+            curr_active_neuron_plot_data['lut'] = lut
+            force_plot_ignore_scalar_as_color(pdata_currActiveNeuronTuningCurve_plotActor, lut)
         
         # pTuningCurves.add_mesh(contours_currActiveNeuronTuningCurve, color=curr_active_neuron_color, line_width=1, name='{}_contours'.format(curr_active_neuron_pf_identifier))
         tuningCurvePlotActors.append(pdata_currActiveNeuronTuningCurve_plotActor)
@@ -225,15 +325,10 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     else:
         legendActor = None
         
-    # if show_legend:
-    #     legendActor = pTuningCurves.add_legend(name='tuningCurvesLegend', origin=[0.9, 0.0], size=[0.1, 1.0]) # vtk.vtkLegendBoxActor
-    # else:
-    #     legendActor = None
-    
-    pTuningCurves.show_grid()
-    pTuningCurves.add_axes(line_width=5, labels_off=False)
-    pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
-    pTuningCurves.enable_3_lights()
+    # pTuningCurves.show_grid()
+    # pTuningCurves.add_axes(line_width=5, labels_off=False)
+    # pTuningCurves.enable_depth_peeling(number_of_peels=num_curr_tuning_curves)
+    # pTuningCurves.enable_3_lights()
     # pTuningCurves.enable_shadows()
     return pTuningCurves, tuningCurvePlotActors, tuningCurvePlotData, legendActor, plots_data
 
