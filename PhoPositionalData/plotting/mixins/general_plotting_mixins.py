@@ -60,7 +60,7 @@ class NeuronIdentityAccessingMixin:
     
     
 class NeuronConfigOwningMixin:
-    
+    """ Implementors own a series of visual configurations for each neuron. """
     @property
     def active_neuron_render_configs(self):
         """The active_neuron_render_configs property."""
