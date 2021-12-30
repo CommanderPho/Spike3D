@@ -18,7 +18,7 @@ from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotte
 # from PhoPositionalData.plotting.mixins.general_plotting_mixins
 from PhoPositionalData.plotting.mixins.occupancy_plotting_mixins import OccupancyPlottingMixin
 from PhoPositionalData.plotting.mixins.placefield_plotting_mixins import HideShowPlacefieldsRenderingMixin
-from PhoPositionalData.plotting.mixins.spikes_mixins import SpikeRenderingMixin, HideShowSpikeRenderingMixin
+from PhoPositionalData.plotting.mixins.spikes_mixins import SpikesDataframeOwningMixin, SpikeRenderingMixin, HideShowSpikeRenderingMixin
 
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df, plot_placefields2D, update_plotVisiblePlacefields2D, build_custom_placefield_maps_lookup_table
 from PhoPositionalData.plotting.gui import CallbackSequence, SetVisibilityCallback, MutuallyExclusiveRadioButtonGroup, add_placemap_toggle_checkboxes, add_placemap_toggle_mutually_exclusive_checkboxes
@@ -32,7 +32,7 @@ from PhoGui.InteractivePlotter.shared_helpers import InteractiveDataExplorerBase
 
 
 # needs perform_plot_flat_arena
-class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideShowPlacefieldsRenderingMixin, SpikeRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
+class InteractivePlaceCellTuningCurvesDataExplorer(OccupancyPlottingMixin, HideShowPlacefieldsRenderingMixin, SpikesDataframeOwningMixin, SpikeRenderingMixin, HideShowSpikeRenderingMixin, InteractiveDataExplorerBase): 
     """[summary]
     """
     show_legend = True
