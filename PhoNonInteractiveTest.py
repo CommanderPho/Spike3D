@@ -83,9 +83,8 @@ from neuropy.core import FlattenedSpiketrains
 from neuropy.core import Neurons
 from neuropy.utils.misc import print_seconds_human_readable
 from neuropy.plotting import plot_raster
-from neuropy.analyses.placefields import PlacefieldComputationParameters
+from neuropy.analyses.placefields import PlacefieldComputationParameters, PfND, compute_placefields_masked_by_epochs, compute_placefields_as_needed
 from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
-from neuropy.analyses.pho_custom_placefields import PfND
 from neuropy.plotting.placemaps import plot_all_placefields
 
 from PhoPositionalData.load_exported import *
@@ -98,7 +97,9 @@ from PhoPositionalData.import_data import * # build_spike_positions_list, build_
 from PhoPositionalData.analysis.interactive_placeCell_config import InteractivePlaceCellConfig, VideoOutputModeConfig, PlottingConfig
 from PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
-from PendingNotebookCode import compute_placefields_masked_by_epochs, debug_print_placefield, debug_print_spike_counts, compute_placefields_as_needed, build_configs, build_units_colormap, build_placefield_multiplotter, process_by_good_placefields, estimation_session_laps, partition
+from PendingNotebookCode import build_configs, build_units_colormap, build_placefield_multiplotter, process_by_good_placefields, estimation_session_laps, partition
+
+from PhoPositionalData.debug_helpers import debug_print_placefield, debug_print_spike_counts
 
 
 """ For running in IPython:
@@ -113,18 +114,19 @@ from PendingNotebookCode import compute_placefields_masked_by_epochs, debug_prin
 """
 
 class PhoNonInteractiveTest:
-	def __init__(self) -> None:
+	def __init__(self, basedir = r'R:\data\KDIBA\gor01\one\2006-6-07_11-26-53') -> None:
 		# KDiba Old Format:
 		## Data must be pre-processed using the MATLAB script located here: 
 		# R:\data\KDIBA\gor01\one\IIDataMat_Export_ToPython_2021_11_23.m
 		# From pre-computed .mat files:
-		# 07: 
-		self.basedir = r'R:\data\KDIBA\gor01\one\2006-6-07_11-26-53'
-		# # ## 08:
-		# basedir = r'R:\data\KDIBA\gor01\one\2006-6-08_14-26-15'
+		if basedir is None:
+			# 07: 
+			self.basedir = r'R:\data\KDIBA\gor01\one\2006-6-07_11-26-53'
+			# # ## 08:
+			# basedir = r'R:\data\KDIBA\gor01\one\2006-6-08_14-26-15'
+		print(f'loading basedir {basedir}...')
 		self.load(self.basedir)
-		print('session dataframe spikes: {}\nsession.neurons.n_spikes summed: {}\n'.format(self.sess.spikes_df.shape, np.sum(self.sess.neurons.n_spikes)))
-
+		print('\t session dataframe spikes: {}\nsession.neurons.n_spikes summed: {}\n'.format(self.sess.spikes_df.shape, np.sum(self.sess.neurons.n_spikes)))
 		## Estimate the Session's Laps data using my algorithm from the loaded position data.
 		self.sess = estimation_session_laps(self.sess)
 

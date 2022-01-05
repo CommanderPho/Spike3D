@@ -2,11 +2,13 @@ import param
 import numpy as np
 import pandas as pd
 
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import ExtendedPlotDataParams, NeuronIdentityAccessingMixin, OptionsListMixin
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronConfigOwningMixin, NeuronIdentityAccessingMixin, OptionsListMixin
 
 
-class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
+class PlacefieldOwningMixin(NeuronIdentityAccessingMixin, NeuronConfigOwningMixin):
     """ Implementor owns placefields and has access to their data and configuration objects """
+    debug_logging = False
+    
     @property
     def placefields(self):
         return self.params.active_epoch_placefields
@@ -30,34 +32,36 @@ class PlacefieldOwningMixin(NeuronIdentityAccessingMixin):
     @property
     def active_tuning_curve_render_configs(self):
         """The active_tuning_curve_render_configs property."""
-        return self.params.pf_active_configs
+        return self.active_neuron_render_configs
     @active_tuning_curve_render_configs.setter
     def active_tuning_curve_render_configs(self, value):
-        self.params.pf_active_configs = value
+        self.active_neuron_render_configs = value
         
-    
     def build_tuning_curve_configs(self):
-        # Get the cell IDs that have a good place field mapping:
-        good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
-        unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(self.num_tuning_curves)]
-        # self.params.pf_active_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
-        self.active_tuning_curve_render_configs = [SinglePlacefieldPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
+        # call the parent function
+        self.build_neuron_render_configs()
+        # do any addition setup needed
+            
+    # @property
+    # def active_tuning_curve_render_configs(self):
+    #     """The active_tuning_curve_render_configs property."""
+    #     return self.params.pf_active_configs
+    # @active_tuning_curve_render_configs.setter
+    # def active_tuning_curve_render_configs(self, value):
+    #     self.params.pf_active_configs = value
+        
+    # def build_tuning_curve_configs(self):
+    #     # Get the cell IDs that have a good place field mapping:
+    #     good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
+    #     unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(self.num_tuning_curves)]
+    #     self.active_tuning_curve_render_configs = [SingleNeuronPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in self.tuning_curve_indicies]
 
 
 
     
 class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
     """ Implementor Visually Displays Placefield data and enables basic interactivity for it. """
-    # active_pf_idx_list = param.ListSelector(default=[3, 5], objects=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], precedence=0.5)
-    # # phase = param.Number(default=0, bounds=(0, np.pi))
-    # # frequency = param.Number(default=1, bounds=(0.1, 2))
-    
-    
-    # @param.depends('active_pf_idx_list')
-    # def interact_update_active_placefields(self):
-    #     selected_placefield_indicies = self.active_pf_idx_list
-    #     print(f'selected_placefield_indicies: {selected_placefield_indicies}')
-    #     self.update_active_placefields(selected_placefield_indicies)
+    debug_logging = False
         
     @property
     def tuning_curve_plot_actors(self):
@@ -101,11 +105,13 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
         self.tuning_curve_plot_actors[show_index].SetVisibility(1)
         
     def on_update_tuning_curve_display_config(self, updated_config_indicies, updated_configs):
-        print(f'HideShowPlacefieldsRenderingMixin.on_update_tuning_curve_display_config(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        if self.debug_logging:
+            print(f'HideShowPlacefieldsRenderingMixin.on_update_tuning_curve_display_config(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        assert hasattr(self, 'update_neuron_render_configs'), "self must be of type NeuronConfigOwningMixin to have access to its configs"
+        self.update_neuron_render_configs(updated_config_indicies, updated_configs) # update the config with the new values:
         for an_updated_config_idx, an_updated_config in zip(updated_config_indicies, updated_configs):
-            self.active_tuning_curve_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
             self.tuning_curve_plot_actors[an_updated_config_idx].SetVisibility(int(self.active_tuning_curve_render_configs[an_updated_config_idx].isVisible)) # update visibility of actor
-            ## TODO: apply spikes changes and stuff...
+            
         
     def update_tuning_curve_configs(self):
         for i, aTuningCurveActor in enumerate(self.tuning_curve_plot_actors):
@@ -118,23 +124,6 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
 
 
 
-class SinglePlacefieldPlottingExtended(ExtendedPlotDataParams):
-    spikesVisible = param.Boolean(default=False, doc="Whether the spikes are visible")
-    
-    # @param.depends(c.param.country, d.param.i, watch=True)
-    # def g(country, i):
-    #     print(f"g country={country} i={i}")
-    
-    
-    # def panel(self):
-    #     return pn.Row(
-    #         pn.Column(
-    #             pn.Param(SinglePlacefieldPlottingExtended.param, name="SinglePlacefield", widgets= {
-    #                 'color': {'widget_type': pn.widgets.ColorPicker, 'name':'pf Color', 'value':'#99ef78', 'width': 50},
-    #             })
-    #         )
-    #     )
-        
         
         
 class ActivePlacefieldsPlotting(OptionsListMixin, param.Parameterized):

@@ -8,6 +8,12 @@
 		},
 		{
 			"path": "R:\\data\\KDIBA\\gor01\\one"
+		},
+		{
+			"path": "..\\pyPhoCoreHelpers"
+		},
+		{
+			"path": "..\\pyPhoPlaceCellAnalysis"
 		}
 	],
 	"settings": {
