@@ -4,6 +4,7 @@ import pandas as pd
 import pyvista as pv
 
 from PhoPositionalData.analysis.helpers import partition
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronConfigOwningMixin
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df
 
 
@@ -15,25 +16,22 @@ from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plo
 # class SpikePlotData(param.Parameterized):
 #     plot_data = SingleCellSpikePlotData.param
 
-
-class SpikeRenderingMixin:
-    """ Implementors render spikes from neural data in 3D """
-    spike_geom_cone = pv.Cone(direction=(0.0, 0.0, -1.0), height=10.0, radius=0.2) # The spike geometry that is only displayed for a short while after the spike occurs
-    
+class SpikesDataframeOwningMixin:
+    """ Implementors own a spikes_df object """
     @property
     def spikes_df(self):
         """The spikes_df property."""
         return self.active_session.spikes_df
 
 
-    def find_matching_cell_IDXs(self, cell_IDXs):
+    def find_rows_matching_cell_IDXs(self, cell_IDXs):
         """Finds the cell IDXs (not IDs) in the self.spikes_df's appropriate column
         Args:
             cell_IDXs ([type]): [description]
         """
         return np.isin(self.spikes_df['cell_idx'], cell_IDXs)
     
-    def find_matching_cell_ids(self, cell_ids):
+    def find_rows_matching_cell_ids(self, cell_ids):
         """Finds the cell original ID in the self.spikes_df's appropriate column
         Args:
             cell_ids ([type]): [description]
@@ -41,6 +39,17 @@ class SpikeRenderingMixin:
         return np.isin(self.spikes_df['aclu'], cell_ids)
 
 
+# Typically requires conformance to SpikesDataframeOwningMixin
+class SpikeRenderingMixin:
+    """ Implementors render spikes from neural data in 3D 
+        Requires:
+            self.spikes_df
+            self.find_rows_matching_cell_IDXs(self, cell_IDXs)
+            self.find_rows_matching_cell_ids(self, cell_ids)
+    """
+    debug_logging = False
+    spike_geom_cone = pv.Cone(direction=(0.0, 0.0, -1.0), height=10.0, radius=0.2) # The spike geometry that is only displayed for a short while after the spike occurs
+    
     def plot_spikes(self):
         historical_spikes_pdata, historical_spikes_pc = build_active_spikes_plot_data_df(self.spikes_df, spike_geom=SpikeRenderingMixin.spike_geom_cone.copy())        
         self.plots_data['spikes_pf_active'] = {'historical_spikes_pdata':historical_spikes_pdata, 'historical_spikes_pc':historical_spikes_pc}
@@ -78,22 +87,7 @@ class SpikeRenderingMixin:
 
         if needs_render:
             self.p.render()
-            
-            
-    def _build_flat_color_data(self):
-        # TODO: could also add in 'render_exclusion_mask'
-        # RGB Version:
-        self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:-1, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3)
-        print(f'SpikeRenderMixin.build_flat_color_data(): built rgb array from pf_colors, droppping the alpha components: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
-        # Add the split RGB columns to the DataFrame
-        self.spikes_df[['R','G','B']] = self.params.flat_spike_colors_array
-        # RGBA version:
-        # self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # np.shape(flat_spike_colors) # (77726, 4)
-        # self.params.flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in self.spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
-        # print(f'SpikeRenderMixin.build_flat_color_data(): built combined rgba array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
-        return self.params.flat_spike_colors_array
-        
-    
+
     # Testing:
     def test_toggle_cell_spikes_visibility(self, included_cell_ids):
         self.update_active_spikes(np.isin(self.spikes_df['aclu'], included_cell_ids))
@@ -101,11 +95,30 @@ class SpikeRenderingMixin:
         
     # Testing: Split spikes plot
     def build_active_unit_split_spikes_data(self, active_flat_df: pd.DataFrame):
+        """ 
+        TODO: Unused. 
+        """
         cell_split_df = partition(active_flat_df, 'aclu')
         for a_split_df in cell_split_df:
             spike_history_pdata, spike_history_pc = build_active_spikes_plot_data_df(a_split_df, SpikeRenderingMixin.spike_geom_cone.copy())
             # SingleCellSpikePlotData(point_data=spike_history_pdata, glyph_data=spike_history_pc)
+      
+                  
             
+    def _build_flat_color_data(self):
+        # TODO: could also add in 'render_exclusion_mask'
+        # RGB Version:
+        self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:-1, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3)
+        if self.debug_logging:
+            print(f'SpikeRenderMixin.build_flat_color_data(): built rgb array from pf_colors, droppping the alpha components: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
+        # Add the split RGB columns to the DataFrame
+        self.spikes_df[['R','G','B']] = self.params.flat_spike_colors_array
+        # RGBA version:
+        # self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # np.shape(flat_spike_colors) # (77726, 4)
+        # self.params.flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in self.spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
+        # print(f'SpikeRenderMixin.build_flat_color_data(): built combined rgba array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
+        return self.params.flat_spike_colors_array
+              
     def setup_spike_rendering_mixin(self):
         # Add the required spike colors
         included_cell_INDEXES = np.array([self.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in self.spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
@@ -118,6 +131,8 @@ class SpikeRenderingMixin:
 
 class HideShowSpikeRenderingMixin:
     """ Implementors present spiking data with the option to hide/show/etc some of the outputs interactively. """    
+    debug_logging = False
+        
     @property
     def spike_exclusion_mask(self):
         """The spike_exclusion_mask property."""
@@ -126,16 +141,12 @@ class HideShowSpikeRenderingMixin:
     def spike_exclusion_mask(self, value):
         self.active_session.spikes_df['render_exclusion_mask'] = value    
     
-    
     def setup_hide_show_spike_rendering_mixin(self):
         self.active_session.spikes_df['render_opacity'] = 0.0 # Initialize all spikes to 0.0 opacity, meaning they won't be rendered.
         self.active_session.spikes_df['render_exclusion_mask'] = False # all are included (not in the exclusion mask) to begin. This does not mean that they will be visible because 'render_opacity' is still set to zero.
         
-        
-    
-    
     def update_active_spikes(self, spike_opacity_mask, is_additive=False):
-        """ 
+        """ Main update callback function for visual changes. Updates the self.spikes_df.
         Usage: 
             included_cell_ids = [48, 61]
             
@@ -150,15 +161,9 @@ class HideShowSpikeRenderingMixin:
         else:
             self.spikes_df['render_opacity'] = spike_opacity_mask
         self.update_spikes()
-        
-    # def include_unit_spikes(self, included_cell_ids):
-    #     self.update_active_spikes(np.isin(self.spikes_df['aclu'], included_cell_ids), is_additive=True)
-    
-    
-    
+            
     def change_unit_spikes_included(self, cell_IDXs=None, cell_IDs=None, are_included=True):
-        """[summary]
-
+        """ Called to update the set of visible spikes for specified cell indicies or IDs
         Args:
             cell_ids ([type]): [description]
             are_included ([type]): [description]
@@ -168,15 +173,36 @@ class HideShowSpikeRenderingMixin:
             # self.get_neuron_id_and_idx(neuron_i=cell_IDXs, cell_ids=cell_ids)
         if cell_IDXs is not None:
             # IDXs mode, preferred.
-            print(f'change_unit_spikes_included(cell_IDXs: {cell_IDXs}, are_included: {are_included}): (note use of Index mode)')
-            matching_rows = self.find_matching_cell_IDXs(cell_IDXs)
+            if self.debug_logging:
+                print(f'HideShowSpikeRenderingMixin.change_unit_spikes_included(cell_IDXs: {cell_IDXs}, are_included: {are_included}): (note use of Index mode)')            
+            matching_rows = self.find_rows_matching_cell_IDXs(cell_IDXs)
         else:
             # IDs mode.
-            print(f'change_unit_spikes_included(cell_IDs: {cell_IDs}, are_included: {are_included}): WARNING: cell_ID mode. Indexes are preferred.')
-            matching_rows = self.find_matching_cell_ids(cell_IDs)
+            if self.debug_logging:
+                print(f'HideShowSpikeRenderingMixin.change_unit_spikes_included(cell_IDs: {cell_IDs}, are_included: {are_included}): WARNING: cell_ID mode. Indexes are preferred.')
+            # convert cell_IDs to to cell_IDXs for use later in updating the configs
+            cell_IDXs = self.find_cell_IDXs_from_cell_ids(cell_IDs)
+            matching_rows = self.find_rows_matching_cell_ids(cell_IDs)
 
+        # Update the specific rows:
         self.change_spike_rows_included(matching_rows, are_included)
         
+        # update the configs for these changed neurons:
+        assert hasattr(self, 'update_neuron_render_configs'), "self must be of type NeuronConfigOwningMixin to have access to its configs"
+        updated_configs = []
+        for an_updated_config_idx in cell_IDXs:
+            self.active_neuron_render_configs[an_updated_config_idx].spikesVisible = are_included # update the config
+            updated_configs.append(self.active_neuron_render_configs[an_updated_config_idx])
+        # call the parent (NeuronConfigOwningMixin) function to ensure the configs are updated.
+        self.update_neuron_render_configs(cell_IDXs, updated_configs) # update configs
+        
+
+    def clear_all_spikes_included(self):
+        # removes all spikes from inclusion
+        if self.debug_logging:
+            print(f'HideShowSpikeRenderingMixin.clear_spikes_included(): clearing all spikes.')     
+        self.change_unit_spikes_included(cell_IDXs=self.neuron_config_indicies, are_included=False) # get all indicies, and set them all to excluded
+           
 
     def change_spike_rows_included(self, row_specifier_mask, are_included):
         """change_spike_rows_included presents an IDX vs. ID agnostic interface with the self.spikes_df to allow the bulk of the code to work for both cases.

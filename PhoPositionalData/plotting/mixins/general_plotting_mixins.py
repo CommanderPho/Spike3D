@@ -2,7 +2,6 @@ import param
 import numpy as np
 import pandas as pd
 
-
 class OptionsListMixin:
     @staticmethod
     def options_to_str(options_list_ints):
@@ -37,6 +36,69 @@ class NeuronIdentityAccessingMixin:
         return neuron_i, neuron_id
     
     
+    def find_cell_ids_from_cell_IDXs(self, cell_IDXs):
+        """Finds the cell original IDs from the cell IDXs (not IDs)
+        Args:
+            cell_IDXs ([type]): [description]
+        """
+        found_cell_ids = [self.get_neuron_id_and_idx(neuron_i=an_included_cell_IDX)[1] for an_included_cell_IDX in cell_IDXs] # get the ids from the cell IDXs
+        return found_cell_ids
+    
+    
+    def find_cell_IDXs_from_cell_ids(self, cell_ids):
+        """Finds the cell IDXs (not IDs) from the cell original IDs (cell_ids)
+        Args:
+            cell_ids ([type]): [description]
+        """
+        found_cell_INDEXES = [self.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in cell_ids] # get the indexes from the cellIDs
+        return found_cell_INDEXES
+    
+    
+    
+    
+class NeuronConfigOwningMixin:
+    """ Implementors own a series of visual configurations for each neuron. """
+    debug_logging = False
+    
+    @property
+    def active_neuron_render_configs(self):
+        """The active_neuron_render_configs property."""
+        return self.params.pf_active_configs
+    @active_neuron_render_configs.setter
+    def active_neuron_render_configs(self, value):
+        self.params.pf_active_configs = value
+
+    @property
+    def num_neuron_configs(self):
+        return len(self.active_neuron_render_configs)
+
+    @property
+    def neuron_config_indicies(self):
+        return np.arange(self.num_neuron_configs)
+    
+        
+    # , cell_IDXs=None, cell_IDs=None
+    def update_neuron_render_configs(self, updated_config_indicies, updated_configs):
+        """Updates the configs for the cells with the specified updated_config_indicies
+        Args:
+            updated_config_indicies ([type]): [description]
+            updated_configs ([type]): [description]
+        """
+        if self.debug_logging:
+            print(f'NeuronConfigOwningMixin.update_cell_configs(updated_config_indicies: {updated_config_indicies}, updated_configs: {updated_configs})')
+        for an_updated_config_idx, an_updated_config in zip(updated_config_indicies, updated_configs):
+            self.active_neuron_render_configs[an_updated_config_idx] = an_updated_config # update the config with the new values:
+            
+    def build_neuron_render_configs(self):
+        ## TODO: should have code here that ensures this is only done once, so values don't get overwritten
+        # Get the cell IDs that have a good place field mapping:
+        good_placefield_neuronIDs = np.array(self.ratemap.neuron_ids) # in order of ascending ID
+        num_neurons = len(good_placefield_neuronIDs)
+        unit_labels = [f'{good_placefield_neuronIDs[i]}' for i in np.arange(num_neurons)]
+        self.active_neuron_render_configs = [SingleNeuronPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in np.arange(num_neurons)]
+        
+           
+        
 # def __build_callbacks(self, tuningCurvePlotActors):
 #         combined_active_pf_update_callbacks = []
 #         for i, an_actor in enumerate(tuningCurvePlotActors):
@@ -56,6 +118,7 @@ class BasePlotDataParams(param.Parameterized):
     # name = param.Parameter(default='name', doc='The name of the placefield')
     isVisible = param.Boolean(default=False, doc="Whether the plot is visible")
 
+
 class ExtendedPlotDataParams(BasePlotDataParams):
     color = param.Color(default='#FF0000', doc="The placefield's Color")
     extended_values_dictionary = param.Dict(default={}, doc="Extra values stored in a dictionary.")
@@ -72,6 +135,22 @@ class ExampleExtended(BasePlotDataParams):
 # cross_selector = pn.widgets.CrossSelector(name='Active Placefields', value=[], options=pf_options_list_strings) # cross_selector.value
 
 
-        
+class SingleNeuronPlottingExtended(ExtendedPlotDataParams):
+    spikesVisible = param.Boolean(default=False, doc="Whether the spikes are visible")
+    
+    # @param.depends(c.param.country, d.param.i, watch=True)
+    # def g(country, i):
+    #     print(f"g country={country} i={i}")
+    
+    
+    # def panel(self):
+    #     return pn.Row(
+    #         pn.Column(
+    #             pn.Param(SingleNeuronPlottingExtended.param, name="SinglePlacefield", widgets= {
+    #                 'color': {'widget_type': pn.widgets.ColorPicker, 'name':'pf Color', 'value':'#99ef78', 'width': 50},
+    #             })
+    #         )
+    #     )
+           
 
 

@@ -31,3 +31,5 @@ def partition(df: pd.DataFrame, partitionColumn: str):
     unique_values = np.unique(df[partitionColumn]) # array([ 0,  1,  2,  3,  4,  7, 11, 12, 13, 14])
     grouped_df = df.groupby([partitionColumn]) #  Groups on the specified column.
     return unique_values, np.array([grouped_df.get_group(aValue) for aValue in unique_values], dtype=object) # dataframes split for each unique value in the column
+
+
