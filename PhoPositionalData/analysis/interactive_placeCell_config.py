@@ -81,3 +81,21 @@ def print_subsession_neuron_differences(prev_session_Neurons, subsession_Neurons
     num_subsession_neurons = subsession_Neurons.n_neurons
     num_subsession_total_spikes = np.sum(subsession_Neurons.n_spikes)
     print('{}/{} total spikes spanning {}/{} units remain in subsession'.format(num_subsession_total_spikes, num_original_total_spikes, num_subsession_neurons, num_original_neurons))
+
+
+
+## For building the configs used to filter the session by epoch: 
+def build_configs(session_config, active_epoch, active_subplots_shape = (1,1)):
+    ## Get the config corresponding to this epoch/session settings:
+    active_config = InteractivePlaceCellConfig(active_session_config=session_config, active_epochs=active_epoch, video_output_config=None, plotting_config=None) # '3|1    
+    active_config.video_output_config = VideoOutputModeConfig(active_frame_range=np.arange(100.0, 120.0), 
+                                                              video_output_parent_dir=Path('output', session_config.session_name, active_epoch.name),
+                                                              active_is_video_output_mode=False)
+    active_config.plotting_config = PlottingConfig(output_subplots_shape=active_subplots_shape,
+                                                   output_parent_dir=Path('output', session_config.session_name, active_epoch.name)
+                                                  )
+    # Make the directories:
+    active_config.plotting_config.active_output_parent_dir.mkdir(parents=True, exist_ok=True) # makes the directory if it isn't already there
+    return active_config
+
+

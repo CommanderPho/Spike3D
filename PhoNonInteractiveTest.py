@@ -83,9 +83,8 @@ from neuropy.core import FlattenedSpiketrains
 from neuropy.core import Neurons
 from neuropy.utils.misc import print_seconds_human_readable
 from neuropy.plotting import plot_raster
-from neuropy.analyses.placefields import PlacefieldComputationParameters
+from neuropy.analyses.placefields import PlacefieldComputationParameters, PfND, compute_placefields_masked_by_epochs, compute_placefields_as_needed
 from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
-from neuropy.analyses.pho_custom_placefields import PfND
 from neuropy.plotting.placemaps import plot_all_placefields
 
 from PhoPositionalData.load_exported import *
@@ -98,7 +97,7 @@ from PhoPositionalData.import_data import * # build_spike_positions_list, build_
 from PhoPositionalData.analysis.interactive_placeCell_config import InteractivePlaceCellConfig, VideoOutputModeConfig, PlottingConfig
 from PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
-from PendingNotebookCode import compute_placefields_masked_by_epochs, compute_placefields_as_needed, build_configs, build_units_colormap, build_placefield_multiplotter, process_by_good_placefields, estimation_session_laps, partition
+from PendingNotebookCode import build_configs, build_units_colormap, build_placefield_multiplotter, process_by_good_placefields, estimation_session_laps, partition
 
 from PhoPositionalData.debug_helpers import debug_print_placefield, debug_print_spike_counts
 
