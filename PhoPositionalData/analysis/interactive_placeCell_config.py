@@ -75,14 +75,6 @@ class InteractivePlaceCellConfig(SimplePrintable):
         self.computation_config = computation_config
 
 
-def print_subsession_neuron_differences(prev_session_Neurons, subsession_Neurons):
-    num_original_neurons = prev_session_Neurons.n_neurons
-    num_original_total_spikes = np.sum(prev_session_Neurons.n_spikes)
-    num_subsession_neurons = subsession_Neurons.n_neurons
-    num_subsession_total_spikes = np.sum(subsession_Neurons.n_spikes)
-    print('{}/{} total spikes spanning {}/{} units remain in subsession'.format(num_subsession_total_spikes, num_original_total_spikes, num_subsession_neurons, num_original_neurons))
-
-
 
 ## For building the configs used to filter the session by epoch: 
 def build_configs(session_config, active_epoch, active_subplots_shape = (1,1)):
