@@ -50,6 +50,7 @@ def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_
     
     n_cells = active_placefields1D.ratemap.n_neurons
     out_figures_list = []
+    out_axes_list = []
     
     if should_save:
         curr_parent_out_path = plotting_config.active_output_parent_dir.joinpath('1d Placecell Validation')
@@ -59,6 +60,7 @@ def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_
         curr_cell_id = active_placefields1D.cell_ids[i]
         fig, axs = plot_1D_placecell_validation(active_placefields1D, i)
         out_figures_list.append(fig)
+        out_axes_list.append(axs)
 
     # once done, save out as specified
     if should_save:
@@ -92,7 +94,7 @@ def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_
 
 # 2d Placefield comparison figure:
 def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_index):
-    """ A cell-by-cell method of analyzing 1D placefields and the spikes that create them 
+    """ A single cell method of analyzing 1D placefields and the spikes that create them 
     
     placefield_cell_index: an flat index into active_epoch_placefields1D.cell_ids. Must be between 0 and len(active_epoch_placefields1D.cell_ids). NOT the cell's original ID!
     """
