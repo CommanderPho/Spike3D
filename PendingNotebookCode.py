@@ -55,9 +55,6 @@ def perform_compute_placefields(active_session_spikes_df, active_pos, computatio
     ## Linearized (1D) Position Placefields:
     if ((active_epoch_placefields1D is None) or should_force_recompute_placefields):
         print('Recomputing active_epoch_placefields...', end=' ')
-        # active_epoch_placefields1D = Pf1D(neurons=active_session_Neurons, position=deepcopy(active_pos.linear_pos_obj), epochs=included_epochs,
-        #                                   speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
-        #                                   grid_bin=computation_config.grid_bin_1D, smooth=computation_config.smooth_1D)
         # PfND version:
         active_epoch_placefields1D = PfND(deepcopy(active_session_spikes_df), deepcopy(active_pos.linear_pos_obj), epochs=included_epochs,
                                           speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
@@ -70,9 +67,6 @@ def perform_compute_placefields(active_session_spikes_df, active_pos, computatio
     ## 2D Position Placemaps:
     if ((active_epoch_placefields2D is None) or should_force_recompute_placefields):
         print('Recomputing active_epoch_placefields2D...', end=' ')
-        # active_epoch_placefields2D = Pf2D(neurons=active_session_Neurons, position=deepcopy(active_pos), epochs=included_epochs,
-        #                                   speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
-        #                                   grid_bin=computation_config.grid_bin, smooth=computation_config.smooth)
         # PfND version:
         active_epoch_placefields2D = PfND(deepcopy(active_session_spikes_df), deepcopy(active_pos), epochs=included_epochs,
                                           speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
@@ -173,14 +167,16 @@ def build_placefield_multiplotter(nfields, linear_plot_data=None):
 
 
 
-def estimation_session_laps(sess, N=20):
+def estimation_session_laps(sess, N=20, should_backup_extant_laps_obj=False):
     """ 2021-12-21 - Pho's lap estimation from the position data (only)
     Replaces the sess.laps which is computed or loaded from the spikesII.mat spikes data (which isn't very good)"""
     # backup the extant laps object to prepare for the new one:
-    sess.old_laps_obj = deepcopy(sess.laps)
+    if should_backup_extant_laps_obj:
+        sess.old_laps_obj = deepcopy(sess.laps)
     # plot originals:
     fig, out_axes_list = plot_laps_2d(sess, legacy_plotting_mode=True)
     out_axes_list[0].set_title('Old SpikeII computed Laps')
+    
     position_obj = sess.position
     # position_obj.dt
     position_obj.compute_higher_order_derivatives()

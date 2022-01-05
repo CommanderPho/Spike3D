@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "..\\pyPhoCoreHelpers"
+		},
+		{
+			"path": "..\\pyPhoPlaceCellAnalysis"
 		}
 	],
 	"settings": {

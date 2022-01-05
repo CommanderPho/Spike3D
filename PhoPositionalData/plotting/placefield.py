@@ -110,8 +110,8 @@ def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_ind
     spike_indcator_lines_linewidth = 0.3
     should_plot_bins_grid = False
 
-    fig = plt.figure()
-    fig.set_size_inches([23, 9.7])
+    fig = plt.figure(figsize=(23, 9.7))
+    # fig.set_size_inches([23, 9.7])
     # Layout Subplots in Figure:
     gs = fig.add_gridspec(1, 8)
     gs.update(wspace=0, hspace=0.05) # set the spacing between axes.
@@ -129,14 +129,11 @@ def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_ind
     # title_string = ' '.join(['pf1D', f'Cell {curr_cell_id:02d}', f'{active_epoch_placefields1D.config.str_for_display(False)}'])
     # axs0.set_title(title_string, fontsize='22')
     
-    
-    
     title_string = ' '.join(['pf1D', f'Cell {curr_cell_id:02d}'])
     subtitle_string = ' '.join([f'{active_epoch_placefields1D.config.str_for_display(False)}'])
     
     fig.suptitle(title_string, fontsize='22')
     axs0.set_title(subtitle_string, fontsize='16')
-    
     
     # axs0.yaxis.grid(True, color = 'green', linestyle = '--', linewidth = 0.5)
     if should_plot_bins_grid:
