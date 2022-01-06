@@ -26,7 +26,7 @@ class LapsVisualizationMixin:
         curr_lap_t_start, curr_lap_t_stop = session.laps.get_lap_times(curr_lap_id)
         print('lap[{}]: ({}, {}): '.format(curr_lap_id, curr_lap_t_start, curr_lap_t_stop))
 
-        curr_lap_position_df_is_included = curr_position_df['t'].between(curr_lap_t_start, curr_lap_t_stop, inclusive=True) # returns a boolean array indicating inclusion in teh current lap
+        curr_lap_position_df_is_included = curr_position_df['t'].between(curr_lap_t_start, curr_lap_t_stop, inclusive='both') # returns a boolean array indicating inclusion in teh current lap
         curr_lap_position_df = curr_position_df[curr_lap_position_df_is_included] 
         # curr_position_df.query('-0.5 <= t < 0.5')
         curr_lap_position_traces = curr_lap_position_df[['x','y']].to_numpy().T

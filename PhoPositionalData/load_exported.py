@@ -8,13 +8,12 @@ import numpy as np
 import h5py
 import hdf5storage # conda install hdf5storage
 from pathlib import Path
+from neuropy.utils.mixins.print_helpers import ProgressMessagePrinter, print_file_progress_message
 
 def import_mat_file(mat_import_file='data/RoyMaze1/positionAnalysis.mat'):
-	print('Loading matlab import file: {}...'.format(mat_import_file))
-	data = hdf5storage.loadmat(mat_import_file, appendmat=False)
-	# np.shape(data)
-	print('done.')
-	return data
+    with ProgressMessagePrinter(mat_import_file, 'Loading', 'matlab import file'):
+        data = hdf5storage.loadmat(mat_import_file, appendmat=False)
+    return data
 
 # ## Load Spiking Information:
 # # load_path = Path('/Volumes/iNeo/Data/Rotation_3_Kamran Diba Lab/ClusterFreeAnalysisProject/Data/Achilles_10252013/ExportedData/Achilles_10252013_Output_All.npz')
