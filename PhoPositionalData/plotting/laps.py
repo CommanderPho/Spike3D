@@ -261,7 +261,6 @@ def plot_laps_2d(sess, legacy_plotting_mode=True):
     # fig.suptitle('Laps', fontsize=22)
     return fig, out_axes_list
 
-
 def plot_lap_trajectories_3d(sess, curr_num_subplots=5, active_page_index=0):
     """ Plots a PyVista Qt Multiplotter with several overhead 3D views, each showing a specific lap over the maze in one of its subplots 
     Usage: 
@@ -335,8 +334,6 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=5, active_page_index=0):
     active_page_laps_ids = laps_pages[active_page_index]
     _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range)
     return p, laps_pages
-
-
 
 def plot_lap_trajectories_2d(sess, curr_num_subplots=5, active_page_index=0):
     """ Plots a MatplotLib 2D Figure with each lap being shown in one of its subplots """

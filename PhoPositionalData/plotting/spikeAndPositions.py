@@ -32,8 +32,6 @@ from vtkmodules.vtkCommonCore import vtkLookupTable # required for build_custom_
 
 def build_repeated_spikes_color_array(spikes_df):
     
-    
-    
     spike_color_info.render_opacity
     flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
     
@@ -66,17 +64,11 @@ def build_custom_placefield_maps_lookup_table(curr_active_neuron_color, num_opac
 
 
 
-
-def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
-    """ Upgraded to render a much better looking 3D extruded maze surface. """
-    # Call with:
-    # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
-    # p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
-    def __build_flat_map_plot_data(x, y):
+def _build_flat_arena_data(x, y, z, smoothing=True):
         # Builds the flat base maze map that the other data will be plot on top of
         ## Implicitly relies on: x, y
         # z = np.zeros_like(x)
-        z = np.full_like(x, -0.01) # offset just slightly in the z direction to account for the thickness of the caps that are added upon extrude
+        z = np.full_like(x, z) # offset just slightly in the z direction to account for the thickness of the caps that are added upon extrude
         point_cloud = np.vstack((x, y, z)).T
         pdata = pv.PolyData(point_cloud)
         pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
@@ -86,14 +78,20 @@ def perform_plot_flat_arena(p, x, y, bShowSequenceTraversalGradient=False):
         surf = surf.extrude([0,0,-5], capping=True, inplace=True)
         clipped_surf = surf.clip('-z', invert=False)
         return pdata, clipped_surf
+    
+def perform_plot_flat_arena(p, x, y, z=-0.01, bShowSequenceTraversalGradient=False, smoothing=True, **kwargs):
+    """ Upgraded to render a much better looking 3D extruded maze surface. """
+    # Call with:
+    # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
+    # p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
 
-    pdata_maze, pc_maze = __build_flat_map_plot_data(x, y)
+    pdata_maze, pc_maze = _build_flat_arena_data(x, y, z, smoothing=smoothing)
     # return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", show_edges=False, render=True)
-    return p.add_mesh(pc_maze, name='maze_bg', label='maze', color=[0.1, 0.1, 0.1, 1.0], pbr=True, metallic=0.8, roughness=0.5, diffuse=1, render=True)
+    return p.add_mesh(pc_maze, **({'name': 'maze_bg', 'label': 'maze', 'color': [0.1, 0.1, 0.1, 1.0], 'pbr': True, 'metallic': 0.8, 'roughness': 0.5, 'diffuse': 1, 'render': True} | kwargs))
     # bShowSequenceTraversalGradient
     if bShowSequenceTraversalGradient:
         traversal_order_scalars = np.arange(len(x))
-        return p.add_mesh(pc_maze, name='maze_bg', label='maze', scalars=traversal_order_scalars, render=True)
+        return p.add_mesh(pc_maze, **({'name': 'maze_bg', 'label': 'maze', 'scalars': traversal_order_scalars, 'render': True} | kwargs))
 
 
 

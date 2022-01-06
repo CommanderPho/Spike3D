@@ -50,26 +50,26 @@ class LapsVisualizationMixin:
 
 
     
-    @staticmethod
-    def plot_lap_trajectory_path_spline(p, curr_lap_position_traces):
-        num_lap_samples = np.shape(curr_lap_position_traces)[1]
-        lap_fixed_z = np.full_like(curr_lap_position_traces[0,:], 0.9)
-        curr_lap_points = np.column_stack((curr_lap_position_traces[0,:], curr_lap_position_traces[1,:], lap_fixed_z))
-        plot_name = 'lap_location_trail_spline'
-        trail_fade_values = None
-        size_values = None
-        trail_fade_values = np.linspace(0.0, 0.6, num_lap_samples)
-        size_values = np.linspace(0.2, 0.6, num_lap_samples) # fade from a scale of 0.2 to 0.6
-        line = LapsVisualizationMixin.lines_from_points(curr_lap_points)
-        line["scalars"] = np.arange(line.n_points)
-        tube = line.tube(radius=0.5)
-        p.add_mesh(tube, name=plot_name, render_lines_as_tubes=True, show_scalar_bar=False, color='red')
+    # @staticmethod
+    # def plot_lap_trajectory_path_spline(p, curr_lap_position_traces):
+    #     num_lap_samples = np.shape(curr_lap_position_traces)[1]
+    #     lap_fixed_z = np.full_like(curr_lap_position_traces[0,:], 0.9)
+    #     curr_lap_points = np.column_stack((curr_lap_position_traces[0,:], curr_lap_position_traces[1,:], lap_fixed_z))
+    #     plot_name = 'lap_location_trail_spline'
+    #     trail_fade_values = None
+    #     size_values = None
+    #     trail_fade_values = np.linspace(0.0, 0.6, num_lap_samples)
+    #     size_values = np.linspace(0.2, 0.6, num_lap_samples) # fade from a scale of 0.2 to 0.6
+    #     line = LapsVisualizationMixin.lines_from_points(curr_lap_points)
+    #     line["scalars"] = np.arange(line.n_points)
+    #     tube = line.tube(radius=0.5)
+    #     p.add_mesh(tube, name=plot_name, render_lines_as_tubes=True, show_scalar_bar=False, color='red')
 
   
     @staticmethod
-    def plot_lap_trajectory_path_spline(p, curr_lap_position_traces, curr_lap_id):
+    def plot_lap_trajectory_path_spline(p, curr_lap_position_traces, curr_lap_id, lap_id_dependent_z_offset=0.45):
         num_lap_samples = np.shape(curr_lap_position_traces)[1]
-        lap_fixed_z = np.full_like(curr_lap_position_traces[0,:], 0.9 + (0.45 * curr_lap_id))
+        lap_fixed_z = np.full_like(curr_lap_position_traces[0,:], 0.9 + (lap_id_dependent_z_offset * curr_lap_id))
         curr_lap_points = np.column_stack((curr_lap_position_traces[0,:], curr_lap_position_traces[1,:], lap_fixed_z))
         plot_name = 'lap_location_trail_spline[{}]'.format(int(curr_lap_id))
         trail_fade_values = np.linspace(0.0, 0.6, num_lap_samples)
