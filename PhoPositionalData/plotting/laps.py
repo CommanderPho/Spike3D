@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection, BrokenBarHCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
-from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena
+from PhoPositionalData.plotting.spikeAndPositions import _build_flat_arena_data, build_active_spikes_plot_data, perform_plot_flat_arena
 from PhoGui.InteractivePlotter.LapsVisualizationMixin import LapsVisualizationMixin
 from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
 import pyvista as pv
@@ -261,8 +261,15 @@ def plot_laps_2d(sess, legacy_plotting_mode=True):
     # fig.suptitle('Laps', fontsize=22)
     return fig, out_axes_list
 
-def plot_lap_trajectories_3d(sess, curr_num_subplots=5, active_page_index=0):
-    """ Plots a PyVista Qt Multiplotter with several overhead 3D views, each showing a specific lap over the maze in one of its subplots 
+
+def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, single_combined_plot=True, plot_stacked_arena_guides=False):
+    """ Plots a PyVista Qt Multiplotter with either:
+        1. several overhead 3D views, each showing a specific lap over the maze in one of its subplots
+        2. a single 3D view with all of the laps displayed in a vertical stack
+        
+    Inputs:
+    
+        plot_stacked_arena_guides: only relevant when single_combined_plot is True. If True, plots vertically stacked arenas for visual reference of where the lap is in the arena.
     Usage: 
         p, laps_pages = plot_lap_trajectories_3d(sess, curr_num_subplots=10, active_page_index=1)
         p.show()
@@ -281,9 +288,9 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=5, active_page_index=0):
         lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in sess.laps.lap_id] # dataframes split for each ID:
         return curr_position_df, lap_specific_position_dfs
         
-    def _build_laps_multiplotter(nfields, linear_plot_data=None):
+    def _build_laps_multiplotter(nfields, single_combined_plot: bool, linear_plot_data=None, maximum_fixed_columns:int=5):
         linear_plotter_indicies = np.arange(nfields)
-        fixed_columns = 5
+        fixed_columns = min(maximum_fixed_columns, nfields)
         needed_rows = int(np.ceil(nfields / fixed_columns))
         row_column_indicies = np.unravel_index(linear_plotter_indicies, (needed_rows, fixed_columns)) # inverse is: np.ravel_multi_index(row_column_indicies, (needed_rows, fixed_columns))
         mp = pvqt.MultiPlotter(nrows=needed_rows, ncols=fixed_columns, show=False, title='Laps Muliplotter', toolbar=False, menu_bar=False, editor=False)
@@ -295,45 +302,71 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=5, active_page_index=0):
             if linear_plot_data is None:
                 mp[curr_row, curr_col].add_mesh(pv.Sphere())
             else:
-                mp[curr_row, curr_col].add_mesh(linear_plot_data[a_linear_index], name='maze_bg', color="black", render=False)
+                if single_combined_plot:
+                    perform_plot_flat_arena(mp[curr_row, curr_col], linear_plot_data[0], linear_plot_data[1], z=-0.01, name='maze_bg', render=False)
+                else:
+                    # mp[curr_row, curr_col].add_mesh(linear_plot_data[a_linear_index], name='maze_bg', color="black", render=False)
+                    perform_plot_flat_arena(mp[curr_row, curr_col], linear_plot_data[a_linear_index], z=-0.01, name='maze_bg', render=False)
+
         return mp, linear_plotter_indicies, row_column_indicies
 
-    # Plot the flat arena
-    def __build_flat_map_plot_data(x, y):
-        # Builds the flat base maze map that the other data will be plot on top of
-        z = np.zeros_like(x)
-        point_cloud = np.vstack((x, y, z)).T
-        pdata = pv.PolyData(point_cloud)
-        pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
-        geo = pv.Circle(radius=0.5)
-        pc = pdata.glyph(scale=False, geom=geo)
-        return pdata, pc
     
-    def _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range):
+    def _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range, single_combined_plot: bool):
         # Add the lap trajectory:
         for a_linear_index in linear_plotter_indicies:
-            curr_lap_id = active_page_laps_ids[a_linear_index]
             curr_row = row_column_indicies[0][a_linear_index]
             curr_col = row_column_indicies[1][a_linear_index]
-            LapsVisualizationMixin.plot_lap_trajectory_path_spline(p[curr_row, curr_col], curr_lap_position_traces[curr_lap_id], a_linear_index)
-            curr_lap_label_text = 'Lap[{}]: t({:.2f}, {:.2f})'.format(curr_lap_id, curr_lap_time_range[curr_lap_id][0], curr_lap_time_range[curr_lap_id][1]) 
-            PhoWidgetHelper.perform_add_text(p[curr_row, curr_col], curr_lap_label_text, name='lblLapIdIndicator')
+            if single_combined_plot:
+                # curr_lap_id = active_page_laps_ids[a_linear_index]
+                # print(f'curr_lap_id: {curr_lap_id}')
+                for curr_lap_idx, curr_lap_id in enumerate(active_page_laps_ids):
+                    LapsVisualizationMixin.plot_lap_trajectory_path_spline(p[curr_row, curr_col], curr_lap_position_traces[curr_lap_idx], curr_lap_id, lap_id_dependent_z_offset=1.0)
+                    # curr_lap_label_text = 'Lap[{}]: t({:.2f}, {:.2f})'.format(curr_lap_id, curr_lap_time_range[curr_lap_id][0], curr_lap_time_range[curr_lap_id][1]) 
+                    # PhoWidgetHelper.perform_add_text(p[curr_row, curr_col], curr_lap_label_text, name='lblLapIdIndicator')
+            else:
+                curr_lap_id = active_page_laps_ids[a_linear_index]
+                LapsVisualizationMixin.plot_lap_trajectory_path_spline(p[curr_row, curr_col], curr_lap_position_traces[curr_lap_id], a_linear_index)
+                curr_lap_label_text = 'Lap[{}]: t({:.2f}, {:.2f})'.format(curr_lap_id, curr_lap_time_range[curr_lap_id][0], curr_lap_time_range[curr_lap_id][1]) 
+                PhoWidgetHelper.perform_add_text(p[curr_row, curr_col], curr_lap_label_text, name='lblLapIdIndicator')
 
     # Compute required data from session:
     curr_position_df, lap_specific_position_dfs = _compute_laps_position_data(sess)
     curr_lap_position_traces = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df in lap_specific_position_dfs]
     curr_lap_time_range = [[lap_pos_df[['t']].to_numpy()[0].item(), lap_pos_df[['t']].to_numpy()[-1].item()] for lap_pos_df in lap_specific_position_dfs]
-
     all_maze_positions = curr_position_df[['x','y']].to_numpy().T # (2, 59308)
-    # np.shape(all_maze_positions)
-    pdata_maze_shared, pc_maze_shared = __build_flat_map_plot_data(all_maze_positions[0,:], all_maze_positions[1,:])
-    all_maze_data = np.full((curr_num_subplots,), pc_maze_shared) # repeat the maze data for each subplot
-    p, linear_plotter_indicies, row_column_indicies = _build_laps_multiplotter(curr_num_subplots, all_maze_data)
+
+    if single_combined_plot:
+        curr_num_subplots = 1 # Only one subplot and the correct page index make sense for single_combined_plot mode 
+        active_page_index = 0
+        all_maze_data = (all_maze_positions[0,:], all_maze_positions[1,:])
+    else:
+        pdata_maze_shared, pc_maze_shared = _build_flat_arena_data(all_maze_positions[0,:], all_maze_positions[1,:], smoothing=False)
+        all_maze_data = np.full((curr_num_subplots,), pc_maze_shared) # repeat the maze data for each subplot
+
+    p, linear_plotter_indicies, row_column_indicies = _build_laps_multiplotter(curr_num_subplots, single_combined_plot, all_maze_data)
     # generate the pages
-    laps_pages = [list(chunk) for chunk in _chunks(sess.laps.lap_id, curr_num_subplots)]
+    if single_combined_plot:
+        laps_pages = [list(sess.laps.lap_id)] # single 'page'
+    else:
+        laps_pages = [list(chunk) for chunk in _chunks(sess.laps.lap_id, curr_num_subplots)]
     active_page_laps_ids = laps_pages[active_page_index]
-    _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range)
+    # print(f'active_page_laps_ids: {active_page_laps_ids}, curr_lap_position_traces: {curr_lap_position_traces}')
+    if plot_stacked_arena_guides:
+        if single_combined_plot:
+            lap_id_dependent_z_offset = 1.0
+            # pdata_maze_shared, pc_maze_shared = _build_flat_arena_data(all_maze_data[0], all_maze_data[1])
+            # all_maze_data = np.full((curr_num_subplots,), pc_maze_shared) # repeat the maze data for each subplot
+
+            for curr_lap_idx, curr_lap_id in enumerate(active_page_laps_ids):
+                curr_maze_z_offset = -0.01 + (lap_id_dependent_z_offset * (curr_lap_idx + 1))
+                perform_plot_flat_arena(p[0,0], all_maze_data[0], all_maze_data[1], z=curr_maze_z_offset, name=f'maze_offset[{curr_lap_idx}]', render=False, color=[0.1, 0.1, 0.1, 1.0], smoothing=False, extrude_height=-2, opacity=0.5)
+
+    # add the laps
+    _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range, single_combined_plot=single_combined_plot)
     return p, laps_pages
+
+
+
 
 def plot_lap_trajectories_2d(sess, curr_num_subplots=5, active_page_index=0):
     """ Plots a MatplotLib 2D Figure with each lap being shown in one of its subplots """
