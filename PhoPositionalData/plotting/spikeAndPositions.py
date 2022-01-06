@@ -150,7 +150,7 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
         print('no custom render_opacity set on dataframe.')
         
     # rebuild the RGB data from the dataframe:
-    if (np.isin(['R','G','B','render_opacity'], active_flat_df.columns).all):
+    if (np.isin(['R','G','B','render_opacity'], active_flat_df.columns).all()):
         # RGB Only:
         # spike_history_pdata['rgb'] = active_flat_df[['R','G','B']].to_numpy()
         # TODO: could easily add the spike_history_pdata['render_opacity'] here as RGBA if we wanted.
