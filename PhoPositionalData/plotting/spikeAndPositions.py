@@ -64,7 +64,7 @@ def build_custom_placefield_maps_lookup_table(curr_active_neuron_color, num_opac
 
 
 
-def _build_flat_arena_data(x, y, z, smoothing=True, extrude_height=-5):
+def _build_flat_arena_data(x, y, z=-0.01, smoothing=True, extrude_height=-5):
         # Builds the flat base maze map that the other data will be plot on top of
         ## Implicitly relies on: x, y
         # z = np.zeros_like(x)
@@ -85,15 +85,24 @@ def _build_flat_arena_data(x, y, z, smoothing=True, extrude_height=-5):
             return pdata, pc
         
 
-def perform_plot_flat_arena(p, x, y, z=-0.01, bShowSequenceTraversalGradient=False, smoothing=True, extrude_height=-5, **kwargs):
+def perform_plot_flat_arena(p, *args, z=-0.01, bShowSequenceTraversalGradient=False, smoothing=True, extrude_height=-5, **kwargs):
     """ Upgraded to render a much better looking 3D extruded maze surface. """
     # Call with:
     # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
     # p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
 
-    pdata_maze, pc_maze = _build_flat_arena_data(x, y, z, smoothing=smoothing, extrude_height=extrude_height)
-    
-    
+    if len(args) == 2:
+        # normal x, y case
+        x, y = args[0], args[1]
+        pdata_maze, pc_maze = _build_flat_arena_data(x, y, z=z, smoothing=smoothing, extrude_height=extrude_height)
+
+    elif len(args) == 1:
+        # directly passing in pc_maze already built by calling _build_flat_arena_data case
+        # Note that  z, smoothing=smoothing, extrude_height=extrude_height are ignored in this case
+        pc_maze = args[0]
+    else:
+        raise ValueError
+
     # return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", show_edges=False, render=True)
     return p.add_mesh(pc_maze, **({'name': 'maze_bg', 'label': 'maze', 'color': [0.1, 0.1, 0.1, 1.0], 'pbr': True, 'metallic': 0.8, 'roughness': 0.5, 'diffuse': 1, 'render': True} | kwargs))
     # bShowSequenceTraversalGradient
