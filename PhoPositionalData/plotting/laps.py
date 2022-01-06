@@ -262,17 +262,22 @@ def plot_laps_2d(sess, legacy_plotting_mode=True):
     return fig, out_axes_list
 
 
-def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, single_combined_plot=True, plot_stacked_arena_guides=False):
+def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, single_combined_plot=True, lap_id_dependent_z_offset = 1.0, plot_stacked_arena_guides=False):
     """ Plots a PyVista Qt Multiplotter with either:
         1. several overhead 3D views, each showing a specific lap over the maze in one of its subplots
         2. a single 3D view with all of the laps displayed in a vertical stack
         
     Inputs:
-    
+        lap_id_dependent_z_offset: only relevant when single_combined_plot is True. a float indicating how far each lap is offset in the z direction from the previous
         plot_stacked_arena_guides: only relevant when single_combined_plot is True. If True, plots vertically stacked arenas for visual reference of where the lap is in the arena.
     Usage: 
         p, laps_pages = plot_lap_trajectories_3d(sess, curr_num_subplots=10, active_page_index=1)
         p.show()
+        
+        p, laps_pages = _plot_lap_trajectories_combined_plot_3d(curr_kdiba_pipeline.sess, curr_num_subplots=1, single_combined_plot=True)
+        p.show()
+
+
     """
     def _chunks(iterable, size=10):
         iterator = iter(iterable)
@@ -311,7 +316,7 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
         return mp, linear_plotter_indicies, row_column_indicies
 
     
-    def _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range, single_combined_plot: bool):
+    def _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range, single_combined_plot: bool, lap_id_dependent_z_offset: float):
         # Add the lap trajectory:
         for a_linear_index in linear_plotter_indicies:
             curr_row = row_column_indicies[0][a_linear_index]
@@ -320,7 +325,7 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
                 # curr_lap_id = active_page_laps_ids[a_linear_index]
                 # print(f'curr_lap_id: {curr_lap_id}')
                 for curr_lap_idx, curr_lap_id in enumerate(active_page_laps_ids):
-                    LapsVisualizationMixin.plot_lap_trajectory_path_spline(p[curr_row, curr_col], curr_lap_position_traces[curr_lap_idx], curr_lap_id, lap_id_dependent_z_offset=1.0)
+                    LapsVisualizationMixin.plot_lap_trajectory_path_spline(p[curr_row, curr_col], curr_lap_position_traces[curr_lap_idx], curr_lap_id, lap_id_dependent_z_offset=lap_id_dependent_z_offset)
                     # curr_lap_label_text = 'Lap[{}]: t({:.2f}, {:.2f})'.format(curr_lap_id, curr_lap_time_range[curr_lap_id][0], curr_lap_time_range[curr_lap_id][1]) 
                     # PhoWidgetHelper.perform_add_text(p[curr_row, curr_col], curr_lap_label_text, name='lblLapIdIndicator')
             else:
@@ -353,7 +358,7 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
     # print(f'active_page_laps_ids: {active_page_laps_ids}, curr_lap_position_traces: {curr_lap_position_traces}')
     if plot_stacked_arena_guides:
         if single_combined_plot:
-            lap_id_dependent_z_offset = 1.0
+            
             # pdata_maze_shared, pc_maze_shared = _build_flat_arena_data(all_maze_data[0], all_maze_data[1])
             # all_maze_data = np.full((curr_num_subplots,), pc_maze_shared) # repeat the maze data for each subplot
 
@@ -362,7 +367,7 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
                 perform_plot_flat_arena(p[0,0], all_maze_data[0], all_maze_data[1], z=curr_maze_z_offset, name=f'maze_offset[{curr_lap_idx}]', render=False, color=[0.1, 0.1, 0.1, 1.0], smoothing=False, extrude_height=-2, opacity=0.5)
 
     # add the laps
-    _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range, single_combined_plot=single_combined_plot)
+    _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range, single_combined_plot=single_combined_plot, lap_id_dependent_z_offset=lap_id_dependent_z_offset)
     return p, laps_pages
 
 
