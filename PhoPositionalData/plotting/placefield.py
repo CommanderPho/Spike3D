@@ -38,7 +38,7 @@ def _plot_helper_setup_gridlines(ax, bin_edges, bin_centers):
         
         
 def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_save=False, modifier_string='', save_mode='separate_files'):
-    """ Plots a series of plots, one for each potential placecell, that allows you to see how the spiking corresponds to the animal's position/lap and how that contributes to the computed placemap
+    """ Uses plot_1D_placecell_validation(...) to plot a series of plots, one for each potential placecell, that allows you to see how the spiking corresponds to the animal's position/lap and how that contributes to the computed placemap
     
     Usage:
         plot_1d_placecell_validations(active_epoch_placefields1D, should_save=True)

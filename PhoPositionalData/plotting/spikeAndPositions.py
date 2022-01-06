@@ -114,7 +114,14 @@ def perform_plot_flat_arena(p, *args, z=-0.01, bShowSequenceTraversalGradient=Fa
 
 # dataframe version of the build_active_spikes_plot_pointdata(...) function
 def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
-    
+    """Builds the pv.PolyData pointcloud from the spikes dataframe points.
+
+    Args:
+        active_flat_df (pd.DataFrame): [description]
+
+    Returns:
+        [type]: [description]
+    """
     if 'z' in active_flat_df.columns:
         # use custom override z-values
         print('build_active_spikes_plot_pointdata_df(...): Found custom z column! Using Data!!')
@@ -152,28 +159,7 @@ def build_active_spikes_plot_pointdata_df(active_flat_df: pd.DataFrame):
         print('successfully set custom rgb key from separate R, G, B columns in dataframe.')
     else:
         print('WARNING: DATAFRAME LACKS RGB VALUES!')
-                
-    # if ('rgb_hex' in active_flat_df.columns) and ('render_opacity' in active_flat_df.columns):
-    #     spike_history_pdata['rgb'] = build_repeated_spikes_color_array(active_flat_df)
-    #     print('successfully set custom rgb key in build_active_spikes_plot_pointdata_df(...).')
-    # else:
-    #     print('WARNING: rgb_hex or render_opacity key is missing from the dataframe!')
-    
-    # if 'rgb' in active_flat_df.columns:
-    #     print(f'adding rgb array from complete rgb column:')
-    #     spike_history_pdata['rgb'] = active_flat_df['rgb'].values
-    # else:
-    #     if 'rgb_hex' in active_flat_df.columns:
-    #         # active_flat_df['render_opacity'].values
-    #         flat_spike_colors_array = np.array([pv.parse_color(hex_color, opacity=1.0) for hex_color in active_flat_df['rgb_hex'].values])
-    #         print(f'adding rgb array from rgb_hex: np.shape(flat_spike_colors_array): {np.shape(flat_spike_colors_array)}')
-    #         spike_history_pdata['rgb'] = flat_spike_colors_array.copy()
-            
-    #         spike_history_pdata['rgb'] = build_repeated_spikes_color_array(active_flat_df).copy()
-            
-    #     else:
-    #         print('no custom rgb_hex key set on dataframe.')
- 
+
     return spike_history_pdata
 
 
