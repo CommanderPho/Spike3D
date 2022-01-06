@@ -64,7 +64,7 @@ def build_custom_placefield_maps_lookup_table(curr_active_neuron_color, num_opac
 
 
 
-def _build_flat_arena_data(x, y, z, smoothing=True):
+def _build_flat_arena_data(x, y, z, smoothing=True, extrude_height=-5):
         # Builds the flat base maze map that the other data will be plot on top of
         ## Implicitly relies on: x, y
         # z = np.zeros_like(x)
@@ -74,18 +74,26 @@ def _build_flat_arena_data(x, y, z, smoothing=True):
         pdata['occupancy heatmap'] = np.arange(np.shape(point_cloud)[0])
         # geo = pv.Circle(radius=0.5)
         # pc = pdata.glyph(scale=False, geom=geo)
-        surf = pdata.delaunay_2d()
-        surf = surf.extrude([0,0,-5], capping=True, inplace=True)
-        clipped_surf = surf.clip('-z', invert=False)
-        return pdata, clipped_surf
-    
-def perform_plot_flat_arena(p, x, y, z=-0.01, bShowSequenceTraversalGradient=False, smoothing=True, **kwargs):
+        if smoothing:
+            surf = pdata.delaunay_2d()
+            surf = surf.extrude([0,0,extrude_height], capping=True, inplace=True)
+            clipped_surf = surf.clip('-z', invert=False)
+            return pdata, clipped_surf
+        else:
+            geo = pv.Circle(radius=0.5)
+            pc = pdata.glyph(scale=False, geom=geo)
+            return pdata, pc
+        
+
+def perform_plot_flat_arena(p, x, y, z=-0.01, bShowSequenceTraversalGradient=False, smoothing=True, extrude_height=-5, **kwargs):
     """ Upgraded to render a much better looking 3D extruded maze surface. """
     # Call with:
     # pdata_maze, pc_maze = build_flat_map_plot_data() # Plot the flat arena
     # p.add_mesh(pc_maze, name='maze_bg', color="black", render=False)
 
-    pdata_maze, pc_maze = _build_flat_arena_data(x, y, z, smoothing=smoothing)
+    pdata_maze, pc_maze = _build_flat_arena_data(x, y, z, smoothing=smoothing, extrude_height=extrude_height)
+    
+    
     # return p.add_mesh(pc_maze, name='maze_bg', label='maze', color="black", show_edges=False, render=True)
     return p.add_mesh(pc_maze, **({'name': 'maze_bg', 'label': 'maze', 'color': [0.1, 0.1, 0.1, 1.0], 'pbr': True, 'metallic': 0.8, 'roughness': 0.5, 'diffuse': 1, 'render': True} | kwargs))
     # bShowSequenceTraversalGradient
