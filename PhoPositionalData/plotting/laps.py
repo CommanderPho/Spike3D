@@ -288,10 +288,6 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
                     yield more    # yield more elements from the iterator
             yield chunk()         # in outer generator, yield next chunk
 
-    def _compute_laps_position_data(sess):
-        curr_position_df = sess.compute_position_laps()
-        lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in sess.laps.lap_id] # dataframes split for each ID:
-        return curr_position_df, lap_specific_position_dfs
         
     def _build_laps_multiplotter(nfields, single_combined_plot: bool, linear_plot_data=None, maximum_fixed_columns:int=5, debug_print=True):
         linear_plotter_indicies = np.arange(nfields)
@@ -353,9 +349,7 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
                 PhoWidgetHelper.perform_add_text(p[curr_row, curr_col], curr_lap_label_text, name='lblLapIdIndicator')
 
     # Compute required data from session:
-    curr_position_df, lap_specific_position_dfs = _compute_laps_position_data(sess)
-    curr_lap_position_traces = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df in lap_specific_position_dfs]
-    curr_lap_time_range = [[lap_pos_df[['t']].to_numpy()[0].item(), lap_pos_df[['t']].to_numpy()[-1].item()] for lap_pos_df in lap_specific_position_dfs]
+    curr_position_df, lap_specific_position_dfs, lap_specific_time_ranges, lap_specific_position_traces = LapsVisualizationMixin._compute_laps_position_data(sess)
     all_maze_positions = curr_position_df[['x','y']].to_numpy().T # (2, 59308)
 
     if single_combined_plot:
@@ -385,7 +379,7 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
                 perform_plot_flat_arena(p[0,0], all_maze_data[0], all_maze_data[1], z=curr_maze_z_offset, name=f'maze_offset[{curr_lap_idx}]', render=False, color=[0.1, 0.1, 0.1, 1.0], smoothing=False, extrude_height=-2, opacity=0.5)
 
     # add the laps
-    _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, curr_lap_position_traces, curr_lap_time_range, single_combined_plot=single_combined_plot, lap_id_dependent_z_offset=lap_id_dependent_z_offset)
+    _add_specific_lap_trajectory(p, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, lap_specific_position_traces, lap_specific_time_ranges, single_combined_plot=single_combined_plot, lap_id_dependent_z_offset=lap_id_dependent_z_offset)
     return p, laps_pages
 
 
@@ -402,10 +396,6 @@ def plot_lap_trajectories_2d(sess, curr_num_subplots=5, active_page_index=0):
                     yield more    # yield more elements from the iterator
             yield chunk()         # in outer generator, yield next chunk
 
-    def _compute_laps_position_data(sess):
-        curr_position_df = sess.compute_position_laps()
-        lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in sess.laps.lap_id] # dataframes split for each ID:
-        return curr_position_df, lap_specific_position_dfs
         
     def _build_laps_multiplotter(nfields, linear_plot_data=None):
         linear_plotter_indicies = np.arange(nfields)
@@ -457,7 +447,7 @@ def plot_lap_trajectories_2d(sess, curr_num_subplots=5, active_page_index=0):
             # PhoWidgetHelper.perform_add_text(p[curr_row, curr_col], curr_lap_label_text, name='lblLapIdIndicator')
 
     # Compute required data from session:
-    curr_position_df, lap_specific_position_dfs = _compute_laps_position_data(sess)
+    curr_position_df, lap_specific_position_dfs = LapsVisualizationMixin._compute_laps_specific_position_dfs(sess)
     laps_position_traces_list = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df in lap_specific_position_dfs]
     laps_time_range_list = [[lap_pos_df[['t']].to_numpy()[0].item(), lap_pos_df[['t']].to_numpy()[-1].item()] for lap_pos_df in lap_specific_position_dfs]
     

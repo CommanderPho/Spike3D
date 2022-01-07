@@ -19,7 +19,37 @@ class LapsVisualizationMixin:
     @staticmethod
     def get_lap_times(session, curr_lap_id):
         return session.laps.get_lap_times(curr_lap_id)
+    
+    @staticmethod
+    def _compute_laps_specific_position_dfs(session):
+        """ curr_position_df, lap_specific_position_dfs = _compute_laps_specific_position_dfs(sess)
 
+        Args:
+            session (DataSession): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        curr_position_df = session.compute_position_laps()
+        lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in session.laps.lap_id] # dataframes split for each ID:
+        return curr_position_df, lap_specific_position_dfs
+
+
+    @classmethod
+    def _compute_laps_position_data(cls, session):
+        """ Given the session, extracts all position data by lap and returns it all """ 
+        curr_position_df, lap_specific_position_dfs = cls._compute_laps_specific_position_dfs(session)
+        return curr_position_df, lap_specific_position_dfs, *cls._lap_specific_positions_from_lap_position_dfs(lap_specific_position_dfs)
+    
+    
+    
+    @staticmethod
+    def _lap_specific_positions_from_lap_position_dfs(lap_specific_position_dfs):
+        """ Helper method just extracts the time and position variables from each of the lap_specific_position_dataframes """
+        lap_specific_time_ranges = [[lap_pos_df[['t']].to_numpy()[0].item(), lap_pos_df[['t']].to_numpy()[-1].item()] for lap_pos_df in lap_specific_position_dfs]
+        lap_specific_position_traces = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df in lap_specific_position_dfs]
+        return lap_specific_time_ranges, lap_specific_position_traces
+    
     @staticmethod
     def get_lap_position(session, curr_lap_id):
         curr_position_df = session.position.to_dataframe()
@@ -68,6 +98,14 @@ class LapsVisualizationMixin:
   
     @staticmethod
     def plot_lap_trajectory_path_spline(p, curr_lap_position_traces, curr_lap_id, lap_id_dependent_z_offset=0.45):
+        """[summary]
+
+        Args:
+            p ([type]): [description]
+            curr_lap_position_traces ([type]): a (3, N) position
+            curr_lap_id ([type]): [description]
+            lap_id_dependent_z_offset (float, optional): [description]. Defaults to 0.45.
+        """
         num_lap_samples = np.shape(curr_lap_position_traces)[1]
         lap_fixed_z = np.full_like(curr_lap_position_traces[0,:], 0.9 + (lap_id_dependent_z_offset * curr_lap_id))
         curr_lap_points = np.column_stack((curr_lap_position_traces[0,:], curr_lap_position_traces[1,:], lap_fixed_z))

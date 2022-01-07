@@ -98,7 +98,7 @@ class NeuronConfigOwningMixin:
         self.active_neuron_render_configs = [SingleNeuronPlottingExtended(name=unit_labels[i], isVisible=False, color=self.params.pf_colors_hex[i], spikesVisible=False) for i in np.arange(num_neurons)]
         
            
-        
+
 # def __build_callbacks(self, tuningCurvePlotActors):
 #         combined_active_pf_update_callbacks = []
 #         for i, an_actor in enumerate(tuningCurvePlotActors):
