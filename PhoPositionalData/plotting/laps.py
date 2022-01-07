@@ -142,6 +142,10 @@ def _plot_helper_render_laps(pos_t_rel_seconds, pos_value, crossing_beginings, c
         _plot_helper_render_lap(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(), desc_crossing_beginings, desc_crossing_midpoints, desc_crossing_endings, color='r', ax=out_axes_list[0])
         _plot_helper_render_lap(pos_df['t'].to_numpy(), pos_df['x'].to_numpy(), asc_crossing_beginings, asc_crossing_midpoints, asc_crossing_endings, color='g', ax=out_axes_list[0])
     """
+    # assert np.shape(pos_t_rel_seconds) == np.shape(crossing_beginings), f"pos_t_rel_seconds and crossing_beginings should be the same shape. Instead pos_t_rel_seconds is of size {np.shape(pos_t_rel_seconds)} and crossing_beginings is of size {np.shape(crossing_beginings)}."
+    assert np.shape(pos_t_rel_seconds)[0] >= np.max(crossing_beginings), f"crossing_beginings contains an index {np.max(crossing_beginings)} that is out of bounds for pos_t_rel_seconds with a size of {np.shape(pos_t_rel_seconds)}."
+    assert np.min(crossing_beginings) >= 0, f"crossing_beginings contains an index {np.min(crossing_beginings)} that is less than zero (and thus out of bounds for pos_t_rel_seconds with a size of {np.shape(pos_t_rel_seconds)})."
+    
     if ax is None:
         ax = plt.gca()
     
@@ -150,7 +154,7 @@ def _plot_helper_render_laps(pos_t_rel_seconds, pos_value, crossing_beginings, c
         ax.scatter(pos_t_rel_seconds[crossing_midpoints], pos_value[crossing_midpoints], s=15, c=color)
     
     # Plots the concrete vertical lines denoting the start/end of each lap
-    ax.vlines(pos_t_rel_seconds[crossing_beginings], 0, 1, transform=ax.get_xaxis_transform(), colors=color)
+    ax.vlines(pos_t_rel_seconds[crossing_beginings], 0, 1, transform=ax.get_xaxis_transform(), colors=color) # index 57100 is out of bounds for axis 0 with size 51455 -> pos_t_rel_seconds has size 51455, and crossing_beginings is too long!
     ax.vlines(pos_t_rel_seconds[crossing_endings], 0, 1, transform=ax.get_xaxis_transform(), colors=color)
     # Plot the ranges for the ascending and descending laps:
     curr_included_mask, curr_included_index_ranges = _build_included_mask(np.shape(pos_value), crossing_beginings, crossing_endings)
@@ -212,6 +216,10 @@ def plot_position_curves_figure(position_obj, include_velocity=True, include_acc
     
     
 def plot_laps_2d(sess, legacy_plotting_mode=True):
+    """ This generates a position/velocity/acceleration curve for the animal and highlights the currently recognized track epochs using green and red span overlays (corresponding to egress and ingress directions) 
+        TODO: currently legacy_plotting_mode=True does not function if the session has been filtered because the indicies no longer line up. 
+            I think that perhaps excluding invalid laps (filtering sess.laps just like the other session members) would prevent this issue, but partially out-of-bounds laps might also need to be dealt with.
+    """
     pos_df = sess.compute_position_laps() # ensures the laps are computed if they need to be:
     position_obj = sess.position
     position_obj.compute_higher_order_derivatives()
@@ -219,6 +227,7 @@ def plot_laps_2d(sess, legacy_plotting_mode=True):
     pos_df = position_obj.to_dataframe()
     
     curr_laps_df = sess.laps.to_dataframe()
+    
     
     fig, out_axes_list = plot_position_curves_figure(position_obj, include_velocity=True, include_accel=True, figsize=(24, 10))    
 
