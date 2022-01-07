@@ -262,7 +262,7 @@ def plot_laps_2d(sess, legacy_plotting_mode=True):
     return fig, out_axes_list
 
 
-def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, single_combined_plot=True, lap_id_dependent_z_offset = 1.0, plot_stacked_arena_guides=False):
+def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, single_combined_plot=True, lap_id_dependent_z_offset = 1.0, plot_stacked_arena_guides=False, existing_plotter=None):
     """ Plots a PyVista Qt Multiplotter with either:
         1. several overhead 3D views, each showing a specific lap over the maze in one of its subplots
         2. a single 3D view with all of the laps displayed in a vertical stack
@@ -293,12 +293,30 @@ def plot_lap_trajectories_3d(sess, curr_num_subplots=1, active_page_index=0, sin
         lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in sess.laps.lap_id] # dataframes split for each ID:
         return curr_position_df, lap_specific_position_dfs
         
-    def _build_laps_multiplotter(nfields, single_combined_plot: bool, linear_plot_data=None, maximum_fixed_columns:int=5):
+    def _build_laps_multiplotter(nfields, single_combined_plot: bool, linear_plot_data=None, maximum_fixed_columns:int=5, debug_print=True):
         linear_plotter_indicies = np.arange(nfields)
         fixed_columns = min(maximum_fixed_columns, nfields)
         needed_rows = int(np.ceil(nfields / fixed_columns))
         row_column_indicies = np.unravel_index(linear_plotter_indicies, (needed_rows, fixed_columns)) # inverse is: np.ravel_multi_index(row_column_indicies, (needed_rows, fixed_columns))
-        mp = pvqt.MultiPlotter(nrows=needed_rows, ncols=fixed_columns, show=False, title='Laps Muliplotter', toolbar=False, menu_bar=False, editor=False)
+        
+        if existing_plotter is None:
+            if debug_print:
+                print('creating new pvqt.MultiPlotter')
+            mp = pvqt.MultiPlotter(nrows=needed_rows, ncols=fixed_columns, show=False, title='Laps Muliplotter', toolbar=False, menu_bar=False, editor=False)
+        else:
+            if isinstance(existing_plotter, pvqt.MultiPlotter):
+                if debug_print:
+                    print('reusing extant existing_plotter (pvqt.MultiPlotter)')
+                mp = existing_plotter
+            elif isinstance(existing_plotter, pvqt.BackgroundPlotter):
+                if debug_print:
+                    print('reusing extant existing_plotter (pvqt.BackgroundPlotter)')
+                print('ERROR: extant_plotter must be a MultiPlotter type!')
+                raise ValueError
+            else:
+                print(f'ERROR: existing_plotter is of unknown type {type(existing_plotter)}')
+                raise ValueError
+            
         # print('linear_plotter_indicies: {}\n row_column_indicies: {}\n'.format(linear_plotter_indicies, row_column_indicies))
         for a_linear_index in linear_plotter_indicies:
             # print('a_linear_index: {}, row_column_indicies[0][a_linear_index]: {}, row_column_indicies[1][a_linear_index]: {}'.format(a_linear_index, row_column_indicies[0][a_linear_index], row_column_indicies[1][a_linear_index]))

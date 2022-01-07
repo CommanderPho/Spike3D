@@ -5,14 +5,17 @@
 # from neuropy
 import numpy as np
 import pyvista as pv
+from pyvista.plotting.plotting import Plotter
 # from pyvista.core.composite import MultiBlock
 from pyvistaqt import BackgroundPlotter
+from pyvistaqt.plotting import MultiPlotter
 from PhoGui.general_parameters import DebugHelper, VisualizationParameters
 
 from PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
 from PhoPositionalData.import_data import build_spike_positions_list
 
 
+from PhoPositionalData.plotting.spikeAndPositions import animal_location_circle, animal_location_trail_circle
 
 # class PlotGroup:
 #     """
@@ -52,7 +55,19 @@ from PhoPositionalData.import_data import build_spike_positions_list
 
 class InteractivePyvistaPlotterBuildIfNeededMixin:
     @staticmethod
-    def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None, **kwargs):
+    def build_new_plotter_if_needed(pActiveTuningCurvesPlotter=None, plotter_type='BackgroundPlotter', **kwargs):
+        """[summary]
+
+        Args:
+            pActiveTuningCurvesPlotter ([type], optional): [description]. Defaults to None.
+            plotter_type (str, optional): [description]. ['BackgroundPlotter', 'MultiPlotter'] Defaults to 'BackgroundPlotter'.
+
+        Raises:
+            ValueError: [description]
+
+        Returns:
+            [type]: [description]
+        """
         if (pActiveTuningCurvesPlotter is not None):
             if isinstance(pActiveTuningCurvesPlotter, BackgroundPlotter):
                 if pActiveTuningCurvesPlotter.app_window.isHidden():
@@ -65,8 +80,9 @@ class InteractivePyvistaPlotterBuildIfNeededMixin:
                     pActiveTuningCurvesPlotter.close() # Close it to start over fresh
                     pActiveTuningCurvesPlotter = None
                     needs_create_new_backgroundPlotter = True
+                    
             else:
-                print('No open BackgroundPlotter, p is a Plotter object')
+                print(f'No open BackgroundPlotter, p is a {type(pActiveTuningCurvesPlotter)} object')
                 pActiveTuningCurvesPlotter.close()
                 pActiveTuningCurvesPlotter = None
                 needs_create_new_backgroundPlotter = True
@@ -75,11 +91,16 @@ class InteractivePyvistaPlotterBuildIfNeededMixin:
             needs_create_new_backgroundPlotter = True
 
         if needs_create_new_backgroundPlotter:
-            print('Creating a new BackgroundPlotter')
-            
-            
+            print(f'Creating a new {plotter_type}')
             # pActiveTuningCurvesPlotter = BackgroundPlotter(window_size=(1920, 1080), shape=(1,1), off_screen=False) # Use just like you would a pv.Plotter() instance
-            pActiveTuningCurvesPlotter = BackgroundPlotter(**({'window_size':(1920, 1080), 'shape':(1,1), 'off_screen':False} | kwargs)) # Use just like you would a pv.Plotter() instance 
+            if plotter_type == 'BackgroundPlotter':
+                pActiveTuningCurvesPlotter = BackgroundPlotter(**({'window_size':(1920, 1080), 'shape':(1,1), 'off_screen':False} | kwargs)) # Use just like you would a pv.Plotter() instance 
+            elif plotter_type == 'MultiPlotter':
+                pActiveTuningCurvesPlotter = MultiPlotter(**({'window_size':(1920, 1080), 'shape':(1,1), 'off_screen':False} | kwargs))
+            else:
+                print(f'plotter_type is of unknown type {plotter_type}')
+                raise ValueError
+                
         return pActiveTuningCurvesPlotter
 
 

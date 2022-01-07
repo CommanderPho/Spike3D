@@ -36,7 +36,7 @@ class VideoOutputModeConfig(SimplePrintable):
     
 
 class PlottingConfig(SimplePrintable):
-    def __init__(self, output_subplots_shape=(1,1), output_parent_dir=None, use_age_proportional_spike_scale=False): 
+    def __init__(self, output_subplots_shape=(1,1), output_parent_dir=None, use_age_proportional_spike_scale=False, plotter_type='BackgroundPlotter'): 
         # output_subplots_shape="3|1" means 3 plots on the left and 1 on the right,
         # output_subplots_shape="4/2" means 4 plots on top of 2 at bottom.
         # use_age_proportional_spike_scale: if True, the scale of the recent spikes is inversely proportional to their age.
@@ -49,6 +49,7 @@ class PlottingConfig(SimplePrintable):
             self.active_output_parent_dir = output_parent_dir
 
         self.use_age_proportional_spike_scale = use_age_proportional_spike_scale
+        self.plotter_type = plotter_type
         
     @property
     def figure_output_directory(self):

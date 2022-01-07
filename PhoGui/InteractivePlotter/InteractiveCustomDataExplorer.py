@@ -7,6 +7,7 @@
 """
 import numpy as np
 import pyvista as pv
+from pyvistaqt.plotting import MultiPlotter
 
 from PhoPositionalData.plotting.animations import make_mp4_from_plotter
 
@@ -42,29 +43,34 @@ class InteractiveCustomDataExplorer(InteractiveDataExplorerBase):
     # General Plotting Method:
    
     # pf_colors, active_config
-    def plot(self, pActivePlotter=None):
+    def plot(self, pActivePlotter=None, default_plotting=True):
         ################################################
         ### Build Appropriate Plotter and set it up:
         #####################
         # Only Create a new BackgroundPlotter if it's needed:
-        self.p = InteractiveCustomDataExplorer.build_new_plotter_if_needed(pActivePlotter, shape=self.active_config.plotting_config.subplots_shape, title=self.data_explorer_name)
+        self.p = InteractiveCustomDataExplorer.build_new_plotter_if_needed(pActivePlotter, shape=self.active_config.plotting_config.subplots_shape, title=self.data_explorer_name,  plotter_type=self.active_config.plotting_config.plotter_type)
         # p.background_color = 'black'
         
         # Plot the flat arena
-        self.plots['maze_bg'] = perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
+        if default_plotting:
+            if isinstance(self.p, MultiPlotter):
+                # for p in self.p:
+                p = self.p[0,0] # the first plotter
+                self.plots['maze_bg'] = perform_plot_flat_arena(p, self.x, self.y, bShowSequenceTraversalGradient=False)
+                p.hide_axes()
+                # self.p.camera_position = 'xy' # Overhead (top) view
+                # apply_close_overhead_zoomed_camera_view(self.p)
+                # apply_close_perspective_camera_view(self.p)
+                p.render() # manually render when needed
+                    
+            else:
+                p = self.p
+                self.plots['maze_bg'] = perform_plot_flat_arena(p, self.x, self.y, bShowSequenceTraversalGradient=False)
 
-        # # Legend:
-        # legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
-        # if self.active_config.plotting_config.show_legend:
-        #     legendActor = self.p.add_legend(legend_entries, name='interactiveSpikesPositionLegend',
-        #                                 bcolor=(0.05, 0.05, 0.05), border=True,
-        #                                 origin=[0.95, 0.3], size=[0.05, 0.65]) # vtk.vtkLegendBoxActor
-        # else:
-        #     legendActor = None
-
-        self.p.hide_axes()
-        # self.p.camera_position = 'xy' # Overhead (top) view
-        # apply_close_overhead_zoomed_camera_view(self.p)
-        # apply_close_perspective_camera_view(self.p)
-        self.p.render() # manually render when needed
+                p.hide_axes()
+                # self.p.camera_position = 'xy' # Overhead (top) view
+                # apply_close_overhead_zoomed_camera_view(self.p)
+                # apply_close_perspective_camera_view(self.p)
+                p.render() # manually render when needed
+                
         return self.p
