@@ -97,7 +97,7 @@ class LapsVisualizationMixin:
 
   
     @staticmethod
-    def plot_lap_trajectory_path_spline(p, curr_lap_position_traces, curr_lap_id, lap_id_dependent_z_offset=0.45):
+    def plot_lap_trajectory_path_spline(p, curr_lap_position_traces, curr_lap_id, lap_start_z=0.9, lap_id_dependent_z_offset=0.45, name=None, **kwargs):
         """[summary]
 
         Args:
@@ -107,13 +107,17 @@ class LapsVisualizationMixin:
             lap_id_dependent_z_offset (float, optional): [description]. Defaults to 0.45.
         """
         num_lap_samples = np.shape(curr_lap_position_traces)[1]
-        lap_fixed_z = np.full_like(curr_lap_position_traces[0,:], 0.9 + (lap_id_dependent_z_offset * curr_lap_id))
+        lap_fixed_z = np.full_like(curr_lap_position_traces[0,:], lap_start_z + (lap_id_dependent_z_offset * curr_lap_id))
         curr_lap_points = np.column_stack((curr_lap_position_traces[0,:], curr_lap_position_traces[1,:], lap_fixed_z))
-        plot_name = 'lap_location_trail_spline[{}]'.format(int(curr_lap_id))
+        # if name is None:
+        #     plot_name = 'lap_location_trail_spline[{}]'.format(int(curr_lap_id))
+        # else:
+        #     plot_name = name
+        
         trail_fade_values = np.linspace(0.0, 0.6, num_lap_samples)
         size_values = np.linspace(0.2, 0.6, num_lap_samples) # fade from a scale of 0.2 to 0.6
         line = LapsVisualizationMixin.lines_from_points(curr_lap_points)
         line["scalars"] = np.arange(line.n_points)
         tube = line.tube(radius=0.2)
         # tube.plot(smooth_shading=True)
-        p.add_mesh(tube, name=plot_name, render_lines_as_tubes=False, show_scalar_bar=False, cmap='bmy', lighting=False, render=False)
+        p.add_mesh(tube, **({'name': 'lap_location_trail_spline[{}]'.format(int(curr_lap_id)), 'render_lines_as_tubes': False, 'show_scalar_bar': False, 'cmap': 'bmy', 'lighting': False, 'render': False} | kwargs))
