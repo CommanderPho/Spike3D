@@ -7,7 +7,7 @@ import sys
 import numpy as np
 from pathlib import Path
 
-from pyphocorehelpers.general_helpers import SimplePrintable
+from pyphocorehelpers.print_helpers import SimplePrintable
 
 
 # refactored to neuropy.analyses.placefields

@@ -1,5 +1,7 @@
     
-from pyphocorehelpers.general_helpers import OrderedMeta, SimplePrintable, PrettyPrintable
+from pyphocorehelpers.general_helpers import OrderedMeta
+from pyphocorehelpers.print_helpers import SimplePrintable, PrettyPrintable
+
 
 class VisualizationParameters(PrettyPrintable, SimplePrintable, metaclass=OrderedMeta):
     def __init__(self, name) -> None:
