@@ -95,7 +95,7 @@ from PhoPositionalData.plot_data import *
 from PhoPositionalData.plotting.animations import * # make_mp4_from_plotter
 from PhoPositionalData.plotting.laps import plot_laps_2d
 from PhoPositionalData.import_data import * # build_spike_positions_list, build_cellID_reverse_lookup_map
-from PhoPositionalData.analysis.interactive_placeCell_config import InteractivePlaceCellConfig, VideoOutputModeConfig, PlottingConfig
+from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, VideoOutputModeConfig, InteractivePlaceCellConfig
 # from PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
 from PendingNotebookCode import build_configs, build_units_colormap, build_placefield_multiplotter, process_by_good_placefields, estimation_session_laps, partition
