@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\NeuroPy"
+		},
+		{
+			"path": "..\\pyPhoCoreHelpers\\src\\pyphocorehelpers"
+		},
+		{
+			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "C:\\Users\\Pho\\anaconda3\\envs\\phoviz_test\\python.exe",
+		"jupyter.jupyterServerType": "local",
+		"files.exclude": {
+		"**/*.7z": true,
+		"**/.classpath": true,
+		"**/.factorypath": true,
+		"**/.ipynb_checkpoints": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/.spyproject": true,
+		"**/.virtual_documents": true,
+		"**/.vscode": true
+		}
+	}
+}
