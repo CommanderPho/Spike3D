@@ -30,5 +30,32 @@ conda install -c conda-forge jupyterlab pyvista vaex ipympl
 mamba create -n viz3d matplotlib seaborn pymc jupyterlab pyvista vaex ipympl hdf5storage ipywidgets ipygany ipyvolume ipyvtklink panel
 
 
+# Pho 2022:
+
+# Create a new environment named 'phoviz_new' from scratch:
+mamba create -n phoviz_new python=3.9
+conda activate phoviz_new
+
+mamba install jupyterlab ipykernel pyscaffold pyscaffoldext-dsproject tox -c conda-forge
+
+mamba install matplotlib pyqtconsole numpy pandas pyqtgraph scipy cupy numba jupyter-rfb colorcet -c conda-forge
+
+mamba install seaborn pymc pyvista vaex ipympl hdf5storage ipywidgets ipygany ipyvolume ipyvtklink panel
+
+
+mamba install jupyter_bokeh bqplot -c conda-forge
+
+
+pip install PyOpenGL PyOpenGL_accelerate
+
+
+
+
+# New environment:
+
+mamba env create -f environment.yml
+conda activate demo-pyphocorehelpers
+
+
 
 

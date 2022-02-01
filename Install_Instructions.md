@@ -11,6 +11,19 @@ git clone https://github.com/CommanderPho/pyPhoCoreHelpers.git
 git clone https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
 
 
+
+
+cd C:\Users\pho\repos\NeuroPy
+pip install -e .
+
+cd C:\Users\pho\repos\pyPhoCoreHelpers
+pip install -e .
+
+cd C:\Users\pho\repos\pyPhoPlaceCellAnalysis
+pip install -e .
+
+
+
 ---
 ## Creating New Modules
 
