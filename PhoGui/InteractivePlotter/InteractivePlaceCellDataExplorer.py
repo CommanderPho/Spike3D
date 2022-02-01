@@ -150,7 +150,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
             #                                                                                 spike_geom=spike_geom_box.copy())
 
             if historical_spikes_pc.n_points >= 1:
-                self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+                self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
                 needs_render = True
 
         ## Recent Spikes:
@@ -165,7 +165,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
             #                                                                                 flattened_spike_positions_list[:, active_included_recent_only_indicies],
             #                                                                                 spike_geom=spike_geom_cone.copy())
             if recent_only_spikes_pc.n_points >= 1:
-                self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
+                self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
                 needs_render = True
 
         ## Animal Trajectory Trail:
@@ -236,7 +236,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         #                                                                                 spike_geom=spike_geom_box.copy())
 
         if historical_spikes_pc.n_points >= 1:
-            self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+            self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
 
 
         ## Recent Spikes:
@@ -256,7 +256,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         #                                                                                 spike_geom=spike_geom_cone.copy())
 
         if recent_only_spikes_pc.n_points >= 1:
-            self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
+            self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
 
         ## Animal Position and Location Trail Plotting:
         self.perform_plot_location_trail('animal_location_trail', self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed,
