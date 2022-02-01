@@ -1,0 +1,41 @@
+pos: (0.0, 0.0)
+bypass: False
+terminals:
+    dataIn:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+    dataOut:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputData', 'pos': (-132.04000000000008, 77.51600000000002), 'state': {'pos': (-132.04000000000008, 77.51600000000002), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'PipelineFilteringData', 'pos': (40.32800000000006, 70.86320000000003), 'state': {'pos': (40.32800000000006, 70.86320000000003), 'bypass': False, 'ctrl': {}}}]
+connects: [('PipelineInputData', 'loaded_pipeline', 'PipelineFilteringData', 'active_pipeline'), ('PipelineInputData', 'known_data_mode', 'PipelineFilteringData', 'active_data_mode'), ('PipelineFilteringData', 'filtered_pipeline', 'Output', 'dataOut')]
+inputNode:
+    pos: (-192.33600000000018, -33.86879999999998)
+    bypass: False
+    terminals:
+        dataIn:
+            io: 'out'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
+outputNode:
+    pos: (299.39520000000005, 13.91040000000001)
+    bypass: False
+    terminals:
+        dataOut:
+            io: 'in'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
