@@ -15,8 +15,15 @@ terminals:
         renamable: False
         removable: False
         multiable: False
-nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputData', 'pos': (-132.04000000000008, 77.51600000000002), 'state': {'pos': (-132.04000000000008, 77.51600000000002), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'PipelineFilteringData', 'pos': (40.32800000000006, 70.86320000000003), 'state': {'pos': (40.32800000000006, 70.86320000000003), 'bypass': False, 'ctrl': {}}}]
-connects: [('PipelineInputData', 'loaded_pipeline', 'PipelineFilteringData', 'active_pipeline'), ('PipelineInputData', 'known_data_mode', 'PipelineFilteringData', 'active_data_mode'), ('PipelineFilteringData', 'filtered_pipeline', 'Output', 'dataOut')]
+    Input:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: True
+        removable: True
+        multiable: True
+nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputData', 'pos': (-195.67161837140682, 72.32158217376272), 'state': {'pos': (-195.67161837140682, 72.32158217376272), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'Pipeline Computation Node', 'pos': (-38.88687185011818, 78.00552451107629), 'state': {'pos': (-38.88687185011818, 78.00552451107629), 'bypass': False, 'ctrl': {}}}, {'class': 'PipelineDisplayNode', 'name': 'PipelineDisplayNode.0', 'pos': (30.192063069422687, -75.82480262162059), 'state': {'pos': (30.192063069422687, -75.82480262162059), 'bypass': False, 'ctrl': {}}}, {'class': 'CanvasWidget', 'name': 'CanvasWidget.0', 'pos': (277.341495432903, 73.05452879391186), 'state': {'pos': (277.341495432903, 73.05452879391186), 'bypass': False}}]
+connects: [('Pipeline Computation Node', 'filtered_pipeline', 'Output', 'dataOut'), ('PipelineInputData', 'loaded_pipeline', 'Pipeline Computation Node', 'active_pipeline'), ('PipelineDisplayNode.0', 'display_outputs', 'Output', 'Input'), ('PipelineInputData', 'known_data_mode', 'Pipeline Computation Node', 'active_data_mode'), ('Pipeline Computation Node', 'filtered_pipeline', 'PipelineDisplayNode.0', 'active_pipeline'), ('PipelineDisplayNode.0', 'display_outputs', 'CanvasWidget.0', 'In'), ('Pipeline Computation Node', 'filter_configurations', 'PipelineDisplayNode.0', 'active_session_filter_configurations'), ('PipelineInputData', 'known_data_mode', 'PipelineDisplayNode.0', 'active_data_mode'), ('Pipeline Computation Node', 'computation_configs', 'PipelineDisplayNode.0', 'active_session_computation_configs')]
 inputNode:
     pos: (-192.33600000000018, -33.86879999999998)
     bypass: False
@@ -29,7 +36,7 @@ inputNode:
             removable: False
             multiable: False
 outputNode:
-    pos: (299.39520000000005, 13.91040000000001)
+    pos: (288.21785334729856, -1.3314363445929018)
     bypass: False
     terminals:
         dataOut:
@@ -39,3 +46,10 @@ outputNode:
             renamable: False
             removable: False
             multiable: False
+        Input:
+            io: 'in'
+            multi: False
+            optional: False
+            renamable: True
+            removable: True
+            multiable: True
