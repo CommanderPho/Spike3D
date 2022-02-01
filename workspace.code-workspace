@@ -11,10 +11,13 @@
 		},
 		{
 			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+		},
+		{
+			"path": "..\\..\\miniconda3\\envs\\phoviz_ultimate\\Lib\\site-packages\\pyqtgraph"
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\python.exe",
+		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
 		"**/*.7z": true,
