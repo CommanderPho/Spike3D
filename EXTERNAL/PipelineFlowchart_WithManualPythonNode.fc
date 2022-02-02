@@ -1,0 +1,55 @@
+pos: (0.0, 0.0)
+bypass: False
+terminals:
+    dataIn:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+    dataOut:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+    Input:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: True
+        removable: True
+        multiable: True
+nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputData', 'pos': (-202.0800239408502, 53.0963654654326), 'state': {'pos': (-202.0800239408502, 53.0963654654326), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'Pipeline Computation Node', 'pos': (-25.910223658320746, 51.17269172518351), 'state': {'keys': ['maze1', 'maze2'], 'ctrls': {'pos': (-25.910223658320746, 51.17269172518351), 'bypass': False, 'ctrl': {'included_configs': ''}}}}, {'class': 'PipelineDisplayNode', 'name': 'PipelineDisplayNode.0', 'pos': (134.635341490873, -6.058729903128935), 'state': {'pos': (134.635341490873, -6.058729903128935), 'bypass': False, 'ctrl': {}}}, {'class': 'ImageView', 'name': 'ImageView.0', 'pos': (475.07471066079563, 21.999457285587695), 'state': {'pos': (475.07471066079563, 21.999457285587695), 'bypass': False}}, {'class': 'PythonEval', 'name': 'PythonEval.0', 'pos': (274.1177913197165, 131.0702960501329), 'state': {'pos': (274.1177913197165, 131.0702960501329), 'bypass': False, 'terminals': OrderedDict([('output', {'io': 'out', 'multi': False, 'optional': False, 'renamable': True, 'removable': False, 'multiable': True}), ('pipeline', {'io': 'in', 'multi': False, 'optional': False, 'renamable': True, 'removable': False, 'multiable': True}), ('config_name', {'io': 'in', 'multi': False, 'optional': False, 'renamable': True, 'removable': True, 'multiable': True})]), 'text': "# Access inputs as args['input_name']\nif args['pipeline'] is None:\n    return {'output': None} ## one key per output terminal\nelse:\n    if args['config_name'] is None:\n        args['config_name'] = 'maze1'\n\n    display_outputs = args['pipeline'].display(DefaultDecoderDisplayFunctions._display_two_step_decoder_prediction_error_2D, args['config_name'], variable_name='p_x_given_n') # works!\n    return {'output': display_outputs} ## one key per output terminal\n\n"}}]
+connects: [('Pipeline Computation Node', 'filter_configurations', 'PipelineDisplayNode.0', 'active_session_filter_configurations'), ('Pipeline Computation Node', 'filtered_pipeline', 'PythonEval.0', 'pipeline'), ('Pipeline Computation Node', 'computation_configs', 'PipelineDisplayNode.0', 'active_session_computation_configs'), ('Pipeline Computation Node', 'filtered_pipeline', 'Output', 'dataOut'), ('PipelineInputData', 'loaded_pipeline', 'Pipeline Computation Node', 'pipeline'), ('PipelineInputData', 'known_data_mode', 'PipelineDisplayNode.0', 'active_data_mode'), ('Pipeline Computation Node', 'filtered_pipeline', 'PipelineDisplayNode.0', 'active_pipeline'), ('PipelineInputData', 'known_data_mode', 'Pipeline Computation Node', 'active_data_mode'), ('PipelineDisplayNode.0', 'display_outputs', 'Output', 'Input'), ('PipelineDisplayNode.0', 'display_outputs', 'ImageView.0', 'data')]
+inputNode:
+    pos: (-192.33600000000018, -33.86879999999998)
+    bypass: False
+    terminals:
+        dataIn:
+            io: 'out'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
+outputNode:
+    pos: (268.13743001210014, -72.584551404975)
+    bypass: False
+    terminals:
+        dataOut:
+            io: 'in'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
+        Input:
+            io: 'in'
+            multi: False
+            optional: False
+            renamable: True
+            removable: True
+            multiable: True
