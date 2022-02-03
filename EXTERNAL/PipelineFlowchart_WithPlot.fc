@@ -15,17 +15,10 @@ terminals:
         renamable: False
         removable: False
         multiable: False
-    Input:
-        io: 'out'
-        multi: False
-        optional: False
-        renamable: True
-        removable: True
-        multiable: True
-nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputData', 'pos': (-202.0800239408502, 53.0963654654326), 'state': {'pos': (-202.0800239408502, 53.0963654654326), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'Pipeline Computation Node', 'pos': (-25.910223658320746, 51.17269172518351), 'state': {'keys': ['maze1', 'maze2'], 'ctrls': {'pos': (-25.910223658320746, 51.17269172518351), 'bypass': False, 'ctrl': {'included_configs': 'maze2'}}}}, {'class': 'PipelineDisplayNode', 'name': 'PipelineDisplayNode.0', 'pos': (153.31018470881992, 18.89152633345283), 'state': {'pos': (153.31018470881992, 18.89152633345283), 'bypass': False, 'ctrl': {}}}]
-connects: [('PipelineInputData', 'loaded_pipeline', 'Pipeline Computation Node', 'pipeline'), ('Pipeline Computation Node', 'filtered_pipeline', 'Output', 'dataOut'), ('PipelineDisplayNode.0', 'display_outputs', 'Output', 'Input'), ('Pipeline Computation Node', 'computation_configs', 'PipelineDisplayNode.0', 'active_session_computation_configs'), ('PipelineInputData', 'known_data_mode', 'Pipeline Computation Node', 'active_data_mode'), ('PipelineInputData', 'known_data_mode', 'PipelineDisplayNode.0', 'active_data_mode'), ('Pipeline Computation Node', 'filter_configurations', 'PipelineDisplayNode.0', 'active_session_filter_configurations'), ('Pipeline Computation Node', 'filtered_pipeline', 'PipelineDisplayNode.0', 'active_pipeline')]
+nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputDataNode.0', 'pos': (-200.0, 50.0), 'state': {'pos': (-200.0, 50.0), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'PipelineFilteringDataNode.0', 'pos': (-26.0, 50.0), 'state': {'keys': ['maze1', 'maze2'], 'ctrls': {'pos': (-26.0, 50.0), 'bypass': False, 'ctrl': {'included_configs': 'maze2'}}}}, {'class': 'PipelineDisplayNode', 'name': 'PipelineDisplayNode.0', 'pos': (154.0, 20.0), 'state': {'pos': (154.0, 20.0), 'bypass': False, 'ctrl': {}}}]
+connects: [('PipelineInputDataNode.0', 'known_data_mode', 'PipelineDisplayNode.0', 'active_data_mode'), ('PipelineFilteringDataNode.0', 'filter_configurations', 'PipelineDisplayNode.0', 'active_session_filter_configurations'), ('PipelineInputDataNode.0', 'loaded_pipeline', 'PipelineFilteringDataNode.0', 'pipeline'), ('PipelineFilteringDataNode.0', 'filtered_pipeline', 'Output', 'dataOut'), ('PipelineInputDataNode.0', 'known_data_mode', 'PipelineFilteringDataNode.0', 'active_data_mode'), ('PipelineFilteringDataNode.0', 'filtered_pipeline', 'PipelineDisplayNode.0', 'active_pipeline'), ('PipelineFilteringDataNode.0', 'computation_configs', 'PipelineDisplayNode.0', 'active_session_computation_configs')]
 inputNode:
-    pos: (-192.33600000000018, -33.86879999999998)
+    pos: (-150.0, 0.0)
     bypass: False
     terminals:
         dataIn:
@@ -36,7 +29,7 @@ inputNode:
             removable: False
             multiable: False
 outputNode:
-    pos: (268.13743001210014, -72.584551404975)
+    pos: (300.0, 0.0)
     bypass: False
     terminals:
         dataOut:
@@ -46,10 +39,3 @@ outputNode:
             renamable: False
             removable: False
             multiable: False
-        Input:
-            io: 'in'
-            multi: False
-            optional: False
-            renamable: True
-            removable: True
-            multiable: True
