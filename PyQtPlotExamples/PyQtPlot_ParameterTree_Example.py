@@ -6,7 +6,7 @@ as well as some customized parameter types
 
 """
 # import initExample  ## Add path to library (just for examples; you do not need this)
-
+import numpy as np
 import pyqtgraph as pg
 # `makeAllParamTypes` creates several parameters from a dictionary of config specs.
 # This contains information about the options for each parameter so they can be directly
@@ -66,10 +66,8 @@ class ScalableGroup(pTypes.GroupParameter):
         self.addChild(
             dict(name="ScalableParam %d" % (len(self.childs) + 1), type=typ, value=val, removable=True, renamable=True))
 
-
-params = [
-    makeAllParamTypes(),
-    {
+def _save_restore_state_button_children():
+    return {
         'name': 'Save/Restore functionality', 'type': 'group', 'children': [
         {'name': 'Save State', 'type': 'action'},
         {
@@ -77,29 +75,63 @@ params = [
             {'name': 'Add missing items', 'type': 'bool', 'value': True},
             {'name': 'Remove extra items', 'type': 'bool', 'value': True},
         ]},
-    ]},
-    {
-        'name': 'Custom context menu', 'type': 'group', 'children': [
-        {
-            'name': 'List contextMenu', 'type': 'float', 'value': 0, 'context': [
-            'menu1',
-            'menu2'
-        ]},
-        {
-            'name': 'Dict contextMenu', 'type': 'float', 'value': 0, 'context': {
-            'changeName': 'Title',
-            'internal': 'What the user sees',
-        }},
-    ]},
-    ComplexParameter(name='Custom parameter group (reciprocal values)'),
-    ScalableGroup(name="Expandable Parameter Group", tip='Click to add children', children=[
-        {'name': 'ScalableParam 1', 'type': 'str', 'value': "default param 1"},
-        {'name': 'ScalableParam 2', 'type': 'str', 'value': "default param 2"},
-    ]),
-]
+    ]}
 
-## Create tree of Parameter objects
-p = Parameter.create(name='params', type='group', children=params)
+
+# # Extra Parameters:
+# params = [
+#     makeAllParamTypes(),
+#     {
+#         'name': 'Save/Restore functionality', 'type': 'group', 'children': [
+#         {'name': 'Save State', 'type': 'action'},
+#         {
+#             'name': 'Restore State', 'type': 'action', 'children': [
+#             {'name': 'Add missing items', 'type': 'bool', 'value': True},
+#             {'name': 'Remove extra items', 'type': 'bool', 'value': True},
+#         ]},
+#     ]},
+#     {
+#         'name': 'Custom context menu', 'type': 'group', 'children': [
+#         {
+#             'name': 'List contextMenu', 'type': 'float', 'value': 0, 'context': [
+#             'menu1',
+#             'menu2'
+#         ]},
+#         {
+#             'name': 'Dict contextMenu', 'type': 'float', 'value': 0, 'context': {
+#             'changeName': 'Title',
+#             'internal': 'What the user sees',
+#         }},
+#     ]},
+#     ComplexParameter(name='Custom parameter group (reciprocal values)'),
+#     ScalableGroup(name="Expandable Parameter Group", tip='Click to add children', children=[
+#         {'name': 'ScalableParam 1', 'type': 'str', 'value': "default param 1"},
+#         {'name': 'ScalableParam 2', 'type': 'str', 'value': "default param 2"},
+#     ]),
+# ]
+
+# ## Create tree of Parameter objects
+# p = Parameter.create(name='params', type='group', children=params)
+
+
+# Simple Example:
+def _example_simple_dict_params():
+    children = [
+        dict(name='a', type='slider', value=5, limits=[0, 10]),
+        dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
+        dict(name='c', type='slider', value=2, span=np.linspace(0, 2*np.pi, 1000)),
+    ]
+
+    # Use save/restore state buttons
+    children.append(_save_restore_state_button_children())
+    
+    p = Parameter.create(name='Filter Options', type='group', children=children)
+    return p
+    # t = ParameterTree()
+    # t.setParameters(p, showTop=True)
+
+
+p = _example_simple_dict_params()
 
 
 ## If anything changes in the tree, print a message
@@ -131,20 +163,25 @@ for child in p.children():
         ch2.sigValueChanging.connect(valueChanging)
 
 
-def save():
-    global state
-    state = p.saveState()
+def _add_save_restore_btn_functionality(p):
+    # Save/Restore State Button Functionality:
+    def save():
+        global state
+        state = p.saveState()
+
+    def restore():
+        global state
+        add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
+        rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
+        p.restoreState(state, addChildren=add, removeChildren=rem)
+
+    # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
+    p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
+    p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
 
 
-def restore():
-    global state
-    add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
-    rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
-    p.restoreState(state, addChildren=add, removeChildren=rem)
+_add_save_restore_btn_functionality(p)
 
-
-p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
-p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
 
 ## Create two ParameterTree widgets, both accessing the same data
 t = ParameterTree()
