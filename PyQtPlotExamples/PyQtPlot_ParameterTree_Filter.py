@@ -125,9 +125,9 @@ def _save_restore_state_button_children():
 # Simple Example:
 def _example_simple_dict_params():
     children = [
-        dict(name='a', type='slider', value=5, limits=[0, 10]),
-        dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
-        dict(name='c', type='slider', value=2, span=np.linspace(0, 2*np.pi, 1000)),
+        # dict(name='a', type='slider', value=5, limits=[0, 10]),
+        # dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
+        # dict(name='c', type='slider', value=2, span=np.linspace(0, 2*np.pi, 1000)),
         dict(name='Included Epochs', type='checklist', value=['maze1'], limits=['pre', 'maze1', 'post1', 'maze2', 'post2']),
         dict(name='Cell Types', type='checklist', value=[NeuronType.PYRAMIDAL.longClassName], limits=NeuronType.__members__),
     ]
