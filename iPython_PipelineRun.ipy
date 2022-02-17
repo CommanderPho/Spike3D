@@ -1,5 +1,12 @@
 """ 
 
+Can run via:
+
+# change directory to PhoPy3DPositionAnalysis2021 repo
+cd 'C:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021'
+# Call iPython:
+ipython iPython_PipelineRun.ipy
+
 jupyter qtconsole 
 # change directory to PhoPy3DPositionAnalysis2021 repo
 cd 'C:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021'
