@@ -12,7 +12,13 @@ import pyqtgraph as pg
 # This contains information about the options for each parameter so they can be directly
 # inserted into the example parameter tree. To create your own parameters, simply follow
 # the guidelines demonstrated by other parameters created here.
-from pyqtgraph.examples._buildParamTypes import makeAllParamTypes
+
+# Example Param Types:
+# from pyqtgraph.examples._buildParamTypes import makeAllParamTypes
+
+# Custom Param Types:
+from _buildFilterParamTypes import makeAllParamTypes
+
 from pyqtgraph.Qt import QtGui
 
 app = pg.mkQApp("Parameter Tree Example")
