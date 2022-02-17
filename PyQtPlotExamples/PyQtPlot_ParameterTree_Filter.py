@@ -1,27 +1,35 @@
 """
-This example demonstrates the use of pyqtgraph's parametertree system. This provides
-a simple way to generate user interfaces that control sets of parameters. The example
-demonstrates a variety of different parameter types (int, float, list, etc.)
-as well as some customized parameter types
+Filter Parameters
 
 """
-# import initExample  ## Add path to library (just for examples; you do not need this)
-import numpy as np
+import importlib
+import sys
+from pathlib import Path
 import pyqtgraph as pg
-# `makeAllParamTypes` creates several parameters from a dictionary of config specs.
-# This contains information about the options for each parameter so they can be directly
-# inserted into the example parameter tree. To create your own parameters, simply follow
-# the guidelines demonstrated by other parameters created here.
+from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
+import numpy as np
 
-# Example Param Types:
-# from pyqtgraph.examples._buildParamTypes import makeAllParamTypes
+from pyqtgraph.widgets.FeedbackButton import FeedbackButton
 
+# NeuroPy (Diba Lab Python Repo) Loading
+try:
+    from neuropy import core
+
+    importlib.reload(core)
+except ImportError:
+    sys.path.append(r"C:\Users\Pho\repos\NeuroPy")  # Windows
+    # sys.path.append('/home/pho/repo/BapunAnalysis2021/NeuroPy') # Linux
+    # sys.path.append(r'/Users/pho/repo/Python Projects/NeuroPy') # MacOS
+    print("neuropy module not found, adding directory to sys.path. \n >> Updated sys.path.")
+    from neuropy import core
+
+from neuropy.core.neurons import NeuronType
 # Custom Param Types:
 from _buildFilterParamTypes import makeAllParamTypes
 
 from pyqtgraph.Qt import QtGui
 
-app = pg.mkQApp("Parameter Tree Example")
+app = pg.mkQApp("Parameter Tree Filter Options")
 import pyqtgraph.parametertree.parameterTypes as pTypes
 from pyqtgraph.parametertree import Parameter, ParameterTree
 
@@ -120,7 +128,8 @@ def _example_simple_dict_params():
         dict(name='a', type='slider', value=5, limits=[0, 10]),
         dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
         dict(name='c', type='slider', value=2, span=np.linspace(0, 2*np.pi, 1000)),
-        dict(name='Cell Types', type='checklist', value=[], limits=['one', 'two', 'three', 'four']),
+        dict(name='Included Epochs', type='checklist', value=['maze1'], limits=['pre', 'maze1', 'post1', 'maze2', 'post2']),
+        dict(name='Cell Types', type='checklist', value=[NeuronType.PYRAMIDAL.longClassName], limits=NeuronType.__members__),
     ]
 
     # Use save/restore state buttons
@@ -199,6 +208,7 @@ layout.addWidget(QtGui.QLabel("These are two views of the same data. They should
 layout.addWidget(t, 1, 0, 1, 1)
 layout.addWidget(t2, 1, 1, 1, 1)
 win.show()
+win.resize(800,900)
 
 ## test save/restore
 state = p.saveState()

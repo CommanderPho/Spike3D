@@ -6,7 +6,14 @@ from pyqtgraph.parametertree.parameterTypes import QtEnumParameter as enum
 dlg = QtWidgets.QFileDialog
 
 cfg = {
-    'list': {
+    # 'list': {
+    #     'limits': {
+    #         'type': 'checklist',
+    #         'limits': ['a', 'b', 'c']
+    #     }
+    # },
+    
+	'list': {
         'limits': {
             'type': 'checklist',
             'limits': ['a', 'b', 'c']
@@ -82,7 +89,7 @@ cfg = {
     #         'value': 1.0e-12,
     #     },
     # },
-
+    
     'checklist': {
         'limits': {
             'type': 'checklist',
@@ -93,6 +100,17 @@ cfg = {
             'value': False,
         }
     },
+    
+    # 'checklist': {
+    #     'limits': {
+    #         'type': 'checklist',
+    #         'limits': ['one', 'two', 'three', 'four'],
+    #     },
+    #     'exclusive': {
+    #         'type': 'bool',
+    #         'value': False,
+    #     }
+    # },
 
     # 'pen': {
     #     'Pen Information': {
