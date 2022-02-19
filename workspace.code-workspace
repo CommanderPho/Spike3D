@@ -13,7 +13,7 @@
 			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
 		},
 		{
-			"path": "..\\..\\miniconda3\\envs\\phoviz_ultimate\\Lib\\site-packages\\pyqtgraph"
+			"path": "..\\pyqtgraph\\pyqtgraph"
 		}
 	],
 	"settings": {
