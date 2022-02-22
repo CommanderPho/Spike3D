@@ -1,3 +1,4 @@
+from typing import OrderedDict
 import param
 import numpy as np
 import pandas as pd
@@ -106,10 +107,10 @@ class SpikeRenderingMixin:
       
                   
             
-    def _build_flat_color_data(self, fallback_color_rgb = (0, 0, 0)):
+    def _build_flat_color_data(self, fallback_color_rgba = (0, 0, 0, 1.0)):
         # adds the color information to the self.spikes_df using params.pf_colors. Adds ['R','G','B'] columns and creates a self.params.flat_spike_colors_array with one color for each spike.
         # fallback_color_rgb: the default value to use for colors that aren't present in the pf_colors array
-        
+        fallback_color_rgb = fallback_color_rgba[:-1]
         
         # TODO: could also add in 'render_exclusion_mask'
         # RGB Version:
