@@ -106,10 +106,16 @@ class SpikeRenderingMixin:
       
                   
             
-    def _build_flat_color_data(self):
+    def _build_flat_color_data(self, fallback_color_rgb = (0, 0, 0)):
+        # adds the color information to the self.spikes_df using params.pf_colors. Adds ['R','G','B'] columns and creates a self.params.flat_spike_colors_array with one color for each spike.
+        # fallback_color_rgb: the default value to use for colors that aren't present in the pf_colors array
+        
+        
         # TODO: could also add in 'render_exclusion_mask'
         # RGB Version:
         self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:-1, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3)
+        self.params.opaque_pf_colors = self.params.pf_colors[:-1, :].copy() # Drop the opacity component, so we only have RGB values
+        
         if self.debug_logging:
             print(f'SpikeRenderMixin.build_flat_color_data(): built rgb array from pf_colors, droppping the alpha components: np.shape(self.params.flat_spike_colors_array): {np.shape(self.params.flat_spike_colors_array)}')
         # Add the split RGB columns to the DataFrame
@@ -127,6 +133,7 @@ class SpikeRenderingMixin:
         flat_spike_hex_colors = np.array([self.params.pf_colors_hex[cell_IDX] for cell_IDX in self.spikes_df['cell_idx'].to_numpy()])
         self.spikes_df['rgb_hex'] = flat_spike_hex_colors.copy()
         self._build_flat_color_data()
+        # Add the required spike colors. Spikes that do not contribute to a cell with a placefield are assigned a black color by default
         
 
 
