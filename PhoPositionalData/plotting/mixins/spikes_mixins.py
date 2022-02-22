@@ -7,6 +7,7 @@ from PhoPositionalData.analysis.helpers import partition
 from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronConfigOwningMixin
 from PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data_df
 
+from pyphocorehelpers.indexing_helpers import safe_get
 
 # class SingleCellSpikePlotData(param.Parameterized):
 #     point_data = param.Array(doc='spike_history_pdata')
