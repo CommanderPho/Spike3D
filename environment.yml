@@ -5,20 +5,22 @@ dependencies:
     - python=3.9
     - pip
     # Computation
-    - numpy=1.20.*
-    - scipy=1.6.*
+    # - numpy>=1.20.*
+    # - scipy>=1.7.*
+    - numpy
+    - scipy
     - pandas
     - pandas-flavor
-    - numba
-    - pingouin
+    # - numba=0.55.*
+    # - pingouin
     - easydict
     - ruamel.yaml
-    - pingouin
-    - cupy
+    # - pingouin
+    # - cupy # must be disabled on mac
     - param
     - joblib
-    - scikit-learn
-    - hmmlearn
+    # - scikit-learn
+    # - hmmlearn
     - h5py
     - hdf5storage
     - pillow
