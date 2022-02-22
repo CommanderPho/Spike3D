@@ -124,14 +124,11 @@ class SpikeRenderingMixin:
         """
         # adds the color information to the self.spikes_df using params.pf_colors. Adds ['R','G','B'] columns and creates a self.params.flat_spike_colors_array with one color for each spike.
         # fallback_color_rgb: the default value to use for colors that aren't present in the pf_colors array
-        fallback_color_rgb = fallback_color_rgba[:-1]
+        fallback_color_rgb = fallback_color_rgba[:-1] # Drop the opacity component, so we only have RGB values
         
         # TODO: could also add in 'render_exclusion_mask'
         # RGB Version:
-        # self.params.flat_spike_colors_array = np.array([self.params.pf_colors[:-1, idx] for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3) 
-        opacity_index = (np.shape(self.params.pf_colors)[0] - 1) # the opacity index is the last index in the first dimension of pf_colors
         self.params.opaque_pf_colors = self.params.pf_colors[:-1, :].copy() # Drop the opacity component, so we only have RGB values
-        
         
         # Build flat hex colors, creating the self.spikes_df['rgb_hex'] column:
         flat_spike_hex_colors = np.array([safe_get(self.params.pf_colors_hex, cell_IDX, '#000000') for cell_IDX in self.spikes_df['cell_idx'].to_numpy()])        
@@ -148,8 +145,8 @@ class SpikeRenderingMixin:
         # pf_opaque_colors_dict = {cell_IDX: fallback_color_rgb for cell_IDX in unique_cell_indicies}
 
         # Flat version:
-        self.params.cell_spike_colors_dict = OrderedDict(zip(unique_cell_indicies, [num_unique_spikes_df_cell_indicies]*fallback_color_rgba))
-        self.params.cell_spike_opaque_colors_dict = OrderedDict(zip(unique_cell_indicies, [num_unique_spikes_df_cell_indicies]*fallback_color_rgb))
+        self.params.cell_spike_colors_dict = OrderedDict(zip(unique_cell_indicies, num_unique_spikes_df_cell_indicies*[fallback_color_rgba]))
+        self.params.cell_spike_opaque_colors_dict = OrderedDict(zip(unique_cell_indicies, num_unique_spikes_df_cell_indicies*[fallback_color_rgb]))
         
         num_pf_colors = np.shape(self.params.pf_colors)[0]
         valid_pf_colors_indicies = np.arange(num_pf_colors)

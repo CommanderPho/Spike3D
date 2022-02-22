@@ -306,6 +306,13 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         self.plots['maze_bg'] = perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
 
         # Legend:
+        
+        # the legend is supposed to be for the placefields, of which there are fewer than the neuron_ids (because some cells don't have a good placefield).
+        
+        self.active_session.neuron_ids
+        
+        
+        self.active_config.plotting_config.
         legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
         if self.active_config.plotting_config.show_legend:
             legendActor = self.p.add_legend(legend_entries, name='interactiveSpikesPositionLegend',

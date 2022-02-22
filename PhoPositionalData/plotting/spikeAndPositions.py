@@ -249,6 +249,8 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
 
     if np.shape(pf_colors)[1] > 3:
         opaque_pf_colors = pf_colors[0:3,:].copy() # get only the RGB values, discarding any potnential alpha information
+    else:
+        opaque_pf_colors = pf_colors.copy()
         
     # curr_tuning_curves[curr_tuning_curves < 0.1] = np.nan
     # curr_tuning_curves = curr_tuning_curves * zScalingFactor
@@ -325,12 +327,20 @@ def plot_placefields2D(pTuningCurves, active_placefields, pf_colors: np.ndarray,
     # Legend:
     plots_data = {'good_placefield_neuronIDs': good_placefield_neuronIDs,
                 'unit_labels': ['{}'.format(good_placefield_neuronIDs[i]) for i in np.arange(num_curr_tuning_curves)],
-                 'legend_entries': [['pf[{}]'.format(good_placefield_neuronIDs[i]), pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]}
+                 'legend_entries': [['pf[{}]'.format(good_placefield_neuronIDs[i]), opaque_pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]}
+    
+    # lost the ability to have colors with alpha components
+        # TypeError: SetEntry argument 4: expected a sequence of 3 values, got 4 values
+        
+    # lost the ability to specify exact origins in add_legend() # used to be origin=[0.95, 0.1]
 
     if show_legend:
         legendActor = pTuningCurves.add_legend(plots_data['legend_entries'], name='tuningCurvesLegend', 
                                 bcolor=(0.05, 0.05, 0.05), border=True,
-                                origin=[0.95, 0.1], size=[0.05, 0.85]) # vtk.vtkLegendBoxActor
+                                loc='center right', size=[0.05, 0.85]) # vtk.vtkLegendBoxActor
+        
+        # used to be origin=[0.95, 0.1]
+        
     else:
         legendActor = None
         
