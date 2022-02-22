@@ -308,18 +308,23 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         # Legend:
         
         # the legend is supposed to be for the placefields, of which there are fewer than the neuron_ids (because some cells don't have a good placefield).
+
+        ## TODO: removed legend:        
+        # self.active_session.neuron_ids
         
-        self.active_session.neuron_ids
+        # [['pf[{}]'.format(good_placefield_neuronIDs[i]), opaque_pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]}
+        # self.active_config.plotting_config.
+        # legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
+        
+        # legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
         
         
-        self.active_config.plotting_config.
-        legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
-        if self.active_config.plotting_config.show_legend:
-            legendActor = self.p.add_legend(legend_entries, name='interactiveSpikesPositionLegend',
-                                        bcolor=(0.05, 0.05, 0.05), border=True,
-                                        origin=[0.95, 0.3], size=[0.05, 0.65]) # vtk.vtkLegendBoxActor
-        else:
-            legendActor = None
+        # if self.active_config.plotting_config.show_legend:
+        #     legendActor = self.p.add_legend(legend_entries, name='interactiveSpikesPositionLegend',
+        #                                 bcolor=(0.05, 0.05, 0.05), border=True,
+        #                                 origin=[0.95, 0.3], size=[0.05, 0.65]) # vtk.vtkLegendBoxActor
+        # else:
+        #     legendActor = None
 
 
         self.p.enable_depth_peeling(number_of_peels=4, occlusion_ratio=0) # Supposedly helps with translucency
