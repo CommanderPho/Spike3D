@@ -169,8 +169,7 @@ class SpikeRenderingMixin:
         #     pf_colors_dict[cell_IDX] = fallback_color_rgba
         #     pf_opaque_colors_dict[cell_IDX] = fallback_color_rgb
             
-            
-        
+
         # pf_colors_arr = self.params.pf_colors
         # opaque_pf_colors_arr = self.params.opaque_pf_colors
         # num_pf_colors = np.shape(pf_colors_arr)[0]
