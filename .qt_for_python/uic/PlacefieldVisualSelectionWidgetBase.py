@@ -31,9 +31,9 @@ class Ui_rootForm(object):
         self.verticalLayout_2.setContentsMargins(2, 0, 2, 4)
         self.verticalLayout_2.setSpacing(2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.pushButton = QtWidgets.QPushButton(self.groupBox)
-        self.pushButton.setObjectName("pushButton")
-        self.verticalLayout_2.addWidget(self.pushButton)
+        self.btnTitle = QtWidgets.QPushButton(self.groupBox)
+        self.btnTitle.setObjectName("btnTitle")
+        self.verticalLayout_2.addWidget(self.btnTitle)
         self.btnColorButton = ColorButton(self.groupBox)
         self.btnColorButton.setMinimumSize(QtCore.QSize(24, 24))
         self.btnColorButton.setText("")
@@ -62,7 +62,7 @@ class Ui_rootForm(object):
         _translate = QtCore.QCoreApplication.translate
         rootForm.setWindowTitle(_translate("rootForm", "Form"))
         self.groupBox.setTitle(_translate("rootForm", "pf[i]"))
-        self.pushButton.setText(_translate("rootForm", "Title"))
+        self.btnTitle.setText(_translate("rootForm", "pf[i]"))
         self.chkbtnPlacefield.setText(_translate("rootForm", "pf"))
         self.chkbtnSpikes.setText(_translate("rootForm", "spikes"))
 from pyqtgraph.widgets.ColorButton import ColorButton
