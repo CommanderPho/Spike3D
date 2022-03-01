@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib as mpl
 from pyqtgraph.Qt import QtCore, QtGui
-%gui qt5 
+# %gui qt5 
 import pyqtgraph as pg
 from matplotlib import cm
 pg.mkQApp()

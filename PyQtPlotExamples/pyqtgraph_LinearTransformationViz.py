@@ -1,8 +1,12 @@
 import sys
 import os
 import pyqtgraph as pg
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QHBoxLayout, QSlider,QCheckBox 
-from PyQt5 import QtCore,  QtGui
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QHBoxLayout, QSlider, QCheckBox 
+# from PyQt5 import QtCore,  QtGui
+from pyqtgraph import QtCore, QtGui, QtWidgets
+
+
+# QSizePolicy
 
 import qdarkstyle
 import numpy as np
