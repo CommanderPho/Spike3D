@@ -5,8 +5,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QHB
 # from PyQt5 import QtCore,  QtGui
 from pyqtgraph import QtCore, QtGui, QtWidgets
 
-
-# QSizePolicy
+""" This example from the internet displays a dark-themed MainWindow containing an interactive pyqtgraph plot that allows you to inspect eigenvalues and drag an animated slider. """
 
 import qdarkstyle
 import numpy as np
@@ -310,7 +309,7 @@ class MainWindow(QWidget):
         self.plot_circle_lower = plotLeft.plot(self.circle_x, self.circle_y_lower, pen = pg.mkPen((231, 219, 96), width = 2.5))
         self.plot_circle_lower.setZValue(2)
 
-####    Slide Bar Left #######
+        ####    Slide Bar Left #######
         panel_slide_bar = QWidget()
         layout_slide_bar = QHBoxLayout()
         layout_slide_bar.setContentsMargins(6, 3, 4, 4)

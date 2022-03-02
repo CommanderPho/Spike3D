@@ -6,6 +6,7 @@
 """
 
 class InteractiveSliderWrapper:
+    """ a wrapper around a VTK GUI slider widget that can be used to sync state between the slider and the pyvista plotter that it controls. """
     # instance attributes
     def __init__(self, slider_obj):
         self.slider_obj = slider_obj
