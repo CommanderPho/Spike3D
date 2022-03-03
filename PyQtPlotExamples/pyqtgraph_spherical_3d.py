@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib as mpl
+# from OpenGL.GL import *  # noqa
 from pyqtgraph.Qt import QtCore, QtGui
 # %gui qt5 
 import pyqtgraph as pg
@@ -135,9 +136,16 @@ class CustomTextItem(gl.GLGraphicsItem.GLGraphicsItem):
     def setZ(self, Z):
         self.Z = Z
         self.update()
+        
+    # def renderText(self,  x, y, z, text, font):
+        # pg.
+        # GL.glGetError()
+        # qt.QGLWidget.renderText(self, x, y, z, text, font)
+        # GL.glGetError()
 
     def paint(self):
-        self.GLViewWidget.qglColor(QtCore.Qt.white)
+        self.GLViewWidget.setBackgroundColor('w')
+        # self.GLViewWidget.qglColor(QtCore.Qt.white)
         self.GLViewWidget.renderText(self.X, self.Y, self.Z, self.text, QtGui.QFont('Arial', 12, QtGui.QFont.Medium))
 
 class _3DAxisItem():
@@ -244,7 +252,7 @@ size = 30
 thet = np.linspace(0,np.pi/4,size)
 ph = np.linspace(0,np.pi,size)
 matrix = np.random.random((size,size))
-matrix = makeGaussian(size, size/3)
+# matrix = makeGaussian(size, size/3)
 rho = 0.7
 try:
     axis.del_items()
