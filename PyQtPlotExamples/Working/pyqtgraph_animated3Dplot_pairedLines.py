@@ -33,19 +33,21 @@ class Visualizer(object):
         gz.translate(0, 0, -10)
         self.w.addItem(gz)
 
-        self.n = 50
-        self.m = 1000
+        self.n = 25 # n: the number of different lines (with different colors)
+        self.m = 1000 # m: the number of datapoints in each line (samples)
         self.y = np.linspace(-10, 10, self.n)
         self.x = np.linspace(-10, 10, self.m)
-        self.phase = 0
+        self.phase = 0 # the parameter that changes with each frame of animation, resulting in a changing z value.
 
         for i in range(self.n):
             yi = np.array([self.y[i]] * self.m)
             d = np.sqrt(self.x ** 2 + yi ** 2)
             z = 10 * np.cos(d + self.phase) / (d + 1)
             pts = np.vstack([self.x, yi, z]).transpose()
-            self.traces[i] = gl.GLLinePlotItem(pos=pts, color=pg.glColor(
-                (i, self.n * 1.3)), width=(i + 1) / 10, antialias=True)
+            self.traces[i] = gl.GLLinePlotItem(pos=pts,
+                                               color=pg.glColor((i, self.n * 1.3)),
+                                               width=(i + 1) / 10,
+                                               antialias=True)
             self.w.addItem(self.traces[i])
 
     def start(self):
@@ -53,7 +55,7 @@ class Visualizer(object):
             QtGui.QApplication.instance().exec_()
 
     def set_plotdata(self, name, points, color, width):
-        self.traces[name].setData(pos=points, color=color, width=width)
+        self.traces[name].setData(pos=points, color=color, width=width, mode='lines')
 
     def update(self):
         for i in range(self.n):
@@ -64,9 +66,9 @@ class Visualizer(object):
             self.set_plotdata(
                 name=i, points=pts,
                 color=pg.glColor((i, self.n * 1.3)),
-                width=(i + 1) / 10
+                width=(i + 1) / 10 # note that the lines get wider from red to purple
             )
-            self.phase -= .003
+            self.phase -= .003 # change the self.phase parameter for the next loop
 
     def animation(self):
         timer = QtCore.QTimer()
