@@ -17,44 +17,6 @@ class OptionsListMixin:
 
 
     
-## TODO: this has been factored out and into neuropy.neuron_identities.NeuronIdentityAccessingMixin
-class NeuronIdentityAccessingMixin:
-    @property
-    def neuron_ids(self):
-        """ e.g. return np.array(active_epoch_placefields2D.cell_ids) """
-        raise NotImplementedError
-    
-    def get_neuron_id_and_idx(self, neuron_i=None, neuron_id=None):
-        assert (neuron_i is not None) or (neuron_id is not None), "You must specify either cell_i or cell_id, and the other will be returned"
-        if neuron_i is not None:
-            neuron_i = int(neuron_i)
-            neuron_id = self.neuron_ids[neuron_i]
-        elif neuron_id is not None:
-            neuron_id = int(neuron_id)
-            neuron_i = np.where(self.neuron_ids == neuron_id)[0].item()
-        # print(f'cell_i: {cell_i}, cell_id: {cell_id}')
-        return neuron_i, neuron_id
-    
-    
-    def find_cell_ids_from_cell_IDXs(self, cell_IDXs):
-        """Finds the cell original IDs from the cell IDXs (not IDs)
-        Args:
-            cell_IDXs ([type]): [description]
-        """
-        found_cell_ids = [self.get_neuron_id_and_idx(neuron_i=an_included_cell_IDX)[1] for an_included_cell_IDX in cell_IDXs] # get the ids from the cell IDXs
-        return found_cell_ids
-    
-    
-    def find_cell_IDXs_from_cell_ids(self, cell_ids):
-        """Finds the cell IDXs (not IDs) from the cell original IDs (cell_ids)
-        Args:
-            cell_ids ([type]): [description]
-        """
-        found_cell_INDEXES = [self.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in cell_ids] # get the indexes from the cellIDs
-        return found_cell_INDEXES
-    
-    
-    
     
 class NeuronConfigOwningMixin:
     """ Implementors own a series of visual configurations for each neuron. """

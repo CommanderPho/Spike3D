@@ -108,7 +108,7 @@ class SpikeRenderingMixin:
                   
             
     def _build_flat_color_data(self, fallback_color_rgba = (0, 0, 0, 1.0)):
-        """ 
+        """ Called only by self.setup_spike_rendering_mixin()
         
         # Adds to self.params:
             opaque_pf_colors

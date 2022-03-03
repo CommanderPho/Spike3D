@@ -34,14 +34,6 @@ def build_repeated_spikes_color_array(spikes_df):
     
     spike_color_info.render_opacity
     flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
-    
-    # flat_spike_colors_array = np.array([pv.parse_color(spike_color_info.rgb_hex, opacity=spike_color_info.render_opacity) for spike_color_info in spikes_df[['rgb_hex', 'render_opacity']].itertuples()])
-    # print(f'build_repeated_spikes_color_array(spikes_df): built combined rgb array from rgb_hex and render_opacity: np.shape(self.params.flat_spike_colors_array): {np.shape(flat_spike_colors_array)}')
-    # included_cell_INDEXES = np.array([ipcDataExplorer.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
-    # included_cell_INDEXES = np.array([ipcDataExplorer.get_neuron_id_and_idx(neuron_id=an_included_cell_ID)[0] for an_included_cell_ID in spikes_df['aclu'].to_numpy()]) # get the indexes from the cellIDs
-    # spikes_df['cell_idx'] = included_cell_INDEXES.copy()
-    # flat_spike_colors = np.array([pv.parse_color(pf_colors_hex[i]) for i in spikes_df['cell_idx'].to_numpy()])
-    # return np.array([pv.parse_color(pf_colors_hex[i]) for i in spikes_df['aclu'].to_numpy()])
     return flat_spike_colors_array
     
     
