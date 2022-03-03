@@ -135,7 +135,7 @@ class InteractivePyvistaPlotter_ObjectManipulationMixin:
         return InteractivePyvistaPlotter_ObjectManipulationMixin.__toggle_visibility(self.safe_get_plot(plot_key))
 
 
-
+### UNUSED:
 class PlotGroupWrapper(InteractivePyvistaPlotter_ObjectManipulationMixin):
     
     def __init__(self, name, plots_dict=dict(), gui_dict=dict()):
