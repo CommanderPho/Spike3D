@@ -9,7 +9,8 @@ from pyvista.plotting.plotting import Plotter
 # from pyvista.core.composite import MultiBlock
 from pyvistaqt import BackgroundPlotter
 from pyvistaqt.plotting import MultiPlotter
-from PhoGui.general_parameters import DebugHelper, VisualizationParameters
+
+from pyphocorehelpers.DataStructure.general_parameter_containers import DebugHelper, VisualizationParameters
 
 from PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
 from PhoPositionalData.import_data import build_spike_positions_list

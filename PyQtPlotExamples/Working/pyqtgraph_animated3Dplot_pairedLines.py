@@ -33,8 +33,8 @@ class Visualizer(object):
         gz.translate(0, 0, -10)
         self.w.addItem(gz)
 
-        self.n = 25 # n: the number of different lines (with different colors)
-        self.m = 1000 # m: the number of datapoints in each line (samples)
+        self.n = 64 # n: the number of different lines (with different colors). Default: 25
+        self.m = 100 # m: the number of datapoints in each line (samples). Default: 1000
         self.y = np.linspace(-10, 10, self.n)
         self.x = np.linspace(-10, 10, self.m)
         self.phase = 0 # the parameter that changes with each frame of animation, resulting in a changing z value.
@@ -62,7 +62,12 @@ class Visualizer(object):
             yi = np.array([self.y[i]] * self.m)
             d = np.sqrt(self.x ** 2 + yi ** 2)
             z = 10 * np.cos(d + self.phase) / (d + 1)
-            pts = np.vstack([self.x, yi, z]).transpose()
+            z = z.repeat(2) # repeat each element twice
+            z[np.arange(0, z.shape[0], 2)] = 0.0  # fill the even elements with zeros.
+            
+            # np.array([1, 2, 3, 4]).repeat(3)
+            # pts = np.vstack([self.x, yi, z]).transpose()
+            pts = np.vstack([self.x.repeat(2), yi.repeat(2), z]).transpose()
             self.set_plotdata(
                 name=i, points=pts,
                 color=pg.glColor((i, self.n * 1.3)),

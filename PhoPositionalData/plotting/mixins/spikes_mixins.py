@@ -159,32 +159,6 @@ class SpikeRenderingMixin:
                 # Otherwise use the fallbacks:
                 self.params.cell_spike_colors_dict[cell_IDX] = fallback_color_rgba
                 self.params.cell_spike_opaque_colors_dict[cell_IDX] = fallback_color_rgb
-
-        
-        # # Loop version:
-        # pf_colors_dict = OrderedDict()
-        # pf_opaque_colors_dict = OrderedDict()
-        
-        # for cell_IDX in unique_cell_indicies:
-        #     pf_colors_dict[cell_IDX] = fallback_color_rgba
-        #     pf_opaque_colors_dict[cell_IDX] = fallback_color_rgb
-            
-
-        # pf_colors_arr = self.params.pf_colors
-        # opaque_pf_colors_arr = self.params.opaque_pf_colors
-        # num_pf_colors = np.shape(pf_colors_arr)[0]
-        # print(f'num_pf_colors: {num_pf_colors}, num_unique_spikes_df_cell_indicies: {num_unique_spikes_df_cell_indicies}')
-        
-        # for cell_IDX in np.arange(num_pf_colors):
-        #         # if we have a color for it, replace the fallback color with the specific one
-        #         pf_colors_dict[cell_IDX] = pf_colors_arr[:, cell_IDX]
-        #         pf_opaque_colors_dict[cell_IDX] = opaque_pf_colors_arr[:, cell_IDX]
-                
-                
-       
-        
-        # Set the pf_colors to be a dict instead of a list so the .get method works
-        # self.params.pf_colors = pf_colors_dict
         
         # self.params.flat_spike_colors_array = np.array([safe_get(self.params.opaque_pf_colors, idx, fallback_color) for idx in self.spikes_df['cell_idx'].to_numpy()]) # Drop the opacity component, so we only have RGB values. np.shape(flat_spike_colors) # (77726, 3)
         
