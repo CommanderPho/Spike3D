@@ -11,7 +11,7 @@ from pyvistaqt import BackgroundPlotter
 from PhoGui.InteractivePlotter.InteractiveSliderWrapper import InteractiveSliderWrapper
 from PhoGui.InteractivePlotter.InterfaceProperties import InterfaceProperties
 # from PhoGui.InteractivePlotter import InterfaceProperties
-# from PhoPositionalData.plotting.spikeAndPositions import InteractiveSliderWrapper
+# from pyphoplacecellanalysis.PhoPositionalData.plotting.spikeAndPositions import InteractiveSliderWrapper
 # import InterfaceProperties
 
 class AnimationStateMixin:

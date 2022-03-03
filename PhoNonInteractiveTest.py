@@ -88,19 +88,19 @@ from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
 from neuropy.plotting.placemaps import plot_all_placefields
 from neuropy.utils.debug_helpers import debug_print_placefield, debug_print_spike_counts, debug_print_subsession_neuron_differences
 
-from PhoPositionalData.load_exported import *
-# from PhoPositionalData.process_data import process_positionalAnalysis_data, gen_2d_histrogram, get_heatmap_color_vectors, process_chunk_equal_poritions_data, extract_spike_timeseries
-from PhoPositionalData.process_data import *
-from PhoPositionalData.plot_data import *
-from PhoPositionalData.plotting.animations import * # make_mp4_from_plotter
-from PhoPositionalData.plotting.laps import plot_laps_2d
-from PhoPositionalData.import_data import * # build_spike_positions_list, build_cellID_reverse_lookup_map
+from pyphoplacecellanalysis.PhoPositionalData.load_exported import *
+# from pyphoplacecellanalysis.PhoPositionalData.process_data import process_positionalAnalysis_data, gen_2d_histrogram, get_heatmap_color_vectors, process_chunk_equal_poritions_data, extract_spike_timeseries
+from pyphoplacecellanalysis.PhoPositionalData.process_data import *
+from pyphoplacecellanalysis.PhoPositionalData.plot_data import *
+from pyphoplacecellanalysis.PhoPositionalData.plotting.animations import * # make_mp4_from_plotter
+from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
+from pyphoplacecellanalysis.PhoPositionalData.import_data import * # build_spike_positions_list, build_cellID_reverse_lookup_map
 from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, VideoOutputModeConfig, InteractivePlaceCellConfig
-# from PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
+# from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
 from PendingNotebookCode import build_configs, build_units_colormap, build_placefield_multiplotter, process_by_good_placefields, estimation_session_laps, partition
 
-# from PhoPositionalData.debug_helpers import debug_print_placefield, debug_print_spike_counts
+# from pyphoplacecellanalysis.PhoPositionalData.debug_helpers import debug_print_placefield, debug_print_spike_counts
 
 
 

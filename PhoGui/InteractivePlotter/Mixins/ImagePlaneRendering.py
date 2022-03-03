@@ -13,7 +13,7 @@ from matplotlib.colors import ListedColormap
 from pyphocorehelpers.geometry_helpers import compute_data_extent, compute_data_aspect_ratio, corner_points_from_extents
 
 # PhoPy3DPositionAnalysis2021:
-from PhoPositionalData.plot_data import get_cmap
+from pyphoplacecellanalysis.PhoPositionalData.plot_data import get_cmap
 
 
 
