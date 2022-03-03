@@ -34,7 +34,7 @@ class Visualizer(object):
         self.w.addItem(gz)
 
         self.n = 64 # n: the number of different lines (with different colors). Default: 25
-        self.m = 100 # m: the number of datapoints in each line (samples). Default: 1000
+        self.m = 200 # m: the number of datapoints in each line (samples). Default: 1000
         self.y = np.linspace(-10, 10, self.n)
         self.x = np.linspace(-10, 10, self.m)
         self.phase = 0 # the parameter that changes with each frame of animation, resulting in a changing z value.

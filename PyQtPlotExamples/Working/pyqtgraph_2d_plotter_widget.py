@@ -7,6 +7,11 @@ import pyqtgraph as pg
 import numpy as np
 from PyQt5.QtCore import Qt
 
+
+""" 
+Allows the user to interactively add/delete new scatterplot points by clicking on the axes.
+
+"""
 class CustomPoint(pg.PlotDataItem):
     def __init__(self, mainWindow, *args, **kwargs):
         super().__init__(*args, **kwargs)

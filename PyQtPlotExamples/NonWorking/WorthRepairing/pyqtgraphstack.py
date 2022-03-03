@@ -89,11 +89,11 @@ class PyQtGraphStack:
 		self.app = QtGui.QApplication([])
 		
 		# Set Window
-		title = "PyQtGraphStack"
+		self.title = "PyQtGraphStack"
 		if 'title' in kwargs:
-			title = kwargs['title']
+			self.title = kwargs['title']
 
-		self.window = pg.GraphicsLayoutWidget(show=True, title=title)
+		self.window = pg.GraphicsLayoutWidget(show=True, title=self.title)
 		self.window.resize(*self.resolution)
 
 		self.window.setWindowTitle(self.title)
@@ -196,7 +196,7 @@ class PyQtGraphStack:
 		new_canvas.setLabel('bottom', x_label, x_units)
 
 		if 'legend' in kwargs:
-			if kwargs['legend']
+			if kwargs['legend']:
 				new_canvas.addLegend()
 
 		if 'xRange' in kwargs:
@@ -272,7 +272,7 @@ class PyQtGraphStack:
 		# Append
 		self.curvelist[canvas_name][name] = curve
 		if 'legend' in kwargs:
-			if kwargs['legend'];
+			if kwargs['legend']:
 				self.canvaslist[canvas_name].addLegend()
 
 	def get_curve(self, curve_name, canvas_name):
@@ -336,3 +336,20 @@ class PyQtGraphStack:
 		"""
 		curve_.setData(xData, yData)
 		
+  
+if __name__ == '__main__':
+    # Create Graph and Add a canvas
+	# PyQTGraphWrapper graph;
+	graph = PyQtGraphStack()
+	graph.add_canvas('data1', curvename = 'curve1')
+
+	# Set name for canvas 'data1':
+	canvas = graph.get_canvas('data1')
+	canvas.setTitle(title="Data-1 Graph")
+
+	# Set data for curve 'curve1' on 'data1':
+	curve = graph.get_curve('curve1', 'data1')
+	# curve.setData(xData, yData)
+
+	# Launch Plot Window
+	graph.launch()
