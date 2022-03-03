@@ -2,7 +2,8 @@ import param
 import numpy as np
 import pandas as pd
 
-from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronConfigOwningMixin, NeuronIdentityAccessingMixin, OptionsListMixin
+from PhoPositionalData.plotting.mixins.general_plotting_mixins import NeuronConfigOwningMixin, OptionsListMixin
+from neuropy.core.neuron_identities import NeuronIdentityAccessingMixin
 
 
 class PlacefieldOwningMixin(NeuronIdentityAccessingMixin, NeuronConfigOwningMixin):
@@ -99,6 +100,18 @@ class HideShowPlacefieldsRenderingMixin(PlacefieldOwningMixin):
         # Works to hide all turning curve plots:
         for aTuningCurveActor in self.tuning_curve_plot_actors:
             aTuningCurveActor.SetVisibility(0)
+
+    def _show_all_tuning_curves(self):
+        # Works to show all turning curve plots by updating the render configs:
+        print('WARNING: _show_all_tuning_curves() does not currently work.')
+        tuning_curve_config_indicies = np.arange(self.num_tuning_curves)
+        # update the configs:
+        curr_configs = self.active_tuning_curve_render_configs       
+        for config_idx in tuning_curve_config_indicies:
+            curr_configs[config_idx].isVisible = True
+        # print(f'curr_configs: {curr_configs}')
+        self.on_update_tuning_curve_display_config(tuning_curve_config_indicies, curr_configs)
+
             
     def _show_tuning_curve(self, show_index):
         # Works to show the specified tuning curve plots:

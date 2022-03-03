@@ -7,8 +7,8 @@ import pandas as pd
 import pyvista as pv
 import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 
-from PhoPositionalData.analysis.interactive_placeCell_config import InteractivePlaceCellConfig, VideoOutputModeConfig, PlottingConfig  # VideoOutputModeConfig, InteractivePlaceCellConfigs
-from PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
+from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
+# from PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
 from neuropy.core import Laps
 

@@ -3,14 +3,7 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-try:
-    from neuropy import core
-except ImportError:
-    sys.path.append(r'C:\Users\Pho\repos\NeuroPy') # Windows
-    # sys.path.append('/home/pho/repo/BapunAnalysis2021/NeuroPy') # Linux
-    # sys.path.append(r'/Users/pho/repo/Python Projects/NeuroPy') # MacOS
-    # print('neuropy module not found, adding directory to sys.path. \nUpdated sys.path: {}'.format(sys.path))
-    from neuropy import core
+from neuropy import core
 
 
 def runAnalysis_PCAandICA(active_session_Neurons, bin_size=0.250, frate_thresh=0.1, should_plot=False, active_cells_colormap=None):

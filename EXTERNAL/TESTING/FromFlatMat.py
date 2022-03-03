@@ -10,15 +10,7 @@ import numpy as np
 import pandas as pd
 
 # NeuroPy (Diba Lab Python Repo) Loading
-try:
-    from neuropy import core
-except ImportError:
-    sys.path.append(r'C:\Users\Pho\repos\NeuroPy') # Windows
-    # sys.path.append('/home/pho/repo/BapunAnalysis2021/NeuroPy') # Linux
-    # sys.path.append(r'/Users/pho/repo/Python Projects/NeuroPy') # MacOS
-    print('neuropy module not found, adding directory to sys.path. \n >> Updated sys.path.')
-    from neuropy import core
-    
+from neuropy import core
 from neuropy.core.dataSession import DataSessionLoader, DataSession, processDataSession
 from neuropy.core.neurons import FlattenedSpiketrains, Neurons
 from neuropy.core.position import Position

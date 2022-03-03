@@ -150,7 +150,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
             #                                                                                 spike_geom=spike_geom_box.copy())
 
             if historical_spikes_pc.n_points >= 1:
-                self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+                self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
                 needs_render = True
 
         ## Recent Spikes:
@@ -165,7 +165,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
             #                                                                                 flattened_spike_positions_list[:, active_included_recent_only_indicies],
             #                                                                                 spike_geom=spike_geom_cone.copy())
             if recent_only_spikes_pc.n_points >= 1:
-                self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
+                self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
                 needs_render = True
 
         ## Animal Trajectory Trail:
@@ -236,7 +236,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         #                                                                                 spike_geom=spike_geom_box.copy())
 
         if historical_spikes_pc.n_points >= 1:
-            self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
+            self.plots['spikes_main_historical'] = self.p.add_mesh(historical_spikes_pc, name='historical_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=True, render=False)
 
 
         ## Recent Spikes:
@@ -256,7 +256,7 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         #                                                                                 spike_geom=spike_geom_cone.copy())
 
         if recent_only_spikes_pc.n_points >= 1:
-            self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.active_cells_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
+            self.plots['spikes_main_recent_only'] = self.p.add_mesh(recent_only_spikes_pc, name='recent_only_spikes_main', scalars='cellID', cmap=self.active_config.plotting_config.pf_listed_colormap, show_scalar_bar=False, lighting=False, render=False) # color='white'
 
         ## Animal Position and Location Trail Plotting:
         self.perform_plot_location_trail('animal_location_trail', self.x[active_window_sample_indicies], self.y[active_window_sample_indicies], self.z_fixed,
@@ -306,13 +306,25 @@ class InteractivePlaceCellDataExplorer(InteractiveDataExplorerBase):
         self.plots['maze_bg'] = perform_plot_flat_arena(self.p, self.x, self.y, bShowSequenceTraversalGradient=False)
 
         # Legend:
-        legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
-        if self.active_config.plotting_config.show_legend:
-            legendActor = self.p.add_legend(legend_entries, name='interactiveSpikesPositionLegend',
-                                        bcolor=(0.05, 0.05, 0.05), border=True,
-                                        origin=[0.95, 0.3], size=[0.05, 0.65]) # vtk.vtkLegendBoxActor
-        else:
-            legendActor = None
+        
+        # the legend is supposed to be for the placefields, of which there are fewer than the neuron_ids (because some cells don't have a good placefield).
+
+        ## TODO: removed legend:        
+        # self.active_session.neuron_ids
+        
+        # [['pf[{}]'.format(good_placefield_neuronIDs[i]), opaque_pf_colors[:,i]] for i in np.arange(num_curr_tuning_curves)]}
+        # self.active_config.plotting_config.
+        # legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
+        
+        # legend_entries = [['pf[{}]'.format(self.active_session.neuron_ids[i]), self.active_config.plotting_config.pf_colors[:,i]] for i in np.arange(len(self.active_session.neuron_ids))]
+        
+        
+        # if self.active_config.plotting_config.show_legend:
+        #     legendActor = self.p.add_legend(legend_entries, name='interactiveSpikesPositionLegend',
+        #                                 bcolor=(0.05, 0.05, 0.05), border=True,
+        #                                 origin=[0.95, 0.3], size=[0.05, 0.65]) # vtk.vtkLegendBoxActor
+        # else:
+        #     legendActor = None
 
 
         self.p.enable_depth_peeling(number_of_peels=4, occlusion_ratio=0) # Supposedly helps with translucency

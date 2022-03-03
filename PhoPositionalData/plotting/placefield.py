@@ -38,7 +38,7 @@ def _plot_helper_setup_gridlines(ax, bin_edges, bin_centers):
         
         
 def plot_1d_placecell_validations(active_placefields1D, plotting_config, should_save=False, modifier_string='', save_mode='separate_files'):
-    """ Plots a series of plots, one for each potential placecell, that allows you to see how the spiking corresponds to the animal's position/lap and how that contributes to the computed placemap
+    """ Uses plot_1D_placecell_validation(...) to plot a series of plots, one for each potential placecell, that allows you to see how the spiking corresponds to the animal's position/lap and how that contributes to the computed placemap
     
     Usage:
         plot_1d_placecell_validations(active_epoch_placefields1D, should_save=True)
@@ -124,14 +124,9 @@ def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_ind
     ## The main position vs. spike curve:
     active_epoch_placefields1D.plotRaw_v_time(placefield_cell_index, ax=axs0)
     
-    # f'cell_{curr_cell_id:02d}'
-    # f'Cell {curr_cell_id:02d}'
-    # title_string = ' '.join(['pf1D', f'Cell {curr_cell_id:02d}', f'{active_epoch_placefields1D.config.str_for_display(False)}'])
-    # axs0.set_title(title_string, fontsize='22')
-    
+    # Title and Subtitle:
     title_string = ' '.join(['pf1D', f'Cell {curr_cell_id:02d}'])
     subtitle_string = ' '.join([f'{active_epoch_placefields1D.config.str_for_display(False)}'])
-    
     fig.suptitle(title_string, fontsize='22')
     axs0.set_title(subtitle_string, fontsize='16')
     
@@ -139,6 +134,8 @@ def plot_1D_placecell_validation(active_epoch_placefields1D, placefield_cell_ind
     if should_plot_bins_grid:
         _plot_helper_setup_gridlines(axs0, active_epoch_placefields1D.ratemap.xbin, active_epoch_placefields1D.ratemap.xbin_centers)
 
+
+    ## Part 2: The Placefield Plot to the Right and the connecting features:
     ## The individual spike lines:
     curr_cell_spike_times = active_epoch_placefields1D.ratemap_spiketrains[placefield_cell_index]  # (271,)
     curr_cell_spike_positions = active_epoch_placefields1D.ratemap_spiketrains_pos[placefield_cell_index]  # (271,)

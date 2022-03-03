@@ -9,9 +9,8 @@ import math # For color map generation
 from matplotlib.colors import ListedColormap
 # from matplotlib.cm import get_cmap
 
-
 # Neuropy
-from neuropy.plotting.ratemaps import compute_data_extent, compute_data_aspect_ratio, corner_points_from_extents
+from pyphocorehelpers.geometry_helpers import compute_data_extent, compute_data_aspect_ratio, corner_points_from_extents
 
 # PhoPy3DPositionAnalysis2021:
 from PhoPositionalData.plot_data import get_cmap

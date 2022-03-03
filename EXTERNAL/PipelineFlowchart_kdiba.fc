@@ -1,0 +1,41 @@
+pos: (0.0, 0.0)
+bypass: False
+terminals:
+    dataIn:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+    dataOut:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputDataNode.0', 'pos': (-400.0, 50.0), 'state': {'pos': (-400.0, 50.0), 'bypass': False, 'ctrl': {'data_mode': 'kdiba'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'PipelineFilteringDataNode.0', 'pos': (-26.0, 50.0), 'state': {'config_rows': ['maze1'], 'ctrls': {'pos': (-26.0, 50.0), 'bypass': False, 'ctrl': {}}}}, {'class': 'PipelineComputationsNode', 'name': 'PipelineComputationsNode.0', 'pos': (154.0, 50.0), 'state': {'config_rows': ['maze1'], 'ctrls': {'pos': (154.0, 50.0), 'bypass': False, 'ctrl': {}}}}, {'class': 'PipelineDisplayNode', 'name': 'PipelineDisplayNode.0', 'pos': (423.80286631015986, 74.19182887700546), 'state': {'combo_box_keys_dict': {'display_function': ['_display_1d_placefield_validations', '_display_2d_placefield_result_plot_ratemaps_2D', '_display_2d_placefield_result_plot_raw', '_display_3d_image_plotter', '_display_3d_interactive_custom_data_explorer', '_display_3d_interactive_spike_and_behavior_browser', '_display_3d_interactive_tuning_curves_plotter', '_display_normal', '_display_placemaps_pyqtplot_2D', '_display_decoder_result', '_display_plot_most_likely_position_comparisons', '_display_two_step_decoder_prediction_error_2D', '_display_two_step_decoder_prediction_error_animated_2D'], 'computed_result': ['maze1']}, 'ctrls': {'pos': (423.80286631015986, 74.19182887700546), 'bypass': False, 'ctrl': {'display_function': '', 'computed_result': ''}}}}, {'class': 'PipelineResultVisNode', 'name': 'PipelineResultVisNode.0', 'pos': (423.80286631016025, 0.23674866310152254), 'state': {'combo_box_keys_dict': {'display_function': ['_display_1d_placefield_validations', '_display_2d_placefield_result_plot_ratemaps_2D', '_display_2d_placefield_result_plot_raw', '_display_3d_image_plotter', '_display_3d_interactive_custom_data_explorer', '_display_3d_interactive_spike_and_behavior_browser', '_display_3d_interactive_tuning_curves_plotter', '_display_normal', '_display_placemaps_pyqtplot_2D', '_display_decoder_result', '_display_plot_most_likely_position_comparisons', '_display_two_step_decoder_prediction_error_2D', '_display_two_step_decoder_prediction_error_animated_2D'], 'computed_result': ['maze1']}, 'ctrls': {'pos': (423.80286631016025, 0.23674866310152254), 'bypass': False, 'ctrl': {'display_function': '_display_2d_placefield_result_plot_raw', 'computed_result': ''}}}}]
+connects: [('PipelineComputationsNode.0', 'computed_pipeline', 'PipelineDisplayNode.0', 'pipeline'), ('PipelineComputationsNode.0', 'updated_computation_configs', 'PipelineDisplayNode.0', 'computation_configs'), ('Input', 'dataIn', 'PipelineInputDataNode.0', 'known_mode'), ('PipelineFilteringDataNode.0', 'computation_configs', 'PipelineComputationsNode.0', 'computation_configs'), ('PipelineFilteringDataNode.0', 'filtered_pipeline', 'PipelineComputationsNode.0', 'pipeline'), ('PipelineComputationsNode.0', 'computed_pipeline', 'PipelineResultVisNode.0', 'pipeline'), ('PipelineInputDataNode.0', 'loaded_pipeline', 'PipelineFilteringDataNode.0', 'pipeline'), ('PipelineInputDataNode.0', 'known_data_mode', 'PipelineFilteringDataNode.0', 'active_data_mode'), ('PipelineComputationsNode.0', 'computed_pipeline', 'Output', 'dataOut'), ('PipelineComputationsNode.0', 'updated_computation_configs', 'PipelineResultVisNode.0', 'computation_configs')]
+inputNode:
+    pos: (-150.0, 0.0)
+    bypass: False
+    terminals:
+        dataIn:
+            io: 'out'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
+outputNode:
+    pos: (300.0, 0.0)
+    bypass: False
+    terminals:
+        dataOut:
+            io: 'in'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False

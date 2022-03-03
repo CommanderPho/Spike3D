@@ -1,0 +1,41 @@
+pos: (0.0, 0.0)
+bypass: False
+terminals:
+    dataIn:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+    dataOut:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputDataNode.0', 'pos': (-300.0, 50.0), 'state': {'pos': (-300.0, 50.0), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'PipelineFilteringDataNode.0', 'pos': (-115.0198772042844, 88.04489206792218), 'state': {'keys': ['maze1', 'maze2'], 'ctrls': {'pos': (-115.0198772042844, 88.04489206792218), 'bypass': False, 'ctrl': {'included_configs': ''}}}}, {'class': 'PipelineComputationsNode', 'name': 'PipelineComputationsNode.0', 'pos': (85.45431553569324, 125.28472752904361), 'state': {'config_rows': ['maze1', 'maze2'], 'ctrls': {'pos': (85.45431553569324, 125.28472752904361), 'bypass': False, 'ctrl': {}}}}, {'class': 'PipelineDisplayNode', 'name': 'PipelineDisplayNode.0', 'pos': (418.3899901819318, -49.078983820602915), 'state': {'pos': (418.3899901819318, -49.078983820602915), 'bypass': False, 'ctrl': {}}}]
+connects: [('Inputs', 'dataIn', 'PipelineInputDataNode.0', 'known_mode'), ('PipelineFilteringDataNode.0', 'filtered_pipeline', 'PipelineComputationsNode.0', 'pipeline'), ('PipelineFilteringDataNode.0', 'computation_configs', 'PipelineComputationsNode.0', 'computation_configs'), ('PipelineComputationsNode.0', 'computed_pipeline', 'PipelineDisplayNode.0', 'pipeline'), ('PipelineInputDataNode.0', 'known_data_mode', 'PipelineDisplayNode.0', 'mode'), ('PipelineInputDataNode.0', 'loaded_pipeline', 'PipelineFilteringDataNode.0', 'pipeline'), ('PipelineFilteringDataNode.0', 'filter_configs', 'PipelineDisplayNode.0', 'filter_configs'), ('PipelineComputationsNode.0', 'computed_pipeline', 'Output', 'dataOut'), ('PipelineInputDataNode.0', 'known_data_mode', 'PipelineFilteringDataNode.0', 'active_data_mode'), ('PipelineComputationsNode.0', 'updated_computation_configs', 'PipelineDisplayNode.0', 'computation_configs')]
+inputNode:
+    pos: (-367.6517008865162, 50.902413917007635)
+    bypass: False
+    terminals:
+        dataIn:
+            io: 'out'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
+outputNode:
+    pos: (437.2319149502838, 107.70099654326077)
+    bypass: False
+    terminals:
+        dataOut:
+            io: 'in'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
