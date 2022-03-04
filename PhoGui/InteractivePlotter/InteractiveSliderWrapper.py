@@ -5,6 +5,8 @@
 
 """
 
+## TODO: very VTK centric, but doesn't need to be
+
 class InteractiveSliderWrapper:
     """ a wrapper around a VTK GUI slider widget that can be used to sync state between the slider and the pyvista plotter that it controls. """
     # instance attributes
@@ -16,7 +18,7 @@ class InteractiveSliderWrapper:
 
     @property
     def curr_value(self):
-        """The curr_value property."""
+        """ VTK: The curr_value property."""
         return self.slider_obj.GetRepresentation().GetValue()
     
     @curr_value.setter
@@ -36,12 +38,14 @@ class InteractiveSliderWrapper:
 
     # instance method
     def update_value(self, new_value):
+        """ VTK """
         from pyvista import _vtk
         self.slider_obj.GetRepresentation().SetValue(new_value)
         self.slider_obj.InvokeEvent(_vtk.vtkCommand.InteractionEvent) # Called to ensure user callback is performed.
 
 
     def _safe_constrain_index(self, proposed_index):
+        """ VTK """
         curr_min_value = self.slider_obj.GetRepresentation().GetMinimumValue()
         curr_max_value = self.slider_obj.GetRepresentation().GetMaximumValue()
         
