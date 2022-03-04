@@ -32,12 +32,12 @@ from matplotlib.cm import hsv
 import ipywidgets as widgets
 
 # import PhoPositionalData as pdp
-# from PhoPositionalData import load_exported, process_data
-from PhoPositionalData.load_exported import *
-# from PhoPositionalData.process_data import process_positionalAnalysis_data, gen_2d_histrogram, get_heatmap_color_vectors, process_chunk_equal_poritions_data, extract_spike_timeseries
-from PhoPositionalData.process_data import *
-from PhoPositionalData.plot_data import *
-from PhoPositionalData.import_data import *
+# from pyphoplacecellanalysis.PhoPositionalData. import load_exported, process_data
+from pyphoplacecellanalysis.PhoPositionalData.load_exported import *
+# from pyphoplacecellanalysis.PhoPositionalData.process_data import process_positionalAnalysis_data, gen_2d_histrogram, get_heatmap_color_vectors, process_chunk_equal_poritions_data, extract_spike_timeseries
+from pyphoplacecellanalysis.PhoPositionalData.process_data import *
+from pyphoplacecellanalysis.PhoPositionalData.plot_data import *
+from pyphoplacecellanalysis.PhoPositionalData.import_data import *
 
 # RoyMaze1:
 mat_import_parent_path = Path(r'C:\Share\data\RoyMaze1')

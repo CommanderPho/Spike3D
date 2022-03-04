@@ -12,11 +12,11 @@ from pyvistaqt.plotting import MultiPlotter
 
 from pyphocorehelpers.DataStructure.general_parameter_containers import DebugHelper, VisualizationParameters
 
-from PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
-from PhoPositionalData.import_data import build_spike_positions_list
+from pyphoplacecellanalysis.PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
+from pyphoplacecellanalysis.PhoPositionalData.import_data import build_spike_positions_list
 
 
-from PhoPositionalData.plotting.spikeAndPositions import animal_location_circle, animal_location_trail_circle
+from pyphoplacecellanalysis.PhoPositionalData.plotting.spikeAndPositions import animal_location_circle, animal_location_trail_circle
 
 # class PlotGroup:
 #     """
@@ -135,7 +135,7 @@ class InteractivePyvistaPlotter_ObjectManipulationMixin:
         return InteractivePyvistaPlotter_ObjectManipulationMixin.__toggle_visibility(self.safe_get_plot(plot_key))
 
 
-
+### UNUSED:
 class PlotGroupWrapper(InteractivePyvistaPlotter_ObjectManipulationMixin):
     
     def __init__(self, name, plots_dict=dict(), gui_dict=dict()):
