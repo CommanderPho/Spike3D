@@ -114,9 +114,6 @@ dependencies:
   # - zict=2.1.0
   # - docutils=0.18.1
   - imageio=2.16.*
-  # - m2w64-ca-certificates
-  # - python-certifi-win32
-  # - m2-ca-certificates
   # - orjson=3.6.*
   # - configupdater=3.1
   - jupyter_console=6.4.*

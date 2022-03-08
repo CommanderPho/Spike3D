@@ -6,6 +6,17 @@ conda cr
 mamba create -n viz3d matplotlib seaborn pymc jupyterlab pyvista vaex ipympl hdf5storage ipywidgets ipygany ipyvolume ipyvtklink panel -c conda-forge
 
 
+# Updated 2022-03-08 Environment Install
+## Creates the new environment from the .yml file:
+mamba env create -f environment_from_history_pruned.yml
+
+## Activate the new environment:
+conda activate phoviz_ultimate
+
+
+
+
+
 git clone https://github.com/CommanderPho/NeuroPy.git
 git clone https://github.com/CommanderPho/pyPhoCoreHelpers.git
 git clone https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
@@ -21,6 +32,8 @@ pip install -e .
 
 cd C:\Users\pho\repos\pyPhoPlaceCellAnalysis
 pip install -e .
+
+
 
 
 
