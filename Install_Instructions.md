@@ -13,6 +13,8 @@ mamba env create -f environment_from_history_pruned.yml
 ## Activate the new environment:
 conda activate phoviz_ultimate
 
+## Install the packages that couldn't be installed on the first wave:
+mamba install cupy cudatoolkit numba -c conda-forge
 
 
 
