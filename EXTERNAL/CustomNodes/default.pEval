@@ -1,0 +1,18 @@
+pos: (104.51081302702696, -132.42010064864866)
+bypass: False
+terminals:
+    input:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: True
+        removable: False
+        multiable: True
+    output:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: True
+        removable: False
+        multiable: True
+text: "# Access inputs as args['input_name']\nreturn {'output': None} ## one key per output terminal"

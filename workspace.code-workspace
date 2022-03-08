@@ -29,6 +29,7 @@
 		"**/.spyproject": true,
 		"**/.virtual_documents": true,
 		"**/.vscode": true
-		}
+		},
+		"python.analysis.logLevel": "Warning"
 	}
 }

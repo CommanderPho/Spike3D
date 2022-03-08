@@ -1,0 +1,41 @@
+pos: (0.0, 0.0)
+bypass: False
+terminals:
+    dataIn:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+    dataOut:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: False
+        removable: False
+        multiable: False
+nodes: [{'class': 'PipelineInputDataNode', 'name': 'PipelineInputDataNode.0', 'pos': (-400.0, 50.0), 'state': {'pos': (-400.0, 50.0), 'bypass': False, 'ctrl': {'data_mode': 'bapun'}}}, {'class': 'PipelineFilteringDataNode', 'name': 'PipelineFilteringDataNode.0', 'pos': (-26.0, 50.0), 'state': {'config_rows': ['maze1', 'maze2'], 'ctrls': {'pos': (-26.0, 50.0), 'bypass': False, 'ctrl': {}}}}, {'class': 'PipelineComputationsNode', 'name': 'PipelineComputationsNode.0', 'pos': (154.0, 50.0), 'state': {'config_rows': [], 'ctrls': {'pos': (154.0, 50.0), 'bypass': False, 'ctrl': {}}}}, {'class': 'PhoPythonEval', 'name': 'PhoPythonEval.0', 'pos': (61.01465136054735, -97.64719756197815), 'state': {'pos': (61.01465136054735, -97.64719756197815), 'bypass': False, 'terminals': OrderedDict([('input', {'io': 'in', 'multi': False, 'optional': False, 'renamable': True, 'removable': False, 'multiable': True}), ('output', {'io': 'out', 'multi': False, 'optional': False, 'renamable': True, 'removable': False, 'multiable': True})]), 'text': "# Access inputs as args['input_name']\nreturn {'output': None} ## one key per output terminal"}}]
+connects: [('PipelineInputDataNode.0', 'loaded_pipeline', 'PipelineFilteringDataNode.0', 'pipeline'), ('PipelineFilteringDataNode.0', 'computation_configs', 'PipelineComputationsNode.0', 'computation_configs'), ('Input', 'dataIn', 'PipelineInputDataNode.0', 'known_mode'), ('PipelineComputationsNode.0', 'computed_pipeline', 'Output', 'dataOut'), ('PipelineInputDataNode.0', 'known_data_mode', 'PipelineFilteringDataNode.0', 'active_data_mode'), ('PipelineFilteringDataNode.0', 'filtered_pipeline', 'PipelineComputationsNode.0', 'pipeline')]
+inputNode:
+    pos: (-150.0, 0.0)
+    bypass: False
+    terminals:
+        dataIn:
+            io: 'out'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
+outputNode:
+    pos: (415.8607127715304, 38.209383999121826)
+    bypass: False
+    terminals:
+        dataOut:
+            io: 'in'
+            multi: False
+            optional: False
+            renamable: False
+            removable: False
+            multiable: False
