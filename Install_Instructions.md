@@ -14,17 +14,13 @@ mamba env create -f environment_from_history_pruned.yml
 conda activate phoviz_ultimate
 
 ## Install the packages that couldn't be installed on the first wave:
-mamba install cupy cudatoolkit numba -c conda-forge
+mamba install pyopengl cupy cudatoolkit numba panel pingouin -c conda-forge
+### Note: pingouin seems to only be used in one file. panel is being phased out.
 
-
-
-
+# Clone the required direct dependency repos and install using `pip install -e .`
 git clone https://github.com/CommanderPho/NeuroPy.git
 git clone https://github.com/CommanderPho/pyPhoCoreHelpers.git
 git clone https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
-
-
-
 
 cd C:\Users\pho\repos\NeuroPy
 pip install -e .
@@ -35,7 +31,10 @@ pip install -e .
 cd C:\Users\pho\repos\pyPhoPlaceCellAnalysis
 pip install -e .
 
-
+## Finally, after installing custom libs, install any extra libs via pip you need:
+pip install PyQt5
+pip install PyQt6
+pip install PyQt6-tools
 
 
 
