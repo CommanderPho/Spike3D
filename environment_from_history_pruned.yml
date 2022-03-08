@@ -9,8 +9,10 @@ dependencies:
   - scipy=1.6.*
   - pandas=1.4.*
   - pandas-flavor
-  - numba=0.55.*
-  - cupy=10.2.*
+  # - numba=0.55.*
+  # - cupy=10.2.*
+  - cupy
+  - cudatoolkit # =11.0
   - param
   - joblib
   - scikit-learn
@@ -49,8 +51,8 @@ dependencies:
   # - certifi
   # - openssl
   - vispy=0.9.*
-  - pingouin=0.5.*
-  - ruamel.yaml=0.17.*
+  # - pingouin=0.5.*
+  # - ruamel.yaml=0.17.*
   - easydict
   - jupyter
   - openpyxl
@@ -58,7 +60,7 @@ dependencies:
   - loky
   - platformdirs=2.5.*
   # - qtpy=2.0.1
-  - jupyter_core=4.9.*
+  # - jupyter_core=4.9.*
   - freeglut=3.2.*
   - fonttools=4.29.*
   - nbclient=0.5.12
@@ -78,9 +80,9 @@ dependencies:
   # - dask=2022.2.1
   # - dask-core=2022.2.1
   # - distributed=2022.2.1
-  - numexpr=2.8.1
+  - numexpr=2.8.*
   # - backports=1.1
-  - mkl=2022.0.*
+  - mkl=2022.*.*
   # - rich=11.2.0
   # - tk=8.6.12
   # - coverage=6.3.2
@@ -118,4 +120,4 @@ dependencies:
   # - orjson=3.6.*
   # - configupdater=3.1
   - jupyter_console=6.4.*
-prefix: C:\Users\pho\miniconda3\envs\phoviz_ultimate
+# prefix: C:\Users\pho\miniconda3\envs\phoviz_ultimate
