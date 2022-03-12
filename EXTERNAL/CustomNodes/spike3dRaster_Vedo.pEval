@@ -1,0 +1,18 @@
+pos: (534.5438753180391, 26.18884144230266)
+bypass: False
+terminals:
+    input:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: True
+        removable: False
+        multiable: True
+    output:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: True
+        removable: False
+        multiable: True
+text: '\'# Access inputs as args[\'input\']\nfrom pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Spike3DRaster import Spike3DRaster\ncurr_spikes_df = args[\'input\'].sess.spikes_df.copy()\n# Build the 3D Raster object:\nspike_raster_plt = Spike3DRaster_Vedo(curr_spikes_df, window_duration=4.0, window_start_time=30.0, neuron_colors=None)\nspike_raster_plt._update_plots()\naxes = dict(xtitle=\'window time\', ytitle=\'cell_id\', ztitle="")\nplt = show(spike_raster_plt.glyph, __doc__, axes=axes, interactive=False, bg=\'k8\') # plt: <vedo.plotter.Plotter at 0x22eb25de370>\n\n{\'output\': plt} ## one key per output terminal'
