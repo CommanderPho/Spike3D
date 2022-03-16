@@ -146,7 +146,7 @@ class Ui_RootWidget(object):
         self.verticalSlider = QtWidgets.QSlider(self.leftSideToolbarWidget)
         self.verticalSlider.setOrientation(QtCore.Qt.Orientation.Vertical)
         self.verticalSlider.setInvertedAppearance(False)
-        self.verticalSlider.setTickPosition(QtWidgets.QSlider.TickPosition.TicksBelow)
+        self.verticalSlider.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
         self.verticalSlider.setObjectName("verticalSlider")
         self.verticalLayout.addWidget(self.verticalSlider)
         self.verticalLayout_2.addLayout(self.verticalLayout)
