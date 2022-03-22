@@ -11,9 +11,6 @@
 		},
 		{
 			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
-		},
-		{
-			"path": "..\\pyqtgraph\\pyqtgraph"
 		}
 	],
 	"settings": {
