@@ -27,6 +27,13 @@
 		"**/.virtual_documents": true,
 		"**/.vscode": true
 		},
-		"python.analysis.logLevel": "Warning"
+		"python.analysis.logLevel": "Warning",
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#1073cf2d",
+			"editor.lineHighlightBorder": "#9fced11f",
+			"activityBar.background": "#3D234B",
+			"titleBar.activeBackground": "#56306A",
+			"titleBar.activeForeground": "#FCFBFD"
+		}
 	}
 }
