@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'c:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Spike3DRasterControls.ui'
+# Form implementation generated from reading ui file 'c:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\SpikeRasterWidgets\Spike3DRasterControls.ui'
 #
 # Created by: PyQt6 UI code generator 6.1.0
 #
