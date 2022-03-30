@@ -135,23 +135,23 @@ class InteractivePyvistaPlotter_ObjectManipulationMixin:
         return InteractivePyvistaPlotter_ObjectManipulationMixin.__toggle_visibility(self.safe_get_plot(plot_key))
 
 
-### UNUSED:
-class PlotGroupWrapper(InteractivePyvistaPlotter_ObjectManipulationMixin):
+# ### UNUSED:
+# class PlotGroupWrapper(InteractivePyvistaPlotter_ObjectManipulationMixin):
     
-    def __init__(self, name, plots_dict=dict(), gui_dict=dict()):
-        self.name = name
-        self.plots = plots_dict
-        # self.plots_data = dict()
-        self.gui_dict = gui_dict
+#     def __init__(self, name, plots_dict=dict(), gui_dict=dict()):
+#         self.name = name
+#         self.plots = plots_dict
+#         # self.plots_data = dict()
+#         self.gui_dict = gui_dict
         
 
-    def GetVisibility(self):
-        item_visibilities = np.array([a_plot.GetVisibility() for a_plot in self.plots.values()], dtype=int)
-        return np.any(item_visibilities)
+#     def GetVisibility(self):
+#         item_visibilities = np.array([a_plot.GetVisibility() for a_plot in self.plots.values()], dtype=int)
+#         return np.any(item_visibilities)
 
-    def SetVisibility(self, value):
-        for a_plot_name, a_plot in self.plots.items():
-            a_plot.SetVisibility(value)
+#     def SetVisibility(self, value):
+#         for a_plot_name, a_plot in self.plots.items():
+#             a_plot.SetVisibility(value)
 
         
         

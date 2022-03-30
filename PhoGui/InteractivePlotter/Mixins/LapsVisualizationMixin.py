@@ -4,7 +4,8 @@ import pandas as pd
 import pyvista as pv
 
 class LapsVisualizationMixin:
-
+    """ Looks like some of this class is independent of the rendering library and some is VTK and PyVista specific """
+    
     @staticmethod
     def lines_from_points(points):
         """Given an array of points, make a line set"""
