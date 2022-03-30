@@ -9,7 +9,7 @@ import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 
 from PhoGui.InteractivePlotter.InteractiveSliderWrapper import InteractiveSliderWrapper
-from PhoGui.InteractivePlotter.InterfaceProperties import InterfaceProperties
+from PhoGui.InteractivePlotter.Model.InterfaceProperties import InterfaceProperties
 from PhoGui.InteractivePlotter.Mixins.AnimationStateMixin import AnimationStateBaseMixin
 # from PhoGui.InteractivePlotter import InterfaceProperties
 # from pyphoplacecellanalysis.PhoPositionalData.plotting.spikeAndPositions import InteractiveSliderWrapper
