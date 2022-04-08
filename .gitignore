@@ -25,3 +25,6 @@ PyQtPlotExamples/Console-icon.png
 pipeline_cache_store.h5
 epoch_rect_meshes_cache.ply
 LibrariesExamples/Vedo/clipped.vtk
+data/mesh_caches/*.ply
+data/clipped.vtk
+data/completed_pipeline.npz
