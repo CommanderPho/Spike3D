@@ -13,6 +13,11 @@ class Ui_RootWidget(object):
     def setupUi(self, RootWidget):
         RootWidget.setObjectName("RootWidget")
         RootWidget.resize(1663, 1110)
+        RootWidget.setStyleSheet("background-color: rgb(71, 58, 46);\n"
+"border-color: rgb(207, 207, 207);\n"
+"background-color: rgba(71, 65, 60, 180);\n"
+"color: rgb(244, 244, 244);\n"
+"border-color: rgb(0, 0, 0);")
         self.gridLayout = QtWidgets.QGridLayout(RootWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
