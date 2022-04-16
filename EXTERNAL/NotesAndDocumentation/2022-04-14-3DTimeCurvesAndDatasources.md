@@ -13,7 +13,67 @@ class RenderDataseries(SimplePrintable, PrettyPrintable, QtCore.QObject):
         ...
 ```
 
-data_series_specs
+## data_series_specs
+active_random_test_plot_curve_datasource.data_series_specs.data_series_pre_spatial_to_spatial_mappings
+
+active_random_test_plot_curve_datasource.data_series_specs.data_series_pre_spatial_list
+
+```python
+    # data_series_specs.data_series_config_list
+    [{'name': 'v0',
+    't': 't',
+    'v_alt': None,
+    'v_main': 'v0',
+    'color_name': 'white',
+    'line_width': 2.0,
+    'z_scaling_factor': 1.0},
+    {'name': 'v1',
+    't': 't',
+    'v_alt': None,
+    'v_main': 'v1',
+    'color_name': 'white',
+    'line_width': 2.0,
+    'z_scaling_factor': 1.0}, 
+    ...
+    ]
+
+    # data_series_specs.data_series_pre_spatial_list:
+    [{'name': 'v0',
+    't': 't',
+    'v_alt': None,
+    'v_main': 'v0',
+    'color_name': 'white',
+    'line_width': 2.0,
+    'z_scaling_factor': 1.0},
+    {'name': 'v1',
+    't': 't',
+    'v_alt': None,
+    'v_main': 'v1',
+    'color_name': 'white',
+    'line_width': 2.0,
+    'z_scaling_factor': 1.0},
+    ...
+    ]
+
+
+    # data_series_specs.data_series_pre_spatial_to_spatial_mappings:
+    [{'name': 'name',
+    'x': 't',
+    'y': 'v_alt',
+    'z': 'v_main',
+    'x_map_fn': <function pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves.Specific3DTimeCurvesHelper.build_test_3D_time_curves.<locals>.<lambda>(t)>,
+    'y_map_fn': <function pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves.Specific3DTimeCurvesHelper.build_test_3D_time_curves.<locals>.<listcomp>.<lambda>(v, bound_i=0)>,
+    'z_map_fn': <function pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves.Specific3DTimeCurvesHelper.build_test_3D_time_curves.<locals>.<lambda>(v_main)>},
+    {'name': 'name',
+    'x': 't',
+    'y': 'v_alt',
+    'z': 'v_main',
+    'x_map_fn': <function pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves.Specific3DTimeCurvesHelper.build_test_3D_time_curves.<locals>.<lambda>(t)>,
+    'y_map_fn': <function pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves.Specific3DTimeCurvesHelper.build_test_3D_time_curves.<locals>.<listcomp>.<lambda>(v, bound_i=1)>,
+    'z_map_fn': <function pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves.Specific3DTimeCurvesHelper.build_test_3D_time_curves.<locals>.<lambda>(v_main)>},
+    ...
+    ]
+```
 
 
 ```python
