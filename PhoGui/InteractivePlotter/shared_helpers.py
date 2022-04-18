@@ -246,7 +246,6 @@ class InteractiveDataExplorerBase(InteractivePyvistaPlotterBuildIfNeededMixin, I
         """ will render a flat indicator of a single point like is used for the animal's current location. 
         Updates the existing plot if the same plot_name is reused. """
         ## COMPAT: merge operator '|'requires Python 3.9
-        # new_dict = default_dict | {'color':'red'}
         pdata_current_point = pv.PolyData(curr_animal_point) # a mesh
         pc_current_point = pdata_current_point.glyph(scale=False, geom=animal_location_circle)
         
