@@ -13,8 +13,8 @@ from pyphoplacecellanalysis.PhoPositionalData.plotting.animations import make_mp
 
 from PhoGui.InteractivePlotter.PhoInteractivePlotter import PhoInteractivePlotter
 
-from PhoGui.PhoCustomVtkWidgets import PhoWidgetHelper
-from PhoGui.PhoCustomVtkWidgets import MultilineTextConsoleWidget
+from pyphocorehelpers.gui.PyVista.PhoCustomVtkWidgets import PhoWidgetHelper
+from pyphocorehelpers.gui.PyVista.PhoCustomVtkWidgets import MultilineTextConsoleWidget
 
 from pyphoplacecellanalysis.PhoPositionalData.plotting.gui import customize_default_pyvista_theme, print_controls_helper_text
 from pyphoplacecellanalysis.PhoPositionalData.plotting.spikeAndPositions import build_active_spikes_plot_data, perform_plot_flat_arena, build_spike_spawn_effect_light_actor, spike_geom_circle, spike_geom_box, spike_geom_cone, animal_location_circle, animal_location_trail_circle
