@@ -14,7 +14,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_rootForm(object):
     def setupUi(self, rootForm):
         rootForm.setObjectName("rootForm")
-        rootForm.resize(100, 116)
+        rootForm.resize(100, 126)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(rootForm.sizePolicy().hasHeightForWidth())
+        rootForm.setSizePolicy(sizePolicy)
+        rootForm.setMinimumSize(QtCore.QSize(90, 0))
+        rootForm.setBaseSize(QtCore.QSize(100, 126))
         rootForm.setStyleSheet("background-color: rgb(71, 58, 46);\n"
 "border-color: rgb(207, 207, 207);\n"
 "background-color: rgba(71, 65, 60, 180);\n"
@@ -62,7 +69,7 @@ class Ui_rootForm(object):
 
     def retranslateUi(self, rootForm):
         _translate = QtCore.QCoreApplication.translate
-        rootForm.setWindowTitle(_translate("rootForm", "Form"))
+        rootForm.setWindowTitle(_translate("rootForm", "Pf"))
         self.groupBox.setTitle(_translate("rootForm", "pf[i]"))
         self.btnTitle.setText(_translate("rootForm", "pf[i]"))
         self.chkbtnPlacefield.setText(_translate("rootForm", "pf"))
