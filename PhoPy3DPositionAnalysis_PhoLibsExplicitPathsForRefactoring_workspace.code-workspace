@@ -7,10 +7,10 @@
 			"path": "..\\NeuroPy"
 		},
 		{
-			"path": "..\\pyPhoCoreHelpers\\src\\pyphocorehelpers"
+			"path": "..\\pyPhoCoreHelpers\\src"
 		},
 		{
-			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+			"path": "..\\pyPhoPlaceCellAnalysis\\src"
 		}
 	],
 	"settings": {
