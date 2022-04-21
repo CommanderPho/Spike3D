@@ -14,14 +14,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_rootForm(object):
     def setupUi(self, rootForm):
         rootForm.setObjectName("rootForm")
-        rootForm.resize(100, 126)
+        rootForm.resize(94, 126)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(rootForm.sizePolicy().hasHeightForWidth())
         rootForm.setSizePolicy(sizePolicy)
-        rootForm.setMinimumSize(QtCore.QSize(90, 0))
-        rootForm.setBaseSize(QtCore.QSize(100, 126))
+        rootForm.setMinimumSize(QtCore.QSize(50, 0))
+        rootForm.setBaseSize(QtCore.QSize(50, 126))
         rootForm.setStyleSheet("background-color: rgb(71, 58, 46);\n"
 "border-color: rgb(207, 207, 207);\n"
 "background-color: rgba(71, 65, 60, 180);\n"
@@ -32,7 +32,9 @@ class Ui_rootForm(object):
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName("gridLayout")
         self.groupBox = QtWidgets.QGroupBox(rootForm)
+        self.groupBox.setMinimumSize(QtCore.QSize(50, 0))
         self.groupBox.setMaximumSize(QtCore.QSize(160, 160))
+        self.groupBox.setBaseSize(QtCore.QSize(50, 0))
         self.groupBox.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.groupBox.setFlat(False)
         self.groupBox.setObjectName("groupBox")
@@ -44,6 +46,7 @@ class Ui_rootForm(object):
         self.btnTitle.setObjectName("btnTitle")
         self.verticalLayout_2.addWidget(self.btnTitle)
         self.btnColorButton = ColorButton(self.groupBox)
+        self.btnColorButton.setEnabled(False)
         self.btnColorButton.setMinimumSize(QtCore.QSize(24, 24))
         self.btnColorButton.setText("")
         self.btnColorButton.setObjectName("btnColorButton")
