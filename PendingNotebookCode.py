@@ -10,17 +10,12 @@ import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
+## Laps Stuff:
 from neuropy.core import Laps
 from neuropy.core.epoch import NamedTimerange
-# from neuropy.analyses import perform_compute_placefields
-from neuropy.analyses.placefields import PlacefieldComputationParameters, PfND
-
 from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
-
-from neuropy.utils.colors_util import get_neuron_colors
-from neuropy.plotting.placemaps import plot_all_placefields
-
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
+
 
 should_force_recompute_placefields = True
 should_display_2D_plots = True
