@@ -33,8 +33,8 @@ def main():
 
 def view(verts, faces, norms=None):
     from PyQt5.QtWidgets import QApplication
-    from pyqtgraph.opengl import GLViewWidget, MeshData
-    from pyqtgraph.opengl.items.GLMeshItem import GLMeshItem
+    from pyphoplacecellanalysis.External.pyqtgraph.opengl import GLViewWidget, MeshData
+    from pyphoplacecellanalysis.External.pyqtgraph.opengl.items.GLMeshItem import GLMeshItem
 
     app = QApplication([])
     

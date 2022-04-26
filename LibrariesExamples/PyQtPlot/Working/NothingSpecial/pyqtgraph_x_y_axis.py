@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QHBoxLayout, QVBoxLayout
 from PyQt5 import QtGui
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 import numpy as np
 
 class MainWindow(QWidget):

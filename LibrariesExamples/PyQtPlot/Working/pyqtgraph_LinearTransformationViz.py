@@ -1,9 +1,9 @@
 import sys
 import os
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QHBoxLayout, QSlider, QCheckBox 
 # from PyQt5 import QtCore,  QtGui
-from pyqtgraph import QtCore, QtGui, QtWidgets
+from pyphoplacecellanalysis.External.pyqtgraph import QtCore, QtGui, QtWidgets
 
 """ This example from the internet displays a dark-themed MainWindow containing an interactive pyqtgraph plot that allows you to inspect eigenvalues and drag an animated slider. """
 

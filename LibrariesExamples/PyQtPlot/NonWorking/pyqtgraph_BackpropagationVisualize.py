@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui
 import numpy as np
 import sys
 
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 
 import NnNetworkGrapher
 from tvtk.api import tvtk

@@ -1,6 +1,6 @@
 # Restructuring this module as a class
-from pyqtgraph.Qt import QtGui, QtCore
-import pyqtgraph as pg
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui, QtCore
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 
 
 

@@ -1,6 +1,6 @@
-from pyqtgraph.parametertree import Parameter
-from pyqtgraph.parametertree.Parameter import PARAM_TYPES
-from pyqtgraph.parametertree.parameterTypes import GroupParameter
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree.Parameter import PARAM_TYPES
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes import GroupParameter
 # from ._paramtreecfg import cfg
 
 from _filter_paramtreecfg import cfg

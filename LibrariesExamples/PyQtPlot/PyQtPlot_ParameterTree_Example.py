@@ -7,23 +7,23 @@ as well as some customized parameter types
 """
 # import initExample  ## Add path to library (just for examples; you do not need this)
 import numpy as np
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 # `makeAllParamTypes` creates several parameters from a dictionary of config specs.
 # This contains information about the options for each parameter so they can be directly
 # inserted into the example parameter tree. To create your own parameters, simply follow
 # the guidelines demonstrated by other parameters created here.
 
 # Example Param Types:
-# from pyqtgraph.examples._buildParamTypes import makeAllParamTypes
+# from pyphoplacecellanalysis.External.pyqtgraph.examples._buildParamTypes import makeAllParamTypes
 
 # Custom Param Types:
 from _buildFilterParamTypes import makeAllParamTypes
 
-from pyqtgraph.Qt import QtGui
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui
 
 app = pg.mkQApp("Parameter Tree Example")
-import pyqtgraph.parametertree.parameterTypes as pTypes
-from pyqtgraph.parametertree import Parameter, ParameterTree
+import pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes as pTypes
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter, ParameterTree
 
 
 ## test subclassing parameters

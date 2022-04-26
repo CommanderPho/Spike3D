@@ -8,7 +8,7 @@ import sys
 import numpy as np
 
 # importing pyqtgraph as pg
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 

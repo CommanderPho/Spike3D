@@ -1,7 +1,7 @@
 import numpy as np
 
-from pyqtgraph.Qt import QtWidgets
-from pyqtgraph.parametertree.parameterTypes import QtEnumParameter as enum
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtWidgets
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes import QtEnumParameter as enum
 
 dlg = QtWidgets.QFileDialog
 

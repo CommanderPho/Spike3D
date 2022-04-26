@@ -3,9 +3,9 @@
     Animated 3D sinc function
 """
 
-from pyqtgraph.Qt import QtCore, QtGui
-import pyqtgraph.opengl as gl
-import pyqtgraph as pg
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui
+import pyphoplacecellanalysis.External.pyqtgraph.opengl as gl
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 import numpy as np
 import sys
 
