@@ -1,7 +1,7 @@
 import numpy as np 
-import pyqtgraph as pg
-from pyqtgraph.Qt import *
-import pyqtgraph.opengl as gl
+import pyphoplacecellanalysis.External.pyqtgraph as pg
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import *
+import pyphoplacecellanalysis.External.pyqtgraph.opengl as gl
 import sys
 
 

@@ -1,8 +1,8 @@
 
-from pyqtgraph.Qt import QtGui, QtCore
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui, QtCore
 
 import numpy as np
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 
 
 X_1 = 1

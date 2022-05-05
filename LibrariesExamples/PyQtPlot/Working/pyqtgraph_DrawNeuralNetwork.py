@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout
 
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 import numpy as np
 
 import sys

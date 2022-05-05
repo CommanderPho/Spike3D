@@ -33,18 +33,18 @@ import numpy as np
 # if not _instance:
 #     _instance = QApplication([])
 # app = _instance
-import pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
+import pyphoplacecellanalysis.External.pyqtgraph as pg
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 
 # Must be called before any figures are created:
 import matplotlib
 matplotlib.use('qtagg')
 
 
-from pyqtgraph.console import ConsoleWidget
-from pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget
-from pyqtgraph.dockarea.Dock import Dock
-from pyqtgraph.dockarea.DockArea import DockArea
+from pyphoplacecellanalysis.External.pyqtgraph.console import ConsoleWidget
+from pyphoplacecellanalysis.External.pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget
+from pyphoplacecellanalysis.External.pyqtgraph.dockarea.Dock import Dock
+from pyphoplacecellanalysis.External.pyqtgraph.dockarea.DockArea import DockArea
 
 from pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.CustomNodes.Mixins.DisplayNodeViewHelpers import ProducedViewType
 from pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.pyqtplot_Flowchart import plot_flowchartWidget

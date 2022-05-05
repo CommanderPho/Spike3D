@@ -80,4 +80,4 @@ class Ui_MainWindow(object):
         self.actionLoad.setText(_translate("MainWindow", "Load..."))
         self.actionSave.setText(_translate("MainWindow", "Save"))
         self.actionSave_As.setText(_translate("MainWindow", "Save As.."))
-from pyqtgraph.console import ConsoleWidget
+from pyphoplacecellanalysis.External.pyqtgraph.console import ConsoleWidget

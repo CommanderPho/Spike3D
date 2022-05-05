@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QDialog, QGridLayout,\
 QTabWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QComboBox, QLineEdit,QScrollArea, QColorDialog
 from PyQt5 import QtGui, QtCore
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 import numpy as np
 from functools import partial
 import os

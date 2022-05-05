@@ -1,10 +1,10 @@
 
 import pickle
-import pyqtgraph as pg
-from pyqtgraph.parametertree import Parameter, ParameterTree
-from pyqtgraph.parametertree.parameterTypes import (
+import pyphoplacecellanalysis.External.pyqtgraph as pg
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter, ParameterTree
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes import (
     WidgetParameterItem, registerParameterType)
-from pyqtgraph.Qt import QtGui, QtCore
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui, QtCore
 
 
 def tree(name, params):

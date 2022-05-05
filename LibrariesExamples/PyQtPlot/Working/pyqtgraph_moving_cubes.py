@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pyqtgraph.Qt import QtCore, QtGui
-import pyqtgraph.opengl as gl
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui
+import pyphoplacecellanalysis.External.pyqtgraph.opengl as gl
 import numpy as np
 import sys
 

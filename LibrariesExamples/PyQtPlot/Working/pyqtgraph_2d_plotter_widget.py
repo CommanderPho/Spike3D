@@ -3,7 +3,7 @@ import sys
 import qdarkstyle
 import os
 from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout,QHBoxLayout,QPushButton
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 import numpy as np
 from PyQt5.QtCore import Qt
 

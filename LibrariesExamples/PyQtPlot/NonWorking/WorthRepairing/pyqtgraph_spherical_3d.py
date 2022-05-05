@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib as mpl
 # from OpenGL.GL import *  # noqa
-from pyqtgraph.Qt import QtCore, QtGui
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui
 # %gui qt5 
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 from matplotlib import cm
 pg.mkQApp()
 
 ## make a widget for displaying 3D objects
-import pyqtgraph.opengl as gl
+import pyphoplacecellanalysis.External.pyqtgraph.opengl as gl
 view = gl.GLViewWidget()
 
 

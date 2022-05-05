@@ -1,7 +1,7 @@
 import sys
-from pyqtgraph.Qt import QtGui, QtCore  # (the example applies equally well to PySide2)
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui, QtCore  # (the example applies equally well to PySide2)
 import numpy as np
-import pyqtgraph as pg
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 
 ## Always start by initializing Qt (only once per application)
 app = QtGui.QApplication([])

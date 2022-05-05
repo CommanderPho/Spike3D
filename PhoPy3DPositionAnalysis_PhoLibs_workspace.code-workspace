@@ -40,6 +40,9 @@
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true
 		},
+		"qtForPython.uic.args": [
+			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\""
+		],
 
 	}
 }
