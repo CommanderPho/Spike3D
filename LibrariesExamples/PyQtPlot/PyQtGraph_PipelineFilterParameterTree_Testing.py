@@ -11,6 +11,8 @@ import numpy as np
 
 from pyphoplacecellanalysis.External.pyqtgraph.widgets.FeedbackButton import FeedbackButton
 
+
+
 # NeuroPy (Diba Lab Python Repo) Loading
 try:
     from neuropy import core
@@ -24,14 +26,36 @@ except ImportError:
     from neuropy import core
 
 from neuropy.core.neurons import NeuronType
+
 # Custom Param Types:
 from _buildFilterParamTypes import makeAllParamTypes
-
 from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui
-
-app = pg.mkQApp("Parameter Tree Filter Options")
 import pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes as pTypes
 from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter, ParameterTree
+
+
+## For qdarkstyle theming support:
+import qdarkstyle
+# app.setStyleSheet(qdarkstyle.load_stylesheet_from_environment(is_pyqtgraph=True))
+# app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+
+# For BreezeStylesheets support:
+from qtpy import QtWidgets
+from qtpy.QtCore import QFile, QTextStream
+import pyphoplacecellanalysis.External.breeze_style_sheets.breeze_resources
+# # set stylesheet:
+# stylesheet_qss_file = QFile(":/dark/stylesheet.qss")
+# stylesheet_qss_file.open(QFile.ReadOnly | QFile.Text)
+# stylesheet_data_stream = QTextStream(stylesheet_qss_file)
+# # app.setStyleSheet(stylesheet_data_stream.readAll())
+
+
+
+app = pg.mkQApp("Parameter Tree Filter Options")
+# app.setStyleSheet(stylesheet_data_stream.readAll())
+app.setStyleSheet(qdarkstyle.load_stylesheet_from_environment(is_pyqtgraph=True)) # QDarkStyle version
+
+
 
 
 ## test subclassing parameters
@@ -123,7 +147,7 @@ def _save_restore_state_button_children():
 
 
 # Simple Example:
-def _example_simple_dict_params():
+def _simple_filter_dict_params():
     children = [
         # dict(name='a', type='slider', value=5, limits=[0, 10]),
         # dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
@@ -141,7 +165,7 @@ def _example_simple_dict_params():
     # t.setParameters(p, showTop=True)
 
 
-p = _example_simple_dict_params()
+p = _simple_filter_dict_params()
 
 
 ## If anything changes in the tree, print a message
@@ -193,27 +217,32 @@ def _add_save_restore_btn_functionality(p):
 _add_save_restore_btn_functionality(p)
 
 
-## Create two ParameterTree widgets, both accessing the same data
-t = ParameterTree()
-t.setParameters(p, showTop=False)
-t.setWindowTitle('pyqtgraph example: Parameter Tree')
-t2 = ParameterTree()
-t2.setParameters(p, showTop=False)
 
-win = QtGui.QWidget()
-layout = QtGui.QGridLayout()
-win.setLayout(layout)
-layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0, 0, 1, 2)
-layout.addWidget(t, 1, 0, 1, 1)
-layout.addWidget(t2, 1, 1, 1, 1)
-win.show()
-win.resize(800,900)
+def create_pipeline_filter_parameter_tree():
+	## Create two ParameterTree widgets, both accessing the same data
+	param_tree = ParameterTree()
+	param_tree.setParameters(p, showTop=False)
+	param_tree.setWindowTitle('pyqtgraph example: Parameter Tree')
+	
+	# win = QtGui.QWidget()
+	layout_win = pg.LayoutWidget()
+	# layout = QtGui.QGridLayout()
+	# win.setLayout(layout_win)
+ 
+	# Add widgets:
+	layout_win.addWidget(param_tree)
+	# layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0, 0, 1, 2)
+	# layout.addWidget(t, 1, 0, 1, 1)
+	layout_win.show()
+	layout_win.resize(800,900)
 
-## test save/restore
-state = p.saveState()
-p.restoreState(state)
-compareState = p.saveState()
-assert pg.eq(compareState, state)
+	## test save/restore
+	state = p.saveState()
+	p.restoreState(state)
+	compareState = p.saveState()
+	assert pg.eq(compareState, state)
+	return layout_win, param_tree
 
 if __name__ == '__main__':
+    win, param_tree = create_pipeline_filter_parameter_tree()
     pg.exec()
