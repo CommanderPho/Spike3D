@@ -152,6 +152,7 @@ def _simple_filter_dict_params():
         # dict(name='a', type='slider', value=5, limits=[0, 10]),
         # dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
         # dict(name='c', type='slider', value=2, span=np.linspace(0, 2*np.pi, 1000)),
+        dict(name='Data Directory', type='file', winTitle='Select Input Data Directory', directory='', options=['ShowDirsOnly', 'DontResolveSymlinks']),
         dict(name='Included Epochs', type='checklist', value=['maze1'], limits=['pre', 'maze1', 'post1', 'maze2', 'post2']),
         dict(name='Cell Types', type='checklist', value=[NeuronType.PYRAMIDAL.longClassName], limits=NeuronType.__members__),
     ]
