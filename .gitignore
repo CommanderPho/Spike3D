@@ -32,3 +32,5 @@ data/mesh_caches/Fri-08-Apr-2022-11-14-52
 .qt_for_python
 EXTERNAL/TESTING/OLD/**
 **/.ipynb_checkpoints
+dist/stager.exe
+build/py_installer
