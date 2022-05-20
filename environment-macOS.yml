@@ -66,6 +66,7 @@ dependencies:
     - pytest
     - pytest-cov
     - pyopengl
+    - qdarkstyle
     # Works well in RedHat8. Note you may have to comment out the following lines and then install manually "pip install scikit-posthocs" in Windows.
     - pip:
         - pyqt6
