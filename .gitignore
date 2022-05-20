@@ -22,3 +22,21 @@ neurons_zeta_results_list.npz
 zetapy.7z
 zetapy
 PyQtPlotExamples/Console-icon.png
+pipeline_cache_store.h5
+epoch_rect_meshes_cache.ply
+LibrariesExamples/Vedo/clipped.vtk
+data/mesh_caches/*.ply
+data/clipped.vtk
+data/completed_pipeline.npz
+data/mesh_caches/Fri-08-Apr-2022-11-14-52
+.qt_for_python
+EXTERNAL/TESTING/OLD/**
+**/.ipynb_checkpoints
+dist/stager.exe
+build/py_installer
+EXTERNAL/Screenshots/Other Features/Tue-17-May-2022-18-32-34
+testPlotter_export_html_Pho.html
+testPlotter_export_obj_Pho.obj.mtl
+testPlotter_export_obj_Pho.obj.obj
+testPlotterSavePho.obj
+.favorites.json

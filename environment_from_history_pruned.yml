@@ -1,0 +1,120 @@
+name: phoviz_ultimate
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip=22.0.*
+  - numpy=1.20
+  - scipy=1.6.*
+  - pandas=1.4.*
+  - pandas-flavor
+  # - numba=0.55.*
+  # - cupy=10.2.*
+  - cupy
+  - cudatoolkit # =11.0
+  - param
+  - joblib
+  - scikit-learn
+  - hmmlearn
+  - h5py
+  - hdf5storage
+  - pillow
+  - opencv
+  - openmp
+  - click
+  - ipython=8.1.*
+  - ipykernel
+  - pyscaffold
+  - pyscaffoldext-dsproject
+  - tox
+  - seaborn
+  - colorcet
+  - pymc
+  - pyvista
+  - ipywidgets
+  - matplotlib
+  - ipympl=0.8.*
+  - ipygany
+  - ipyvolume
+  - ipyvtklink
+  - pytables
+  - bqplot=0.12.*
+  - pyvistaqt
+  - pyqtconsole
+  - qtmodern
+  - jupyter-rfb
+  - pytest
+  - pytest-cov
+  - console_shortcut
+  # - ca-certificates
+  # - certifi
+  # - openssl
+  - vispy=0.9.*
+  # - pingouin=0.5.*
+  # - ruamel.yaml=0.17.*
+  - easydict
+  - jupyter
+  - openpyxl
+  - cython=0.29.*
+  - loky
+  - platformdirs=2.5.*
+  # - qtpy=2.0.1
+  # - jupyter_core=4.9.*
+  - freeglut=3.2.*
+  - fonttools=4.29.*
+  - nbclient=0.5.12
+  # - nbconvert=6.4.2
+  # - pywinpty=2.0.*
+  # - fastprogress=1.0.2
+  # - vaex-core=4.8.0
+  # - vaex-server=0.8.1
+  # - virtualenv=20.13.3
+  - setuptools=60.9.*
+  # - progressbar2=4.0.0
+  - jsoncpp=1.9.*
+  - ipyvuetify=1.8.*
+  - importlib-metadata=4.11.*
+  # - charls=2.3.4
+  # - charset-normalizer=2.0.12
+  # - dask=2022.2.1
+  # - dask-core=2022.2.1
+  # - distributed=2022.2.1
+  - numexpr=2.8.*
+  # - backports=1.1
+  - mkl=2022.*.*
+  # - rich=11.2.0
+  # - tk=8.6.12
+  # - coverage=6.3.2
+  # - sqlite=3.37.2
+  # - stack_data=0.2.0
+  - xlrd
+  - xlwt
+  # - plotly-orca
+  - pyqt-builder=1.12.*
+  - pyqt_distutils=0.7.*
+  - qdarkstyle
+  - qscintilla2
+  - vedo
+  - k3d
+  # - scooby=0.5.12
+  # - executing=0.8.3
+  # - frozendict=2.3.0
+  # - filelock=3.6.0
+  # - fastapi=0.75.0
+  # - expat=2.4.6
+  # - et_xmlfile=1.1.0
+  # - entrypoints=0.4
+  # - tifffile=2022.2.9
+  # - tomli=2.0.1
+  # - tomlkit=0.10.0
+  - scikit-image=0.19.*
+  # - sphinx=4.4.0
+  # - xarray=2022.3.0
+  # - zict=2.1.0
+  # - docutils=0.18.1
+  - imageio=2.16.*
+  # - orjson=3.6.*
+  # - configupdater=3.1
+  - jupyter_console=6.4.*
+# prefix: C:\Users\pho\miniconda3\envs\phoviz_ultimate
