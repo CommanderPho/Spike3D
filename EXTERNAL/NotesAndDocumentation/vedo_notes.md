@@ -5,7 +5,7 @@ basic\colorlines.py
 python examples\basic\clustering.py ### Renders clusters and removes outliers automatically somehow
 python examples\basic\flatarrow.py ### Renders curved arrows that are flat in a given plane
 
-### Generated Silhouettes/Projects of a mesh to a specified plane.
+### Generated Silhouettes/Projections of a mesh to a specified plane.
 python examples\basic\silhouette1.py
 
 ### Broken due to missing meshes:
