@@ -1,5 +1,5 @@
 Looks like I might be able to do:
-
+```python
 def update():
     for dat in data:
         plotter.update_scalars(dat, mesh=mesh)
@@ -7,7 +7,7 @@ def update():
         plotter.update()
         
 plotter.add_callback(update, interval=100)
-
+```
 to get periodic updates
 
 
@@ -48,7 +48,8 @@ A workaround is basically to load a new mesh into the Plotter every time your da
 Swap #Animation section with this snippet and the plane will grow some volume:
 
 # Animation
-for i in range(5, 1000):
+```python
+    for i in range(5, 1000):
     # Updating our data
     data = np.full((i, N, N),0)
     data[:] = np.random.randint(0,1000000, data.shape)
@@ -65,5 +66,6 @@ for i in range(5, 1000):
 
     # Redrawing
     p.update()
+```
 
 Note that scene is interactive only when its updating, so lowering update frequency will make scene pretty laggy
