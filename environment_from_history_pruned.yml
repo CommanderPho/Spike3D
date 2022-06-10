@@ -117,4 +117,6 @@ dependencies:
   # - orjson=3.6.*
   # - configupdater=3.1
   - jupyter_console=6.4.*
+  - PyQt5Singleton
+  - indexed
 # prefix: C:\Users\pho\miniconda3\envs\phoviz_ultimate
