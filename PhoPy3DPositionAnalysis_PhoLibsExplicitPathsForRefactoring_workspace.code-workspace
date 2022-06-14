@@ -30,10 +30,7 @@
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
 			"editor.lineHighlightBackground": "#1073cf2d",
-			"editor.lineHighlightBorder": "#9fced11f",
-			"activityBar.background": "#3D234B",
-			"titleBar.activeBackground": "#56306A",
-			"titleBar.activeForeground": "#FCFBFD"
+			"editor.lineHighlightBorder": "#9fced11f"
 		},
 		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
 		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
