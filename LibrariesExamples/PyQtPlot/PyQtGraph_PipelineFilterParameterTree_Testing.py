@@ -32,7 +32,7 @@ from _buildFilterParamTypes import makeAllParamTypes
 from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui
 import pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes as pTypes
 from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter, ParameterTree
-
+from pyphoplacecellanalysis.GUI.PyQtPlot.Params.SaveRestoreStateParamHelpers import default_parameters_save_restore_state_button_children, add_save_restore_btn_functionality # for adding save/restore buttons
 
 ## For qdarkstyle theming support:
 import qdarkstyle
@@ -114,20 +114,7 @@ class ExportHdf5KeysGroup(pTypes.GroupParameter):
         }[typ]
         self.addChild(dict(name="/filtered_sessions/YOUR_SESSION_NAME/YOUR_KEY", type=typ, value=val, removable=True, renamable=True))
         
-        
-def _default_parameters_save_restore_state_button_children():
-    """ Builds the default save/restore state buttons for a parameter item """
-    return {
-        'name': 'Save/Restore functionality', 'type': 'group', 'children': [
-        {'name': 'Save State', 'type': 'action'},
-        {
-            'name': 'Restore State', 'type': 'action', 'children': [
-            {'name': 'Add missing items', 'type': 'bool', 'value': True},
-            {'name': 'Remove extra items', 'type': 'bool', 'value': True},
-        ]},
-    ]}
-    
-    
+
 ##################################################
 ## FILTER TREE
 ##################################################/
@@ -144,7 +131,7 @@ def _build_filter_parameters_tree(parameter_names='Filter Options', include_stat
 
         # Use save/restore state buttons
         if include_state_save_restore_buttons:
-            children.append(_default_parameters_save_restore_state_button_children())
+            children.append(default_parameters_save_restore_state_button_children())
 
         p = Parameter.create(name=parameter_names, type='group', children=children)
         return p
@@ -178,24 +165,7 @@ def _build_filter_parameters_tree(parameter_names='Filter Options', include_stat
             child.child('widget').sigValueChanging.connect(valueChanging)
         
     if include_state_save_restore_buttons:
-        def _add_save_restore_btn_functionality(p):
-            # Save/Restore State Button Functionality:
-            def save():
-                global state
-                state = p.saveState()
-
-            def restore():
-                global state
-                add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
-                rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
-                p.restoreState(state, addChildren=add, removeChildren=rem)
-
-            # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
-            p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
-            p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
-
-
-        _add_save_restore_btn_functionality(p)
+        add_save_restore_btn_functionality(p)
 
     return p
 
@@ -228,7 +198,7 @@ def _build_export_parameters_tree(parameter_names='ExportParams', finalized_outp
 
         # Use save/restore state buttons
         if include_state_save_restore_buttons:
-            children.append(_default_parameters_save_restore_state_button_children())
+            children.append(default_parameters_save_restore_state_button_children())
 
         ## Create tree of Parameter objects
         p = Parameter.create(name=parameter_names, type='group', children=children)
@@ -263,24 +233,7 @@ def _build_export_parameters_tree(parameter_names='ExportParams', finalized_outp
             child.child('widget').sigValueChanging.connect(valueChanging)
         
     if include_state_save_restore_buttons:
-        def _add_save_restore_btn_functionality(p):
-            # Save/Restore State Button Functionality:
-            def save():
-                global state
-                state = p.saveState()
-
-            def restore():
-                global state
-                add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
-                rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
-                p.restoreState(state, addChildren=add, removeChildren=rem)
-
-            # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
-            p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
-            p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
-
-
-        _add_save_restore_btn_functionality(p)
+        add_save_restore_btn_functionality(p)
 
     return p
 
