@@ -43,3 +43,4 @@ testPlotterSavePho.obj
 EXTERNAL/Design/Neuropy Exports
 EXTERNAL/Screenshots/PyVista-Based/InteractivePlaceCellDataExplorer/Exported 3D Objects
 data/computation_results_cache_store.h5
+data/test_cache_store.h5
