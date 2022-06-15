@@ -80,25 +80,43 @@ class ComplexParameter(pTypes.GroupParameter):
         self.a.setValue(1.0 / self.b.value(), blockSignal=self.aChanged)
 
 
-## test add/remove
+## Define Custom Parameter types:
+import pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes as pTypes
+from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter, ParameterTree
 ## this group includes a menu allowing the user to add new parameters into its child list
 class ScalableGroup(pTypes.GroupParameter):
     def __init__(self, **opts):
         opts['type'] = 'group'
         opts['addText'] = "Add"
-        opts['addList'] = ['str', 'float', 'int']
+        opts['addList'] = ['str', 'float', 'int'] # dropdown list of items to add (shows up in the combo box)
         pTypes.GroupParameter.__init__(self, **opts)
-
+    
     def addNew(self, typ):
         val = {
             'str': '',
             'float': 0.0,
             'int': 0
         }[typ]
-        self.addChild(
-            dict(name="ScalableParam %d" % (len(self.childs) + 1), type=typ, value=val, removable=True, renamable=True))
-
-def _save_restore_state_button_children():
+        self.addChild(dict(name="ScalableParam %d" % (len(self.childs)+1), type=typ, value=val, removable=True, renamable=True))
+        
+class ExportHdf5KeysGroup(pTypes.GroupParameter):
+    def __init__(self, **opts):
+        opts['type'] = 'group'
+        opts['addText'] = "Add Key"
+        opts['addList'] = ['str', 'float', 'int'] # dropdown list of items to add (shows up in the combo box)
+        pTypes.GroupParameter.__init__(self, **opts)
+    
+    def addNew(self, typ):
+        val = {
+            'str': '',
+            'float': 0.0,
+            'int': 0
+        }[typ]
+        self.addChild(dict(name="/filtered_sessions/YOUR_SESSION_NAME/YOUR_KEY", type=typ, value=val, removable=True, renamable=True))
+        
+        
+def _default_parameters_save_restore_state_button_children():
+    """ Builds the default save/restore state buttons for a parameter item """
     return {
         'name': 'Save/Restore functionality', 'type': 'group', 'children': [
         {'name': 'Save State', 'type': 'action'},
@@ -108,142 +126,212 @@ def _save_restore_state_button_children():
             {'name': 'Remove extra items', 'type': 'bool', 'value': True},
         ]},
     ]}
-
-
-# # Extra Parameters:
-# params = [
-#     makeAllParamTypes(),
-#     {
-#         'name': 'Save/Restore functionality', 'type': 'group', 'children': [
-#         {'name': 'Save State', 'type': 'action'},
-#         {
-#             'name': 'Restore State', 'type': 'action', 'children': [
-#             {'name': 'Add missing items', 'type': 'bool', 'value': True},
-#             {'name': 'Remove extra items', 'type': 'bool', 'value': True},
-#         ]},
-#     ]},
-#     {
-#         'name': 'Custom context menu', 'type': 'group', 'children': [
-#         {
-#             'name': 'List contextMenu', 'type': 'float', 'value': 0, 'context': [
-#             'menu1',
-#             'menu2'
-#         ]},
-#         {
-#             'name': 'Dict contextMenu', 'type': 'float', 'value': 0, 'context': {
-#             'changeName': 'Title',
-#             'internal': 'What the user sees',
-#         }},
-#     ]},
-#     ComplexParameter(name='Custom parameter group (reciprocal values)'),
-#     ScalableGroup(name="Expandable Parameter Group", tip='Click to add children', children=[
-#         {'name': 'ScalableParam 1', 'type': 'str', 'value': "default param 1"},
-#         {'name': 'ScalableParam 2', 'type': 'str', 'value': "default param 2"},
-#     ]),
-# ]
-
-# ## Create tree of Parameter objects
-# p = Parameter.create(name='params', type='group', children=params)
-
-
-# Simple Example:
-def _simple_filter_dict_params():
-    children = [
-        # dict(name='a', type='slider', value=5, limits=[0, 10]),
-        # dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
-        # dict(name='c', type='slider', value=2, span=np.linspace(0, 2*np.pi, 1000)),
-        dict(name='Data Directory', type='file', winTitle='Select Input Data Directory', directory='', options=['ShowDirsOnly', 'DontResolveSymlinks']),
-        dict(name='Included Epochs', type='checklist', value=['maze1'], limits=['pre', 'maze1', 'post1', 'maze2', 'post2']),
-        dict(name='Cell Types', type='checklist', value=[NeuronType.PYRAMIDAL.longClassName], limits=NeuronType.__members__),
-    ]
-
-    # Use save/restore state buttons
-    children.append(_save_restore_state_button_children())
     
-    p = Parameter.create(name='Filter Options', type='group', children=children)
+    
+##################################################
+## FILTER TREE
+##################################################/
+def _build_filter_parameters_tree(parameter_names='Filter Options', include_state_save_restore_buttons=True, debug_print=False):    
+    def _simple_filter_dict_params():
+        children = [
+            # dict(name='a', type='slider', value=5, limits=[0, 10]),
+            # dict(name='b', type='slider', value=0.1, limits=[-5, 5], step=0.1),
+            # dict(name='c', type='slider', value=2, span=np.linspace(0, 2*np.pi, 1000)),
+            dict(name='Data Directory', type='file', winTitle='Select Input Data Directory', directory='', options=['ShowDirsOnly', 'DontResolveSymlinks']),
+            dict(name='Included Epochs', type='checklist', value=['maze1'], limits=['pre', 'maze1', 'post1', 'maze2', 'post2']),
+            dict(name='Cell Types', type='checklist', value=[NeuronType.PYRAMIDAL.longClassName], limits=NeuronType.__members__),
+        ]
+
+        # Use save/restore state buttons
+        if include_state_save_restore_buttons:
+            children.append(_default_parameters_save_restore_state_button_children())
+
+        p = Parameter.create(name=parameter_names, type='group', children=children)
+        return p
+        
+    p = _simple_filter_dict_params()
+
+    ## If anything changes in the tree, print a message
+    def on_tree_value_change(param, changes):
+        print("tree changes:")
+        for param, change, data in changes:
+            path = p.childPath(param)
+            if path is not None:
+                childName = '.'.join(path)
+            else:
+                childName = param.name()
+            print('  parameter: %s'% childName)
+            print('  change:    %s'% change)
+            print('  data:      %s'% str(data))
+            print('  ----------')
+
+    p.sigTreeStateChanged.connect(on_tree_value_change)
+
+    def valueChanging(param, value):
+        # called whenever a child value is changed:
+        print("Value changing (not finalized): %s %s" % (param, value))
+
+    # Only listen for changes of the 'widget' child:
+    # for child in p.child(parameter_names):
+    for child in p.children():
+        if 'widget' in child.names:
+            child.child('widget').sigValueChanging.connect(valueChanging)
+        
+    if include_state_save_restore_buttons:
+        def _add_save_restore_btn_functionality(p):
+            # Save/Restore State Button Functionality:
+            def save():
+                global state
+                state = p.saveState()
+
+            def restore():
+                global state
+                add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
+                rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
+                p.restoreState(state, addChildren=add, removeChildren=rem)
+
+            # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
+            p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
+            p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
+
+
+        _add_save_restore_btn_functionality(p)
+
     return p
-    # t = ParameterTree()
-    # t.setParameters(p, showTop=True)
 
 
-p = _simple_filter_dict_params()
+##################################################/
+## EXPORT TREE:
+##################################################/
+def _build_export_parameters_tree(parameter_names='ExportParams', finalized_output_cache_file='data/pipeline_cache_store.h5', include_state_save_restore_buttons=True, debug_print=False):
+    # Define Saving/Loading Directory and paths:
+    from pyphoplacecellanalysis.General.Mixins.ExportHelpers import _test_save_pipeline_data_to_h5, get_h5_data_keys, save_some_pipeline_data_to_h5, load_pipeline_data_from_h5  #ExportHelpers
+
+    
+    def _simple_export_dict_params():
+        # List existing keys in the file:
+        # out_keys = get_h5_data_keys(finalized_output_cache_file=finalized_output_cache_file)
+        
+        ## DEBUG ONLY: for debug testing, don't actually require a .h5 file to load the keys from, use these hardcoded defaults
+        out_keys = ['/spikes_df', '/sess/pos_df', '/sess/spikes_df', '/filtered_sessions/maze2/pos_df', '/filtered_sessions/maze2/spikes_df', '/filtered_sessions/maze2/pos_df/meta/values_block_2/meta', '/filtered_sessions/maze2/pos_df/meta/values_block_1/meta', '/filtered_sessions/maze1/pos_df', '/filtered_sessions/maze1/spikes_df', '/filtered_sessions/maze1/pos_df/meta/values_block_2/meta', '/filtered_sessions/maze1/pos_df/meta/values_block_1/meta', '/filtered_sessions/maze/pos_df', '/filtered_sessions/maze/spikes_df', '/filtered_sessions/maze/pos_df/meta/values_block_2/meta', '/filtered_sessions/maze/pos_df/meta/values_block_1/meta']
+        
+        if debug_print:
+            print(f'out_keys: {out_keys}')
+        key_children_list = [{'name': extant_key, 'type': 'str', 'value': "<TODO>"} for extant_key in out_keys]
+        if debug_print:
+            print(f'key_children_list: {key_children_list}')
+        children = [
+                dict(name='Export Path', type='file', dialogLabel='test label', value=finalized_output_cache_file),
+                dict(name='Cell Types', type='checklist', value=[], limits=['one', 'two', 'three', 'four']),
+                ExportHdf5KeysGroup(name="Export Keys", tip='Click to add children', children=key_children_list),
+            ]
+
+        # Use save/restore state buttons
+        if include_state_save_restore_buttons:
+            children.append(_default_parameters_save_restore_state_button_children())
+
+        ## Create tree of Parameter objects
+        p = Parameter.create(name=parameter_names, type='group', children=children)
+        return p
+    
+    p = _simple_export_dict_params()
+    
+    ## If anything changes in the tree, print a message
+    def on_tree_value_change(param, changes):
+        print("tree changes:")
+        for param, change, data in changes:
+            path = p.childPath(param)
+            if path is not None:
+                childName = '.'.join(path)
+            else:
+                childName = param.name()
+            print('  parameter: %s'% childName)
+            print('  change:    %s'% change)
+            print('  data:      %s'% str(data))
+            print('  ----------')
+
+    p.sigTreeStateChanged.connect(on_tree_value_change)
+
+    def valueChanging(param, value):
+        # called whenever a child value is changed:
+        print("Value changing (not finalized): %s %s" % (param, value))
+
+    # Only listen for changes of the 'widget' child:
+    # for child in p.child(parameter_names):
+    for child in p.children():
+        if 'widget' in child.names:
+            child.child('widget').sigValueChanging.connect(valueChanging)
+        
+    if include_state_save_restore_buttons:
+        def _add_save_restore_btn_functionality(p):
+            # Save/Restore State Button Functionality:
+            def save():
+                global state
+                state = p.saveState()
+
+            def restore():
+                global state
+                add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
+                rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
+                p.restoreState(state, addChildren=add, removeChildren=rem)
+
+            # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
+            p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
+            p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
 
 
-## If anything changes in the tree, print a message
-def change(param, changes):
-    print("tree changes:")
-    for param, change, data in changes:
-        path = p.childPath(param)
-        if path is not None:
-            childName = '.'.join(path)
-        else:
-            childName = param.name()
-        print('  parameter: %s' % childName)
-        print('  change:    %s' % change)
-        print('  data:      %s' % str(data))
-        print('  ----------')
+        _add_save_restore_btn_functionality(p)
 
-
-p.sigTreeStateChanged.connect(change)
-
-
-def valueChanging(param, value):
-    print("Value changing (not finalized): %s %s" % (param, value))
-
-
-# Too lazy for recursion:
-for child in p.children():
-    child.sigValueChanging.connect(valueChanging)
-    for ch2 in child.children():
-        ch2.sigValueChanging.connect(valueChanging)
-
-
-def _add_save_restore_btn_functionality(p):
-    # Save/Restore State Button Functionality:
-    def save():
-        global state
-        state = p.saveState()
-
-    def restore():
-        global state
-        add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
-        rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
-        p.restoreState(state, addChildren=add, removeChildren=rem)
-
-    # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
-    p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
-    p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
-
-
-_add_save_restore_btn_functionality(p)
+    return p
 
 
 
-def create_pipeline_filter_parameter_tree():
-	## Create two ParameterTree widgets, both accessing the same data
-	param_tree = ParameterTree()
-	param_tree.setParameters(p, showTop=False)
-	param_tree.setWindowTitle('pyqtgraph example: Parameter Tree')
-	
-	# win = QtGui.QWidget()
-	layout_win = pg.LayoutWidget()
-	# layout = QtGui.QGridLayout()
-	# win.setLayout(layout_win)
+## Main Create function
+def create_pipeline_parameter_tree(tree_type='filter', debug_print=False):
+    ## Create two ParameterTree widgets, both accessing the same data
+    if tree_type == 'filter':
+        ## FILTER TREE
+        p = _build_filter_parameters_tree(parameter_names='Filter Options', debug_print=debug_print)
+    elif tree_type == 'export':
+        ## EXPORT TREE:
+        p = _build_export_parameters_tree(parameter_names='ExportParams', finalized_output_cache_file='data/pipeline_cache_store.h5', debug_print=debug_print)
+    else:
+        p = None
+        raise NotImplementedError
+
+    param_tree = ParameterTree()
+    param_tree.setParameters(p, showTop=False)
+    param_tree.setWindowTitle('pyqtgraph example: Parameter Tree')
+    
+    # win = QtGui.QWidget()
+    layout_win = pg.LayoutWidget()
+    # layout = QtGui.QGridLayout()
+    # win.setLayout(layout_win)
  
-	# Add widgets:
-	layout_win.addWidget(param_tree)
-	# layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0, 0, 1, 2)
-	# layout.addWidget(t, 1, 0, 1, 1)
-	layout_win.show()
-	layout_win.resize(800,900)
+    # Add widgets:
+    layout_win.addWidget(param_tree)
+    # layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0, 0, 1, 2)
+    # layout.addWidget(t, 1, 0, 1, 1)
+    layout_win.show()
+    layout_win.resize(800,900)
 
-	## test save/restore
-	state = p.saveState()
-	p.restoreState(state)
-	compareState = p.saveState()
-	assert pg.eq(compareState, state)
-	return layout_win, param_tree
+    ## test save/restore
+    state = p.saveState()
+    p.restoreState(state)
+    compareState = p.saveState()
+    assert pg.eq(compareState, state)
+    return layout_win, param_tree
+
+
+## Conveninece functions:
+def create_pipeline_filter_parameter_tree():
+    return create_pipeline_parameter_tree(tree_type='filter')
+
+def create_pipeline_export_parameter_tree():
+    return create_pipeline_parameter_tree(tree_type='export')
+
 
 if __name__ == '__main__':
     win, param_tree = create_pipeline_filter_parameter_tree()
+    # win, param_tree = create_pipeline_export_parameter_tree()
     pg.exec()
