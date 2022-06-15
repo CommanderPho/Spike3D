@@ -24,7 +24,7 @@ from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui
 app = pg.mkQApp("Parameter Tree Example")
 import pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes as pTypes
 from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter, ParameterTree
-
+from pyphoplacecellanalysis.GUI.PyQtPlot.Params.SaveRestoreStateParamHelpers import add_save_restore_btn_functionality
 
 ## test subclassing parameters
 ## This parameter automatically generates two child parameters which are always reciprocals of each other
@@ -164,24 +164,7 @@ for child in p.children():
         ch2.sigValueChanging.connect(valueChanging)
 
 
-def _add_save_restore_btn_functionality(p):
-    # Save/Restore State Button Functionality:
-    def save():
-        global state
-        state = p.saveState()
-
-    def restore():
-        global state
-        add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
-        rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
-        p.restoreState(state, addChildren=add, removeChildren=rem)
-
-    # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
-    p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
-    p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
-
-
-_add_save_restore_btn_functionality(p)
+add_save_restore_btn_functionality(p)
 
 
 ## Create two ParameterTree widgets, both accessing the same data
