@@ -32,6 +32,7 @@ from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtGui
 app = pg.mkQApp("Parameter Tree Filter Options")
 import pyphoplacecellanalysis.External.pyqtgraph.parametertree.parameterTypes as pTypes
 from pyphoplacecellanalysis.External.pyqtgraph.parametertree import Parameter, ParameterTree
+from pyphoplacecellanalysis.GUI.PyQtPlot.Params.SaveRestoreStateParamHelpers import add_save_restore_btn_functionality
 
 
 ## test subclassing parameters
@@ -173,24 +174,7 @@ for child in p.children():
         ch2.sigValueChanging.connect(valueChanging)
 
 
-def _add_save_restore_btn_functionality(p):
-    # Save/Restore State Button Functionality:
-    def save():
-        global state
-        state = p.saveState()
-
-    def restore():
-        global state
-        add = p['Save/Restore functionality', 'Restore State', 'Add missing items']
-        rem = p['Save/Restore functionality', 'Restore State', 'Remove extra items']
-        p.restoreState(state, addChildren=add, removeChildren=rem)
-
-    # Looks like here it tries to find the child named 'Save/Restore functionality' > 'Save State' to bind the buttons
-    p.param('Save/Restore functionality', 'Save State').sigActivated.connect(save)
-    p.param('Save/Restore functionality', 'Restore State').sigActivated.connect(restore)
-
-
-_add_save_restore_btn_functionality(p)
+add_save_restore_btn_functionality(p)
 
 
 ## Create two ParameterTree widgets, both accessing the same data
@@ -203,8 +187,7 @@ t2.setParameters(p, showTop=False)
 win = QtGui.QWidget()
 layout = QtGui.QGridLayout()
 win.setLayout(layout)
-layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0,
-                 0, 1, 2)
+layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0, 0, 1, 2)
 layout.addWidget(t, 1, 0, 1, 1)
 layout.addWidget(t2, 1, 1, 1, 1)
 win.show()

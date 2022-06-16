@@ -32,3 +32,18 @@ data/mesh_caches/Fri-08-Apr-2022-11-14-52
 .qt_for_python
 EXTERNAL/TESTING/OLD/**
 **/.ipynb_checkpoints
+dist/stager.exe
+build/py_installer
+EXTERNAL/Screenshots/Other Features/Tue-17-May-2022-18-32-34
+testPlotter_export_html_Pho.html
+testPlotter_export_obj_Pho.obj.mtl
+testPlotter_export_obj_Pho.obj.obj
+testPlotterSavePho.obj
+.favorites.json
+EXTERNAL/Design/Neuropy Exports
+EXTERNAL/Screenshots/PyVista-Based/InteractivePlaceCellDataExplorer/Exported 3D Objects
+data/computation_results_cache_store.h5
+data/test_cache_store.h5
+EXTERNAL/Design/Icons/fugue-icons-3.5.6-src
+EXTERNAL/Design/Icons/InteractiveTuningCurvesPlotter/TuningMapDataExplorer.PNG
+EXTERNAL/Design/Icons/InteractivePlaceCellDataExplorer/InteractivePlaceCellDataExplorer - Closeup.png
