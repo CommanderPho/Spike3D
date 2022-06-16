@@ -69,50 +69,6 @@ def build_placefield_multiplotter(nfields, linear_plot_data=None):
 
 
 
-
-
-# finalized_spike_df_cache_file='./pipeline_cache_store.h5'
-
-
-
-def save_some_pipeline_data_to_h5(active_pipeline, finalized_output_cache_file='./pipeline_cache_store.h5'):
-    """ 
-    # Saves out ['/spikes_df', '/sess/spikes_df', '/filtered_sessions/maze2/spikes_df', '/filtered_sessions/maze1/spikes_df', '/filtered_sessions/maze/spikes_df'] to a .h5 file which can be loaded with
-    # with pd.HDFStore(finalized_spike_df_cache_file) as store:
-        # print(store.keys())
-        # reread = pd.read_hdf(finalized_spike_df_cache_file, key='spikes_df')
-        # reread
-    Usage:
-        save_spikes_data_to_h5(active_pipeline, finalized_spike_df_cache_file='./pipeline_cache_store.h5')
-    
-    Example: Loading Saved Dataframe:
-        # Load the saved .h5 spikes dataframe for testing:
-        finalized_spike_df_cache_file='./pipeline_cache_store.h5'
-        desired_spikes_df_key = '/filtered_sessions/maze1/spikes_df'
-        spikes_df = pd.read_hdf(finalized_spike_df_cache_file, key=desired_spikes_df_key)
-        spikes_df
-    """
-    def _perform_save_cache_pipeline_data_to_h5(spikes_df, pos_df, sess_identifier_key='sess', finalized_output_cache_file='./pipeline_cache_store.h5'):
-        """ 
-            sess_identifier_key: str: like 'sess' or 'filtered_sessions/maze1'
-        
-        """
-        spikes_df.to_hdf(finalized_output_cache_file, key=f'{sess_identifier_key}/spikes_df')
-        pos_df.to_hdf(finalized_output_cache_file, key=f'{sess_identifier_key}/pos_df', format='table')
-
-
-    _perform_save_cache_pipeline_data_to_h5(active_pipeline.sess.spikes_df, active_pipeline.sess.position.to_dataframe(), sess_identifier_key='sess', finalized_output_cache_file=finalized_output_cache_file)
-    # active_pipeline.sess.spikes_df.to_hdf(finalized_output_cache_file, key='sess/spikes_df')
-    # active_pipeline.sess.position.to_dataframe().to_hdf(finalized_output_cache_file, key='sess/pos_df')
-
-    for (a_key, a_filtered_session) in active_pipeline.filtered_sessions.items():
-        print(f'a_filtered_session: {a_filtered_session}')
-        _perform_save_cache_pipeline_data_to_h5(a_filtered_session.spikes_df, a_filtered_session.position.to_dataframe(), sess_identifier_key=f'filtered_sessions/{a_key}', finalized_output_cache_file=finalized_output_cache_file)        
-        # a_filtered_session.spikes_df.to_hdf(finalized_output_cache_file, key=f'filtered_sessions/{a_key}/spikes_df')
-        # a_filtered_session.position.to_dataframe().to_hdf(finalized_output_cache_file, key=f'filtered_sessions/{a_key}/pos_df')
-
-
-
 #TODO: Works, but need to convert into the computation function format or find a new place to put it. It operates on the entire pipeline while currently computation functions are limited to operating on one stage at a time.
 def _perform_PBE_stats(active_pipeline, debug_print = False):
     """ # Analyze PBEs by looping through the filtered epochs:
