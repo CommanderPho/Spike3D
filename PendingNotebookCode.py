@@ -151,3 +151,121 @@ def _perform_PBE_stats(active_pipeline, debug_print = False):
     # all_epochs_info = {'all_epochs_full_pbe_spiketrain_lists':all_epochs_full_pbe_spiketrain_lists, 'all_epochs_pbe_num_spikes_lists':all_epochs_pbe_num_spikes_lists, 'all_epochs_intra_pbe_interval_lists':all_epochs_intra_pbe_interval_lists} # dict version
     return pbe_analyses_result_df, all_epochs_info
 
+
+# -------------------------- 2022-06-22 Notebook 93 -------------------------- #
+import matplotlib.pyplot as plt
+
+
+
+def spike_count_and_firing_rate_normalizations(pho_custom_decoder, enable_plots=True):
+    """ Computes several different normalizations of binned firing rate and spike counts, optionally plotting them. 
+    
+    Usage:
+        pho_custom_decoder = curr_kdiba_pipeline.computation_results['maze1'].computed_data['pf2D_Decoder']
+        enable_plots = True
+        unit_specific_time_binned_outputs = spike_count_and_firing_rate_normalizations(pho_custom_decoder, enable_plots=enable_plots)
+        spike_proportion_global_fr_normalized, firing_rate, firing_rate_global_fr_normalized = unit_specific_time_binned_outputs # unwrap the output tuple:
+        
+        
+    TESTING CODE:
+    
+    pho_custom_decoder = curr_kdiba_pipeline.computation_results['maze1'].computed_data['pf2D_Decoder']
+    enable_plots = True
+
+    print(f'most_likely_positions: {np.shape(pho_custom_decoder.most_likely_positions)}') # most_likely_positions: (3434, 2)
+    unit_specific_time_binned_outputs = spike_count_and_firing_rate_normalizations(pho_custom_decoder, enable_plots=enable_plots)
+    spike_proportion_global_fr_normalized, firing_rate, firing_rate_global_fr_normalized = unit_specific_time_binned_outputs # unwrap the output tuple:
+
+    # pho_custom_decoder.unit_specific_time_binned_spike_counts.shape # (64, 1717)
+    unit_specific_binned_spike_count_mean = np.nanmean(pho_custom_decoder.unit_specific_time_binned_spike_counts, axis=1)
+    unit_specific_binned_spike_count_var = np.nanvar(pho_custom_decoder.unit_specific_time_binned_spike_counts, axis=1)
+    unit_specific_binned_spike_count_median = np.nanmedian(pho_custom_decoder.unit_specific_time_binned_spike_counts, axis=1)
+
+    unit_specific_binned_spike_count_mean
+    unit_specific_binned_spike_count_median
+    # unit_specific_binned_spike_count_mean.shape # (64, )
+
+    """
+    # produces a fraction which indicates which proportion of the window's firing belonged to each unit (accounts for global changes in firing rate (each window is scaled by the toial spikes of all cells in that window)
+    unit_specific_time_binned_spike_proportion_global_fr_normalized = pho_custom_decoder.unit_specific_time_binned_spike_counts / pho_custom_decoder.total_spike_counts_per_window
+    if enable_plots:
+        plt.figure(num=5)
+        plt.imshow(unit_specific_time_binned_spike_proportion_global_fr_normalized, cmap='turbo', aspect='auto')
+        plt.title('Unit Specific Proportion of Window Spikes')
+        plt.xlabel('Binned Time Window')
+        plt.ylabel('Neuron Proportion Activity')
+
+    # print(pho_custom_decoder.time_window_edges_binning_info.step)
+    # print(f'pho_custom_decoder: {pho_custom_decoder}')
+    # np.shape(pho_custom_decoder.F) # (1856, 64)
+
+    unit_specific_time_binned_firing_rate = pho_custom_decoder.unit_specific_time_binned_spike_counts / pho_custom_decoder.time_window_edges_binning_info.step
+    # print(unit_specific_time_binned_firing_rate)
+    if enable_plots:
+        plt.figure(num=6)
+        plt.imshow(unit_specific_time_binned_firing_rate, cmap='turbo', aspect='auto')
+        plt.title('Unit Specific Binned Firing Rates')
+        plt.xlabel('Binned Time Window')
+        plt.ylabel('Neuron Firing Rate')
+
+
+    # produces a unit firing rate for each window that accounts for global changes in firing rate (each window is scaled by the firing rate of all cells in that window
+    unit_specific_time_binned_firing_rate_global_fr_normalized = unit_specific_time_binned_spike_proportion_global_fr_normalized / pho_custom_decoder.time_window_edges_binning_info.step
+    if enable_plots:
+        plt.figure(num=7)
+        plt.imshow(unit_specific_time_binned_firing_rate_global_fr_normalized, cmap='turbo', aspect='auto')
+        plt.title('Unit Specific Binned Firing Rates (Global Normalized)')
+        plt.xlabel('Binned Time Window')
+        plt.ylabel('Neuron Proportion Firing Rate')
+        
+        
+    # Special:
+    # pho_custom_decoder.unit_specific_time_binned_spike_counts
+    # unit_specific_binned_spike_count_mean = np.nanmean(pho_custom_decoder.unit_specific_time_binned_spike_counts, axis=1)
+    
+
+    # Return the computed values, leaving the original data unchanged.
+    return unit_specific_time_binned_spike_proportion_global_fr_normalized, unit_specific_time_binned_firing_rate, unit_specific_time_binned_firing_rate_global_fr_normalized
+
+
+
+def document_active_variables(params, include_explicit_values=False, enable_print=True):
+    """ Builds a skeleton for documenting variables and parameters by using the values set for a passed in instance.
+    
+    Usage:
+        document_active_variables(active_curve_plotter_3d.params, enable_print=True)
+    """
+    keys = [str(a_key) for a_key in params.keys()]
+    output_entries = dict()
+    # for a_key, a_value in params.items():
+    for a_key in params.keys():
+        a_value = params.__dict__[a_key]
+        curr_key_type = type(a_key)
+        curr_key_str_rep = str(a_key)
+        if curr_key_type == str:
+            curr_key_type_string = ''
+        else:
+            # non-string keys included
+            curr_key_type_string = f'<{str(curr_key_type)}>'
+            
+        curr_value_type = type(a_value)
+        if curr_value_type == str:
+            curr_value_type_string = ''
+        else:
+            # non-string values included
+            curr_value_type_string = f'<{str(curr_value_type)}>'
+            
+        if include_explicit_values:
+            curr_value_str_rep = str(a_value)
+        else:
+            # if include_explicit_values is false, don't include explicit default values
+            curr_value_str_rep = ''
+        # build output string:
+        curr_output_string = f'{curr_key_str_rep}{curr_key_type_string}: ({curr_value_str_rep}{curr_value_type_string})'
+        output_entries[curr_key_str_rep] = curr_output_string
+        
+    # print(f'keys: {keys}')
+    if enable_print:
+        print('\n'.join(list(output_entries.values())))
+    return output_entries
+    
