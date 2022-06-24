@@ -40,6 +40,15 @@
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true
 		},
+		"qtForPython.uic.args": [
+			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\"",
+			"--execute",
+			"--import-from \"pyphoplacecellanalysis.Resources\"",
+			"--resource-suffix \"\""
+		],
+		"qtForPython.rcc.args": [
+			"-o \"${fileDirname}${pathSeparator}${fileBasenameNoExtension}.py\""
+		],
 
 	}
 }

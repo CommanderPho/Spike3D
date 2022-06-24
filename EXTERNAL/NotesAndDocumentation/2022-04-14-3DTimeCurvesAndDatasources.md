@@ -92,7 +92,7 @@ class SpikesDataframeDatasource(DataframeDatasource):
 ```
 
 ## Windowed Datasources:
-These objects wrap both a TimeWindow and a Datasource of some kinda, meaning they're able to provide some sort of active_windowed_data for the times of the it's time window.
+These objects wrap both a TimeWindow and a Datasource of some kind, meaning they're able to provide some sort of active_windowed_data for the times of the it's time window.
 
 ```python
 class LiveWindowedData(SimplePrintable, PrettyPrintable, QtCore.QObject):
