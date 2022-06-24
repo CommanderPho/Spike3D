@@ -43,6 +43,8 @@
 		"qtForPython.uic.args": [
 			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\""
 		],
+		"python.autoComplete.extraPaths": [],
+		"git.ignoreLimitWarning": true,
 
 	}
 }
