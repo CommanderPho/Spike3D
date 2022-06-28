@@ -38,7 +38,8 @@
 		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
 		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
 		"search.exclude": {
-			"**/.ipynb_checkpoints": true
+			"**/.ipynb_checkpoints": true,
+			"**/EXTERNAL/TESTING/OLD": true
 		},
 		"qtForPython.uic.args": [
 			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\""
