@@ -36,8 +36,9 @@ import numpy as np
 # if not _instance:
 #     _instance = QApplication([])
 # app = _instance
-import pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtGui
+
+import pyphoplacecellanalysis.External.pyqtgraph as pg
+# import pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui
 
 from pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.pyqtplot_Flowchart import plot_flowchartWidget
 pipeline_flowchart_window, pipeline_flowchart_app = plot_flowchartWidget(title='PhoMainPipelineFlowchartApp'); pg.exec()
