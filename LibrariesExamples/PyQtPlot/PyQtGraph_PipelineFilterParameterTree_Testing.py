@@ -256,11 +256,7 @@ def create_pipeline_parameter_tree(tree_type='filter', debug_print=False):
     param_tree.setParameters(p, showTop=False)
     param_tree.setWindowTitle('pyqtgraph example: Parameter Tree')
     
-    # win = QtGui.QWidget()
     layout_win = pg.LayoutWidget()
-    # layout = QtGui.QGridLayout()
-    # win.setLayout(layout_win)
- 
     # Add widgets:
     layout_win.addWidget(param_tree)
     # layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0, 0, 1, 2)
