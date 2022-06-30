@@ -16,7 +16,6 @@ from neuropy.core.epoch import NamedTimerange
 from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 
-
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
