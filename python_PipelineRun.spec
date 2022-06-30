@@ -1,13 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+# c:\windows\system32
 
 block_cipher = None
 
 
 a = Analysis(
     ['python_PipelineRun.py'],
-    pathex=[],
-    binaries=[],
+    pathex=[r'C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x86', r'C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x64'],
+    binaries=[(r'C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x86', '.'), (r'C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x64', '.')],
     datas=[],
     hiddenimports=['neuropy', 'pyphocorehelpers', 'pyphoplacecellanalysis', 'pyphoplacecellanalysis.External.pyqtgraph', 'pyphoplacecellanalysis.External.pyqtgraph.*',
         'pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.ViewBox.axisCtrlTemplate_pyqt5', 'pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.plotConfigTemplate_pyqt5', 'pyphoplacecellanalysis.External.pyqtgraph.GraphicsScene.exportDialogTemplate_pyqt5',
@@ -17,8 +17,8 @@ a = Analysis(
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    win_no_prefer_redirects=True,
-    win_private_assemblies=True,
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
 )
