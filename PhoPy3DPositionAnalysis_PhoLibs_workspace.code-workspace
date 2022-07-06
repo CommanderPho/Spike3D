@@ -47,5 +47,10 @@
 		"python.autoComplete.extraPaths": [],
 		"git.ignoreLimitWarning": true,
 
+	},
+	"extensions": {
+		"recommendations": [
+			"huynh-quang-phuc.create-file-from-template"
+		]
 	}
 }
