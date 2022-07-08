@@ -10,21 +10,12 @@ from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidget
 import numpy as np
 
 from pyphoplacecellanalysis.External.pyqtgraph.widgets.FeedbackButton import FeedbackButton
-
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.ParameterTreeWidget import create_parameter_tree_widget
 
 
 # NeuroPy (Diba Lab Python Repo) Loading
-try:
-    from neuropy import core
-
-    importlib.reload(core)
-except ImportError:
-    sys.path.append(r"C:\Users\Pho\repos\NeuroPy")  # Windows
-    # sys.path.append('/home/pho/repo/BapunAnalysis2021/NeuroPy') # Linux
-    # sys.path.append(r'/Users/pho/repo/Python Projects/NeuroPy') # MacOS
-    print("neuropy module not found, adding directory to sys.path. \n >> Updated sys.path.")
-    from neuropy import core
-
+from neuropy import core
+importlib.reload(core)
 from neuropy.core.neurons import NeuronType
 
 # Custom Param Types:
@@ -251,24 +242,8 @@ def create_pipeline_parameter_tree(tree_type='filter', debug_print=False):
     else:
         p = None
         raise NotImplementedError
-
-    param_tree = ParameterTree()
-    param_tree.setParameters(p, showTop=False)
-    param_tree.setWindowTitle('pyqtgraph example: Parameter Tree')
     
-    layout_win = pg.LayoutWidget()
-    # Add widgets:
-    layout_win.addWidget(param_tree)
-    # layout.addWidget(QtGui.QLabel("These are two views of the same data. They should always display the same values."), 0, 0, 1, 2)
-    # layout.addWidget(t, 1, 0, 1, 1)
-    layout_win.show()
-    layout_win.resize(800,900)
-
-    ## test save/restore
-    state = p.saveState()
-    p.restoreState(state)
-    compareState = p.saveState()
-    assert pg.eq(compareState, state)
+    layout_win, param_tree = create_parameter_tree_widget(p)
     return layout_win, param_tree
 
 
@@ -281,6 +256,6 @@ def create_pipeline_export_parameter_tree():
 
 
 if __name__ == '__main__':
-    win, param_tree = create_pipeline_filter_parameter_tree()
-    # win, param_tree = create_pipeline_export_parameter_tree()
+    # win, param_tree = create_pipeline_filter_parameter_tree()
+    win, param_tree = create_pipeline_export_parameter_tree()
     pg.exec()
