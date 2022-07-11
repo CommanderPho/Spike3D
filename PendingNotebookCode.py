@@ -19,8 +19,29 @@ from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+# 2022-07-11 
+def _build_pdf_pages_output_info(display_function_name):
+    """ 
+    Implicitly captures:
+        programmatic_display_fcn_out_path
+        session_descriptor_string
+        pho_pdf_metadata
+        filter_name
+    """
+    built_pdf_metadata = pho_pdf_metadata.copy()
+    context_tuple = [session_descriptor_string, filter_name, display_function_name]
+    built_pdf_metadata['Title'] = '_'.join(context_tuple)
+    built_pdf_metadata['Subject'] = display_function_name
+    built_pdf_metadata['Keywords'] = ' | '.join(context_tuple)
+    curr_pdf_save_path = programmatic_display_fcn_out_path.joinpath(('_'.join(context_tuple) + '.pdf'))
+    return built_pdf_metadata, curr_pdf_save_path
 
 
+
+
+# ==================================================================================================================== #
+# Pre- 2022-07-11                                                                                                      #
+# ==================================================================================================================== #
 
 
 
