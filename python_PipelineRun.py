@@ -40,12 +40,6 @@ import pyphoplacecellanalysis.External.pyqtgraph as pg
 import matplotlib
 matplotlib.use('qtagg')
 
-# from pyphoplacecellanalysis.External.pyqtgraph.console import ConsoleWidget
-# from pyphoplacecellanalysis.External.pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget
-# from pyphoplacecellanalysis.External.pyqtgraph.dockarea.Dock import Dock
-# from pyphoplacecellanalysis.External.pyqtgraph.dockarea.DockArea import DockArea
-
-# from pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.CustomNodes.Mixins.DisplayNodeViewHelpers import ProducedViewType
 from pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.pyqtplot_Flowchart import plot_flowchartWidget
 
 # Pipeline:

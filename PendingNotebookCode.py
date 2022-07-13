@@ -16,12 +16,72 @@ from neuropy.core.epoch import NamedTimerange
 from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 
-
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+# 2022-07-11 
+def _build_programmatic_display_function_testing_pdf_metadata(curr_active_pipeline, filter_name, out_path=None, debug_print=False):
+    """ Builds the PDF metadata generating function from the passed info
+    
+        curr_active_pipeline: Needed for curr_active_pipeline.sess.get_session_description(curr_active_pipeline.session_data_type)
+        filter_name: a name like 'maze1'
+        out_path: an optional Path to use instead of generating a new one
+        
+    Returns:
+        a function that takes one argument, the display function name, and returns the PDF metadata
+        
+    Usage:
+        _build_pdf_pages_output_info, out_parent_path = _build_programmatic_display_function_testing_pdf_metadata(curr_active_pipeline, filter_name=active_config_name, out_path=None)
+        
+        curr_display_function_name = '_display_1d_placefield_validations'
+        built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
+        with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_pdf_metadata) as pdf:
+            # plt.ioff() # disable displaying the plots inline in the Jupyter-lab notebook. NOTE: does not work in Jupyter-Lab, figures still show
+            plots = curr_active_pipeline.display(curr_display_function_name, active_config_name) # works, but generates a TON of plots!
+            # plt.ion()
+            for fig_idx, a_fig in enumerate(plots):
+                # print(f'saving fig: {fig_idx+1}/{len(plots)}')
+                pdf.savefig(a_fig)
+                # pdf.savefig(a_fig, transparent=True)
+            # When no figure is specified the current figure is saved
+            # pdf.savefig()
+
+        
+    """
+    if out_path is None:   
+        out_path = Path(r'C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\Screenshots\ProgrammaticDisplayFunctionTesting\2022-07-11')
+    else:
+        out_path = Path(out_path) # make sure it's a Path
+    out_path.mkdir(exist_ok=True)
+
+    session_descriptor_string = curr_active_pipeline.sess.get_session_description(curr_active_pipeline.session_data_type) # 'sess_kdiba_2006-6-07_11-26-53'
+    pho_pdf_metadata = {'Creator': 'Spike3D - TestNeuroPyPipeline116', 'Author': 'Pho Hale', 'Title': session_descriptor_string, 'Subject': '', 'Keywords': [session_descriptor_string]}
+    if debug_print:
+        print(f'filter_name: {filter_name}')
+
+    def _build_pdf_pages_output_info(display_function_name):
+        """ 
+        Implicitly captures:
+            programmatic_display_fcn_out_path
+            session_descriptor_string
+            pho_pdf_metadata
+            filter_name
+        """
+        built_pdf_metadata = pho_pdf_metadata.copy()
+        context_tuple = [session_descriptor_string, filter_name, display_function_name]
+        built_pdf_metadata['Title'] = '_'.join(context_tuple)
+        built_pdf_metadata['Subject'] = display_function_name
+        built_pdf_metadata['Keywords'] = ' | '.join(context_tuple)
+        curr_pdf_save_path = out_path.joinpath(('_'.join(context_tuple) + '.pdf'))
+        return built_pdf_metadata, curr_pdf_save_path
+    
+    return _build_pdf_pages_output_info, out_path
 
 
+
+# ==================================================================================================================== #
+# Pre- 2022-07-11                                                                                                      #
+# ==================================================================================================================== #
 
 
 
