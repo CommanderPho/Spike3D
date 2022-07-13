@@ -36,9 +36,9 @@ import numpy as np
 import pyphoplacecellanalysis.External.pyqtgraph as pg
 # from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 
-# Must be called before any figures are created:
-import matplotlib
-matplotlib.use('qtagg')
+# # Must be called before any figures are created:
+# import matplotlib
+# matplotlib.use('Qt5Agg')
 
 from pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.pyqtplot_Flowchart import plot_flowchartWidget
 
