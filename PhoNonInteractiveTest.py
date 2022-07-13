@@ -8,18 +8,8 @@
 # %autoreload 2
 import sys
 import importlib
-from threading import Thread
-import time # for time.sleep
-from ipygany import PolyMesh, Scene, IsoColor, WarpByScalar
-import pyvista as pv
-# from pyvista import _vtk
-import pyvistaqt as pvqt
-import colorcet as cc # Colormaps:
 import numpy as np
 import pandas as pd
-from pathlib import Path
-import bqplot.scales
-import seaborn as sns
 
 #interactive plotting in separate window
 # %matplotlib qt
@@ -28,24 +18,11 @@ import seaborn as sns
 # %matplotlib widget
 # %matplotlib qt
 
-from mpl_toolkits import mplot3d
 # %matplotlib widget
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-from matplotlib.colors import Normalize, to_rgba_array
-from matplotlib.figure import Figure
-# import mplcursors
-import math # For color map generation
 from matplotlib.colors import ListedColormap
-from matplotlib.cm import hsv
-
 from copy import deepcopy
-
-import ipywidgets as widgets
 # from PyQt5 import QtWidgets, uic
-from pyvistaqt import QtInteractor, MainWindow
 # from pyqt6 import QApplication
-from IPython.external.qt_for_kernel import QtGui
 from IPython.core.display import display, HTML
 display(HTML("<style>div.output_area pre {white-space: pre;}</style>"))
 from IPython.lib.pretty import pretty, pprint
@@ -57,21 +34,8 @@ from IPython.lib.pretty import pretty, pprint
 # pd.set_option('display.max_colwidth', -1)  # or 199
 pd.set_option('display.width', 1000)
 
-import rich as rich
-# from rich import inspect
-# from rich import print
-# from rich import pretty
-import datetime as dt
 
-try:
-    from neuropy import core
-    importlib.reload(core)
-except ImportError:
-    sys.path.append(r'C:\Users\Pho\repos\NeuroPy') # Windows
-    # sys.path.append('/home/pho/repo/BapunAnalysis2021/NeuroPy') # Linux
-    # sys.path.append(r'/Users/pho/repo/Python Projects/NeuroPy') # MacOS
-    print('neuropy module not found, adding directory to sys.path. \n >> Updated sys.path.')
-    from neuropy import core
+from neuropy import core
 # from neuropy.core.session.dataSession import SessionConfig, DataSessionLoader, DataSession, processDataSssion
 from neuropy.core.session.data_session_loader import DataSessionLoader
 from neuropy.core.session.dataSession import DataSession
@@ -91,7 +55,6 @@ from pyphoplacecellanalysis.PhoPositionalData.load_exported import *
 from pyphoplacecellanalysis.PhoPositionalData.process_data import *
 from pyphoplacecellanalysis.PhoPositionalData.plot_data import *
 from pyphoplacecellanalysis.PhoPositionalData.plotting.animations import * # make_mp4_from_plotter
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 from pyphoplacecellanalysis.PhoPositionalData.import_data import * # build_spike_positions_list, build_cellID_reverse_lookup_map
 
 from PendingNotebookCode import build_configs, build_units_colormap, build_placefield_multiplotter, process_by_good_placefields, estimation_session_laps, partition

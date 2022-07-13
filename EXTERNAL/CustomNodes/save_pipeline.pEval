@@ -1,0 +1,18 @@
+pos: (1017.7315971127723, 40.10362667277343)
+bypass: False
+terminals:
+    input:
+        io: 'in'
+        multi: False
+        optional: False
+        renamable: True
+        removable: False
+        multiable: True
+    output:
+        io: 'out'
+        multi: False
+        optional: False
+        renamable: True
+        removable: False
+        multiable: True
+text: "pipeline = args['input']\nreturn {'output': pipeline}"
