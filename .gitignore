@@ -55,3 +55,6 @@ dist
 EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/2022-07-05
 EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/2022-07-10
 EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting
+python_PipelineRun.build
+python_PipelineRun.cmd
+python_PipelineRun.exe
