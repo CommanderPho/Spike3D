@@ -92,3 +92,8 @@ https://pyscaffold.org/projects/dsproject/en/stable/readme.html
 mamba env create -f environment.yml
 conda activate demo-pyphocorehelpers
 ```
+
+
+2022-07-05 New Packages:
+	pip install findpeaks~=2.4.3 opencv-python
+
