@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
     os.environ['PYQTGRAPH_QT_LIB'] = 'PyQt5'
     app = QApplication(sys.argv)
-    app.setStyleSheet(qdarkstyle.load_stylesheet_from_environment(is_pyqtgraph=True))
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
     win = GraphView()
     win.show()
