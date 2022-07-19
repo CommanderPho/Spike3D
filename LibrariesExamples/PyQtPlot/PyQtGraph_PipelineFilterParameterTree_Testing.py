@@ -27,7 +27,6 @@ from pyphoplacecellanalysis.GUI.PyQtPlot.Params.SaveRestoreStateParamHelpers imp
 
 ## For qdarkstyle theming support:
 import qdarkstyle
-# app.setStyleSheet(qdarkstyle.load_stylesheet_from_environment(is_pyqtgraph=True))
 # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
 # For BreezeStylesheets support:
@@ -44,7 +43,7 @@ import pyphoplacecellanalysis.External.breeze_style_sheets.breeze_resources
 
 app = pg.mkQApp("Parameter Tree Filter Options")
 # app.setStyleSheet(stylesheet_data_stream.readAll())
-app.setStyleSheet(qdarkstyle.load_stylesheet_from_environment(is_pyqtgraph=True)) # QDarkStyle version
+app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5()) # QDarkStyle version
 
 
 
