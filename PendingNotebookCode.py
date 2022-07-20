@@ -19,7 +19,440 @@ from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
-# 2022-07-11 
+
+
+# ==================================================================================================================== #
+# 2022-07-20                                                                                                           #
+# ==================================================================================================================== #
+
+def old_timesynchronized_plotter_testing():
+    # # Test PfND_TimeDependent Class
+
+    # ## Old TimeSynchronized*Plotter Testing
+
+    # CELL ==================================================================================================================== #    t = curr_occupancy_plotter.active_time_dependent_placefields.last_t + 7 # add one second
+    # with np.errstate(divide='ignore', invalid='ignore'):
+    # active_time_dependent_placefields.update(t)
+    print(f't: {t}')
+    curr_occupancy_plotter.on_window_changed(0.0, t)
+    curr_placefields_plotter.on_window_changed(0.0, t)
+
+
+    # CELL ==================================================================================================================== #    from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import pyqtplot_plot_image, pyqtplot_plot_image_array
+    import time
+
+    def _test_plot_curr_pf_result(curr_t, curr_ratemap, drop_below_threshold: float=0.0000001, output_plots_dict=None):
+        """ plots a single result at a given time.
+        
+        Creates the figures if needed, otherwise updates the existing ones.
+        
+        """
+        if output_plots_dict is None:
+            output_plots_dict = {'occupancy': {}, 'placefields': {}} # make a new dictionary to hold the plot objects.
+
+        # images = curr_ratemap.tuning_curves # (43, 63, 63)
+        occupancy = curr_ratemap.occupancy
+        # occupancy = curr_ratemap.curr_raw_occupancy_map
+
+        imv = output_plots_dict.get('occupancy', {}).get('imv', None)
+        if imv is None:
+            # Otherwise build the plotter:
+            occupancy_app, occupancy_win, imv = pyqtplot_plot_image(active_time_dependent_placefields2D.xbin, active_time_dependent_placefields2D.ybin, occupancy)
+            output_plots_dict['occupancy'] = dict(zip(('app', 'win', 'imv'), (occupancy_app, occupancy_win, imv)))   
+            occupancy_win.show()
+        else:
+            # Update the existing one:
+            imv.setImage(occupancy, xvals=active_time_dependent_placefields2D.xbin)
+
+        pg.QtGui.QApplication.processEvents() # call to ensure the occupancy gets updated before starting the placefield plots:
+        
+        img_item_array = output_plots_dict.get('placefields', {}).get('img_item_array', None)
+        if img_item_array is None:
+            # Create a new one:
+            placefields_app, placefields_win, root_render_widget, plot_array, img_item_array, other_components_array = pyqtplot_plot_image_array(active_time_dependent_placefields2D.xbin, active_time_dependent_placefields2D.ybin,
+                                                                                                                                            active_time_dependent_placefields2D.ratemap.normalized_tuning_curves, active_time_dependent_placefields2D.curr_raw_occupancy_map)#, 
+            output_plots_dict['placefields'] = dict(zip(('app', 'win', 'root_render_widget', 'plot_array', 'img_item_array', 'other_components_array'), (placefields_app, placefields_win, root_render_widget, plot_array, img_item_array, other_components_array)))
+            placefields_win.show()
+
+        else:
+            # Update the placefields plot if needed:
+            images = curr_ratemap.tuning_curves # (43, 63, 63)
+            for i, an_img_item in enumerate(img_item_array):
+                image = np.squeeze(images[i,:,:])
+                # Pre-filter the data:
+                # image = np.array(image.copy()) / np.nanmax(image) # note scaling by maximum here!
+                if drop_below_threshold is not None:
+                    image[np.where(occupancy < drop_below_threshold)] = np.nan # null out the occupancy        
+                # an_img_item.setImage(np.squeeze(images[i,:,:]))
+                an_img_item.setImage(image)
+
+        return output_plots_dict
+
+
+    # CELL ==================================================================================================================== #
+    def pre_build_iterative_results(num_iterations=50, t_list=[], ratemaps_list=[]):
+        """ 
+        build up historical data arrays:
+        
+        Usage:
+            t_list, ratemaps_list = pre_build_iterative_results(num_iterations=50, t_list=t_list, ratemaps_list=ratemaps_list)
+        """
+        # t_list = []
+        # ratemaps_list = []
+        
+        def _step_plot(time_step_seconds):
+            t = active_time_dependent_placefields2D.last_t + time_step_seconds # add one second
+            t_list.append(t)
+            with np.errstate(divide='ignore', invalid='ignore'):
+                active_time_dependent_placefields2D.update(t)
+            # Loop through and update the plots:
+            # Get flat list of images:
+            curr_ratemap = active_time_dependent_placefields2D.ratemap
+            # images = curr_ratemap.tuning_curves # (43, 63, 63)
+            # images = active_time_dependent_placefields2D.ratemap.normalized_tuning_curves[0:40,:,:] # (43, 63, 63)
+            # occupancy = curr_ratemap.occupancy
+            ratemaps_list.append(curr_ratemap)
+        #     for i, an_img_item in enumerate(img_item_array):
+        #     # for i, a_plot in enumerate(plot_array):
+        #         # image = np.squeeze(images[i,:,:])
+        #         # Pre-filter the data:
+        #         # image = np.array(image.copy()) / np.nanmax(image) # note scaling by maximum here!
+        # #         if drop_below_threshold is not None:
+        # #             image[np.where(occupancy < drop_below_threshold)] = np.nan # null out the occupancy        
+        #         an_img_item.setImage(np.squeeze(images[i,:,:]))
+        
+        for i in np.arange(num_iterations):
+            _step_plot(time_step_seconds=1.0)
+        
+        return t_list, ratemaps_list
+
+
+    # Loop through the historically collected ratemaps and plot them:
+    def _test_plot_historical_iterative_pf_results(t_list, ratemaps_list, drop_below_threshold: float=0.0000001, output_plots_dict=None):
+        """ Uses the previously built-up t_list and ratemaps_list (as computed by pre_build_iterative_results(...)) to plot the time-dependent results.
+        requires:
+        imv: a previously created single-image plotter:
+        """
+        num_historical_results = len(ratemaps_list)
+        assert len(t_list) == len(ratemaps_list), f"len(t_list): {len(t_list)} needs to equal len(ratemaps_list): {len(ratemaps_list)}"
+        
+        if output_plots_dict is None:
+            output_plots_dict = {'occupancy': {},
+                                'placefields': {}} # make a new dictionary to hold the plot objects.
+            
+        for i in np.arange(num_historical_results):
+            curr_t = t_list[i]
+            # Set up
+            # print(f'curr_t: {curr_t}')
+            curr_ratemap = ratemaps_list[i]
+            output_plots_dict = _test_plot_curr_pf_result(curr_t, curr_ratemap, drop_below_threshold=drop_below_threshold, output_plots_dict=output_plots_dict)
+        
+            pg.QtGui.QApplication.processEvents()
+            time.sleep(0.1) # Sleep for 0.5 seconds
+
+        return output_plots_dict
+
+    # Build the Historical Results:
+    t_list, ratemaps_list = pre_build_iterative_results(num_iterations=50, t_list=t_list, ratemaps_list=ratemaps_list)
+    # Plot the historical results:
+    if output_plots_dict is None:
+        output_plots_dict = {'occupancy': {}, 'placefields': {}}
+    output_plots_dict = _test_plot_historical_iterative_pf_results(t_list, ratemaps_list, output_plots_dict=output_plots_dict)
+
+
+    # CELL ==================================================================================================================== #
+    # Compute the time-dependent ratemap info in real-time and plot them:
+    def _test_step_live_iterative_pf_results_plot(active_time_dependent_placefields2D, t, drop_below_threshold: float=0.0000001, output_plots_dict=None):
+        """ 
+        requires:
+        imv: a previously created single-image plotter:
+        """
+        # Compute the updated placefields/occupancy for the time t:
+        with np.errstate(divide='ignore', invalid='ignore'):
+            active_time_dependent_placefields2D.update(t)
+        # Update the plots:
+        curr_t = active_time_dependent_placefields2D.last_t
+        curr_ratemap = active_time_dependent_placefields2D.ratemap
+
+        if output_plots_dict is None:
+            output_plots_dict = {'occupancy': {}, 'placefields': {}} # make a new dictionary to hold the plot objects.
+            
+        # Plot the results directly from the active_time_dependent_placefields2D
+        output_plots_dict = _test_plot_curr_pf_result(curr_t, curr_ratemap, drop_below_threshold=drop_below_threshold, output_plots_dict=output_plots_dict)
+        pg.QtGui.QApplication.processEvents()
+        
+        return output_plots_dict
+
+    def _test_live_iterative_pf_results_plot(active_time_dependent_placefields2D, num_iterations=50, time_step_seconds=1.0, drop_below_threshold: float=0.0000001, output_plots_dict=None):
+        """ performs num_iterations time steps of size time_step_seconds and plots the results. """
+        for i in np.arange(num_iterations):
+            t = active_time_dependent_placefields2D.last_t + time_step_seconds # add one second
+            output_plots_dict = _test_step_live_iterative_pf_results_plot(active_time_dependent_placefields2D, t, drop_below_threshold=drop_below_threshold, output_plots_dict=output_plots_dict)
+            time.sleep(0.1) # Sleep for 0.5 seconds
+
+
+    # CELL ==================================================================================================================== #
+    try:
+        if output_plots_dict is None:
+            output_plots_dict = {'occupancy': {}, 'placefields': {}}
+    except NameError:
+        output_plots_dict = {'occupancy': {}, 'placefields': {}}
+
+    output_plots_dict = _test_live_iterative_pf_results_plot(active_time_dependent_placefields2D, num_iterations=50, time_step_seconds=1.0, output_plots_dict=output_plots_dict)
+
+
+    # CELL ==================================================================================================================== #
+    output_plots_dict = {'occupancy': {}, 'placefields': {}} # clear the output plots dict
+    output_plots_dict = _test_step_live_iterative_pf_results_plot(active_time_dependent_placefields2D, spike_raster_window.spikes_window.active_time_window[1], output_plots_dict=output_plots_dict)
+
+
+    # CELL ==================================================================================================================== #
+    def _on_window_updated(window_start, window_end):
+        # print(f'_on_window_updated(window_start: {window_start}, window_end: {window_end})')
+        global output_plots_dict
+        ## Update only version:
+        # with np.errstate(divide='ignore', invalid='ignore'):
+        #     active_time_dependent_placefields2D.update(window_end) # advance the placefield display to the end of the window.
+        ## Update and plot version:
+        # t = window_end
+        output_plots_dict = _test_step_live_iterative_pf_results_plot(active_time_dependent_placefields2D, window_end, output_plots_dict=output_plots_dict)
+        
+    # spike_raster_window.connect_additional_controlled_plotter(_on_window_updated)
+
+    _on_window_updated(spike_raster_window.spikes_window.active_time_window[0], spike_raster_window.spikes_window.active_time_window[1])
+    sync_connection = spike_raster_window.spike_raster_plt_2d.window_scrolled.connect(_on_window_updated) # connect the window_scrolled event to the _on_window_updated function
+
+
+    # CELL ==================================================================================================================== #
+    active_time_dependent_placefields2D.plot_occupancy()
+
+
+    # CELL ==================================================================================================================== #
+    # active_time_dependent_placefields2D.plot_ratemaps_2D(enable_spike_overlay=False) # Works
+    active_time_dependent_placefields2D.plot_ratemaps_2D(enable_spike_overlay=True)
+
+
+    # CELL ==================================================================================================================== #
+    # t_list
+    active_time_dependent_placefields2D.plot_ratemaps_2D(enable_saving_to_disk=False, enable_spike_overlay=False)
+
+
+    # CELL ==================================================================================================================== #
+    # ax_pf_1D, occupancy_fig, active_pf_2D_figures, active_pf_2D_gs = plot_all_placefields(None, active_time_dependent_placefields2D, active_config_name)
+    occupancy_fig, occupancy_ax = active_time_dependent_placefields2D.plot_occupancy(identifier_details_list=[])
+
+
+    # CELL ==================================================================================================================== #
+    i = 0
+    while (i < len(t_list)):
+        curr_t = t_list[i]
+        # Set up
+        print(f'curr_t: {curr_t}')
+        curr_ratemap = ratemaps_list[i]
+        # images = curr_ratemap.tuning_curves # (43, 63, 63)
+        occupancy = curr_ratemap.occupancy
+        # occupancy = curr_ratemap.curr_raw_occupancy_map
+        imv.setImage(occupancy, xvals=active_time_dependent_placefields2D.xbin)
+        i += 1
+        pg.QtGui.QApplication.processEvents()
+        
+    print(f'done!')
+
+
+    # CELL ==================================================================================================================== #
+    # Timer Update Approach:
+    timer = pg.QtCore.QTimer()
+    i = 0
+    def update():
+        if (i < len(t_list)):
+            curr_t = t_list[i]
+            # Set up
+            print(f'curr_t: {curr_t}')
+            curr_ratemap = ratemaps_list[i]
+            # images = curr_ratemap.tuning_curves # (43, 63, 63)
+            occupancy = curr_ratemap.occupancy
+            # occupancy = curr_ratemap.curr_raw_occupancy_map
+            imv.setImage(occupancy, xvals=active_time_dependent_placefields2D.xbin)
+            i += 1
+        else:
+            print(f'done!')
+        # pw.plot(x, y, clear=True)
+
+    timer.timeout.connect(update)
+
+
+    # CELL ==================================================================================================================== #
+    # timer.start(16)
+    timer.start(500)
+
+
+    # CELL ==================================================================================================================== #
+    timer.stop()
+
+
+    # CELL ==================================================================================================================== #
+    t_list
+
+
+    # CELL ==================================================================================================================== #
+    # get properties from spike_raster_window:
+
+    active_curve_plotter_3d = test_independent_vedo_raster_widget # use separate vedo plotter
+    # active_curve_plotter_3d = spike_raster_window.spike_raster_plt_3d
+    curr_computations_results = curr_active_pipeline.computation_results[active_config_name]
+
+
+    # CELL ==================================================================================================================== #
+    ## Spike Smoothed Moving Average Rate:
+    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves import Specific3DTimeCurvesHelper
+    binned_spike_moving_average_rate_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_binned_spike_visualization_curves(curr_computations_results, active_curve_plotter_3d, spike_visualization_mode='mov_average')            
+
+
+    # CELL ==================================================================================================================== #
+    # Get current plot items:
+    curr_plot3D_active_window_data = active_curve_plotter_3d.params.time_curves_datasource.get_updated_data_window(active_curve_plotter_3d.spikes_window.active_window_start_time, active_curve_plotter_3d.spikes_window.active_window_end_time) # get updated data for the active window from the datasource
+    is_data_series_mode = active_curve_plotter_3d.params.time_curves_datasource.has_data_series_specs
+    if is_data_series_mode:
+        data_series_spaital_values_list = active_curve_plotter_3d.params.time_curves_datasource.data_series_specs.get_data_series_spatial_values(curr_plot3D_active_window_data)
+        num_data_series = len(data_series_spaital_values_list)
+
+    curr_data_series_index = 0
+    curr_data_series_dict = data_series_spaital_values_list[curr_data_series_index]
+
+    curr_plot_column_name = curr_data_series_dict.get('name', f'series[{curr_data_series_index}]') # get either the specified name or the generic 'series[i]' name otherwise
+    curr_plot_name = active_curve_plotter_3d.params.time_curves_datasource.datasource_UIDs[curr_data_series_index]
+    # points for the current plot:
+    pts = np.column_stack([curr_data_series_dict['x'], curr_data_series_dict['y'], curr_data_series_dict['z']])
+    pts
+
+
+    # CELL ==================================================================================================================== #
+    ## Add the new filled plot item:
+    plot_args = ({'color_name':'white','line_width':0.5,'z_scaling_factor':1.0})
+    _test_fill_plt = gl.GLLinePlotItem(pos=points, color=line_color, width=plot_args.setdefault('line_width',0.5), antialias=True)
+    _test_fill_plt.scale(1.0, 1.0, plot_args.setdefault('z_scaling_factor',1.0)) # Scale the data_values_range to fit within the z_max_value. Shouldn't need to be adjusted so long as data doesn't change.            
+    # plt.scale(1.0, 1.0, self.data_z_scaling_factor) # Scale the data_values_range to fit within the z_max_value. Shouldn't need to be adjusted so long as data doesn't change.
+    active_curve_plotter_3d.ui.main_gl_widget.addItem(_test_fill_plt)
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.plots.keys()
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.params.render_epochs
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.params.time_curves_datasource
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.params.time_curves_enable_baseline_grid = True
+    active_curve_plotter_3d.params.time_curves_baseline_grid_alpha = 0.9
+    # add_3D_time_curves_baseline_grid_mesh
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.add_3D_time_curves_baseline_grid_mesh()
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.remove_3D_time_curves_baseline_grid_mesh()
+
+
+    # CELL ==================================================================================================================== #
+    list(active_curve_plotter_3d.plots.keys())
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.plots.time_curve_helpers
+
+
+    # CELL ==================================================================================================================== #
+    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Render3DTimeCurvesBaseGridMixin import BaseGrid3DTimeCurvesHelper, Render3DTimeCurvesBaseGridMixin
+
+
+    # CELL ==================================================================================================================== #
+    BaseGrid3DTimeCurvesHelper.init_3D_time_curves_baseline_grid_mesh(active_curve_plotter_3d=active_curve_plotter_3d)
+
+
+    # CELL ==================================================================================================================== #
+    BaseGrid3DTimeCurvesHelper.add_3D_time_curves_baseline_grid_mesh(active_curve_plotter_3d=active_curve_plotter_3d)
+
+
+    # CELL ==================================================================================================================== #
+    BaseGrid3DTimeCurvesHelper.remove_3D_time_curves_baseline_grid_mesh(active_curve_plotter_3d=active_curve_plotter_3d)
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.params.time_curves_main_alpha = 0.5
+    active_curve_plotter_3d.update_3D_time_curves()
+
+
+    # CELL ==================================================================================================================== #
+    # Add default params if needed:
+    # active_curve_plotter_3d.params
+
+
+    # CELL ==================================================================================================================== #
+    list(active_curve_plotter_3d.params.keys())
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.params.time_curves_z_baseline
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.plots
+
+
+    # CELL ==================================================================================================================== #
+    'time_curve_helpers' not in active_curve_plotter_3d.plots
+
+
+    # CELL ==================================================================================================================== #
+    'plots_grid_3dCurveBaselines_Grid' not in active_curve_plotter_3d.plots.time_curve_helpers
+
+
+    # CELL ==================================================================================================================== #
+    time_curves_z_baseline = 5.0 
+
+    data_series_baseline
+    # z_map_fn = lambda v_main: v_main + 5.0 # returns the un-transformed primary value
+
+    5.0
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.params.axes_walls_z_height = 15.0
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d._update_axes_plane_graphics()
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.temporal_axis_length
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.temporal_zoom_factor # 2.6666666666666665
+
+
+    # CELL ==================================================================================================================== #
+    active_curve_plotter_3d.temporal_to_spatial(temporal_data=[1.0])
+
+    # CELL ==================================================================================================================== #
+    line_color = pg.mkColor(plot_args.setdefault('color_name', 'white'))
+    line_color.setAlphaF(0.8)
+
+
+
+
+# ==================================================================================================================== #
+# 2022-07-11                                                                                                           #
+# ==================================================================================================================== #
 def _build_programmatic_display_function_testing_pdf_metadata(curr_active_pipeline, filter_name, out_path=None, debug_print=False):
     """ Builds the PDF metadata generating function from the passed info
     
