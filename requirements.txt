@@ -22,3 +22,5 @@ colorcet~=3.0.0
 rich==11.2.0
 findpeaks~=2.4.3
 opencv-python~=4.6.0
+indexed~=1.2.1
+pybursts~=0.1.1
