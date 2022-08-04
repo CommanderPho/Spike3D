@@ -24,3 +24,4 @@ findpeaks~=2.4.3
 opencv-python~=4.6.0
 indexed~=1.2.1
 pybursts~=0.1.1
+# alive_progress<2.2
