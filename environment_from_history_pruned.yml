@@ -119,4 +119,5 @@ dependencies:
   - jupyter_console=6.4.*
   - PyQt5Singleton
   - indexed
+  - alive_progress<2.2
 # prefix: C:\Users\pho\miniconda3\envs\phoviz_ultimate

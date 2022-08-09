@@ -59,3 +59,4 @@ python_PipelineRun.build
 python_PipelineRun.cmd
 python_PipelineRun.exe
 EXTERNAL/Design/Icons/Features
+viztracer_report.json
