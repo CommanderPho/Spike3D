@@ -50,7 +50,8 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"huynh-quang-phuc.create-file-from-template"
+			"huynh-quang-phuc.create-file-from-template",
+			"kawamataryo.copy-python-dotted-path"
 		]
 	}
 }

@@ -1,6 +1,7 @@
 {
 	"recommendations": [
 		"huynh-quang-phuc.create-file-from-template",
-		"bradzacher.vscode-copy-filename"
+		"bradzacher.vscode-copy-filename",
+		"kawamataryo.copy-python-dotted-path"
 	]
 }
