@@ -487,7 +487,7 @@ def _build_programmatic_display_function_testing_pdf_metadata(curr_active_pipeli
         out_path = Path(out_path) # make sure it's a Path
     out_path.mkdir(exist_ok=True)
 
-    session_descriptor_string = curr_active_pipeline.sess.get_session_description(curr_active_pipeline.session_data_type) # 'sess_kdiba_2006-6-07_11-26-53'
+    session_descriptor_string = curr_active_pipeline.sess.get_session_description() # 'sess_kdiba_2006-6-07_11-26-53'
     pho_pdf_metadata = {'Creator': 'Spike3D - TestNeuroPyPipeline116', 'Author': 'Pho Hale', 'Title': session_descriptor_string, 'Subject': '', 'Keywords': [session_descriptor_string]}
     if debug_print:
         print(f'filter_name: {filter_name}')

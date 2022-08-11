@@ -36,7 +36,6 @@ pd.set_option('display.width', 1000)
 
 
 from neuropy import core
-# from neuropy.core.session.dataSession import SessionConfig, DataSessionLoader, DataSession, processDataSssion
 from neuropy.core.session.data_session_loader import DataSessionLoader
 from neuropy.core.session.dataSession import DataSession
 from neuropy.core.epoch import Epoch
