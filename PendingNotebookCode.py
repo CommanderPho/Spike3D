@@ -22,8 +22,62 @@ should_display_2D_plots = True
 # ==================================================================================================================== #
 # 2022-08-16                                                                                                           #
 # ==================================================================================================================== #
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper, NestedDockAreaWidget
 
+
+
+from neuropy.utils.dynamic_container import overriding_dict_with # used in display_all_pf_2D_pyqtgraph_binned_image_rendering to only get the valid kwargs to pass from the display config
+from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, enumTuningMap2DPlotMode, enumTuningMap2DPlotVariables, _determine_best_placefield_2D_layout, _scale_current_placefield_to_acceptable_range
+from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow, add_bin_ticks, build_binned_imageItem
+
+def display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_format_config, debug_print=True):
+    """ 2022-08-16 - A fresh implementation of a pf_2D placefield renderer that uses the BasicBinnedImageRenderingWindow subclass. 
+    
+    Uses the common `_determine_best_placefield_2D_layout(...)` setup so that its returned subplots layout is the same as the matplotlib version in NeuroPy.neuropy.plotting.ratemaps.plot_ratemap_2D(...) (the main Matplotlib version that works)
+    
+    Usage:
+        out_all_pf_2D_pyqtgraph_binned_image_fig = display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_format_config)
+        
+    """
+    drop_below_threshold = figure_format_config.get('drop_below_threshold', None) # try to get the 'drop_below_threshold' argument
+    # nfigures, num_pages, included_combined_indicies_pages, page_grid_sizes, data_aspect_ratio, page_figure_sizes = _determine_best_placefield_2D_layout(xbin=active_pf_2D.xbin, ybin=active_pf_2D.ybin, included_unit_indicies=np.arange(active_pf_2D.ratemap.n_neurons), subplots=(40, 3), fig_column_width=8.0, fig_row_height=1.0, resolution_multiplier=1.0, max_screen_figure_size=(None, None), last_figure_subplots_same_layout=True, debug_print=True)
+    nfigures, num_pages, included_combined_indicies_pages, page_grid_sizes, data_aspect_ratio, page_figure_sizes = _determine_best_placefield_2D_layout(xbin=active_pf_2D.xbin, ybin=active_pf_2D.ybin, included_unit_indicies=np.arange(active_pf_2D.ratemap.n_neurons),
+        **overriding_dict_with(lhs_dict={'subplots': (40, 3), 'fig_column_width': 8.0, 'fig_row_height': 1.0, 'resolution_multiplier': 1.0, 'max_screen_figure_size': (None, None), 'last_figure_subplots_same_layout': True, 'debug_print': True}, **figure_format_config))
+    active_xbins = active_pf_2D.xbin
+    active_ybins = active_pf_2D.ybin    
+    out = None
+    # New page-based version:
+    for page_idx in np.arange(num_pages):
+        if debug_print:
+            print(f'page_idx: {page_idx}')
+        for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in included_combined_indicies_pages[page_idx]:
+            # Need to convert to page specific:
+            curr_page_relative_linear_index = np.mod(a_linear_index, int(page_grid_sizes[page_idx].num_rows * page_grid_sizes[page_idx].num_columns))
+            curr_page_relative_row = np.mod(curr_row, page_grid_sizes[page_idx].num_rows)
+            curr_page_relative_col = np.mod(curr_col, page_grid_sizes[page_idx].num_columns)
+            # print(f'a_linear_index: {a_linear_index}, curr_page_relative_linear_index: {curr_page_relative_linear_index}, curr_row: {curr_row}, curr_col: {curr_col}, curr_page_relative_row: {curr_page_relative_row}, curr_page_relative_col: {curr_page_relative_col}, curr_included_unit_index: {curr_included_unit_index}')
+            neuron_IDX = curr_included_unit_index
+            # pfmap = active_pf_2D.ratemap.normalized_tuning_curves[a_linear_index]
+            # pfmap = active_pf_2D.ratemap.tuning_curves[a_linear_index].copy()
+            pfmap = _scale_current_placefield_to_acceptable_range(np.squeeze(active_pf_2D.ratemap.tuning_curves[a_linear_index,:,:]), occupancy=active_pf_2D.occupancy, drop_below_threshold=drop_below_threshold)            
+            
+            curr_extended_id_string = active_pf_2D.ratemap.get_extended_neuron_id_string(neuron_i=neuron_IDX)
+            # ratemap.neuron_extended_ids[neuron_IDX]
+            
+            if out is None:
+                # first iteration only
+                out = BasicBinnedImageRenderingWindow(pfmap, active_xbins, active_ybins, name=f'pf[{curr_extended_id_string}]', title=curr_extended_id_string, variable_label=curr_extended_id_string, wants_crosshairs=False, color_bar_mode='each', )
+            else:
+                out.add_data(row=curr_page_relative_row, col=curr_page_relative_col, matrix=pfmap, xbins=active_xbins, ybins=active_ybins, name=f'pf[{curr_extended_id_string}]', title=curr_extended_id_string, variable_label=curr_extended_id_string)
+        
+    return out
+    
+    
+    
+
+# ==================================================================================================================== #
+# Pre 2022-08-16 Figure Docking                                                                                        #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper, NestedDockAreaWidget
 
 def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, debug_print=False):
     """ Combines the active_pf_2D individual figures into a single widget, with each item being docked and modifiable.
@@ -156,9 +210,6 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
     
     return win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items
     
-    
-
-
 
 # ==================================================================================================================== #
 # 2022-07-20                                                                                                           #
