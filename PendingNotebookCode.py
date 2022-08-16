@@ -19,6 +19,145 @@ from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+# ==================================================================================================================== #
+# 2022-08-16                                                                                                           #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper, NestedDockAreaWidget
+
+
+def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, debug_print=False):
+    """ Combines the active_pf_2D individual figures into a single widget, with each item being docked and modifiable.
+    Requies figures to already be created and passed in the appropriate format.
+    
+    # TODO: On close should close the figure handles that are currently open. Can use figure_manager to do this.
+    
+    
+    # TODO: Shouldnt' this be a widget instead of a function? Maybe it doesn't matter though.
+    
+    if should_nest_figures_on_filter is True, the figures are docked in a nested dockarea for each filter (e.g. ['maze1', 'maze2']. Otherwise they are returned flat.
+        
+    Unique to nested:
+        all_nested_dock_area_widgets = {}
+        all_nested_dock_area_widget_display_items = {}
+
+
+    Usage:
+    
+        def _display_specified__display_2d_placefield_result_plot_ratemaps_2D(filter_name):
+            active_filter_pf_2D_figures = {}
+            active_filter_pf_2D_figures['SPIKES_MAPS'] = curr_active_pipeline.display('_display_2d_placefield_result_plot_ratemaps_2D', filter_name, plot_variable=enumTuningMap2DPlotVariables.SPIKES_MAPS, fignum=plots_fig_nums_dict[filter_name][0], **figure_format_config)[0]
+            active_filter_pf_2D_figures['TUNING_MAPS'] = curr_active_pipeline.display('_display_2d_placefield_result_plot_ratemaps_2D', filter_name, plot_variable=enumTuningMap2DPlotVariables.TUNING_MAPS, fignum=plots_fig_nums_dict[filter_name][1], **figure_format_config)[0]
+            return active_filter_pf_2D_figures
+
+        active_pf_2D_figures = {}
+        ## Plots for each maze programmatically:
+        for i, filter_name in enumerate(curr_active_pipeline.active_config_names):
+            active_pf_2D_figures[filter_name] = _display_specified__display_2d_placefield_result_plot_ratemaps_2D(filter_name=filter_name)
+
+        active_pf_2D_figures
+        # {'maze1': {'SPIKES_MAPS': <Figure size 1728x1080 with 88 Axes>,
+        #   'TUNING_MAPS': <Figure size 1728x1080 with 88 Axes>},
+        #  'maze2': {'SPIKES_MAPS': <Figure size 1728x864 with 71 Axes>,
+        #   'TUNING_MAPS': <Figure size 1728x864 with 71 Axes>}}
+
+        win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items = _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, debug_print=False)
+
+        win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items = _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, debug_print=False)
+        
+        
+    """
+    min_width = 500
+    min_height = 500
+    win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
+
+    all_dock_display_items = {}
+    all_item_widths_list = []
+    all_item_heights_list = []
+
+    if should_nest_figures_on_filter:
+        all_nested_dock_area_widgets = {}
+        all_nested_dock_area_widget_display_items = {}
+
+        _last_dock_outer_nested_item = None
+        for filter_name, a_figures_dict in active_pf_2D_figures.items():
+            # For each filter, create a new NestedDockAreaWidget
+            all_nested_dock_area_widgets[filter_name] = NestedDockAreaWidget()
+            # Once done with a given filter, add its nested dockarea widget to the window
+            if _last_dock_outer_nested_item is not None:
+                #NOTE: to stack two dock widgets on top of each other, do area.moveDock(d6, 'above', d4)   ## move d6 to stack on top of d4
+                dockAddLocationOpts = ['above', _last_dock_outer_nested_item] # position relative to the _last_dock_outer_nested_item for this figure
+            else:
+                dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
+            nested_out_widget_key = f'Nested Outer Widget: {filter_name}'
+            if debug_print:
+                print(f'nested_out_widget_key: {nested_out_widget_key}')
+            _, dDisplayItem = win.add_display_dock(nested_out_widget_key, dockSize=(min_width, min_height), dockIsClosable=False, widget=all_nested_dock_area_widgets[filter_name], dockAddLocationOpts=dockAddLocationOpts)
+            all_nested_dock_area_widget_display_items[filter_name] = dDisplayItem
+            _last_dock_outer_nested_item = dDisplayItem
+
+            ## Add the sub-items for this filter:
+            _last_dock_item = None
+            for a_figure_name, a_figure in a_figures_dict.items():
+                # individual figures
+                figure_key = f'{filter_name}_{a_figure_name}'
+                if debug_print:
+                    print(f'figure_key: {figure_key}')
+                fig_window = a_figure.canvas.window()
+                fig_geom = fig_window.window().geometry() # get the QTCore PyRect object
+                fig_x, fig_y, fig_width, fig_height = fig_geom.getRect() # Note: dx & dy refer to width and height
+                all_item_widths_list.append(fig_width)
+                all_item_heights_list.append(fig_height)
+
+                # Add the dock and keep the display item:
+                if _last_dock_item is not None:
+                    dockAddLocationOpts = ['above', _last_dock_item] # position relative to the _last_dock_item for this figure
+                else:
+                    dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
+                _, dDisplayItem = all_nested_dock_area_widgets[filter_name].add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
+                dDisplayItem.setOrientation('horizontal') # want orientation of outer dockarea to be opposite of that of the inner one. # 'auto', 'horizontal', or 'vertical'.
+                all_dock_display_items[figure_key] = dDisplayItem
+                _last_dock_item = dDisplayItem
+
+    else:
+        ## Flat (non-nested)
+        all_nested_dock_area_widgets = None
+        all_nested_dock_area_widget_display_items = None
+        
+        for filter_name, a_figures_dict in active_pf_2D_figures.items():
+            _last_dock_item = None
+            for a_figure_name, a_figure in a_figures_dict.items():
+                # individual figures
+                figure_key = f'{filter_name}_{a_figure_name}'
+                if debug_print:
+                    print(f'figure_key: {figure_key}')
+                fig_window = a_figure.canvas.window()
+                fig_geom = fig_window.window().geometry() # get the QTCore PyRect object
+                fig_x, fig_y, fig_width, fig_height = fig_geom.getRect() # Note: dx & dy refer to width and height
+                all_item_widths_list.append(fig_width)
+                all_item_heights_list.append(fig_height)
+                
+                # Add the dock and keep the display item:
+                if _last_dock_item is not None:
+                    #NOTE: to stack two dock widgets on top of each other, do area.moveDock(d6, 'above', d4)   ## move d6 to stack on top of d4
+                    dockAddLocationOpts = ['above', _last_dock_item] # position relative to the _last_dock_item for this figure
+                else:
+                    dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
+                _, dDisplayItem = win.add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
+                all_dock_display_items[figure_key] = dDisplayItem
+
+                _last_dock_item = dDisplayItem
+
+    # Resize window to largest figure size:
+    all_item_widths_list = np.array(all_item_widths_list)
+    all_item_heights_list = np.array(all_item_heights_list)
+    max_width = np.max(all_item_widths_list)
+    max_height = np.max(all_item_heights_list)
+    win.resize(max_width, max_height)
+    
+    return win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items
+    
+    
+
 
 
 # ==================================================================================================================== #
