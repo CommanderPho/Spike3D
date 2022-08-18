@@ -11,10 +11,7 @@ from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
 ## Laps Stuff:
-from neuropy.core import Laps
 from neuropy.core.epoch import NamedTimerange
-from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 
 should_force_recompute_placefields = True
 should_display_2D_plots = True
@@ -273,9 +270,6 @@ def display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analy
     return out
     
 
-
-
-
 # ==================================================================================================================== #
 # Pre 2022-08-17                                                                                                           #
 # ==================================================================================================================== #
@@ -501,7 +495,6 @@ def _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_win
     
     root_dockAreaWindow, app = _merge_plotters(spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter)
     return (spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter), root_dockAreaWindow, app
-    
     
 
 # ==================================================================================================================== #
@@ -1128,12 +1121,9 @@ def old_timesynchronized_plotter_testing():
     line_color = pg.mkColor(plot_args.setdefault('color_name', 'white'))
     line_color.setAlphaF(0.8)
 
-
 # ==================================================================================================================== #
 # Pre- 2022-07-11                                                                                                      #
 # ==================================================================================================================== #
-
-
 
 def process_by_good_placefields(session, active_config, active_placefields):
     """  Filters the session by the units in active_placefields that have good placefields and return an updated session. Also adds generated colors for each good unit to active_config """
@@ -1151,9 +1141,6 @@ def process_by_good_placefields(session, active_config, active_placefields):
     active_config.plotting_config.active_cells_listed_colormap = ListedColormap(active_config.plotting_config.active_cells_colormap)
     
     return good_placefields_session, active_config, good_placefield_neuronIDs
-
-
-
 
 def build_placefield_multiplotter(nfields, linear_plot_data=None):
     linear_plotter_indicies = np.arange(nfields)
@@ -1176,8 +1163,6 @@ def build_placefield_multiplotter(nfields, linear_plot_data=None):
             mp[curr_row, curr_col].add_mesh(linear_plot_data[a_linear_index], name='maze_bg', color="black", render=False)
             # mp[a_row_column_index[0], a_row_column_index[1]].add_mesh(pv.Sphere())
     return mp, linear_plotter_indicies, row_column_indicies
-
-
 
 #TODO: Works, but need to convert into the computation function format or find a new place to put it. It operates on the entire pipeline while currently computation functions are limited to operating on one stage at a time.
 def _perform_PBE_stats(active_pipeline, debug_print = False):
@@ -1265,8 +1250,6 @@ def _perform_PBE_stats(active_pipeline, debug_print = False):
 
 # -------------------------- 2022-06-22 Notebook 93 -------------------------- #
 import matplotlib.pyplot as plt
-
-
 
 def spike_count_and_firing_rate_normalizations(pho_custom_decoder, enable_plots=True):
     """ Computes several different normalizations of binned firing rate and spike counts, optionally plotting them. 
