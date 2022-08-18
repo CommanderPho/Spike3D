@@ -19,6 +19,205 @@ from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+
+# ==================================================================================================================== #
+# Pre 2022-08-17                                                                                                           #
+# ==================================================================================================================== #
+
+import pyphoplacecellanalysis.External.pyqtgraph as pg # required for _temp_pyqtplot_plot_image_array
+from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import _pyqtplot_build_image_bounds_extent # required for _temp_pyqtplot_plot_image_array
+from pyphocorehelpers.indexing_helpers import compute_paginated_grid_config # required for _temp_pyqtplot_plot_image_array
+from pyphoplacecellanalysis.GUI.PyQtPlot.pyqtplot_basic import pyqtplot_common_setup # required for _temp_pyqtplot_plot_image_array
+
+
+def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, max_num_columns = 5, drop_below_threshold: float=0.0000001, enable_LUT_Histogram=False, app=None, parent_root_widget=None, root_render_widget=None, debug_print=False):
+    """ Plots an array of images provided in 'images' argument
+    images should be an nd.array with dimensions like: (10, 63, 63), where (N_Images, X_Dim, Y_Dim)
+        or (2, 5, 63, 63), where (N_Rows, N_Cols, X_Dim, Y_Dim)
+        
+    Example:
+        # Get flat list of images:
+        images = active_one_step_decoder.ratemap.normalized_tuning_curves # (43, 63, 63)
+        # images = active_one_step_decoder.ratemap.normalized_tuning_curves[0:40,:,:] # (43, 63, 63)
+        occupancy = active_one_step_decoder.ratemap.occupancy
+
+        app, win, plot_array, img_item_array, other_components_array = pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy)
+        win.show()
+    """
+    
+    # pg.setConfigOptions(imageAxisOrder='row-major')
+    root_render_widget, parent_root_widget, app = pyqtplot_common_setup(f'_temp_pyqtplot_plot_image_array: {np.shape(images)}', app=app, parent_root_widget=parent_root_widget, root_render_widget=root_render_widget)
+    pg.setConfigOptions(imageAxisOrder='col-major')
+    
+    # cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
+    cmap = pg.colormap.get('jet','matplotlib') # prepare a linear color map
+
+    image_bounds_extent, x_range, y_range = _pyqtplot_build_image_bounds_extent(xbin_edges, ybin_edges, margin=2.0, debug_print=debug_print)
+    # image_aspect_ratio, image_width_height_tuple = compute_data_aspect_ratio(x_range, y_range)
+    # print(f'image_aspect_ratio: {image_aspect_ratio} - xScale/yScale: {float(image_width_height_tuple.width) / float(image_width_height_tuple.height)}')
+    
+    # Compute Images:
+    included_unit_indicies = np.arange(np.shape(images)[0]) # include all unless otherwise specified
+    nMapsToShow = len(included_unit_indicies)
+
+    # Paging Management: Constrain the subplots values to just those that you need
+    subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nMapsToShow, max_num_columns=max_num_columns, max_subplots_per_page=None, data_indicies=included_unit_indicies, last_figure_subplots_same_layout=True)
+    page_idx = 0 # page_idx is zero here because we only have one page:
+    
+    img_item_array = []
+    other_components_array = []
+    plot_array = []
+
+    for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in included_combined_indicies_pages[page_idx]:
+        # Need to convert to page specific:
+        curr_page_relative_linear_index = np.mod(a_linear_index, int(page_grid_sizes[page_idx].num_rows * page_grid_sizes[page_idx].num_columns))
+        curr_page_relative_row = np.mod(curr_row, page_grid_sizes[page_idx].num_rows)
+        curr_page_relative_col = np.mod(curr_col, page_grid_sizes[page_idx].num_columns)
+        is_first_column = (curr_page_relative_col == 0)
+        is_first_row = (curr_page_relative_row == 0)
+        is_last_column = (curr_page_relative_col == (page_grid_sizes[page_idx].num_columns-1))
+        is_last_row = (curr_page_relative_row == (page_grid_sizes[page_idx].num_rows-1))
+        if debug_print:
+            print(f'a_linear_index: {a_linear_index}, curr_page_relative_linear_index: {curr_page_relative_linear_index}, curr_row: {curr_row}, curr_col: {curr_col}, curr_page_relative_row: {curr_page_relative_row}, curr_page_relative_col: {curr_page_relative_col}, curr_included_unit_index: {curr_included_unit_index}')
+
+        neuron_IDX = curr_included_unit_index
+        curr_cell_identifier_string = f'Cell[{neuron_IDX}]'
+        curr_plot_identifier_string = f'pyqtplot_plot_image_array.{curr_cell_identifier_string}'
+
+        image = np.squeeze(images[a_linear_index,:,:])
+        # Pre-filter the data:
+        with np.errstate(divide='ignore', invalid='ignore'):
+            image = np.array(image.copy()) / np.nanmax(image) # note scaling by maximum here!
+            if drop_below_threshold is not None:
+                image[np.where(occupancy < drop_below_threshold)] = np.nan # null out the occupancy
+
+        # Build the image item:
+        img_item = pg.ImageItem(image=image, levels=(0,1))
+        
+        # # plot mode:
+        curr_plot = root_render_widget.addPlot(row=curr_row, col=curr_col, name=curr_plot_identifier_string, title=curr_cell_identifier_string)
+        curr_plot.showAxes(False)
+        if is_last_row:
+            curr_plot.showAxes('x', True)
+            curr_plot.showAxis('bottom', show=True)
+        else:
+            curr_plot.showAxes('x', False)
+            curr_plot.showAxis('bottom', show=False)
+            
+        if is_first_column:
+            curr_plot.showAxes('y', True)
+            curr_plot.showAxis('left', show=True)
+        else:
+            curr_plot.showAxes('y', False)
+            curr_plot.showAxis('left', show=False)
+        
+        curr_plot.hideButtons() # Hides the auto-scale button
+        
+        curr_plot.addItem(img_item, defaultPadding=0.0)  # add ImageItem to PlotItem
+        # curr_plot.setAspectLocked(lock=True, ratio=image_aspect_ratio)
+        # curr_plot.showAxes(True)
+        # curr_plot.showGrid(True, True, 0.7)
+        # curr_plot.setLabel('bottom', "Label to test offset")
+        
+        # # Overlay cell identifier text:
+        # curr_label = pg.TextItem(f'Cell[{neuron_IDX}]', color=(230, 230, 230))
+        # curr_label.setPos(30, 60)
+        # curr_label.setParentItem(img_item)
+        # # curr_plot.addItem(curr_label, ignoreBounds=True)
+        # curr_plot.addItem(curr_label)
+
+        # Update the image:
+        img_item.setImage(image, rect=image_bounds_extent, autoLevels=False) # rect: [x, y, w, h]
+        img_item.setLookupTable(cmap.getLookupTable(nPts=256), update=False)
+
+        # curr_plot.set
+        # margin = 2.0
+        # curr_plot.setXRange(global_min_x-margin, global_max_x+margin)
+        # curr_plot.setYRange(global_min_y-margin, global_max_y+margin)
+        # curr_plot.setXRange(*x_range)
+        # curr_plot.setYRange(*y_range)
+        curr_plot.setRange(xRange=x_range, yRange=y_range, padding=0.0, update=False, disableAutoRange=True)
+        # Sets only the panning limits:
+        curr_plot.setLimits(xMin=x_range[0], xMax=x_range[-1], yMin=y_range[0], yMax=y_range[-1])
+        # Link Axes to previous item:
+        if a_linear_index > 0:
+            prev_plot_item = plot_array[a_linear_index-1]
+            curr_plot.setXLink(prev_plot_item)
+            curr_plot.setYLink(prev_plot_item)
+                        
+        # Interactive Color Bar:
+        bar = pg.ColorBarItem(values= (0, 1), colorMap=cmap, width=5, interactive=False) # prepare interactive color bar
+        # Have ColorBarItem control colors of img and appear in 'plot':
+        bar.setImageItem(img_item, insert_in=curr_plot)
+
+        img_item_array.append(img_item)
+        plot_array.append(curr_plot)
+        other_components_array.append({'color_bar':bar})
+        
+    # Post images loop:
+    
+    enable_show = False
+    
+    if parent_root_widget is not None:
+        if enable_show:
+            parent_root_widget.show()
+        
+        parent_root_widget.setWindowTitle('pyqtplot image array')
+
+    # pg.exec()
+    return app, parent_root_widget, root_render_widget, plot_array, img_item_array, other_components_array
+
+
+# ==================================================================================================================== #
+# 🔜👁️‍🗨️ Merging TimeSynchronized Plotters:                                                                         #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster import Spike2DRaster
+from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedOccupancyPlotter import TimeSynchronizedOccupancyPlotter
+from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedPlacefieldsPlotter import TimeSynchronizedPlacefieldsPlotter
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper
+
+def _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0):
+    """ Builds a single window with time_synchronized (time-dependent placefield) plotters controlled by a 2DRasterPlot widget.
+    
+    Usage:
+        active_pf_2D_dt.reset()
+        active_pf_2D_dt.update(t=45.0, start_relative_t=True)
+        all_plotters, root_dockAreaWindow, app = _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0)
+    """
+    def _merge_plotters(spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter):
+        # root_dockAreaWindow, app = DockAreaWrapper.wrap_with_dockAreaWindow(curr_sync_occupancy_plotter, spike_raster_plt_2d, title='All Time Synchronized Plotters')
+        # curr_placefields_plotter, dDisplayItem = root_dockAreaWindow.add_display_dock(identifier='Time Dependent Placefields', widget=curr_placefields_plotter, dockAddLocationOpts=['left'])
+        root_dockAreaWindow, app = DockAreaWrapper.wrap_with_dockAreaWindow(curr_sync_occupancy_plotter, curr_placefields_plotter, title='All Time Synchronized Plotters')
+        spike_raster_plt_2d, dDisplayItem = root_dockAreaWindow.add_display_dock(identifier='Time Dependent Placefields', widget=spike_raster_plt_2d, dockAddLocationOpts=['bottom'])
+        
+        ## Register the children items as drivables/drivers:
+        root_dockAreaWindow.connection_man.register_drivable(curr_sync_occupancy_plotter)
+        root_dockAreaWindow.connection_man.register_drivable(curr_placefields_plotter)
+        root_dockAreaWindow.connection_man.register_driver(spike_raster_plt_2d)
+        # Wire up signals such that time-synchronized plotters are controlled by the RasterPlot2D:
+        occupancy_raster_window_sync_connection = root_dockAreaWindow.connection_man.connect_drivable_to_driver(drivable=curr_sync_occupancy_plotter, driver=spike_raster_plt_2d,
+                                                               custom_connect_function=(lambda driver, drivable: pg.SignalProxy(driver.window_scrolled, delay=0.2, rateLimit=60, slot=drivable.on_window_changed_rate_limited)))
+        placefields_raster_window_sync_connection = root_dockAreaWindow.connection_man.connect_drivable_to_driver(drivable=curr_placefields_plotter, driver=spike_raster_plt_2d,
+                                                               custom_connect_function=(lambda driver, drivable: pg.SignalProxy(driver.window_scrolled, delay=0.2, rateLimit=60, slot=drivable.on_window_changed_rate_limited)))
+        
+        return root_dockAreaWindow, app
+    
+    # Build the 2D Raster Plotter using a fixed window duration
+    current_window_start_time = active_pf_2D_dt.last_t - fixed_window_duration
+    spike_raster_plt_2d = Spike2DRaster.init_from_independent_data(active_pf_2D_dt.all_time_filtered_spikes_df, window_duration=fixed_window_duration, window_start_time=current_window_start_time,
+                                                                   neuron_colors=None, neuron_sort_order=None, application_name='TimeSynchronizedPlotterControlSpikeRaster2D',
+                                                                   enable_independent_playback_controller=False, should_show=False,  parent=None) # setting , parent=spike_raster_plt_3d makes a single window
+    spike_raster_plt_2d.setWindowTitle('2D Raster Control Window')
+    # Update the 2D Scroll Region to the initial value:
+    spike_raster_plt_2d.update_scroll_window_region(current_window_start_time, active_pf_2D_dt.last_t, block_signals=False)
+    curr_sync_occupancy_plotter = TimeSynchronizedOccupancyPlotter(active_pf_2D_dt)
+    curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
+    
+    root_dockAreaWindow, app = _merge_plotters(spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter)
+    return (spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter), root_dockAreaWindow, app
+    
+    
+
 # ==================================================================================================================== #
 # 2022-08-16                                                                                                           #
 # ==================================================================================================================== #
