@@ -89,7 +89,7 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
             print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
         decoder_plot_widget = DecoderPlotSelectorWidget()
         decoder_plot_widget.show()
-        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, dockIsClosable=False)
+        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, dockIsClosable=True)
         out_display_items[active_identifying_ctx] = (decoder_plot_widget)
 
         # Get the decoders from the computation result:
@@ -107,7 +107,7 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
         ## Build the widget:
         app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, app=app, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
         pyqtplot_pf2D_parent_root_widget.show()
-        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=False)
+        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=True)
         out_display_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
         
         return active_identifying_session_ctx, out_display_items
@@ -131,7 +131,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider # needed for _temp_debug_two_step_plots_animated_imshow
 
 ## Copied from DecoderPredictionError.py to modify with adding nearest animal position at each timestep:
-def _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, time_binned_position_df, variable_name='p_x_given_n_and_x_prev', override_variable_value=None, update_callback_function=None):
+def _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, time_binned_position_df: pd.DataFrame, variable_name='p_x_given_n_and_x_prev', override_variable_value=None, update_callback_function=None):
     """Matplotlib-based imshow plot with interactive slider for displaying two-step bayesian decoding results
 
     ## Added _update_measured_animal_position_point(...)
@@ -164,7 +164,7 @@ def _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_t
         variable_value = override_variable_value
 
     num_frames = np.shape(variable_value)[-1]
-    debug_print = False
+    debug_print = True
     if debug_print:
         print(f'_temp_debug_two_step_plots_animated_imshow: variable_name="{variable_name}", np.shape: {np.shape(variable_value)}, num_frames: {num_frames}')
 
