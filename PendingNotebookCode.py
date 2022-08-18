@@ -130,6 +130,151 @@ def context_nested_docks(curr_active_pipeline, debug_print=True):
         
     return master_dock_win, app, out_items
 
+import matplotlib.pyplot as plt 
+from matplotlib.widgets import Slider # needed for _temp_debug_two_step_plots_animated_imshow
+
+## Copied from DecoderPredictionError.py to modify with adding nearest animal position at each timestep:
+def _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, time_binned_position_df, variable_name='p_x_given_n_and_x_prev', override_variable_value=None, update_callback_function=None):
+    """Matplotlib-based imshow plot with interactive slider for displaying two-step bayesian decoding results
+
+    ## Added _update_measured_animal_position_point(...)
+    DEPENDS ON active_computed_data.extended_stats.time_binned_position_df
+    
+    Args:
+        active_one_step_decoder ([type]): [description]
+        active_two_step_decoder ([type]): [description]
+        time_binned_position_df: should be obtained from `active_computed_data.extended_stats.time_binned_position_df` by default
+        variable_name (str, optional): [description]. Defaults to 'p_x_given_n_and_x_prev'.
+        override_variable_value ([type], optional): [description]. Defaults to None.
+        update_callback_function ([type], optional): [description]. Defaults to None.
+        
+        
+    Usage:
+        # Simple plot type 1:
+        # plotted_variable_name = kwargs.get('variable_name', 'p_x_given_n') # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
+        plotted_variable_name = 'p_x_given_n' # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
+        _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, active_computed_data.extended_stats.time_binned_position_df, variable_name=plotted_variable_name) # Works
+
+    """
+    if override_variable_value is None:
+        try:
+            variable_value = active_two_step_decoder[variable_name]
+        except (TypeError, KeyError):
+            # fallback to the one_step_decoder
+            variable_value = getattr(active_one_step_decoder, variable_name, None)
+    else:
+        # if override_variable_value is set, ignore the input info and use it.
+        variable_value = override_variable_value
+
+    num_frames = np.shape(variable_value)[-1]
+    debug_print = False
+    if debug_print:
+        print(f'_temp_debug_two_step_plots_animated_imshow: variable_name="{variable_name}", np.shape: {np.shape(variable_value)}, num_frames: {num_frames}')
+
+    fig, ax = plt.subplots(ncols=1, nrows=1, num=f'debug_two_step_animated: variable_name={variable_name}', figsize=(15,15), clear=True, constrained_layout=False)
+    plt.subplots_adjust(left=0.25, bottom=0.25)
+
+    frame = 0
+    
+    # Get extents:    
+    xmin, xmax, ymin, ymax = (active_one_step_decoder.xbin[0], active_one_step_decoder.xbin[-1], active_one_step_decoder.ybin[0], active_one_step_decoder.ybin[-1])
+    x_first_extent = (xmin, xmax, ymin, ymax) # traditional order of the extant axes
+    active_extent = x_first_extent # for 'x == horizontal orientation'
+    # active_extent = y_first_extent # for 'x == vertical orientation'
+
+    main_plot_kwargs = {
+        'origin': 'lower',
+        'cmap': 'turbo',
+        'extent': active_extent,
+        # 'aspect':'auto',
+    }
+
+    curr_val = variable_value[:,:,frame] # untranslated output:
+    curr_val = np.swapaxes(curr_val, 0, 1) # x_horizontal_matrix: swap the first two axes while leaving the last intact. Returns a view into the matrix so it doesn't modify the value
+    
+    im_out = ax.imshow(curr_val, **main_plot_kwargs)
+    
+    ## Setup Auxillary Plots:
+    active_resampled_pos_df = time_binned_position_df.copy() # active_computed_data.extended_stats.time_binned_position_df  # 1717 rows × 16 columns
+    active_resampled_measured_positions = active_resampled_pos_df[['x','y']].to_numpy() # The measured positions resampled (interpolated) at the window centers. 
+    measured_point = np.squeeze(active_resampled_measured_positions[frame,:])
+    ## decided on using scatter
+    # measured_positions_scatter = ax.scatter(measured_point[0], measured_point[1], color='white') # PathCollection
+    measured_positions_scatter, = ax.plot(measured_point[0], measured_point[1], color='white', marker='o', ls='') # PathCollection
+    
+    def _update_measured_animal_position_point(time_window_idx, ax=None):
+        """ captures `active_resampled_measured_positions` and `measured_positions_scatter` """
+        measured_point = np.squeeze(active_resampled_measured_positions[time_window_idx,:])
+        ## TODO: this would need to use set_offsets(...) if we wanted to stick with scatter plot.
+        measured_positions_scatter.set_xdata(measured_point[0])
+        measured_positions_scatter.set_ydata(measured_point[1])
+    
+    # for 'x == horizontal orientation':
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    
+    # ax.axis("off")
+    plt.title(f'debug_two_step: {variable_name}')
+
+    axcolor = 'lightgoldenrodyellow'
+    axframe = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
+    sframe = Slider(axframe, 'Frame', 0, num_frames-1, valinit=2, valfmt='%d') # MATPLOTLIB Slider
+
+    def update(val):
+        new_frame = int(np.around(sframe.val))
+        # print(f'new_frame: {new_frame}')
+        curr_val = variable_value[:,:,new_frame] # untranslated output:
+        curr_val = np.swapaxes(curr_val, 0, 1) # x_horizontal_matrix: swap the first two axes while leaving the last intact. Returns a view into the matrix so it doesn't modify the value
+        im_out.set_data(curr_val)
+        # ax.relim()
+        # ax.autoscale_view()
+        _update_measured_animal_position_point(new_frame, ax=ax)
+        
+        if update_callback_function is not None:
+            update_callback_function(new_frame, ax=ax)
+        plt.draw()
+
+    sframe.on_changed(update)
+    plt.draw()
+    # plt.show()
+    
+    
+
+from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow # required for display_all_eloy_pf_density_measures_results
+
+def display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results):
+    """ 
+    Usage:
+        out_all_eloy_pf_density_fig = display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results)
+        
+    """
+    # active_xbins = active_pf_2D.xbin
+    # active_ybins = active_pf_2D.ybin
+    
+    # # *bin_indicies:
+    # xbin_indicies = active_pf_2D.xbin_labels -1
+    # ybin_indicies = active_pf_2D.ybin_labels -1
+    # active_xbins = xbin_indicies
+    # active_ybins = ybin_indicies
+    
+    # *bin_centers: these seem to work
+    active_xbins = active_pf_2D.xbin_centers
+    active_ybins = active_pf_2D.ybin_centers
+    
+    out = BasicBinnedImageRenderingWindow(active_eloy_analysis.avg_2D_speed_per_pos, active_xbins, active_ybins, name='avg_velocity', title="Avg Velocity per Pos (X, Y)", variable_label='Avg Velocity')
+    out.add_data(row=2, col=0, matrix=active_eloy_analysis.pf_overlapDensity_2D, xbins=active_xbins, ybins=active_ybins, name='pf_overlapDensity', title='pf overlapDensity metric', variable_label='pf overlapDensity')
+    out.add_data(row=3, col=0, matrix=active_pf_2D.ratemap.occupancy, xbins=active_xbins, ybins=active_ybins, name='occupancy_seconds', title='Seconds Occupancy', variable_label='seconds')
+    out.add_data(row=4, col=0, matrix=active_simpler_pf_densities_analysis.n_neurons_meeting_firing_critiera_by_position_bins_2D, xbins=active_xbins, ybins=active_ybins, name='n_neurons_meeting_firing_critiera_by_position_bins_2D', title='# neurons > 1Hz per Pos (X, Y)', variable_label='# neurons')
+    # out.add_data(row=5, col=0, matrix=active_peak_prominence_2d_results.peak_counts.raw, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map', title='# pf peaks per Pos (X, Y)', variable_label='# pf peaks')
+    # out.add_data(row=6, col=0, matrix=active_peak_prominence_2d_results.peak_counts.gaussian_blurred, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map_blurred gaussian', title='Gaussian blurred # pf peaks per Pos (X, Y)', variable_label='Gaussian blurred # pf peaks')
+    out.add_data(row=5, col=0, matrix=active_peak_prominence_2d_results.peak_counts.raw, xbins=active_xbins, ybins=active_ybins, name='pf_peak_counts_map', title='# pf peaks per Pos (X, Y)', variable_label='# pf peaks')
+    out.add_data(row=6, col=0, matrix=active_peak_prominence_2d_results.peak_counts.gaussian_blurred, xbins=active_xbins, ybins=active_ybins, name='pf_peak_counts_map_blurred gaussian', title='Gaussian blurred # pf peaks per Pos (X, Y)', variable_label='Gaussian blurred # pf peaks')
+
+    return out
+    
+
+
+
 
 # ==================================================================================================================== #
 # Pre 2022-08-17                                                                                                           #
@@ -154,6 +299,19 @@ def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, m
 
         app, win, plot_array, img_item_array, other_components_array = pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy)
         win.show()
+        
+    # TODO: COMPATIBILITY: replace compute_paginated_grid_config with standardized `_determine_best_placefield_2D_layout` block (see below):
+    
+    from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, enumTuningMap2DPlotMode, enumTuningMap2DPlotVariables, _determine_best_placefield_2D_layout
+    nfigures, num_pages, included_combined_indicies_pages, page_grid_sizes, data_aspect_ratio, page_figure_sizes = _determine_best_placefield_2D_layout(xbin=active_pf_2D.xbin, ybin=active_pf_2D.ybin, included_unit_indicies=np.arange(active_pf_2D.ratemap.n_neurons),
+        **overriding_dict_with(lhs_dict={'subplots': (40, 3), 'fig_column_width': 8.0, 'fig_row_height': 1.0, 'resolution_multiplier': 1.0, 'max_screen_figure_size': (None, None), 'last_figure_subplots_same_layout': True, 'debug_print': True}, **figure_format_config)) 
+
+    print(f'nfigures: {nfigures}\ndata_aspect_ratio: {data_aspect_ratio}')
+    # Loop through each page/figure that's required:
+    for page_fig_ind, page_fig_size, page_grid_size in zip(np.arange(nfigures), page_figure_sizes, page_grid_sizes):
+        print(f'\tpage_fig_ind: {page_fig_ind}, page_fig_size: {page_fig_size}, page_grid_size: {page_grid_size}')
+        # print(f'\tincluded_combined_indicies_pages: {included_combined_indicies_pages}\npage_grid_sizes: {page_grid_sizes}\npage_figure_sizes: {page_figure_sizes}')
+        
     """
     
     # pg.setConfigOptions(imageAxisOrder='row-major')
@@ -181,7 +339,7 @@ def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, m
     nMapsToShow = len(included_unit_indicies)
 
     # Paging Management: Constrain the subplots values to just those that you need
-    subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nMapsToShow, max_num_columns=max_num_columns, max_subplots_per_page=None, data_indicies=included_unit_indicies, last_figure_subplots_same_layout=True)
+    subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nMapsToShow, max_num_columns=max_num_columns, max_subplots_per_page=None, data_indicies=included_unit_indicies, last_figure_subplots_same_layout=True)   
     page_idx = 0 # page_idx is zero here because we only have one page:
     
     img_item_array = []
