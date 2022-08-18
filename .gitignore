@@ -63,3 +63,4 @@ viztracer_report.json
 .vscode/configurationCache.log
 .vscode/targets.log
 .vscode/dryrun.log
+viztracer_report_pre_remove_name.json
