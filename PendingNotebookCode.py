@@ -28,43 +28,34 @@ from pyphoplacecellanalysis.GUI.Qt.DecoderPlotSelectorControls.DecoderPlotSelect
 from pyphoplacecellanalysis.GUI.Qt.FigureFormatConfigControls.FigureFormatConfigControls import FigureFormatConfigControls # for context_nested_docks
 _debug_print = True
 
-
-def context_nested_docks(curr_active_pipeline, debug_print=True):
-    active_config_names = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
-    
-    master_dock_win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_global_window', defer_show=False)
-    master_dock_win.resize(1920, 1200)
-
-    def single_context_nested_docks(curr_active_pipeline, active_config_name, master_dock_win, debug_print=True):
+def single_context_nested_docks(curr_active_pipeline, active_config_name, app, master_dock_win, debug_print=True):
         out_display_items = dict()
         
         # Get relevant variables for this particular context:
         # curr_active_pipeline is set above, and usable here
         sess = curr_active_pipeline.filtered_sessions[active_config_name]
 
-        active_computation_results = curr_active_pipeline.computation_results[active_config_name]
-        active_computed_data = curr_active_pipeline.computation_results[active_config_name].computed_data
-        active_computation_config = curr_active_pipeline.computation_results[active_config_name].computation_config
-        active_computation_errors = curr_active_pipeline.computation_results[active_config_name].accumulated_errors
-        active_pf_1D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf1D']
-        active_pf_2D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf2D']    
-        active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
-        active_pf_2D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_dt', None)
-        active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
+        # active_computation_results = curr_active_pipeline.computation_results[active_config_name]
+        # active_computed_data = curr_active_pipeline.computation_results[active_config_name].computed_data
+        # active_computation_config = curr_active_pipeline.computation_results[active_config_name].computation_config
+        # active_computation_errors = curr_active_pipeline.computation_results[active_config_name].accumulated_errors
+        # active_pf_1D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf1D']
+        # active_pf_2D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf2D']    
+        # active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
+        # active_pf_2D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_dt', None)
+        # active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
         active_one_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None)
-        active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None)
-        active_extended_stats = curr_active_pipeline.computation_results[active_config_name].computed_data.get('extended_stats', None)
-        active_eloy_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('EloyAnalysis', None)
-        active_simpler_pf_densities_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('SimplerNeuronMeetingThresholdFiringAnalysis', None)
-        active_ratemap_peaks_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', None)
-        active_peak_prominence_2d_results = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', {}).get('PeakProminence2D', None)
-        active_measured_positions = curr_active_pipeline.computation_results[active_config_name].sess.position.to_dataframe()
-        curr_spikes_df = sess.spikes_df
+        # active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None)
+        # active_extended_stats = curr_active_pipeline.computation_results[active_config_name].computed_data.get('extended_stats', None)
+        # active_eloy_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('EloyAnalysis', None)
+        # active_simpler_pf_densities_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('SimplerNeuronMeetingThresholdFiringAnalysis', None)
+        # active_ratemap_peaks_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', None)
+        # active_peak_prominence_2d_results = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', {}).get('PeakProminence2D', None)
+        # active_measured_positions = curr_active_pipeline.computation_results[active_config_name].sess.position.to_dataframe()
+        # curr_spikes_df = sess.spikes_df
 
         curr_active_config = curr_active_pipeline.active_configs[active_config_name]
-        curr_active_display_config = curr_active_config.plotting_config
-
-        display_output = dict()
+        # curr_active_display_config = curr_active_config.plotting_config
 
         ## Build the active context by starting with the session context:
         active_identifying_session_ctx = sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
@@ -117,19 +108,24 @@ def context_nested_docks(curr_active_pipeline, debug_print=True):
             print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
             
         ## Build the widget:
-        app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, 
-                                                                                app=None, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
+        app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, app=app, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
         pyqtplot_pf2D_parent_root_widget.show()
         master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=False)
         out_display_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
         
-        
         return active_identifying_session_ctx, out_display_items
         # END single_context_nested_docks(...)
+        
+        
+def context_nested_docks(curr_active_pipeline, debug_print=True):
+    active_config_names = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
+    
+    master_dock_win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_global_window', defer_show=False)
+    master_dock_win.resize(1920, 1200)
 
     out_items = {}
     for a_config_name in active_config_names:
-        active_identifying_session_ctx, out_display_items = single_context_nested_docks(curr_active_pipeline=curr_active_pipeline, active_config_name=a_config_name, master_dock_win=master_dock_win, debug_print=debug_print)
+        active_identifying_session_ctx, out_display_items = single_context_nested_docks(curr_active_pipeline=curr_active_pipeline, active_config_name=a_config_name, app=app, master_dock_win=master_dock_win, debug_print=debug_print)
         out_items[a_config_name] = (active_identifying_session_ctx, out_display_items)
         
     return master_dock_win, app, out_items
@@ -162,6 +158,15 @@ def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, m
     
     # pg.setConfigOptions(imageAxisOrder='row-major')
     root_render_widget, parent_root_widget, app = pyqtplot_common_setup(f'_temp_pyqtplot_plot_image_array: {np.shape(images)}', app=app, parent_root_widget=parent_root_widget, root_render_widget=root_render_widget)
+    ## TODO: BUG: this makes a new QMainWindow to hold this item, which is inappropriate if it's to be rendered as a child of another control
+    
+    
+    # Creating a GraphicsLayoutWidget as the central widget
+    # if root_render_widget is None:
+        # root_render_widget = pg.GraphicsLayoutWidget()
+    #     parent_root_widget.setCentralWidget(root_render_widget)
+        
+
     pg.setConfigOptions(imageAxisOrder='col-major')
     
     # cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
@@ -210,7 +215,15 @@ def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, m
         img_item = pg.ImageItem(image=image, levels=(0,1))
         
         # # plot mode:
-        curr_plot = root_render_widget.addPlot(row=curr_row, col=curr_col, name=curr_plot_identifier_string, title=curr_cell_identifier_string)
+        curr_plot = root_render_widget.addPlot(row=curr_row, col=curr_col, title=curr_cell_identifier_string) # old: , name=curr_plot_identifier_string 
+        # PERFORMANCE: primary performance bottleneck occurs here, specifically in GraphicsLayout
+        ## PERFORMANCE: It's specifically the initialization of PlotItem within addPlot
+            # register
+                # updateViewLists: called many times, responsible for majority of time in register
+                    ## BREAKTHROUGH: register is only called when setting the name kwarg 
+                        # if name is not None:
+                        #     self.vb.register(name)
+            
         curr_plot.showAxes(False)
         if is_last_row:
             curr_plot.showAxes('x', True)
