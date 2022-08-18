@@ -562,7 +562,7 @@ def display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_form
 # ==================================================================================================================== #
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper, NestedDockAreaWidget
 
-def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, debug_print=False):
+def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, extant_dockAreaWidget=None, debug_print=False):
     """ Combines the active_pf_2D individual figures into a single widget, with each item being docked and modifiable.
     Requies figures to already be created and passed in the appropriate format.
     
@@ -577,6 +577,7 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
         all_nested_dock_area_widgets = {}
         all_nested_dock_area_widget_display_items = {}
 
+    NOTE: This builds a brand-new independent dockAreaWindow, with no option to reuse an extant one.
 
     Usage:
     
@@ -605,7 +606,12 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
     """
     min_width = 500
     min_height = 500
-    win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
+    if extant_dockAreaWidget is None:
+        created_new_main_widget = True
+        active_containing_dockAreaWidget, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
+    else:
+        created_new_main_widget = False
+        active_containing_dockAreaWidget = extant_dockAreaWidget
 
     all_dock_display_items = {}
     all_item_widths_list = []
@@ -628,7 +634,7 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
             nested_out_widget_key = f'Nested Outer Widget: {filter_name}'
             if debug_print:
                 print(f'nested_out_widget_key: {nested_out_widget_key}')
-            _, dDisplayItem = win.add_display_dock(nested_out_widget_key, dockSize=(min_width, min_height), dockIsClosable=False, widget=all_nested_dock_area_widgets[filter_name], dockAddLocationOpts=dockAddLocationOpts)
+            _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(nested_out_widget_key, dockSize=(min_width, min_height), dockIsClosable=False, widget=all_nested_dock_area_widgets[filter_name], dockAddLocationOpts=dockAddLocationOpts)
             all_nested_dock_area_widget_display_items[filter_name] = dDisplayItem
             _last_dock_outer_nested_item = dDisplayItem
 
@@ -679,19 +685,21 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
                     dockAddLocationOpts = ['above', _last_dock_item] # position relative to the _last_dock_item for this figure
                 else:
                     dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
-                _, dDisplayItem = win.add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
+                _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
                 all_dock_display_items[figure_key] = dDisplayItem
 
                 _last_dock_item = dDisplayItem
 
     # Resize window to largest figure size:
-    all_item_widths_list = np.array(all_item_widths_list)
-    all_item_heights_list = np.array(all_item_heights_list)
-    max_width = np.max(all_item_widths_list)
-    max_height = np.max(all_item_heights_list)
-    win.resize(max_width, max_height)
+    if created_new_main_widget:
+        # Only resize if we created this widget, otherwise don't change the size
+        all_item_widths_list = np.array(all_item_widths_list)
+        all_item_heights_list = np.array(all_item_heights_list)
+        max_width = np.max(all_item_widths_list)
+        max_height = np.max(all_item_heights_list)
+        active_containing_dockAreaWidget.resize(max_width, max_height)
     
-    return win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items
+    return active_containing_dockAreaWidget, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items
     
 
 # ==================================================================================================================== #
