@@ -29,13 +29,15 @@ from pyphoplacecellanalysis.GUI.Qt.FigureFormatConfigControls.FigureFormatConfig
 _debug_print = True
 
 
-def context_nested_docks(curr_active_pipeline):
+def context_nested_docks(curr_active_pipeline, debug_print=True):
     active_config_names = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
     
     master_dock_win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_global_window', defer_show=False)
     master_dock_win.resize(1920, 1200)
 
-    def single_context_nested_docks(curr_active_pipeline, active_config_name):
+    def single_context_nested_docks(curr_active_pipeline, active_config_name, master_dock_win, debug_print=True):
+        out_display_items = dict()
+        
         # Get relevant variables for this particular context:
         # curr_active_pipeline is set above, and usable here
         sess = curr_active_pipeline.filtered_sessions[active_config_name]
@@ -44,8 +46,6 @@ def context_nested_docks(curr_active_pipeline):
         active_computed_data = curr_active_pipeline.computation_results[active_config_name].computed_data
         active_computation_config = curr_active_pipeline.computation_results[active_config_name].computation_config
         active_computation_errors = curr_active_pipeline.computation_results[active_config_name].accumulated_errors
-        print(f'active_computed_data.keys(): {list(active_computed_data.keys())}')
-        print(f'active_computation_errors: {active_computation_errors}')
         active_pf_1D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf1D']
         active_pf_2D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf2D']    
         active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
@@ -66,23 +66,23 @@ def context_nested_docks(curr_active_pipeline):
 
         display_output = dict()
 
+        ## Build the active context by starting with the session context:
+        active_identifying_session_ctx = sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+        ## Add the filter to the active context
+        active_identifying_session_ctx.add_context('filter', filter_name=active_config_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
 
         def on_finalize_figure_format_config(updated_figure_format_config):
-                if _debug_print:
+                if debug_print:
                     print('on_finalize_figure_format_config')
                     print(f'\t {updated_figure_format_config}')
                 # figure_format_config = updated_figure_format_config
                 pass
                 
-        ## Build the active context by starting with the session context:
-        active_identifying_ctx = sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
-        ## Add the filter to the active context
-        active_identifying_ctx.add_context('filter', filter_name=filter_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
         ## Finally, add the display function to the active context
-        active_identifying_ctx.add_context('display_fn', display_fn_name='figure_format_config_widget') # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze_figure_format_config_widget'
-        ## Get final discription string:
-        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|')
-        print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
+        active_identifying_ctx = active_identifying_session_ctx.adding_context('display_fn', display_fn_name='figure_format_config_widget')
+        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
+        if debug_print:
+            print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
 
         figure_format_config_widget = FigureFormatConfigControls(config=curr_active_config)
         figure_format_config_widget.figure_format_config_finalized.connect(on_finalize_figure_format_config)
@@ -91,22 +91,18 @@ def context_nested_docks(curr_active_pipeline):
         figure_format_config = figure_format_config_widget.figure_format_config
 
         master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=figure_format_config_widget, dockIsClosable=False)
+        out_display_items[active_identifying_ctx] = (figure_format_config_widget)
 
-
-        ## Build the active context by starting with the session context:
-        active_identifying_ctx = sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
-        ## Add the filter to the active context
-        active_identifying_ctx.add_context('filter', filter_name=filter_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
+        
         ## Finally, add the display function to the active context
-        active_identifying_ctx.add_context('display_fn', display_fn_name='2D Position Decoder') # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze_temp_pyqtplot_plot_image_array'
-        ## Get final discription string:
-        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|')
-        print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
-
+        active_identifying_ctx = active_identifying_session_ctx.adding_context('display_fn', display_fn_name='2D Position Decoder')
+        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
+        if debug_print:
+            print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
         decoder_plot_widget = DecoderPlotSelectorWidget()
         decoder_plot_widget.show()
         master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, dockIsClosable=False)
-
+        out_display_items[active_identifying_ctx] = (decoder_plot_widget)
 
         # Get the decoders from the computation result:
         # active_one_step_decoder = computation_result.computed_data['pf2D_Decoder'] # doesn't actually require the Decoder, could just use computation_result.computed_data['pf2D']            
@@ -115,24 +111,26 @@ def context_nested_docks(curr_active_pipeline):
         # images = active_one_step_decoder.ratemap.normalized_tuning_curves[0:40,:,:] # (43, 63, 63)
         occupancy = active_one_step_decoder.ratemap.occupancy
 
-        ## Build the active context by starting with the session context:
-        active_identifying_ctx = sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
-        ## Add the filter to the active context
-        active_identifying_ctx.add_context('filter', filter_name=filter_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
-        ## Finally, add the display function to the active context
-        active_identifying_ctx.add_context('display_fn', display_fn_name='_temp_pyqtplot_plot_image_array') # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze_temp_pyqtplot_plot_image_array'
-        ## Get final discription string:
-        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|')
-        print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
+        active_identifying_ctx = active_identifying_session_ctx.adding_context('display_fn', display_fn_name='_temp_pyqtplot_plot_image_array')
+        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
+        if debug_print:
+            print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
+            
         ## Build the widget:
-        app, parent_root_widget, root_render_widget, plot_array, img_item_array, other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, 
+        app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, 
                                                                                 app=None, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
-        parent_root_widget.show()
-        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=parent_root_widget, dockIsClosable=False)
+        pyqtplot_pf2D_parent_root_widget.show()
+        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=False)
+        out_display_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
+        
+        
+        return active_identifying_session_ctx, out_display_items
+        # END single_context_nested_docks(...)
 
     out_items = {}
     for a_config_name in active_config_names:
-        out_items[a_config_name] = single_context_nested_docks(curr_active_pipeline=curr_active_pipeline, active_config_name=a_config_name)
+        active_identifying_session_ctx, out_display_items = single_context_nested_docks(curr_active_pipeline=curr_active_pipeline, active_config_name=a_config_name, master_dock_win=master_dock_win, debug_print=debug_print)
+        out_items[a_config_name] = (active_identifying_session_ctx, out_display_items)
         
     return master_dock_win, app, out_items
 
