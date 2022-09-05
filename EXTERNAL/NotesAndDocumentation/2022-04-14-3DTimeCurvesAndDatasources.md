@@ -6,6 +6,7 @@
 ## Properties:
 
 
+
 ```python
 class RenderDataseries(SimplePrintable, PrettyPrintable, QtCore.QObject):
     """ Serves as a very flexible mapping between any temporal data values and the final spatial location to render them by storing a list of configs for each series (self.data_series_config_list)
