@@ -46,6 +46,7 @@
 		],
 		"python.autoComplete.extraPaths": [],
 		"git.ignoreLimitWarning": true,
+		"qtForPython.qmllint.enabled": false,
 
 	},
 	"extensions": {

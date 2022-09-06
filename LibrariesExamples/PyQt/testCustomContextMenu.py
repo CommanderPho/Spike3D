@@ -1,0 +1,67 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QMenu, QListWidget, QVBoxLayout
+from PyQt5.QtCore import QEvent, Qt
+
+from pyphoplacecellanalysis.Resources import GuiResources, ActionIcons
+from pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable import LocalMenus_AddRenderable
+
+
+class MyApp(QWidget):
+    def __init__(self, custom_menu=None):
+        self.custom_menu = custom_menu
+        super().__init__()
+        self.setWindowTitle('Insert Context Menu to ListWidget')
+        self.window_width, self.window_height = 800, 600
+        self.setMinimumSize(self.window_width, self.window_height)
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        self.listWidget = QListWidget()
+        self.listWidget.addItems(('Facebook', 'Microsoft', 'Google'))
+        self.listWidget.installEventFilter(self)
+        layout.addWidget(self.listWidget)
+
+    def eventFilter(self, source, event):
+        if event.type() == QEvent.ContextMenu and source is self.listWidget:
+            if self.custom_menu is not None:
+                menu = self.custom_menu
+            else:
+                # make default new menu:
+                menu = QMenu()
+                menu.addAction('Action 1')
+                menu.addAction('Action 2')
+                menu.addAction('Action 3')
+
+            if menu.exec_(event.globalPos()):
+                item = source.itemAt(event.pos())
+                print(item.text())
+            return True
+        return super().eventFilter(source, event)
+
+
+# testCustomContextMenu
+
+if __name__ == '__main__':
+    # don't auto scale.
+    QApplication.setAttribute(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    
+    app = QApplication(sys.argv)
+    app.setStyleSheet('''
+        QWidget {
+            font-size: 30px;
+        }
+    ''')
+    
+    widget = LocalMenus_AddRenderable()
+    provided_menu = widget.ui.menuAdd_Renderable
+    # widget.show()
+    
+    myApp = MyApp(custom_menu=provided_menu)
+    myApp.show()
+
+    try:
+        sys.exit(app.exec_())
+    except SystemExit:
+        print('Closing Window...')
+
