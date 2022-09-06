@@ -69,8 +69,8 @@ def create_custom_context_menu(owner):
     # owner.popMenu.addSeparator()
     # owner.popMenu.addAction(QAction('test2', parent=owner))
     
-    nested_action_parent = popMenuActionsList[1]
-    # nested_action_parent = owner
+    # nested_action_parent = popMenuActionsList[1]
+    nested_action_parent = owner
     # nested_action_parent = owner.popMenu
     nestedMenuActionsList = [QAction('testA', parent=nested_action_parent),
         QAction('testB', parent=nested_action_parent),
@@ -87,11 +87,15 @@ def create_custom_context_menu(owner):
     # # owner.subMenu = QMenu(owner.popMenu)
     # # owner.subMenu = QMenu(owner)
     
+    # owner.popMenu.addMenu(
+    
     for an_action in popMenuActionsList:
         owner.popMenu.addAction(an_action)
         
+    file_submenu = owner.popMenu.addMenu("Submenu")
+    # file_submenu.addAction(button_action2) 
     for an_action in nestedMenuActionsList:
-        owner.popMenu.addAction(an_action)
+        file_submenu.addAction(an_action)
     
     # owner.subMenu = QMenu(owner.popMenu)
     # owner.subMenu = QMenu(owner)
