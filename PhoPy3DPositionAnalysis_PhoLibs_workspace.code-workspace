@@ -46,7 +46,10 @@
 		"git.ignoreLimitWarning": true,
 		"qtForPython.uic.options": [
 			"-o",
-			"${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py"
+			"${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
+			"--import-from",
+			"pyphoplacecellanalysis.Resources", // specifies the appropriate import path for resources. See if this messes up other import paths (for custom widgets for example)
+			"--resource-suffix=\"\"", // gets rid of the default "_rc" extension suffix
 		],
 	},
 	"extensions": {
