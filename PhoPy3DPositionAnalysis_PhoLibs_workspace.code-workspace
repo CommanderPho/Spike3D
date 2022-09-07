@@ -35,19 +35,19 @@
 			"titleBar.activeBackground": "#56306A",
 			"titleBar.activeForeground": "#FCFBFD"
 		},
-		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
-		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
 			"**/EXTERNAL/TESTING/OLD": true
 		},
-		"qtForPython.uic.args": [
-			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\""
-		],
+		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
+		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
+		"qtForPython.qmllint.enabled": false,
 		"python.autoComplete.extraPaths": [],
 		"git.ignoreLimitWarning": true,
-		"qtForPython.qmllint.enabled": false,
-
+		"qtForPython.uic.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py"
+		],
 	},
 	"extensions": {
 		"recommendations": [
