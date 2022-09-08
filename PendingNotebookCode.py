@@ -9,17 +9,727 @@ import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 
 from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
+from neuropy.core.neuron_identities import PlotStringBrevityModeEnum # for display_all_pf_2D_pyqtgraph_binned_image_rendering
+
 
 ## Laps Stuff:
-from neuropy.core import Laps
 from neuropy.core.epoch import NamedTimerange
-from neuropy.analyses.laps import estimate_laps, compute_laps_spike_indicies
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+# ==================================================================================================================== #
+# 2022-08-18                                                                                                           #
+# ==================================================================================================================== #
 
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper
+from pyphoplacecellanalysis.GUI.Qt.DecoderPlotSelectorControls.DecoderPlotSelectorWidget import DecoderPlotSelectorWidget # for context_nested_docks
+from pyphoplacecellanalysis.GUI.Qt.FigureFormatConfigControls.FigureFormatConfigControls import FigureFormatConfigControls # for context_nested_docks
+_debug_print = True
+
+def single_context_nested_docks(curr_active_pipeline, active_config_name, app, master_dock_win, debug_print=True):
+        out_display_items = dict()
+        
+        # Get relevant variables for this particular context:
+        # curr_active_pipeline is set above, and usable here
+        sess = curr_active_pipeline.filtered_sessions[active_config_name]
+
+        # active_computation_results = curr_active_pipeline.computation_results[active_config_name]
+        # active_computed_data = curr_active_pipeline.computation_results[active_config_name].computed_data
+        # active_computation_config = curr_active_pipeline.computation_results[active_config_name].computation_config
+        # active_computation_errors = curr_active_pipeline.computation_results[active_config_name].accumulated_errors
+        # active_pf_1D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf1D']
+        # active_pf_2D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf2D']    
+        # active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
+        # active_pf_2D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_dt', None)
+        # active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
+        active_one_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None)
+        # active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None)
+        # active_extended_stats = curr_active_pipeline.computation_results[active_config_name].computed_data.get('extended_stats', None)
+        # active_eloy_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('EloyAnalysis', None)
+        # active_simpler_pf_densities_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('SimplerNeuronMeetingThresholdFiringAnalysis', None)
+        # active_ratemap_peaks_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', None)
+        # active_peak_prominence_2d_results = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', {}).get('PeakProminence2D', None)
+        # active_measured_positions = curr_active_pipeline.computation_results[active_config_name].sess.position.to_dataframe()
+        # curr_spikes_df = sess.spikes_df
+
+        curr_active_config = curr_active_pipeline.active_configs[active_config_name]
+        # curr_active_display_config = curr_active_config.plotting_config
+
+        ## Build the active context by starting with the session context:
+        active_identifying_session_ctx = sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+        ## Add the filter to the active context
+        active_identifying_session_ctx.add_context('filter', filter_name=active_config_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
+
+        def on_finalize_figure_format_config(updated_figure_format_config):
+                if debug_print:
+                    print('on_finalize_figure_format_config')
+                    print(f'\t {updated_figure_format_config}')
+                # figure_format_config = updated_figure_format_config
+                pass
+                
+        ## Finally, add the display function to the active context
+        active_identifying_ctx = active_identifying_session_ctx.adding_context('display_fn', display_fn_name='figure_format_config_widget')
+        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
+        if debug_print:
+            print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
+
+        figure_format_config_widget = FigureFormatConfigControls(config=curr_active_config)
+        figure_format_config_widget.figure_format_config_finalized.connect(on_finalize_figure_format_config)
+        figure_format_config_widget.show() # even without .show() being called, the figure still appears
+        ## Get the figure_format_config from the figure_format_config widget:
+        figure_format_config = figure_format_config_widget.figure_format_config
+
+        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=figure_format_config_widget, dockIsClosable=False)
+        out_display_items[active_identifying_ctx] = (figure_format_config_widget)
+
+        
+        ## Finally, add the display function to the active context
+        active_identifying_ctx = active_identifying_session_ctx.adding_context('display_fn', display_fn_name='2D Position Decoder')
+        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
+        if debug_print:
+            print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
+        decoder_plot_widget = DecoderPlotSelectorWidget()
+        decoder_plot_widget.show()
+        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, dockIsClosable=True)
+        out_display_items[active_identifying_ctx] = (decoder_plot_widget)
+
+        # Get the decoders from the computation result:
+        # active_one_step_decoder = computation_result.computed_data['pf2D_Decoder'] # doesn't actually require the Decoder, could just use computation_result.computed_data['pf2D']            
+        # Get flat list of images:
+        images = active_one_step_decoder.ratemap.normalized_tuning_curves # (43, 63, 63)
+        # images = active_one_step_decoder.ratemap.normalized_tuning_curves[0:40,:,:] # (43, 63, 63)
+        occupancy = active_one_step_decoder.ratemap.occupancy
+
+        active_identifying_ctx = active_identifying_session_ctx.adding_context('display_fn', display_fn_name='_temp_pyqtplot_plot_image_array')
+        active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
+        if debug_print:
+            print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
+            
+        ## Build the widget:
+        app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, app=app, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
+        pyqtplot_pf2D_parent_root_widget.show()
+        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=True)
+        out_display_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
+        
+        return active_identifying_session_ctx, out_display_items
+        # END single_context_nested_docks(...)
+        
+        
+def context_nested_docks(curr_active_pipeline, debug_print=True):
+    active_config_names = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
+    
+    master_dock_win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_global_window', defer_show=False)
+    master_dock_win.resize(1920, 1200)
+
+    out_items = {}
+    for a_config_name in active_config_names:
+        active_identifying_session_ctx, out_display_items = single_context_nested_docks(curr_active_pipeline=curr_active_pipeline, active_config_name=a_config_name, app=app, master_dock_win=master_dock_win, debug_print=debug_print)
+        out_items[a_config_name] = (active_identifying_session_ctx, out_display_items)
+        
+    return master_dock_win, app, out_items
+
+import matplotlib.pyplot as plt 
+from matplotlib.widgets import Slider # needed for _temp_debug_two_step_plots_animated_imshow
+
+## Copied from DecoderPredictionError.py to modify with adding nearest animal position at each timestep:
+def _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, time_binned_position_df: pd.DataFrame, variable_name='p_x_given_n_and_x_prev', override_variable_value=None, update_callback_function=None):
+    """Matplotlib-based imshow plot with interactive slider for displaying two-step bayesian decoding results
+
+    ## Added _update_measured_animal_position_point(...)
+    DEPENDS ON active_computed_data.extended_stats.time_binned_position_df
+    
+    Args:
+        active_one_step_decoder ([type]): [description]
+        active_two_step_decoder ([type]): [description]
+        time_binned_position_df: should be obtained from `active_computed_data.extended_stats.time_binned_position_df` by default
+        variable_name (str, optional): [description]. Defaults to 'p_x_given_n_and_x_prev'.
+        override_variable_value ([type], optional): [description]. Defaults to None.
+        update_callback_function ([type], optional): [description]. Defaults to None.
+        
+        
+    Usage:
+        # Simple plot type 1:
+        # plotted_variable_name = kwargs.get('variable_name', 'p_x_given_n') # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
+        plotted_variable_name = 'p_x_given_n' # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
+        _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, active_computed_data.extended_stats.time_binned_position_df, variable_name=plotted_variable_name) # Works
+
+    """
+    if override_variable_value is None:
+        try:
+            variable_value = active_two_step_decoder[variable_name]
+        except (TypeError, KeyError):
+            # fallback to the one_step_decoder
+            variable_value = getattr(active_one_step_decoder, variable_name, None)
+    else:
+        # if override_variable_value is set, ignore the input info and use it.
+        variable_value = override_variable_value
+
+    num_frames = np.shape(variable_value)[-1]
+    debug_print = True
+    if debug_print:
+        print(f'_temp_debug_two_step_plots_animated_imshow: variable_name="{variable_name}", np.shape: {np.shape(variable_value)}, num_frames: {num_frames}')
+
+    fig, ax = plt.subplots(ncols=1, nrows=1, num=f'debug_two_step_animated: variable_name={variable_name}', figsize=(15,15), clear=True, constrained_layout=False)
+    plt.subplots_adjust(left=0.25, bottom=0.25)
+
+    frame = 0
+    
+    # Get extents:    
+    xmin, xmax, ymin, ymax = (active_one_step_decoder.xbin[0], active_one_step_decoder.xbin[-1], active_one_step_decoder.ybin[0], active_one_step_decoder.ybin[-1])
+    x_first_extent = (xmin, xmax, ymin, ymax) # traditional order of the extant axes
+    active_extent = x_first_extent # for 'x == horizontal orientation'
+    # active_extent = y_first_extent # for 'x == vertical orientation'
+
+    main_plot_kwargs = {
+        'origin': 'lower',
+        'cmap': 'turbo',
+        'extent': active_extent,
+        # 'aspect':'auto',
+    }
+
+    curr_val = variable_value[:,:,frame] # untranslated output:
+    curr_val = np.swapaxes(curr_val, 0, 1) # x_horizontal_matrix: swap the first two axes while leaving the last intact. Returns a view into the matrix so it doesn't modify the value
+    
+    im_out = ax.imshow(curr_val, **main_plot_kwargs)
+    
+    ## Setup Auxillary Plots:
+    active_resampled_pos_df = time_binned_position_df.copy() # active_computed_data.extended_stats.time_binned_position_df  # 1717 rows × 16 columns
+    active_resampled_measured_positions = active_resampled_pos_df[['x','y']].to_numpy() # The measured positions resampled (interpolated) at the window centers. 
+    measured_point = np.squeeze(active_resampled_measured_positions[frame,:])
+    ## decided on using scatter
+    # measured_positions_scatter = ax.scatter(measured_point[0], measured_point[1], color='white') # PathCollection
+    measured_positions_scatter, = ax.plot(measured_point[0], measured_point[1], color='white', marker='o', ls='') # PathCollection
+    
+    def _update_measured_animal_position_point(time_window_idx, ax=None):
+        """ captures `active_resampled_measured_positions` and `measured_positions_scatter` """
+        measured_point = np.squeeze(active_resampled_measured_positions[time_window_idx,:])
+        ## TODO: this would need to use set_offsets(...) if we wanted to stick with scatter plot.
+        measured_positions_scatter.set_xdata(measured_point[0])
+        measured_positions_scatter.set_ydata(measured_point[1])
+    
+    # for 'x == horizontal orientation':
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    
+    # ax.axis("off")
+    plt.title(f'debug_two_step: {variable_name}')
+
+    axcolor = 'lightgoldenrodyellow'
+    axframe = plt.axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
+    sframe = Slider(axframe, 'Frame', 0, num_frames-1, valinit=2, valfmt='%d') # MATPLOTLIB Slider
+
+    def update(val):
+        new_frame = int(np.around(sframe.val))
+        # print(f'new_frame: {new_frame}')
+        curr_val = variable_value[:,:,new_frame] # untranslated output:
+        curr_val = np.swapaxes(curr_val, 0, 1) # x_horizontal_matrix: swap the first two axes while leaving the last intact. Returns a view into the matrix so it doesn't modify the value
+        im_out.set_data(curr_val)
+        # ax.relim()
+        # ax.autoscale_view()
+        _update_measured_animal_position_point(new_frame, ax=ax)
+        
+        if update_callback_function is not None:
+            update_callback_function(new_frame, ax=ax)
+        plt.draw()
+
+    sframe.on_changed(update)
+    plt.draw()
+    # plt.show()
+    
+    
+
+from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow # required for display_all_eloy_pf_density_measures_results
+
+def display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results):
+    """ 
+    Usage:
+        out_all_eloy_pf_density_fig = display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results)
+        
+    """
+    # active_xbins = active_pf_2D.xbin
+    # active_ybins = active_pf_2D.ybin
+    
+    # # *bin_indicies:
+    # xbin_indicies = active_pf_2D.xbin_labels -1
+    # ybin_indicies = active_pf_2D.ybin_labels -1
+    # active_xbins = xbin_indicies
+    # active_ybins = ybin_indicies
+    
+    # *bin_centers: these seem to work
+    active_xbins = active_pf_2D.xbin_centers
+    active_ybins = active_pf_2D.ybin_centers
+    
+    out = BasicBinnedImageRenderingWindow(active_eloy_analysis.avg_2D_speed_per_pos, active_xbins, active_ybins, name='avg_velocity', title="Avg Velocity per Pos (X, Y)", variable_label='Avg Velocity')
+    out.add_data(row=2, col=0, matrix=active_eloy_analysis.pf_overlapDensity_2D, xbins=active_xbins, ybins=active_ybins, name='pf_overlapDensity', title='pf overlapDensity metric', variable_label='pf overlapDensity')
+    out.add_data(row=3, col=0, matrix=active_pf_2D.ratemap.occupancy, xbins=active_xbins, ybins=active_ybins, name='occupancy_seconds', title='Seconds Occupancy', variable_label='seconds')
+    out.add_data(row=4, col=0, matrix=active_simpler_pf_densities_analysis.n_neurons_meeting_firing_critiera_by_position_bins_2D, xbins=active_xbins, ybins=active_ybins, name='n_neurons_meeting_firing_critiera_by_position_bins_2D', title='# neurons > 1Hz per Pos (X, Y)', variable_label='# neurons')
+    # out.add_data(row=5, col=0, matrix=active_peak_prominence_2d_results.peak_counts.raw, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map', title='# pf peaks per Pos (X, Y)', variable_label='# pf peaks')
+    # out.add_data(row=6, col=0, matrix=active_peak_prominence_2d_results.peak_counts.gaussian_blurred, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map_blurred gaussian', title='Gaussian blurred # pf peaks per Pos (X, Y)', variable_label='Gaussian blurred # pf peaks')
+    out.add_data(row=5, col=0, matrix=active_peak_prominence_2d_results.peak_counts.raw, xbins=active_xbins, ybins=active_ybins, name='pf_peak_counts_map', title='# pf peaks per Pos (X, Y)', variable_label='# pf peaks')
+    out.add_data(row=6, col=0, matrix=active_peak_prominence_2d_results.peak_counts.gaussian_blurred, xbins=active_xbins, ybins=active_ybins, name='pf_peak_counts_map_blurred gaussian', title='Gaussian blurred # pf peaks per Pos (X, Y)', variable_label='Gaussian blurred # pf peaks')
+
+    return out
+    
+
+# ==================================================================================================================== #
+# Pre 2022-08-17                                                                                                           #
+# ==================================================================================================================== #
+
+import pyphoplacecellanalysis.External.pyqtgraph as pg # required for _temp_pyqtplot_plot_image_array
+from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import _pyqtplot_build_image_bounds_extent # required for _temp_pyqtplot_plot_image_array
+from pyphocorehelpers.indexing_helpers import compute_paginated_grid_config # required for _temp_pyqtplot_plot_image_array
+from pyphoplacecellanalysis.GUI.PyQtPlot.pyqtplot_basic import pyqtplot_common_setup # required for _temp_pyqtplot_plot_image_array
+
+
+def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, max_num_columns = 5, drop_below_threshold: float=0.0000001, enable_LUT_Histogram=False, app=None, parent_root_widget=None, root_render_widget=None, debug_print=False):
+    """ Plots an array of images provided in 'images' argument
+    images should be an nd.array with dimensions like: (10, 63, 63), where (N_Images, X_Dim, Y_Dim)
+        or (2, 5, 63, 63), where (N_Rows, N_Cols, X_Dim, Y_Dim)
+        
+    Example:
+        # Get flat list of images:
+        images = active_one_step_decoder.ratemap.normalized_tuning_curves # (43, 63, 63)
+        # images = active_one_step_decoder.ratemap.normalized_tuning_curves[0:40,:,:] # (43, 63, 63)
+        occupancy = active_one_step_decoder.ratemap.occupancy
+
+        app, win, plot_array, img_item_array, other_components_array = pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy)
+        win.show()
+        
+    # TODO: COMPATIBILITY: replace compute_paginated_grid_config with standardized `_determine_best_placefield_2D_layout` block (see below):
+    
+    from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, enumTuningMap2DPlotMode, enumTuningMap2DPlotVariables, _determine_best_placefield_2D_layout
+    nfigures, num_pages, included_combined_indicies_pages, page_grid_sizes, data_aspect_ratio, page_figure_sizes = _determine_best_placefield_2D_layout(xbin=active_pf_2D.xbin, ybin=active_pf_2D.ybin, included_unit_indicies=np.arange(active_pf_2D.ratemap.n_neurons),
+        **overriding_dict_with(lhs_dict={'subplots': (40, 3), 'fig_column_width': 8.0, 'fig_row_height': 1.0, 'resolution_multiplier': 1.0, 'max_screen_figure_size': (None, None), 'last_figure_subplots_same_layout': True, 'debug_print': True}, **figure_format_config)) 
+
+    print(f'nfigures: {nfigures}\ndata_aspect_ratio: {data_aspect_ratio}')
+    # Loop through each page/figure that's required:
+    for page_fig_ind, page_fig_size, page_grid_size in zip(np.arange(nfigures), page_figure_sizes, page_grid_sizes):
+        print(f'\tpage_fig_ind: {page_fig_ind}, page_fig_size: {page_fig_size}, page_grid_size: {page_grid_size}')
+        # print(f'\tincluded_combined_indicies_pages: {included_combined_indicies_pages}\npage_grid_sizes: {page_grid_sizes}\npage_figure_sizes: {page_figure_sizes}')
+        
+    """
+    
+    # pg.setConfigOptions(imageAxisOrder='row-major')
+    root_render_widget, parent_root_widget, app = pyqtplot_common_setup(f'_temp_pyqtplot_plot_image_array: {np.shape(images)}', app=app, parent_root_widget=parent_root_widget, root_render_widget=root_render_widget)
+    ## TODO: BUG: this makes a new QMainWindow to hold this item, which is inappropriate if it's to be rendered as a child of another control
+    
+    
+    # Creating a GraphicsLayoutWidget as the central widget
+    # if root_render_widget is None:
+        # root_render_widget = pg.GraphicsLayoutWidget()
+    #     parent_root_widget.setCentralWidget(root_render_widget)
+        
+
+    pg.setConfigOptions(imageAxisOrder='col-major')
+    
+    # cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
+    cmap = pg.colormap.get('jet','matplotlib') # prepare a linear color map
+
+    image_bounds_extent, x_range, y_range = _pyqtplot_build_image_bounds_extent(xbin_edges, ybin_edges, margin=2.0, debug_print=debug_print)
+    # image_aspect_ratio, image_width_height_tuple = compute_data_aspect_ratio(x_range, y_range)
+    # print(f'image_aspect_ratio: {image_aspect_ratio} - xScale/yScale: {float(image_width_height_tuple.width) / float(image_width_height_tuple.height)}')
+    
+    # Compute Images:
+    included_unit_indicies = np.arange(np.shape(images)[0]) # include all unless otherwise specified
+    nMapsToShow = len(included_unit_indicies)
+
+    # Paging Management: Constrain the subplots values to just those that you need
+    subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nMapsToShow, max_num_columns=max_num_columns, max_subplots_per_page=None, data_indicies=included_unit_indicies, last_figure_subplots_same_layout=True)   
+    page_idx = 0 # page_idx is zero here because we only have one page:
+    
+    img_item_array = []
+    other_components_array = []
+    plot_array = []
+
+    for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in included_combined_indicies_pages[page_idx]:
+        # Need to convert to page specific:
+        curr_page_relative_linear_index = np.mod(a_linear_index, int(page_grid_sizes[page_idx].num_rows * page_grid_sizes[page_idx].num_columns))
+        curr_page_relative_row = np.mod(curr_row, page_grid_sizes[page_idx].num_rows)
+        curr_page_relative_col = np.mod(curr_col, page_grid_sizes[page_idx].num_columns)
+        is_first_column = (curr_page_relative_col == 0)
+        is_first_row = (curr_page_relative_row == 0)
+        is_last_column = (curr_page_relative_col == (page_grid_sizes[page_idx].num_columns-1))
+        is_last_row = (curr_page_relative_row == (page_grid_sizes[page_idx].num_rows-1))
+        if debug_print:
+            print(f'a_linear_index: {a_linear_index}, curr_page_relative_linear_index: {curr_page_relative_linear_index}, curr_row: {curr_row}, curr_col: {curr_col}, curr_page_relative_row: {curr_page_relative_row}, curr_page_relative_col: {curr_page_relative_col}, curr_included_unit_index: {curr_included_unit_index}')
+
+        neuron_IDX = curr_included_unit_index
+        curr_cell_identifier_string = f'Cell[{neuron_IDX}]'
+        curr_plot_identifier_string = f'pyqtplot_plot_image_array.{curr_cell_identifier_string}'
+
+        image = np.squeeze(images[a_linear_index,:,:])
+        # Pre-filter the data:
+        with np.errstate(divide='ignore', invalid='ignore'):
+            image = np.array(image.copy()) / np.nanmax(image) # note scaling by maximum here!
+            if drop_below_threshold is not None:
+                image[np.where(occupancy < drop_below_threshold)] = np.nan # null out the occupancy
+
+        # Build the image item:
+        img_item = pg.ImageItem(image=image, levels=(0,1))
+        
+        # # plot mode:
+        curr_plot = root_render_widget.addPlot(row=curr_row, col=curr_col, title=curr_cell_identifier_string) # old: , name=curr_plot_identifier_string 
+        # PERFORMANCE: primary performance bottleneck occurs here, specifically in GraphicsLayout
+        ## PERFORMANCE: It's specifically the initialization of PlotItem within addPlot
+            # register
+                # updateViewLists: called many times, responsible for majority of time in register
+                    ## BREAKTHROUGH: register is only called when setting the name kwarg 
+                        # if name is not None:
+                        #     self.vb.register(name)
+            
+        curr_plot.showAxes(False)
+        if is_last_row:
+            curr_plot.showAxes('x', True)
+            curr_plot.showAxis('bottom', show=True)
+        else:
+            curr_plot.showAxes('x', False)
+            curr_plot.showAxis('bottom', show=False)
+            
+        if is_first_column:
+            curr_plot.showAxes('y', True)
+            curr_plot.showAxis('left', show=True)
+        else:
+            curr_plot.showAxes('y', False)
+            curr_plot.showAxis('left', show=False)
+        
+        curr_plot.hideButtons() # Hides the auto-scale button
+        
+        curr_plot.addItem(img_item, defaultPadding=0.0)  # add ImageItem to PlotItem
+        # curr_plot.setAspectLocked(lock=True, ratio=image_aspect_ratio)
+        # curr_plot.showAxes(True)
+        # curr_plot.showGrid(True, True, 0.7)
+        # curr_plot.setLabel('bottom', "Label to test offset")
+        
+        # # Overlay cell identifier text:
+        # curr_label = pg.TextItem(f'Cell[{neuron_IDX}]', color=(230, 230, 230))
+        # curr_label.setPos(30, 60)
+        # curr_label.setParentItem(img_item)
+        # # curr_plot.addItem(curr_label, ignoreBounds=True)
+        # curr_plot.addItem(curr_label)
+
+        # Update the image:
+        img_item.setImage(image, rect=image_bounds_extent, autoLevels=False) # rect: [x, y, w, h]
+        img_item.setLookupTable(cmap.getLookupTable(nPts=256), update=False)
+
+        # curr_plot.set
+        # margin = 2.0
+        # curr_plot.setXRange(global_min_x-margin, global_max_x+margin)
+        # curr_plot.setYRange(global_min_y-margin, global_max_y+margin)
+        # curr_plot.setXRange(*x_range)
+        # curr_plot.setYRange(*y_range)
+        curr_plot.setRange(xRange=x_range, yRange=y_range, padding=0.0, update=False, disableAutoRange=True)
+        # Sets only the panning limits:
+        curr_plot.setLimits(xMin=x_range[0], xMax=x_range[-1], yMin=y_range[0], yMax=y_range[-1])
+        # Link Axes to previous item:
+        if a_linear_index > 0:
+            prev_plot_item = plot_array[a_linear_index-1]
+            curr_plot.setXLink(prev_plot_item)
+            curr_plot.setYLink(prev_plot_item)
+                        
+        # Interactive Color Bar:
+        bar = pg.ColorBarItem(values= (0, 1), colorMap=cmap, width=5, interactive=False) # prepare interactive color bar
+        # Have ColorBarItem control colors of img and appear in 'plot':
+        bar.setImageItem(img_item, insert_in=curr_plot)
+
+        img_item_array.append(img_item)
+        plot_array.append(curr_plot)
+        other_components_array.append({'color_bar':bar})
+        
+    # Post images loop:
+    
+    enable_show = False
+    
+    if parent_root_widget is not None:
+        if enable_show:
+            parent_root_widget.show()
+        
+        parent_root_widget.setWindowTitle('pyqtplot image array')
+
+    # pg.exec()
+    return app, parent_root_widget, root_render_widget, plot_array, img_item_array, other_components_array
+
+
+# ==================================================================================================================== #
+# 🔜👁️‍🗨️ Merging TimeSynchronized Plotters:                                                                         #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster import Spike2DRaster
+from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedOccupancyPlotter import TimeSynchronizedOccupancyPlotter
+from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedPlacefieldsPlotter import TimeSynchronizedPlacefieldsPlotter
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper
+
+def _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0):
+    """ Builds a single window with time_synchronized (time-dependent placefield) plotters controlled by a 2DRasterPlot widget.
+    
+    Usage:
+        active_pf_2D_dt.reset()
+        active_pf_2D_dt.update(t=45.0, start_relative_t=True)
+        all_plotters, root_dockAreaWindow, app = _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0)
+    """
+    def _merge_plotters(spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter):
+        # root_dockAreaWindow, app = DockAreaWrapper.wrap_with_dockAreaWindow(curr_sync_occupancy_plotter, spike_raster_plt_2d, title='All Time Synchronized Plotters')
+        # curr_placefields_plotter, dDisplayItem = root_dockAreaWindow.add_display_dock(identifier='Time Dependent Placefields', widget=curr_placefields_plotter, dockAddLocationOpts=['left'])
+        root_dockAreaWindow, app = DockAreaWrapper.wrap_with_dockAreaWindow(curr_sync_occupancy_plotter, curr_placefields_plotter, title='All Time Synchronized Plotters')
+        spike_raster_plt_2d, dDisplayItem = root_dockAreaWindow.add_display_dock(identifier='Time Dependent Placefields', widget=spike_raster_plt_2d, dockAddLocationOpts=['bottom'])
+        
+        ## Register the children items as drivables/drivers:
+        root_dockAreaWindow.connection_man.register_drivable(curr_sync_occupancy_plotter)
+        root_dockAreaWindow.connection_man.register_drivable(curr_placefields_plotter)
+        root_dockAreaWindow.connection_man.register_driver(spike_raster_plt_2d)
+        # Wire up signals such that time-synchronized plotters are controlled by the RasterPlot2D:
+        occupancy_raster_window_sync_connection = root_dockAreaWindow.connection_man.connect_drivable_to_driver(drivable=curr_sync_occupancy_plotter, driver=spike_raster_plt_2d,
+                                                               custom_connect_function=(lambda driver, drivable: pg.SignalProxy(driver.window_scrolled, delay=0.2, rateLimit=60, slot=drivable.on_window_changed_rate_limited)))
+        placefields_raster_window_sync_connection = root_dockAreaWindow.connection_man.connect_drivable_to_driver(drivable=curr_placefields_plotter, driver=spike_raster_plt_2d,
+                                                               custom_connect_function=(lambda driver, drivable: pg.SignalProxy(driver.window_scrolled, delay=0.2, rateLimit=60, slot=drivable.on_window_changed_rate_limited)))
+        
+        return root_dockAreaWindow, app
+    
+    # Build the 2D Raster Plotter using a fixed window duration
+    current_window_start_time = active_pf_2D_dt.last_t - fixed_window_duration
+    spike_raster_plt_2d = Spike2DRaster.init_from_independent_data(active_pf_2D_dt.all_time_filtered_spikes_df, window_duration=fixed_window_duration, window_start_time=current_window_start_time,
+                                                                   neuron_colors=None, neuron_sort_order=None, application_name='TimeSynchronizedPlotterControlSpikeRaster2D',
+                                                                   enable_independent_playback_controller=False, should_show=False,  parent=None) # setting , parent=spike_raster_plt_3d makes a single window
+    spike_raster_plt_2d.setWindowTitle('2D Raster Control Window')
+    # Update the 2D Scroll Region to the initial value:
+    spike_raster_plt_2d.update_scroll_window_region(current_window_start_time, active_pf_2D_dt.last_t, block_signals=False)
+    curr_sync_occupancy_plotter = TimeSynchronizedOccupancyPlotter(active_pf_2D_dt)
+    curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
+    
+    root_dockAreaWindow, app = _merge_plotters(spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter)
+    return (spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter), root_dockAreaWindow, app
+    
+
+# ==================================================================================================================== #
+# 2022-08-16                                                                                                           #
+# ==================================================================================================================== #
+
+from neuropy.utils.dynamic_container import overriding_dict_with # used in display_all_pf_2D_pyqtgraph_binned_image_rendering to only get the valid kwargs to pass from the display config
+from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, enumTuningMap2DPlotMode, enumTuningMap2DPlotVariables, _determine_best_placefield_2D_layout, _scale_current_placefield_to_acceptable_range, _build_neuron_identity_label
+from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow, add_bin_ticks, build_binned_imageItem
+
+def display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_format_config, debug_print=True):
+    """ 2022-08-16 - A fresh implementation of a pf_2D placefield renderer that uses the BasicBinnedImageRenderingWindow subclass. 
+    
+    Uses the common `_determine_best_placefield_2D_layout(...)` setup so that its returned subplots layout is the same as the matplotlib version in NeuroPy.neuropy.plotting.ratemaps.plot_ratemap_2D(...) (the main Matplotlib version that works)
+    
+    Usage:
+        out_all_pf_2D_pyqtgraph_binned_image_fig = display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_format_config)
+        
+    """
+    wants_crosshairs= figure_format_config.get('wants_crosshairs', False) 
+    
+    
+    # cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
+    # cmap = pg.colormap.get('jet','matplotlib') # prepare a linear color map
+    
+    # color_map = figure_format_config.get('color_map', 'viridis')
+    color_map = figure_format_config.get('color_map', pg.colormap.get('jet','matplotlib'))
+    # color_map = figure_format_config.get('color_map', 'viridis')
+    
+    # color_bar_mode = figure_format_config.get('color_bar_mode', 'each')
+    color_bar_mode = figure_format_config.get('color_bar_mode', None) # no colorbars rendered  
+    
+    use_special_overlayed_title = True
+    brev_mode = PlotStringBrevityModeEnum.CONCISE
+    plot_variable = enumTuningMap2DPlotVariables.TUNING_MAPS
+    drop_below_threshold = figure_format_config.get('drop_below_threshold', 0.0000001) # try to get the 'drop_below_threshold' argument
+    ## from matplotlib version:
+    # drop_below_threshold: float=0.0000001, brev_mode: PlotStringBrevityModeEnum=PlotStringBrevityModeEnum.CONCISE, plot_variable: enumTuningMap2DPlotVariables=enumTuningMap2DPlotVariables.TUNING_MAPS
+    # Build the formatter for rendering the max values such as the peak firing rate or max spike counts:
+    if brev_mode.should_show_firing_rate_label:
+        max_value_formatter = _build_variable_max_value_label(plot_variable=plot_variable)
+    else:
+        max_value_formatter = None
+        
+    nfigures, num_pages, included_combined_indicies_pages, page_grid_sizes, data_aspect_ratio, page_figure_sizes = _determine_best_placefield_2D_layout(xbin=active_pf_2D.xbin, ybin=active_pf_2D.ybin, included_unit_indicies=np.arange(active_pf_2D.ratemap.n_neurons),
+        **overriding_dict_with(lhs_dict={'subplots': (40, 3), 'fig_column_width': 8.0, 'fig_row_height': 1.0, 'resolution_multiplier': 1.0, 'max_screen_figure_size': (None, None), 'last_figure_subplots_same_layout': True, 'debug_print': True}, **figure_format_config))
+
+    active_xbins = active_pf_2D.xbin
+    active_ybins = active_pf_2D.ybin    
+    out = None
+    # New page-based version:
+    for page_idx in np.arange(num_pages):
+        if debug_print:
+            print(f'page_idx: {page_idx}')
+        for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in included_combined_indicies_pages[page_idx]:
+            # Need to convert to page specific:
+            curr_page_relative_linear_index = np.mod(a_linear_index, int(page_grid_sizes[page_idx].num_rows * page_grid_sizes[page_idx].num_columns))
+            curr_page_relative_row = np.mod(curr_row, page_grid_sizes[page_idx].num_rows)
+            curr_page_relative_col = np.mod(curr_col, page_grid_sizes[page_idx].num_columns)
+            # print(f'a_linear_index: {a_linear_index}, curr_page_relative_linear_index: {curr_page_relative_linear_index}, curr_row: {curr_row}, curr_col: {curr_col}, curr_page_relative_row: {curr_page_relative_row}, curr_page_relative_col: {curr_page_relative_col}, curr_included_unit_index: {curr_included_unit_index}')
+            neuron_IDX = curr_included_unit_index
+            curr_extended_id_string = active_pf_2D.ratemap.get_extended_neuron_id_string(neuron_i=neuron_IDX) 
+            # ratemap.neuron_extended_ids[neuron_IDX] # the matplotlib version just uses ratemap.neuron_extended_ids[neuron_IDX], but this should work too
+            
+            pfmap = np.squeeze(active_pf_2D.ratemap.tuning_curves[a_linear_index,:,:]).copy()
+            
+            ## Labeling:
+            formatted_max_value_string = None
+            if brev_mode.should_show_firing_rate_label:
+                assert max_value_formatter is not None
+                ## NOTE: must set max_value_formatter on the pfmap BEFORE the `_scale_current_placefield_to_acceptable_range` is called to have it show accurate labels!
+                formatted_max_value_string = max_value_formatter(np.nanmax(pfmap))
+            
+            ## Once the max_value_formatter is called with the unscaled pfmap, we can call _scale_current_placefield_to_acceptable_range to scale it appropriately:
+            pfmap = _scale_current_placefield_to_acceptable_range(pfmap, occupancy=active_pf_2D.occupancy, drop_below_threshold=drop_below_threshold)            
+                
+            final_title = _build_neuron_identity_label(neuron_extended_id=active_pf_2D.ratemap.neuron_extended_ids[neuron_IDX], brev_mode=brev_mode, formatted_max_value_string=formatted_max_value_string, use_special_overlayed_title=use_special_overlayed_title)
+            
+            if out is None:
+                # first iteration only
+                out = BasicBinnedImageRenderingWindow(pfmap, active_xbins, active_ybins, name=f'pf[{final_title}]', title=final_title, variable_label=curr_extended_id_string, wants_crosshairs=wants_crosshairs, color_map=color_map, color_bar_mode=color_bar_mode)
+            else:
+                out.add_data(row=curr_page_relative_row, col=curr_page_relative_col, matrix=pfmap, xbins=active_xbins, ybins=active_ybins, name=f'pf[{final_title}]', title=final_title, variable_label=curr_extended_id_string)
+        
+    return out
+    
+    
+    
+
+# ==================================================================================================================== #
+# Pre 2022-08-16 Figure Docking                                                                                        #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper, NestedDockAreaWidget
+
+def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, extant_dockAreaWidget=None, debug_print=False):
+    """ Combines the active_pf_2D individual figures into a single widget, with each item being docked and modifiable.
+    Requies figures to already be created and passed in the appropriate format.
+    
+    # TODO: On close should close the figure handles that are currently open. Can use figure_manager to do this.
+    
+    
+    # TODO: Shouldnt' this be a widget instead of a function? Maybe it doesn't matter though.
+    
+    if should_nest_figures_on_filter is True, the figures are docked in a nested dockarea for each filter (e.g. ['maze1', 'maze2']. Otherwise they are returned flat.
+        
+    Unique to nested:
+        all_nested_dock_area_widgets = {}
+        all_nested_dock_area_widget_display_items = {}
+
+    NOTE: This builds a brand-new independent dockAreaWindow, with no option to reuse an extant one.
+
+    Usage:
+    
+        def _display_specified__display_2d_placefield_result_plot_ratemaps_2D(filter_name):
+            active_filter_pf_2D_figures = {}
+            active_filter_pf_2D_figures['SPIKES_MAPS'] = curr_active_pipeline.display('_display_2d_placefield_result_plot_ratemaps_2D', filter_name, plot_variable=enumTuningMap2DPlotVariables.SPIKES_MAPS, fignum=plots_fig_nums_dict[filter_name][0], **figure_format_config)[0]
+            active_filter_pf_2D_figures['TUNING_MAPS'] = curr_active_pipeline.display('_display_2d_placefield_result_plot_ratemaps_2D', filter_name, plot_variable=enumTuningMap2DPlotVariables.TUNING_MAPS, fignum=plots_fig_nums_dict[filter_name][1], **figure_format_config)[0]
+            return active_filter_pf_2D_figures
+
+        active_pf_2D_figures = {}
+        ## Plots for each maze programmatically:
+        for i, filter_name in enumerate(curr_active_pipeline.active_config_names):
+            active_pf_2D_figures[filter_name] = _display_specified__display_2d_placefield_result_plot_ratemaps_2D(filter_name=filter_name)
+
+        active_pf_2D_figures
+        # {'maze1': {'SPIKES_MAPS': <Figure size 1728x1080 with 88 Axes>,
+        #   'TUNING_MAPS': <Figure size 1728x1080 with 88 Axes>},
+        #  'maze2': {'SPIKES_MAPS': <Figure size 1728x864 with 71 Axes>,
+        #   'TUNING_MAPS': <Figure size 1728x864 with 71 Axes>}}
+
+        win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items = _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, debug_print=False)
+
+        win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items = _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, debug_print=False)
+        
+        
+    """
+    min_width = 500
+    min_height = 500
+    if extant_dockAreaWidget is None:
+        created_new_main_widget = True
+        active_containing_dockAreaWidget, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
+    else:
+        created_new_main_widget = False
+        active_containing_dockAreaWidget = extant_dockAreaWidget
+
+    all_dock_display_items = {}
+    all_item_widths_list = []
+    all_item_heights_list = []
+
+    if should_nest_figures_on_filter:
+        all_nested_dock_area_widgets = {}
+        all_nested_dock_area_widget_display_items = {}
+
+        _last_dock_outer_nested_item = None
+        for filter_name, a_figures_dict in active_pf_2D_figures.items():
+            # For each filter, create a new NestedDockAreaWidget
+            all_nested_dock_area_widgets[filter_name] = NestedDockAreaWidget()
+            # Once done with a given filter, add its nested dockarea widget to the window
+            if _last_dock_outer_nested_item is not None:
+                #NOTE: to stack two dock widgets on top of each other, do area.moveDock(d6, 'above', d4)   ## move d6 to stack on top of d4
+                dockAddLocationOpts = ['above', _last_dock_outer_nested_item] # position relative to the _last_dock_outer_nested_item for this figure
+            else:
+                dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
+            nested_out_widget_key = f'Nested Outer Widget: {filter_name}'
+            if debug_print:
+                print(f'nested_out_widget_key: {nested_out_widget_key}')
+            _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(nested_out_widget_key, dockSize=(min_width, min_height), dockIsClosable=False, widget=all_nested_dock_area_widgets[filter_name], dockAddLocationOpts=dockAddLocationOpts)
+            all_nested_dock_area_widget_display_items[filter_name] = dDisplayItem
+            _last_dock_outer_nested_item = dDisplayItem
+
+            ## Add the sub-items for this filter:
+            _last_dock_item = None
+            for a_figure_name, a_figure in a_figures_dict.items():
+                # individual figures
+                figure_key = f'{filter_name}_{a_figure_name}'
+                if debug_print:
+                    print(f'figure_key: {figure_key}')
+                fig_window = a_figure.canvas.window()
+                fig_geom = fig_window.window().geometry() # get the QTCore PyRect object
+                fig_x, fig_y, fig_width, fig_height = fig_geom.getRect() # Note: dx & dy refer to width and height
+                all_item_widths_list.append(fig_width)
+                all_item_heights_list.append(fig_height)
+
+                # Add the dock and keep the display item:
+                if _last_dock_item is not None:
+                    dockAddLocationOpts = ['above', _last_dock_item] # position relative to the _last_dock_item for this figure
+                else:
+                    dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
+                _, dDisplayItem = all_nested_dock_area_widgets[filter_name].add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
+                dDisplayItem.setOrientation('horizontal') # want orientation of outer dockarea to be opposite of that of the inner one. # 'auto', 'horizontal', or 'vertical'.
+                all_dock_display_items[figure_key] = dDisplayItem
+                _last_dock_item = dDisplayItem
+
+    else:
+        ## Flat (non-nested)
+        all_nested_dock_area_widgets = None
+        all_nested_dock_area_widget_display_items = None
+        
+        for filter_name, a_figures_dict in active_pf_2D_figures.items():
+            _last_dock_item = None
+            for a_figure_name, a_figure in a_figures_dict.items():
+                # individual figures
+                figure_key = f'{filter_name}_{a_figure_name}'
+                if debug_print:
+                    print(f'figure_key: {figure_key}')
+                fig_window = a_figure.canvas.window()
+                fig_geom = fig_window.window().geometry() # get the QTCore PyRect object
+                fig_x, fig_y, fig_width, fig_height = fig_geom.getRect() # Note: dx & dy refer to width and height
+                all_item_widths_list.append(fig_width)
+                all_item_heights_list.append(fig_height)
+                
+                # Add the dock and keep the display item:
+                if _last_dock_item is not None:
+                    #NOTE: to stack two dock widgets on top of each other, do area.moveDock(d6, 'above', d4)   ## move d6 to stack on top of d4
+                    dockAddLocationOpts = ['above', _last_dock_item] # position relative to the _last_dock_item for this figure
+                else:
+                    dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
+                _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
+                all_dock_display_items[figure_key] = dDisplayItem
+
+                _last_dock_item = dDisplayItem
+
+    # Resize window to largest figure size:
+    if created_new_main_widget:
+        # Only resize if we created this widget, otherwise don't change the size
+        all_item_widths_list = np.array(all_item_widths_list)
+        all_item_heights_list = np.array(all_item_heights_list)
+        max_width = np.max(all_item_widths_list)
+        max_height = np.max(all_item_heights_list)
+        active_containing_dockAreaWidget.resize(max_width, max_height)
+    
+    return active_containing_dockAreaWidget, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items
+    
 
 # ==================================================================================================================== #
 # 2022-07-20                                                                                                           #
@@ -304,7 +1014,7 @@ def old_timesynchronized_plotter_testing():
 
     # CELL ==================================================================================================================== #
     ## Spike Smoothed Moving Average Rate:
-    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves import Specific3DTimeCurvesHelper
+    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.Specific3DTimeCurves import Specific3DTimeCurvesHelper
     binned_spike_moving_average_rate_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_binned_spike_visualization_curves(curr_computations_results, active_curve_plotter_3d, spike_visualization_mode='mov_average')            
 
 
@@ -370,7 +1080,7 @@ def old_timesynchronized_plotter_testing():
 
 
     # CELL ==================================================================================================================== #
-    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Render3DTimeCurvesBaseGridMixin import BaseGrid3DTimeCurvesHelper, Render3DTimeCurvesBaseGridMixin
+    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.Render3DTimeCurvesBaseGridMixin import BaseGrid3DTimeCurvesHelper, Render3DTimeCurvesBaseGridMixin
 
 
     # CELL ==================================================================================================================== #
@@ -447,76 +1157,9 @@ def old_timesynchronized_plotter_testing():
     line_color = pg.mkColor(plot_args.setdefault('color_name', 'white'))
     line_color.setAlphaF(0.8)
 
-
-
-
-# ==================================================================================================================== #
-# 2022-07-11                                                                                                           #
-# ==================================================================================================================== #
-def _build_programmatic_display_function_testing_pdf_metadata(curr_active_pipeline, filter_name, out_path=None, debug_print=False):
-    """ Builds the PDF metadata generating function from the passed info
-    
-        curr_active_pipeline: Needed for curr_active_pipeline.sess.get_session_description(curr_active_pipeline.session_data_type)
-        filter_name: a name like 'maze1'
-        out_path: an optional Path to use instead of generating a new one
-        
-    Returns:
-        a function that takes one argument, the display function name, and returns the PDF metadata
-        
-    Usage:
-        _build_pdf_pages_output_info, out_parent_path = _build_programmatic_display_function_testing_pdf_metadata(curr_active_pipeline, filter_name=active_config_name, out_path=None)
-        
-        curr_display_function_name = '_display_1d_placefield_validations'
-        built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
-        with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_pdf_metadata) as pdf:
-            # plt.ioff() # disable displaying the plots inline in the Jupyter-lab notebook. NOTE: does not work in Jupyter-Lab, figures still show
-            plots = curr_active_pipeline.display(curr_display_function_name, active_config_name) # works, but generates a TON of plots!
-            # plt.ion()
-            for fig_idx, a_fig in enumerate(plots):
-                # print(f'saving fig: {fig_idx+1}/{len(plots)}')
-                pdf.savefig(a_fig)
-                # pdf.savefig(a_fig, transparent=True)
-            # When no figure is specified the current figure is saved
-            # pdf.savefig()
-
-        
-    """
-    if out_path is None:   
-        out_path = Path(r'C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\Screenshots\ProgrammaticDisplayFunctionTesting\2022-07-11')
-    else:
-        out_path = Path(out_path) # make sure it's a Path
-    out_path.mkdir(exist_ok=True)
-
-    session_descriptor_string = curr_active_pipeline.sess.get_session_description() # 'sess_kdiba_2006-6-07_11-26-53'
-    pho_pdf_metadata = {'Creator': 'Spike3D - TestNeuroPyPipeline116', 'Author': 'Pho Hale', 'Title': session_descriptor_string, 'Subject': '', 'Keywords': [session_descriptor_string]}
-    if debug_print:
-        print(f'filter_name: {filter_name}')
-
-    def _build_pdf_pages_output_info(display_function_name):
-        """ 
-        Implicitly captures:
-            programmatic_display_fcn_out_path
-            session_descriptor_string
-            pho_pdf_metadata
-            filter_name
-        """
-        built_pdf_metadata = pho_pdf_metadata.copy()
-        context_tuple = [session_descriptor_string, filter_name, display_function_name]
-        built_pdf_metadata['Title'] = '_'.join(context_tuple)
-        built_pdf_metadata['Subject'] = display_function_name
-        built_pdf_metadata['Keywords'] = ' | '.join(context_tuple)
-        curr_pdf_save_path = out_path.joinpath(('_'.join(context_tuple) + '.pdf'))
-        return built_pdf_metadata, curr_pdf_save_path
-    
-    return _build_pdf_pages_output_info, out_path
-
-
-
 # ==================================================================================================================== #
 # Pre- 2022-07-11                                                                                                      #
 # ==================================================================================================================== #
-
-
 
 def process_by_good_placefields(session, active_config, active_placefields):
     """  Filters the session by the units in active_placefields that have good placefields and return an updated session. Also adds generated colors for each good unit to active_config """
@@ -534,9 +1177,6 @@ def process_by_good_placefields(session, active_config, active_placefields):
     active_config.plotting_config.active_cells_listed_colormap = ListedColormap(active_config.plotting_config.active_cells_colormap)
     
     return good_placefields_session, active_config, good_placefield_neuronIDs
-
-
-
 
 def build_placefield_multiplotter(nfields, linear_plot_data=None):
     linear_plotter_indicies = np.arange(nfields)
@@ -559,8 +1199,6 @@ def build_placefield_multiplotter(nfields, linear_plot_data=None):
             mp[curr_row, curr_col].add_mesh(linear_plot_data[a_linear_index], name='maze_bg', color="black", render=False)
             # mp[a_row_column_index[0], a_row_column_index[1]].add_mesh(pv.Sphere())
     return mp, linear_plotter_indicies, row_column_indicies
-
-
 
 #TODO: Works, but need to convert into the computation function format or find a new place to put it. It operates on the entire pipeline while currently computation functions are limited to operating on one stage at a time.
 def _perform_PBE_stats(active_pipeline, debug_print = False):
@@ -648,8 +1286,6 @@ def _perform_PBE_stats(active_pipeline, debug_print = False):
 
 # -------------------------- 2022-06-22 Notebook 93 -------------------------- #
 import matplotlib.pyplot as plt
-
-
 
 def spike_count_and_firing_rate_normalizations(pho_custom_decoder, enable_plots=True):
     """ Computes several different normalizations of binned firing rate and spike counts, optionally plotting them. 
