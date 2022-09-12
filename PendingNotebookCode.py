@@ -459,7 +459,7 @@ from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchro
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper
 
 def _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0):
-    """ Builds a single window with time_synchronized (time-dependent placefield) plotters controlled by a 2DRasterPlot widget.
+    """ Builds a single window with time_synchronized (time-dependent placefield) plotters controlled by an internal 2DRasterPlot widget.
     
     Usage:
         active_pf_2D_dt.reset()
@@ -488,7 +488,7 @@ def _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_win
     current_window_start_time = active_pf_2D_dt.last_t - fixed_window_duration
     spike_raster_plt_2d = Spike2DRaster.init_from_independent_data(active_pf_2D_dt.all_time_filtered_spikes_df, window_duration=fixed_window_duration, window_start_time=current_window_start_time,
                                                                    neuron_colors=None, neuron_sort_order=None, application_name='TimeSynchronizedPlotterControlSpikeRaster2D',
-                                                                   enable_independent_playback_controller=False, should_show=False,  parent=None) # setting , parent=spike_raster_plt_3d makes a single window
+                                                                   enable_independent_playback_controller=False, should_show=False, parent=None) # setting , parent=spike_raster_plt_3d makes a single window
     spike_raster_plt_2d.setWindowTitle('2D Raster Control Window')
     # Update the 2D Scroll Region to the initial value:
     spike_raster_plt_2d.update_scroll_window_region(current_window_start_time, active_pf_2D_dt.last_t, block_signals=False)
