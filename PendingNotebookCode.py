@@ -448,55 +448,6 @@ def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, m
 
     # pg.exec()
     return app, parent_root_widget, root_render_widget, plot_array, img_item_array, other_components_array
-
-
-# ==================================================================================================================== #
-# 🔜👁️‍🗨️ Merging TimeSynchronized Plotters:                                                                         #
-# ==================================================================================================================== #
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster import Spike2DRaster
-from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedOccupancyPlotter import TimeSynchronizedOccupancyPlotter
-from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedPlacefieldsPlotter import TimeSynchronizedPlacefieldsPlotter
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper
-
-def _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0):
-    """ Builds a single window with time_synchronized (time-dependent placefield) plotters controlled by an internal 2DRasterPlot widget.
-    
-    Usage:
-        active_pf_2D_dt.reset()
-        active_pf_2D_dt.update(t=45.0, start_relative_t=True)
-        all_plotters, root_dockAreaWindow, app = _build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0)
-    """
-    def _merge_plotters(spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter):
-        # root_dockAreaWindow, app = DockAreaWrapper.wrap_with_dockAreaWindow(curr_sync_occupancy_plotter, spike_raster_plt_2d, title='All Time Synchronized Plotters')
-        # curr_placefields_plotter, dDisplayItem = root_dockAreaWindow.add_display_dock(identifier='Time Dependent Placefields', widget=curr_placefields_plotter, dockAddLocationOpts=['left'])
-        root_dockAreaWindow, app = DockAreaWrapper.wrap_with_dockAreaWindow(curr_sync_occupancy_plotter, curr_placefields_plotter, title='All Time Synchronized Plotters')
-        spike_raster_plt_2d, dDisplayItem = root_dockAreaWindow.add_display_dock(identifier='Time Dependent Placefields', widget=spike_raster_plt_2d, dockAddLocationOpts=['bottom'])
-        
-        ## Register the children items as drivables/drivers:
-        root_dockAreaWindow.connection_man.register_drivable(curr_sync_occupancy_plotter)
-        root_dockAreaWindow.connection_man.register_drivable(curr_placefields_plotter)
-        root_dockAreaWindow.connection_man.register_driver(spike_raster_plt_2d)
-        # Wire up signals such that time-synchronized plotters are controlled by the RasterPlot2D:
-        occupancy_raster_window_sync_connection = root_dockAreaWindow.connection_man.connect_drivable_to_driver(drivable=curr_sync_occupancy_plotter, driver=spike_raster_plt_2d,
-                                                               custom_connect_function=(lambda driver, drivable: pg.SignalProxy(driver.window_scrolled, delay=0.2, rateLimit=60, slot=drivable.on_window_changed_rate_limited)))
-        placefields_raster_window_sync_connection = root_dockAreaWindow.connection_man.connect_drivable_to_driver(drivable=curr_placefields_plotter, driver=spike_raster_plt_2d,
-                                                               custom_connect_function=(lambda driver, drivable: pg.SignalProxy(driver.window_scrolled, delay=0.2, rateLimit=60, slot=drivable.on_window_changed_rate_limited)))
-        
-        return root_dockAreaWindow, app
-    
-    # Build the 2D Raster Plotter using a fixed window duration
-    current_window_start_time = active_pf_2D_dt.last_t - fixed_window_duration
-    spike_raster_plt_2d = Spike2DRaster.init_from_independent_data(active_pf_2D_dt.all_time_filtered_spikes_df, window_duration=fixed_window_duration, window_start_time=current_window_start_time,
-                                                                   neuron_colors=None, neuron_sort_order=None, application_name='TimeSynchronizedPlotterControlSpikeRaster2D',
-                                                                   enable_independent_playback_controller=False, should_show=False, parent=None) # setting , parent=spike_raster_plt_3d makes a single window
-    spike_raster_plt_2d.setWindowTitle('2D Raster Control Window')
-    # Update the 2D Scroll Region to the initial value:
-    spike_raster_plt_2d.update_scroll_window_region(current_window_start_time, active_pf_2D_dt.last_t, block_signals=False)
-    curr_sync_occupancy_plotter = TimeSynchronizedOccupancyPlotter(active_pf_2D_dt)
-    curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
-    
-    root_dockAreaWindow, app = _merge_plotters(spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter)
-    return (spike_raster_plt_2d, curr_sync_occupancy_plotter, curr_placefields_plotter), root_dockAreaWindow, app
     
 
 # ==================================================================================================================== #
