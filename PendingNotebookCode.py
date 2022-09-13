@@ -498,7 +498,6 @@ def display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_form
     """
     wants_crosshairs= figure_format_config.get('wants_crosshairs', False) 
     
-    
     # cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
     # cmap = pg.colormap.get('jet','matplotlib') # prepare a linear color map
     
