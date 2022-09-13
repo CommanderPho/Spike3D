@@ -10,7 +10,7 @@ import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 from neuropy.core.neuron_identities import PlotStringBrevityModeEnum # for display_all_pf_2D_pyqtgraph_binned_image_rendering
-
+from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
 
 ## Laps Stuff:
 from neuropy.core.epoch import NamedTimerange
@@ -27,7 +27,7 @@ from pyphoplacecellanalysis.GUI.Qt.DecoderPlotSelectorControls.DecoderPlotSelect
 from pyphoplacecellanalysis.GUI.Qt.FigureFormatConfigControls.FigureFormatConfigControls import FigureFormatConfigControls # for context_nested_docks
 _debug_print = True
 
-def single_context_nested_docks(curr_active_pipeline, active_config_name, app, master_dock_win, debug_print=True):
+def single_context_nested_docks(curr_active_pipeline, active_config_name, app, master_dock_win, enable_gui=False, debug_print=True):
         out_display_items = dict()
         
         # Get relevant variables for this particular context:
@@ -74,25 +74,37 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
         if debug_print:
             print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
 
-        figure_format_config_widget = FigureFormatConfigControls(config=curr_active_config)
-        figure_format_config_widget.figure_format_config_finalized.connect(on_finalize_figure_format_config)
-        figure_format_config_widget.show() # even without .show() being called, the figure still appears
-        ## Get the figure_format_config from the figure_format_config widget:
-        figure_format_config = figure_format_config_widget.figure_format_config
+        if enable_gui:
+            figure_format_config_widget = FigureFormatConfigControls(config=curr_active_config)
+            figure_format_config_widget.figure_format_config_finalized.connect(on_finalize_figure_format_config)
+            figure_format_config_widget.show() # even without .show() being called, the figure still appears
 
-        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=figure_format_config_widget, dockIsClosable=False)
-        out_display_items[active_identifying_ctx] = (figure_format_config_widget)
+            ## Get the figure_format_config from the figure_format_config widget:
+            figure_format_config = figure_format_config_widget.figure_format_config
 
+            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=figure_format_config_widget, dockIsClosable=False)
+            out_display_items[active_identifying_ctx] = (figure_format_config_widget)
+
+        else:
+            
+            # out_display_items[active_identifying_ctx] = None
+             out_display_items[active_identifying_ctx] = (PhoUIContainer(figure_format_config=curr_active_config))
         
         ## Finally, add the display function to the active context
         active_identifying_ctx = active_identifying_session_ctx.adding_context('display_fn', display_fn_name='2D Position Decoder')
         active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
         if debug_print:
             print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
-        decoder_plot_widget = DecoderPlotSelectorWidget()
-        decoder_plot_widget.show()
-        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, dockIsClosable=True)
-        out_display_items[active_identifying_ctx] = (decoder_plot_widget)
+            
+        if enable_gui:
+            decoder_plot_widget = DecoderPlotSelectorWidget()
+            decoder_plot_widget.show()
+            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, dockIsClosable=True)
+            out_display_items[active_identifying_ctx] = (decoder_plot_widget)
+        else:
+            out_display_items[active_identifying_ctx] = None
+
+        
 
         # Get the decoders from the computation result:
         # active_one_step_decoder = computation_result.computed_data['pf2D_Decoder'] # doesn't actually require the Decoder, could just use computation_result.computed_data['pf2D']            
@@ -106,25 +118,32 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
         if debug_print:
             print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
             
-        ## Build the widget:
-        app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, app=app, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
-        pyqtplot_pf2D_parent_root_widget.show()
-        master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=True)
-        out_display_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
+        if enable_gui:
+            ## Build the widget:
+            app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, app=app, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
+            pyqtplot_pf2D_parent_root_widget.show()
+            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=True)
+            out_display_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
+        else:
+            out_display_items[active_identifying_ctx] = None
         
         return active_identifying_session_ctx, out_display_items
         # END single_context_nested_docks(...)
         
         
-def context_nested_docks(curr_active_pipeline, debug_print=True):
+def context_nested_docks(curr_active_pipeline, enable_gui=False, debug_print=True):
     active_config_names = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
     
-    master_dock_win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_global_window', defer_show=False)
-    master_dock_win.resize(1920, 1200)
+    if enable_gui:
+        master_dock_win, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_global_window', defer_show=False)
+        master_dock_win.resize(1920, 1200)
+    else:
+        master_dock_win = None
+        app = None
 
     out_items = {}
     for a_config_name in active_config_names:
-        active_identifying_session_ctx, out_display_items = single_context_nested_docks(curr_active_pipeline=curr_active_pipeline, active_config_name=a_config_name, app=app, master_dock_win=master_dock_win, debug_print=debug_print)
+        active_identifying_session_ctx, out_display_items = single_context_nested_docks(curr_active_pipeline=curr_active_pipeline, active_config_name=a_config_name, app=app, master_dock_win=master_dock_win, enable_gui=enable_gui, debug_print=debug_print)
         out_items[a_config_name] = (active_identifying_session_ctx, out_display_items)
         
     return master_dock_win, app, out_items
