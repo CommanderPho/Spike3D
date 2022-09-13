@@ -28,6 +28,10 @@ from pyphoplacecellanalysis.GUI.Qt.FigureFormatConfigControls.FigureFormatConfig
 _debug_print = True
 
 def single_context_nested_docks(curr_active_pipeline, active_config_name, app, master_dock_win, enable_gui=False, debug_print=True):
+        """ 
+        
+        
+        """
         out_display_items = dict()
         
         # Get relevant variables for this particular context:
@@ -132,6 +136,10 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
         
         
 def context_nested_docks(curr_active_pipeline, enable_gui=False, debug_print=True):
+    """ builds a series of nested contexts for each active_config 
+    
+    
+    """
     active_config_names = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
     
     if enable_gui:
@@ -147,6 +155,8 @@ def context_nested_docks(curr_active_pipeline, enable_gui=False, debug_print=Tru
         out_items[a_config_name] = (active_identifying_session_ctx, out_display_items)
         
     return master_dock_win, app, out_items
+
+
 
 import matplotlib.pyplot as plt 
 from matplotlib.widgets import Slider # needed for _temp_debug_two_step_plots_animated_imshow
