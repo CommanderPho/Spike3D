@@ -69,3 +69,5 @@ EXTERNAL/Design/Icons/Export
 EXTERNAL/Design/Icons/Potential
 EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.notebook.log
 EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeline.log
+EXTERNAL/TESTING/Logging/.vscode/settings.json
+EXTERNAL/TESTING/Logging/*.log
