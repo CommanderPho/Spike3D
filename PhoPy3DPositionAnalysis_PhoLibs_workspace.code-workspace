@@ -59,7 +59,8 @@
 	"extensions": {
 		"recommendations": [
 			"huynh-quang-phuc.create-file-from-template",
-			"kawamataryo.copy-python-dotted-path"
+			"kawamataryo.copy-python-dotted-path",
+			"kdcro101.favorites"
 		]
 	}
 }
