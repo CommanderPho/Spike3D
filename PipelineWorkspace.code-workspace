@@ -29,6 +29,13 @@
 		"**/.spyproject": true,
 		"**/.virtual_documents": true,
 		"**/.vscode": true
+		},
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#1073cf2d",
+			"editor.lineHighlightBorder": "#9fced11f",
+			"activityBar.background": "#462609",
+			"titleBar.activeBackground": "#62350C",
+			"titleBar.activeForeground": "#FEF9F4"
 		}
 	}
 }
