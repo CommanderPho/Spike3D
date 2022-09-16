@@ -1,0 +1,53 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../NeuroPy"
+		},
+		{
+			"path": "../pyPhoCoreHelpers/src"
+		},
+		{
+			"path": "../pyPhoPlaceCellAnalysis/src"
+		}
+	],
+	"settings": {
+		"jupyter.jupyterServerType": "local",
+		"files.exclude": {
+		"**/*.7z": true,
+		"**/.classpath": true,
+		"**/.factorypath": true,
+		"**/.ipynb_checkpoints": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/.spyproject": true,
+		"**/.virtual_documents": true,
+		"**/.vscode": true
+		},
+		"python.analysis.logLevel": "Error",
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#1073cf2d",
+			"editor.lineHighlightBorder": "#9fced11f",
+			"activityBar.background": "#3D234B",
+			"titleBar.activeBackground": "#56306A",
+			"titleBar.activeForeground": "#FCFBFD"
+		},
+		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
+		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
+		"search.exclude": {
+			"**/.ipynb_checkpoints": true
+		},
+		"qtForPython.uic.args": [
+			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\"",
+			"--execute",
+			"--import-from \"pyphoplacecellanalysis.Resources\"",
+			"--resource-suffix \"\""
+		],
+		"qtForPython.rcc.args": [
+			"-o \"${fileDirname}${pathSeparator}${fileBasenameNoExtension}.py\""
+		],
+
+	}
+}
