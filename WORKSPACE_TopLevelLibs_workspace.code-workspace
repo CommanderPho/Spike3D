@@ -4,7 +4,7 @@
 			"path": "."
 		},
 		{
-			"path": "..\\NeuroPy"
+			"path": "../NeuroPy"
 		},
 		{
 			"path": "../pyPhoPlaceCellAnalysis"
@@ -17,6 +17,8 @@
 		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
+		"**/.tox": true,
+		"**/.qt_for_python": true,
 		"**/*.7z": true,
 		"**/.classpath": true,
 		"**/.factorypath": true,
@@ -25,7 +27,8 @@
 		"**/.settings": true,
 		"**/.spyproject": true,
 		"**/.virtual_documents": true,
-		"**/.vscode": true
+		"**/.vscode": true,
+
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
