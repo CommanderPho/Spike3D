@@ -306,7 +306,7 @@ def display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analy
 # ==================================================================================================================== #
 
 import pyphoplacecellanalysis.External.pyqtgraph as pg # required for _temp_pyqtplot_plot_image_array
-from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import _pyqtplot_build_image_bounds_extent # required for _temp_pyqtplot_plot_image_array
+from pyphoplacecellanalysis.Pho2D.PyQtPlots.Extensions.pyqtgraph_helpers import pyqtplot_build_image_bounds_extent   # required for _temp_pyqtplot_plot_image_array
 from pyphocorehelpers.indexing_helpers import compute_paginated_grid_config # required for _temp_pyqtplot_plot_image_array
 from pyphoplacecellanalysis.GUI.PyQtPlot.pyqtplot_basic import pyqtplot_common_setup # required for _temp_pyqtplot_plot_image_array
 
@@ -355,7 +355,7 @@ def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, m
     # cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
     cmap = pg.colormap.get('jet','matplotlib') # prepare a linear color map
 
-    image_bounds_extent, x_range, y_range = _pyqtplot_build_image_bounds_extent(xbin_edges, ybin_edges, margin=2.0, debug_print=debug_print)
+    image_bounds_extent, x_range, y_range = pyqtplot_build_image_bounds_extent(xbin_edges, ybin_edges, margin=2.0, debug_print=debug_print)
     # image_aspect_ratio, image_width_height_tuple = compute_data_aspect_ratio(x_range, y_range)
     # print(f'image_aspect_ratio: {image_aspect_ratio} - xScale/yScale: {float(image_width_height_tuple.width) / float(image_width_height_tuple.height)}')
     
