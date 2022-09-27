@@ -28,7 +28,7 @@ from pyphoplacecellanalysis.GUI.Qt.FigureFormatConfigControls.FigureFormatConfig
 _debug_print = True
 
 def single_context_nested_docks(curr_active_pipeline, active_config_name, app, master_dock_win, enable_gui=False, debug_print=True):
-        """ 
+        """ 2022-08-18
         
         
         """
@@ -136,8 +136,7 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
         
         
 def context_nested_docks(curr_active_pipeline, enable_gui=False, debug_print=True):
-    """ builds a series of nested contexts for each active_config 
-    
+    """ 2022-08-18 - builds a series of nested contexts for each active_config 
     
     """
     active_config_names = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
@@ -479,96 +478,13 @@ def _temp_pyqtplot_plot_image_array(xbin_edges, ybin_edges, images, occupancy, m
     return app, parent_root_widget, root_render_widget, plot_array, img_item_array, other_components_array
     
 
-# ==================================================================================================================== #
-# 2022-08-16                                                                                                           #
-# ==================================================================================================================== #
 
-from neuropy.utils.dynamic_container import overriding_dict_with # used in display_all_pf_2D_pyqtgraph_binned_image_rendering to only get the valid kwargs to pass from the display config
-from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, enumTuningMap2DPlotMode, enumTuningMap2DPlotVariables, _determine_best_placefield_2D_layout, _scale_current_placefield_to_acceptable_range, _build_neuron_identity_label
-from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow, add_bin_ticks, build_binned_imageItem
-
-def display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_format_config, debug_print=True):
-    """ 2022-08-16 - A fresh implementation of a pf_2D placefield renderer that uses the BasicBinnedImageRenderingWindow subclass. 
-    
-    Uses the common `_determine_best_placefield_2D_layout(...)` setup so that its returned subplots layout is the same as the matplotlib version in NeuroPy.neuropy.plotting.ratemaps.plot_ratemap_2D(...) (the main Matplotlib version that works)
-    
-    Usage:
-        out_all_pf_2D_pyqtgraph_binned_image_fig = display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_format_config)
-        
-    """
-    wants_crosshairs= figure_format_config.get('wants_crosshairs', False) 
-    
-    # cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
-    # cmap = pg.colormap.get('jet','matplotlib') # prepare a linear color map
-    
-    # color_map = figure_format_config.get('color_map', 'viridis')
-    color_map = figure_format_config.get('color_map', pg.colormap.get('jet','matplotlib'))
-    # color_map = figure_format_config.get('color_map', 'viridis')
-    
-    # color_bar_mode = figure_format_config.get('color_bar_mode', 'each')
-    color_bar_mode = figure_format_config.get('color_bar_mode', None) # no colorbars rendered  
-    
-    use_special_overlayed_title = True
-    brev_mode = PlotStringBrevityModeEnum.CONCISE
-    plot_variable = enumTuningMap2DPlotVariables.TUNING_MAPS
-    drop_below_threshold = figure_format_config.get('drop_below_threshold', 0.0000001) # try to get the 'drop_below_threshold' argument
-    ## from matplotlib version:
-    # drop_below_threshold: float=0.0000001, brev_mode: PlotStringBrevityModeEnum=PlotStringBrevityModeEnum.CONCISE, plot_variable: enumTuningMap2DPlotVariables=enumTuningMap2DPlotVariables.TUNING_MAPS
-    # Build the formatter for rendering the max values such as the peak firing rate or max spike counts:
-    if brev_mode.should_show_firing_rate_label:
-        max_value_formatter = _build_variable_max_value_label(plot_variable=plot_variable)
-    else:
-        max_value_formatter = None
-        
-    nfigures, num_pages, included_combined_indicies_pages, page_grid_sizes, data_aspect_ratio, page_figure_sizes = _determine_best_placefield_2D_layout(xbin=active_pf_2D.xbin, ybin=active_pf_2D.ybin, included_unit_indicies=np.arange(active_pf_2D.ratemap.n_neurons),
-        **overriding_dict_with(lhs_dict={'subplots': (40, 3), 'fig_column_width': 8.0, 'fig_row_height': 1.0, 'resolution_multiplier': 1.0, 'max_screen_figure_size': (None, None), 'last_figure_subplots_same_layout': True, 'debug_print': True}, **figure_format_config))
-
-    active_xbins = active_pf_2D.xbin
-    active_ybins = active_pf_2D.ybin    
-    out = None
-    # New page-based version:
-    for page_idx in np.arange(num_pages):
-        if debug_print:
-            print(f'page_idx: {page_idx}')
-        for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in included_combined_indicies_pages[page_idx]:
-            # Need to convert to page specific:
-            curr_page_relative_linear_index = np.mod(a_linear_index, int(page_grid_sizes[page_idx].num_rows * page_grid_sizes[page_idx].num_columns))
-            curr_page_relative_row = np.mod(curr_row, page_grid_sizes[page_idx].num_rows)
-            curr_page_relative_col = np.mod(curr_col, page_grid_sizes[page_idx].num_columns)
-            # print(f'a_linear_index: {a_linear_index}, curr_page_relative_linear_index: {curr_page_relative_linear_index}, curr_row: {curr_row}, curr_col: {curr_col}, curr_page_relative_row: {curr_page_relative_row}, curr_page_relative_col: {curr_page_relative_col}, curr_included_unit_index: {curr_included_unit_index}')
-            neuron_IDX = curr_included_unit_index
-            curr_extended_id_string = active_pf_2D.ratemap.get_extended_neuron_id_string(neuron_i=neuron_IDX) 
-            # ratemap.neuron_extended_ids[neuron_IDX] # the matplotlib version just uses ratemap.neuron_extended_ids[neuron_IDX], but this should work too
-            
-            pfmap = np.squeeze(active_pf_2D.ratemap.tuning_curves[a_linear_index,:,:]).copy()
-            
-            ## Labeling:
-            formatted_max_value_string = None
-            if brev_mode.should_show_firing_rate_label:
-                assert max_value_formatter is not None
-                ## NOTE: must set max_value_formatter on the pfmap BEFORE the `_scale_current_placefield_to_acceptable_range` is called to have it show accurate labels!
-                formatted_max_value_string = max_value_formatter(np.nanmax(pfmap))
-            
-            ## Once the max_value_formatter is called with the unscaled pfmap, we can call _scale_current_placefield_to_acceptable_range to scale it appropriately:
-            pfmap = _scale_current_placefield_to_acceptable_range(pfmap, occupancy=active_pf_2D.occupancy, drop_below_threshold=drop_below_threshold)            
-                
-            final_title = _build_neuron_identity_label(neuron_extended_id=active_pf_2D.ratemap.neuron_extended_ids[neuron_IDX], brev_mode=brev_mode, formatted_max_value_string=formatted_max_value_string, use_special_overlayed_title=use_special_overlayed_title)
-            
-            if out is None:
-                # first iteration only
-                out = BasicBinnedImageRenderingWindow(pfmap, active_xbins, active_ybins, name=f'pf[{final_title}]', title=final_title, variable_label=curr_extended_id_string, wants_crosshairs=wants_crosshairs, color_map=color_map, color_bar_mode=color_bar_mode)
-            else:
-                out.add_data(row=curr_page_relative_row, col=curr_page_relative_col, matrix=pfmap, xbins=active_xbins, ybins=active_ybins, name=f'pf[{final_title}]', title=final_title, variable_label=curr_extended_id_string)
-        
-    return out
-    
-    
-    
 
 # ==================================================================================================================== #
 # Pre 2022-08-16 Figure Docking                                                                                        #
 # ==================================================================================================================== #
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper, NestedDockAreaWidget
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper
+from pyphoplacecellanalysis.GUI.PyQtPlot.DockingWidgets.NestedDockAreaWidget import NestedDockAreaWidget
 
 def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, extant_dockAreaWidget=None, debug_print=False):
     """ Combines the active_pf_2D individual figures into a single widget, with each item being docked and modifiable.
