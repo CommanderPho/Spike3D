@@ -22,13 +22,14 @@ should_display_2D_plots = True
 # 2022-08-18                                                                                                           #
 # ==================================================================================================================== #
 
+from pyphoplacecellanalysis.GUI.PyQtPlot.DockingWidgets.DynamicDockDisplayAreaContent import CustomDockDisplayConfig
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockAreaWrapper import DockAreaWrapper
 from pyphoplacecellanalysis.GUI.Qt.DecoderPlotSelectorControls.DecoderPlotSelectorWidget import DecoderPlotSelectorWidget # for context_nested_docks
 from pyphoplacecellanalysis.GUI.Qt.FigureFormatConfigControls.FigureFormatConfigControls import FigureFormatConfigControls # for context_nested_docks
 _debug_print = True
 
 def single_context_nested_docks(curr_active_pipeline, active_config_name, app, master_dock_win, enable_gui=False, debug_print=True):
-        """ 2022-08-18
+        """ 2022-08-18 - Called for each config name in context_nested_docks's for loop.
         
         
         """
@@ -86,7 +87,7 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
             ## Get the figure_format_config from the figure_format_config widget:
             figure_format_config = figure_format_config_widget.figure_format_config
 
-            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=figure_format_config_widget, dockIsClosable=False)
+            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=figure_format_config_widget, display_config=CustomDockDisplayConfig(showCloseButton=False))
             out_display_items[active_identifying_ctx] = (figure_format_config_widget)
 
         else:
@@ -103,7 +104,7 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
         if enable_gui:
             decoder_plot_widget = DecoderPlotSelectorWidget()
             decoder_plot_widget.show()
-            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, dockIsClosable=True)
+            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=decoder_plot_widget, display_config=CustomDockDisplayConfig(showCloseButton=True))
             out_display_items[active_identifying_ctx] = (decoder_plot_widget)
         else:
             out_display_items[active_identifying_ctx] = None
@@ -126,7 +127,7 @@ def single_context_nested_docks(curr_active_pipeline, active_config_name, app, m
             ## Build the widget:
             app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array = _temp_pyqtplot_plot_image_array(active_one_step_decoder.xbin, active_one_step_decoder.ybin, images, occupancy, app=app, parent_root_widget=None, root_render_widget=None, max_num_columns=8)
             pyqtplot_pf2D_parent_root_widget.show()
-            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, dockIsClosable=True)
+            master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, display_config=CustomDockDisplayConfig(showCloseButton=True))
             out_display_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
         else:
             out_display_items[active_identifying_ctx] = None
@@ -558,7 +559,7 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
             nested_out_widget_key = f'Nested Outer Widget: {filter_name}'
             if debug_print:
                 print(f'nested_out_widget_key: {nested_out_widget_key}')
-            _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(nested_out_widget_key, dockSize=(min_width, min_height), dockIsClosable=False, widget=all_nested_dock_area_widgets[filter_name], dockAddLocationOpts=dockAddLocationOpts)
+            _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(nested_out_widget_key, dockSize=(min_width, min_height), display_config=CustomDockDisplayConfig(showCloseButton=False), widget=all_nested_dock_area_widgets[filter_name], dockAddLocationOpts=dockAddLocationOpts)
             all_nested_dock_area_widget_display_items[filter_name] = dDisplayItem
             _last_dock_outer_nested_item = dDisplayItem
 
@@ -580,7 +581,7 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
                     dockAddLocationOpts = ['above', _last_dock_item] # position relative to the _last_dock_item for this figure
                 else:
                     dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
-                _, dDisplayItem = all_nested_dock_area_widgets[filter_name].add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
+                _, dDisplayItem = all_nested_dock_area_widgets[filter_name].add_display_dock(figure_key, dockSize=(fig_width, fig_height), display_config=CustomDockDisplayConfig(showCloseButton=False), widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
                 dDisplayItem.setOrientation('horizontal') # want orientation of outer dockarea to be opposite of that of the inner one. # 'auto', 'horizontal', or 'vertical'.
                 all_dock_display_items[figure_key] = dDisplayItem
                 _last_dock_item = dDisplayItem
@@ -609,7 +610,10 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
                     dockAddLocationOpts = ['above', _last_dock_item] # position relative to the _last_dock_item for this figure
                 else:
                     dockAddLocationOpts = ['bottom'] #no previous dock for this filter, so use absolute positioning
-                _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(figure_key, dockSize=(fig_width, fig_height), dockIsClosable=False, widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
+                    
+                display_config = CustomDockDisplayConfig()
+            
+                _, dDisplayItem = active_containing_dockAreaWidget.add_display_dock(figure_key, dockSize=(fig_width, fig_height), display_config=CustomDockDisplayConfig(showCloseButton=False), widget=fig_window, dockAddLocationOpts=dockAddLocationOpts)
                 all_dock_display_items[figure_key] = dDisplayItem
 
                 _last_dock_item = dDisplayItem
