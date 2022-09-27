@@ -22,7 +22,7 @@ def build_svg_viewer():
     
     
 def build_overlay_viewer(image_path, overlay_path):
-    """ 
+    """ Builds a QLabel containing the result of overlaying the image at overlay_path on top of image_path
     
     Usage:
         image, overlay, painter, label = build_overlay_viewer(image_path=app.arguments()[1], overlay_path=app.arguments()[2])
@@ -61,28 +61,6 @@ if __name__ == "__main__":
     
     
     image, overlay, painter, label = build_overlay_viewer(image_path=app.arguments()[1], overlay_path=app.arguments()[2])
-    # image = QtGui.QImage(app.arguments()[1])
-    # if image.isNull():
-    #     sys.stderr.write("Failed to read image: %s\n" % app.arguments()[1])
-    #     sys.exit(1)
-    
-    # overlay = QtGui.QImage(app.arguments()[2])
-    # if overlay.isNull():
-    #     sys.stderr.write("Failed to read image: %s\n" % app.arguments()[2])
-    #     sys.exit(1)
-
-    # if overlay.size().width() > image.size().width():
-    #     overlay = overlay.scaled(image.size(), QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-    
-    # painter = QtGui.QPainter()
-    # painter.begin(image)
-    # painter.drawImage(0, 0, overlay)
-    # painter.end()
-    
-    # label = QtWidgets.QLabel()
-    # label.setPixmap(QtGui.QPixmap.fromImage(image))
-    # label.show()
-    
     sys.exit(app.exec_())
     
     
