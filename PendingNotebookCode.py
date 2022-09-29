@@ -22,12 +22,6 @@ should_display_2D_plots = True
 # 2022-08-18                                                                                                           #
 # ==================================================================================================================== #
 
-import matplotlib.pyplot as plt 
-from matplotlib.widgets import Slider # needed for _temp_debug_two_step_plots_animated_imshow
-
-
-    
-    
 from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow # required for display_all_eloy_pf_density_measures_results
 
 def display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results):
