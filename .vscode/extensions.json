@@ -3,6 +3,7 @@
 		"huynh-quang-phuc.create-file-from-template",
 		"bradzacher.vscode-copy-filename",
 		"kawamataryo.copy-python-dotted-path",
-		"kdcro101.favorites"
+		"kdcro101.favorites",
+		"phohale.pho-pyqt-class-generator"
 	]
 }
