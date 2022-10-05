@@ -19,6 +19,8 @@ def main_pypdf2(allpdfs, outpath=None):
     """ works to merge multiple .pdf files specified by allpdfs into a single output pdf. 
 
     See https://stackoverflow.com/questions/3444645/merge-pdf-files for more info.
+    https://github.com/mahaguru24/Python_Merge_PDF
+
 
     output: Path or str - to get all pdfs in a directory as a list: `allpdfs = [a for a in glob("*.pdf")]`
     """
