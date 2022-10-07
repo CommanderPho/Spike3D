@@ -74,16 +74,16 @@ from PendingNotebookCode import build_configs, build_units_colormap, build_place
 """
 
 class PhoNonInteractiveTest:
-	def __init__(self, basedir = r'R:\data\KDIBA\gor01\one\2006-6-07_11-26-53') -> None:
+	def __init__(self, basedir = r'W:\data\KDIBA\gor01\one\2006-6-07_11-26-53') -> None:
 		# KDiba Old Format:
 		## Data must be pre-processed using the MATLAB script located here: 
 		# R:\data\KDIBA\gor01\one\IIDataMat_Export_ToPython_2021_11_23.m
 		# From pre-computed .mat files:
 		if basedir is None:
 			# 07: 
-			self.basedir = r'R:\data\KDIBA\gor01\one\2006-6-07_11-26-53'
+			self.basedir = r'W:\data\KDIBA\gor01\one\2006-6-07_11-26-53'
 			# # ## 08:
-			# basedir = r'R:\data\KDIBA\gor01\one\2006-6-08_14-26-15'
+			# basedir = r'W:\data\KDIBA\gor01\one\2006-6-08_14-26-15'
 		print(f'loading basedir {basedir}...')
 		self.load(self.basedir)
 		print('\t session dataframe spikes: {}\nsession.neurons.n_spikes summed: {}\n'.format(self.sess.spikes_df.shape, np.sum(self.sess.neurons.n_spikes)))
