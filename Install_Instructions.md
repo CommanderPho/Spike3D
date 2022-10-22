@@ -99,3 +99,5 @@ conda activate demo-pyphocorehelpers
 
 
 mamba install tox jupyter-lab cython ipykernel pyvistaqt -c conda-forge
+
+
