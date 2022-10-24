@@ -4,6 +4,7 @@
 		"bradzacher.vscode-copy-filename",
 		"kawamataryo.copy-python-dotted-path",
 		"kdcro101.favorites",
-		"phohale.pho-pyqt-class-generator"
+		"phohale.pho-pyqt-class-generator",
+		"berublan.vscode-log-viewer"
 	]
 }
