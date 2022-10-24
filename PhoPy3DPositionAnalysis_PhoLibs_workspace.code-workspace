@@ -61,7 +61,8 @@
 			"huynh-quang-phuc.create-file-from-template",
 			"kawamataryo.copy-python-dotted-path",
 			"kdcro101.favorites",
-			"phohale.pho-pyqt-class-generator"
+			"phohale.pho-pyqt-class-generator",
+			"berublan.vscode-log-viewer"
 		]
 	}
 }
