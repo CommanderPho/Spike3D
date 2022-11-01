@@ -29,11 +29,7 @@
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
-			"editor.lineHighlightBackground": "#1073cf2d",
-			"editor.lineHighlightBorder": "#9fced11f",
-			"activityBar.background": "#3D234B",
-			"titleBar.activeBackground": "#56306A",
-			"titleBar.activeForeground": "#FCFBFD"
+			"titleBar.activeBackground": "#3086a2"
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
