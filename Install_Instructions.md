@@ -21,19 +21,24 @@ mamba install pyopengl cupy cudatoolkit numba panel pingouin -c conda-forge
 git clone https://github.com/CommanderPho/NeuroPy.git
 git clone https://github.com/CommanderPho/pyPhoCoreHelpers.git
 git clone https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
+git clone https://github.com/CommanderPho/cnn_ripple.git
+
 
 cd C:\Users\pho\repos\NeuroPy
-pip install -e .
+python -m pip install -e .
 
 cd C:\Users\pho\repos\pyPhoCoreHelpers
-pip install -e .
+python -m pip install -e .
 
 cd C:\Users\pho\repos\pyPhoPlaceCellAnalysis
-pip install -e .
+python -m pip install -e .
+
+cd C:\Users\pho\repos\cnn_ripple
+python -m pip install -e .
 
 ## Finally, after installing custom libs, install any extra libs via pip you need:
+pip install tensorflow
 pip install PyQt5
-pip install PyQt6
 pip install PyQt6-tools
 
 
