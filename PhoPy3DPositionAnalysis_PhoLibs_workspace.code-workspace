@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+		},
+		{
+			"path": "../cnn_ripple"
 		}
 	],
 	"settings": {
