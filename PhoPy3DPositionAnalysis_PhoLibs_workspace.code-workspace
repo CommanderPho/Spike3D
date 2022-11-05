@@ -32,7 +32,7 @@
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
-			"titleBar.activeBackground": "#c6c8dc"
+			"titleBar.activeBackground": "#3086a2"
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
