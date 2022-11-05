@@ -116,9 +116,8 @@ conda activate demo-pyphocorehelpers
 ```
 
 
-2022-07-05 New Packages:
-	python -m pip install findpeaks~=2.4.3 opencv-python indexed~=1.2.1 pybursts~=0.1.1 PyQt5Singleton
-
+# 2022-07-05 New Packages:
+	python -m pip install findpeaks~=2.4.3 opencv-python indexed~=1.2.1 pybursts~=0.1.1 PyQt5Singleton pyqt-checkbox-table-widget
 
 mamba install tox jupyter-lab cython ipykernel pyvistaqt -c conda-forge
 
