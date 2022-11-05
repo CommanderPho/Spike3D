@@ -440,6 +440,7 @@ dependencies:
   - zipp=3.7.0=pyhd8ed1ab_0
   - zlib=1.2.11=h8ffe710_1013
   - zstd=1.5.2=h6255e5f_0
+  - pip
   - pip:
     - click==7.1.2
     - opensimplex==0.4.2

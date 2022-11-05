@@ -36,8 +36,25 @@ python -m pip install -e .
 cd C:\Users\pho\repos\cnn_ripple
 python -m pip install -e .
 
+
+
+
+# Concise version:
+python -m pip install -e C:\Users\pho\repos\NeuroPy
+python -m pip install -e C:\Users\pho\repos\pyPhoCoreHelpers
+python -m pip install -e C:\Users\pho\repos\pyPhoPlaceCellAnalysis
+python -m pip install -e C:\Users\pho\repos\cnn_ripple
+
+
+python -m pip install -e C:\Users\pho\repos\ExternalTesting\pyqode.python
+
+## Non-Editable Variants:
+python -m pip install https://github.com/CommanderPho/pyqode.python.git
+# TODO - add other package URLS
+
+
 ## Finally, after installing custom libs, install any extra libs via pip you need:
-pip install tensorflow
+pip install tensorflow findpeaks~=2.4.3 opencv-python
 pip install PyQt5
 pip install PyQt6-tools
 
@@ -100,9 +117,15 @@ conda activate demo-pyphocorehelpers
 
 
 2022-07-05 New Packages:
-	pip install findpeaks~=2.4.3 opencv-python
+	python -m pip install findpeaks~=2.4.3 opencv-python indexed~=1.2.1 pybursts~=0.1.1 PyQt5Singleton
 
 
 mamba install tox jupyter-lab cython ipykernel pyvistaqt -c conda-forge
 
 
+## 2022-11-04 - To Upgrade
+
+mamba env update -n <your-env> --file environment.yml
+
+
+mamba env update -n mamba_ultimate --file "C:\Users\pho\Desktop\Anaconda Environments Full Backup 2022-11-04\pho_ultimate.yaml"
