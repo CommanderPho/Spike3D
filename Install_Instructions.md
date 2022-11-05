@@ -49,7 +49,12 @@ python -m pip install -e C:\Users\pho\repos\cnn_ripple
 python -m pip install -e C:\Users\pho\repos\ExternalTesting\pyqode.python
 
 ## Non-Editable Variants:
-python -m pip install https://github.com/CommanderPho/pyqode.python.git
+python -m pip install git+https://github.com/CommanderPho/NeuroPy.git
+python -m pip install git+https://github.com/CommanderPho/pyPhoCoreHelpers.git
+python -m pip install git+https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
+python -m pip install git+https://github.com/CommanderPho/cnn_ripple.git
+
+python -m pip install git+https://github.com/CommanderPho/pyqode.python.git
 # TODO - add other package URLS
 
 
@@ -117,7 +122,7 @@ conda activate demo-pyphocorehelpers
 
 
 # 2022-07-05 New Packages:
-	python -m pip install findpeaks~=2.4.3 opencv-python indexed~=1.2.1 pybursts~=0.1.1 PyQt5Singleton pyqt-checkbox-table-widget
+	python -m pip install findpeaks~=2.4.3 opencv-python indexed~=1.2.1 pybursts~=0.1.1 PyQt5Singleton pyqt-checkbox-table-widget tensorflow python-benedict
 
 mamba install tox jupyter-lab cython ipykernel pyvistaqt -c conda-forge
 
