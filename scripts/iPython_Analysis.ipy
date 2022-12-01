@@ -1,0 +1,459 @@
+"""
+@author: pho
+"""
+""" 
+
+Can run via:
+
+# change directory to PhoPy3DPositionAnalysis2021 repo
+cd 'C:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021'
+jupyter qtconsole 
+Once in qtconsole, paste the following line:
+>>> %run ./scripts/iPython_Analysis.ipy
+
+
+
+
+
+
+"""
+%load_ext autoreload
+%autoreload 2
+import sys
+import importlib
+from pathlib import Path
+
+import numpy as np
+
+# required to enable non-blocking interaction:
+# %gui qt
+# $env:QT_API="pyqt6"
+%gui qt5
+# %gui qt6
+# from PyQt5.Qt import QApplication
+# # start qt event loop
+# _instance = QApplication.instance()
+# if not _instance:
+#     _instance = QApplication([])
+# app = _instance
+
+import logging
+
+from copy import deepcopy
+from numba import jit
+import numpy as np
+import pandas as pd
+
+import pyphoplacecellanalysis.External.pyqtgraph as pg # Used to plot Speed vs. Pf Desnity Metrics
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
+import pyphoplacecellanalysis.External.pyqtgraph.opengl as gl # for 3D raster plot
+
+# Pho's Formatting Preferences
+# from pyphocorehelpers.preferences_helpers import set_pho_preferences, set_pho_preferences_concise, set_pho_preferences_verbose
+# set_pho_preferences_concise()
+
+## Pho's Custom Libraries:
+from pyphocorehelpers.general_helpers import CodeConversion, get_arguments_as_optional_dict, inspect_callable_arguments, safely_accepts_kwargs
+from pyphocorehelpers.indexing_helpers import partition, compute_spanning_bins, interleave_elements, compute_position_grid_size, compute_paginated_grid_config
+from pyphocorehelpers.print_helpers import PrettyPrintable, WrappingMessagePrinter, print_value_overview_only, print_keys_if_possible, debug_dump_object_member_shapes, safe_get_variable_shape
+from pyphocorehelpers.DataStructure.dynamic_parameters import DynamicParameters
+from pyphocorehelpers.performance_timing_helpers import WrappingPerformanceTimer
+from pyphocorehelpers.gui.interaction_helpers import CallbackWrapper
+from pyphocorehelpers.Filesystem.open_in_system_file_manager import reveal_in_system_file_manager
+from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
+from pyphocorehelpers.indexing_helpers import BinningInfo, compute_spanning_bins, get_bin_centers, get_bin_edges, debug_print_1D_bin_infos, interleave_elements, build_spanning_grid_matrix
+
+# pyPhoPlaceCellAnalysis:
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # get_neuron_identities
+# from pyphoplacecellanalysis.General.SessionSelectionAndFiltering import batch_filter_session, build_custom_epochs_filters
+from neuropy.core.session.KnownDataSessionTypeProperties import KnownDataSessionTypeProperties
+
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ComputationFunctionRegistryHolder import ComputationFunctionRegistryHolder
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DisplayFunctionRegistryHolder import DisplayFunctionRegistryHolder
+from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
+from pyphoplacecellanalysis.GUI.Qt.Menus.PhoMenuHelper import PhoMenuHelper
+from pyphoplacecellanalysis.GUI.Qt.Menus.LocalMenus_AddRenderable import LocalMenus_AddRenderable
+from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.CreateLinkedWidget_MenuProvider import CreateLinkedWidget_MenuProvider
+
+# NeuroPy (Diba Lab Python Repo) Loading
+# from neuropy import core
+from neuropy.core.session.data_session_loader import DataSessionLoader
+from neuropy.core.session.dataSession import DataSession
+from neuropy.analyses.placefields import PlacefieldComputationParameters
+
+from neuropy.core.laps import Laps  # Used for adding laps in KDiba mode
+from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping # Used for adding laps in KDiba mode
+
+from neuropy.core.epoch import NamedTimerange
+
+from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder, DataSessionFormatBaseRegisteredClass
+from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
+from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
+from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
+from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
+
+known_data_session_type_properties_dict = DataSessionFormatRegistryHolder.get_registry_known_data_session_type_dict()
+active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHolder.get_registry_data_session_type_class_name_dict()
+
+enable_saving_to_disk = False
+# common_parent_foldername = Path(r'R:\Dropbox (Personal)\Active\Kamran Diba Lib\Pho-Kamran-Meetings\Final Placemaps 2021-01-14')
+common_parent_foldername = Path(r'R:\Dropbox (Personal)\Active\Kamran Diba Lib\Pho-Kamran-Meetings\2022-01-16')
+
+# np.set_string_function(lambda x:f'np.array[{np.shape(x)}]', repr=True)
+# np.set_string_function(None, repr=True)
+from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import loadData, saveData
+
+## For computation parameters:
+from neuropy.analyses.placefields import PlacefieldComputationParameters
+from neuropy.utils.dynamic_container import DynamicContainer, override_dict, overriding_dict_with, get_dict_subset
+from neuropy.utils.position_util import compute_position_grid_size
+
+## Test Matplotlib plotting:
+from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, add_inner_title, enumTuningMap2DPlotMode, _build_square_checkerboard_image, enumTuningMap2DPlotVariables, compute_data_aspect_ratio
+
+def build_eloy_computation_configs(sess, **kwargs):
+    """ OPTIONALLY can be overriden by implementors to provide specific filter functions """
+    # (4.0, 4.0)cm bins, (6.0, 6.0)cm gaussian smoothing
+    # peak frate > 2Hz 
+    # return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(6.0, 6.0), frate_thresh=0.2, time_bin_size=1.0, computation_epochs = None), spike_analysis=None)]
+    # return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(2.5, 2.5), frate_thresh=0.2, time_bin_size=1.0, computation_epochs = None), spike_analysis=None)]
+    # return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(0.2, 0.2), frate_thresh=0.2, time_bin_size=1.0, computation_epochs = None), spike_analysis=None)]
+    return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(0.2, 0.2), frate_thresh=0.2, time_bin_size=0.025, computation_epochs = None), spike_analysis=None)]
+
+
+# ==================================================================================================================== #
+# Load Data                                                                                                            #
+# ==================================================================================================================== #
+
+# %%viztracer
+active_data_mode_name = 'kdiba'
+active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
+active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
+
+## Data must be pre-processed using the MATLAB script located here: 
+#     neuropy/data_session_pre_processing_scripts/KDIBA/IIDataMat_Export_ToPython_2022_08_01.m
+# From pre-computed .mat files:
+
+## Animal `gor01`:
+local_session_parent_path = Path(r'W:\Data\KDIBA\gor01\one') # Apogee Windows (W: Wiser)
+# local_session_parent_path = Path(r'R:\data\KDIBA\gor01\one') # Apogee Windows (R: MoverNew)
+# local_session_parent_path = Path(r'/Volumes/MoverNew/data/KDIBA/gor01/one') # Pho's MacBook Pro
+# local_session_parent_path = Path(r'/run/media/halechr/MoverNew/data/KDIBA/gor01/one') # Lab Linux Workstation (with external MoverNew drive)
+# local_session_parent_path = Path(r'/home/halechr/Data/KDIBA/gor01/one') # Lab Linux Workstation (local user folder Data)
+
+local_session_names_list = ['2006-6-07_11-26-53', '2006-6-08_14-26-15', '2006-6-09_1-22-43', '2006-6-09_3-23-37', '2006-6-12_15-55-31', '2006-6-13_14-42-6']
+
+
+# ### Animal `vvp01`:
+# local_session_parent_path = Path(r'W:\Data\KDIBA\vvp01') # Apogee Windows (W: Wiser)
+
+# local_session_names_list = ['2006-4-09_17-29-30',
+#                             # '2006-6-08_14-26-15', '2006-6-09_1-22-43', '2006-6-09_3-23-37', '2006-6-12_15-55-31', '2006-6-13_14-42-6'
+#                            ]
+
+local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
+basedir = local_session_paths_list[1] # NOT 3
+print(f'basedir: {str(basedir)}')
+
+curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), override_post_load_functions=[], force_reload=False, active_pickle_filename='loadedSessPickle.pkl')
+# active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
+active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze','maze1','maze2'])
+# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2'])
+# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1'])
+# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze2'])
+
+# sess.epochs.t_start = 22.26 # exclude the first short period where the animal isn't on the maze yet
+# active_session_filter_configurations = {'maze1': lambda x: (x.filtered_by_neuron_type('pyramidal').filtered_by_epoch(x.epochs.get_named_timerange('maze1')), x.epochs.get_named_timerange('maze1')),
+# 'maze2': lambda x: (x.filtered_by_neuron_type('pyramidal').filtered_by_epoch(x.epochs.get_named_timerange('maze2')), x.epochs.get_named_timerange('maze2')),
+# 'maze': lambda x: (x.filtered_by_neuron_type('pyramidal').filtered_by_epoch(NamedTimerange(name='maze', start_end_times=[x.epochs['maze1'][0], x.epochs['maze2'][1]])), NamedTimerange(name='maze', start_end_times=[x.epochs['maze1'][0], x.epochs['maze2'][1]]))
+#                 }
+
+active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
+# active_session_computation_configs[0].pf_params.smooth = (0.0, 0.0)
+# active_session_computation_configs = build_eloy_computation_configs(sess=curr_active_pipeline.sess)
+curr_active_pipeline.filter_sessions(active_session_filter_configurations)
+
+# Whitelist Mode:
+computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+                                        # '_perform_position_decoding_computation', 
+                                        '_perform_firing_rate_trends_computation',
+                                        '_perform_pf_find_ratemap_peaks_computation',
+                                        # '_perform_two_step_position_decoding_computation',
+                                        # '_perform_recursive_latent_placefield_decoding'
+                                     ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
+computation_functions_name_blacklist=None
+
+# # Blacklist Mode:
+# computation_functions_name_whitelist=None
+# computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
+
+curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=True, debug_print=False) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+
+# curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
+curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=True) # TODO: pass a display config
+curr_active_pipeline.save_pipeline()
+
+
+
+## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
+# ==================================================================================================================== #
+# Perform missing global computations                                                                                  #
+# ==================================================================================================================== #
+curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses', '_perform_short_long_pf_overlap_analyses'], fail_on_exception=True, debug_print=True)
+
+## Get global 'jonathan_firing_rate_analysis' results:
+curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
+neuron_replay_stats_df, rdf, aclu_to_idx, irdf = curr_jonathan_firing_rate_analysis['neuron_replay_stats_df'], curr_jonathan_firing_rate_analysis['rdf']['rdf'], curr_jonathan_firing_rate_analysis['rdf']['aclu_to_idx'], curr_jonathan_firing_rate_analysis['irdf']['irdf']
+neuron_replay_stats_df
+
+# ==================================================================================================================== #
+# Batch Output of Figures                                                                                              #
+# ==================================================================================================================== #
+## 🗨️🟢 2022-11-05 - Pho-Jonathan Batch Outputs of Firing Rate Figures
+# %matplotlib qt
+
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership
+short_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.RIGHT_ONLY]
+short_only_aclus = short_only_df.index.values.tolist()
+long_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.LEFT_ONLY]
+long_only_aclus = long_only_df.index.values.tolist()
+shared_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.SHARED]
+shared_aclus = shared_df.index.values.tolist()
+print(f'shared_aclus: {shared_aclus}')
+print(f'long_only_aclus: {long_only_aclus}')
+print(f'short_only_aclus: {short_only_aclus}')
+
+
+active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+
+
+# ==================================================================================================================== #
+# Output Figures to File                                                                                               #
+# ==================================================================================================================== #
+## PDF Output 
+from matplotlib.backends import backend_pdf, backend_pgf, backend_ps
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_export_metadata
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_figure_basename_from_display_context
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_metadata_from_display_context, create_daily_programmatic_display_function_testing_folder_if_needed # newer version of build_pdf_export_metadata
+
+active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+
+# ## OLD
+# _build_pdf_pages_output_info, programmatic_display_function_testing_output_parent_path = build_pdf_export_metadata(curr_active_pipeline.sess.get_description(), filter_name='global') # , filter_name='long_only'
+# print(f'Figure Output path: {str(programmatic_display_function_testing_output_parent_path)}')
+
+
+
+# ## NEW_VERSION Build PDF Output Info
+# active_identifying_ctx = active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='long_only') # , aclus=f"{long_only_aclus}"
+# active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(active_identifying_ctx)
+# print(f'active_pdf_metadata: {active_pdf_metadata}')
+# print(active_pdf_save_filename) # 'kdiba_2006-6-09_1-22-43__batch_plot_test_long_only.pdf'
+# figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+# active_pdf_save_path = figures_parent_out_path.joinpath(active_pdf_save_filename) # build the final output pdf path from the pdf_parent_out_path (which is the daily folder)
+
+""" RENAMES 2022-11-30
+
+programmatic_display_function_testing_output_parent_path -> figures_parent_out_path
+built_pdf_metadata -> active_pdf_metadata
+"""
+
+size_dpi = 100.0
+single_subfigure_size_px = np.array([1920.0, 220.0])
+# single_subfigure_size_inches = single_subfigure_size_px/size_dpi # np.array([19.2,  2.2])
+single_subfigure_size_inches = np.array([19.2,  2.2])
+
+def _batch_plot_test(included_unit_neuron_IDs=None, active_identifying_ctx=None, fignum=None, fig_idx=0):
+    num_cells = len(included_unit_neuron_IDs)
+    desired_figure_size_inches = single_subfigure_size_inches.copy()
+    desired_figure_size_inches[1] = desired_figure_size_inches[1] * num_cells
+    print(f'num_cells: {num_cells}, desired_figure_size_inches: {desired_figure_size_inches}')
+    graphics_output_dict = curr_active_pipeline.display('_display_batch_pho_jonathan_replay_firing_rate_comparison', active_identifying_ctx,
+                                                        n_max_plot_rows=10, included_unit_neuron_IDs=included_unit_neuron_IDs,
+                                                        show_inter_replay_frs=False, spikes_color=(0.1, 0.0, 0.1), spikes_alpha=0.5, fignum=fignum, fig_idx=fig_idx, figsize=desired_figure_size_inches)
+    fig, subfigs, axs, plot_data = graphics_output_dict['fig'], graphics_output_dict['subfigs'], graphics_output_dict['axs'], graphics_output_dict['plot_data']
+    fig.suptitle(active_identifying_ctx.get_description()) # 'kdiba_2006-6-08_14-26-15_[4, 13, 36, 58, 60]'
+    num_subfigures = len(subfigs)
+    # desired_figure_size_inches = single_subfigure_size_inches.copy()
+    # desired_figure_size_inches[1] = desired_figure_size_inches[1] * num_subfigures
+    print(f'num_subfigures: {num_subfigures}')
+    # fig.set_size_inches(*desired_figure_size_inches, forward=True)
+    return fig
+
+_batch_plot_kwargs_list = [dict(included_unit_neuron_IDs=long_only_aclus,
+     active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', plot_result_set='long_only', aclus=f"{long_only_aclus}"),
+     fignum='long_only'),
+                           dict(included_unit_neuron_IDs=short_only_aclus,
+     active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', plot_result_set='short_only', aclus=f"{short_only_aclus}"),
+     fignum='short_only'),
+     #                       dict(included_unit_neuron_IDs=shared_aclus,
+     # active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', plot_result_set='shared', aclus=f"{shared_aclus}"),
+     # fignum='shared'),
+                          ]
+
+
+
+
+# ==================================================================================================================== #
+# Long and Short Only Cells __________________________________________________________________________________________ #
+
+
+# ## OLD:
+# curr_display_function_name = '_display_batch_pho_jonathan_replay_firing_rate_comparison'
+# built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
+# built_pdf_metadata
+# curr_pdf_save_path
+
+## NEW_VERSION Build PDF Output Info
+active_identifying_ctx = active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test') # , aclus=f"{long_only_aclus}"
+active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(active_identifying_ctx)
+print(f'active_pdf_metadata: {active_pdf_metadata}\nactive_pdf_save_filename: {active_pdf_save_filename}')  # 'kdiba_2006-6-09_1-22-43__batch_plot_test_long_only.pdf'
+
+figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+curr_pdf_save_path = figures_parent_out_path.joinpath(active_pdf_save_filename) # build the final output pdf path from the pdf_parent_out_path (which is the daily folder)
+
+
+
+
+active_out_figures_list = []
+debug_print = True
+progress_print = True
+
+with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=active_pdf_metadata) as pdf:
+    # active_identifying_ctx = active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', plot_result_set='short_only', aclus=f"{short_only_aclus}") # .adding_context('display_fn', display_fn_name='display_batch_pho_jonathan_replay_firing_rate_comparison')
+    
+    active_out_figures_list = [] # empty list to hold figures
+    for i, curr_batch_plot_kwargs in enumerate(_batch_plot_kwargs_list):
+        a_fig = _batch_plot_test(**curr_batch_plot_kwargs)
+        active_out_figures_list.append(a_fig)
+        
+    num_pages = len(active_out_figures_list)
+    for fig_idx, a_fig in enumerate(active_out_figures_list):
+        if progress_print:
+            print(f'saving fig: {fig_idx+1}/{num_pages}')
+        
+        # Also save .png versions:
+        # fig_out_path = active_config.plotting_config.get_figure_save_path('lap_trajectories_2D').with_suffix('.png')
+        curr_page_str = f'pg{fig_idx+1}of{num_pages}'
+        fig_png_out_path = curr_pdf_save_path.with_stem(f'{curr_pdf_save_path.stem}_{curr_page_str}').with_suffix('.png') # note this replaces the current .pdf extension with .png, resulting in a good filename for a .png
+        a_fig.savefig(fig_png_out_path)
+        if progress_print:
+            print(f'\t saved {fig_png_out_path}')
+        # Save out PDF page:
+        pdf.savefig(a_fig)
+        pdf.attach_note(f'Page {fig_idx + 1}')
+        
+        # if progress_print:
+        #     print(f'\t saved {fig_png_out_path}')
+            
+print(f'{len(active_out_figures_list)} plots saved to {curr_pdf_save_path}')
+
+
+
+# ==================================================================================================================== #
+# Shared Cells _______________________________________________________________________________________________________ #
+
+from neuropy.utils.misc import compute_paginated_grid_config
+
+nAclusToShow = len(shared_aclus)
+# Paging Management: Constrain the subplots values to just those that you need
+subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nAclusToShow, max_num_columns=1, max_subplots_per_page=10, data_indicies=shared_aclus, last_figure_subplots_same_layout=True)
+num_pages = len(included_combined_indicies_pages)
+nfigures = num_pages
+
+print(f'nAclusToShow: {nAclusToShow}, nfigures: {nfigures}')
+# print(f'subplot_no_pagination_configuration: {subplot_no_pagination_configuration}, included_combined_indicies_pages: {included_combined_indicies_pages}')
+print(f'shared_aclus: {shared_aclus}')
+
+## paginated outputs for shared cells
+# [curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in included_combined_indicies_pages[page_idx]]
+included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)]
+# included_unit_indicies_pages # a list of length `num_pages` containing up to 10 items
+print(f'included_unit_indicies_pages: {included_unit_indicies_pages}')
+paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
+     active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', plot_result_set='shared', page=f'{page_idx}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
+     fignum=f'shared_{page_idx}', fig_idx=page_idx) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
+
+# # included_unit_neuron_IDs=difference_sorted_aclus[:8] # get the first 8 difference-sorted aclus
+# # included_unit_neuron_IDs=difference_sorted_aclus[-8:] # get the last 8 difference-sorted aclus
+
+# # included_unit_neuron_IDs = None
+# fignum=None
+# # included_unit_neuron_IDs = difference_sorted_result.sorted_aclus
+# # included_unit_neuron_IDs = difference_sorted_result.sorted_aclus[:10]
+# # included_unit_neuron_IDs = difference_sorted_result.sorted_aclus[::-1][:10] # reverse
+
+
+# ==================================================================================================================== #
+
+
+## OLD style again
+curr_display_function_name = '_display_batch_pho_jonathan_replay_firing_rate_comparison_SHARED'
+built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
+
+## NEW_VERSION Build PDF Output Info
+active_identifying_ctx = active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='SHARED') # , aclus=f"{long_only_aclus}"
+active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(active_identifying_ctx)
+print(f'active_pdf_metadata: {active_pdf_metadata}\nactive_pdf_save_filename: {active_pdf_save_filename}')  # 'kdiba_2006-6-09_1-22-43__batch_plot_test_long_only.pdf'
+
+figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+curr_pdf_save_path = figures_parent_out_path.joinpath(active_pdf_save_filename) # build the final output pdf path from the pdf_parent_out_path (which is the daily folder)
+
+
+
+with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=active_pdf_metadata) as pdf:
+    
+    active_out_figures_list = [] # empty list to hold figures
+    for i, curr_batch_plot_kwargs in enumerate(_batch_plot_kwargs_list):
+        curr_active_identifying_ctx = _batch_plot_kwargs_list['active_identifying_ctx']
+        a_fig = _batch_plot_test(**curr_batch_plot_kwargs)
+        active_out_figures_list.append(a_fig)
+        
+    num_pages = len(active_out_figures_list)
+    for fig_idx, a_fig in enumerate(active_out_figures_list):
+        if progress_print:
+            print(f'saving fig: {fig_idx+1}/{num_pages}')
+        
+        # Also save .png versions:
+        # fig_out_path = active_config.plotting_config.get_figure_save_path('lap_trajectories_2D').with_suffix('.png')
+        curr_page_str = f'pg{fig_idx+1}of{num_pages}'
+        fig_png_out_path = curr_pdf_save_path.with_stem(f'{curr_pdf_save_path.stem}_{curr_page_str}').with_suffix('.png') # note this replaces the current .pdf extension with .png, resulting in a good filename for a .png
+        a_fig.savefig(fig_png_out_path)
+        if progress_print:
+            print(f'\t saved {fig_png_out_path}')
+        # Save out PDF page:
+        pdf.savefig(a_fig)
+        pdf.attach_note(f'Page {fig_idx + 1}')
+        
+        # if progress_print:
+        #     print(f'\t saved {fig_png_out_path}')
+        
+print(f'saved to {curr_pdf_save_path}')
+
+
+
+# ==================================================================================================================== #
+# Completely New                                                                                                       #
+# ==================================================================================================================== #
+
+figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+active_out_figures_list = [] # empty list to hold figures
+num_pages = len(_batch_plot_kwargs_list)
+for i, curr_batch_plot_kwargs in enumerate(_batch_plot_kwargs_list):
+    curr_active_identifying_ctx = curr_batch_plot_kwargs['active_identifying_ctx']
+    active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(active_identifying_ctx)
+    curr_pdf_save_path = figures_parent_out_path.joinpath(active_pdf_save_filename) # build the final output pdf path from the pdf_parent_out_path (which is the daily folder)
+    # One plot at a time to PDF:
+    with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=active_pdf_metadata) as pdf:
+        a_fig = _batch_plot_test(**curr_batch_plot_kwargs)
+        active_out_figures_list.append(a_fig)
+        # Save out PDF page:
+        pdf.savefig(a_fig)
+
+    # Also save .png versions:
+    curr_page_str = f'pg{i+1}of{num_pages}'
+    fig_png_out_path = curr_pdf_save_path.with_stem(f'{curr_pdf_save_path.stem}_{curr_page_str}').with_suffix('.png') # note this replaces the current .pdf extension with .png, resulting in a good filename for a .png
+    a_fig.savefig(fig_png_out_path)
+    if progress_print:
+        print(f'\t saved {fig_png_out_path}')
+
