@@ -235,8 +235,8 @@ import matplotlib
 # backend_qt5agg
 matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
 
-from PhoPy3DPositionAnalysis2021.PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs
+from ..PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs
 
 n_max_page_rows = 10
 _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
-active_out_figures_list = _perform_batch_plot(_batch_plot_kwargs_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
+active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
