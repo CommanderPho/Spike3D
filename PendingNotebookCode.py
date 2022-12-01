@@ -18,6 +18,131 @@ from neuropy.core.epoch import NamedTimerange
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+
+
+
+# ==================================================================================================================== #
+# 2022-12-01 - Automated programmatic output using `_display_batch_pho_jonathan_replay_firing_rate_comparison`                                                                                                          #
+# ==================================================================================================================== #
+
+## PDF Output 
+from matplotlib.backends import backend_pdf
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_figure_basename_from_display_context
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_metadata_from_display_context, create_daily_programmatic_display_function_testing_folder_if_needed # newer version of build_pdf_export_metadata
+
+from neuropy.utils.misc import compute_paginated_grid_config # for paginating shared aclus
+def _subfn_batch_plot_automated(curr_active_pipeline, included_unit_neuron_IDs=None, active_identifying_ctx=None, fignum=None, fig_idx=0, n_max_page_rows=10):
+    """ the a programmatic wrapper for automated output using `_display_batch_pho_jonathan_replay_firing_rate_comparison`. The specific plot function called. 
+    Called ONLY by `_perform_batch_plot(...)`
+
+    """
+    # size_dpi = 100.0,
+    # single_subfigure_size_px = np.array([1920.0, 220.0])
+    single_subfigure_size_inches = np.array([19.2,  2.2])
+
+    num_cells = len(included_unit_neuron_IDs)
+    desired_figure_size_inches = single_subfigure_size_inches.copy()
+    desired_figure_size_inches[1] = desired_figure_size_inches[1] * num_cells
+    graphics_output_dict = curr_active_pipeline.display('_display_batch_pho_jonathan_replay_firing_rate_comparison', active_identifying_ctx,
+                                                        n_max_plot_rows=n_max_page_rows, included_unit_neuron_IDs=included_unit_neuron_IDs,
+                                                        show_inter_replay_frs=False, spikes_color=(0.1, 0.0, 0.1), spikes_alpha=0.5, fignum=fignum, fig_idx=fig_idx, figsize=desired_figure_size_inches)
+    fig, subfigs, axs, plot_data = graphics_output_dict['fig'], graphics_output_dict['subfigs'], graphics_output_dict['axs'], graphics_output_dict['plot_data']
+    fig.suptitle(active_identifying_ctx.get_description()) # 'kdiba_2006-6-08_14-26-15_[4, 13, 36, 58, 60]'
+    return fig
+
+def _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=10):
+    """ builds the list of kwargs for all aclus """
+    _batch_plot_kwargs_list = [] # empty list to start
+    ## {long_only, short_only} plot configs (doesn't include the shared_aclus)
+    if len(long_only_aclus) > 0:        
+        _batch_plot_kwargs_list.append(dict(included_unit_neuron_IDs=long_only_aclus,
+        active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test',
+            display_fn_name='batch_plot_test', plot_result_set='long_only', aclus=f"{long_only_aclus}"
+        ),
+        fignum='long_only', n_max_page_rows=len(long_only_aclus)))
+    else:
+        print(f'WARNING: long_only_aclus is empty, so not adding kwargs for these.')
+    
+    if len(short_only_aclus) > 0:
+         _batch_plot_kwargs_list.append(dict(included_unit_neuron_IDs=short_only_aclus,
+        active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test',
+            display_fn_name='batch_plot_test', plot_result_set='short_only', aclus=f"{short_only_aclus}"
+        ),
+        fignum='short_only', n_max_page_rows=len(short_only_aclus)))
+    else:
+        print(f'WARNING: short_only_aclus is empty, so not adding kwargs for these.')
+
+    ## Build Pages for Shared ACLUS:    
+    nAclusToShow = len(shared_aclus)
+    if nAclusToShow > 0:        
+        # Paging Management: Constrain the subplots values to just those that you need
+        subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nAclusToShow, max_num_columns=1, max_subplots_per_page=n_max_page_rows, data_indicies=shared_aclus, last_figure_subplots_same_layout=True)
+        num_pages = len(included_combined_indicies_pages)
+        ## paginated outputs for shared cells
+        included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
+        paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
+            active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='shared', page=f'{page_idx+1}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
+            fignum=f'shared_{page_idx}', fig_idx=page_idx, n_max_page_rows=n_max_page_rows) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
+        _batch_plot_kwargs_list.extend(paginated_shared_cells_kwarg_list) # add paginated_shared_cells_kwarg_list to the list
+    else:
+        print(f'WARNING: shared_aclus is empty, so not adding kwargs for these.')
+    return _batch_plot_kwargs_list
+
+def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False):
+    """ Plots everything using the kwargs provided in `active_kwarg_list`
+
+    Args:
+        active_kwarg_list (_type_): generated by `_build_batch_plot_kwargs(...)`
+        figures_parent_out_path (_type_, optional): _description_. Defaults to None.
+        write_pdf (bool, optional): _description_. Defaults to False.
+        write_png (bool, optional): _description_. Defaults to True.
+        progress_print (bool, optional): _description_. Defaults to True.
+        debug_print (bool, optional): _description_. Defaults to False.
+
+    Returns:
+        _type_: _description_
+    """
+    if figures_parent_out_path is None:
+        figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+    active_out_figures_list = [] # empty list to hold figures
+    num_pages = len(active_kwarg_list)
+    for i, curr_batch_plot_kwargs in enumerate(active_kwarg_list):
+        curr_active_identifying_ctx = curr_batch_plot_kwargs['active_identifying_ctx']
+        # print(f'curr_active_identifying_ctx: {curr_active_identifying_ctx}')
+        active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(curr_active_identifying_ctx)
+        # print(f'active_pdf_save_filename: {active_pdf_save_filename}')
+        curr_pdf_save_path = figures_parent_out_path.joinpath(active_pdf_save_filename) # build the final output pdf path from the pdf_parent_out_path (which is the daily folder)
+        # One plot at a time to PDF:
+        if write_pdf:
+            with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=active_pdf_metadata) as pdf:
+                a_fig = _subfn_batch_plot_automated(curr_active_pipeline, **curr_batch_plot_kwargs)
+                active_out_figures_list.append(a_fig)
+                # Save out PDF page:
+                pdf.savefig(a_fig)
+        else:
+            a_fig = _subfn_batch_plot_automated(curr_active_pipeline, **curr_batch_plot_kwargs)
+            active_out_figures_list.append(a_fig)
+
+        # Also save .png versions:
+        if write_png:
+            # curr_page_str = f'pg{i+1}of{num_pages}'
+            fig_png_out_path = curr_pdf_save_path.with_suffix('.png')
+            # fig_png_out_path = fig_png_out_path.with_stem(f'{curr_pdf_save_path.stem}_{curr_page_str}') # note this replaces the current .pdf extension with .png, resulting in a good filename for a .png
+            a_fig.savefig(fig_png_out_path)
+            if progress_print:
+                print(f'\t saved {fig_png_out_path}')
+
+    return active_out_figures_list
+
+
+
+
+
+
+
+
+
+
 # ==================================================================================================================== #
 # 2022-11-09                                                                                                           #
 # ==================================================================================================================== #
