@@ -127,13 +127,19 @@ active_data_mode_type_properties = known_data_session_type_properties_dict[activ
 # From pre-computed .mat files:
 
 ## Animal `gor01`:
-local_session_parent_path = Path(r'W:\Data\KDIBA\gor01\one') # Apogee Windows (W: Wiser)
-# local_session_parent_path = Path(r'R:\data\KDIBA\gor01\one') # Apogee Windows (R: MoverNew)
-# local_session_parent_path = Path(r'/Volumes/MoverNew/data/KDIBA/gor01/one') # Pho's MacBook Pro
-# local_session_parent_path = Path(r'/run/media/halechr/MoverNew/data/KDIBA/gor01/one') # Lab Linux Workstation (with external MoverNew drive)
-# local_session_parent_path = Path(r'/home/halechr/Data/KDIBA/gor01/one') # Lab Linux Workstation (local user folder Data)
 
-local_session_names_list = ['2006-6-07_11-26-53', '2006-6-08_14-26-15', '2006-6-09_1-22-43', '2006-6-09_3-23-37', '2006-6-12_15-55-31', '2006-6-13_14-42-6']
+## 'one'
+# local_session_parent_path = Path(r'W:\Data\KDIBA\gor01\one') # Apogee Windows (W: Wiser)
+# # local_session_parent_path = Path(r'R:\data\KDIBA\gor01\one') # Apogee Windows (R: MoverNew)
+# # local_session_parent_path = Path(r'/Volumes/MoverNew/data/KDIBA/gor01/one') # Pho's MacBook Pro
+# # local_session_parent_path = Path(r'/run/media/halechr/MoverNew/data/KDIBA/gor01/one') # Lab Linux Workstation (with external MoverNew drive)
+# # local_session_parent_path = Path(r'/home/halechr/Data/KDIBA/gor01/one') # Lab Linux Workstation (local user folder Data)
+
+# local_session_names_list = ['2006-6-07_11-26-53', '2006-6-08_14-26-15', '2006-6-09_1-22-43', '2006-6-09_3-23-37', '2006-6-12_15-55-31', '2006-6-13_14-42-6']
+
+## 'two'
+local_session_parent_path = Path(r'W:\Data\KDIBA\gor01\two') # Apogee Windows (W: Wiser)
+local_session_names_list = ['2006-6-07_16-40-19', '2006-6-08_15-46-47', '2006-6-08_21-16-25']
 
 
 # ### Animal `vvp01`:
@@ -144,7 +150,7 @@ local_session_names_list = ['2006-6-07_11-26-53', '2006-6-08_14-26-15', '2006-6-
 #                            ]
 
 local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
-basedir = local_session_paths_list[5] # NOT 3
+basedir = local_session_paths_list[2] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), override_post_load_functions=[], force_reload=False, active_pickle_filename='loadedSessPickle.pkl')
@@ -183,7 +189,7 @@ curr_active_pipeline.perform_computations(active_session_computation_configs[0],
 
 # curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
 curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=True) # TODO: pass a display config
-# curr_active_pipeline.save_pipeline() # Save is disabled
+curr_active_pipeline.save_pipeline() # Save is disabled
 
 
 
@@ -235,7 +241,7 @@ import matplotlib
 # backend_qt5agg
 matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
 
-from ..PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs
+from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs
 
 n_max_page_rows = 10
 _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
