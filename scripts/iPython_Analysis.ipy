@@ -71,9 +71,6 @@ from neuropy.core.session.KnownDataSessionTypeProperties import KnownDataSession
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ComputationFunctionRegistryHolder import ComputationFunctionRegistryHolder
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DisplayFunctionRegistryHolder import DisplayFunctionRegistryHolder
 from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
-from pyphoplacecellanalysis.GUI.Qt.Menus.PhoMenuHelper import PhoMenuHelper
-from pyphoplacecellanalysis.GUI.Qt.Menus.LocalMenus_AddRenderable import LocalMenus_AddRenderable
-from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.CreateLinkedWidget_MenuProvider import CreateLinkedWidget_MenuProvider
 
 # NeuroPy (Diba Lab Python Repo) Loading
 # from neuropy import core
@@ -99,14 +96,9 @@ enable_saving_to_disk = False
 # common_parent_foldername = Path(r'R:\Dropbox (Personal)\Active\Kamran Diba Lib\Pho-Kamran-Meetings\Final Placemaps 2021-01-14')
 common_parent_foldername = Path(r'R:\Dropbox (Personal)\Active\Kamran Diba Lib\Pho-Kamran-Meetings\2022-01-16')
 
-# np.set_string_function(lambda x:f'np.array[{np.shape(x)}]', repr=True)
-# np.set_string_function(None, repr=True)
-from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import loadData, saveData
-
 ## For computation parameters:
 from neuropy.analyses.placefields import PlacefieldComputationParameters
 from neuropy.utils.dynamic_container import DynamicContainer, override_dict, overriding_dict_with, get_dict_subset
-from neuropy.utils.position_util import compute_position_grid_size
 
 ## Test Matplotlib plotting:
 from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, add_inner_title, enumTuningMap2DPlotMode, _build_square_checkerboard_image, enumTuningMap2DPlotVariables, compute_data_aspect_ratio
@@ -152,7 +144,7 @@ local_session_names_list = ['2006-6-07_11-26-53', '2006-6-08_14-26-15', '2006-6-
 #                            ]
 
 local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
-basedir = local_session_paths_list[1] # NOT 3
+basedir = local_session_paths_list[5] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), override_post_load_functions=[], force_reload=False, active_pickle_filename='loadedSessPickle.pkl')
@@ -191,7 +183,7 @@ curr_active_pipeline.perform_computations(active_session_computation_configs[0],
 
 # curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
 curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=True) # TODO: pass a display config
-curr_active_pipeline.save_pipeline()
+# curr_active_pipeline.save_pipeline() # Save is disabled
 
 
 
@@ -223,7 +215,6 @@ print(f'shared_aclus: {shared_aclus}')
 print(f'long_only_aclus: {long_only_aclus}')
 print(f'short_only_aclus: {short_only_aclus}')
 
-
 active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
 
 
@@ -231,72 +222,60 @@ active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapu
 # Output Figures to File                                                                                               #
 # ==================================================================================================================== #
 ## PDF Output 
-from matplotlib.backends import backend_pdf, backend_pgf, backend_ps
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_export_metadata
+from matplotlib.backends import backend_pdf
 from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_figure_basename_from_display_context
 from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_metadata_from_display_context, create_daily_programmatic_display_function_testing_folder_if_needed # newer version of build_pdf_export_metadata
 
-active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
-
-""" RENAMES 2022-11-30
-
-programmatic_display_function_testing_output_parent_path -> figures_parent_out_path
-built_pdf_metadata -> active_pdf_metadata
-"""
-
 from neuropy.utils.misc import compute_paginated_grid_config # for paginating shared aclus
 
-size_dpi = 100.0,
-single_subfigure_size_px = np.array([1920.0, 220.0])
-# single_subfigure_size_inches = single_subfigure_size_px/size_dpi # np.array([19.2,  2.2])
-single_subfigure_size_inches = np.array([19.2,  2.2])
+# %matplotlib qtagg
+import matplotlib
+# configure backend here
+# matplotlib.use('Qt5Agg')
+# backend_qt5agg
+matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
 
 def _batch_plot_test(included_unit_neuron_IDs=None, active_identifying_ctx=None, fignum=None, fig_idx=0):
     """ the specific plot function called """
+    # size_dpi = 100.0,
+    # single_subfigure_size_px = np.array([1920.0, 220.0])
+    single_subfigure_size_inches = np.array([19.2,  2.2])
+
     num_cells = len(included_unit_neuron_IDs)
     desired_figure_size_inches = single_subfigure_size_inches.copy()
     desired_figure_size_inches[1] = desired_figure_size_inches[1] * num_cells
-    # print(f'num_cells: {num_cells}, desired_figure_size_inches: {desired_figure_size_inches}')
     graphics_output_dict = curr_active_pipeline.display('_display_batch_pho_jonathan_replay_firing_rate_comparison', active_identifying_ctx,
                                                         n_max_plot_rows=10, included_unit_neuron_IDs=included_unit_neuron_IDs,
                                                         show_inter_replay_frs=False, spikes_color=(0.1, 0.0, 0.1), spikes_alpha=0.5, fignum=fignum, fig_idx=fig_idx, figsize=desired_figure_size_inches)
     fig, subfigs, axs, plot_data = graphics_output_dict['fig'], graphics_output_dict['subfigs'], graphics_output_dict['axs'], graphics_output_dict['plot_data']
     fig.suptitle(active_identifying_ctx.get_description()) # 'kdiba_2006-6-08_14-26-15_[4, 13, 36, 58, 60]'
-    num_subfigures = len(subfigs)
-    # print(f'num_subfigures: {num_subfigures}')
     return fig
 
-## {long_only, short_only} plot configs (doesn't include the shared_aclus)
-_batch_plot_kwargs_list = [dict(included_unit_neuron_IDs=long_only_aclus,
-     active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='long_only', aclus=f"{long_only_aclus}"),
-     fignum='long_only'),
-                           dict(included_unit_neuron_IDs=short_only_aclus,
-     active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='short_only', aclus=f"{short_only_aclus}"),
-     fignum='short_only'),
-     #                       dict(included_unit_neuron_IDs=shared_aclus,
-     # active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', plot_result_set='shared', aclus=f"{shared_aclus}"),
-     # fignum='shared'),
-                          ]
+def _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx):
+    """ builds the list of kwargs for all aclus """
+    ## {long_only, short_only} plot configs (doesn't include the shared_aclus)
+    _batch_plot_kwargs_list = [dict(included_unit_neuron_IDs=long_only_aclus,
+        active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='long_only', aclus=f"{long_only_aclus}"),
+        fignum='long_only'),
+                            dict(included_unit_neuron_IDs=short_only_aclus,
+        active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='short_only', aclus=f"{short_only_aclus}"),
+        fignum='short_only')
+        ]
 
-## Build Pages for Shared ACLUS:
-nAclusToShow = len(shared_aclus)
-# Paging Management: Constrain the subplots values to just those that you need
-subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nAclusToShow, max_num_columns=1, max_subplots_per_page=10, data_indicies=shared_aclus, last_figure_subplots_same_layout=True)
-num_pages = len(included_combined_indicies_pages)
-nfigures = num_pages
-# print(f'nAclusToShow: {nAclusToShow}, nfigures: {nfigures}')
-# print(f'subplot_no_pagination_configuration: {subplot_no_pagination_configuration}, included_combined_indicies_pages: {included_combined_indicies_pages}')
-# print(f'shared_aclus: {shared_aclus}')
-## paginated outputs for shared cells
-included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
-# print(f'included_unit_indicies_pages: {included_unit_indicies_pages}')
-paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
-     active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='shared', page=f'{page_idx}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
-     fignum=f'shared_{page_idx}', fig_idx=page_idx) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
+    ## Build Pages for Shared ACLUS:
+    nAclusToShow = len(shared_aclus)
+    # Paging Management: Constrain the subplots values to just those that you need
+    subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nAclusToShow, max_num_columns=1, max_subplots_per_page=10, data_indicies=shared_aclus, last_figure_subplots_same_layout=True)
+    num_pages = len(included_combined_indicies_pages)
+    ## paginated outputs for shared cells
+    included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
+    paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
+        active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='shared', page=f'{page_idx}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
+        fignum=f'shared_{page_idx}', fig_idx=page_idx) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
+    _batch_plot_kwargs_list.extend(paginated_shared_cells_kwarg_list) # add paginated_shared_cells_kwarg_list to the list
+    return _batch_plot_kwargs_list
 
-_batch_plot_kwargs_list.extend(paginated_shared_cells_kwarg_list) # add paginated_shared_cells_kwarg_list to the list
-_batch_plot_kwargs_list
-
+_batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx)
 
 # ==================================================================================================================== #
 # Completely New                                                                                                       #
@@ -332,8 +311,8 @@ for i, curr_batch_plot_kwargs in enumerate(active_kwarg_list):
     # Also save .png versions:
     if write_png:
         # curr_page_str = f'pg{i+1}of{num_pages}'
-        # fig_png_out_path = curr_pdf_save_path.with_stem(f'{curr_pdf_save_path.stem}_{curr_page_str}') # note this replaces the current .pdf extension with .png, resulting in a good filename for a .png
-        fig_png_out_path = fig_png_out_path.with_suffix('.png')
+        fig_png_out_path = curr_pdf_save_path.with_suffix('.png')
+        # fig_png_out_path = fig_png_out_path.with_stem(f'{curr_pdf_save_path.stem}_{curr_page_str}') # note this replaces the current .pdf extension with .png, resulting in a good filename for a .png
         a_fig.savefig(fig_png_out_path)
         if progress_print:
             print(f'\t saved {fig_png_out_path}')
