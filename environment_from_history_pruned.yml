@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.9
+  - python=3.11
   - pip=22.0.*
   - numpy=1.20
   - scipy=1.6.*
@@ -119,5 +119,5 @@ dependencies:
   - jupyter_console=6.4.*
   - PyQt5Singleton
   - indexed
-  - alive_progress<2.2
+  # - alive_progress<2.2
 # prefix: C:\Users\pho\miniconda3\envs\phoviz_ultimate
