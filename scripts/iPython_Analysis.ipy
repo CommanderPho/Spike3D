@@ -28,7 +28,7 @@ import numpy as np
 # required to enable non-blocking interaction:
 # %gui qt
 # $env:QT_API="pyqt6"
-%gui qt5
+# %gui qt5
 # %gui qt6
 # from PyQt5.Qt import QApplication
 # # start qt event loop
@@ -37,57 +37,26 @@ import numpy as np
 #     _instance = QApplication([])
 # app = _instance
 
-import logging
-
 from copy import deepcopy
 from numba import jit
 import numpy as np
 import pandas as pd
 
-import pyphoplacecellanalysis.External.pyqtgraph as pg # Used to plot Speed vs. Pf Desnity Metrics
-from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
-import pyphoplacecellanalysis.External.pyqtgraph.opengl as gl # for 3D raster plot
 
 # Pho's Formatting Preferences
 # from pyphocorehelpers.preferences_helpers import set_pho_preferences, set_pho_preferences_concise, set_pho_preferences_verbose
 # set_pho_preferences_concise()
 
 ## Pho's Custom Libraries:
-from pyphocorehelpers.general_helpers import CodeConversion, get_arguments_as_optional_dict, inspect_callable_arguments, safely_accepts_kwargs
-from pyphocorehelpers.indexing_helpers import partition, compute_spanning_bins, interleave_elements, compute_position_grid_size, compute_paginated_grid_config
-from pyphocorehelpers.print_helpers import PrettyPrintable, WrappingMessagePrinter, print_value_overview_only, print_keys_if_possible, debug_dump_object_member_shapes, safe_get_variable_shape
-from pyphocorehelpers.DataStructure.dynamic_parameters import DynamicParameters
-from pyphocorehelpers.performance_timing_helpers import WrappingPerformanceTimer
-from pyphocorehelpers.gui.interaction_helpers import CallbackWrapper
-from pyphocorehelpers.Filesystem.open_in_system_file_manager import reveal_in_system_file_manager
-from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
-from pyphocorehelpers.indexing_helpers import BinningInfo, compute_spanning_bins, get_bin_centers, get_bin_edges, debug_print_1D_bin_infos, interleave_elements, build_spanning_grid_matrix
 
 # pyPhoPlaceCellAnalysis:
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # get_neuron_identities
-# from pyphoplacecellanalysis.General.SessionSelectionAndFiltering import batch_filter_session, build_custom_epochs_filters
-from neuropy.core.session.KnownDataSessionTypeProperties import KnownDataSessionTypeProperties
-
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ComputationFunctionRegistryHolder import ComputationFunctionRegistryHolder
-from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DisplayFunctionRegistryHolder import DisplayFunctionRegistryHolder
-from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
 
 # NeuroPy (Diba Lab Python Repo) Loading
 # from neuropy import core
-from neuropy.core.session.data_session_loader import DataSessionLoader
-from neuropy.core.session.dataSession import DataSession
 from neuropy.analyses.placefields import PlacefieldComputationParameters
-
-from neuropy.core.laps import Laps  # Used for adding laps in KDiba mode
-from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping # Used for adding laps in KDiba mode
-
 from neuropy.core.epoch import NamedTimerange
-
-from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder, DataSessionFormatBaseRegisteredClass
-from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
-from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
-from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
-from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
+from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
 
 known_data_session_type_properties_dict = DataSessionFormatRegistryHolder.get_registry_known_data_session_type_dict()
 active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHolder.get_registry_data_session_type_class_name_dict()
@@ -95,10 +64,9 @@ enable_saving_to_disk = False
 
 ## For computation parameters:
 from neuropy.analyses.placefields import PlacefieldComputationParameters
-from neuropy.utils.dynamic_container import DynamicContainer, override_dict, overriding_dict_with, get_dict_subset
+from neuropy.utils.dynamic_container import DynamicContainer
 
-## Test Matplotlib plotting:
-from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, add_inner_title, enumTuningMap2DPlotMode, _build_square_checkerboard_image, enumTuningMap2DPlotVariables, compute_data_aspect_ratio
+from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs, find_local_session_paths
 
 def build_eloy_computation_configs(sess, **kwargs):
     """ OPTIONALLY can be overriden by implementors to provide specific filter functions """
@@ -110,26 +78,10 @@ def build_eloy_computation_configs(sess, **kwargs):
     return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(0.2, 0.2), frate_thresh=0.2, time_bin_size=0.025, computation_epochs = None), spike_analysis=None)]
 
 
-def _find_local_session_paths(local_session_parent_path, blacklist=[], debug_print=True):
-    try:
-        found_local_session_paths_list = [x for x in local_session_parent_path.iterdir() if x.is_dir()]
-        local_session_names_list = [a_path.name for a_path in found_local_session_paths_list if a_path.name not in blacklist]
-        if debug_print:
-            print(f'local_session_names_list: {local_session_names_list}')
-        local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
-        
-    except Exception as e:
-        print(f"Error processing path: '{local_session_parent_path}' due to exception: {e}. Skipping...")
-        local_session_paths_list = None
-        local_session_names_list = None
-        
-    return local_session_paths_list, local_session_names_list
 
-
-global_data_root_parent_path = Path(r'W:\Data') # Windows Apogee
-# global_data_root_parent_path = Path(r'/media/MAX/Data') # Diba Lab Workstation Linux
+# global_data_root_parent_path = Path(r'W:\Data') # Windows Apogee
+global_data_root_parent_path = Path(r'/media/MAX/Data') # Diba Lab Workstation Linux
 # global_data_root_parent_path = Path(r'/Volumes/MoverNew/data') # rMBP
-
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 
 # ==================================================================================================================== #
@@ -148,11 +100,11 @@ active_data_mode_type_properties = known_data_session_type_properties_dict[activ
 local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
-# local_session_parent_path = local_session_root_parent_path.joinpath('gor01', 'one')
-# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+local_session_parent_path = local_session_root_parent_path.joinpath('gor01', 'one')
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-local_session_parent_path = local_session_root_parent_path.joinpath('gor01', 'two')
-local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=[])
+# local_session_parent_path = local_session_root_parent_path.joinpath('gor01', 'two')
+# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=[])
     
 # ### Animal `vvp01`:
 # local_session_parent_path = local_session_root_parent_path.joinpath('vvp01', 'one')
@@ -162,7 +114,7 @@ local_session_paths_list, local_session_names_list =  _find_local_session_paths(
 # local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=[])
 
 # local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
-basedir = local_session_paths_list[0] # NOT 3
+basedir = local_session_paths_list[1] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 
@@ -245,21 +197,13 @@ active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapu
 # ==================================================================================================================== #
 # Output Figures to File                                                                                               #
 # ==================================================================================================================== #
-## PDF Output 
-from matplotlib.backends import backend_pdf
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_figure_basename_from_display_context
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_metadata_from_display_context, create_daily_programmatic_display_function_testing_folder_if_needed # newer version of build_pdf_export_metadata
-
-from neuropy.utils.misc import compute_paginated_grid_config # for paginating shared aclus
-
+## PDF Output
 # %matplotlib qtagg
 import matplotlib
 # configure backend here
 # matplotlib.use('Qt5Agg')
 # backend_qt5agg
 matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
-
-from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs
 
 n_max_page_rows = 10
 _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)

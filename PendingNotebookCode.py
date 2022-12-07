@@ -18,7 +18,24 @@ from neuropy.core.epoch import NamedTimerange
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+# ==================================================================================================================== #
+# 2022-12-07 - Finding Local Session Paths
+# ==================================================================================================================== #
 
+def find_local_session_paths(local_session_parent_path, blacklist=[], debug_print=True):
+    try:
+        found_local_session_paths_list = [x for x in local_session_parent_path.iterdir() if x.is_dir()]
+        local_session_names_list = [a_path.name for a_path in found_local_session_paths_list if a_path.name not in blacklist]
+        if debug_print:
+            print(f'local_session_names_list: {local_session_names_list}')
+        local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
+        
+    except Exception as e:
+        print(f"Error processing path: '{local_session_parent_path}' due to exception: {e}. Skipping...")
+        local_session_paths_list = None
+        local_session_names_list = None
+        
+    return local_session_paths_list, local_session_names_list
 
 
 # ==================================================================================================================== #
