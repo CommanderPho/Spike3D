@@ -170,7 +170,7 @@ local_session_paths_list, local_session_names_list =  find_local_session_paths(l
 
     
 
-
+## Run batch queue
 for curr_session_basedir, curr_session_name in zip(local_session_paths_list, local_session_names_list):
     print(f'curr_session_basedir: {str(curr_session_basedir)}')
     session_batch_status[curr_session_basedir] = SessionBatchProgress.NOT_STARTED
