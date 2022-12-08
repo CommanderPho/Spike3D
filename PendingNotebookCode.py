@@ -97,13 +97,11 @@ def batch_programmatic_figures(curr_active_pipeline):
     print(f'short_only_aclus: {short_only_aclus}')
 
     active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
-    curr_sess_ctx = local_session_contexts_list[0]
     # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
     figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
-    curr_session_parent_out_path = session_context_to_relative_path(figures_parent_out_path, curr_sess_ctx)
-    print(f'curr_session_parent_out_path: {curr_session_parent_out_path}')
-    curr_session_parent_out_path.mkdir(exist_ok=True) # make folder if needed
-
+    active_session_figures_out_path = session_context_to_relative_path(figures_parent_out_path, active_identifying_session_ctx)
+    print(f'curr_session_parent_out_path: {active_session_figures_out_path}')
+    active_session_figures_out_path.mkdir(parents=True, exist_ok=True) # make folder if needed
 
 
     # ==================================================================================================================== #
@@ -119,9 +117,9 @@ def batch_programmatic_figures(curr_active_pipeline):
 
     n_max_page_rows = 10
     _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
-    active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=curr_session_parent_out_path, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
+    active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=active_session_figures_out_path, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
 
-    return active_identifying_session_ctx, active_out_figures_list
+    return active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list
 
 
 # ==================================================================================================================== #
@@ -163,7 +161,7 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
         print(f'active_session_filter_configurations: {active_session_filter_configurations}')
 
     active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
-    curr_active_pipeline.filter_sessions(active_session_filter_configurations, debug_print=True)
+    curr_active_pipeline.filter_sessions(active_session_filter_configurations, changed_filters_ignore_list=['maze1','maze2','maze'], debug_print=True)
 
     # Whitelist Mode:
     computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
@@ -279,7 +277,7 @@ def _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, ac
         print(f'WARNING: shared_aclus is empty, so not adding kwargs for these.')
     return _batch_plot_kwargs_list
 
-def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False):
+def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_out_path=None, subset_whitelist=None, subset_blacklist=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False):
     """ Plots everything using the kwargs provided in `active_kwarg_list`
 
     Args:
@@ -300,7 +298,7 @@ def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_
     for i, curr_batch_plot_kwargs in enumerate(active_kwarg_list):
         curr_active_identifying_ctx = curr_batch_plot_kwargs['active_identifying_ctx']
         # print(f'curr_active_identifying_ctx: {curr_active_identifying_ctx}')
-        active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(curr_active_identifying_ctx)
+        active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(curr_active_identifying_ctx, subset_whitelist=subset_whitelist, subset_blacklist=subset_blacklist)
         # print(f'active_pdf_save_filename: {active_pdf_save_filename}')
         curr_pdf_save_path = figures_parent_out_path.joinpath(active_pdf_save_filename) # build the final output pdf path from the pdf_parent_out_path (which is the daily folder)
         # One plot at a time to PDF:
