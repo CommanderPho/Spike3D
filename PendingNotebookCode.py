@@ -145,7 +145,7 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
 
     epoch_name_whitelist = kwargs.get('epoch_name_whitelist', ['maze1','maze2','maze'])
     debug_print = kwargs.get('debug_print', False)
-    skip_save = kwargs.get('skip_save', True)
+    skip_save = kwargs.get('skip_save', False)
 
     known_data_session_type_properties_dict = DataSessionFormatRegistryHolder.get_registry_known_data_session_type_dict()
     active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHolder.get_registry_data_session_type_class_name_dict()
@@ -154,7 +154,7 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
 
     curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties,
-        override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename='loadedSessPickle.pkl', skip_save=skip_save)
+        override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename='loadedSessPickle.pkl', skip_save=True)
 
     active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=epoch_name_whitelist) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
     if debug_print:
