@@ -69,6 +69,7 @@ class SessionBatchProgress(Enum):
 session_batch_status = {}
 enable_saving_to_disk = False
 
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # needed for batch_programmatic_figures
 from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs, find_local_session_paths, batch_load_session
 
 def build_eloy_computation_configs(sess, **kwargs):
