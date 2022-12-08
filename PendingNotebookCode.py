@@ -29,7 +29,7 @@ from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionForma
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # for batch_load_session
 
 
-def batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, force_reload=False):
+def batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, force_reload=False, **kwargs):
     """Loads and runs the entire pipeline for a session folder located at the path 'basedir'.
 
     Args:
@@ -40,6 +40,11 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     Returns:
         _type_: _description_
     """
+
+    epoch_name_whitelist = kwargs.get('epoch_name_whitelist', ['maze1','maze2','maze'])
+    debug_print = kwargs.get('debug_print', False)
+    skip_save = kwargs.get('skip_save', True)
+
     known_data_session_type_properties_dict = DataSessionFormatRegistryHolder.get_registry_known_data_session_type_dict()
     active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHolder.get_registry_data_session_type_class_name_dict()
 
@@ -47,18 +52,13 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
 
     curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties,
-        override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename='loadedSessPickle.pkl', skip_save=True)
+        override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename='loadedSessPickle.pkl', skip_save=skip_save)
 
-    active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2','maze']) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze','maze1','maze2'])
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2'])
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1'])
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze2'])
-    print(f'active_session_filter_configurations: {active_session_filter_configurations}')
+    active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=epoch_name_whitelist) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
+    if debug_print:
+        print(f'active_session_filter_configurations: {active_session_filter_configurations}')
 
     active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
-    # active_session_computation_configs[0].pf_params.smooth = (0.0, 0.0)
-    # active_session_computation_configs = build_eloy_computation_configs(sess=curr_active_pipeline.sess)
     curr_active_pipeline.filter_sessions(active_session_filter_configurations)
 
     # Whitelist Mode:
@@ -75,13 +75,16 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     # computation_functions_name_whitelist=None
     # computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
 
-    curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=True, debug_print=False) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+    curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=True, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
 
     # curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
 
     curr_active_pipeline.prepare_for_display(root_output_dir=global_data_root_parent_path.joinpath('Output'), should_smooth_maze=True) # TODO: pass a display config
 
-    curr_active_pipeline.save_pipeline()
+    if not skip_save:
+        curr_active_pipeline.save_pipeline()
+    else:
+        print(f'skip_save == True, so not saving at the end of batch_load_session')
     return curr_active_pipeline
 
 
