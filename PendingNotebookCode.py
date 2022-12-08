@@ -18,6 +18,109 @@ from neuropy.core.epoch import NamedTimerange
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+# ==================================================================================================================== #
+# 2022-12-08 Batch Programmatic Figures (Currently only Jonathan-style)                                                #
+# ==================================================================================================================== #
+
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # needed for batch_programmatic_figures
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed
+
+def session_context_to_relative_path(parent_path, session_ctx):
+    """_summary_
+
+    Args:
+        parent_path (_type_): _description_
+        session_ctx (_type_): _description_
+
+    Returns:
+        _type_: _description_
+
+    Usage:
+
+        curr_sess_ctx = local_session_contexts_list[0]
+        # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
+        figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+        session_context_to_relative_path(figures_parent_out_path, curr_sess_ctx)
+
+    """
+    parent_path = Path(parent_path)
+    subset_whitelist=['format_name','animal','exper_name', 'session_name']
+    all_keys_found, found_keys, missing_keys = session_ctx.check_keys(subset_whitelist, debug_print=False)
+    if not all_keys_found:
+        print(f'WARNING: missing {len(missing_keys)} keys from context: {missing_keys}. Building path anyway.')
+    curr_sess_ctx_tuple = session_ctx.as_tuple(subset_whitelist=subset_whitelist, drop_missing=True) # ('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')
+    return parent_path.joinpath(*curr_sess_ctx_tuple).resolve()
+    
+
+
+
+from enum import unique # SessionBatchProgress
+from pyphocorehelpers.DataStructure.enum_helpers import ExtendedEnum # required for SessionBatchProgress
+
+@unique
+class SessionBatchProgress(ExtendedEnum):
+    """Indicates the progress state for a given session in a batch processing queue """
+    NOT_STARTED = "NOT_STARTED"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    ABORTED = "ABORTED"
+
+def batch_programmatic_figures(curr_active_pipeline):
+    """ programmatically generates and saves the batch figures 2022-12-07 
+        curr_active_pipeline is the pipeline for a given session with all computations done.
+
+    ## TODO: curr_session_parent_out_path
+
+
+    """
+    ## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
+    # Perform missing global computations                                                                                  #
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses', '_perform_short_long_pf_overlap_analyses'], fail_on_exception=True, debug_print=True)
+
+    ## Get global 'jonathan_firing_rate_analysis' results:
+    curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
+    neuron_replay_stats_df, rdf, aclu_to_idx, irdf = curr_jonathan_firing_rate_analysis['neuron_replay_stats_df'], curr_jonathan_firing_rate_analysis['rdf']['rdf'], curr_jonathan_firing_rate_analysis['rdf']['aclu_to_idx'], curr_jonathan_firing_rate_analysis['irdf']['irdf']
+
+    # ==================================================================================================================== #
+    # Batch Output of Figures                                                                                              #
+    # ==================================================================================================================== #
+    ## 🗨️🟢 2022-11-05 - Pho-Jonathan Batch Outputs of Firing Rate Figures
+    # %matplotlib qt
+    short_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.RIGHT_ONLY]
+    short_only_aclus = short_only_df.index.values.tolist()
+    long_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.LEFT_ONLY]
+    long_only_aclus = long_only_df.index.values.tolist()
+    shared_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.SHARED]
+    shared_aclus = shared_df.index.values.tolist()
+    print(f'shared_aclus: {shared_aclus}')
+    print(f'long_only_aclus: {long_only_aclus}')
+    print(f'short_only_aclus: {short_only_aclus}')
+
+    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+    # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
+    figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+    active_session_figures_out_path = session_context_to_relative_path(figures_parent_out_path, active_identifying_session_ctx)
+    print(f'curr_session_parent_out_path: {active_session_figures_out_path}')
+    active_session_figures_out_path.mkdir(parents=True, exist_ok=True) # make folder if needed
+
+
+    # ==================================================================================================================== #
+    # Output Figures to File                                                                                               #
+    # ==================================================================================================================== #
+    ## PDF Output
+    # %matplotlib qtagg
+    import matplotlib
+    # configure backend here
+    # matplotlib.use('Qt5Agg')
+    # backend_qt5agg
+    matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
+
+    n_max_page_rows = 10
+    _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
+    active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=active_session_figures_out_path, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
+
+    return active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list
+
 
 # ==================================================================================================================== #
 # 2022-12-07 - batch_load_session - Computes Entire Pipeline                                                           #
@@ -28,8 +131,7 @@ from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionForma
 # pyPhoPlaceCellAnalysis:
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # for batch_load_session
 
-
-def batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, force_reload=False):
+def batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, force_reload=False, **kwargs):
     """Loads and runs the entire pipeline for a session folder located at the path 'basedir'.
 
     Args:
@@ -40,6 +142,11 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     Returns:
         _type_: _description_
     """
+
+    epoch_name_whitelist = kwargs.get('epoch_name_whitelist', ['maze1','maze2','maze'])
+    debug_print = kwargs.get('debug_print', False)
+    skip_save = kwargs.get('skip_save', False)
+
     known_data_session_type_properties_dict = DataSessionFormatRegistryHolder.get_registry_known_data_session_type_dict()
     active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHolder.get_registry_data_session_type_class_name_dict()
 
@@ -49,17 +156,12 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties,
         override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename='loadedSessPickle.pkl', skip_save=True)
 
-    active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2','maze']) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze','maze1','maze2'])
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2'])
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1'])
-    # active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze2'])
-    print(f'active_session_filter_configurations: {active_session_filter_configurations}')
+    active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=epoch_name_whitelist) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
+    if debug_print:
+        print(f'active_session_filter_configurations: {active_session_filter_configurations}')
 
     active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
-    # active_session_computation_configs[0].pf_params.smooth = (0.0, 0.0)
-    # active_session_computation_configs = build_eloy_computation_configs(sess=curr_active_pipeline.sess)
-    curr_active_pipeline.filter_sessions(active_session_filter_configurations)
+    curr_active_pipeline.filter_sessions(active_session_filter_configurations, changed_filters_ignore_list=['maze1','maze2','maze'], debug_print=True)
 
     # Whitelist Mode:
     computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
@@ -75,13 +177,16 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     # computation_functions_name_whitelist=None
     # computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
 
-    curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=True, debug_print=False) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+    curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=True, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
 
     # curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
 
     curr_active_pipeline.prepare_for_display(root_output_dir=global_data_root_parent_path.joinpath('Output'), should_smooth_maze=True) # TODO: pass a display config
 
-    curr_active_pipeline.save_pipeline()
+    if not skip_save:
+        curr_active_pipeline.save_pipeline()
+    else:
+        print(f'skip_save == True, so not saving at the end of batch_load_session')
     return curr_active_pipeline
 
 
@@ -172,7 +277,7 @@ def _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, ac
         print(f'WARNING: shared_aclus is empty, so not adding kwargs for these.')
     return _batch_plot_kwargs_list
 
-def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False):
+def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_out_path=None, subset_whitelist=None, subset_blacklist=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False):
     """ Plots everything using the kwargs provided in `active_kwarg_list`
 
     Args:
@@ -193,7 +298,7 @@ def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_
     for i, curr_batch_plot_kwargs in enumerate(active_kwarg_list):
         curr_active_identifying_ctx = curr_batch_plot_kwargs['active_identifying_ctx']
         # print(f'curr_active_identifying_ctx: {curr_active_identifying_ctx}')
-        active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(curr_active_identifying_ctx)
+        active_pdf_metadata, active_pdf_save_filename = build_pdf_metadata_from_display_context(curr_active_identifying_ctx, subset_whitelist=subset_whitelist, subset_blacklist=subset_blacklist)
         # print(f'active_pdf_save_filename: {active_pdf_save_filename}')
         curr_pdf_save_path = figures_parent_out_path.joinpath(active_pdf_save_filename) # build the final output pdf path from the pdf_parent_out_path (which is the daily folder)
         # One plot at a time to PDF:
