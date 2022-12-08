@@ -18,6 +18,111 @@ from neuropy.core.epoch import NamedTimerange
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 
+# ==================================================================================================================== #
+# 2022-12-08 Batch Programmatic Figures (Currently only Jonathan-style)                                                #
+# ==================================================================================================================== #
+
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # needed for batch_programmatic_figures
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed
+
+def session_context_to_relative_path(parent_path, session_ctx):
+    """_summary_
+
+    Args:
+        parent_path (_type_): _description_
+        session_ctx (_type_): _description_
+
+    Returns:
+        _type_: _description_
+
+    Usage:
+
+        curr_sess_ctx = local_session_contexts_list[0]
+        # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
+        figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+        session_context_to_relative_path(figures_parent_out_path, curr_sess_ctx)
+
+    """
+    parent_path = Path(parent_path)
+    subset_whitelist=['format_name','animal','exper_name', 'session_name']
+    all_keys_found, found_keys, missing_keys = session_ctx.check_keys(subset_whitelist, debug_print=False)
+    if not all_keys_found:
+        print(f'WARNING: missing {len(missing_keys)} keys from context: {missing_keys}. Building path anyway.')
+    curr_sess_ctx_tuple = session_ctx.as_tuple(subset_whitelist=subset_whitelist, drop_missing=True) # ('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')
+    return parent_path.joinpath(*curr_sess_ctx_tuple).resolve()
+    
+
+
+
+from enum import unique # SessionBatchProgress
+from pyphocorehelpers.DataStructure.enum_helpers import ExtendedEnum # required for SessionBatchProgress
+
+@unique
+class SessionBatchProgress(ExtendedEnum):
+    """Indicates the progress state for a given session in a batch processing queue """
+    NOT_STARTED = "NOT_STARTED"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    ABORTED = "ABORTED"
+
+def batch_programmatic_figures(curr_active_pipeline):
+    """ programmatically generates and saves the batch figures 2022-12-07 
+        curr_active_pipeline is the pipeline for a given session with all computations done.
+
+    ## TODO: curr_session_parent_out_path
+
+
+    """
+    ## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
+    # Perform missing global computations                                                                                  #
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses', '_perform_short_long_pf_overlap_analyses'], fail_on_exception=True, debug_print=True)
+
+    ## Get global 'jonathan_firing_rate_analysis' results:
+    curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
+    neuron_replay_stats_df, rdf, aclu_to_idx, irdf = curr_jonathan_firing_rate_analysis['neuron_replay_stats_df'], curr_jonathan_firing_rate_analysis['rdf']['rdf'], curr_jonathan_firing_rate_analysis['rdf']['aclu_to_idx'], curr_jonathan_firing_rate_analysis['irdf']['irdf']
+
+    # ==================================================================================================================== #
+    # Batch Output of Figures                                                                                              #
+    # ==================================================================================================================== #
+    ## 🗨️🟢 2022-11-05 - Pho-Jonathan Batch Outputs of Firing Rate Figures
+    # %matplotlib qt
+    short_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.RIGHT_ONLY]
+    short_only_aclus = short_only_df.index.values.tolist()
+    long_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.LEFT_ONLY]
+    long_only_aclus = long_only_df.index.values.tolist()
+    shared_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.SHARED]
+    shared_aclus = shared_df.index.values.tolist()
+    print(f'shared_aclus: {shared_aclus}')
+    print(f'long_only_aclus: {long_only_aclus}')
+    print(f'short_only_aclus: {short_only_aclus}')
+
+    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+    curr_sess_ctx = local_session_contexts_list[0]
+    # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
+    figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+    curr_session_parent_out_path = session_context_to_relative_path(figures_parent_out_path, curr_sess_ctx)
+    print(f'curr_session_parent_out_path: {curr_session_parent_out_path}')
+    curr_session_parent_out_path.mkdir(exist_ok=True) # make folder if needed
+
+
+
+    # ==================================================================================================================== #
+    # Output Figures to File                                                                                               #
+    # ==================================================================================================================== #
+    ## PDF Output
+    # %matplotlib qtagg
+    import matplotlib
+    # configure backend here
+    # matplotlib.use('Qt5Agg')
+    # backend_qt5agg
+    matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
+
+    n_max_page_rows = 10
+    _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
+    active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=curr_session_parent_out_path, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
+
+    return active_identifying_session_ctx, active_out_figures_list
+
 
 # ==================================================================================================================== #
 # 2022-12-07 - batch_load_session - Computes Entire Pipeline                                                           #
@@ -27,7 +132,6 @@ from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionForma
 
 # pyPhoPlaceCellAnalysis:
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # for batch_load_session
-
 
 def batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, force_reload=False, **kwargs):
     """Loads and runs the entire pipeline for a session folder located at the path 'basedir'.
@@ -59,7 +163,7 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
         print(f'active_session_filter_configurations: {active_session_filter_configurations}')
 
     active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
-    curr_active_pipeline.filter_sessions(active_session_filter_configurations)
+    curr_active_pipeline.filter_sessions(active_session_filter_configurations, debug_print=True)
 
     # Whitelist Mode:
     computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
