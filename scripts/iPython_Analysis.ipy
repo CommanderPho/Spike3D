@@ -28,7 +28,7 @@ import numpy as np
 # required to enable non-blocking interaction:
 # %gui qt
 # $env:QT_API="pyqt6"
-# %gui qt5
+%gui qt5
 # %gui qt6
 # from PyQt5.Qt import QApplication
 # # start qt event loop
@@ -49,24 +49,18 @@ import pandas as pd
 
 ## Pho's Custom Libraries:
 
-# pyPhoPlaceCellAnalysis:
-from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # get_neuron_identities
 
 # NeuroPy (Diba Lab Python Repo) Loading
 # from neuropy import core
 from neuropy.analyses.placefields import PlacefieldComputationParameters
-from neuropy.core.epoch import NamedTimerange
-from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
 
-known_data_session_type_properties_dict = DataSessionFormatRegistryHolder.get_registry_known_data_session_type_dict()
-active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHolder.get_registry_data_session_type_class_name_dict()
 enable_saving_to_disk = False
 
 ## For computation parameters:
 from neuropy.analyses.placefields import PlacefieldComputationParameters
 from neuropy.utils.dynamic_container import DynamicContainer
 
-from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs, find_local_session_paths
+from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs, find_local_session_paths, batch_load_session
 
 def build_eloy_computation_configs(sess, **kwargs):
     """ OPTIONALLY can be overriden by implementors to provide specific filter functions """
@@ -88,11 +82,7 @@ assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {g
 # Load Data                                                                                                            #
 # ==================================================================================================================== #
 
-# %%viztracer
 active_data_mode_name = 'kdiba'
-active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
-active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
-
 ## Data must be pre-processed using the MATLAB script located here: 
 #     neuropy/data_session_pre_processing_scripts/KDIBA/IIDataMat_Export_ToPython_2022_08_01.m
 # From pre-computed .mat files:
@@ -117,51 +107,12 @@ local_session_paths_list, local_session_names_list =  find_local_session_paths(l
 basedir = local_session_paths_list[1] # NOT 3
 print(f'basedir: {str(basedir)}')
 
-
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), override_post_load_functions=[], force_reload=False, active_pickle_filename='loadedSessPickle.pkl', skip_save=True)
-active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2','maze']) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze','maze1','maze2'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze2'])
-print(f'active_session_filter_configurations: {active_session_filter_configurations}')
 
-# sess.epochs.t_start = 22.26 # exclude the first short period where the animal isn't on the maze yet
-# active_session_filter_configurations = {'maze1': lambda x: (x.filtered_by_epoch(x.epochs.get_named_timerange('maze1')), x.epochs.get_named_timerange('maze1')),
-#     'maze2': lambda x: (x.filtered_by_epoch(x.epochs.get_named_timerange('maze2')), x.epochs.get_named_timerange('maze2')),
-#     'maze': lambda x: (x.filtered_by_epoch(NamedTimerange(name='maze', start_end_times=[x.epochs['maze1'][0], x.epochs['maze2'][1]])), NamedTimerange(name='maze', start_end_times=[x.epochs['maze1'][0], x.epochs['maze2'][1]]))
-# }
 
-active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
-# active_session_computation_configs[0].pf_params.smooth = (0.0, 0.0)
-# active_session_computation_configs = build_eloy_computation_configs(sess=curr_active_pipeline.sess)
-curr_active_pipeline.filter_sessions(active_session_filter_configurations) ## NOTE: BUG: TODO: this fails when the pipeline is loaded if the active_session_filter_configurations were initially defined in the notebook itself (because it can't get the source code).
-
-# Whitelist Mode:
-computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
-                                        '_perform_position_decoding_computation', 
-                                        '_perform_firing_rate_trends_computation',
-                                        '_perform_pf_find_ratemap_peaks_computation',
-                                        # '_perform_two_step_position_decoding_computation',
-                                        # '_perform_recursive_latent_placefield_decoding'
-                                     ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
-computation_functions_name_blacklist=None
-
-# # Blacklist Mode:
-# computation_functions_name_whitelist=None
-# computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
-
-curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=True, debug_print=False) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
-
-# curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
-
-curr_active_pipeline.prepare_for_display(root_output_dir=global_data_root_parent_path.joinpath('Output'), should_smooth_maze=True) # TODO: pass a display config
-
-curr_active_pipeline.save_pipeline()
-
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir)
 
 
 ## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
@@ -209,3 +160,5 @@ matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly thi
 n_max_page_rows = 10
 _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
 active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
+
+
