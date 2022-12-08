@@ -48,17 +48,26 @@ import pandas as pd
 # set_pho_preferences_concise()
 
 ## Pho's Custom Libraries:
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # for batch_programmatic_figures
 
 
 # NeuroPy (Diba Lab Python Repo) Loading
 # from neuropy import core
-from neuropy.analyses.placefields import PlacefieldComputationParameters
-
-enable_saving_to_disk = False
-
 ## For computation parameters:
 from neuropy.analyses.placefields import PlacefieldComputationParameters
 from neuropy.utils.dynamic_container import DynamicContainer
+
+from enum import Enum
+
+class SessionBatchProgress(Enum):
+    """Indicates the progress state for a given session in a batch processing queue """
+    NOT_STARTED = "NOT_STARTED"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    ABORTED = "ABORTED"
+
+session_batch_status = {}
+enable_saving_to_disk = False
 
 from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs, find_local_session_paths, batch_load_session
 
@@ -72,11 +81,63 @@ def build_eloy_computation_configs(sess, **kwargs):
     return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(0.2, 0.2), frate_thresh=0.2, time_bin_size=0.025, computation_epochs = None), spike_analysis=None)]
 
 
+def batch_programmatic_figures(curr_active_pipeline):
+    """ programmatically generates and saves the batch figures 2022-12-07 
+
+    """
+    ## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
+    # Perform missing global computations                                                                                  #
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses', '_perform_short_long_pf_overlap_analyses'], fail_on_exception=True, debug_print=True)
+
+    ## Get global 'jonathan_firing_rate_analysis' results:
+    curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
+    neuron_replay_stats_df, rdf, aclu_to_idx, irdf = curr_jonathan_firing_rate_analysis['neuron_replay_stats_df'], curr_jonathan_firing_rate_analysis['rdf']['rdf'], curr_jonathan_firing_rate_analysis['rdf']['aclu_to_idx'], curr_jonathan_firing_rate_analysis['irdf']['irdf']
+
+    # ==================================================================================================================== #
+    # Batch Output of Figures                                                                                              #
+    # ==================================================================================================================== #
+    ## 🗨️🟢 2022-11-05 - Pho-Jonathan Batch Outputs of Firing Rate Figures
+    # %matplotlib qt
+    short_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.RIGHT_ONLY]
+    short_only_aclus = short_only_df.index.values.tolist()
+    long_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.LEFT_ONLY]
+    long_only_aclus = long_only_df.index.values.tolist()
+    shared_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.SHARED]
+    shared_aclus = shared_df.index.values.tolist()
+    print(f'shared_aclus: {shared_aclus}')
+    print(f'long_only_aclus: {long_only_aclus}')
+    print(f'short_only_aclus: {short_only_aclus}')
+
+    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+
+
+    # ==================================================================================================================== #
+    # Output Figures to File                                                                                               #
+    # ==================================================================================================================== #
+    ## PDF Output
+    # %matplotlib qtagg
+    import matplotlib
+    # configure backend here
+    # matplotlib.use('Qt5Agg')
+    # backend_qt5agg
+    matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
+
+    n_max_page_rows = 10
+    _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
+    active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
+
+    return active_identifying_session_ctx, active_out_figures_list
+
+
+# ==================================================================================================================== #
+# BEGIN BODY                                                                                                           #
+# ==================================================================================================================== #
 
 # global_data_root_parent_path = Path(r'W:\Data') # Windows Apogee
 global_data_root_parent_path = Path(r'/media/MAX/Data') # Diba Lab Workstation Linux
 # global_data_root_parent_path = Path(r'/Volumes/MoverNew/data') # rMBP
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
+
 
 # ==================================================================================================================== #
 # Load Data                                                                                                            #
@@ -104,61 +165,25 @@ local_session_paths_list, local_session_names_list =  find_local_session_paths(l
 # local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=[])
 
 # local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
-basedir = local_session_paths_list[1] # NOT 3
-print(f'basedir: {str(basedir)}')
-
-# ==================================================================================================================== #
-# Load Pipeline                                                                                                        #
-# ==================================================================================================================== #
+# basedir = local_session_paths_list[1] # NOT 3
 
 
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir)
+    
 
 
-## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
-# ==================================================================================================================== #
-# Perform missing global computations                                                                                  #
-# ==================================================================================================================== #
-curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses', '_perform_short_long_pf_overlap_analyses'], fail_on_exception=True, debug_print=True)
+for curr_session_basedir, curr_session_name in zip(local_session_paths_list, local_session_names_list):
+    print(f'curr_session_basedir: {str(curr_session_basedir)}')
+    session_batch_status[curr_session_basedir] = SessionBatchProgress.NOT_STARTED
+    try:
+        session_batch_status[curr_session_basedir] = SessionBatchProgress.RUNNING
+        curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, curr_session_basedir)
+        active_identifying_session_ctx, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
+        session_batch_status[curr_session_basedir] = SessionBatchProgress.COMPLETED
+        print(f'completed processing for {curr_session_basedir}: {active_identifying_session_ctx}')
+    except Exception as e:
+        print(f'ERROR processing {curr_session_basedir} with error {e}')
+        session_batch_status[curr_session_basedir] = SessionBatchProgress.ABORTED
+        # raise e
 
-## Get global 'jonathan_firing_rate_analysis' results:
-curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
-neuron_replay_stats_df, rdf, aclu_to_idx, irdf = curr_jonathan_firing_rate_analysis['neuron_replay_stats_df'], curr_jonathan_firing_rate_analysis['rdf']['rdf'], curr_jonathan_firing_rate_analysis['rdf']['aclu_to_idx'], curr_jonathan_firing_rate_analysis['irdf']['irdf']
-neuron_replay_stats_df
-
-# ==================================================================================================================== #
-# Batch Output of Figures                                                                                              #
-# ==================================================================================================================== #
-## 🗨️🟢 2022-11-05 - Pho-Jonathan Batch Outputs of Firing Rate Figures
-# %matplotlib qt
-
-from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership
-short_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.RIGHT_ONLY]
-short_only_aclus = short_only_df.index.values.tolist()
-long_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.LEFT_ONLY]
-long_only_aclus = long_only_df.index.values.tolist()
-shared_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.SHARED]
-shared_aclus = shared_df.index.values.tolist()
-print(f'shared_aclus: {shared_aclus}')
-print(f'long_only_aclus: {long_only_aclus}')
-print(f'short_only_aclus: {short_only_aclus}')
-
-active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
-
-
-# ==================================================================================================================== #
-# Output Figures to File                                                                                               #
-# ==================================================================================================================== #
-## PDF Output
-# %matplotlib qtagg
-import matplotlib
-# configure backend here
-# matplotlib.use('Qt5Agg')
-# backend_qt5agg
-matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
-
-n_max_page_rows = 10
-_batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
-active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=None, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
-
-
+print(f'session_batch_status: {session_batch_status}')
+print('!!! done running batch !!!')
