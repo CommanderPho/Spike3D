@@ -23,10 +23,17 @@ should_display_2D_plots = True
 # ==================================================================================================================== #
 
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # needed for batch_programmatic_figures
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path, programmatic_display_to_PDF
 
 from enum import unique # SessionBatchProgress
 from pyphocorehelpers.DataStructure.enum_helpers import ExtendedEnum # required for SessionBatchProgress
+
+## MATPLOTLIB Imports:
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.backends import backend_pdf
+
 
 @unique
 class SessionBatchProgress(ExtendedEnum):
@@ -35,6 +42,20 @@ class SessionBatchProgress(ExtendedEnum):
     RUNNING = "RUNNING"
     COMPLETED = "COMPLETED"
     ABORTED = "ABORTED"
+
+
+def batch_extended_programmatic_figures(curr_active_pipeline):
+    _bak_rcParams = mpl.rcParams.copy()
+    mpl.rcParams['toolbar'] = 'None' # disable toolbars
+    matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
+    # active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+    programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_1d_placefields', debug_print=False) # 🟢✅ Now seems to be working and saving to PDF!! Still using matplotlib.use('Qt5Agg') mode and plots still appear.
+    programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_1d_placefield_validations') # , filter_name=active_config_name 🟢✅ Now seems to be working and saving to PDF!! Still using matplotlib.use('Qt5Agg') mode and plots still appear. Moderate visual improvements can still be made (titles overlap and stuff). Works with %%capture
+    programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_2d_placefield_result_plot_ratemaps_2D') #  🟢✅ Now seems to be working and saving to PDF!! Still using matplotlib.use('Qt5Agg') mode and plots still appear.
+
+
+
+
 
 def batch_programmatic_figures(curr_active_pipeline):
     """ programmatically generates and saves the batch figures 2022-12-07 
@@ -89,6 +110,8 @@ def batch_programmatic_figures(curr_active_pipeline):
     n_max_page_rows = 10
     _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
     active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=active_session_figures_out_path, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
+
+
 
     return active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list
 
