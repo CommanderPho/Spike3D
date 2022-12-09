@@ -133,12 +133,24 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=epoch_name_whitelist) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
     if debug_print:
         print(f'active_session_filter_configurations: {active_session_filter_configurations}')
-
-    ## Compute shared grid_bin_bounds for all epochs from the global positions:
-    grid_bin_bounds = PlacefieldComputationParameters.compute_grid_bin_bounds(curr_active_pipeline.sess.position.x, curr_active_pipeline.sess.position.y)
-    active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
-
+    
     curr_active_pipeline.filter_sessions(active_session_filter_configurations, changed_filters_ignore_list=['maze1','maze2','maze'], debug_print=True)
+
+    # ## Compute shared grid_bin_bounds for all epochs from the global positions:
+    # global_unfiltered_session = curr_active_pipeline.sess
+    # # ((22.736279243974774, 261.696733348342), (49.989466271998936, 151.2870218547401))
+    # first_filtered_session = curr_active_pipeline.filtered_sessions[curr_active_pipeline.filtered_session_names[0]]
+    # # ((22.736279243974774, 261.696733348342), (125.5644705153173, 151.21507349463707))
+    # second_filtered_session = curr_active_pipeline.filtered_sessions[curr_active_pipeline.filtered_session_names[1]]
+    # # ((71.67666779621361, 224.37820920766043), (110.51617463644946, 151.2870218547401))
+
+    # grid_bin_bounding_session = first_filtered_session
+    # grid_bin_bounds = PlacefieldComputationParameters.compute_grid_bin_bounds(grid_bin_bounding_session.position.x, grid_bin_bounding_session.position.y)
+
+    ## OR use no grid_bin_bounds meaning they will be determined dynamically for each epoch:
+    grid_bin_bounds = None
+
+    active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
 
     # Whitelist Mode:
     computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
