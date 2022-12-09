@@ -23,36 +23,7 @@ should_display_2D_plots = True
 # ==================================================================================================================== #
 
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # needed for batch_programmatic_figures
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed
-
-def session_context_to_relative_path(parent_path, session_ctx):
-    """_summary_
-
-    Args:
-        parent_path (_type_): _description_
-        session_ctx (_type_): _description_
-
-    Returns:
-        _type_: _description_
-
-    Usage:
-
-        curr_sess_ctx = local_session_contexts_list[0]
-        # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
-        figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
-        session_context_to_relative_path(figures_parent_out_path, curr_sess_ctx)
-
-    """
-    parent_path = Path(parent_path)
-    subset_whitelist=['format_name','animal','exper_name', 'session_name']
-    all_keys_found, found_keys, missing_keys = session_ctx.check_keys(subset_whitelist, debug_print=False)
-    if not all_keys_found:
-        print(f'WARNING: missing {len(missing_keys)} keys from context: {missing_keys}. Building path anyway.')
-    curr_sess_ctx_tuple = session_ctx.as_tuple(subset_whitelist=subset_whitelist, drop_missing=True) # ('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')
-    return parent_path.joinpath(*curr_sess_ctx_tuple).resolve()
-    
-
-
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
 
 from enum import unique # SessionBatchProgress
 from pyphocorehelpers.DataStructure.enum_helpers import ExtendedEnum # required for SessionBatchProgress
