@@ -98,6 +98,8 @@ def batch_programmatic_figures(curr_active_pipeline):
 # ==================================================================================================================== #
 from neuropy.core.epoch import NamedTimerange
 from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder # for batch_load_session
+from neuropy.analyses.placefields import PlacefieldComputationParameters # for batch_load_session
+
 
 # pyPhoPlaceCellAnalysis:
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # for batch_load_session
@@ -131,7 +133,10 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     if debug_print:
         print(f'active_session_filter_configurations: {active_session_filter_configurations}')
 
-    active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
+    ## Compute shared grid_bin_bounds for all epochs from the global positions:
+    grid_bin_bounds = PlacefieldComputationParameters.compute_grid_bin_bounds(curr_active_pipeline.sess.position.x, curr_active_pipeline.sess.position.y)
+    active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
+
     curr_active_pipeline.filter_sessions(active_session_filter_configurations, changed_filters_ignore_list=['maze1','maze2','maze'], debug_print=True)
 
     # Whitelist Mode:
