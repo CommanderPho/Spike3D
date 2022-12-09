@@ -23,10 +23,17 @@ should_display_2D_plots = True
 # ==================================================================================================================== #
 
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # needed for batch_programmatic_figures
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path, programmatic_display_to_PDF
 
 from enum import unique # SessionBatchProgress
 from pyphocorehelpers.DataStructure.enum_helpers import ExtendedEnum # required for SessionBatchProgress
+
+## MATPLOTLIB Imports:
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.backends import backend_pdf
+
 
 @unique
 class SessionBatchProgress(ExtendedEnum):
@@ -35,6 +42,20 @@ class SessionBatchProgress(ExtendedEnum):
     RUNNING = "RUNNING"
     COMPLETED = "COMPLETED"
     ABORTED = "ABORTED"
+
+
+def batch_extended_programmatic_figures(curr_active_pipeline):
+    _bak_rcParams = mpl.rcParams.copy()
+    mpl.rcParams['toolbar'] = 'None' # disable toolbars
+    matplotlib.use('AGG') # non-interactive backend ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
+    # active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+    programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_1d_placefields', debug_print=False) # 🟢✅ Now seems to be working and saving to PDF!! Still using matplotlib.use('Qt5Agg') mode and plots still appear.
+    programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_1d_placefield_validations') # , filter_name=active_config_name 🟢✅ Now seems to be working and saving to PDF!! Still using matplotlib.use('Qt5Agg') mode and plots still appear. Moderate visual improvements can still be made (titles overlap and stuff). Works with %%capture
+    programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_2d_placefield_result_plot_ratemaps_2D') #  🟢✅ Now seems to be working and saving to PDF!! Still using matplotlib.use('Qt5Agg') mode and plots still appear.
+
+
+
+
 
 def batch_programmatic_figures(curr_active_pipeline):
     """ programmatically generates and saves the batch figures 2022-12-07 
@@ -90,6 +111,8 @@ def batch_programmatic_figures(curr_active_pipeline):
     _batch_plot_kwargs_list = _build_batch_plot_kwargs(long_only_aclus, short_only_aclus, shared_aclus, active_identifying_session_ctx, n_max_page_rows=n_max_page_rows)
     active_out_figures_list = _perform_batch_plot(curr_active_pipeline, _batch_plot_kwargs_list, figures_parent_out_path=active_session_figures_out_path, write_pdf=False, write_png=True, progress_print=True, debug_print=False)
 
+
+
     return active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list
 
 
@@ -98,6 +121,8 @@ def batch_programmatic_figures(curr_active_pipeline):
 # ==================================================================================================================== #
 from neuropy.core.epoch import NamedTimerange
 from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder # for batch_load_session
+from neuropy.analyses.placefields import PlacefieldComputationParameters # for batch_load_session
+
 
 # pyPhoPlaceCellAnalysis:
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # for batch_load_session
@@ -117,6 +142,7 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     epoch_name_whitelist = kwargs.get('epoch_name_whitelist', ['maze1','maze2','maze'])
     debug_print = kwargs.get('debug_print', False)
     skip_save = kwargs.get('skip_save', False)
+    active_pickle_filename = kwargs.get('active_pickle_filename', 'loadedSessPickle.pkl')
 
     known_data_session_type_properties_dict = DataSessionFormatRegistryHolder.get_registry_known_data_session_type_dict()
     active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHolder.get_registry_data_session_type_class_name_dict()
@@ -125,14 +151,29 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
     active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
 
     curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties,
-        override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename='loadedSessPickle.pkl', skip_save=True)
+        override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename=active_pickle_filename, skip_save=True)
 
     active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=epoch_name_whitelist) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
     if debug_print:
         print(f'active_session_filter_configurations: {active_session_filter_configurations}')
-
-    active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333) #1.0/30.0 # decode at 30fps to match the position sampling frequency
+    
     curr_active_pipeline.filter_sessions(active_session_filter_configurations, changed_filters_ignore_list=['maze1','maze2','maze'], debug_print=True)
+
+    # ## Compute shared grid_bin_bounds for all epochs from the global positions:
+    # global_unfiltered_session = curr_active_pipeline.sess
+    # # ((22.736279243974774, 261.696733348342), (49.989466271998936, 151.2870218547401))
+    # first_filtered_session = curr_active_pipeline.filtered_sessions[curr_active_pipeline.filtered_session_names[0]]
+    # # ((22.736279243974774, 261.696733348342), (125.5644705153173, 151.21507349463707))
+    # second_filtered_session = curr_active_pipeline.filtered_sessions[curr_active_pipeline.filtered_session_names[1]]
+    # # ((71.67666779621361, 224.37820920766043), (110.51617463644946, 151.2870218547401))
+
+    # grid_bin_bounding_session = first_filtered_session
+    # grid_bin_bounds = PlacefieldComputationParameters.compute_grid_bin_bounds(grid_bin_bounding_session.position.x, grid_bin_bounding_session.position.y)
+
+    ## OR use no grid_bin_bounds meaning they will be determined dynamically for each epoch:
+    grid_bin_bounds = None
+
+    active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=0.03333, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
 
     # Whitelist Mode:
     computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
