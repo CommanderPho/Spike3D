@@ -212,6 +212,39 @@ def batch_load_session(global_data_root_parent_path, active_data_mode_name, base
 # ==================================================================================================================== #
 
 def find_local_session_paths(local_session_parent_path, blacklist=[], debug_print=True):
+    """Finds the local session paths
+
+    History: From PendingNotebookCode's 2022-12-07 section - "Finding Local Session Paths"
+
+    Args:
+        local_session_parent_path (_type_): _description_
+        blacklist (list, optional): _description_. Defaults to [].
+        debug_print (bool, optional): _description_. Defaults to True.
+
+    Returns:
+        _type_: _description_
+
+    History: extracted from PendingNotebookCode on 2022-12-13 from section "2022-12-07 - Finding Local Session Paths"
+
+    Usage:
+
+        active_data_mode_name = 'kdiba'
+        local_session_root_parent_context = IdentifyingContext(format_name=active_data_mode_name)
+        local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
+
+        ## Animal `gor01`:
+        local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one')
+        local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+        local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+
+    >>> local_session_names_list: ['2006-6-07_11-26-53', '2006-6-08_14-26-15', '2006-6-09_1-22-43', '2006-6-09_3-23-37', '2006-6-12_15-55-31', '2006-6-13_14-42-6']
+        local_session_paths_list: {WindowsPath('W:/Data/KDIBA/gor01/one/2006-6-07_11-26-53'): <SessionBatchProgress.NOT_STARTED: 'NOT_STARTED'>,
+            WindowsPath('W:/Data/KDIBA/gor01/one/2006-6-08_14-26-15'): <SessionBatchProgress.NOT_STARTED: 'NOT_STARTED'>,
+            WindowsPath('W:/Data/KDIBA/gor01/one/2006-6-09_1-22-43'): <SessionBatchProgress.NOT_STARTED: 'NOT_STARTED'>,
+            WindowsPath('W:/Data/KDIBA/gor01/one/2006-6-09_3-23-37'): <SessionBatchProgress.NOT_STARTED: 'NOT_STARTED'>,
+            WindowsPath('W:/Data/KDIBA/gor01/one/2006-6-12_15-55-31'): <SessionBatchProgress.NOT_STARTED: 'NOT_STARTED'>,
+            WindowsPath('W:/Data/KDIBA/gor01/one/2006-6-13_14-42-6'): <SessionBatchProgress.NOT_STARTED: 'NOT_STARTED'>}
+    """
     try:
         found_local_session_paths_list = [x for x in local_session_parent_path.iterdir() if x.is_dir()]
         local_session_names_list = [a_path.name for a_path in found_local_session_paths_list if a_path.name not in blacklist]
@@ -340,106 +373,6 @@ def _perform_batch_plot(curr_active_pipeline, active_kwarg_list, figures_parent_
 
     return active_out_figures_list
 
-
-
-
-
-
-
-
-
-
-# ==================================================================================================================== #
-# 2022-11-09                                                                                                           #
-# ==================================================================================================================== #
-from matplotlib.offsetbox import AnchoredText
-from matplotlib.patheffects import withStroke
-
-def scale_title_label(ax, curr_title_obj, curr_im, debug_print=False):
-    """ Scales some matplotlib-based figures titles to be reasonable. I remember that this was important and hard to make, but don't actually remember what it does as of 2022-10-24. It needs to be moved in to somewhere else.
-    """
-    ### USAGE:
-    # ## Scale all:
-    # _display_outputs = widget.last_added_display_output
-    # curr_graphics_objs = _display_outputs.graphics[0]
-
-    # """ curr_graphics_objs is:
-    # {2: {'axs': [<Axes:label='2'>],
-    # 'image': <matplotlib.image.AxesImage at 0x1630c4556d0>,
-    # 'title_obj': <matplotlib.offsetbox.AnchoredText at 0x1630c4559a0>},
-    # 4: {'axs': [<Axes:label='4'>],
-    # 'image': <matplotlib.image.AxesImage at 0x1630c455f70>,
-    # 'title_obj': <matplotlib.offsetbox.AnchoredText at 0x1630c463280>},
-    # 5: {'axs': [<Axes:label='5'>],
-    # 'image': <matplotlib.image.AxesImage at 0x1630c463850>,
-    # 'title_obj': <matplotlib.offsetbox.AnchoredText at 0x1630c463b20>},
-    # ...
-    # """
-    # for aclu, curr_neuron_graphics_dict in curr_graphics_objs.items():
-    #     curr_title_obj = curr_neuron_graphics_dict['title_obj'] # matplotlib.offsetbox.AnchoredText
-    #     curr_title_text_obj = curr_title_obj.txt.get_children()[0] # Text object
-    #     curr_im = curr_neuron_graphics_dict['image'] # matplotlib.image.AxesImage
-    #     curr_ax = curr_neuron_graphics_dict['axs'][0]
-    #     scale_title_label(curr_ax, curr_title_obj, curr_im)
-
-
-    transform = ax.transData
-
-    curr_label_extent = curr_title_obj.get_window_extent(ax.get_figure().canvas.get_renderer()) # Bbox([[1028.49144862968, 2179.0555555555566], [1167.86644862968, 2193.0555555555566]])
-    curr_label_width = curr_label_extent.width # 139.375
-    # curr_im.get_extent() # (-85.75619321393464, 112.57838773103435, -96.44772761274268, 98.62205280781535)
-    img_extent = curr_im.get_window_extent(ax.get_figure().canvas.get_renderer()) # Bbox([[1049.76842294452, 2104.7727272727284], [1146.5894743148401, 2200.000000000001]])
-    curr_img_width = img_extent.width # 96.82105137032022
-    needed_scale_factor = curr_img_width / curr_label_width
-    if debug_print:
-        print(f'curr_label_width: {curr_label_width}, curr_img_width: {curr_img_width}, needed_scale_factor: {needed_scale_factor}')
-    needed_scale_factor = min(needed_scale_factor, 1.0) # Only scale up, don't scale down
-    
-    curr_font_props = curr_title_obj.prop # FontProperties
-    curr_font_size_pts = curr_font_props.get_size_in_points() # 10.0
-    curr_scaled_font_size_pts = needed_scale_factor * curr_font_size_pts
-    if debug_print:
-        print(f'curr_font_size_pts: {curr_font_size_pts}, curr_scaled_font_size_pts: {curr_scaled_font_size_pts}')
-
-    if isinstance(curr_title_obj, AnchoredText):
-        curr_title_text_obj = curr_title_obj.txt.get_children()[0] # Text object
-    else:
-        curr_title_text_obj = curr_title_obj
-    
-    curr_title_text_obj.set_fontsize(curr_scaled_font_size_pts)
-    font_foreground = 'white'
-    # font_foreground = 'black'
-    curr_title_text_obj.set_color(font_foreground)
-    # curr_title_text_obj.set_fontsize(6)
-    
-    stroke_foreground = 'black'
-    # stroke_foreground = 'gray'
-    # stroke_foreground = 'orange'
-    strokewidth = 4
-    curr_title_text_obj.set_path_effects([withStroke(foreground=stroke_foreground, linewidth=strokewidth)])
-    ## Disable path effects:
-    # curr_title_text_obj.set_path_effects([])
-
-#     ## Figure computation
-#     fig: plt.Figure = ax.get_figure()
-#     dpi = fig.dpi
-#     rect_height_inch = rect_height / dpi
-#     # Initial fontsize according to the height of boxes
-#     fontsize = rect_height_inch * 72
-#     print(f'rect_height_inch: {rect_height_inch}, fontsize: {fontsize}')
-
-# #     text: Annotation = ax.annotate(txt, xy, ha=ha, va=va, xycoords=transform, **kwargs)
-
-# #     # Adjust the fontsize according to the box size.
-# #     text.set_fontsize(fontsize)
-#     bbox: Bbox = text.get_window_extent(fig.canvas.get_renderer())
-#     adjusted_size = fontsize * rect_width / bbox.width
-#     print(f'bbox: {bbox}, adjusted_size: {adjusted_size}')
-#     text.set_fontsize(adjusted_size)
-    
-    
-
-    
 
 
 # ==================================================================================================================== #
