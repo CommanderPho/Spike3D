@@ -19,7 +19,140 @@ should_force_recompute_placefields = True
 should_display_2D_plots = True
 
 
+# ==================================================================================================================== #
+# 2022-12-13 Misc                                                                                                      #
+# ==================================================================================================================== #
 
+def process_session_plots(curr_active_pipeline, active_config_name, debug_print=False):
+    """ Unwrap single config 
+    UNUSED AND UNTESTED
+
+    Usage:
+
+        from PendingNotebookCode import process_session_plots
+
+        # active_config_name = 'maze1'
+        # active_config_name = 'maze2'
+        # active_config_name = 'maze'
+        # active_config_name = 'sprinkle'
+
+        # active_config_name = 'maze_PYR'
+
+        # active_config_name = 'maze1_rippleOnly'
+        # active_config_name = 'maze2_rippleOnly'
+
+        # active_config_name = curr_active_pipeline.active_config_names[0] # get the first name by default
+        active_config_name = curr_active_pipeline.active_config_names[-1] # get the last name
+
+        active_identifying_filtered_session_ctx, programmatic_display_function_testing_output_parent_path = process_session_plots(curr_active_pipeline, active_config_name)
+
+    """
+    print(f'active_config_name: {active_config_name}')
+
+    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+
+    ## Add the filter to the active context
+    # active_identifying_filtered_session_ctx = active_identifying_session_ctx.adding_context('filter', filter_name=active_config_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
+    active_identifying_filtered_session_ctx = curr_active_pipeline.filtered_contexts[active_config_name] # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
+
+    # Get relevant variables:
+    # curr_active_pipeline is set above, and usable here
+    sess = curr_active_pipeline.filtered_sessions[active_config_name]
+
+    active_computation_results = curr_active_pipeline.computation_results[active_config_name]
+    active_computed_data = curr_active_pipeline.computation_results[active_config_name].computed_data
+    active_computation_config = curr_active_pipeline.computation_results[active_config_name].computation_config
+    active_computation_errors = curr_active_pipeline.computation_results[active_config_name].accumulated_errors
+    print(f'active_computed_data.keys(): {list(active_computed_data.keys())}')
+    print(f'active_computation_errors: {active_computation_errors}')
+    active_pf_1D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf1D']
+    active_pf_2D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf2D']
+    active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
+    active_pf_2D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_dt', None)
+    active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
+    active_one_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None)
+    active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None)
+    active_extended_stats = curr_active_pipeline.computation_results[active_config_name].computed_data.get('extended_stats', None)
+    active_eloy_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('EloyAnalysis', None)
+    active_simpler_pf_densities_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('SimplerNeuronMeetingThresholdFiringAnalysis', None)
+    active_ratemap_peaks_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', None)
+    active_peak_prominence_2d_results = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', {}).get('PeakProminence2D', None)
+    active_measured_positions = curr_active_pipeline.computation_results[active_config_name].sess.position.to_dataframe()
+    curr_spikes_df = sess.spikes_df
+
+    curr_active_config = curr_active_pipeline.active_configs[active_config_name]
+    curr_active_display_config = curr_active_config.plotting_config
+
+    active_display_output = curr_active_pipeline.display_output[active_identifying_filtered_session_ctx]
+    print(f'active_display_output: {active_display_output}')
+
+    # Create `master_dock_win` - centralized plot output window to collect individual figures/controls in (2022-08-18)
+    display_output = active_display_output | curr_active_pipeline.display('_display_context_nested_docks', active_identifying_session_ctx, enable_gui=False, debug_print=True) # returns {'master_dock_win': master_dock_win, 'app': app, 'out_items': out_items}
+    master_dock_win = display_output['master_dock_win']
+    app = display_output['app']
+    out_items = display_output['out_items']
+
+    def _get_curr_figure_format_config():
+        """ Aims to fetch the current figure_format_config and context from the figure_format_config widget:    
+        Implicitly captures: `out_items`, `active_config_name`, `active_identifying_filtered_session_ctx` 
+        """
+        ## Get the figure_format_config from the figure_format_config widget:
+        # Fetch the context from the GUI:
+        _curr_gui_session_ctx, _curr_gui_out_display_items = out_items[active_config_name]
+        _curr_gui_figure_format_config_widget = _curr_gui_out_display_items[active_identifying_filtered_session_ctx.adding_context('display_fn', display_fn_name='figure_format_config_widget')] # [0] is seemingly not needed to unpack the tuple
+        if _curr_gui_figure_format_config_widget is not None:
+            # has GUI for config
+            figure_format_config = _curr_gui_figure_format_config_widget.figure_format_config
+        else:
+            # has non-GUI provider of figure_format_config
+            figure_format_config = _curr_gui_figure_format_config_widget.figure_format_config
+
+        if debug_print:
+            print(f'recovered gui figure_format_config: {figure_format_config}')
+
+        return figure_format_config
+
+    figure_format_config = _get_curr_figure_format_config()
+
+    ## PDF Output, NOTE this is single plot stuff: uses active_config_name
+    from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_export_metadata
+
+    filter_name = active_config_name
+    _build_pdf_pages_output_info, programmatic_display_function_testing_output_parent_path = build_pdf_export_metadata(curr_active_pipeline.sess.get_description(), filter_name=filter_name)
+    print(f'Figure Output path: {str(programmatic_display_function_testing_output_parent_path)}')
+    
+    
+    ## Test getting figure save paths:
+    _test_fig_path = curr_active_config.plotting_config.get_figure_save_path('test')
+    print(f'_test_fig_path: {_test_fig_path}\n\t exists? {_test_fig_path.exists()}')
+
+    return active_identifying_filtered_session_ctx, programmatic_display_function_testing_output_parent_path
+    
+
+
+
+
+class Plot(object):
+    """a member dot accessor for display functions.
+
+    Can call like: `plot._display_1d_placefields`
+
+    """
+    def __init__(self, curr_active_pipeline):
+        super(Plot, self).__init__()
+        self._pipeline_reference = curr_active_pipeline
+
+    def __dir__(self):
+        return self._pipeline_reference.registered_display_function_names # ['area', 'perimeter', 'location']
+    
+    def __getattr__(self, k):
+        if '__getstate__' in k: # a trick to make spyder happy when inspecting dotdict
+            def _dummy():
+                pass
+            return _dummy
+        # return self[k]
+        # return self._pipeline_reference.display(display_function=k, active_identifying_session_ctx=self._pipeline_reference.sess.get_context())
+        return self._pipeline_reference.display(display_function=k, active_session_configuration_context=list(self._pipeline_reference.filtered_contexts.values())[-1])
 
 
 
