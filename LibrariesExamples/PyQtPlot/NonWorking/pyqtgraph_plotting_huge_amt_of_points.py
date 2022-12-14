@@ -341,7 +341,7 @@ class ColorSetting:
         newObj.pens = self.pens[:]
         newObj.brushes = self.brushes[:]
         newObj.symbols = self.symbols[:]
-        newObj.sizes = self.sizes[:
+        newObj.sizes = self.sizes[:]
         return newObj
 
 class SettingManager:
