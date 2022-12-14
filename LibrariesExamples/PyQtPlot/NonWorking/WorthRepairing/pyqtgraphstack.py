@@ -74,6 +74,8 @@ class PyQtGraphStack:
 		* title : sets the window title
 
 		"""
+		self.canvaslist = {}
+		self.curvelist = {}
 
 		# Resolution Resources → Fixed Aspect Ratio of 16:9 enforced
 		self.resolution = [192, 108]
@@ -146,7 +148,7 @@ class PyQtGraphStack:
 					  (default is 'curve')
 
 		"""
-		if name in canvaslist:
+		if name in self.canvaslist:
 			raise Exception(f"Curve name must be a unique identifier! {name} already exists.")
 
 		# Decide whether to use the next column or row
@@ -186,7 +188,7 @@ class PyQtGraphStack:
 		new_cols = self.cols + colspan
 		self.resize(new_rows, new_cols)
 
-		new_canvas = window.addPlot(title=title, row = self.rows, col = self.cols, rowspan=rowspan, colspan=colspan)
+		new_canvas = self.window.addPlot(title=title, row = self.rows, col = self.cols, rowspan=rowspan, colspan=colspan)
 
 		self.rows = new_rows
 		self.cols = new_cols
