@@ -22,88 +22,29 @@ should_display_2D_plots = True
 # 2022-12-14 Batch Surprise Recomputation                                                                              #
 # ==================================================================================================================== #
 
-from pyphocorehelpers.DataStructure.enum_helpers import ExtendedEnum
-
-class TimeDependentPlacefieldSurpriseMode(ExtendedEnum):
-    """Docstring for TimeDependentPlacefieldSurpriseMode."""
-    FROM_SCRATCH = "from_scratch"
-    USING_EXTANT = "using_extant"
-
-    @property
-    def use_extant(self):
-        return TimeDependentPlacefieldSurpriseMode.use_extantList()[self]
-
-    # Static properties
-    @classmethod
-    def use_extantList(cls):
-        return cls.build_member_value_dict([False, True])
 
 
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import ZhangReconstructionImplementation
-from neuropy.utils.mixins.binning_helpers import BinningContainer
-from pyphocorehelpers.indexing_helpers import build_pairwise_indicies
-from neuropy.analyses.time_dependent_placefields import PfND_TimeDependent
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ExtendedStats import compute_snapshot_differences
 
-use_extant_pf1D_dt_mode = TimeDependentPlacefieldSurpriseMode.FROM_SCRATCH
+import pyphoplacecellanalysis.External.pyqtgraph as pg
+from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.CustomLinearRegionItem import CustomLinearRegionItem
 
-global_epoch_name = curr_active_pipeline.active_completed_computation_result_names[-1] # 'maze'
-global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
-sess =  curr_active_pipeline.computation_results[global_epoch_name].sess
-active_one_step_decoder = curr_active_pipeline.computation_results[global_epoch_name].computed_data.get('pf2D_Decoder', None)
-active_extended_stats = curr_active_pipeline.computation_results[global_epoch_name].computed_data.get('extended_stats', None)
-
-
-## Get the time-binning from `firing_rate_trends`:
-active_firing_rate_trends = curr_active_pipeline.computation_results[global_epoch_name].computed_data.get('firing_rate_trends', None)
-time_bin_size_seconds, all_session_spikes, pf_included_spikes_only = active_firing_rate_trends['time_bin_size_seconds'], active_firing_rate_trends['all_session_spikes'], active_firing_rate_trends['pf_included_spikes_only']
-
-active_time_binning_container, active_time_binned_unit_specific_binned_spike_rate, active_time_binned_unit_specific_binned_spike_counts = pf_included_spikes_only['time_binning_container'], pf_included_spikes_only['time_binned_unit_specific_binned_spike_rate'], pf_included_spikes_only['time_binned_unit_specific_binned_spike_counts']
-ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(active_time_binning_container.centers, active_time_binned_unit_specific_binned_spike_counts)
-
-
-# ## Make new pf_1D_dt:
-active_session, pf_computation_config = global_results.sess, global_results.computation_config.pf_params
-active_session_spikes_df, active_pos, computation_config, included_epochs = active_session.spikes_df, active_session.position, pf_computation_config, pf_computation_config.computation_epochs
-active_pf_1D_dt = PfND_TimeDependent(deepcopy(active_session_spikes_df), deepcopy(active_pos.linear_pos_obj), epochs=included_epochs,
-                                    speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
-                                    grid_bin=computation_config.grid_bin, grid_bin_bounds=computation_config.grid_bin_bounds, smooth=computation_config.smooth)
-
-out_pair_indicies = build_pairwise_indicies(np.arange(active_time_binning_container.edge_info.num_bins))
-time_intervals = active_time_binning_container.edges[out_pair_indicies] # .shape # (4153, 2)
-# time_intervals
-
-## Entirely independent computations for binned_times:
-if use_extant_pf1D_dt_mode.use_extant:
-    active_pf_1D_dt.reset()
-
-out_list_t = []
-out_list = []
-for start_t, end_t in time_intervals:
-    out_list_t.append(end_t)
+def plot_simple_graph(y=np.random.normal(size=100)):
+    app = pg.mkQApp("Plotting Example")
+    #mw = QtGui.QMainWindow()
+    #mw.resize(800,800)
     
-    ## Inline version that reuses active_pf_1D_dt directly:
-    if use_extant_pf1D_dt_mode.use_extant:
-        out_list.append(active_pf_1D_dt.complete_time_range_computation(start_t, end_t, assign_results_to_member_variables=False))
-    else:
-        # Static version that calls PfND_TimeDependent.perform_time_range_computation(...) itself using just the static variables of `active_pf_1D_dt`:
-        out_list.append(PfND_TimeDependent.perform_time_range_computation(active_pf_1D_dt.all_time_filtered_spikes_df, active_pf_1D_dt.all_time_filtered_pos_df, position_srate=active_pf_1D_dt.position_srate,
-                                                                    xbin=active_pf_1D_dt.xbin, ybin=active_pf_1D_dt.ybin,
-                                                                    start_time=start_t, end_time=end_t,
-                                                                    included_neuron_IDs=active_pf_1D_dt.included_neuron_IDs, active_computation_config=active_pf_1D_dt.config, override_smooth=active_pf_1D_dt.smooth))
+    win = pg.GraphicsLayoutWidget(show=True, title="Basic plotting examples")
+    win.resize(1000,600)
+    win.setWindowTitle('pyqtgraph example: Plotting')
     
+    # Enable antialiasing for prettier plots
+    pg.setConfigOptions(antialias=True)
+    
+    p1 = win.addPlot(title="Basic array plotting", y=y)
+    
+    return [p1], win, app
 
-# out_list # len(out_list) # 4153
-out_list_t = np.array(out_list_t)
-historical_snapshots = {float(t):v for t, v in zip(out_list_t, out_list)} # build a dict<float:PlacefieldSnapshot>
- # {1.9991045125061646: <neuropy.analyses.time_dependent_placefields.PlacefieldSnapshot at 0x16c2b74fb20>, 2.4991045125061646: <neuropy.analyses.time_dependent_placefields.PlacefieldSnapshot at 0x168acfb3bb0>, ...}
-
-post_update_times, pf_overlap_results, flat_relative_entropy_results, flat_jensen_shannon_distance_results = compute_snapshot_differences(historical_snapshots)
-relative_entropy_result_dicts_list = [a_val_dict['relative_entropy_result_dict'] for a_val_dict in pf_overlap_results]
-long_short_rel_entr_curves_list = [a_val_dict['long_short_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list] # [0].shape # (108, 63) = (n_neurons, n_xbins)
-short_long_rel_entr_curves_list = [a_val_dict['short_long_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list]
-long_short_rel_entr_curves_frames = np.stack([a_val_dict['long_short_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list]) # build a 3D array (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
-short_long_rel_entr_curves_frames = np.stack([a_val_dict['short_long_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list]) # build a 3D array (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
 
 
 # ==================================================================================================================== #
