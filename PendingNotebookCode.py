@@ -22,10 +22,6 @@ should_display_2D_plots = True
 # 2022-12-14 Batch Surprise Recomputation                                                                              #
 # ==================================================================================================================== #
 
-
-
-
-
 import pyphoplacecellanalysis.External.pyqtgraph as pg
 from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.CustomLinearRegionItem import CustomLinearRegionItem
