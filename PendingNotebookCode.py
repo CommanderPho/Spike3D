@@ -22,26 +22,104 @@ should_display_2D_plots = True
 # 2022-12-14 Batch Surprise Recomputation                                                                              #
 # ==================================================================================================================== #
 
-import pyphoplacecellanalysis.External.pyqtgraph as pg
-from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.CustomLinearRegionItem import CustomLinearRegionItem
+from numpy import inf # for _normalize_flat_relative_entropy_infs
+from sklearn.preprocessing import minmax_scale # for _normalize_flat_relative_entropy_infs
+from matplotlib.collections import BrokenBarHCollection # for add_epochs
 
-def plot_simple_graph(y=np.random.normal(size=100)):
-    app = pg.mkQApp("Plotting Example")
-    #mw = QtGui.QMainWindow()
-    #mw.resize(800,800)
-    
-    win = pg.GraphicsLayoutWidget(show=True, title="Basic plotting examples")
-    win.resize(1000,600)
-    win.setWindowTitle('pyqtgraph example: Plotting')
-    
-    # Enable antialiasing for prettier plots
-    pg.setConfigOptions(antialias=True)
-    
-    p1 = win.addPlot(title="Basic array plotting", y=y)
-    
-    return [p1], win, app
+def build_epoch_label(xy, text, ax, **labels_kwargs):
+    """ places a text label for the epoch at the top, just inside of it """
+    if labels_kwargs is None:
+        labels_kwargs = {}
+    labels_y_offset = labels_kwargs.pop('y_offset', -0.05)
+    # y = xy[1]
+    y = xy[1] + labels_y_offset  # shift y-value for label so that it's below the artist
+    return ax.text(xy[0], y, text, **({'ha': 'center', 'va': 'top', 'family': 'sans-serif', 'size': 14} | labels_kwargs)) # va="top" places it inside the box if it's aligned to the top
 
+def add_epochs(epoch_obj, curr_ax, facecolor=('green','red'), edgecolors=("black",), alpha=0.25, labels_kwargs=None, defer_render=False, debug_print=False):
+    """ plots epoch rectangles on the existing matplotlib axis
+    2022-12-14
+
+    Usage:
+        epochs_collection, epoch_labels = add_epochs(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
+
+    Full Usage Examples:
+
+    ## Example 1:
+        active_filter_epochs = curr_active_pipeline.sess.replay
+        active_filter_epochs
+
+        if not 'stop' in active_filter_epochs.columns:
+            # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
+            active_filter_epochs['stop'] = active_filter_epochs['end'].copy()
+            
+        if not 'label' in active_filter_epochs.columns:
+            # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
+            active_filter_epochs['label'] = active_filter_epochs['flat_replay_idx'].copy()
+
+        active_filter_epoch_obj = Epoch(active_filter_epochs)
+        active_filter_epoch_obj
+
+
+        fig, ax = plt.subplots()
+        ax.plot(post_update_times, flat_surprise_across_all_positions)
+        ax.set_ylabel('Relative Entropy across all positions')
+        ax.set_xlabel('t (seconds)')
+        epochs_collection, epoch_labels = add_epochs(curr_active_pipeline.sess.epochs, ax, facecolor=('red','cyan'), alpha=0.1, edgecolors=None, labels_kwargs={'y_offset': -0.05, 'size': 14}, defer_render=True, debug_print=False)
+        laps_epochs_collection, laps_epoch_labels = add_epochs(curr_active_pipeline.sess.laps.as_epoch_obj(), ax, facecolor='red', edgecolors='black', labels_kwargs={'y_offset': -16.0, 'size':8}, defer_render=True, debug_print=False)
+        replays_epochs_collection, replays_epoch_labels = add_epochs(active_filter_epoch_obj, ax, facecolor='orange', edgecolors=None, labels_kwargs=None, defer_render=False, debug_print=False)
+        fig.show()
+
+
+    ## Example 2:
+
+        # Show basic relative entropy vs. time plot:
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        ax.plot(post_update_times, flat_relative_entropy_results)
+        ax.set_ylabel('Relative Entropy')
+        ax.set_xlabel('t (seconds)')
+        epochs_collection, epoch_labels = add_epochs(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
+        fig.show()
+
+    """        
+    epoch_tuples = [(start_t, width_duration) for start_t, width_duration in zip(epoch_obj.starts, epoch_obj.durations)] # [(0.0, 1211.5580800310709), (1211.5580800310709, 882.3397767931456)]
+    epoch_mid_t = [a_tuple[0]+(0.5*a_tuple[1]) for a_tuple in epoch_tuples] # used for labels
+
+    curr_span_ymin = curr_ax.get_ylim()[0]
+    curr_span_ymax = curr_ax.get_ylim()[1]
+    curr_span_height = curr_span_ymax-curr_span_ymin
+    # xrange: list of (float, float) The sequence of (left-edge-position, width) pairs for each bar.
+    # yrange: (lower-edge, height) 
+    epochs_collection = BrokenBarHCollection(xranges=epoch_tuples, yrange=(curr_span_ymin, curr_span_height), facecolor=facecolor, alpha=alpha, edgecolors=edgecolors, linewidths=(1,)) # , offset_transform=curr_ax.transData
+    if debug_print:
+        print(f'(curr_span_ymin, curr_span_ymax): ({curr_span_ymin}, {curr_span_ymax}), epoch_tuples: {epoch_tuples}')
+    curr_ax.add_collection(epochs_collection)
+    if labels_kwargs is not None:
+        epoch_labels = [build_epoch_label((a_mid_t, curr_span_ymax), a_label, curr_ax, **labels_kwargs) for a_label, a_mid_t in zip(epoch_obj.labels, epoch_mid_t)]
+    else:
+        epoch_labels = None
+    if not defer_render:
+        curr_ax.get_figure().canvas.draw()
+    return epochs_collection, epoch_labels
+
+def _normalize_flat_relative_entropy_infs(flat_relative_entropy_results):
+    """ Replace np.inf with a maximally high value.
+    2022-12-14 WIP
+
+    Usage:
+        normalized_flat_relative_entropy_results = _normalize_flat_relative_entropy_infs(flat_relative_entropy_results)
+    """
+
+    # Replace np.inf with a maximally high value.
+    inf_value_mask = np.isinf(flat_relative_entropy_results) # all the infinte values
+
+    normalized_flat_relative_entropy_results = flat_relative_entropy_results.copy()
+    normalized_flat_relative_entropy_results[normalized_flat_relative_entropy_results == inf] = 0  # zero out the infinite values for normalization to the feature range (-1, 1)
+    normalized_flat_relative_entropy_results = minmax_scale(normalized_flat_relative_entropy_results, feature_range=(-1, 1)) # normalize to the feature_range (-1, 1)
+
+    # Restore the infinite values at the specified value:
+    # normalized_flat_relative_entropy_results[inf_value_mask] = 0.0
+    return normalized_flat_relative_entropy_results
 
 
 # ==================================================================================================================== #
