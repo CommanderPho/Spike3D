@@ -25,12 +25,13 @@ should_display_2D_plots = True
 # ==================================================================================================================== #
 
 def find_epoch_names(curr_active_pipeline):
-    """ 
-    from PendingNotebookCode import find_epoch_names
-    long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
-    long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
-    short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
-    global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
+    """ Returns the [long, short, global] epoch names. They must exist.
+    Usage:
+        from PendingNotebookCode import find_epoch_names
+        long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
+        long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
+        short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
+        global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
 
     """
     include_whitelist = curr_active_pipeline.active_completed_computation_result_names # ['maze', 'sprinkle']
