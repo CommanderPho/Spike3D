@@ -17,22 +17,11 @@ from neuropy.core.epoch import NamedTimerange
 
 should_force_recompute_placefields = True
 should_display_2D_plots = True
+_debug_print = False
 
 # ==================================================================================================================== #
 # 2022-12-15 Importing from TestNeuropyPipeline241                                                                     #
 # ==================================================================================================================== #
-
-
-# ### ✅ Test adding the nearest predicted/decoded position as a red point to the 3D plotter:
-
-# In[ ]:
-
-
-## Sync ipspikesDataExplorer to raster window:
-extra_interactive_spike_behavior_browser_sync_connection = spike_raster_window.connect_additional_controlled_plotter(controlled_plt=ipspikesDataExplorer)
-# extra_interactive_spike_behavior_browser_sync_connection = _connect_additional_controlled_plotter(spike_raster_window.spike_raster_plt_2d, ipspikesDataExplorer)
-
-_debug_print = False
 
 def _update_nearest_decoded_most_likely_position_callback(start_t, end_t):
     """ Only uses end_t
@@ -73,12 +62,6 @@ def _update_nearest_decoded_most_likely_position_callback(start_t, end_t):
         print(f'tcurr_debug_point: {curr_debug_point}') # \n\tlast_window_time: {last_window_time}\n\tdisplayed_time_offset: {displayed_time_offset}
     ipspikesDataExplorer.perform_plot_location_point('debug_point_plot', curr_debug_point, color='r', render=True)
     return curr_debug_point
-
-_update_nearest_decoded_most_likely_position_callback(0.0, ipspikesDataExplorer.t[0])
-# _conn = pg.SignalProxy(ipspikesDataExplorer.sigOnUpdateMeshes, rateLimit=14, slot=_update_nearest_decoded_most_likely_position_callback)
-_conn = ipspikesDataExplorer.sigOnUpdateMeshes.connect(_update_nearest_decoded_most_likely_position_callback)
-
-
 
 
 # ==================================================================================================================== #
@@ -257,8 +240,10 @@ def process_session_plots(curr_active_pipeline, active_config_name, debug_print=
     active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
     active_pf_2D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_dt', None)
     active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
-    active_one_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None)
-    active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None)
+    active_one_step_decoder_2D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None) # BayesianPlacemapPositionDecoder
+    active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None) 
+    active_one_step_decoder_1D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_Decoder', None) # BayesianPlacemapPositionDecoder
+    # active_two_step_decoder_1D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_TwoStepDecoder', None)
     active_extended_stats = curr_active_pipeline.computation_results[active_config_name].computed_data.get('extended_stats', None)
     active_eloy_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('EloyAnalysis', None)
     active_simpler_pf_densities_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('SimplerNeuronMeetingThresholdFiringAnalysis', None)
