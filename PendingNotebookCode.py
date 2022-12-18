@@ -20,6 +20,74 @@ should_display_2D_plots = True
 _debug_print = False
 
 # ==================================================================================================================== #
+# 2022-12-18 - Added Standardization of Position bins between short and long                                           #
+# ==================================================================================================================== #
+
+from neuropy.analyses.placefields import PfND # for re-binning pf1D
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
+
+
+def _standardize_long_short_pf_bins(long_pf1D, short_pf1D):
+    """ Allow overriding PfND's bins:
+        # 2022-12-09 - We want to be able to have both long/short track placefields have the same bins.
+        This function standardizes the short pf1D's xbins to the same ones as the long_pf1D, and then recalculates it.
+        Usage:
+            long_pf1D, short_pf1D, did_update_bins = _standardize_long_short_pf(long_pf1D, short_pf1D)
+    """
+    did_update_bins = False
+    if (len(short_pf1D.xbin) < len(long_pf1D.xbin)):
+        print(f'short_pf1D will be re-binned to match long_pf1D...')
+        bak_short_pf1D = deepcopy(short_pf1D) # Backup the original first
+        xbin, ybin, bin_info, grid_bin = long_pf1D.xbin, long_pf1D.ybin, long_pf1D.bin_info, long_pf1D.config.grid_bin
+        ## Apply to the short dataframe:
+        short_pf1D.xbin, short_pf1D.ybin, short_pf1D.bin_info, short_pf1D.config.grid_bin = xbin, ybin, bin_info, grid_bin
+        ## Updates (replacing) the 'binned_x' (and if 2D 'binned_y') columns to the position dataframe:
+        short_pf1D._filtered_pos_df, _, _, _ = PfND.build_position_df_discretized_binned_positions(short_pf1D._filtered_pos_df, short_pf1D.config, xbin_values=short_pf1D.xbin, ybin_values=short_pf1D.ybin, debug_print=False) # Finishes setup
+        short_pf1D.compute() # does compute
+        print(f'done.') ## Successfully re-bins pf1D:
+        did_update_bins = True # set the update flag
+
+
+    return long_pf1D, short_pf1D, did_update_bins
+
+
+def _get_common_cell_pf_results(long_pf1D, ):
+    ## get shared neuron info:
+    # this must be done after we rebuild the short_pf1D bins (if we need to) so they continue to match:
+    pf_neurons_diff = _compare_computation_results(long_results.pf1D.ratemap.neuron_ids, short_results.pf1D.ratemap.neuron_ids)
+
+    shared_aclus = pf_neurons_diff.intersection #.shape (56,)
+    print(f'shared_aclus: {shared_aclus}.\t np.shape: {np.shape(shared_aclus)}')
+    # curr_any_context_neurons = pf_neurons_diff.either
+    long_only_aclus = pf_neurons_diff.lhs_only
+    short_only_aclus = pf_neurons_diff.rhs_only
+    print(f'long_only_aclus: {long_only_aclus}.\t np.shape: {np.shape(long_only_aclus)}')
+    print(f'short_only_aclus: {short_only_aclus}.\t np.shape: {np.shape(short_only_aclus)}')
+
+    ## Get the normalized_tuning_curves only for the shared aclus (that are common across (long/short/global):
+    long_is_included = np.isin(long_pf1D.ratemap.neuron_ids, shared_aclus)  #.shape # (104, 63)
+    long_incl_aclus = np.array(long_pf1D.ratemap.neuron_ids)[long_is_included] #.shape # (98,)
+    long_incl_curves = long_pf1D.ratemap.normalized_tuning_curves[long_is_included]  #.shape # (98, 63)
+    assert long_incl_aclus.shape[0] == long_incl_curves.shape[0] # (98,) == (98, 63)
+
+    short_is_included = np.isin(short_pf1D.ratemap.neuron_ids, shared_aclus)
+    short_incl_aclus = np.array(short_pf1D.ratemap.neuron_ids)[short_is_included] #.shape (98,)
+    short_incl_curves = short_pf1D.ratemap.normalized_tuning_curves[short_is_included]  #.shape # (98, 40)
+    assert short_incl_aclus.shape[0] == short_incl_curves.shape[0] # (98,) == (98, 63)
+    # assert short_incl_curves.shape[1] == long_incl_curves.shape[1] # short and long should have the same bins
+
+    global_is_included = np.isin(global_pf1D.ratemap.neuron_ids, shared_aclus)
+    global_incl_aclus = np.array(global_pf1D.ratemap.neuron_ids)[global_is_included] #.shape (98,)
+    global_incl_curves = global_pf1D.ratemap.normalized_tuning_curves[global_is_included]  #.shape # (98, 63)
+    assert global_incl_aclus.shape[0] == global_incl_curves.shape[0] # (98,) == (98, 63)
+    assert global_incl_curves.shape[1] == long_incl_curves.shape[1] # global and long should have the same bins
+
+    assert np.alltrue(np.isin(long_incl_aclus, short_incl_aclus))
+    assert np.alltrue(np.isin(long_incl_aclus, global_incl_aclus))
+    return 
+
+
+# ==================================================================================================================== #
 # 2022-12-15 Importing from TestNeuropyPipeline241                                                                     #
 # ==================================================================================================================== #
 
