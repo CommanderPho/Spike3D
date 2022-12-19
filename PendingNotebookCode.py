@@ -27,28 +27,15 @@ from neuropy.analyses.placefields import PfND # for re-binning pf1D
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
 
 
-def _standardize_long_short_pf_bins(long_pf1D, short_pf1D):
-    """ Allow overriding PfND's bins:
-        # 2022-12-09 - We want to be able to have both long/short track placefields have the same bins.
-        This function standardizes the short pf1D's xbins to the same ones as the long_pf1D, and then recalculates it.
-        Usage:
-            long_pf1D, short_pf1D, did_update_bins = _standardize_long_short_pf(long_pf1D, short_pf1D)
-    """
-    did_update_bins = False
-    if (len(short_pf1D.xbin) < len(long_pf1D.xbin)):
-        print(f'short_pf1D will be re-binned to match long_pf1D...')
-        bak_short_pf1D = deepcopy(short_pf1D) # Backup the original first
-        xbin, ybin, bin_info, grid_bin = long_pf1D.xbin, long_pf1D.ybin, long_pf1D.bin_info, long_pf1D.config.grid_bin
-        ## Apply to the short dataframe:
-        short_pf1D.xbin, short_pf1D.ybin, short_pf1D.bin_info, short_pf1D.config.grid_bin = xbin, ybin, bin_info, grid_bin
-        ## Updates (replacing) the 'binned_x' (and if 2D 'binned_y') columns to the position dataframe:
-        short_pf1D._filtered_pos_df, _, _, _ = PfND.build_position_df_discretized_binned_positions(short_pf1D._filtered_pos_df, short_pf1D.config, xbin_values=short_pf1D.xbin, ybin_values=short_pf1D.ybin, debug_print=False) # Finishes setup
-        short_pf1D.compute() # does compute
-        print(f'done.') ## Successfully re-bins pf1D:
-        did_update_bins = True # set the update flag
+def interleave(list1, list2):
+    """ Chat-GPT """
+    return [x for pair in zip(list1, list2) for x in pair]
 
 
-    return long_pf1D, short_pf1D, did_update_bins
+import itertools
+def interleave(list1, list2):
+    """ human solution """
+    return [x for x in itertools.chain.from_iterable(itertools.izip_longest(list1,list2)) if x]
 
 
 def _get_common_cell_pf_results(long_pf1D, ):
