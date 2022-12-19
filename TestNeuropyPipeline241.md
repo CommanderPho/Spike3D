@@ -145,7 +145,7 @@ active_data_mode_type_properties = known_data_session_type_properties_dict[activ
 basedir = r'W:\Data\Bapun\RatS\Day5TwoNovel'
 # basedir = r'/home/halechr/Data/Bapun/RatS/Day5TwoNovel'
 
-curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), force_reload=False, skip_save=True) # damn this file is 21.1 GB!
+curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), force_reload=True, skip_save_on_initial_load=True) # damn this file is 21.1 GB!
 active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
 active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess)
 
@@ -159,7 +159,7 @@ curr_active_pipeline.prepare_for_display(root_output_dir=r'Data/Output', should_
 ## _perform_velocity_vs_pf_density_computation: causes AssertionError: After AOC normalization the sum over each cell should be 1.0, but it is not! [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan] with 1D placefields!
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region tags=[] -->
 ### Test arbitrary filtering beyond active_session_filter_configurations:
 <!-- #endregion -->
 
@@ -246,6 +246,7 @@ active_session_computation_configs.time
 <!-- #endregion -->
 
 ```python pycharm={"is_executing": false} tags=[]
+%pdb on
 from neuropy.core.session.SessionSelectionAndFiltering import build_custom_epochs_filters # used particularly to build Bapun-style filters
 
 active_data_mode_name = 'bapun'
@@ -254,11 +255,11 @@ active_data_mode_type_properties = known_data_session_type_properties_dict[activ
 basedir = r'W:\Data\Bapun\RatN\Day4OpenField' # Apogee
 # basedir = '/Volumes/MoverNew/data/Bapun/RatN/Day4OpenField' # mac
 
-curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), force_reload=False, skip_save=True)
+curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), force_reload=True, skip_save_on_initial_load=True)
 # active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, included_epoch_names=['maze','sprinkle']) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-# active_session_filter_configurations = build_custom_epochs_filters(curr_active_pipeline.sess, included_epoch_labels=['maze','sprinkle'])
-active_session_filter_configurations = build_custom_epochs_filters(curr_active_pipeline.sess, included_epoch_labels=['maze','sprinkle'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(curr_active_pipeline.sess, included_epoch_labels=['maze','sprinkle'])
+# active_session_filter_configurations = build_custom_epochs_filters(curr_active_pipeline.sess, epoch_name_whitelist=['maze','sprinkle'])
+active_session_filter_configurations = build_custom_epochs_filters(curr_active_pipeline.sess, epoch_name_whitelist=['maze','sprinkle'])
+# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(curr_active_pipeline.sess, epoch_name_whitelist=['maze','sprinkle'])
 active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=1.0)
 curr_active_pipeline.filter_sessions(active_session_filter_configurations)
 curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_recursive_latent_placefield_decoding', '_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation']) # SpikeAnalysisComputations._perform_spike_burst_detection_computation
@@ -287,7 +288,7 @@ curr_active_pipeline.perform_computations(active_session_computation_configs[0],
 curr_active_pipeline.prepare_for_display(should_smooth_maze=True) # TODO: pass a display config
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## KDiba Format:
 <!-- #endregion -->
 
