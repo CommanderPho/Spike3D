@@ -1057,7 +1057,7 @@ win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_
 # + scene__Default [markdown] Scene=true tags=["ActiveScene"]
 # # Main Visualization GUIs
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
 # ## 🪟 3D Interactive Spike Raster Window
 
 # + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
@@ -1175,7 +1175,7 @@ spike_raster_window.spike_raster_plt_2d.params.config_items
 # + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.menus.custom_context_menus.add_renderables
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # ### Compute whether each spike is included in the active placefield computation. Spikes might be excluded due to not meeting speed/firing-rate thresholds, being an unused cell type, or occuring outside the computational_epochs for which the pfs were computed for the active configuration
 
 # + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
@@ -1655,7 +1655,7 @@ curve.curve.setClickable(True)
 from pyphoplacecellanalysis.External.pyqtgraph.console import ConsoleWidget
 from pyphoplacecellanalysis.External.pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ## Custom Epochs
 
 # +
@@ -1740,7 +1740,7 @@ for a_plot, a_rect_item in active_2d_plot.rendered_epochs.GeneralEpochs.items():
     active_2d_plot.compute_bounds_adjustment_for_rect_item(a_plot, a_rect_item, debug_print=True, should_apply_adjustment=False)
 # get_added_rect_item_required_y_value(a_rect_item, debug_print=False)
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # ## Custom Simple 2D Curves for the 2D Rasters
 # Note, approach below copied from `add_separate_render_epoch_rects_plot_item(...)`
 
@@ -1822,8 +1822,6 @@ fig
 
 widget
 
-
-
 active_2d_plot.ui.dynamic_docked_widget_container.setContentsMargins(0, 0, 0, 0)
 active_2d_plot.ui.dynamic_docked_widget_container.layout().setContentsMargins(0,0,0,0)
 active_2d_plot.ui.dynamic_docked_widget_container.layout().setSpacing(0)
@@ -1839,41 +1837,6 @@ dDisplayItem
 
 dDisplayItem.
 
-
-
-# +
-## THE CORE WORKING VERSION - 2022-09-27 @ 4pm
-
-from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_most_likely_position_comparsions, plot_1D_most_likely_position_comparsions
-
-## Test Plotting just a single dimension of the 2D posterior:
-pho_custom_decoder = active_one_step_decoder # active_pf_2D
-# pho_custom_decoder = new_2D_decoder
-active_posterior = pho_custom_decoder.p_x_given_n
-# Collapse the 2D position posterior into two separate 1D (X & Y) marginal posteriors. Be sure to re-normalize each marginal after summing
-marginal_posterior_x = np.squeeze(np.sum(active_posterior, 1)) # sum over all y. Result should be [x_bins x time_bins]
-marginal_posterior_x = marginal_posterior_x / np.sum(marginal_posterior_x, axis=0) # sum over all positions for each time_bin (so there's a normalized distribution at each timestep)
-# np.shape(marginal_posterior_x) # (41, 3464)
-custom_2D_decoder_container = PhoUIContainer('active_pf_2D_decoder', figure_id=f'active_pf_2D_decoder_most_likely')
-# custom_2D_decoder_container.fig, custom_2D_decoder_container.ax = plt.subplots(num=custom_2D_decoder_container.figure_id, ncols=1, nrows=1, figsize=(15,15), clear=True, sharex=True, sharey=False, constrained_layout=True)
-
-custom_2D_decoder_container.fig = active_2d_plot.ui.matplotlib_view_widget.getFigure()
-custom_2D_decoder_container.ax = active_2d_plot.ui.matplotlib_view_widget.ax #getFigure().add_subplot(111)
-custom_2D_decoder_container.fig.suptitle(custom_2D_decoder_container.name)
-custom_2D_decoder_container.fig, custom_2D_decoder_container.ax = plot_1D_most_likely_position_comparsions(sess.position.to_dataframe(), ax=custom_2D_decoder_container.ax, time_window_centers=pho_custom_decoder.active_time_window_centers, xbin=pho_custom_decoder.xbin,
-                                                   posterior=marginal_posterior_x,
-                                                   active_most_likely_positions_1D=pho_custom_decoder.most_likely_positions[:,0].T,
-                                                   enable_flat_line_drawing=False, debug_print=False)
-
-active_2d_plot.ui.matplotlib_view_widget.draw()
-# -
-
-
-
-
-
-
-
 # ValueError: x and y must have same first dimension, but have shapes (11881,) and (11880,)
 pho_custom_decoder.active_time_window_centers.shape # (11881,)
 
@@ -1883,98 +1846,8 @@ pho_custom_decoder.most_likely_positions[:,0].T.shape
 
 active_2d_plot.sync_matplotlib_render_plot_widget()
 
-
-
 subplot.plot(np.arange(9))
 active_2d_plot.ui.matplotlib_view_widget.draw()
-
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## Test Custom Menu/Widgets
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### ➡️ Traditional Menus for adding TimeCurves/TimeIntervals to the raster plot:
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# append_custom_menu_to_context_menu(main_graphics_layout_widget, widget.ui.menuAdd_Renderable)
-widget_3d_menu = active_3d_plot_renderable_menus[0]
-append_custom_menu_to_context_menu(active_3d_plot, widget_3d_menu.ui.menuAdd_Renderable)
-# append_custom_menu_to_context_menu(background_static_scroll_plot_widget, widget_3d_menu.ui.menuAdd_Renderable)
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-active_3d_plot_renderable_menus = build_renderable_menu(active_3d_plot, sess)
-# active_3d_plot_renderable_menus
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# Set Plot3DWidget custom context menu
-main_3d_widget.setContextMenuPolicy(qt.Qt.CustomContextMenu)
-main_3d_widget.customContextMenuRequested.connect(main_3d_widget._contextMenu)
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-main_3d_widget = active_3d_plot.ui.main_gl_widget # GLViewWidget
-# main_3d_widget.customContextMenuRequested
-def _prepare3DContextMenu(pos):
-    """ For the Spike3DRaster, doesn't currently seem to display
-    Captures active_3d_plot, main_3d_widget, widget_3d_menu 
-    """
-    print(f'_prepare3DContextMenu(pos: {pos})')
-    menu = QtWidgets.QMenu(active_3d_plot)
-    # debugTestAction = menu.addAction('Debug Test')
-    # debugTestAction1 = menu.addAction('Debug Test 1')
-    # debugTestAction2 = menu.addAction('Debug Test 2')
-    debugTestAction = menu.addAction('Debug A')
-    debugTestAction1 = menu.addAction('Debug B')
-    debugTestAction2 = menu.addAction('Debug C')
-    
-    # menu = widget_3d_menu
-    # print(f'\tmenu: {menu}')
-    # debugTestAction = QAction('Debug Test')
-    # # debugTestAction.setEnabled(active_3d_plot.text().strip() != '')
-    # # debugTestAction.triggered.connect(active_3d_plot.__openPath)
-    # menu.addAction(debugTestAction)
-    
-    # openDirAction = QAction('Open Path')
-    # openDirAction.setEnabled(active_3d_plot.text().strip() != '')
-    # openDirAction.triggered.connect(active_3d_plot.__openPath)
-    # menu.addAction(openDirAction)
-    # menu.addMenu(widget_3d_menu)
-    # menu.exec(active_3d_plot.mapToGlobal(pos))
-    
-    globalPosition = main_3d_widget.mapToGlobal(pos)
-    # globalPosition = active_3d_plot.mapToGlobal(pos)
-    print(f'\tglobalPosition: {globalPosition}')
-    menu.exec(globalPosition)
-    print(f'\tdone.')
-
-main_3d_widget.setContextMenuPolicy(pg.QtCore.Qt.CustomContextMenu)
-_curr_plot3d_context_menu_conn = main_3d_widget.customContextMenuRequested.connect(_prepare3DContextMenu)
-
-# active_3d_plot.setContextMenuPolicy(pg.QtCore.Qt.CustomContextMenu)
-# _curr_plot3d_context_menu_conn = active_3d_plot.customContextMenuRequested.connect(_prepare3DContextMenu)
-# active_3d_plot.customContextMenuRequested.connect()
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# main_3d_widget.installEventFilter
-main_3d_widget.actions()
-main_3d_widget.mouseGrabber()
-# main_3d_widget.mouseReleaseEvent
-# main_3d_widget.nativeParentWidget()
-# main_3d_widget.x
-
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-active_3d_plot.customContextMenuRequested.disconnect()
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-active_3d_plot.plots
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-active_3d_plot.plots_data
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-main_plot_widget.parentWidget()
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-main_plot_widget.vb.menu # ViewBoxMenu 
 
 # + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # #### _debug_print_spike_raster_timeline_alignments
@@ -1984,17 +1857,11 @@ active_plot_curve_datasource.time_column_values # DIBA: 22.286207, 2093.874535
 active_plot_curve_datasource.time_column_values # BAPUN: 7423.002380, 11482.995349
 
 # + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-active_2d_plot.clear_all_3D_time_curves()
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # active_2d_plot.ui.main_time_curves_view_widget.setXLink(None)
 active_2d_plot.ui.main_time_curves_view_widget.setXLink(background_static_scroll_plot_widget)
 
 # + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.ui.main_time_curves_view_widget.showAxes('left', True)
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-active_measured_positions
 
 # + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 background_static_scroll_plot_widget.showAxes('xy')
@@ -2022,23 +1889,13 @@ curr_spikes_df
 # ## 🪟 ipcDataExplorer - 3D Interactive Tuning Curves Plotter
 
 # + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-pActiveTuningCurvesPlotter = None
 
-zScalingFactor = 2000.0 # worked well before with default params
-# zScalingFactor = 50.0 # worked well before with default params
-display_output = display_output | curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', active_config_name, extant_plotter=display_output.get('pActiveTuningCurvesPlotter', None), panel_controls_mode='Qt', should_nan_non_visited_elements=False, zScalingFactor=zScalingFactor, separate_window=False)
-ipcDataExplorer = display_output['ipcDataExplorer']
-display_output['pActiveTuningCurvesPlotter'] = display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
-pActiveTuningCurvesPlotter = display_output['pActiveTuningCurvesPlotter']
-root_dockAreaWindow, placefieldControlsContainerWidget, pf_widgets = display_output['pane'] # for Qt mode:
 
 # + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # ### Setup Extra Buttons
 # -
 
 ipcDataExplorer.occupancy_plotting_config.barOpacity = 0.25
-
-placefieldControlsContainerWidget.ui.end_button_helper_connections
 
 ipcDataExplorer.plots
 ipcDataExplorer.zScalingFactor = 100
@@ -2076,26 +1933,9 @@ print(f'post-update time: {active_pf_2D_dt.last_t}')
 
 
 
-# +
-## Asserts to make sure that the fully-updated dt is equal to the normal:
-assert active_pf_2D_dt.all_time_filtered_pos_df.shape == active_pf_2D_dt.filtered_pos_df.shape, f"active_pf_2D_dt.all_time_filtered_pos_df.shape: {active_pf_2D_dt.all_time_filtered_pos_df.shape}\nactive_pf_2D_dt.filtered_pos_df.shape: {active_pf_2D_dt.filtered_pos_df.shape} "
-assert active_pf_2D_dt.all_time_filtered_spikes_df.shape == active_pf_2D_dt.filtered_spikes_df.shape, f"active_pf_2D_dt.all_time_filtered_spikes_df.shape: {active_pf_2D_dt.all_time_filtered_spikes_df.shape}\nactive_pf_2D_dt.filtered_spikes_df.shape: {active_pf_2D_dt.filtered_spikes_df.shape} "
-# Occupancies are equal:
 
-assert np.isclose(active_pf_2D_dt.ratemap.occupancy, active_pf_2D.ratemap.occupancy).all(), f"active_pf_2D_dt.ratemap.occupancy: {active_pf_2D_dt.ratemap.occupancy}\nactive_pf_2D.ratemap.occupancy: {active_pf_2D.ratemap.occupancy}"
-# assert (active_pf_2D_dt.ratemap.occupancy == active_pf_2D.ratemap.occupancy).all(), f"active_pf_2D_dt.ratemap.occupancy: {active_pf_2D_dt.ratemap.occupancy}\nactive_pf_2D.ratemap.occupancy: {active_pf_2D.ratemap.occupancy}"
-assert (active_pf_2D_dt.ratemap.spikes_maps == active_pf_2D.ratemap.spikes_maps).all(), f"active_pf_2D_dt.ratemap.spikes_maps: {active_pf_2D_dt.ratemap.spikes_maps}\nactive_pf_2D.ratemap.spikes_maps: {active_pf_2D.ratemap.spikes_maps}"
-# -
 
-assert (active_pf_2D_dt.ratemap.tuning_curves == active_pf_2D.ratemap.tuning_curves).all(), f"active_pf_2D_dt.ratemap.tuning_curves: {active_pf_2D_dt.ratemap.tuning_curves}\nactive_pf_2D.ratemap.tuning_curves: {active_pf_2D.ratemap.tuning_curves}"
 
-active_pf_2D_dt.should_smooth_final_tuning_map
-
-PfND_ .should_smooth_spikes_map
-
-active_pf_2D_dt.plot_ratemaps_2D(**({'subplots': (None, 9), 'resolution_multiplier': 1.0, 'enable_spike_overlay': False}))
-
-active_pf_2D.plot_ratemaps_2D(**({'subplots': (None, 9), 'resolution_multiplier': 1.0, 'enable_spike_overlay': False}))
 
 # +
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import pyqtplot_plot_image_array, pyqtplot_common_setup
@@ -2174,14 +2014,7 @@ active_pf_2D_dt.curr_occupancy_weighted_tuning_maps_matrix
 
 active_pf_2D_dt.ratemap.neuron_ids
 
-# # %pdb on
-pActiveTuningCurvesPlotter_dup = None
-display_output = display_output | curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', active_config_name, override_pf2D=active_pf_2D_dt , extant_plotter=display_output.get('pActiveTuningCurvesPlotter_dup', None),
-                                                               panel_controls_mode='Qt', should_nan_non_visited_elements=False, zScalingFactor=2000.0) # Works now!
-ipcDataExplorer_dup = display_output['ipcDataExplorer']
-display_output['pActiveTuningCurvesPlotter_dup'] = display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
-pActiveTuningCurvesPlotter_dup = display_output['pActiveTuningCurvesPlotter_dup']
-root_dockAreaWindow_dup, placefieldControlsContainerWidget_dup, pf_widgets_dup = display_output['pane'] # for Qt mode:
+
 
 # +
 # # %pdb on
@@ -2232,26 +2065,6 @@ pane = (root_dockAreaWindow, placefieldControlsContainerWidget_dup, pf_widgets)
 # -
 
 
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### Optional Duplicate ipcDataExplorer plotter for comparison
-
-# + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-pActiveTuningCurvesPlotter_dup = None
-display_output = display_output | curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', active_config_name, override_pf2D= , extant_plotter=display_output.get('pActiveTuningCurvesPlotter_dup', None),
-                                                               panel_controls_mode='Qt', should_nan_non_visited_elements=False, zScalingFactor=2000.0) # Works now!
-ipcDataExplorer_dup = display_output['ipcDataExplorer']
-display_output['pActiveTuningCurvesPlotter_dup'] = display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
-pActiveTuningCurvesPlotter_dup = display_output['pActiveTuningCurvesPlotter_dup']
-root_dockAreaWindow_dup, placefieldControlsContainerWidget_dup, pf_widgets_dup = display_output['pane'] # for Qt mode:
-
-# + [markdown] tags=[]
-# ### Render computed contours and peaks to ipcDataExplorer:
-# -
-
-from pyphoplacecellanalysis.PhoPositionalData.plotting.peak_prominences import render_all_neuron_peak_prominence_2d_results_on_pyvista_plotter
-## Call the function to add the 3D plot components to the pyvista plotter
-render_all_neuron_peak_prominence_2d_results_on_pyvista_plotter(ipcDataExplorer, active_peak_prominence_2d_results, debug_print=False)
 
 # + pycharm={"is_executing": false, "name": "#%%\n"}
 ## Set the colors of the raster window from the tuning curve window:
@@ -2459,14 +2272,10 @@ app, win, w = curr_active_pipeline.display('_display_placemaps_pyqtplot_2D', act
 win.show(); pg.exec()
 
 # + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## 🪟 ipspikesDataExplorer - 3D Interactive Spike and Behavior Plotter
+#
 
 # + pycharm={"is_executing": false, "name": "#%%\n"}
-pActiveSpikesBehaviorPlotter = None
-active_display_output = active_display_output | curr_active_pipeline.display('_display_3d_interactive_spike_and_behavior_browser', active_config_name, extant_plotter=active_display_output.get('pActiveSpikesBehaviorPlotter', None)) # Works now!
-ipspikesDataExplorer = active_display_output['ipspikesDataExplorer']
-active_display_output['pActiveSpikesBehaviorPlotter'] = active_display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
-pActiveSpikesBehaviorPlotter = active_display_output['pActiveSpikesBehaviorPlotter']
+
 
 # + pycharm={"is_executing": false, "name": "#%%\n"}
 ## Sync ipspikesDataExplorer to raster window:
@@ -2474,54 +2283,7 @@ extra_interactive_spike_behavior_browser_sync_connection = spike_raster_window.c
 # extra_interactive_spike_behavior_browser_sync_connection = _connect_additional_controlled_plotter(spike_raster_window.spike_raster_plt_2d, ipspikesDataExplorer)
 
 # + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### ✅ Test adding the nearest predicted/decoded position as a red point to the 3D plotter:
-
-# + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-_debug_print = False
-
-def _update_nearest_decoded_most_likely_position_callback(start_t, end_t):
-    """ Only uses end_t
-    Implicitly captures: ipspikesDataExplorer, _get_nearest_decoded_most_likely_position_callback
-    
-    Usage:
-        _update_nearest_decoded_most_likely_position_callback(0.0, ipspikesDataExplorer.t[0])
-        _conn = ipspikesDataExplorer.sigOnUpdateMeshes.connect(_update_nearest_decoded_most_likely_position_callback)
-
-    """
-    def _get_nearest_decoded_most_likely_position_callback(t):
-        """ A callback that when passed a visualization timestamp (the current time to render) returns the most likely predicted position provided by the active_two_step_decoder
-        Implicitly captures:
-            active_one_step_decoder, active_two_step_decoder
-        Usage:
-            _get_nearest_decoded_most_likely_position_callback(9000.1)
-        """
-        active_time_window_variable = active_one_step_decoder.time_window_centers # get time window centers (n_time_window_centers,) # (4060,)
-        active_most_likely_positions = active_one_step_decoder.most_likely_positions.T # (4060, 2) NOTE: the most_likely_positions for the active_one_step_decoder are tranposed compared to the active_two_step_decoder
-        # active_most_likely_positions = active_two_step_decoder.most_likely_positions # (2, 4060)
-        assert np.shape(active_time_window_variable)[0] == np.shape(active_most_likely_positions)[1], f"timestamps and num positions must be the same but np.shape(active_time_window_variable): {np.shape(active_time_window_variable)} and np.shape(active_most_likely_positions): {np.shape(active_most_likely_positions)}!"
-        last_window_index = np.searchsorted(active_time_window_variable, t, side='left') # side='left' ensures that no future values (later than 't') are ever returned
-        # TODO: CORRECTNESS: why is it returning an index that corresponds to a time later than the current time?
-        # for current time t=9000.0
-        #     last_window_index: 1577
-        #     last_window_time: 9000.5023
-        # EH: close enough
-        last_window_time = active_time_window_variable[last_window_index] # If there is no suitable index, return either 0 or N (where N is the length of `a`).
-        displayed_time_offset = t - last_window_time # negative value if the window time being displayed is in the future
-        if _debug_print:
-            print(f'for current time t={t}\n\tlast_window_index: {last_window_index}\n\tlast_window_time: {last_window_time}\n\tdisplayed_time_offset: {displayed_time_offset}')
-        return (last_window_time, *list(np.squeeze(active_most_likely_positions[:, last_window_index]).copy()))
-
-    t = end_t # the t under consideration should always be the end_t. This is written this way just for compatibility with the ipspikesDataExplorer.sigOnUpdateMeshes (float, float) signature
-    curr_t, curr_x, curr_y = _get_nearest_decoded_most_likely_position_callback(t)
-    curr_debug_point = [curr_x, curr_y, ipspikesDataExplorer.z_fixed[-1]]
-    if _debug_print:
-        print(f'tcurr_debug_point: {curr_debug_point}') # \n\tlast_window_time: {last_window_time}\n\tdisplayed_time_offset: {displayed_time_offset}
-    ipspikesDataExplorer.perform_plot_location_point('debug_point_plot', curr_debug_point, color='r', render=True)
-    return curr_debug_point
-
-_update_nearest_decoded_most_likely_position_callback(0.0, ipspikesDataExplorer.t[0])
-# _conn = pg.SignalProxy(ipspikesDataExplorer.sigOnUpdateMeshes, rateLimit=14, slot=_update_nearest_decoded_most_likely_position_callback)
-_conn = ipspikesDataExplorer.sigOnUpdateMeshes.connect(_update_nearest_decoded_most_likely_position_callback)
+#
 
 # + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 ipspikesDataExplorer.sigOnUpdateMeshes.disconnect()
@@ -2549,7 +2311,7 @@ recent_spikes_mesh = ipspikesDataExplorer.plots['spikes_main_recent_only']
 # + pycharm={"is_executing": false, "name": "#%%\n"}
 ipspikesDataExplorer.spikes_main_historical.AddPosition((0.0, 0.0, (-1.1*10)))
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## 🪟 TimeSynchronizedPlotters - for plotting time-dependent placefields (active_pf_2D_dt) 
 
 # + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
@@ -4286,7 +4048,7 @@ plt.xlim([start_t, start_t+window_length])
 
 plt.legend()
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # ### Exploring display_predicted_position_difference
 # Draws an arrow from the measured position to the predicted position for each timestep
 
@@ -4305,7 +4067,7 @@ np.where(np.isnan(active_one_step_decoder.p_x_given_n))
 
 np.nan_to_num(active_one_step_decoder.p_x_given_n, nan=0.0, posinf=1.0, neginf=0.0)
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # ### Testing `_display_plot_marginal_1D_most_likely_position_comparisons`
 # ✅ Conclusion: Seems to work as intended!
 
@@ -4331,7 +4093,7 @@ active_2d_plot.ui.matplotlib_view_widget.draw()
 # + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # ### Evaluating Two-Step Decoder:
 # -
 
@@ -6370,7 +6132,7 @@ active_2d_plot.clear_all_rendered_intervals()
 # + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 
-# + [markdown] scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # ## Embedded matplotlib_render_plot_widget display of new ripples
 # -
 
@@ -6386,13 +6148,13 @@ out = ax.plot(prediction_timesteps, np.squeeze(a_result['predictions']))
 # + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.sync_matplotlib_render_plot_widget() # Sync it with the active window:
 
-# + [markdown] scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # # 🐞⛳️✳️ the 3D Interval Rects are CONFIRMED to be misaligned by exactly half of the window width.
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # `active_3d_plot.add_rendered_intervals(new_ripples_intervals_datasource, name='new_ripples')`
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # ![python_JwdIMVHpEQ.png](attachment:52498aab-31a8-4a0b-8add-0728809de9ab.png)
 # ![image.png](attachment:dabc70cf-76b1-45b6-b7a0-a3bf785e5391.png)
 
