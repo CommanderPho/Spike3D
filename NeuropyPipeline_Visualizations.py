@@ -486,14 +486,14 @@ curr_active_pipeline.save_pipeline(active_pickle_filename='loadedSessPickle-2022
 # + pycharm={"is_executing": false} tags=[]
 curr_active_pipeline.save_pipeline()
 
-# + [markdown] tags=[]
-# # Common: Multiple Context Explorations
-
 # + tags=[]
 from pyphoplacecellanalysis.GUI.Qt.Widgets.ProgrammaticPipelineWidget.ProgrammaticPipelineWidget import ProgrammaticPipelineWidget
 widget = ProgrammaticPipelineWidget(owning_pipeline=curr_active_pipeline)
 widget.show()
 widget
+
+# + [markdown] tags=[]
+# # Common: Multiple Context Explorations
 
 # + tags=[]
 CodeConversion.convert_dictionary_to_defn_lines(widget.last_added_display_output, 'widget.last_added_display_output')
@@ -1555,7 +1555,7 @@ spike_raster_window.connection_man.active_connections
 # + pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.connection_man.get_available_drivers()
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
 # ### 2D Raster Plot Interactivity Testing/Extras
 
 # + pycharm={"is_executing": false, "name": "#%%\n"}
@@ -1764,9 +1764,6 @@ active_random_test_plot_curve_datasource = Specific3DTimeCurvesHelper.build_test
 # + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_3d_plot.clear_all_3D_time_curves()
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# #### ✅ 2022-09-05 - Try to skip the reimplementation, and just call the 3D simple methods on the active_2d_plot:
-
 # + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.SpecificTimeCurves import PositionRenderTimeCurves
 
@@ -1811,9 +1808,6 @@ legend.setParent(None)
 
 # + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 legend = None
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-
 
 # + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # ## 👁️‍ Test embedded matplotlib-based figures using `MatplotlibWidget`
@@ -2555,10 +2549,10 @@ recent_spikes_mesh = ipspikesDataExplorer.plots['spikes_main_recent_only']
 # + pycharm={"is_executing": false, "name": "#%%\n"}
 ipspikesDataExplorer.spikes_main_historical.AddPosition((0.0, 0.0, (-1.1*10)))
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # ## 🪟 TimeSynchronizedPlotters - for plotting time-dependent placefields (active_pf_2D_dt) 
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # ### Merging TimeSynchronized Plotters:
 # WTF is this? What does it mean merging them?
 
@@ -2622,7 +2616,7 @@ active_pf_2D_dt.update(t=45.0, start_relative_t=True)
 all_plotters, root_dockAreaWindow, app = build_combined_time_synchronized_plotters_window(active_pf_2D_dt, controlling_widget=spike_raster_window.spike_raster_plt_2d, create_new_controlling_widget=False) # window_scrolled
 controlling_widget, curr_sync_occupancy_plotter, curr_placefields_plotter = all_plotters
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
 # ## Updated Color Config Handling
 
 # + pycharm={"is_executing": false, "name": "#%%\n"}
@@ -3473,26 +3467,9 @@ verify_non_overlapping(start_stop_times_arr=active_filter_epochs[['start','stop'
 
 
 
-# ### Piso-based interval overlap removal
-
-# +
-## Build non-overlapping intervals with piso. Unsure of the computation efficiency, but the ouptuts are correct.
-import piso
-piso.register_accessors()
-
-print(f'pre: {active_filter_epochs.shape[0]}')
-valid_intervals = pd.arrays.IntervalArray.from_arrays(left=active_filter_epochs.start.values, right=active_filter_epochs.end.values).piso.symmetric_difference()
-valid_active_filter_epochs = np.vstack([valid_intervals.left.values.T, valid_intervals.right.values.T]).T
-print(f'post: {valid_active_filter_epochs.shape[0]}') # (37, 2)
-
-active_filter_epochs = valid_active_filter_epochs
-# -
-
 active_filter_epochs
 
 programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_plot_decoded_epoch_slices', filter_epochs='replay', debug_test_max_num_slices=128, debug_print=False) # Does not work due to overlap
-
-
 
 # + [markdown] pycharm={"name": "#%%\n"}
 # ### 🔜 2022-08-10 👁️‍🗨️ NOW: Plot animal positions on the computed posteriors:
@@ -3515,7 +3492,7 @@ print(f'active_one_step_decoder.active_time_window_centers.shape: {active_one_st
 # + pycharm={"name": "#%%\n"}
 active_resampled_pos_df
 
-# +
+# + tags=["gui"]
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
@@ -3536,17 +3513,12 @@ def _debug_on_frame_update(new_frame_idx, ax):
 # plotted_variable_name = kwargs.get('variable_name', 'p_x_given_n') # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
 plotted_variable_name = 'p_x_given_n' # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
 _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, active_computed_data.extended_stats.time_binned_position_df, variable_name=plotted_variable_name, update_callback_function=_debug_on_frame_update) # Works
-# -
 
-
-
-
-
-
-
+# + tags=["gui"]
 curr_display_function_name = '_display_spike_rasters_pyqtplot_2D'
 curr_active_pipeline.display(curr_display_function_name, filter_name, debug_print=False, enable_saving_to_disk=enable_saving_to_disk) 
 
+# + tags=["gui"]
 ## Works, displays my velocity/density result for both 2D and 1D:
 # out_plot_1D, out_plot_2D = curr_active_pipeline.display('_display_speed_vs_PFoverlapDensity_plots', active_config_name)
 curr_display_function_name = '_display_speed_vs_PFoverlapDensity_plots'
@@ -3574,23 +3546,6 @@ plots = curr_active_pipeline.display(curr_display_function_name, filter_name)
 # a_plot_item = a_plot.plotItem # PlotItem
 # a_plot.scene() # GraphicsScene
 export_pyqtgraph_plot(plots[0])
-
-# + [markdown] tags=[]
-# ### 3D (PyVista/Vedo/etc)-based plots:
-
-# + pycharm={"is_executing": false, "name": "#%%\n"}
-curr_active_pipeline.display('_display_3d_interactive_spike_and_behavior_browser', active_config_name) # this works now!
-
-# + pycharm={"is_executing": false, "name": "#%%\n"}
-display_dict = curr_active_pipeline.display('_display_3d_interactive_custom_data_explorer', active_config_name) # does not work, missing color info?
-iplapsDataExplorer = display_dict['iplapsDataExplorer']
-# plotter is available at
-p = display_dict['plotter']
-iplapsDataExplorer
-# -
-
-# curr_kdiba_pipeline.display(DefaultDisplayFunctions._display_3d_interactive_custom_data_explorer, 'maze1') # works!
-curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', 'maze1_PYR') # works!
 
 # + [markdown] tags=[]
 #
@@ -3789,13 +3744,11 @@ new_decoder_spikes_df.spikes.time_variable_name # 't_rel_seconds'
 spike_times = new_decoder_spikes_df[new_decoder_spikes_df.spikes.time_variable_name].to_numpy()
 (spike_times[0], spike_times[-1]) # (1211.5883460667683, 2077.5610790087376)
 
-
-
 active_two_step_decoder.p_x_given_n_and_x_prev
 
-# +
-## Adds the directly accessible properties to the active_one_step_decoder after they're computed in the active_two_step_decoder so that they can be plotted with the same functions/etc.
+# ## Adds the directly accessible properties to the active_one_step_decoder after they're computed in the active_two_step_decoder so that they can be plotted with the same functions/etc.
 
+# +
 # None initialize two-step properties on the one_step_decoder:
 active_one_step_decoder.p_x_given_n_and_x_prev = None
 active_one_step_decoder.two_step_most_likely_positions = None

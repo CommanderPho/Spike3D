@@ -27,6 +27,19 @@ from neuropy.analyses.placefields import PfND # for re-binning pf1D
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
 
 
+### Piso-based interval overlap removal
+# ## Build non-overlapping intervals with piso. Unsure of the computation efficiency, but the ouptuts are correct.
+# import piso
+# piso.register_accessors()
+
+# print(f'pre: {active_filter_epochs.shape[0]}')
+# valid_intervals = pd.arrays.IntervalArray.from_arrays(left=active_filter_epochs.start.values, right=active_filter_epochs.end.values).piso.symmetric_difference()
+# valid_active_filter_epochs = np.vstack([valid_intervals.left.values.T, valid_intervals.right.values.T]).T
+# print(f'post: {valid_active_filter_epochs.shape[0]}') # (37, 2)
+
+# active_filter_epochs = valid_active_filter_epochs
+
+
 def interleave(list1, list2):
     """ Chat-GPT """
     return [x for pair in zip(list1, list2) for x in pair]

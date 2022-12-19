@@ -1,29 +1,29 @@
-# ---
-# jupyter:
-#   jupytext:
-#     formats: ipynb,md,py:light
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.14.4
-#   kernelspec:
-#     display_name: Python [conda env:phoviz_ultimate_311]
-#     language: python
-#     name: conda-env-phoviz_ultimate_311-py
-# ---
+---
+jupyter:
+  jupytext:
+    formats: ipynb,md,py:light
+    text_representation:
+      extension: .md
+      format_name: markdown
+      format_version: '1.3'
+      jupytext_version: 1.14.4
+  kernelspec:
+    display_name: Python [conda env:phoviz_ultimate_311]
+    language: python
+    name: conda-env-phoviz_ultimate_311-py
+---
 
-# + scene__Default pycharm={"is_executing": false} Scene=true tags=["ActiveScene"]
+```python scene__Default pycharm={"is_executing": false} Scene=true tags=["ActiveScene"]
 """
 @author: pho
 """
 ## Automatic debugger on exception raised
-# # %pdb on
-# %pdb off
-# %load_ext autoreload
-# %autoreload 2
+# %pdb on
+%pdb off
+%load_ext autoreload
+%autoreload 2
 # # You need to load the extension first
-# %load_ext viztracer
+%load_ext viztracer
 
 import sys
 import importlib
@@ -39,10 +39,10 @@ from numba import jit
 import numpy as np
 import pandas as pd
 
-# %config Completer.use_jedi = False
+%config Completer.use_jedi = False
 
 # # required to enable non-blocking interaction:
-# %gui qt5
+%gui qt5
 
 import pyphoplacecellanalysis.External.pyqtgraph as pg # Used to plot Speed vs. Pf Desnity Metrics
 from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
@@ -127,15 +127,17 @@ def build_eloy_computation_configs(sess, **kwargs):
     # return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(2.5, 2.5), frate_thresh=0.2, time_bin_size=1.0, computation_epochs = None), spike_analysis=None)]
     # return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(0.2, 0.2), frate_thresh=0.2, time_bin_size=1.0, computation_epochs = None), spike_analysis=None)]
     return [DynamicContainer(pf_params=PlacefieldComputationParameters(speed_thresh=10.0, grid_bin=(4.0, 4.0), smooth=(0.2, 0.2), frate_thresh=0.2, time_bin_size=0.025, computation_epochs = None), spike_analysis=None)]
+```
 
+<!-- #region scene__Default Scene=true tags=["main_run", "ActiveScene"] -->
+# Load Appropriate Data and begin pipeline
+<!-- #endregion -->
 
-# + scene__Default [markdown] Scene=true tags=["main_run", "ActiveScene"]
-# # Load Appropriate Data and begin pipeline
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=["Rachel"] jp-MarkdownHeadingCollapsed=true -->
+## Rachel Format:
+<!-- #endregion -->
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=["Rachel"] jp-MarkdownHeadingCollapsed=true
-# ## Rachel Format:
-
-# + tags=["Rachel"]
+```python tags=["Rachel"]
 active_data_mode_name = 'rachel'
 active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
 active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
@@ -144,17 +146,20 @@ basedir = r'R:\data\Rachel\merged_M1_20211123_raw_phy' # Windows
 curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir))
 active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
 active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess)
+```
 
-# + pycharm={"is_executing": false} tags=["Rachel"]
+```python pycharm={"is_executing": false} tags=["Rachel"]
 curr_active_pipeline.filter_sessions(active_session_filter_configurations)
 curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation']) # Causes "IndexError: index 59 is out of bounds for axis 0 with size 59"
 curr_active_pipeline.prepare_for_display(should_smooth_maze=True) # TODO: pass a display config
+```
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
-# ## KDiba Format:
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+## KDiba Format:
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false} tags=["main_run", "ActiveScene", "Diba"]
-# # %%viztracer
+```python pycharm={"is_executing": false} tags=["main_run", "ActiveScene", "Diba"]
+# %%viztracer
 active_data_mode_name = 'kdiba'
 active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
 active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
@@ -213,59 +218,75 @@ curr_active_pipeline.perform_computations(active_session_computation_configs[0],
 # curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
 curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=True) # TODO: pass a display config
 curr_active_pipeline.save_pipeline()
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 # _perform_firing_rate_trends_computation
 curr_active_pipeline.registered_computation_function_names
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.reload_default_computation_functions()
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.is_computed
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.active_completed_computation_result_names # ['maze1_PYR', 'maze2_PYR', 'maze_PYR']
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.active_incomplete_computation_result_status_dicts # {}
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.computation_results['maze_PYR'].accumulated_errors
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.perform_drop_entire_computed_config
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.perform_drop_computed_result
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.computation_results
 curr_active_pipeline.global_computation_results
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.rerun_failed_computations(curr_active_pipeline.computation_results['maze_PYR'])
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.sess.epochs
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.sess.pbe
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 # active_computation_results[filter_name]
 active_computation_results = curr_active_pipeline.computation_results['maze_PYR']
 active_computed_data = active_computation_results.computed_data
 # active_computed_data
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 active_firing_rate_trends = active_computed_data['firing_rate_trends']
 list(active_firing_rate_trends.keys()) # ['active_rolling_window_times', 'mean_firing_rates', 'desired_window_length_seconds', 'desired_window_length_bins', 'active_firing_rates_df', 'moving_mean_firing_rates_df']
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 active_firing_rate_trends.all_session_spikes['instantaneous_unit_specific_spike_rate']
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 from neuropy.utils.mixins.time_slicing import add_epochs_id_identity, _compute_spike_arbitrary_provided_epoch_ids # for decode_specific_epochs
 from neuropy.utils.efficient_interval_search import OverlappingIntervalsFallbackBehavior #, determine_event_interval_identity, determine_event_interval_is_included # numba acceleration
 from neuropy.analyses.decoders import epochs_spkcount # for decode_specific_epochs
@@ -284,8 +305,9 @@ epoch_label_column_name = 'flat_replay_idx'
 if 'stop' not in filter_epochs_df:
     filter_epochs_df['stop'] = filter_epochs_df['end'].copy()
 filter_epochs_df
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 ## Get the spikes during these epochs to attempt to decode from:
 filter_epoch_spikes_df = deepcopy(curr_active_pipeline.sess.spikes_df)
 ## Add the epoch ids to each spike so we can easily filter on them:
@@ -296,36 +318,44 @@ spike_epoch_identity_arr, interval_timestamp_indicies_lists = _compute_spike_arb
 if debug_print:
     print(f'np.shape(spike_epoch_identity_arr): {np.shape(spike_epoch_identity_arr)}') # (1014937,)
     # print(f'interval_timestamp_indicies_lists: {interval_timestamp_indicies_lists}')
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 i = 0
 df1 = filter_epoch_spikes_df.iloc[interval_timestamp_indicies_lists[i]]
 df1
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 filter_epoch_spikes_df[epoch_id_key_name] = spike_epoch_identity_arr
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 if debug_print:
     print(f'np.shape(filter_epoch_spikes_df): {np.shape(filter_epoch_spikes_df)}')
 filter_epoch_spikes_df = filter_epoch_spikes_df[filter_epoch_spikes_df[epoch_id_key_name] != -1] # Drop all non-included spikes
 if debug_print:
     print(f'np.shape(filter_epoch_spikes_df): {np.shape(filter_epoch_spikes_df)}')
 filter_epoch_spikes_df
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.sess.ripple
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.sess.compute_neurons_ripples
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis import SpikeAnalysisComputations
 
 SpikeAnalysisComputations._perform_firing_rate_trends_computation
@@ -335,36 +365,45 @@ curr_active_pipeline.
 curr_active_pipeline.continue
 _perform_firing_rate_trends_computation
 '_perform_firing_rate_trends_computation'
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 list(curr_active_pipeline.computation_results['maze1_PYR'].keys()) # ['sess', 'computation_config', 'computed_data', 'accumulated_errors']
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 list(curr_active_pipeline.computation_results['maze_PYR'].computed_data.firing_rate_trends.all_session_spikes.keys())
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.computation_results['maze1_PYR'].computed_data['firing_rate_trends']
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.stage.run_specific_computations_single_context(computation_functions_name_whitelist=['_perform_firing_rate_trends_computation'])
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 from pyphoplacecellanalysis.General.Pipeline.Stages.Computation import EvaluationActions
 # progress_logger_callback=(lambda x: curr_active_pipeline.logger.info(x))
 progress_logger_callback=(lambda x: print(f'{x}'))
 curr_active_pipeline.stage.perform_action_for_all_contexts(EvaluationActions.RUN_SPECIFIC, enabled_filter_names=['maze_PYR'], active_computation_params=None, overwrite_extant_results=False,
             computation_functions_name_whitelist=['_perform_firing_rate_trends_computation'], fail_on_exception=True, progress_logger_callback=progress_logger_callback, debug_print=True) #, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, progress_logger_callback=progress_logger_callback, debug_print=debug_print
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 curr_active_pipeline.perform_drop_computed_result(computed_data_keys_to_drop=['firing_rate_trends'])
+```
 
-# + tags=["main_run", "ActiveScene"]
+```python tags=["main_run", "ActiveScene"]
 
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## Hiro Format:
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## Hiro Format:
+<!-- #endregion -->
 
-# + tags=[]
+```python tags=[]
 active_data_mode_name = 'hiro'
 active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
 active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
@@ -387,121 +426,151 @@ basedir = r'W:\Data\Hiro\RoyMaze1' # Apogee Windows (W: Wiser)
 # basedir = r'R:\rMBP Python Repos 2022-07-07\PhoNeuronGillespie2021CodeRepo\PhoMatlabDataScripting\ExportedData\RoyMaze2' # WINDOWS
 # basedir = r'R:\data\Hiro\RoyMaze2' # WINDOWS
 curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir))
+```
 
-# + tags=[]
+```python tags=[]
 from neuropy.utils.misc import convert_dataframe_columns_to_datatype_if_possible, add_explicit_dataframe_columns_from_lookup_df
 
 ## Finish setting up the spikes_df:
 curr_active_pipeline.sess.spikes_df.spikes.set_time_variable_name("t_seconds")
 curr_active_pipeline.sess.flattened_spiketrains._spikes_df = add_explicit_dataframe_columns_from_lookup_df(curr_active_pipeline.sess.spikes_df, curr_active_pipeline.sess.neurons._extended_neuron_properties_df).sort_values(by=['t_seconds']) # Need to re-sort by timestamps once done
 convert_dataframe_columns_to_datatype_if_possible(curr_active_pipeline.sess.spikes_df, {'int':['shank', 'cluster', 'aclu', 'qclu', 'traj', 'lap']})
-# -
+```
 
+```python
 # active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
 # active_session_filter_configurations = active_data_mode_registered_class.build_track_only_filter_functions(sess=curr_active_pipeline.sess)
 active_session_filter_configurations = active_data_mode_registered_class.build_filters_track_only_pyramidal(sess=curr_active_pipeline.sess)
 active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess)
 # active_session_computation_configs
+```
 
-# +
+```python
 post_filter_fn = active_session_filter_configurations['track']
 
 
 active_session_filter_configurations['track'] = lambda x: (x.filtered_by_neuron_type('pyramidal').filtered_by_epoch(x.epochs.get_named_timerange('maze1')), x.epochs.get_named_timerange('maze1'))
-# -
+```
 
+```python
 curr_active_pipeline.sess.flattened_spiketrains._time_variable_name
+```
 
+```python
 curr_active_pipeline.filter_sessions(active_session_filter_configurations)
+```
 
+```python
 curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation'], fail_on_exception=True)
 curr_active_pipeline.prepare_for_display(should_smooth_maze=True) # TODO: pass a display config
+```
 
-# + scene__Default Scene=true tags=["ActiveScene"]
+```python scene__Default Scene=true tags=["ActiveScene"]
 from pyphoplacecellanalysis.General.Mixins.DisplayHelpers import debug_print_spikes_df_column_info
+```
 
-# + tags=[]
+```python tags=[]
 # curr_active_pipeline.sess.spikes_df.columns
 # curr_active_pipeline.sess.spikes_df.spikes.time_variable_name
 _debug_print_spikes_df_column_info(curr_active_pipeline.sess.spikes_df)
+```
 
-# + tags=[]
+```python tags=[]
 # curr_active_pipeline.filtered_sessions['track'].spikes_df.columns
 # curr_active_pipeline.filtered_sessions['track'].spikes_df.spikes.time_variable_name
 _debug_print_spikes_df_column_info(curr_active_pipeline.filtered_sessions['track'].spikes_df)
-# -
+```
 
+```python
 curr_active_pipeline.sess.neurons._extended_neuron_properties_df
+```
 
-# +
+```python
 from neuropy.utils.debug_helpers import debug_print_placefield, debug_print_spike_counts, debug_print_subsession_neuron_differences
 from neuropy.utils.misc import print_seconds_human_readable
 
 
 debug_print_spike_counts(sess)
+```
 
-# + [markdown] tags=[]
-# ### Logging detour:
+<!-- #region tags=[] -->
+### Logging detour:
+<!-- #endregion -->
 
-# + tags=[]
+```python tags=[]
 ## TODO: ONLY RUN ONCE!
 import logging
 logging.captureWarnings(False)
 logger = logging.getLogger("com.PhoHale")
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler(stream=sys.stdout))
+```
 
-# + tags=[]
+```python tags=[]
 root_logger = logging.root
+```
 
-# + tags=[]
+```python tags=[]
 root_logger.handlers
+```
 
-# + tags=[]
+```python tags=[]
 # logger.removeHandler(logging.StreamHandler(stream=sys.stdout))
 for a_handler in logger.handlers:
     logger.removeHandler(a_handler)
+```
 
-# + tags=[]
+```python tags=[]
 logger.info('creating an instance of auxiliary_module.Auxiliary')
 logger.debug('UOS')
 logger.warning('OH NO!')
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[]
-# ## 💾 Save out the changes to the pipeline after computation to the pickle file for easy loading in the future:
+<!-- #region jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] -->
+## 💾 Save out the changes to the pipeline after computation to the pickle file for easy loading in the future:
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false} tags=[]
+```python pycharm={"is_executing": false} tags=[]
 curr_active_pipeline.pickle_path
+```
 
-# + pycharm={"is_executing": false} tags=[]
+```python pycharm={"is_executing": false} tags=[]
 ## Save out the changes to the pipeline after computation to the pickle file for easy loading in the future
 curr_active_pipeline.save_pipeline(active_pickle_filename='loadedSessPickle.pkl')
+```
 
-# + pycharm={"is_executing": false} tags=[]
+```python pycharm={"is_executing": false} tags=[]
 
+```
 
-# + pycharm={"is_executing": false} tags=[]
+```python pycharm={"is_executing": false} tags=[]
 curr_active_pipeline.save_pipeline(active_pickle_filename='loadedSessPickle-2022-10-22.pkl')
+```
 
-# + pycharm={"is_executing": false} tags=[]
+```python pycharm={"is_executing": false} tags=[]
 curr_active_pipeline.save_pipeline()
+```
 
-# + [markdown] tags=[]
-# # Common: Multiple Context Explorations
-
-# + tags=[]
+```python tags=[]
 from pyphoplacecellanalysis.GUI.Qt.Widgets.ProgrammaticPipelineWidget.ProgrammaticPipelineWidget import ProgrammaticPipelineWidget
 widget = ProgrammaticPipelineWidget(owning_pipeline=curr_active_pipeline)
 widget.show()
 widget
+```
 
-# + tags=[]
+<!-- #region tags=[] -->
+# Common: Multiple Context Explorations
+<!-- #endregion -->
+
+```python tags=[]
 CodeConversion.convert_dictionary_to_defn_lines(widget.last_added_display_output, 'widget.last_added_display_output')
+```
 
-# + tags=[]
+```python tags=[]
 widget.last_added_display_output
+```
 
-# + tags=[]
+```python tags=[]
 # spike_raster_plt_2d, spike_raster_plt_3d, spike_raster_window = widget.last_added_display_output['spike_raster_plt_2d'], widget.last_added_display_output['spike_raster_plt_3d'], widget.last_added_display_output['spike_raster_window'] # Extract variables from the `target_dict` dictionary to the local workspace
 spike_raster_window = widget.last_added_display_output['spike_raster_window']
 # Extras:
@@ -510,8 +579,9 @@ active_3d_plot = spike_raster_window.spike_raster_plt_3d # <pyphoplacecellanalys
 main_graphics_layout_widget = active_2d_plot.ui.main_graphics_layout_widget # GraphicsLayoutWidget
 main_plot_widget = active_2d_plot.plots.main_plot_widget # PlotItem
 background_static_scroll_plot_widget = active_2d_plot.plots.background_static_scroll_window_plot # PlotItem
+```
 
-# + tags=[]
+```python tags=[]
 # Traceback (most recent call last):
 #   File "/Users/pho/repo/Python Projects/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/Widgets/ProgrammaticPipelineWidget/ProgrammaticPipelineWidget.py", line 195, in <lambda>
 #     _newToolFunction = lambda isChecked, bound_function_name=function_name: self._perform_run_display_function(bound_function_name)
@@ -532,14 +602,17 @@ background_static_scroll_plot_widget = active_2d_plot.plots.background_static_sc
 #   File "/Users/pho/repo/Python Projects/NeuroPy/neuropy/utils/mixins/binning_helpers.py", line 80, in build_center_binning_info
 #     actual_window_size = centers[2] - centers[1]
 # IndexError: index 2 is out of bounds for axis 0 with size 2
+```
 
-# + tags=[]
+```python tags=[]
 new_widget_test0 = active_2d_plot.add_new_matplotlib_render_plot_widget(name='test0')
+```
 
-# + tags=[]
+```python tags=[]
 new_widget_test1 = active_2d_plot.add_new_matplotlib_render_plot_widget(name='test1')
+```
 
-# + tags=[]
+```python tags=[]
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _find_any_context_neurons
 # all_results_neuron_ids_lists = [a_result.computed_data.pf2D.ratemap.neuron_ids for a_result in curr_active_pipeline.computation_results.values()]
 # _find_any_context_neurons(*all_results_neuron_ids_lists) # array([ 3,  4,  5,  6,  7,  8,  9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 22, 23, 25, 26, 27, 28, 29, 32, 33, 34, 36, 37, 38, 41, 43, 44, 45, 46, 47, 49, 51, 52, 53, 54, 55, 56, 59])
@@ -551,12 +624,13 @@ def _build_multi_context_any_neurons_id_list():
     curr_active_contexts = contextSelectorWidget.current_selected_multi_contexts # get the contexts dict from the contextSelectorWidget
     curr_any_context_neurons = _find_any_context_neurons(*[curr_active_pipeline.computation_results[k].computed_data.pf2D.ratemap.neuron_ids for k in list(curr_active_contexts.keys())])
     
+```
 
-
-# + tags=[]
+```python tags=[]
 # array([ 3,  4,  5,  6,  7,  8,  9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 22, 23, 25, 26, 27, 28, 29, 32, 33, 34, 36, 37, 38, 41, 43, 44, 45, 46, 47, 49, 51, 52, 53, 54, 55, 56, 59])
-# -
+```
 
+```python
 contextSelectorWidget = widget.ui.contextSelectorWidget
 # contextSelectorWidget.check_table_ctrl.getCheckedRows() # [0, 1, 2]
 # curr_item = contextSelectorWidget.check_table_ctrl.itemAt(2,1)
@@ -565,75 +639,95 @@ contextSelectorWidget = widget.ui.contextSelectorWidget
 # text()
 curr_active_contexts = contextSelectorWidget.current_selected_multi_contexts
 curr_active_contexts
+```
 
-# +
+```python
 
 
 # [curr_active_pipeline.computation_results[k] for k in list(curr_active_context_keys())]
 
 curr_any_context_neurons = _find_any_context_neurons(*[curr_active_pipeline.computation_results[k].computed_data.pf2D.ratemap.neuron_ids for k in list(curr_active_contexts.keys())])
 curr_any_context_neurons
-# -
+```
 
+```python
 list(curr_active_pipeline.computation_results.keys())
+```
 
+```python
 contextSelectorWidget.current_selected_multi_context_descriptions
+```
 
+```python
 contextSelectorWidget.current_selected_multi_context_indicies
+```
 
+```python
 contextSelectorWidget.check_table_ctrl.selectionChanged #  QItemSelection, QItemSelection
+```
 
-# +
+```python
 contextSelectorWidget.check_table_ctrl.setCheckedAt(idx=0, f=True)
 
 for i in np.arange(n
-# -
+```
 
+```python
 curr_plot = widget.last_added_display_output.parent_root_widget
 curr_plot
+```
 
+```python
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _find_any_context_neurons
 all_results_neuron_ids_lists = [a_result.computed_data.pf2D.ratemap.neuron_ids for a_result in curr_active_pipeline.computation_results.values()]
 _find_any_context_neurons(*all_results_neuron_ids_lists) # array([ 3,  4,  5,  6,  7,  8,  9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 22, 23, 25, 26, 27, 28, 29, 32, 33, 34, 36, 37, 38, 41, 43, 44, 45, 46, 47, 49, 51, 52, 53, 54, 55, 56, 59])
+```
 
+```python
 [tuple(i) for i in all_results_neuron_ids_lists]
+```
 
-# +
+```python
 set(tuple([tuple(i) for i in all_results_neuron_ids_lists]))
 
 
-# -
+```
 
+```python
 pf_neurons_either = []
 for curr_list in all_results_neuron_ids_lists:
     pf_neurons_either = np.union1d(pf_neurons_either, curr_list)
 pf_neurons_either
+```
 
-# +
+```python
 pf_neurons_either = np.array(list(set([tuple(i) for i in all_results_neuron_ids_lists]))).flatten()
 
 # pf_neurons_either = list(set([tuple(i) for i in all_results_neuron_ids_lists]))
 
 pf_neurons_either
 # pf_neurons_either[0]
+```
 
-# +
+```python
 from functools import reduce
 # reduce(np.union1d, ([1, 3, 4, 3], [3, 1, 2, 1], [6, 3, 4, 2]))
 
 pf_neurons_either = reduce(np.union1d, tuple(all_results_neuron_ids_lists))
 pf_neurons_either
+```
 
-# +
+```python
 
 curr_active_pipeline.reload_default_computation_functions()
 # ComputationFunctionRegistryHolder.get_registry()['PlacefieldComputations']._is_global
 
 ComputationFunctionRegistryHolder.get_global_registry_items()
 
+```
 
-# +
-# # %pdb off
+```python
+# %pdb off
 ## Test _perform_specific_epochs_decoding
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import DefaultComputationFunctions
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
@@ -654,66 +748,104 @@ active_decoder = computation_result.computed_data['pf2D_Decoder']
 out_plot_tuple = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=computation_result.sess.position.to_dataframe(), xbin=active_decoder.xbin,
                                                         **{'name':default_figure_name, 'debug_test_max_num_slices':1024, 'enable_flat_line_drawing':False, 'debug_print': False})
 params, plots_data, plots, ui = out_plot_tuple
-# -
+```
 
+```python
 ui.mw.setWindowTitle('')
+```
 
+```python
 active_filter_epochs
+```
 
+```python
 default_figure_name
+```
 
+```python
 curr_active_pipeline.filtered_contexts.maze1_PYR
+```
 
+```python
 
+```
 
+```python
 curr_active_pipeline.reload_default_display_functions()
+```
 
+```python
 active_first_order_2D_decoder = active_recursive_latent_pf_2Ds[0].get('pf2D_Decoder', None)
+```
 
+```python
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
 curr_active_pipeline.computation_results
 pf_neurons_diff = _compare_computation_results(computation_results.maze1_PYR, computation_results.maze2_PYR)
+```
 
+```python
 curr_plot.plots_data.shared_IDXs_map
+```
 
+```python
 from neuropy.utils.misc import safe_item
 included_unit_neuron_IDs = np.array(curr_plot.plots_data.included_unit_neuron_IDs.copy())
 active_pf_2D = widget.owning_pipeline.computation_results['maze1_PYR'].computed_data['pf2D']
 np.array(active_pf_2D.ratemap.neuron_ids)
+```
 
+```python
 np.array(included_unit_neuron_IDs)
+```
 
+```python
 shared_IDXs_map = [safe_item(np.argwhere(aclu == active_pf_2D.ratemap.neuron_ids), default=None) for aclu in included_unit_neuron_IDs]
 shared_IDXs_map
+```
 
+```python
 curr_plot.plots_data.included_unit_neuron_IDs
+```
 
+```python
 curr_plot.plots_data._local_active_maps
+```
 
+```python
 curr_plot.ui.graphics_layout.clear()
+```
 
+```python
 ui.graphics_layout
+```
 
+```python
 active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
 filtered_contexts = curr_active_pipeline.filtered_contexts
+```
 
+```python
 [a_context.get_description() for a_context in curr_active_pipeline.filtered_contexts.values()]
+```
 
-# +
+```python
 # curr_active_pipeline.registered_display_function_docs_dict
 curr_fcn = curr_active_pipeline.registered_display_function_dict['_display_2d_placefield_result_plot_ratemaps_2D']
 print(str(curr_fcn.__code__.co_varnames)) # PyFunction_GetCode
 
 # ('computation_result', 'active_config', 'enable_saving_to_disk', 'kwargs', 'plot_variable_name', 'active_figure', 'active_pf_computation_params', 'session_identifier', 'fig_label', 'active_pf_2D_figures', 'should_save_to_disk')
-# -
+```
 
+```python
 imgs = curr_ax.get_images()
 img = imgs[1] # AxesImage 
 # img.properties()
 img_data = img.get_array() # masked_array
 img_data.
+```
 
-# +
+```python
 # widget.all_filtered_session_contexts['maze'].f
 from skimage import data # test images
 import napari
@@ -724,26 +856,39 @@ viewer = napari.view_image(img_data, rgb=True)
 
 viewer
 # widget.ui.contextSelectorWidget.current_selected_context.adding_context(
-# -
+```
 
+```python
 fig_format_config_widget = widget.ui.active_figure_format_config_widget
 fig_format_config_widget
+```
 
+```python
 fig_format_config_widget.figure_format_config
+```
 
+```python
 # _display_outputs = curr_active_pipeline.display_output
 last_added_context = list(curr_active_pipeline.display_output.keys())[-1]
 last_added_display_output = curr_active_pipeline.display_output[last_added_context]
 _display_outputs = last_added_display_output
 # _display_outputs
+```
 
+```python
 _display_outputs = widget.last_added_display_output
 _display_outputs[1].show()
+```
 
+```python
 _display_outputs.graphics
+```
 
+```python
 [str(a_key) for a_key in _display_outputs.all_attributes]
+```
 
+```python
 # curr_graphics_objs = _display_outputs[2][0]
 curr_graphics_objs = _display_outputs.graphics[0]
 curr_neuron_graphics_dict = curr_graphics_objs[2] # get for neuron aclu 2
@@ -751,10 +896,13 @@ curr_title_obj = curr_neuron_graphics_dict['title_obj'] # matplotlib.offsetbox.A
 curr_title_text_obj = curr_title_obj.txt.get_children()[0] # Text object
 curr_im = curr_neuron_graphics_dict['image'] # matplotlib.image.AxesImage
 curr_ax = curr_neuron_graphics_dict['axs'][0]
+```
 
+```python
 curr_neuron_graphics_dict
+```
 
-# +
+```python
 from neuropy.utils.matplotlib_helpers import scale_title_label
 
 
@@ -781,12 +929,17 @@ for aclu, curr_neuron_graphics_dict in curr_graphics_objs.items():
     curr_ax = curr_neuron_graphics_dict['axs'][0]
     scale_title_label(curr_ax, curr_title_obj, curr_im)
     
-# -
+```
 
+```python
 widget.last_added_display_output.graphics[0]
+```
 
+```python
 scale_title_label(curr_ax, curr_title_obj, curr_im)
+```
 
+```python
 # curr_title_text_obj.set_fontsize(10)
 # curr_title_text_obj
 # curr_title_text_obj.set_backgroundcolor('black')
@@ -794,12 +947,18 @@ curr_title_text_obj.set_backgroundcolor(None)
 stroke_foreground = 'orange'
 strokewidth = 4
 curr_title_text_obj.set_path_effects([withStroke(foreground=stroke_foreground, linewidth=strokewidth)])
+```
 
+```python
 curr_title_text_obj.set_path_effects([])
+```
 
+```python
 curr_title_obj.loc = 'upper left'
 curr_title_obj.loc
+```
 
+```python
 ## Figure computation
 fig: plt.Figure = curr_ax.get_figure()
 dpi = fig.dpi
@@ -807,27 +966,38 @@ rect_height_inch = rect_height / dpi
 # Initial fontsize according to the height of boxes
 fontsize = rect_height_inch * 72
 print(f'rect_height_inch: {rect_height_inch}, fontsize: {fontsize}')
+```
 
-# +
+```python
 # curr_title_obj.set_fontsize(curr_scaled_font_size_pts)
-# -
+```
 
+```python
 curr_title_obj.txt.get_text() # TextArea 
+```
 
+```python
 widget.window().statusBar()
+```
 
+```python
 # widget.owning_pipeline.filtered_contexts
 widget.ui.contextSelectorWidget.current_selected_context_key
+```
 
+```python
 curr_config = widget.ui.contextSelectorWidget.owning_pipeline.active_configs['maze'] # InteractivePlaceCellConfig
 curr_plotting_config = curr_config.plotting_config # PlottingConfig
 curr_plotting_config.output_subplots_shape
 curr_plotting_config.original_attributes
 curr_plotting_config
+```
 
+```python
 widget.owning_pipeline.active_configs[widget.ui.contextSelectorWidget.current_selected_context_key]
+```
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.Qt.Menus.LocalMenus_AddRenderable.LocalMenus_AddRenderable import LocalMenus_AddRenderable # for custom context menus
 from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.ConnectionControlsMenuMixin import ConnectionControlsMenuMixin
 from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.CreateNewConnectedWidgetMenuMixin import CreateNewConnectedWidgetMenuHelper
@@ -845,24 +1015,30 @@ if active_display_fn_identifying_ctx not in widget.owning_pipeline.display_outpu
     widget.owning_pipeline.display_output[active_display_fn_identifying_ctx] = PhoUIContainer() # create a new context
 
 display_output = widget.owning_pipeline.display_output[active_display_fn_identifying_ctx]
-# -
+```
 
+```python
 # print(f'display_output: {display_output}')
 curr_main_menu_window, menuCreateNewConnectedWidget, createNewConnected_actions_dict = CreateNewConnectedWidgetMenuHelper.try_add_create_new_connected_widget_menu(widget, widget.owning_pipeline, active_config_name, display_output) 
 widget.main_menu_window = curr_main_menu_window # to retain the changes
+```
 
+```python
 widget.
+```
 
-# + [markdown] tags=[]
-# # Common: Single Context(Session) Plotting
-# Common visualization and display functions for both forms of data/pipelines:
+<!-- #region tags=[] -->
+# Common: Single Context(Session) Plotting
+Common visualization and display functions for both forms of data/pipelines:
+<!-- #endregion -->
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[]
-# # Common: Single Context(Session, Filter) - active_identifying_filtered_session_ctx
-# Acts on a single specific filter `active_config_name`. Everything below this line will require a valid `active_config_name` to be set.
+<!-- #region pycharm={"name": "#%%\n"} tags=[] -->
+# Common: Single Context(Session, Filter) - active_identifying_filtered_session_ctx
+Acts on a single specific filter `active_config_name`. Everything below this line will require a valid `active_config_name` to be set.
+<!-- #endregion -->
 
-# +
-# # %%viztracer
+```python
+# %%viztracer
 
 active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
 
@@ -978,27 +1154,33 @@ from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_export
 filter_name = active_config_name
 _build_pdf_pages_output_info, programmatic_display_function_testing_output_parent_path = build_pdf_export_metadata(curr_active_pipeline.sess.get_description(), filter_name=filter_name)
 print(f'Figure Output path: {str(programmatic_display_function_testing_output_parent_path)}')
+```
 
-# +
+```python
 # active_computation_results[filter_name]
 active_firing_rate_trends = active_computed_data['firing_rate_trends']
 list(active_firing_rate_trends.keys()) # ['active_rolling_window_times', 'mean_firing_rates', 'desired_window_length_seconds', 'desired_window_length_bins', 'active_firing_rates_df', 'moving_mean_firing_rates_df']
 
 active_firing_rate_trends.all_session_spikes['instantaneous_unit_specific_spike_rate'] = None #['instantaneous_unit_specific_spike_rate']
-# -
+```
 
+```python
 active_extended_stats.
+```
 
+```python
  # plot_data = pd.DataFrame({'t': curr_sess.mua.time, 'mua_firing_rate': curr_sess.mua.firing_rate, 'mua_spike_counts': curr_sess.mua.spike_counts})
 plot_data = pd.DataFrame({'t': sess.mua.time, 'mua_firing_rate': sess.mua.firing_rate})
 active_3d_plot.add_3D_time_curves(plot_dataframe=plot_data)
 # active_3d_plot.add_3D_time_curves(plot_data)
+```
 
-# + [markdown] tags=[]
-# ### Plots for each (session, filter):
-# 🔜 NEXT STEP: TODO: 2022-08-10 - Got the ratemaps plotting working for all filters and those combined into a single window (with items docked) using `_build_docked_pf_2D_figures_widget`. Now need to add more plots, like the `DecoderPlotSelectorWidget`
+<!-- #region tags=[] -->
+### Plots for each (session, filter):
+🔜 NEXT STEP: TODO: 2022-08-10 - Got the ratemaps plotting working for all filters and those combined into a single window (with items docked) using `_build_docked_pf_2D_figures_widget`. Now need to add more plots, like the `DecoderPlotSelectorWidget`
+<!-- #endregion -->
 
-# +
+```python
 from PendingNotebookCode import spike_count_and_firing_rate_normalizations
 
 # pho_custom_decoder = curr_active_pipeline.computation_results['maze1'].computed_data['pf2D_Decoder']
@@ -1016,12 +1198,13 @@ unit_specific_binned_spike_count_median = np.nanmedian(pho_custom_decoder.unit_s
 
 unit_specific_binned_spike_count_mean
 unit_specific_binned_spike_count_median
+```
 
+<!-- #region tags=[] -->
+## 🚧🟨🔜 TODO 2022-08-18: refactor curr_active_pipeline.display(...) to take a IdentifyingContext instead of the inputs it currently takes
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ## 🚧🟨🔜 TODO 2022-08-18: refactor curr_active_pipeline.display(...) to take a IdentifyingContext instead of the inputs it currently takes
-
-# +
+```python
 # @capture_new_figures_decorator
 def _display_specified__display_2d_placefield_result_plot_ratemaps_2D(filter_name, debug_print=True):
     """ Implicitly captures out_items, `active_identifying_filtered_session_ctx` """
@@ -1053,14 +1236,17 @@ active_pf_2D_figures[active_config_name] = _display_specified__display_2d_placef
 from PendingNotebookCode import _build_docked_pf_2D_figures_widget
 # win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items = _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=True, extant_dockAreaWidget=None, debug_print=False)
 win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_widget_display_items = _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures_on_filter=False, extant_dockAreaWidget=master_dock_win, debug_print=False)
+```
 
-# + scene__Default [markdown] Scene=true tags=["ActiveScene"]
-# # Main Visualization GUIs
+<!-- #region scene__Default Scene=true tags=["ActiveScene"] -->
+# Main Visualization GUIs
+<!-- #endregion -->
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## 🪟 3D Interactive Spike Raster Window
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+## 🪟 3D Interactive Spike Raster Window
+<!-- #endregion -->
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import Specific2DRenderTimeEpochsHelper
 from pyphoplacecellanalysis.General.Model.Datasources.IntervalDatasource import IntervalsDatasource
 from pyphoplacecellanalysis.General.Model.RenderDataseries import RenderDataseries
@@ -1076,17 +1262,21 @@ active_3d_plot = spike_raster_window.spike_raster_plt_3d # <pyphoplacecellanalys
 main_graphics_layout_widget = active_2d_plot.ui.main_graphics_layout_widget # GraphicsLayoutWidget
 main_plot_widget = active_2d_plot.plots.main_plot_widget # PlotItem
 background_static_scroll_plot_widget = active_2d_plot.plots.background_static_scroll_window_plot # PlotItem
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.splitter.childrenCollapsible
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.splitter.sizes() # backup sizes [505, 498]
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.mainSpike3DRasterWidget.setVisible(False)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 void MainWindow::on_pushButton_clicked() {
     ui->widgetToHide->setVisible(not ui->widgetToHide->isVisible() );
     if (not ui->widgetToHide->isVisible()) {
@@ -1096,8 +1286,9 @@ void MainWindow::on_pushButton_clicked() {
         ui->splitter->setSizes(lastSizes);
     }
 }
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.SpecificTimeCurves import Specific3DTimeCurvesHelper
 
 # add_unit_time_binned_spike_visualization_curves
@@ -1118,108 +1309,137 @@ binned_spike_counts_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_
 # active_3d_plot.add_3D_time_curves(curve_datasource=binned_spike_rate_curve_datasource)
 
 # ValueError: all the input array dimensions for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 17101 and the array at index 1 has size 17102
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_3d_plot.clear_all_3D_time_curves()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.main_time_curves_view_legend.parentItem()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.main_time_curves_view_legend.setParentItem(active_2d_plot.ui.main_time_curves_view_widget)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.main_time_curves_view_legend.clear()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.clear_all_3D_time_curves()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.matplotlib_view_widget.ax
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # self.pw.addLegend()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.scrollAnimTimeline.setFrameRange(0, 100)
 spike_raster_window.ui.scrollAnimTimeline.setEndFrame(100)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.scrollAnimTimeline.setDuration(20)
 
 ## Slow motion scroll animation (for debugging):
 # spike_raster_window.ui.scrollAnimTimeline.setDuration(2000)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.params.animation_time_step
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.animation_time_step
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.scrollAnimTimeline.start() # Do not start it
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_spike_t, curr_spike_y, curr_spike_pens, curr_n = spike_raster_window.spike_raster_plt_2d_build_all_spikes_data_values()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 list(display_output.keys())
 sess.spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 sess.spikes_df
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d.params.config_items
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.menus.custom_context_menus.add_renderables
+```
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# ### Compute whether each spike is included in the active placefield computation. Spikes might be excluded due to not meeting speed/firing-rate thresholds, being an unused cell type, or occuring outside the computational_epochs for which the pfs were computed for the active configuration
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+### Compute whether each spike is included in the active placefield computation. Spikes might be excluded due to not meeting speed/firing-rate thresholds, being an unused cell type, or occuring outside the computational_epochs for which the pfs were computed for the active configuration
+<!-- #endregion -->
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.General.Mixins.SpikesRenderingBaseMixin import SpikeEmphasisState
 
 # De-emphasize spikes excluded from the placefield calculations:
 is_spike_included_in_pf = np.isin(spike_raster_window.spike_raster_plt_2d.spikes_df.index, active_pf_2D.filtered_spikes_df.index)
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included_in_pf), SpikeEmphasisState.Deemphasized)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 ## De-emphasize spikes that don't have their 'aclu' from a given set of indicies:
 # is_spike_included = np.where(spike_raster_window.spike_raster_plt_2d.spikes_df.aclu == 2)
 is_spike_included = spike_raster_window.spike_raster_plt_2d.spikes_df.aclu.to_numpy() == 2
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 is_spike_included = spike_raster_window.spike_raster_plt_2d.spikes_df.aclu.to_numpy() == 2
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 actionNewConnectedDataExplorer_ipspikes = spike_raster_window.main_menu_window.ui.menus.global_window_menus.create_new_connected_widget.actions_dict['actionNewConnectedDataExplorer_ipspikes']
 actionNewConnectedDataExplorer_ipspikes
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 actionNewConnectedDataExplorer_ipspikes.disconnect()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # CreateNewDataExplorer_ipspikes_PlotterCommand(spike_raster_window, curr_active_pipeline, active_config_name, display_output)
 # actionNewConnectedDataExplorer_ipspikes.activate()
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.create_new_connected_widget.actions_dict['actionNewConnectedDataExplorer_ipspikes'].triggered.connect(CreateNewDataExplorer_ipspikes_PlotterCommand(spike_raster_window, curr_active_pipeline, active_config_name, display_output))
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.create_linked_widget
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.active_drivers_menu.removeAction() #activeMenuReference.active_drivers_menu
 
 actions_to_remove = spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.active_drivers_menu.actions()
@@ -1237,22 +1457,27 @@ for an_old_action in actions_to_remove:
     an_old_action.triggered.disconnect()
     spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.active_connections_menu.removeAction(an_old_action)
     
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # for a_driveable_key in curr_drivable_items:
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.actions_dict
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _out_synchronized_plotter = curr_active_pipeline.display_output['comboSynchronizedPlotter']
 (controlling_widget, curr_sync_occupancy_plotter, curr_placefields_plotter), root_dockAreaWindow, app = _out_synchronized_plotter
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 root_dockAreaWindow.dynamic_display_dict
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 "widget"
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # test_is_drivable(curr_sync_occupancy_plotter) # True
 # test_is_driver(curr_sync_occupancy_plotter) # False
 
@@ -1264,8 +1489,9 @@ root_dockAreaWindow.dynamic_display_dict
 
 test_is_drivable(root_dockAreaWindow) # False
 # test_is_driver(root_dockAreaWindow) # False
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.External.pyqtgraph.dockarea.Dock import Dock
 
 # root_dockAreaWindow.children()
@@ -1280,14 +1506,17 @@ curr_display_dock_planning_helper_widgets[0]
 
 
 root_dockAreaWindow.find_display_dock()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
-# -
+```
 
+```python
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 def _test_available_drivers_changed():
     print(f'_test_available_drivers_changed()')
     spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update()
@@ -1303,22 +1532,25 @@ def _test_available_connections_changed():
 _connection_t1 = spike_raster_window.connection_man.sigAvailableDriversChanged.connect(_test_available_drivers_changed)
 _connection_t2 = spike_raster_window.connection_man.sigAvailableDrivablesChanged.connect(_test_available_driveables_changed)
 _connection_t3 = spike_raster_window.connection_man.sigConnectionsChanged.connect(_test_available_connections_changed)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _connection_available_changed_1 = spike_raster_window.connection_man.sigAvailableDriversChanged.connect(spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update)
 _connection_available_changed_2 = spike_raster_window.connection_man.sigAvailableDrivablesChanged.connect(spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update)
 _connection_available_changed_3 = spike_raster_window.connection_man.sigConnectionsChanged.connect(spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 ## Register the children items as drivables/drivers:
 root_dockAreaWindow.connection_man.register_drivable(curr_sync_occupancy_plotter)
 root_dockAreaWindow.connection_man.register_drivable(curr_placefields_plotter)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.connection_man.get_available_drivables()
+```
 
-
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 def closeEvent(self, event):
     reply = QMessageBox.question(self, 'Window Close', 'Are you sure you want to close the window?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -1328,69 +1560,85 @@ def closeEvent(self, event):
         print('Window closed')
     else:
         event.ignore()
+```
 
-
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # spike_raster_window.connect_controlled_time_synchronized_plotter(controlled_plt=)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # spike_raster_window.
 curr_window = PhoMenuHelper.try_get_menu_window(spike_raster_window)
 curr_window # PhoBaseMainWindow 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 print_keys_if_possible('curr_window.ui.menus', curr_window.ui.menus, depth=1)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.all_refs
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 widget, renderable_menu, (submenu_menuItems, submenu_menuCallbacks, submenu_menu_Connections) = curr_window.ui.menus.global_window_menus.create_linked_widget.all_refs
 submenu_menuItems
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 CreateNewTimeSynchronizedPlotterCommand
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # active_pf_2D_dt
 display_output
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 display_output
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.CreateLinkedWidget_MenuProvider import CreateNewTimeSynchronizedPlotterCommand
 
 curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'] = CreateNewTimeSynchronizedPlotterCommand(spike_raster_window, active_pf_2D_dt, plotter_type='occupancy', display_output=display_output)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_pf_2D_dt.reset()
 active_pf_2D_dt.update(t=45.0, start_relative_t=True)
 curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'].execute('')
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_action = curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionTimeSynchronizedOccupancyPlotter'] # QAction 
 curr_action
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # curr_action.setParent()
 curr_action.parent() # <pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable.LocalMenus_AddRenderable at 0x229506cfb80>
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_action.parentWidget() # <pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable.LocalMenus_AddRenderable at 0x229506cfb80>
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parent() # <PyQt5.QtWidgets.QMenuBar at 0x229506cfca0>
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parentWidget() # <PyQt5.QtWidgets.QMenuBar at 0x229506cfca0>
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_dest_menubar = curr_window.menuBar()
 new_dest_menubar
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 oldLocalMenus_AddRenderable = curr_window.ui.menus.global_window_menus.create_linked_widget.all_refs # <pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable.LocalMenus_AddRenderable at 0x229506cfb80>
 oldLocalMenus_AddRenderable
 
@@ -1401,20 +1649,25 @@ old_menu_item = oldLocalMenus_AddRenderable.ui.menuCreate_Paired_Widget
 old_menu_item
 
 print(f'old_menu_item.title(): {old_menu_item.title()}')
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parent()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parentWidget() # <PyQt5.QtWidgets.QMenuBar at 0x229506cfca0>
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.setParent(new_dest_menubar)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 old_menu_item = old_menubar.children()[1] # <PyQt5.QtWidgets.QMenu at 0x229506cfd30>
 old_menu_item
 
@@ -1436,71 +1689,89 @@ old_children_items
 #  <PyQt5.QtWidgets.QMenu at 0x229506cfdc0>,
 #  <PyQt5.QtWidgets.QMenu at 0x229506cfee0>,
 #  <PyQt5.QtWidgets.QAction at 0x229508d5d30>]
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # for an_item in old_children_items
 new_menu, new_children_items, new_actions = PhoMenuHelper.perform_copy_QMenu(old_menu_item, action_parent=curr_window, menu_parent=new_dest_menubar, debug_print=True)
 new_menu
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_menu
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_children_items
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_actions
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 {an_action.text():an_action for an_action in new_actions}
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 [an_action.parent() for an_action in new_actions]
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_menu.parent() == old_menubar
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_menu.setEnabled(new_menu.isEnabled())
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _new_connection = submenu_menuItems[0].triggered.connect(curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'])
 
 # _new_connection = submenu_menuItems[0].triggered.connect(CreateNewTimeSynchronizedPlotterCommand(spike_raster_window, active_pf_2D_dt, plotter_type='occupancy', display_output=display_output))
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 submenu_menuItems[0].triggered.disconnect()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 (self.menuCreate_Paired_Widget.menuAction()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'] = submenu_menuItems[0].triggered.connect(CreateNewTimeSynchronizedPlotterCommand(spike_raster_window, active_pf_2D_dt, plotter_type='occupancy', display_output=display_output))
 
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _createLinkedWidget_menu_provider = CreateLinkedWidget_MenuProvider(render_widget=spike_raster_window)
 _createLinkedWidget_menu_provider.CreateLinkedWidget_MenuProvider_on_init()
 _createLinkedWidget_menu_provider.CreateLinkedWidget_MenuProvider_on_buildUI()
 # top_level_menu, actions_dict, all_refs = _createLinkedWidget_menu_provider.CreateLinkedWidget_MenuProvider_on_buildUI()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _createLinkedWidget_menu_provider.activeMenuReference
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 rendered_epoch_rects_container = active_2d_plot.rendered_epochs['Replays'] # RenderedEpochsItemsContainer
 
 main_plot_curr_rects = rendered_epoch_rects_container[main_plot_widget] # IntervalRectsItem 
 main_plot_curr_rects
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 main_plot_curr_rects.getViewBox()
 
 view = main_plot_curr_rects.getViewBox()
@@ -1514,26 +1785,31 @@ path = main_plot_curr_rects.mapToItem(view, path)
 stroker.setWidth(main_plot_curr_rects.opts['mouseWidth'])
 mousePath = stroker.createStroke(path)
 # main_plot_curr_rects._mouseShape = main_plot_curr_rects.mapFromItem(view, mousePath)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window = Spike3DRasterWindowWidget(curr_spikes_df, application_name=f'Spike Raster Window - {active_config_name}')
 # Set Window Title Options:
 spike_raster_window.setWindowFilePath(str(sess.filePrefix.resolve()))
 spike_raster_window.setWindowTitle(f'Spike Raster Window - {active_config_name} - {str(sess.filePrefix.resolve())}')
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Set the colors of the raster window from the tuning curve window:
 spike_raster_window.update_neurons_color_data(updated_neuron_render_configs=provided_neuron_id_to_color_map)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.ConnectionControlsMenuMixin import ConnectionControlsMenuMixin
 # Setup Connections Menu:
 root_window, menuConnections, actions_dict = ConnectionControlsMenuMixin.try_add_connections_menu(spike_raster_window) # none of these properties need to be 
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### Test building a second spike_raster_window for a different epoch:
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### Test building a second spike_raster_window for a different epoch:
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # secondary_active_config_name = 'maze2'
 secondary_active_config_name = 'maze2_PYR'
 secondary_spikes_df = curr_active_pipeline.filtered_sessions[secondary_active_config_name].spikes_df
@@ -1542,35 +1818,43 @@ spike_raster_window_second_epoch = Spike3DRasterWindowWidget(secondary_spikes_df
 spike_raster_window_second_epoch.setWindowFilePath(str(sess.filePrefix.resolve()))
 spike_raster_window_second_epoch.setWindowTitle(f'Spike Raster Window - {secondary_active_config_name} - {str(sess.filePrefix.resolve())}')
 spike_raster_window_second_epoch
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.spikes_df # has scISI column!
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.connection_man
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.connection_man.active_connections
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.connection_man.get_available_drivers()
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### 2D Raster Plot Interactivity Testing/Extras
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true -->
+### 2D Raster Plot Interactivity Testing/Extras
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # spike_raster_window.render_window_duration
 # spike_raster_window.spikes_window.active_window_end_time
 spike_raster_window.spikes_window.window_duration
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ### Debug printing for color properties of spike_raster_window
 _debug_params = spike_raster_window.spike_raster_plt_2d.params
 # _debug_params.neuron_colors
 # _debug_params.config_items
 # spike_raster_window.params
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # Wanted to try to set setClickable(True) on the children widgets
 
 # spike_raster_window.spike_raster_plt_2d.plots # {'name': '', 'preview_overview_scatter_plot': <pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.ScatterPlotItem.ScatterPlotItem object at 0x0000020AA96D9E50>}
@@ -1632,8 +1916,9 @@ main_scatter_clicked_connection = main_scatter_plot.sigClicked.connect(_test_sca
 # tip
 # .sigHovered 
 # TypeError: 'VisualizationParameters' object is not subscriptable
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Test Adding ROIs of interest to the 2D Raster Plot:
 rois = []
 rois.append(pg.MultiRectROI([[20, 90], [50, 60], [60, 90]], width=5, pen=(2,9)))
@@ -1645,31 +1930,41 @@ def update(roi):
 for roi in rois:
     roi.sigRegionChanged.connect(update)
     v1a.addItem(roi)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 curve.curve.setClickable(True)
-# -
+```
 
+```python
 
+```
 
+```python
 from pyphoplacecellanalysis.External.pyqtgraph.console import ConsoleWidget
 from pyphoplacecellanalysis.External.pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## Custom Epochs
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## Custom Epochs
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, SessionEpochs2DRenderTimeEpochs, PBE_2DRenderTimeEpochs, Laps2DRenderTimeEpochs, Replays_2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs
 from pyphoplacecellanalysis.General.Model.Datasources.IntervalDatasource import IntervalsDatasource
 
 # from General2DRenderTimeEpochs
-# -
+```
 
+```python
 general_epochs_interval_datasource = IntervalsDatasource.init_from_epoch_object(active_epochs_obj, cls.build_epochs_dataframe_formatter(**kwargs), datasource_name='intervals_datasource_from_general_Epochs_obj')
+```
 
+```python
 IntervalsDatasource.init_from_times_values(datasource_name='Replays', t_starts=
+```
 
-# +
+```python
 Replays_2DRenderTimeEpochs.build_epochs_dataframe_formatter
 
 def _add_interval_dataframe_visualization_columns_general_epoch(active_df):
@@ -1682,21 +1977,29 @@ def _add_interval_dataframe_visualization_columns_general_epoch(active_df):
     ## Add the missing parameters to the dataframe:
     active_df = cls._add_missing_df_columns(active_df, y_location, height, pen_color, brush_color, **kwargs)
     return active_df
+```
 
-
-# -
-
+```python
 SessionEpochs2DRenderTimeEpochs.add_render_time_epochs(curr_sess=sess.epochs, destination_plot=active_2d_plot)
+```
 
+```python
 SessionEpochs2DRenderTimeEpochs.add_render_time_epochs(curr_sess=sess, destination_plot=active_2d_plot)
+```
 
+```python
 PBE_2DRenderTimeEpochs.add_render_time_epochs(curr_sess=sess.pbe, destination_plot=active_2d_plot)
+```
 
+```python
 Laps2DRenderTimeEpochs.add_render_time_epochs(curr_sess=sess.laps, destination_plot=active_2d_plot)
+```
 
+```python
 curr_x_min, curr_x_max, curr_y_min, curr_y_max = active_2d_plot.get_plot_view_range(a_plot, debug_print=False) # curr_x_min: 22.30206346133491, curr_x_max: 1739.1355703625595, curr_y_min: 0.5, curr_y_max: 39.5        
+```
 
-# +
+```python
 from neuropy.analyses.brainstates import detect_brainstates_epochs
 from neuropy.analyses.spkepochs import detect_local_sleep_epochs
 from neuropy.utils.mixins.print_helpers import ProgressMessagePrinter
@@ -1717,19 +2020,26 @@ def compute_local_sleep_epochs_epochs(session, save_on_compute=False):
     
 local_sleep_epochs = compute_local_sleep_epochs_epochs(sess, save_on_compute=True)
 local_sleep_epochs
-# -
+```
 
+```python
 local_sleep_epochs_interval_datasource = build_general_render_time_epochs_datasource(local_sleep_epochs)
 out_rects = active_2d_plot.add_rendered_intervals(local_sleep_epochs, name='local_sleep_epochs', child_plots=[background_static_scroll_plot_widget, main_plot_widget], debug_print=True)
 out_rects
+```
 
+```python
 # out_rects
 # active_2d_plot.rendered_epochs.GeneralEpochs: RenderedEpochsItemsContainer
 out_interval_rect_items = list(active_2d_plot.rendered_epochs.GeneralEpochs.values()) # list of IntervalRectsItem
 out_interval_rect_items
+```
 
+```python
 list(active_2d_plot.rendered_epochs.GeneralEpochs.keys()) # '__class__'
+```
 
+```python
 # new_max_y_range: 1.0
 # GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.EpochRenderingMixin.
 # active_2d_plot.get_added_rect_item_required_y_value(out_interval_rect_items[0], debug_print=True)
@@ -1739,115 +2049,148 @@ for a_plot, a_rect_item in active_2d_plot.rendered_epochs.GeneralEpochs.items():
     print(f'a_rect_item.boundingRect(): {a_rect_item.boundingRect()}')
     active_2d_plot.compute_bounds_adjustment_for_rect_item(a_plot, a_rect_item, debug_print=True, should_apply_adjustment=False)
 # get_added_rect_item_required_y_value(a_rect_item, debug_print=False)
+```
 
-# + [markdown] tags=[]
-# ## Custom Simple 2D Curves for the 2D Rasters
-# Note, approach below copied from `add_separate_render_epoch_rects_plot_item(...)`
+<!-- #region tags=[] -->
+## Custom Simple 2D Curves for the 2D Rasters
+Note, approach below copied from `add_separate_render_epoch_rects_plot_item(...)`
+<!-- #endregion -->
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# #### ✅ 2022-08-30 - Testing 3D curves again - GOOD, WORKING
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+#### ✅ 2022-08-30 - Testing 3D curves again - GOOD, WORKING
+<!-- #endregion -->
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves3D.Specific3DTimeCurves import Specific3DTimeCurvesHelper
 
 # active_mua_plot_curve_datasource = Specific3DTimeCurvesHelper.build_MUA_3D_time_curves(sess, active_3d_plot)
 
 active_plot_curve_datasource = Specific3DTimeCurvesHelper.build_position_3D_time_curves(sess, active_3d_plot)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_plot_curve_datasource.update_data_series_config_items(series_inclusion_filter=lambda a_data_series_config: (a_data_series_config['name'] in ['x position', 'y position']),
                                                              target_key='line_width', target_value=9.0)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_random_test_plot_curve_datasource = Specific3DTimeCurvesHelper.build_test_3D_time_curves(spike_raster_plt_3d=active_3d_plot)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_3d_plot.clear_all_3D_time_curves()
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# #### ✅ 2022-09-05 - Try to skip the reimplementation, and just call the 3D simple methods on the active_2d_plot:
-
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.SpecificTimeCurves import PositionRenderTimeCurves
 
 active_plot_curve_datasource_2d = PositionRenderTimeCurves.add_render_time_curves(sess, active_2d_plot)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.params.time_curves_datasource.active_data_column_names # ['linear position', 'x position', 'y position']
 active_2d_plot.params.time_curves_datasource.active_datasource_UIDs # ['default_plot_datasource.lin_pos', 'default_plot_datasource.x', 'default_plot_datasource.y']
 list(active_2d_plot.params.time_curves_datasource.data_column_names) # ['lin_pos', 'x', 'y']
 active_2d_plot.params.time_curves_datasource.active_data_column_names # ['linear position', 'x position', 'y position']
 active_2d_plot.params.time_curves_datasource.active_data_column_values
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 curveDataItem
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.plots['time_curves']
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.plots_data['time_curves']
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.clear_all_3D_time_curves
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_plot_curve_datasource
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # legend.setParent()
 temp = active_2d_plot.ui.main_time_curves_view_widget.graphicsItem()
 # legend
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.clear_all_3D_time_curves()
 active_2d_plot.clear_all_rendered_intervals()
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 temp.removeItem(legend) 
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 legend.setParent(None)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 legend = None
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+## 👁️‍ Test embedded matplotlib-based figures using `MatplotlibWidget`
+✅
+<!-- #endregion -->
 
-
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## 👁️‍ Test embedded matplotlib-based figures using `MatplotlibWidget`
-# ✅
-# -
-
+```python
 widget, fig, ax = active_2d_plot.add_new_matplotlib_render_plot_widget()
+```
 
+```python
 ax
+```
 
+```python
 fig
+```
 
+```python
 widget
+```
 
+```python
 
+```
 
+```python
 active_2d_plot.ui.dynamic_docked_widget_container.setContentsMargins(0, 0, 0, 0)
 active_2d_plot.ui.dynamic_docked_widget_container.layout().setContentsMargins(0,0,0,0)
 active_2d_plot.ui.dynamic_docked_widget_container.layout().setSpacing(0)
+```
 
+```python
 active_2d_plot.ui.dynamic_docked_widget_container.dynamic_display_dict
+```
 
+```python
 dDisplayItem = active_2d_plot.ui.dynamic_docked_widget_container.find_display_dock(identifier="matplotlib_view_widget") # Dock
 # dDisplayItem.setOrientation('vertical', force=True)
 # dDisplayItem.setOrientation('horizontal', force=True)
 # dDisplayItem.updateStyle()
 # dDisplayItem.update()
 dDisplayItem
+```
 
+```python
 dDisplayItem.
+```
 
+```python
 
+```
 
-# +
+```python
 ## THE CORE WORKING VERSION - 2022-09-27 @ 4pm
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_most_likely_position_comparsions, plot_1D_most_likely_position_comparsions
@@ -1872,50 +2215,73 @@ custom_2D_decoder_container.fig, custom_2D_decoder_container.ax = plot_1D_most_l
                                                    enable_flat_line_drawing=False, debug_print=False)
 
 active_2d_plot.ui.matplotlib_view_widget.draw()
-# -
+```
 
+```python
 
+```
 
+```python
 
+```
 
+```python
 
+```
 
+```python
 # ValueError: x and y must have same first dimension, but have shapes (11881,) and (11880,)
 pho_custom_decoder.active_time_window_centers.shape # (11881,)
+```
 
+```python
 pho_custom_decoder.debug_dump_print()
+```
 
+```python
 pho_custom_decoder.most_likely_positions[:,0].T.shape
+```
 
+```python
 active_2d_plot.sync_matplotlib_render_plot_widget()
+```
 
+```python
 
+```
 
+```python
 subplot.plot(np.arange(9))
 active_2d_plot.ui.matplotlib_view_widget.draw()
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## Test Custom Menu/Widgets
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+## Test Custom Menu/Widgets
+<!-- #endregion -->
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### ➡️ Traditional Menus for adding TimeCurves/TimeIntervals to the raster plot:
+<!-- #region jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### ➡️ Traditional Menus for adding TimeCurves/TimeIntervals to the raster plot:
+<!-- #endregion -->
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # append_custom_menu_to_context_menu(main_graphics_layout_widget, widget.ui.menuAdd_Renderable)
 widget_3d_menu = active_3d_plot_renderable_menus[0]
 append_custom_menu_to_context_menu(active_3d_plot, widget_3d_menu.ui.menuAdd_Renderable)
 # append_custom_menu_to_context_menu(background_static_scroll_plot_widget, widget_3d_menu.ui.menuAdd_Renderable)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_3d_plot_renderable_menus = build_renderable_menu(active_3d_plot, sess)
 # active_3d_plot_renderable_menus
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # Set Plot3DWidget custom context menu
 main_3d_widget.setContextMenuPolicy(qt.Qt.CustomContextMenu)
 main_3d_widget.customContextMenuRequested.connect(main_3d_widget._contextMenu)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 main_3d_widget = active_3d_plot.ui.main_gl_widget # GLViewWidget
 # main_3d_widget.customContextMenuRequested
 def _prepare3DContextMenu(pos):
@@ -1957,8 +2323,9 @@ _curr_plot3d_context_menu_conn = main_3d_widget.customContextMenuRequested.conne
 # active_3d_plot.setContextMenuPolicy(pg.QtCore.Qt.CustomContextMenu)
 # _curr_plot3d_context_menu_conn = active_3d_plot.customContextMenuRequested.connect(_prepare3DContextMenu)
 # active_3d_plot.customContextMenuRequested.connect()
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # main_3d_widget.installEventFilter
 main_3d_widget.actions()
 main_3d_widget.mouseGrabber()
@@ -1966,52 +2333,67 @@ main_3d_widget.mouseGrabber()
 # main_3d_widget.nativeParentWidget()
 # main_3d_widget.x
 
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_3d_plot.customContextMenuRequested.disconnect()
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_3d_plot.plots
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_3d_plot.plots_data
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 main_plot_widget.parentWidget()
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 main_plot_widget.vb.menu # ViewBoxMenu 
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# #### _debug_print_spike_raster_timeline_alignments
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+#### _debug_print_spike_raster_timeline_alignments
+<!-- #endregion -->
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_plot_curve_datasource.time_column_values # DIBA: 22.286207, 2093.874535
 active_plot_curve_datasource.time_column_values # BAPUN: 7423.002380, 11482.995349
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.clear_all_3D_time_curves()
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 # active_2d_plot.ui.main_time_curves_view_widget.setXLink(None)
 active_2d_plot.ui.main_time_curves_view_widget.setXLink(background_static_scroll_plot_widget)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_2d_plot.ui.main_time_curves_view_widget.showAxes('left', True)
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 active_measured_positions
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 background_static_scroll_plot_widget.showAxes('xy')
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 main_plot_widget.showAxes('xy')
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 main_plot_widget.showGrid('xy')
+```
 
-# + jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 curr_spikes_df
 # # t 	t_seconds 	t_rel_seconds
 # 728088.0 	603808.219589 	22.366852
@@ -2023,11 +2405,13 @@ curr_spikes_df
 #     While the spike rasters all use 
 #     Zooming Raster: ()
 #     Bottom Static Raster: (-35.692, 2151.9)
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## 🪟 ipcDataExplorer - 3D Interactive Tuning Curves Plotter
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+## 🪟 ipcDataExplorer - 3D Interactive Tuning Curves Plotter
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 pActiveTuningCurvesPlotter = None
 
 zScalingFactor = 2000.0 # worked well before with default params
@@ -2037,22 +2421,30 @@ ipcDataExplorer = display_output['ipcDataExplorer']
 display_output['pActiveTuningCurvesPlotter'] = display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
 pActiveTuningCurvesPlotter = display_output['pActiveTuningCurvesPlotter']
 root_dockAreaWindow, placefieldControlsContainerWidget, pf_widgets = display_output['pane'] # for Qt mode:
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### Setup Extra Buttons
-# -
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### Setup Extra Buttons
+<!-- #endregion -->
 
+```python
 ipcDataExplorer.occupancy_plotting_config.barOpacity = 0.25
+```
 
+```python
 placefieldControlsContainerWidget.ui.end_button_helper_connections
+```
 
+```python
 ipcDataExplorer.plots
 ipcDataExplorer.zScalingFactor = 100
+```
 
-# + [markdown] tags=[]
-# ### Prototype updating the displayed placefield values with those generated from a time-dependent pf_2D_dt
+<!-- #region tags=[] -->
+### Prototype updating the displayed placefield values with those generated from a time-dependent pf_2D_dt
+<!-- #endregion -->
 
-# +
+```python
 ## Update the time-dependent pf:
 active_pf_2D_dt.reset()
 
@@ -2078,11 +2470,13 @@ print(f'post-update time: {active_pf_2D_dt.last_t}')
 # earliest_pos_t: 22.26785500004189
 # last_pos_t: 1739.1316560000414
 # post-update time: 322.2678550000419
-# -
+```
 
+```python
 
+```
 
-# +
+```python
 ## Asserts to make sure that the fully-updated dt is equal to the normal:
 assert active_pf_2D_dt.all_time_filtered_pos_df.shape == active_pf_2D_dt.filtered_pos_df.shape, f"active_pf_2D_dt.all_time_filtered_pos_df.shape: {active_pf_2D_dt.all_time_filtered_pos_df.shape}\nactive_pf_2D_dt.filtered_pos_df.shape: {active_pf_2D_dt.filtered_pos_df.shape} "
 assert active_pf_2D_dt.all_time_filtered_spikes_df.shape == active_pf_2D_dt.filtered_spikes_df.shape, f"active_pf_2D_dt.all_time_filtered_spikes_df.shape: {active_pf_2D_dt.all_time_filtered_spikes_df.shape}\nactive_pf_2D_dt.filtered_spikes_df.shape: {active_pf_2D_dt.filtered_spikes_df.shape} "
@@ -2091,19 +2485,29 @@ assert active_pf_2D_dt.all_time_filtered_spikes_df.shape == active_pf_2D_dt.filt
 assert np.isclose(active_pf_2D_dt.ratemap.occupancy, active_pf_2D.ratemap.occupancy).all(), f"active_pf_2D_dt.ratemap.occupancy: {active_pf_2D_dt.ratemap.occupancy}\nactive_pf_2D.ratemap.occupancy: {active_pf_2D.ratemap.occupancy}"
 # assert (active_pf_2D_dt.ratemap.occupancy == active_pf_2D.ratemap.occupancy).all(), f"active_pf_2D_dt.ratemap.occupancy: {active_pf_2D_dt.ratemap.occupancy}\nactive_pf_2D.ratemap.occupancy: {active_pf_2D.ratemap.occupancy}"
 assert (active_pf_2D_dt.ratemap.spikes_maps == active_pf_2D.ratemap.spikes_maps).all(), f"active_pf_2D_dt.ratemap.spikes_maps: {active_pf_2D_dt.ratemap.spikes_maps}\nactive_pf_2D.ratemap.spikes_maps: {active_pf_2D.ratemap.spikes_maps}"
-# -
+```
 
+```python
 assert (active_pf_2D_dt.ratemap.tuning_curves == active_pf_2D.ratemap.tuning_curves).all(), f"active_pf_2D_dt.ratemap.tuning_curves: {active_pf_2D_dt.ratemap.tuning_curves}\nactive_pf_2D.ratemap.tuning_curves: {active_pf_2D.ratemap.tuning_curves}"
+```
 
+```python
 active_pf_2D_dt.should_smooth_final_tuning_map
+```
 
+```python
 PfND_ .should_smooth_spikes_map
+```
 
+```python
 active_pf_2D_dt.plot_ratemaps_2D(**({'subplots': (None, 9), 'resolution_multiplier': 1.0, 'enable_spike_overlay': False}))
+```
 
+```python
 active_pf_2D.plot_ratemaps_2D(**({'subplots': (None, 9), 'resolution_multiplier': 1.0, 'enable_spike_overlay': False}))
+```
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import pyqtplot_plot_image_array, pyqtplot_common_setup
 # Get flat list of images:
 images = active_pf_2D.ratemap.tuning_curves # (43, 63, 63)
@@ -2119,9 +2523,9 @@ app, parent_root_widget, root_render_widget, plot_array, img_item_array, other_c
                                                                         app=None, parent_root_widget=None, root_render_widget=None)
 
 parent_root_widget.show()
+```
 
-
-# +
+```python
 def debug_show_placefields(pf_type: str, images, occupancy):
     if pf_type == 'dt':
         active_pfs = active_pf_2D_dt
@@ -2134,53 +2538,87 @@ def debug_show_placefields(pf_type: str, images, occupancy):
 
 
 debug_pf_dict = debug_show_placefields('', active_pf_2D.ratemap.tuning_curves, active_pf_2D.ratemap.occupancy)
-# -
+```
 
+```python
 debug_pf_dt_dict = debug_show_placefields('dt', active_pf_2D_dt.ratemap.tuning_curves, active_pf_2D_dt.ratemap.occupancy)
+```
 
-# +
+```python
 active_pf_2D.should_smooth_spatial_occupancy_map
 active_pf_2D_dt.should_smooth_spatial_occupancy_map
 
 active_pf_2D_dt.included_neuron_IDs
+```
 
-# +
+```python
 
 
 assert (active_pf_2D_dt.ratemap.spikes_maps == active_pf_2D.ratemap.spikes_maps).all(), f"active_pf_2D_dt.ratemap.spikes_maps: {active_pf_2D_dt.ratemap.spikes_maps}\nactive_pf_2D.ratemap.spikes_maps: {active_pf_2D.ratemap.spikes_maps}"
-# -
+```
 
+```python
 active_pf_2D_dt._included_thresh_neurons_indx
+```
 
+```python
 active_pf_2D.ratemap.occupancy
+```
 
+```python
 active_pf_2D_dt.curr_seconds_occupancy
+```
 
+```python
 active_pf_2D_dt.ratemap.occupancy
+```
 
+```python
 active_pf_2D.ratemap.tuning_curves
+```
 
+```python
 active_pf_2D_dt.curr_occupancy_weighted_tuning_maps_matrix
+```
 
+```python
 [len(dim_nonzeros) for dim_nonzeros in active_pf_2D_dt.curr_occupancy_weighted_tuning_maps_matrix[~active_pf_2D_dt._included_thresh_neurons_indx,:,:].nonzero()] # [4602, 4602, 4602], there are [2441, 2441, 2441] outside the included
+```
 
+```python
 [len(dim_nonzeros) for dim_nonzeros in active_pf_2D.ratemap.tuning_curves.nonzero()] # [67595, 67595, 67595]
+```
 
+```python
 active_pf_2D_dt.ratemap.tuning_curves
+```
 
+```python
 active_pf_2D.ratemap.spikes_maps.nonzero()
+```
 
+```python
 [len(dim_nonzeros) for dim_nonzeros in active_pf_2D.ratemap.tuning_curves.nonzero()] # [67595, 67595, 67595]
+```
 
+```python
 active_pf_2D_dt.last_t
+```
 
+```python
 active_pf_2D_dt.ratemap.tuning_curves
+```
 
+```python
 active_pf_2D_dt.curr_occupancy_weighted_tuning_maps_matrix
+```
 
+```python
 active_pf_2D_dt.ratemap.neuron_ids
+```
 
-# # %pdb on
+```python
+# %pdb on
 pActiveTuningCurvesPlotter_dup = None
 display_output = display_output | curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', active_config_name, override_pf2D=active_pf_2D_dt , extant_plotter=display_output.get('pActiveTuningCurvesPlotter_dup', None),
                                                                panel_controls_mode='Qt', should_nan_non_visited_elements=False, zScalingFactor=2000.0) # Works now!
@@ -2188,10 +2626,11 @@ ipcDataExplorer_dup = display_output['ipcDataExplorer']
 display_output['pActiveTuningCurvesPlotter_dup'] = display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
 pActiveTuningCurvesPlotter_dup = display_output['pActiveTuningCurvesPlotter_dup']
 root_dockAreaWindow_dup, placefieldControlsContainerWidget_dup, pf_widgets_dup = display_output['pane'] # for Qt mode:
+```
 
-# +
-# # %pdb on
-# # %pdb off
+```python
+# %pdb on
+# %pdb off
 from pyphoplacecellanalysis.GUI.PyVista.InteractivePlotter.InteractivePlaceCellTuningCurvesDataExplorer import InteractivePlaceCellTuningCurvesDataExplorer
 from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.ConnectionControlsMenuMixin import ConnectionControlsMenuMixin
 
@@ -2231,18 +2670,22 @@ root_dockAreaWindow, app = DockAreaWrapper.wrap_with_dockAreaWindow(active_root_
 pane = (root_dockAreaWindow, placefieldControlsContainerWidget_dup, pf_widgets)
 
 
+```
 
-# +
+```python
 # ## Update existing open ipcDataExplorer by overwriting (TODO):
 # ipcDataExplorer.params.active_epoch_placefields = active_pf_2D_dt
-# -
+```
 
+```python
 
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### Optional Duplicate ipcDataExplorer plotter for comparison
+<!-- #region jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### Optional Duplicate ipcDataExplorer plotter for comparison
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 pActiveTuningCurvesPlotter_dup = None
 display_output = display_output | curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', active_config_name, override_pf2D= , extant_plotter=display_output.get('pActiveTuningCurvesPlotter_dup', None),
                                                                panel_controls_mode='Qt', should_nan_non_visited_elements=False, zScalingFactor=2000.0) # Works now!
@@ -2250,50 +2693,61 @@ ipcDataExplorer_dup = display_output['ipcDataExplorer']
 display_output['pActiveTuningCurvesPlotter_dup'] = display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
 pActiveTuningCurvesPlotter_dup = display_output['pActiveTuningCurvesPlotter_dup']
 root_dockAreaWindow_dup, placefieldControlsContainerWidget_dup, pf_widgets_dup = display_output['pane'] # for Qt mode:
+```
 
-# + [markdown] tags=[]
-# ### Render computed contours and peaks to ipcDataExplorer:
-# -
+<!-- #region tags=[] -->
+### Render computed contours and peaks to ipcDataExplorer:
+<!-- #endregion -->
 
+```python
 from pyphoplacecellanalysis.PhoPositionalData.plotting.peak_prominences import render_all_neuron_peak_prominence_2d_results_on_pyvista_plotter
 ## Call the function to add the 3D plot components to the pyvista plotter
 render_all_neuron_peak_prominence_2d_results_on_pyvista_plotter(ipcDataExplorer, active_peak_prominence_2d_results, debug_print=False)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Set the colors of the raster window from the tuning curve window:
 spike_raster_window.update_neurons_color_data(updated_neuron_render_configs=ipcDataExplorer.active_neuron_render_configs_map)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.p.enable_depth_peeling(10, occlusion_ratio=0) # This fixes many of the rendering issues of the placefields, but does slow things way down. 
 # ipcDataExplorer.p.enable_depth_peeling(number_of_peels=4, occlusion_ratio=0)
 # ipcDataExplorer.p.disable_depth_peeling()
 # ipcDataExplorer.p.enable_depth_peeling(10)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Change background color:
 ipcDataExplorer.params.plotter_backgrounds
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.set_background('Deep Space (Dark)')
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.set_background('Purple Paradise')
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.plot_placefields()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.params.zScalingFactor
+```
 
-# +
+```python
 # ipcDataExplorer.toggle_plot_visibility() # Looks like it works for generally specified plot key
 # ipcDataExplorer.get_plot_objects_list
 
 # ['main', 'points', 'peaks']
 list(ipcDataExplorer.tuning_curve_plot_actors[2].keys())
 # 'tuningCurvePlotActors'
+```
 
-# +
+```python
 curr_tuning_curve_data = ipcDataExplorer.plots_data['tuningCurvePlotData'][2]
 curr_pdata = curr_tuning_curve_data['pdata_currActiveNeuronTuningCurve'] # StructuredGrid
 curr_pdata_points = curr_tuning_curve_data['pdata_currActiveNeuronTuningCurve_Points'] # UnstructuredGrid
@@ -2342,18 +2796,25 @@ origin[-1] = origin[-1] - (active_points_data.length/3.0)
 origin
 projected = active_points_data.project_points_to_plane(origin=origin)
 projected
-# -
+```
 
+```python
 edges = curr_pdata.extract_all_edges()
 edges.plot(line_width=1, color='k')
+```
 
+```python
 # non_visited_mask = active_placefields.never_visited_occupancy_mask
 non_visited_mask = ipcDataExplorer.params.active_epoch_placefields.never_visited_occupancy_mask.copy()
 non_visited_mask
+```
 
+```python
 flat_non_visited_mask = non_visited_mask.T.copy().ravel(order="F")
 # flat_non_visited_mask.shape # (1856,)
+```
 
+```python
 # Only if VTK > 9.1.X does this return a PointData, otherwise returns None
 # _ = curr_pdata.hide_points(ind=flat_non_visited_mask)
 curr_pdata.hide_cells(flat_non_visited_mask, inplace=True)
@@ -2361,7 +2822,9 @@ curr_pdata.hide_cells(flat_non_visited_mask, inplace=True)
 # curr_updated_pdata_points
 # List or array of point indices to be hidden. The array can also be a boolean array of the same size as the number of points.
 
+```
 
+```python
 import pyvista as pv
 pl = pv.Plotter(shape=(1,2))
 pl.add_mesh(curr_pdata_points)
@@ -2373,57 +2836,76 @@ pl.add_mesh(projected)
 pl.add_mesh(curr_pdata)
 pl.add_title('reconstructed from points')
 pl.show()
+```
 
+```python
 curr_tuning_curve_plot = ipcDataExplorer.tuning_curve_plot_actors[2]['main']
 curr_tuning_curve_plot.GetShaderProperty()
+```
 
+```python
 sess_spikes_df
+```
 
-# + [markdown] tags=[]
-# ### Test Programmatically Adding GUI/UI controls for additional plots (Occupancy, etc)
-# -
+<!-- #region tags=[] -->
+### Test Programmatically Adding GUI/UI controls for additional plots (Occupancy, etc)
+<!-- #endregion -->
 
+```python
 # ipcDataExplorer.ui.placefieldControlsContainerWidget # PlacefieldVisualSelectionControlsBarWidget
 # ipcDataExplorer.ui.placefieldControlsContainerWidget.ui.pf_layout # QHBoxLayout 
 curr_neuron_widget = ipcDataExplorer.ui.placefieldControlsContainerWidget.ui.pf_widgets[0] # Grab single neuron widget (PlacefieldVisualSelectionWidget)
 curr_layout = curr_neuron_widget.ui.groupBox.layout() # QVBoxLayout 
+```
 
+```python
 chkbtnProminenceMetrics = curr_neuron_widget.build_ui_toggle_button(name='chkbtnProminenceMetrics', text='prominences', parent=curr_neuron_widget.ui.groupBox)
 curr_layout.addWidget(chkbtnProminenceMetrics)
+```
 
-# <!-- ### Occupancy Toggle -->
+<!-- ### Occupancy Toggle -->
 
+```python
 # ipcDataExplorer.on_occupancy_plot_update_visibility
 ipcDataExplorer.occupancy_plotting_config.isVisible = False
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.plot_occupancy_bars()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.occupancy_plotting_config.labelsAreVisible = True # Setting this to true renders the labels at each occupancy bin
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.occupancy_plotting_config.labelsShowPoints = True
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.params.should_nan_non_visited_elements = False
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 filtered_indices = sess_spikes_df.index.values[active_pf_2D.filtered_spikes_df.index]
 # filtered_sess_spikes_df = sess_spikes_df[sess_spikes_df.index == active_pf_2D.filtered_spikes_df.index]
 # filtered_sess_spikes_df = sess_spikes_df[sess_spikes_df['flat_spike_idx'] == active_pf_2D.filtered_spikes_df.flat_spike_idx]
 # filtered_sess_spikes_df
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.occupancy_plotting_config.isVisible = False
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.occupancy_plotting_config
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### Explore Mesh/Cell Picking in ipcDataExplorer
+<!-- #region jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### Explore Mesh/Cell Picking in ipcDataExplorer
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Make the legend pickable:
 import pyvista as pv
 
@@ -2436,8 +2918,9 @@ def callback(point):
 
 ipcDataExplorer.p.enable_surface_picking(callback=callback, left_clicking=True, show_point=False)
 # ipcDataExplorer.p.enable_surface_picking(
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 def mesh_picked_callback(mesh):
     """TODO: highlight the mesh or something - label at the click point."""
     print(f'mesh_picked_callback(mesh: {mesh})')
@@ -2446,11 +2929,13 @@ def mesh_picked_callback(mesh):
     # ipcDataExplorer.p.add_point_labels(point, [f"{point[0]:.2f}, {point[1]:.2f}, {point[2]:.2f}"])
 
 ipcDataExplorer.p.enable_mesh_picking(callback=mesh_picked_callback, left_clicking=True, show=True)
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### Other
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### Other
+<!-- #endregion -->
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 # Here we look at the population burst events for each epoch ('maze1' vs. 'maze2')
 # curr_active_pipeline.sess.
 
@@ -2459,30 +2944,36 @@ pbe_only_spikes_df = sess.spikes_df[(sess.spikes_df.PBE_id > -1)]
 pbe_only_spikes_df
 
 curr_active_pipeline.sess.pbe #[10960 rows x 4 columns]
+```
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 app, win, w = curr_active_pipeline.display('_display_placemaps_pyqtplot_2D', active_config_name)
 win.show(); pg.exec()
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## 🪟 ipspikesDataExplorer - 3D Interactive Spike and Behavior Plotter
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+## 🪟 ipspikesDataExplorer - 3D Interactive Spike and Behavior Plotter
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 pActiveSpikesBehaviorPlotter = None
 active_display_output = active_display_output | curr_active_pipeline.display('_display_3d_interactive_spike_and_behavior_browser', active_config_name, extant_plotter=active_display_output.get('pActiveSpikesBehaviorPlotter', None)) # Works now!
 ipspikesDataExplorer = active_display_output['ipspikesDataExplorer']
 active_display_output['pActiveSpikesBehaviorPlotter'] = active_display_output.pop('plotter') # rename the key from the generic "plotter" to "pActiveSpikesBehaviorPlotter" to avoid collisions with others
 pActiveSpikesBehaviorPlotter = active_display_output['pActiveSpikesBehaviorPlotter']
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Sync ipspikesDataExplorer to raster window:
 extra_interactive_spike_behavior_browser_sync_connection = spike_raster_window.connect_additional_controlled_plotter(controlled_plt=ipspikesDataExplorer)
 # extra_interactive_spike_behavior_browser_sync_connection = _connect_additional_controlled_plotter(spike_raster_window.spike_raster_plt_2d, ipspikesDataExplorer)
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### ✅ Test adding the nearest predicted/decoded position as a red point to the 3D plotter:
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### ✅ Test adding the nearest predicted/decoded position as a red point to the 3D plotter:
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 _debug_print = False
 
 def _update_nearest_decoded_most_likely_position_callback(start_t, end_t):
@@ -2528,78 +3019,99 @@ def _update_nearest_decoded_most_likely_position_callback(start_t, end_t):
 _update_nearest_decoded_most_likely_position_callback(0.0, ipspikesDataExplorer.t[0])
 # _conn = pg.SignalProxy(ipspikesDataExplorer.sigOnUpdateMeshes, rateLimit=14, slot=_update_nearest_decoded_most_likely_position_callback)
 _conn = ipspikesDataExplorer.sigOnUpdateMeshes.connect(_update_nearest_decoded_most_likely_position_callback)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
+```python pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
 ipspikesDataExplorer.sigOnUpdateMeshes.disconnect()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
   
 # curr_debug_point = np.array(ipspikesDataExplorer.animal_location_trail.GetCenter()) # (206.27755737304688, 140.15452575683594, 1.100000023841858)
 # ipspikesDataExplorer.perform_plot_location_point('debug_point_plot', curr_debug_point, color='r')
+```
 
-# + [markdown] pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ### Test Programmatic Updating of the ipspikesDataExplorer
+<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} tags=[] -->
+### Test Programmatic Updating of the ipspikesDataExplorer
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipspikesDataExplorer.spikes_main_historical.VisibilityOff()
 # ipspikesDataExplorer.
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 np.shape(ipspikesDataExplorer.params.flattened_spike_positions_list) # (2, 102139)
 np.shape(ipspikesDataExplorer.flattened_spike_times) # (102139,)
 
 recent_spikes_mesh = ipspikesDataExplorer.plots['spikes_main_recent_only']
 # ipspikesDataExplorer.plots.keys() # dict_keys(['spikes_main_historical', 'spikes_main_recent_only', 'animal_location_trail', 'animal_current_location_point', 'maze_bg'])
 # , show_edges=True
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipspikesDataExplorer.spikes_main_historical.AddPosition((0.0, 0.0, (-1.1*10)))
+```
 
-# + [markdown] tags=[]
-# ## 🪟 TimeSynchronizedPlotters - for plotting time-dependent placefields (active_pf_2D_dt) 
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+## 🪟 TimeSynchronizedPlotters - for plotting time-dependent placefields (active_pf_2D_dt) 
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ### Merging TimeSynchronized Plotters:
-# WTF is this? What does it mean merging them?
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+### Merging TimeSynchronized Plotters:
+WTF is this? What does it mean merging them?
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.Mixins.helpers import build_combined_time_synchronized_plotters_window, build_connected_time_synchronized_occupancy_plotter, build_connected_time_synchronized_placefields_plotter, build_connected_time_synchronized_decoder_plotter
 
 active_pf_2D_dt.reset()
 active_pf_2D_dt.update(t=45.0, start_relative_t=True)
 all_plotters, root_dockAreaWindow, app = build_combined_time_synchronized_plotters_window(active_pf_2D_dt, fixed_window_duration = 15.0, controlling_widget=None, create_new_controlling_widget=True)
 controlling_widget, curr_sync_occupancy_plotter, curr_placefields_plotter = all_plotters
-# -
+```
 
+```python
 # root_dockAreaWindow.show()
 controlling_widget, curr_sync_occupancy_plotter, curr_placefields_plotter = all_plotters
+```
 
+```python
 # curr_placefields_plotter.resize(desired_page_width, desired_page_height)
 root_dockAreaWindow # PhoDockAreaContainingWindow 
 root_dockAreaWindow.dynamic_display_dict['Dock1 - Controls']
+```
 
+```python
 curr_dock_item = root_dockAreaWindow.dynamic_display_dict['Dock1 - Controls']['Dock1 - Controls']['dock']
 curr_dock_item.name()
 # curr_dock_item.adjustSize(desired_page_width, desired_page_height)
 curr_dock_item.resize(desired_page_width, desired_page_height)
+```
 
+```python
 # MESSAGE:
 # ipspikesDataExplorer.disable_ui_window_updating_controls() # Works
 ipspikesDataExplorer.disable_ui_window_updating_controls() # Works
+```
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedOccupancyPlotter import TimeSynchronizedOccupancyPlotter
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedPlacefieldsPlotter import TimeSynchronizedPlacefieldsPlotter
 
 curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
 curr_placefields_plotter.show()
-# -
+```
 
+```python
 active_pf_2D_dt.all_time_filtered_spikes_df
+```
 
+```python
 active_pf_2D.filtered_spikes_df
+```
 
-# +
+```python
 ## 🔜 CURRENT: Determine why some curves are flat, and others aren't, and how this relates to the firing rate.
 
 with pd.option_context('display.max_rows', 70, 'display.max_columns', 5):
@@ -2608,8 +3120,9 @@ with pd.option_context('display.max_rows', 70, 'display.max_columns', 5):
                   'peak_firing_rates': ipcDataExplorer.placefields.ratemap.tuning_curve_peak_firing_rates}))
 
 # https://github.com/CommanderPho/NeuroPy/blob/feature%2Fpho_variant/neuropy/plotting/ratemaps.py#L230
+```
 
-# +
+```python
 from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
 from pyphoplacecellanalysis.GUI.Qt.Menus.PhoMenuHelper import PhoMenuHelper
 from pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable import LocalMenus_AddRenderable
@@ -2621,41 +3134,50 @@ active_pf_2D_dt.reset()
 active_pf_2D_dt.update(t=45.0, start_relative_t=True)
 all_plotters, root_dockAreaWindow, app = build_combined_time_synchronized_plotters_window(active_pf_2D_dt, controlling_widget=spike_raster_window.spike_raster_plt_2d, create_new_controlling_widget=False) # window_scrolled
 controlling_widget, curr_sync_occupancy_plotter, curr_placefields_plotter = all_plotters
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[]
-# ## Updated Color Config Handling
+<!-- #region jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true -->
+## Updated Color Config Handling
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.active_neuron_render_configs
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # [SingleNeuronPlottingExtended(color='#843c39', extended_values_dictionary={}, isVisible=False, name='2', spikesVisible=False),
 #  SingleNeuronPlottingExtended(color='#9d514e', extended_values_dictionary={}, isVisible=False, name='3', spikesVisible=False),
 #  ...
 # ]
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 test_updated_configs_colors_map[3] = '#333333'
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # Test applying changes to configs:
 active_configs_map, updated_ids_list, updated_configs_list = _test_apply_updated_colors_map_to_configs(active_configs_map, test_updated_configs_colors_map)
 # active_configs_map
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Test applying it to the Qt widgets:
 # ipcDataExplorer.find_rows_matching_cell_ids
 
 ipcDataExplorer.active_neuron_render_configs
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 test_updated_configs_colors_map
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # updated_ids_list
 updated_configs_list
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # ipcDataExplorer.update_spikes()
 # ipcDataExplorer.gui.
 # placefieldControlsContainerWidget
@@ -2669,31 +3191,37 @@ apply_updated_configs_to_pf_widgets(ipcDataExplorer.neuron_id_pf_widgets_map, ac
 # for a_pf_ctrl_widget in pf_widgets:
 #     print(f'{a_pf_ctrl_widget.name}')
 #     # int(a_config.name)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 test_updated_colors_map = {3: '#999999'}
 ipcDataExplorer.on_config_update(test_updated_colors_map)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # Need to rebuild the spikes colors and such upon updating the configs. 
 # should take a config and produce the changes needed to recolor the neurons.
 ipcDataExplorer.update_spikes_df_color_columns(test_updated_colors_map)
 ipcDataExplorer.update_rendered_placefields(test_updated_colors_map)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 _test_neuron_id = 3
 pdata_currActiveNeuronTuningCurve_plotActor = ipcDataExplorer.plots['tuningCurvePlotActors'][_test_neuron_id]['main'] # get the main plot actor from the CascadingDynamicPlotsList
 pdata_currActiveNeuronTuningCurve_Points_plotActor = ipcDataExplorer.plots['tuningCurvePlotActors'][_test_neuron_id]['points']
 
 # add_mesh
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.enable_overwrite_invalid_fragile_linear_neuron_IDXs = True
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.helper_setup_neuron_colors_and_order(ipcDataExplorer, debug_print=True)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 from vedo.io import exportWindow, write
 # exportWindow('testOutFilePho.html')
 # exportWindow('testOutFilePho.x3d')
@@ -2712,19 +3240,23 @@ pActiveTuningCurvesPlotter.export_vtkjs(final_output_path.with_suffix('.vtkjs'))
 # pActiveTuningCurvesPlotter.export_gltf(final_output_path.with_suffix('.gltf'))
 # pActiveTuningCurvesPlotter.export_html(final_output_path.with_suffix('.html')) ## First export that actually works with BackgroundPlotter
 # pActiveTuningCurvesPlotter.export_obj(final_output_path.with_suffix('.obj')) ## Works for exporting .obj files
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 import pyvista as pv
 pv.vtk_version_info
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # ipcDataExplorer.p.enable_cell_picking(callback=)
 ipcDataExplorer.pyqtConfigure()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 p.enable_point_picking()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.active_config # pf_neuron_identities, pf_colors, pf_sort_ind
 
 # ipcDataExplorer.active_config.keys()
@@ -2739,11 +3271,13 @@ print_keys_if_possible('ipcDataExplorer', ipcDataExplorer)
     # - pf_sort_ind: <class 'numpy.ndarray'> - (39,)
     # - pf_colors: <class 'numpy.ndarray'> - (4, 39)
     # - pf_colormap: <class 'numpy.ndarray'> - (39, 4)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 len(ipcDataExplorer.params.neuron_colors_hex) # 39
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # np.shape(ipcDataExplorer.params.neuron_colors) # (4, 39)
 # len(ipcDataExplorer.params.reverse_cellID_to_tuning_curve_idx_lookup_map) # 39
 
@@ -2756,31 +3290,38 @@ final_perfect_colormap = {int(neuron_id):ipcDataExplorer.params.neuron_colors_he
 # final_perfect_colormap = {int(neuron_id):list(np.squeeze(ipcDataExplorer.params.neuron_colors[:, tuning_curve_idx])) for neuron_id, tuning_curve_idx in ipcDataExplorer.params.reverse_cellID_to_tuning_curve_idx_lookup_map.items()}
 # final_perfect_colormap = {int(neuron_id):QtGui.QColor(*np.squeeze(ipcDataExplorer.params.neuron_colors[:, tuning_curve_idx])) for neuron_id, tuning_curve_idx in ipcDataExplorer.params.reverse_cellID_to_tuning_curve_idx_lookup_map.items()}
 final_perfect_colormap
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 len(final_perfect_colormap) # 39
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.on_config_update(updated_colors_map=final_perfect_colormap)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 partial_perfect_colormap = {24: [0.9098039215686274, 0.8075259642318465, 0.6095686274509803, 1.0],
  25: [1.0, 0.9148351648351648, 0.75, 1.0],
  26: [0.388235294117647, 0.4745098039215686, 0.22352941176470587, 1.0],
  27: [0.48533923796791445, 0.5796078431372549, 0.3053719008264463, 1.0]}
 ipcDataExplorer.on_update_spikes_colors(neuron_id_color_update_dict=partial_perfect_colormap)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 QtGui.QColor(*(0.5176470588235295, 0.23529411764705882, 0.22352941176470587, 1.0))
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # don't use this one!
 len(ipcDataExplorer.params.reverse_cellID_idx_lookup_map) # 40
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.active_neuron_render_configs # confirmed same configs as active_tuning_curve_render_configs
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # ipcDataExplorer.setup_spike_rendering_mixin()
 
 ipcDataExplorer.spikes_df # first many entries all look like R G B columns are 0.0 even if rgb_hex isn't and is different!
@@ -2789,53 +3330,65 @@ ipcDataExplorer.spikes_df # first many entries all look like R G B columns are 0
 ipcDataExplorer.spikes_df.columns
 
 ipcDataExplorer.spikes_df[['aclu', 'fragile_linear_neuron_IDX', 'neuron_IDX']] ## BREAKTHROUGH: 'fragile_linear_neuron_IDX' and 'neuron_IDX' are definitely not equal (but I think they should be)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 np.unique(ipcDataExplorer.spikes_df['fragile_linear_neuron_IDX'])
 ## MAJOR CONCERN: 'fragile_linear_neuron_IDX' values make no sense at all. They aren't even equal to 'aclu'
 # array([ 0,  1,  2,  3,  5,  6,  7,  8,  9, 10, 12, 15, 16, 19, 20, 21, 22, 23, 24, 25, 26, 27, 31, 32, 36, 37, 40, 42, 43, 44, 45, 46, 51, 53, 55, 56, 59, 60, 61, 62])
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 np.unique(ipcDataExplorer.spikes_df['neuron_IDX'])
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.spikes_df['old_fragile_linear_neuron_IDX']
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.spikes_df[['aclu', 'fragile_linear_neuron_IDX', 'neuron_IDX', 'old_fragile_linear_neuron_IDX']] ## GOOD: after rebuilding the 'fragile_linear_neuron_IDX' and 'neuron_IDX' columns now match as expected.
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.neuron_ids
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # ipcDataExplorer.update_active_spikes(
 ipcDataExplorer.update_spikes()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Rebuild the IDXs
 ipcDataExplorer.spikes_df.spikes._obj, neuron_id_to_new_IDX_map_new_method = ipcDataExplorer.spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs(debug_print=True)
 new_neuron_IDXs = list(neuron_id_to_new_IDX_map_new_method.values())
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.params.cell_spike_opaque_colors_dict # this is what spikes_df's 'R', 'G', 'B' columns set from.
 # keys are neuron_IDX format
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # Disable the bar on the docks:
 dDisplayItem1 = root_dockAreaWindow.dynamic_display_dict['Dock1 - Controls']['Dock1 - Controls']['dock']
 dDisplayItem2 = root_dockAreaWindow.dynamic_display_dict['Dock2 - Content']['Dock2 - Content']['dock']
 
 dDisplayItem1.hideTitleBar()
 dDisplayItem2.hideTitleBar()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipcDataExplorer.params.end_button_helper_obj.btn_show_all_callback(True)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # ipcDataExplorer.update_tuning_curve_configs()
 ipcDataExplorer.update_neuron_render_configs()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # ipcDataExplorer.params.cell_spike_colors_dict
 # ipcDataExplorer.active_neuron_render_configs
 
@@ -2858,8 +3411,9 @@ good_placefield_neuronIDs = ipcDataExplorer.params.pf_unit_ids
 
 # Never Visited Mask
 # occupancy
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # never_visited_occupancy_mask
 i = 0
 curr_active_neuron_ID = good_placefield_neuronIDs[i]
@@ -2868,8 +3422,9 @@ curr_active_neuron_opaque_color = opaque_pf_colors[:,i]
 curr_active_neuron_pf_identifier = 'pf[{}]'.format(curr_active_neuron_ID)
 curr_active_neuron_tuning_Curve = np.squeeze(curr_tuning_curves[i,:,:]).T.copy() # A single tuning curve, (21, 59)
 # curr_active_neuron_tuning_Curve
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 curr_active_plot_actor = ipcDataExplorer.plots['tuningCurvePlotActors'][i]
 curr_active_plot_data = ipcDataExplorer.plots_data['tuningCurvePlotData'][i]
 curr_active_plot_data
@@ -2878,73 +3433,88 @@ pdata_currActiveNeuronTuningCurve = curr_active_plot_data['pdata_currActiveNeuro
 # Test Extracting Points:
 curr_mesh_extracted_pts = pdata_currActiveNeuronTuningCurve.extract_points(pdata_currActiveNeuronTuningCurve.points[:, 2] > 0)
 type(curr_mesh_extracted_pts) # UnstructuredGrid
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # Add labels to points on the yz plane (where x == 0)
 points = pdata_currActiveNeuronTuningCurve.points
 # mask = points[:, 0] == 0
 mask = points[:, 2] > 0.1
 pActiveTuningCurvesPlotter.add_point_labels(points[mask], points[mask].tolist(), point_size=20, font_size=36)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 np.shape(never_visited_occupancy_mask) # (59, 21)
 np.sum(curr_active_neuron_tuning_Curve[~never_visited_occupancy_mask.T]) # (735,), 7.9040396441924194
 curr_active_neuron_tuning_Curve[~never_visited_occupancy_mask.T] = np.nan # set non-visited locations to NaN
 # NOTE: the sum of all visited locations is 36.44356525201446 and those non-visited locations is 7.9040396441924194
 curr_active_neuron_tuning_Curve
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 curr_active_pipeline.active_configs[active_config_name].keys()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 
 updated_video_output_config = curr_active_pipeline.active_configs[active_config_name]['video_output_config']
 updated_video_output_config.active_frame_range = np.arange(100, 480, 1)
 updated_video_output_config
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # Enable video output by setting: active_is_video_output_mode
 updated_video_output_config.active_is_video_output_mode = True
 
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 import pyvista as pv
 from pyvista import examples
 # Download skybox
 cubemap = examples.download_sky_box_cube_map()
 ipspikesDataExplorer.p.add_actor(cubemap.to_skybox())
 ipspikesDataExplorer.p.set_environment_texture(cubemap)  # For reflecting the environment off the mesh
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipspikesDataExplorer.p.enable_shadows()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipspikesDataExplorer.p.render()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # recent_spikes_mesh.
 ipspikesDataExplorer.params.longer_spikes_window.duration_seconds = 10.0
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ipspikesDataExplorer.p.enable_depth_peeling(number_of_peels=6, occlusion_ratio=0) # Supposedly helps with translucency
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # spike_raster_window.spikes_window.on_window_changed()
 # spike_raster_window.spikes_window.update_window_start(500.0) # doesn't update anything
 # spike_raster_window.spike_raster_plt_2d.spikes_window.update_window_start(500.0) # doesn't update anything
 spike_raster_window.spike_raster_plt_2d.update_scroll_window_region(500.0, 700.0, block_signals=False)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # spike_raster_window.spike_3d_to_2d_window_connection.disconnect(spike_raster_window.spike_raster_plt_3d.spikes_window.update_window_start_end)
 spike_raster_window.spike_raster_plt_2d.window_scrolled.disconnect(spike_raster_window.spike_raster_plt_3d.spikes_window.update_window_start_end)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.spike_raster_plt_2d.window_scrolled.disconnect()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.spike_raster_plt_2d.ui.scroll_window_region.sigRegionChanged.disconnect()
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Need to the spike indicies that are currently visible in the raster window to programmatically update ipspikesDataExplorer's displayed spikes.
 # active_epoch_session.flattened_spiketrains.time_slice(curr_lap_spike_t_seconds.values[0], curr_lap_spike_t_seconds.values[-1]).spikes_df
 # spike_raster_window.spike_raster_plt_2d.spikes_window
@@ -2957,8 +3527,9 @@ spike_raster_window.spike_raster_plt_2d.ui.scroll_window_region.sigRegionChanged
 
 # np.shape(ipspikesDataExplorer.params.active_trail_opacity_values) # (299,)
 ## Hopefully ipspikesDataExplorer's slider will adjust automatically?
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Test disabling the user-slider:
 # ipspikesDataExplorer.interface_properties
 # interactive_timestamp_slider_actor
@@ -2983,11 +3554,13 @@ callback_timer.isActive()
 # callback_timer.stop()
 
 ipspikesDataExplorer
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 spike_raster_window.animation_active_time_window.window_duration
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 # Get the times that fall within the current plot window:
 curr_win_start, curr_win_end = spike_raster_window.spike_raster_plt_3d.spikes_window.active_time_window
 # np.shape(ipspikesDataExplorer.t) # (51455,)
@@ -3029,8 +3602,9 @@ ipspikesDataExplorer.perform_plot_location_point('animal_current_location_point'
 
 
 # curr_time_fixedSegments = ipspikesDataExplorer.t[active_window_sample_indicies] # New Way
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 curr_win_start, curr_win_end = spike_raster_window.spike_raster_plt_3d.spikes_window.active_time_window
 ipspikesDataExplorer.on_active_window_update_mesh(curr_win_start, curr_win_end, enable_position_mesh_updates=True, render=True)
 
@@ -3052,8 +3626,9 @@ ipspikesDataExplorer.on_active_window_update_mesh(curr_win_start, curr_win_end, 
 # ipspikesDataExplorer.on_programmatic_data_update(active_included_all_historical_indicies=curr_lap_spike_indicies, active_included_recent_only_indicies=curr_lap_spike_indicies) # index 145937 is out of bounds for axis 0 with size 19647
 # ipspikesDataExplorer.on_programmatic_data_update(active_included_all_historical_indicies=curr_lap_spike_t_seconds, active_included_recent_only_indicies=curr_lap_spike_t_seconds) # 
 # ipspikesDataExplorer.on_programmatic_data_update(active_included_all_historical_indicies=curr_lap_spike_t_seconds.values, active_included_recent_only_indicies=curr_lap_spike_t_seconds.values) # 
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 ## Can Programmaticallyt set the visibility on the different plotted elements:
 ipspikesDataExplorer.toggle_plot_visibility('spikes_main_historical')
 # ipspikesDataExplorer.toggle_plot_visibility('spikes_main_recent_only')
@@ -3062,8 +3637,9 @@ ipspikesDataExplorer.toggle_plot_visibility('spikes_main_historical')
 # toggle_visibility(ipspikesDataExplorer.spikes_main_recent_only)
 # toggle_visibility(ipspikesDataExplorer.animal_location_trail)
 # toggle_visibility(ipspikesDataExplorer.animal_current_location_point)
+```
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
+```python pycharm={"is_executing": false, "name": "#%%\n"}
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 
@@ -3077,14 +3653,17 @@ pl = BackgroundPlotter()
 curr_points_actor = pl.add_points(curr_mesh_extracted_pts, render_points_as_spheres=True, point_size=2.0, color='black')
 pl.show()
 
+```
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[]
-# # Individual Plotting Tests:
+<!-- #region pycharm={"name": "#%%\n"} tags=[] -->
+# Individual Plotting Tests:
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ### Common Config
+<!-- #region tags=[] -->
+### Common Config
+<!-- #endregion -->
 
-# + tags=[]
+```python tags=[]
 # display matplotlib figures in a qt backed window. Works in Jupyter notebooks
 from neuropy.utils.matplotlib_helpers import enumTuningMap2DPlotVariables # for getting the variant name from the dict
 
@@ -3154,32 +3733,44 @@ def wrap_display_function_to_save_pdf(curr_display_function_name='_display_norma
             pdf.attach_note(f'Page {i + 1}') 
 
             
+```
 
-# + [markdown] tags=[]
-# ## Single (Session, Filter) Context Plotting:
+<!-- #region tags=[] -->
+## Single (Session, Filter) Context Plotting:
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ### Utility:
-# -
+<!-- #region tags=[] -->
+### Utility:
+<!-- #endregion -->
 
+```python
 # Reload display functions:
 curr_active_pipeline.reload_default_display_functions()
 curr_active_pipeline.registered_display_function_names # ['_display_1d_placefield_validations', '_display_2d_placefield_result_plot_ratemaps_2D', '_display_2d_placefield_result_plot_raw', '_display_normal', '_display_placemaps_pyqtplot_2D', '_display_decoder_result', '_display_plot_most_likely_position_comparisons', '_display_two_step_decoder_prediction_error_2D', '_display_two_step_decoder_prediction_error_animated_2D', '_display_spike_rasters_pyqtplot_2D', '_display_spike_rasters_pyqtplot_3D', '_display_spike_rasters_pyqtplot_3D_with_2D_controls', '_display_spike_rasters_vedo_3D', '_display_spike_rasters_vedo_3D_with_2D_controls', '_display_spike_rasters_window', '_display_speed_vs_PFoverlapDensity_plots', '_display_3d_image_plotter', '_display_3d_interactive_custom_data_explorer', '_display_3d_interactive_spike_and_behavior_browser', '_display_3d_interactive_tuning_curves_plotter']
 print(curr_active_pipeline.registered_display_function_names)
+```
 
+```python
 ## Test getting figure save paths:
 _test_fig_path = curr_active_config.plotting_config.get_figure_save_path('test')
 print(f'_test_fig_path: {_test_fig_path}\n\t exists? {_test_fig_path.exists()}')
+```
 
-# %matplotlib --list 
+```python
+%matplotlib --list 
 # Available matplotlib backends: ['tk', 'gtk', 'gtk3', 'gtk4', 'wx', 'qt4', 'qt5', 'qt6', 'qt', 'osx', 'nbagg', 'notebook', 'agg', 'svg', 'pdf', 'ps', 'inline', 'ipympl', 'widget']
+```
 
-# %matplotlib qt
+```python
+%matplotlib qt
 ## NOTE THAT ONCE THIS IS SET TO qt, it cannot be undone!
+```
 
+```python
 fig_man.close_all()
+```
 
-# +
+```python
 extant_figs_dict = fig_man.figures_dict
 extant_fig_nums = fig_man.figure_nums
 fig_num_figure_still_exists = [plt.fignum_exists(a_fig_num) for a_fig_num in extant_fig_nums]
@@ -3191,36 +3782,54 @@ fig_num_figure_still_exists #     # Figure is still opened or is closed
 extant_figs_dict
 
 # mpl.rcParams['toolbar'] = 'None'
-# -
+```
 
+```python
 fig_man.reshow_figure(extant_figs_dict[10])
+```
 
-# + [markdown] tags=[]
-# #### 🐞 Planning Helper Dock
-# -
+<!-- #region tags=[] -->
+#### 🐞 Planning Helper Dock
+<!-- #endregion -->
 
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockPlanningHelperWidget.DockPlanningHelperWidget import DockPlanningHelperWidget
+```
 
+```python
 test_dock_planning_widget = DockPlanningHelperWidget(dock_title='Test Dock Widget 1', dock_id='Test Dock Widget 1')
 win.add_display_dock(identifier=test_dock_planning_widget.identifier, widget=test_dock_planning_widget)
+```
 
+```python
 # test_dock_planning_widget.parent()
 test_dock_planning_widget.embedding_dock_item
+```
 
+```python
 test_dock_planning_widget.embedding_dock_item.area # DockArea 
 # test_dock_planning_widget.embedding_dock_item.orig_area # DockArea 
+```
 
+```python
 test_dock_planning_widget.embedding_dock_item.setOrientation
+```
 
+```python
 test_dock_planning_widget, test_dock_item = win.create_planning_helper_dock()
 test_dock_planning_widget
+```
 
+```python
 win.ui
+```
 
+```python
 test_dock_planning_widget2, test_dock_item2 = win.create_planning_helper_dock()
 test_dock_planning_widget2
+```
 
-# +
+```python
 # curr_display_dock_planning_helper_widgets = win.displayDockArea.findChildren(DockPlanningHelperWidget, QtCore.QRegExp(".*"), QtCore.Qt.FindChildrenRecursively)
 # curr_display_dock_planning_helper_widgets
 
@@ -3229,90 +3838,114 @@ curr_display_dock_planning_helper_widgets = win.displayDockArea.findChildren(Doc
 # win.connection_man
 for a_child_helper_widget in curr_display_dock_planning_helper_widgets:
     a_child_helper_widget.action_create_new_dock.connect(perform_create_new_relative_dock)
-# -
+```
 
+```python
 win.dynamic_display_dict
+```
 
-# +
+```python
 win.dynamic_display_dict['Test Dock Widget 1']
 
 
 
 # "dock"
 # "widget"
+```
 
-# +
+```python
 from pyphoplacecellanalysis.External.pyqtgraph.dockarea.Dock import Dock
 
 # curr_display_dock_items = win.displayDockArea.children()
 # curr_display_dock_items = win.displayDockArea.findChildren(Dock)
 curr_display_dock_items = win.displayDockArea.findChildren(Dock, QtCore.QRegExp(".*"), QtCore.Qt.FindChildrenRecursively)
 curr_display_dock_items
-# -
+```
 
+```python
 win.find_display_dock('Test Dock Widget 1')
+```
 
+```python
 dock_item_titles = [a_dock_item.title() for a_dock_item in curr_display_dock_items]
 dock_item_titles
 # [a_dock_item for a_dock_item in curr_display_dock_items]
+```
 
+```python
 first_dock_item = curr_display_dock_items[0]
+```
 
+```python
 first_dock_item.title() # 
 # first_dock_item.setTitle
 first_dock_item.geometry() # PyQt5.QtCore.QRect(0, 792, 842, 786)
+```
 
+```python
 first_dock_item.frameGeometry() # PyQt5.QtCore.QRect(0, 792, 842, 786)
 first_dock_item.widgets # list, e.g. [<pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.DockPlanningHelperWidget.DockPlanningHelperWidget.DockPlanningHelperWidget at 0x1d6b2a1b820>]
 first_dock_item.name()
 
+```
 
-# + [markdown] tags=[]
-# ## Systematic Display Function Testing
+<!-- #region tags=[] -->
+## Systematic Display Function Testing
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ### Matplotlib-based plots:
+<!-- #region tags=[] -->
+### Matplotlib-based plots:
+<!-- #endregion -->
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 import matplotlib
 # matplotlib.use('AGG') # non-interactive backend
-# # %matplotlib -l
+# %matplotlib -l
 
 matplotlib.use('Qt5Agg') # non-interactive backend
 ## 2022-08-16 - Surprisingly this works to make the matplotlib figures render only to .png file, not appear on the screen!
+```
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 curr_active_pipeline.filtered_session_names # ['maze', 'sprinkle']
 active_config_name = 'maze'
+```
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 # active_display_to_pdf_fn = wrap_display_function_to_save_pdf
 active_display_to_pdf_fn = programmatic_display_to_PDF
-# -
+```
 
-# %%capture
+```python
+%%capture
 active_display_to_pdf_fn(curr_active_pipeline, curr_display_function_name='_display_1d_placefield_validations', filter_name=active_config_name) # 🟢✅ Working
+```
 
-# # %%capture
+```python
+# %%capture
 # active_display_to_pdf_fn(curr_active_pipeline, curr_display_function_name='_display_2d_placefield_result_plot_raw', filter_name=curr_active_pipeline.filtered_contexts.maze) # 🟢✅ Working
 active_display_to_pdf_fn(curr_active_pipeline, curr_display_function_name='_display_2d_placefield_result_plot_raw') # 🟢✅ Working
 
+```
 
-# +
-# # %%capture
+```python
+# %%capture
 active_display_to_pdf_fn(curr_active_pipeline, curr_display_function_name='_display_2d_placefield_result_plot_ratemaps_2D') # , filter_name=active_config_name # 🟢 Mostly Working # works but now only displays a single filter (where before it displayed all of them and rendered them to individual pages of the PDF)
 # BROKEN: TypeError: neuropy.utils.debug_helpers.safely_accepts_kwargs.<locals>._safe_kwargs_fn() got multiple values for keyword argument 'computation_config'
 
 
-# -
+```
 
-# %%capture
+```python
+%%capture
 active_display_to_pdf_fn(curr_active_pipeline, curr_display_function_name='_display_normal', filter_name=active_config_name) # 🟢✅ Working
+```
 
-# + [markdown] tags=[]
-# ## 🐞👁️‍🗨️🔜 TODO: FINISH THIS UP AND FIGURE OUT WHATEVER THE HELL I'M DOING HERE
-# -
+<!-- #region tags=[] -->
+## 🐞👁️‍🗨️🔜 TODO: FINISH THIS UP AND FIGURE OUT WHATEVER THE HELL I'M DOING HERE
+<!-- #endregion -->
 
+```python
 curr_display_function_name = '_display_2d_placefield_result_plot_ratemaps_2D'
 built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
 out_fig_list = []
@@ -3331,22 +3964,27 @@ with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_p
         out_fig_list.extend(curr_active_pipeline.display(curr_display_function_name, filter_name, plot_variable=enumTuningMap2DPlotVariables.TUNING_MAPS, fignum=active_identifying_ctx_string, **figure_format_config))
         for a_fig in out_fig_list:
             pdf.savefig(a_fig, transparent=True)
+```
 
-# %%capture
+```python
+%%capture
 curr_display_function_name = '_display_decoder_result'
 built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
 with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_pdf_metadata) as pdf:
     plots = curr_active_pipeline.display(curr_display_function_name, filter_name)
     print(plots)
     # pdf.savefig(a_fig)
+```
 
-# + [markdown] tags=[]
-# ### PyQtGraph-based plots:
+<!-- #region tags=[] -->
+### PyQtGraph-based plots:
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# #### PyQtGraph-based Pf2D Viewers:
+<!-- #region tags=[] -->
+#### PyQtGraph-based Pf2D Viewers:
+<!-- #endregion -->
 
-# +
+```python
 # 🟢✅ Nearly Completely Working - Needs subplot labels changed to match standardized matplotlib version, needs color scheme set consistently to matplotlib version, needs colorbars removed
 from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow, add_bin_ticks, build_binned_imageItem
 from neuropy.utils.matplotlib_helpers import _build_variable_max_value_label, enumTuningMap2DPlotMode, enumTuningMap2DPlotVariables, _determine_best_placefield_2D_layout, _scale_current_placefield_to_acceptable_range
@@ -3358,14 +3996,18 @@ from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import display_all_
 active_identifying_display_ctx = active_identifying_filtered_session_ctx.adding_context('display_fn', display_fn_name='display_all_pf_2D_pyqtgraph_binned_image_rendering')
 figure_format_config = _get_curr_figure_format_config() # Fetch the context from the GUI
 out_all_pf_2D_pyqtgraph_binned_image_fig = display_all_pf_2D_pyqtgraph_binned_image_rendering(active_pf_2D, figure_format_config)
-# -
+```
 
+```python
 out_all_pf_2D_pyqtgraph_binned_image_fig.setWindowTitle(f'{active_identifying_display_ctx.get_description()}')
+```
 
+```python
 images = active_one_step_decoder.ratemap.normalized_tuning_curves
 images.shape # (66, 41, 63)
+```
 
-# +
+```python
 # 🟢🚧🟨 Almost Working - Needs subplot labels changed from Cell[i] to the appropriate standardized titles. Needs other minor refinements.
 # 🚧 pyqtplot_plot_image_array needs major improvements to achieve feature pairity with display_all_pf_2D_pyqtgraph_binned_image_rendering, so probably just use display_all_pf_2D_pyqtgraph_binned_image_rendering.  
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import pyqtplot_plot_image_array
@@ -3388,21 +4030,25 @@ parent_root_widget.show()
 if master_dock_win is not None:
     # if there's an open master_dock_win, add this widget as a child dock
     master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=parent_root_widget, dockIsClosable=True)
+```
 
-# + [markdown] tags=[]
-# #### Decoder Plots:
+<!-- #region tags=[] -->
+#### Decoder Plots:
+<!-- #endregion -->
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 # Must switch back to the interactive backend here for the interactive/animated decoder plots:
 matplotlib.use('Qt5Agg')
 # backend_qt5agg
 import matplotlib.pyplot as plt
 # plt.switch_backend('Qt5Agg')
+```
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 curr_active_pipeline.display('_display_two_step_decoder_prediction_error_animated_2D', active_config_name, variable_name='p_x_given_n')
+```
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 # ## MATPLOTLIB Imports:
 # import matplotlib
 # # configure backend here
@@ -3411,11 +4057,13 @@ curr_active_pipeline.display('_display_two_step_decoder_prediction_error_animate
 # import matplotlib as mpl
 ## This plot looks phenominal, and the slider works!
 curr_active_pipeline.display('_display_two_step_decoder_prediction_error_2D', active_config_name, variable_name='p_x_given_n') # NOW: TypeError: _temp_debug_two_step_plots_animated_imshow() missing 1 required positional argument: 'time_binned_position_df'
+```
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 curr_active_pipeline.display('_display_two_step_decoder_prediction_error_2D', active_config_name, variable_name='p_x_given_n_and_x_prev')  # this one doesn't work!
+```
 
-# +
+```python
 # Get the decoders from the computation result:
 # active_one_step_decoder = computation_result.computed_data['pf2D_Decoder']
 # active_two_step_decoder = computation_result.computed_data.get('pf2D_TwoStepDecoder', None)
@@ -3425,29 +4073,41 @@ active_one_step_decoder # BayesianPlacemapPositionDecoder
 active_two_step_decoder
 
 ## SAVE OUT THE RESULTS of the decoder:
-# -
+```
 
+```python
 
+```
 
+```python
 ## PDF Output, NOTE this is single plot stuff: uses active_config_name
 from matplotlib.backends import backend_pdf, backend_pgf, backend_ps
 from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, build_pdf_metadata_from_display_context, programmatic_display_to_PDF
+```
 
+```python
 ## 2022-10-04 Modern Programmatic PDF outputs:
 # programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_plot_decoded_epoch_slices',  debug_print=False)
 programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_plot_decoded_epoch_slices', filter_epochs='ripple', decoding_time_bin_size=0.02, debug_test_max_num_slices=128, debug_print=True)
+```
 
+```python
 programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_plot_decoded_epoch_slices', filter_epochs='laps', debug_test_max_num_slices=128, debug_print=False)
+```
 
-# +
+```python
 ## TODO: trying to hack up 'replay's which aren't working because of the overlaps, and strangely my overlaps code doesn't seem to work
-# -
+```
 
+```python
 sess.replay
+```
 
+```python
 sess.replay.flat_replay_idx.unique()
+```
 
-# +
+```python
 from neuropy.utils.efficient_interval_search import verify_non_overlapping, get_non_overlapping_epochs
 
 active_filter_epochs = deepcopy(sess.replay) # epoch object
@@ -3455,8 +4115,9 @@ active_filter_epochs = deepcopy(sess.replay) # epoch object
 if not 'stop' in active_filter_epochs.columns:
     active_filter_epochs['stop'] = active_filter_epochs['end'].copy()     # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
 default_figure_name = f'Replay'
-# -
+```
 
+```python
 # TODO 2022-10-04 - CORRECTNESS - AssertionError: Intervals in start_stop_times_arr must be non-overlapping. I believe this is due to the stop values overlapping somewhere
 print(f'active_filter_epochs: {active_filter_epochs}')
 ## HANDLE OVERLAPPING EPOCHS: Note that there is a problem that occurs here with overlapping epochs for laps. Below we remove any overlapping epochs and leave only the valid ones.
@@ -3465,43 +4126,38 @@ is_non_overlapping = get_non_overlapping_epochs(active_filter_epochs[['start','s
 # active_filter_epochs = active_filter_epochs[is_non_overlapping, :]
 active_filter_epochs = active_filter_epochs.loc[is_non_overlapping]
 print(f'active_filter_epochs: {active_filter_epochs}')
+```
 
+```python
 is_non_overlapping = get_non_overlapping_epochs(active_filter_epochs[['start','stop']].to_numpy()) # returns a boolean array of the same length as the number of epochs 
 np.where(np.logical_not(is_non_overlapping))[0]
+```
 
+```python
 verify_non_overlapping(start_stop_times_arr=active_filter_epochs[['start','stop']].to_numpy())
+```
 
+```python
 
+```
 
-# ### Piso-based interval overlap removal
-
-# +
-## Build non-overlapping intervals with piso. Unsure of the computation efficiency, but the ouptuts are correct.
-import piso
-piso.register_accessors()
-
-print(f'pre: {active_filter_epochs.shape[0]}')
-valid_intervals = pd.arrays.IntervalArray.from_arrays(left=active_filter_epochs.start.values, right=active_filter_epochs.end.values).piso.symmetric_difference()
-valid_active_filter_epochs = np.vstack([valid_intervals.left.values.T, valid_intervals.right.values.T]).T
-print(f'post: {valid_active_filter_epochs.shape[0]}') # (37, 2)
-
-active_filter_epochs = valid_active_filter_epochs
-# -
-
+```python
 active_filter_epochs
+```
 
+```python
 programmatic_display_to_PDF(curr_active_pipeline, curr_display_function_name='_display_plot_decoded_epoch_slices', filter_epochs='replay', debug_test_max_num_slices=128, debug_print=False) # Does not work due to overlap
+```
 
+<!-- #region pycharm={"name": "#%%\n"} -->
+### 🔜 2022-08-10 👁️‍🗨️ NOW: Plot animal positions on the computed posteriors:
+The process of plotting the animal position on the decoder plot needs to be refined. Currently it works by re-implementing 
 
+🔜 NEXT STEP: TODO: Make a "Datasource" like approach perhaps to provide the actual animal position at each point in time?
+🐞🔜 BUG TODO: Noticed that for Bapun Day5 data, it looks like the current position point is being plotted incorrectly (it doesn't even move across the space much)
+<!-- #endregion -->
 
-# + [markdown] pycharm={"name": "#%%\n"}
-# ### 🔜 2022-08-10 👁️‍🗨️ NOW: Plot animal positions on the computed posteriors:
-# The process of plotting the animal position on the decoder plot needs to be refined. Currently it works by re-implementing 
-#
-# 🔜 NEXT STEP: TODO: Make a "Datasource" like approach perhaps to provide the actual animal position at each point in time?
-# 🐞🔜 BUG TODO: Noticed that for Bapun Day5 data, it looks like the current position point is being plotted incorrectly (it doesn't even move across the space much)
-
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 ## Get the current positions at each of the time_window_centers:
 # active_resampled_measured_positions
 time_binned_pos_df = active_computed_data.extended_stats.time_binned_position_df
@@ -3511,11 +4167,13 @@ active_resampled_measured_positions = active_resampled_pos_df[['x','y']].to_nump
 active_one_step_decoder.active_time_window_centers.shape # (1911,)
 print(f'active_one_step_decoder.active_time_window_centers.shape: {active_one_step_decoder.active_time_window_centers.shape}')
 # Note this has 2900 rows × 24 columns and active_one_step_decoder.active_time_window_centers.shape is (2892,) for some reason. Shouldn't they be the same?
+```
 
-# + pycharm={"name": "#%%\n"}
+```python pycharm={"name": "#%%\n"}
 active_resampled_pos_df
+```
 
-# +
+```python tags=["gui"]
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
@@ -3536,79 +4194,65 @@ def _debug_on_frame_update(new_frame_idx, ax):
 # plotted_variable_name = kwargs.get('variable_name', 'p_x_given_n') # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
 plotted_variable_name = 'p_x_given_n' # Tries to get the user-provided variable name, otherwise defaults to 'p_x_given_n'
 _temp_debug_two_step_plots_animated_imshow(active_one_step_decoder, active_two_step_decoder, active_computed_data.extended_stats.time_binned_position_df, variable_name=plotted_variable_name, update_callback_function=_debug_on_frame_update) # Works
-# -
+```
 
-
-
-
-
-
-
+```python tags=["gui"]
 curr_display_function_name = '_display_spike_rasters_pyqtplot_2D'
 curr_active_pipeline.display(curr_display_function_name, filter_name, debug_print=False, enable_saving_to_disk=enable_saving_to_disk) 
+```
 
+```python tags=["gui"]
 ## Works, displays my velocity/density result for both 2D and 1D:
 # out_plot_1D, out_plot_2D = curr_active_pipeline.display('_display_speed_vs_PFoverlapDensity_plots', active_config_name)
 curr_display_function_name = '_display_speed_vs_PFoverlapDensity_plots'
 plots = curr_active_pipeline.display(curr_display_function_name, filter_name)
 plots
+```
 
-# + tags=[]
+```python tags=[]
 curr_display_function_name = '_display_placemaps_pyqtplot_2D'
 out_plots = curr_active_pipeline.display(curr_display_function_name, filter_name, max_num_columns=8)    
 out_plots[1].show()
+```
 
-# + tags=[]
+```python tags=[]
 out_plots[1].show()
+```
 
-# + tags=[]
+```python tags=[]
 out_plots[1].close()
+```
 
-# + tags=[]
+```python tags=[]
 ## KNOWN BAD, locks up, do not execute:
 curr_display_function_name = 'display_firing_rate_trends'
 plots = curr_active_pipeline.display(curr_display_function_name, filter_name)
+```
 
-# + tags=[]
+```python tags=[]
 # a_plot = plots[0] # PlotWidget 
 # a_plot_item = a_plot.plotItem # PlotItem
 # a_plot.scene() # GraphicsScene
 export_pyqtgraph_plot(plots[0])
+```
 
-# + [markdown] tags=[]
-# ### 3D (PyVista/Vedo/etc)-based plots:
+<!-- #region tags=[] -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
-curr_active_pipeline.display('_display_3d_interactive_spike_and_behavior_browser', active_config_name) # this works now!
+# Testing: Position Decoding:
+<!-- #endregion -->
 
-# + pycharm={"is_executing": false, "name": "#%%\n"}
-display_dict = curr_active_pipeline.display('_display_3d_interactive_custom_data_explorer', active_config_name) # does not work, missing color info?
-iplapsDataExplorer = display_dict['iplapsDataExplorer']
-# plotter is available at
-p = display_dict['plotter']
-iplapsDataExplorer
-# -
+<!-- % $$\int_{a}^b f(x)dx$$ -->
+<!-- Euler's identity: $ e^{i \pi} + 1 = 0 $ -->
 
-# curr_kdiba_pipeline.display(DefaultDisplayFunctions._display_3d_interactive_custom_data_explorer, 'maze1') # works!
-curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', 'maze1_PYR') # works!
+## One-step Bayesian Decoder:
+$$P(\overrightarrow{x}_{t}|\overrightarrow{n}_{t})$$
 
-# + [markdown] tags=[]
-#
-# # Testing: Position Decoding:
-# -
+$$P(\overrightarrow{n}|\overrightarrow{x})$$ : probability for the numbers of spikes $\overrightarrow{n}$ to occur given we know the animal is at location $\overrightarrow{x}$
 
-# <!-- % $$\int_{a}^b f(x)dx$$ -->
-# <!-- Euler's identity: $ e^{i \pi} + 1 = 0 $ -->
-#
-# ## One-step Bayesian Decoder:
-# $$P(\overrightarrow{x}_{t}|\overrightarrow{n}_{t})$$
-#
-# $$P(\overrightarrow{n}|\overrightarrow{x})$$ : probability for the numbers of spikes $\overrightarrow{n}$ to occur given we know the animal is at location $\overrightarrow{x}$
-#
-# ## Two-step Bayesian Decoder:
-# $$P(\overrightarrow{x}_{t}|\overrightarrow{n}_{t}, \overrightarrow{x}_{t-1}) = k P(\overrightarrow{x}_{t}|\overrightarrow{n}_{t}) P(\overrightarrow{x}_{t-1}|\overrightarrow{x}_{t})$$
+## Two-step Bayesian Decoder:
+$$P(\overrightarrow{x}_{t}|\overrightarrow{n}_{t}, \overrightarrow{x}_{t-1}) = k P(\overrightarrow{x}_{t}|\overrightarrow{n}_{t}) P(\overrightarrow{x}_{t-1}|\overrightarrow{x}_{t})$$
 
-# +
+```python
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_most_likely_position_comparsions, plot_1D_most_likely_position_comparsions
 from pyphocorehelpers.print_helpers import print_value_overview_only, print_keys_if_possible, debug_dump_object_member_shapes, safe_get_variable_shape
 
@@ -3642,31 +4286,47 @@ debug_dump_object_member_shapes(active_one_step_decoder)
 # most_likely_position_indicies:	||	shape: (2, 1297)	||	<class 'numpy.ndarray'>
 
 active_decoder = active_one_step_decoder
-# -
+```
 
+```python
 active_decoder.debug_dump_print()
+```
 
-# +
+```python
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_spike_count_and_firing_rate_normalizations
 
 fig, axs = plot_spike_count_and_firing_rate_normalizations(active_decoder)
-# -
+```
 
+```python
 axs[1]
+```
 
+```python
 active_decoder.setup()
+```
 
+```python
 active_decoder.time_window_edges_binning_info
+```
 
+```python
 active_decoder._flatten_output(active_one_step_decoder.most_likely_positions)
+```
 
+```python
 active_one_step_decoder.most_likely_positions
+```
 
+```python
 marginals_x.most_likely_positions_1D.shape
+```
 
+```python
 marginals_x.p_x_given_n.shape
+```
 
-# +
+```python
 t_start, t_stop = active_2d_plot.spikes_window.active_window_start_time, active_2d_plot.spikes_window.active_window_end_time
 
 
@@ -3685,117 +4345,178 @@ sliced_marginals_x
 # included_timestamps
 # curr_window_marginal_x_p_x_given_n
 # curr_window_marginal_x_p_x_given_n.shape
-# -
+```
 
+```python
 sliced_marginals_x.p_x_given_n[:,0]
+```
 
+```python
 np.sum(sliced_marginals_x.p_x_given_n, axis=0)
+```
 
+```python
 np.nanvar(sliced_marginals_x.p_x_given_n, axis=0)
+```
 
+```python
 np.ptp(sliced_marginals_x.p_x_given_n, axis=0)*100
+```
 
+```python
 active_decoder.time_binning_container.edge_info
+```
 
+```python
 active_decoder.unit_specific_time_binned_spike_counts.shape # (67, 11881)
+```
 
+```python
 active_decoder.compute_all()
+```
 
+```python
 active_decoder.marginal.x.most_likely_positions_1D
+```
 
+```python
 active_decoder.marginal.x.
+```
 
+```python
 active_decoder.compute_corrected_positions()
+```
 
+```python
 active_decoder.marginallanalysis.Analysis.Decoder.reconstruction import ZhangReconstructionImplementation
+```
 
-# +
+```python
 active_decoder.unit_specific_time_binned_spike_counts, active_decoder.time_window_edges, active_decoder.time_window_edges_binning_info = ZhangReconstructionImplementation.time_bin_spike_counts_N_i(active_decoder.spikes_df, active_decoder.time_bin_size, debug_print=active_decoder.debug_print) # unit_specific_binned_spike_counts.to_numpy(): (40, 85841)
 active_decoder.unit_specific_time_binned_spike_counts.shape # (70, 11881)
 active_decoder.time_window_edges.shape # (11882,)
 
 # The time_window_edges returned from the ZhangReconstructionImplementation.time_bin_spike_counts_N_i(...) function are one longer than the final ones accessible from the active_decoder.time_binning_container.edges
-# -
+```
 
+```python
 time_window_edges, time_window_edges_binning_info, spikes_df = ZhangReconstructionImplementation.compute_time_bins(active_decoder.spikes_df, max_time_bin_size=active_decoder.time_bin_size, debug_print=True)
 unit_specific_binned_spike_counts = ZhangReconstructionImplementation.compute_unit_specific_bin_specific_spike_counts(spikes_df, time_window_edges_binning_info.bin_indicies[1:], debug_print=debug_print)
+```
 
+```python
 unit_specific_binned_spike_counts.shape # (11881, 70)
+```
 
+```python
 active_decoder.time_window_edges
+```
 
-# +
+```python
 active_decoder.time_binning_container.edges.shape # (11881,)
 
 active_decoder.time_binning_container.edges
 ##
-# -
+```
 
+```python
 active_decoder.time_binning_container.centers.shape
+```
 
+```python
 active_decoder.time_window_centers.shape # (11880,)
+```
 
+```python
 active_decoder.time_binning_container.center_info
+```
 
+```python
 active_decoder.time_window_edges
+```
 
+```python
 sliced_marginals_x.total_spike_counts_per_window
+```
 
+```python
 active_decoder.p_x_given_n.shape # (63, 16, 11880)
+```
 
+```python
 active_decoder.total_spike_counts_per_window.shape # (11881,)
+```
 
+```python
 active_decoder.unit_specific_time_binned_spike_counts.shape # (67, 11881)
+```
 
+```python
 active_computation_results.computation_config.pf_params
 # [curr_active_config]
+```
 
+```python
 active_one_step_decoder.time_bin_size
+```
 
+```python
 active_one_step_decoder.time_window_centers
+```
 
+```python
 active_two_step_decoder.flat_p_x_given_n_and_x_prev
+```
 
+```python
 sess.epochs
+```
 
-# + tags=[]
+```python tags=[]
 sess.neurons.t_start
 
 sess.neurons.t_stop
 
 sess.neurons
+```
 
-# +
+```python
 # Default Plotting:
-# -
+```
 
+```python
 fig_most_likely_position_decoder, axs_most_likely_position_decoder = plot_most_likely_position_comparsions(active_one_step_decoder, sess.position.to_dataframe(), show_posterior=True, show_one_step_most_likely_positions_plots=True)
 plt.suptitle('one_step_decoder')
 plt.ion()
 plt.show()
 
+```
 
-# +
+```python
 active_one_step_decoder.time_bin_size # 1.0 second binning
 
 
 
-# -
+```
 
+```python
 new_decoder_pf2D = active_pf_2D #
 new_decoder_spikes_df = new_decoder_pf2D.filtered_spikes_df.copy()
+```
 
+```python
 new_decoder_spikes_df.spikes.time_variable_name # 't_rel_seconds'
 spike_times = new_decoder_spikes_df[new_decoder_spikes_df.spikes.time_variable_name].to_numpy()
 (spike_times[0], spike_times[-1]) # (1211.5883460667683, 2077.5610790087376)
+```
 
-
-
+```python
 active_two_step_decoder.p_x_given_n_and_x_prev
+```
 
-# +
 ## Adds the directly accessible properties to the active_one_step_decoder after they're computed in the active_two_step_decoder so that they can be plotted with the same functions/etc.
 
+```python
 # None initialize two-step properties on the one_step_decoder:
 active_one_step_decoder.p_x_given_n_and_x_prev = None
 active_one_step_decoder.two_step_most_likely_positions = None
@@ -3814,16 +4535,21 @@ active_one_step_decoder.marginal.x.two_step_most_likely_positions_1D = active_tw
 
 active_one_step_decoder.marginal.y.p_x_given_n_and_x_prev = active_two_step_decoder.marginal.y.p_x_given_n.copy()
 active_one_step_decoder.marginal.y.two_step_most_likely_positions_1D = active_two_step_decoder.marginal.y.most_likely_positions_1D.copy()
-# -
+```
 
+```python
 
+```
 
+```python
 active_one_step_decoder.two_step_most_likely_positions
+```
 
-# + [markdown] tags=[]
-# ### Build a brand new decoder instance for testing
+<!-- #region tags=[] -->
+### Build a brand new decoder instance for testing
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BayesianPlacemapPositionDecoder, Zhang_Two_Step
 from pyphocorehelpers.indexing_helpers import BinningInfo, compute_spanning_bins, get_bin_centers, get_bin_edges, debug_print_1D_bin_infos, interleave_elements, build_spanning_grid_matrix
 from pyphocorehelpers.indexing_helpers import build_spanning_grid_matrix
@@ -3843,30 +4569,42 @@ new_decoder_pf_params = deepcopy(active_computation_config.pf_params) # should b
 # override some settings before computation:
 new_decoder_pf_params.time_bin_size = time_bin_size
 # new_decoder_pf_params.time_bin_size = 0.25
+```
 
-# + [markdown] tags=[]
-# #### Custom Manual 1D Decoder:
-# -
+<!-- #region tags=[] -->
+#### Custom Manual 1D Decoder:
+<!-- #endregion -->
 
+```python
 new_decoder_pf1D = active_pf_1D
 new_1D_decoder_spikes_df = new_decoder_pf1D.filtered_spikes_df.copy()
 new_1D_decoder_spikes_df = new_1D_decoder_spikes_df.spikes.add_binned_time_column(manual_time_window_edges, manual_time_window_edges_binning_info, debug_print=False)
 new_1D_decoder = BayesianPlacemapPositionDecoder(new_decoder_pf_params.time_bin_size, new_decoder_pf1D, new_1D_decoder_spikes_df, manual_time_window_edges=manual_time_window_edges, manual_time_window_edges_binning_info=manual_time_window_edges_binning_info, debug_print=False)
 new_1D_decoder.compute_all() #  --> n = self.
+```
 
+```python
 new_1D_decoder.most_likely_position_indicies.shape # (1, 20717)
+```
 
+```python
 new_1D_decoder.original_position_data_shape # (63,)
 new_1D_decoder.pf.ndim # 1
+```
 
+```python
 new_1D_decoder.pf
+```
 
+```python
 new_1D_decoder.most_likely_positions.shape # (20717,)
+```
 
-# + [markdown] tags=[]
-# #### Custom Manual 2D Decoder:
+<!-- #region tags=[] -->
+#### Custom Manual 2D Decoder:
+<!-- #endregion -->
 
-# +
+```python
 new_decoder_pf2D = active_pf_2D # 
 new_decoder_spikes_df = new_decoder_pf2D.filtered_spikes_df.copy()
 new_decoder_spikes_df = new_decoder_spikes_df.spikes.add_binned_time_column(manual_time_window_edges, manual_time_window_edges_binning_info, debug_print=False)
@@ -3874,22 +4612,33 @@ new_2D_decoder = BayesianPlacemapPositionDecoder(new_decoder_pf_params.time_bin_
 new_2D_decoder.compute_all() #  --> n = self.
 
 new_2D_decoder
-# -
+```
 
+```python
 new_2D_decoder.unit_specific_time_binned_spike_counts.shape # (66, 3530)
+```
 
+```python
 new_2D_decoder.time_window_centers.shape # (3530,)
+```
 
+```python
 new_2D_decoder.neuron_IDXs.shape
+```
 
+```python
 new_2D_decoder.flat_p_x_given_n.shape # (1638, 20717)
+```
 
+```python
 new_2D_decoder.neuron_IDs
+```
 
-# + [markdown] tags=[]
-# #### Test Specific Epochs Decoding:
+<!-- #region tags=[] -->
+#### Test Specific Epochs Decoding:
+<!-- #endregion -->
 
-# +
+```python
 from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
 from neuropy.analyses.decoders import epochs_spkcount
 
@@ -3902,30 +4651,46 @@ decoding_time_bin_size = 0.1
 active_decoder = active_one_step_decoder
 # active_decoder = new_2D_decoder
 # active_decoder = new_1D_decoder
-# -
+```
 
+```python
 curr_active_pipeline.reload_default_display_functions()
+```
 
-# + tags=[]
+```python tags=[]
 _temp_out = curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_config_name, debug_test_max_num_slices=16)
 params, plots_data, plots, ui = _temp_out
-# -
+```
 
+```python
 params
+```
 
+```python
 plots_data
+```
 
+```python
 plots
+```
 
+```python
 ui
+```
 
+```python
 ui.mw.getFigure()
+```
 
+```python
 sess.epochs
+```
 
+```python
 _temp_out = curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_config_name, filter_epochs='laps', debug_test_max_num_slices=16)
+```
 
-# +
+```python
 ## Plot the results:
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
 
@@ -3934,8 +4699,9 @@ enable_flat_line_drawing = False
 # enable_flat_line_drawing = True
 debug_test_max_num_slices = 16
 
-# -
+```
 
+```python
 # filter_epochs = deepcopy(sess.replay) # epoch object
 filter_epochs = filter_epochs.drop_duplicates("start") # tries to remove duplicate replays to take care of `AssertionError: Intervals in start_stop_times_arr must be non-overlapping`, but it hasn't worked.
 # filter_epochs.columns # ['epoch_id', 'rel_id', 'start', 'end', 'replay_r', 'replay_p', 'template_id', 'flat_replay_idx', 'duration']
@@ -3943,54 +4709,73 @@ if not 'stop' in filter_epochs.columns:
     # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
     filter_epochs['stop'] = filter_epochs['end'].copy()
 filter_epochs
+```
 
-# +
+```python
 ## Ripple-Epochs Decoding:
 filter_epochs = deepcopy(sess.ripple) # epoch object
 
 decoding_time_bin_size = 0.02
 filter_epochs_decoder_result = active_decoder.decode_specific_epochs(sess.spikes_df, filter_epochs=filter_epochs, decoding_time_bin_size=decoding_time_bin_size, debug_print=False)
 filter_epochs_decoder_result
-# -
+```
 
+```python
 params, plots_data, plots, ui = plot_decoded_epoch_slices(filter_epochs, filter_epochs_decoder_result, global_pos_df=sess.position.to_dataframe(), xbin=active_decoder.xbin,
                                                           enable_flat_line_drawing=enable_flat_line_drawing, debug_test_max_num_slices=debug_test_max_num_slices, name='RIPPLES', debug_print=debug_print)
+```
 
+```python
 ## Lap-Epochs Decoding:
 laps_copy = deepcopy(sess.laps)
 laps_filter_epochs = laps_copy.filtered_by_lap_flat_index(np.arange(6)).as_epoch_obj() # epoch object
 laps_filter_epochs_decoder_result = active_decoder.decode_specific_epochs(sess.spikes_df, filter_epochs=laps_filter_epochs, decoding_time_bin_size=decoding_time_bin_size, debug_print=False)
 laps_plot_tuple = plot_decoded_epoch_slices(laps_filter_epochs, laps_filter_epochs_decoder_result, global_pos_df=sess.position.to_dataframe(), xbin=active_decoder.xbin,
                                                           enable_flat_line_drawing=enable_flat_line_drawing, debug_test_max_num_slices=debug_test_max_num_slices, name='LAPS', debug_print=debug_print)
+```
 
-# + [markdown] tags=[]
-# #### Custom Manual Decoder Plotting:
-# -
+<!-- #region tags=[] -->
+#### Custom Manual Decoder Plotting:
+<!-- #endregion -->
 
+```python
 new_decoder_pf2D.cell_ids
+```
 
+```python
 # new_decoder_pf2D.filtered_spikes_df.spikes.get_split_by_unit(included_neuron_ids=)
 # new_decoder_pf2D.build_position_df_discretized_binned_positions
 new_decoder_pf2D.xbin_centers
+```
 
+```python
 new_decoder_pf2D.config.grid_bin # (3.793023081021702, 1.607897707662558)
+```
 
+```python
 # Call the plot function with the decoder result.
 fig_most_likely_position_decoder, axs_most_likely_position_decoder = plot_most_likely_position_comparsions(pho_custom_decoder, sess.position.to_dataframe(), show_posterior=True, show_one_step_most_likely_positions_plots = True)
 plt.ion()
 plt.show()
+```
 
+```python
 
+```
 
+```python
 new_decoder.most_likely_positions # (3530, 2)
+```
 
+```python
 neuropy_2D_decoder.decoded_position # (3529, 2)
+```
 
+<!-- #region tags=[] -->
+#### Connect the fig_most_likely_position_decoder region to the spike_raster_window
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# #### Connect the fig_most_likely_position_decoder region to the spike_raster_window
-
-# +
+```python
 # custom_2D_decoder_container.ax
 
 def _temp_most_likely_position_decoder_plot_sync_window(start_t, end_t):
@@ -4007,28 +4792,43 @@ for curr_ax in axs_most_likely_position_decoder:
     curr_ax.set_xlim(spike_raster_window.spikes_window.active_window_start_time, spike_raster_window.spikes_window.active_window_end_time)
 
 sync_connection = spike_raster_window.spike_raster_plt_2d.window_scrolled.connect(_temp_most_likely_position_decoder_plot_sync_window) # connect the window_scrolled event to the _on_window_updated function
-# -
+```
 
+```python
 spike_raster_window.spikes_window.active_window_start_time, spike_raster_window.spikes_window.active_window_end_time
+```
 
+```python
 # Call the plot function with the decoder result.
 fig1, axs1 = plot_most_likely_position_comparsions(active_one_step_decoder, sess.position.to_dataframe(), show_posterior=True, show_one_step_most_likely_positions_plots = True)
+```
 
+```python
 new_decoder.debug_dump_print()
+```
 
+```python
 
+```
 
+```python
 active_pf_1D.plot_ratemaps_1D()
+```
 
+```python
 active_pf_1D.
+```
 
+```python
 
+```
 
-# + [markdown] tags=[]
-# ### Test out NeuroPy's decoders
-# So Decode1d seems to work well on KDiba linear track
+<!-- #region tags=[] -->
+### Test out NeuroPy's decoders
+So Decode1d seems to work well on KDiba linear track
+<!-- #endregion -->
 
-# +
+```python
 from neuropy.analyses.decoders import Decode1d, Decode2d
 from neuropy.core.neurons import Neurons
 
@@ -4046,35 +4846,56 @@ neuropy_decoder_time_bin_centers = neuropy_decoder_time_bins[:-1] + np.diff(neur
 
 neuropy_1D_decoder = Decode1d(filtered_neurons, active_pf_1D.ratemap, time_bin_size=time_bin_size)
 neuropy_1D_decoder
-# -
+```
 
+```python
 len(neuropy_decoder_time_bins)
+```
 
+```python
 len(neuropy_1D_decoder.decodingtime)
+```
 
+```python
 len(neuropy_1D_decoder.time_bin_centers)
+```
 
+```python
 len(neuropy_decoder_time_bin_centers)
+```
 
+```python
 neuropy_1D_decoder.decoded_position.shape # (3530,)
+```
 
+```python
 binned_spiketrains = filtered_neurons.get_binned_spiketrains(bin_size=time_bin_size) # Neuropy BinnedSpiketrain object
 spkcount = binned_spiketrains.spike_counts
+```
 
+```python
 binned_spiketrains.time
+```
 
+```python
 new_decoder.time_window_edges
+```
 
+```python
 new_decoder.active_time_windows # These seem to match 
+```
 
-# +
+```python
 # neuropy_1D_decoder.posterior
-# -
+```
 
+```python
 neuropy_1D_decoder.posterior.shape # (40, 1765)
 # neuropy_1D_decoder.
 # neuropy_1D_decoder.decoded_position.shape # (1765,)
+```
 
+```python
 neuropy_1D_container = PhoUIContainer('neuropy_most_likely_1D_comparison', figure_id=f'neuropy_1D_most_likely')
 # print(f'neuropy_1D_container.name: "{neuropy_1D_container.name}"')
 # print(f'neuropy_1D_container.figure_id: "{neuropy_1D_container.figure_id}"')
@@ -4085,9 +4906,9 @@ neuropy_1D_container.fig, neuropy_1D_container.ax = plot_1D_most_likely_position
                                                    active_most_likely_positions_1D=neuropy_1D_decoder.decoded_position, variable_name='lin_pos',
                                                    enable_flat_line_drawing=False, debug_print=False)
 neuropy_1D_container.fig.show()
+```
 
-
-# +
+```python
 def _temp_most_likely_position_decoder_plot_1D_sync_window(start_t, end_t):
     # print(f'_temp_most_likely_position_decoder_plot_sync_window(start_t: {start_t}, end_t: {end_t})')
     global neuropy_1D_container
@@ -4098,19 +4919,23 @@ def _temp_most_likely_position_decoder_plot_1D_sync_window(start_t, end_t):
 
 neuropy_1D_container.ax.set_xlim(spike_raster_window.spikes_window.active_window_start_time, spike_raster_window.spikes_window.active_window_end_time)
 sync_connection = spike_raster_window.spike_raster_plt_2d.window_scrolled.connect(_temp_most_likely_position_decoder_plot_1D_sync_window) # connect the window_scrolled event to the _on_window_updated function
-# -
+```
 
+```python
 sess.position.to_dataframe()
+```
 
-# + [markdown] tags=[]
-# #### Neuropy 2D Decoder (Decode2D)
-# -
+<!-- #region tags=[] -->
+#### Neuropy 2D Decoder (Decode2D)
+<!-- #endregion -->
 
+```python
 neuropy_2D_decoder = Decode2d(active_pf_2D)
 neuropy_2D_decoder.estimate_behavior(spikes_df=active_pf_2D.filtered_spikes_df, time_bin_size=time_bin_size, t_start_end=(sess.t_start, sess.t_stop), smooth=1, plot=False)
 neuropy_2D_decoder
+```
 
-# +
+```python
 neuropy_2D_decoder._original_data_shape # (41, 26)
 neuropy_2D_decoder.time_bin_centers
 
@@ -4125,8 +4950,9 @@ converted_posterior.shape # (41, 26, 3529)
 neuropy_2D_decoder_marginal_posterior_x = np.squeeze(np.sum(converted_posterior, 1)) # sum over all y. Result should be [x_bins x time_bins]
 neuropy_2D_decoder_marginal_posterior_x = neuropy_2D_decoder_marginal_posterior_x / np.sum(neuropy_2D_decoder_marginal_posterior_x, axis=0) # sum over all positions for each time_bin (so there's a normalized distribution at each timestep)
 np.shape(neuropy_2D_decoder_marginal_posterior_x) # (41, 3464)
-# -
+```
 
+```python
 neuropy_2D_container = PhoUIContainer('neuropy_most_likely_2D_comparison', figure_id=f'neuropy_2D_most_likely')
 neuropy_2D_container.fig, neuropy_2D_container.ax = plt.subplots(num=neuropy_2D_container.figure_id, ncols=1, nrows=1, figsize=(15,15), clear=True, sharex=True, sharey=False, constrained_layout=True)
 neuropy_2D_container.fig.suptitle(neuropy_2D_container.name)
@@ -4135,20 +4961,34 @@ neuropy_2D_container.fig, neuropy_2D_container.ax = plot_1D_most_likely_position
                                                    active_most_likely_positions_1D=neuropy_2D_decoder.decoded_position[:,0].T, variable_name='x',
                                                    enable_flat_line_drawing=False, debug_print=False)
 neuropy_2D_container.fig.show()
+```
 
+```python
 neuropy_2D_decoder.decoded_position.shape # (3529, 2)
+```
 
+```python
 neuropy_2D_decoder.posterior.shape # (1066, 3529)
+```
 
+```python
 neuropy_2D_decoder.decodingtime.shape # (3530,)
+```
 
+```python
 neuropy_2D_decoder.time_bin_centers.shape # (3529,)
+```
 
+```python
 neuropy_2D_decoder.actualpos.shape # (2, 3529)
 neuropy_2D_decoder.actualbin.shape # (2, 3529)
+```
 
+```python
 
+```
 
+```python
 ## Test synchronizing to arrbitrary times:
 _curr_epoch_sync_index = 10
 start_t, end_t = epoch_slices[_curr_epoch_sync_index]
@@ -4157,15 +4997,18 @@ for curr_ax in (neuropy_1D_container.ax, custom_2D_decoder_container.ax, neuropy
     curr_ax.set_xlim(start_t, end_t)
     plt.draw()
     
+```
 
-# + [markdown] tags=[]
-# ### Build Stacked Matplotlib Figure analagous to `stacked_epoch_slices_view`:
-# -
+<!-- #region tags=[] -->
+### Build Stacked Matplotlib Figure analagous to `stacked_epoch_slices_view`:
+<!-- #endregion -->
 
-# # %matplotlib qt
+```python
+# %matplotlib qt
 matplotlib.use('Qt5Agg') # non-interactive backend
+```
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_basic_setup, stacked_epoch_slices_matplotlib_build_view, stacked_epoch_slices_matplotlib_build_insets_view
 # from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_basic_setup, stacked_epoch_slices_matplotlib_build_view, stacked_epoch_slices_matplotlib_build_insets_view
 debug_print = False
@@ -4185,8 +5028,9 @@ laps_position_traces_list = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df i
 epochs = sess.laps.to_dataframe()
 epoch_slices = epochs[['start', 'stop']].to_numpy()
 epoch_description_list = [f'lap {epoch_tuple.lap_id} (maze: {epoch_tuple.maze_id}, direction: {epoch_tuple.lap_dir})' for epoch_tuple in epochs[['lap_id','maze_id','lap_dir']].itertuples()]
+```
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_matplotlib_build_view
 
 plot_function_name = 'Stacked Epoch Slices View - MATPLOTLIB subplots Version'
@@ -4206,8 +5050,9 @@ for i, curr_ax in enumerate(plots.axs):
                                                        enable_flat_line_drawing=enable_flat_line_drawing, debug_print=False)
     curr_ax.set_xlim(*plots_data.epoch_slices[i,:])
     curr_ax.set_title('')
+```
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_matplotlib_build_insets_view
 plot_function_name = 'Stacked Epoch Slices View - MATPLOTLIB INSET SUBPLOTS Version'
 params, plots_data, plots, ui = stacked_epoch_slices_matplotlib_build_insets_view(epoch_slices, name='stacked_epoch_slices_matplotlib_INSET_subplots_laps', plot_function_name=plot_function_name, debug_test_max_num_slices=debug_test_max_num_slices, debug_print=False)
@@ -4226,56 +5071,85 @@ for a_slice_idx, curr_ax in enumerate(plots.axs):
                                                         enable_flat_line_drawing=enable_flat_line_drawing,  debug_print=False)
     curr_ax.set_xlim(*plots_data.epoch_slices[a_slice_idx,:])
     curr_ax.set_title('')
-# -
+```
 
+```python
 
+```
 
+```python
 active_one_step_decoder.most_likely_positions.shape # (20542, 2)
+```
 
+```python
 # Call the plot function with the decoder result.
 fig, axs_most_likely_position_decoder = plot_most_likely_position_comparsions(new_decoder, sess.position.to_dataframe(), show_posterior=True, show_one_step_most_likely_positions_plots=True)
+```
 
-# + [markdown] tags=[]
-# ### Other
-# -
+<!-- #region tags=[] -->
+### Other
+<!-- #endregion -->
 
+```python
 
+```
 
+```python
 active_one_step_decoder.debug_dump_print()
+```
 
+```python
 active_one_step_decoder.time_bin_size
+```
 
+```python
 active_one_step_decoder.time_window_edges_binning_info
+```
 
+```python
 active_one_step_decoder.time_window_center_binning_info
+```
 
+```python
 t = active_one_step_decoder.time_window_centers # get time window centers (n_time_window_centers,)
 t
+```
 
+```python
 np.shape(t) # (4060,)
+```
 
-# +
+```python
 # active_two_step_decoder
 
 active_two_step_decoder.most_likely_positions.shape
-# -
+```
 
+```python
 most_likely_position_indicies
+```
 
+```python
 
+```
 
+```python
 last_window_index = np.searchsorted(t, 9000.0, side='left') # side='left' ensures that no future values (later than 't') are ever returned
 last_window_index
+```
 
+```python
 t[last_window_index]
+```
 
-# +
+```python
 
 fig, axs = plt.subplots(ncols=1, nrows=nrows, figsize=(15,15), clear=True, sharex=True, sharey=False, constrained_layout=True)
 
 
+```
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.Mixins.helpers import connect_time_synchronized_plotter
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchronizedPositionDecoderPlotter import TimeSynchronizedPositionDecoderPlotter
 
@@ -4285,122 +5159,167 @@ curr_position_decoder_plotter = TimeSynchronizedPositionDecoderPlotter(active_on
 curr_position_decoder_plotter.show()
 # decoder_raster_window_sync_connection = connect_time_synchronized_plotter(curr_position_decoder_plotter, spike_raster_window)
 
-# -
+```
 
+```python
 TimeSynchronizedPositionDecoderPlotter
+```
 
+```python
 # unit_specific_time_binned_spike_counts # (n_neurons, n_time_window_centers)
 # total_spike_counts_per_window # (n_time_window_centers,)
 # F (n_flattened_x_bins, n_neurons)
 # flat_p_x_given_n # (n_flattened_x_bins, n_time_window_centers)
 # p_x_given_n # (41, 63, n_time_window_centers) ## PRIMARY OUTPUT of one_step_decoder
 p_x_given_n = active_one_step_decoder.p_x_given_n.copy()
+```
 
+```python
 p_x_given_n_and_x_prev = active_two_step_decoder.p_x_given_n_and_x_prev.copy()
 p_x_given_n_and_x_prev
+```
 
+```python
 ## This plot looks phenominal, and the slider works!
 curr_active_pipeline.display('_display_two_step_decoder_prediction_error_2D', active_config_name, variable_name='p_x_given_n') # works!
+```
 
+```python
 curr_active_pipeline.display('_display_two_step_decoder_prediction_error_2D', active_config_name, variable_name='p_x_given_n_and_x_prev')
+```
 
+```python
 
+```
 
+```python
 plot_most_likely_position_comparsions
+```
 
+```python
 
+```
 
-# + [markdown] tags=[]
-# ### Analyzing what's going wrong in `_display_plot_most_likely_position_comparisons`
-#     ✅ Conclusion: Intervals are missing because they become NaN during the runs themselves for some reason
-# -
+<!-- #region tags=[] -->
+### Analyzing what's going wrong in `_display_plot_most_likely_position_comparisons`
+    ✅ Conclusion: Intervals are missing because they become NaN during the runs themselves for some reason
+<!-- #endregion -->
 
+```python
 curr_active_pipeline.display('_display_plot_most_likely_position_comparisons', active_config_name) ## Current plot
+```
 
+```python
 # plt.xlabel('test')
 start_t = 1900
 window_length = 100.0
 step_t = 2.5
 plt.xlim([start_t, start_t+window_length])
+```
 
-# +
+```python
 # def _step():
 start_t = start_t + step_t
 plt.xlim([start_t, start_t+window_length])
 
 # _step()
-# -
+```
 
+```python
 plt.legend()
+```
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# ### Exploring display_predicted_position_difference
-# Draws an arrow from the measured position to the predicted position for each timestep
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+### Exploring display_predicted_position_difference
+Draws an arrow from the measured position to the predicted position for each timestep
+<!-- #endregion -->
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.Pho2D.decoder_difference import display_predicted_position_difference
 
 active_resampled_pos_df = active_computed_data.extended_stats.time_binned_position_df.copy() # active_computed_data.extended_stats.time_binned_position_df  # 1717 rows × 16 columns
 active_resampled_measured_positions = active_resampled_pos_df[['x','y']].to_numpy() # The measured positions resampled (interpolated) at the window centers. 
 display_predicted_position_difference(active_one_step_decoder, active_two_step_decoder, active_resampled_measured_positions)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_one_step_decoder.p_x_given_n.shape # (41, 26, 883)
 active_one_step_decoder.active_time_window_centers.shape # (883,)
 
 np.where(np.isnan(active_one_step_decoder.p_x_given_n))
 
 np.nan_to_num(active_one_step_decoder.p_x_given_n, nan=0.0, posinf=1.0, neginf=0.0)
+```
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# ### Testing `_display_plot_marginal_1D_most_likely_position_comparisons`
-# ✅ Conclusion: Seems to work as intended!
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+### Testing `_display_plot_marginal_1D_most_likely_position_comparisons`
+✅ Conclusion: Seems to work as intended!
+<!-- #endregion -->
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 fig_x, ax_x = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, posterior_name='p_x_given_n_and_x_prev') ## Current plot
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_config_name
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 fig_y, ax_y = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, variable_name='y', posterior_name='p_x_given_n_and_x_prev') ## Current plot
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # Test setting previously extant axis:
 currFig, currAx = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, variable_name='x', posterior_name='p_x_given_n_and_x_prev', ax=ax_y) ## Current plot
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 currFig, currAx = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, variable_name='x', posterior_name='p_x_given_n_and_x_prev', ax=active_2d_plot.ui.matplotlib_view_widget.ax) ## Current plot
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.matplotlib_view_widget.draw()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
+```
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# ### Evaluating Two-Step Decoder:
-# -
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+### Evaluating Two-Step Decoder:
+<!-- #endregion -->
 
+```python
 active_two_step_decoder.most_likely_positions.shape # (2, 11880)
 # active_one_step_decoder.most_likely_positions.shape # (11880, 2)
+```
 
+```python
 active_one_step_decoder.p_x_given_n.shape # (63, 16, 11880)
+```
 
+```python
 active_two_step_decoder.p_x_given_n_and_x_prev.shape # (63, 16, 11880)
+```
 
-# +
+```python
 # .debug_dump_print()
-# -
+```
 
+```python
 active_two_step_decoder.most_likely_positions.shape # (11880, 2)
+```
 
+```python
 print(list(active_two_step_decoder.keys())) # ['xbin', 'ybin', 'avg_speed_per_pos', 'K', 'V', 'sigma_t_all', 'flat_sigma_t_all', 'C', 'k', 'all_x', 'flat_all_x', 'original_all_x_shape', 'flat_p_x_given_n_and_x_prev', 'p_x_given_n_and_x_prev', 'most_likely_position_indicies', 'most_likely_positions', 'all_scaling_factors_k', 'most_likely_position_flat_indicies']
+```
 
+```python
 active_two_step_decoder.marginal.x.p_x_given_n.shape # (63, 11880)
 
+```
 
-# +
+```python
 # from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_matplotlib_build_view 
 ## TODO: stacked_epoch_slices_matplotlib_build_view should be replaced with plot_decoded_epoch_slices:
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
@@ -4425,41 +5344,49 @@ for i, curr_ax in enumerate(active_two_step_plots.axs):
                                                        enable_flat_line_drawing=enable_flat_line_drawing, debug_print=False)
     curr_ax.set_xlim(*active_two_step_plots_data.epoch_slices[i,:])
     curr_ax.set_title('')
-# -
+```
 
+```python
 
+```
 
-# + [markdown] tags=[]
-# ## PyQtPlot Exploration
+<!-- #region tags=[] -->
+## PyQtPlot Exploration
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.pyqtplot_basic import pyqtplot_common_setup
 # from pyphoplacecellanalysis.GUI.Qt.Mixins.PhoMainAppWindowBase import PhoMainAppWindowBase
 # from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import _pyqtplot_build_image_bounds_extent
 
 app, win, imv = pyqtplot_plot_time_dependent_image(active_one_step_decoder.xbin, active_one_step_decoder.ybin, active_one_step_decoder.time_window_centers, active_one_step_decoder.p_x_given_n.copy())
 win.show()
-# -
+```
 
+```python
 
+```
 
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import pyqtplot_plot_image_array, pyqtplot_plot_image
 app, win, imv = pyqtplot_plot_image(active_one_step_decoder.xbin, active_one_step_decoder.ybin, active_one_step_decoder.p_x_given_n.copy())
 win.show()
+```
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import pyqtplot_plot_image_array
 
 # test single image plot:
 curr_im = np.squeeze(active_one_step_decoder.ratemap.normalized_tuning_curves[0,:,:].T) # (43, 63, 63)
 app, win, imv = pyqtplot_plot_image(active_one_step_decoder.xbin, active_one_step_decoder.ybin, curr_im)
 win.show()
+```
 
+<!-- #region tags=[] -->
+## Placefield Overlap Detection:
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ## Placefield Overlap Detection:
-
-# +
+```python
 # Test Placefield Overlap Detection:
 def compute_placefield_overlap(pf):
     return np.squeeze(np.prod(pf, axis=0))
@@ -4471,8 +5398,9 @@ total_pairwise_overlaps = active_pf_overlap_results['total_pairwise_overlaps']
 all_pairwise_overlaps = active_pf_overlap_results['all_pairwise_overlaps']
 
 print_keys_if_possible('active_pf_overlap_results', active_pf_overlap_results)
+```
 
-# +
+```python
 # active_placefield_overlap
 # total_pairwise_overlaps
 # all_pairwise_overlaps
@@ -4488,14 +5416,17 @@ pg.mkQApp("Correlation matrix display")
 main_window = MatrixRenderingWindow(matrix=top_pairwise_overlaps, columns=[f'{i}' for i in np.arange(np.shape(top_pairwise_overlaps)[-1])])
 
 # compute_placefield_overlap(active_one_step_decoder.pf.ratemap.normalized_tuning_curves)
+```
 
-# + [markdown] tags=[]
-# # Pho Scratch Workspace
+<!-- #region tags=[] -->
+# Pho Scratch Workspace
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ## Working firing rates fresh from spikes_df
+<!-- #region tags=[] -->
+## Working firing rates fresh from spikes_df
+<!-- #endregion -->
 
-# +
+```python
 time_bin_size_seconds = 1.0
 print(f'time_bin_size_seconds: {time_bin_size_seconds}')
 
@@ -4504,67 +5435,79 @@ active_spikes_df = curr_active_pipeline.filtered_sessions[active_filter_name].sp
 print(f'active_filter_name: {active_filter_name}')
 unit_specific_binned_spike_rate, max_spike_rates, time_window_edges, time_window_edges_binning_info = simple_time_binned_firing_rates(active_spikes_df)
 print(f'\tmax_spike_rates: {max_spike_rates.to_numpy()}')
-# -
+```
 
+```python
 active_filter_name = 'maze2'
 active_spikes_df = curr_active_pipeline.filtered_sessions[active_filter_name].spikes_df.copy()
 print(f'active_filter_name: {active_filter_name}')
 unit_specific_binned_spike_rate, max_spike_rates, time_window_edges, time_window_edges_binning_info = simple_time_binned_firing_rates(active_spikes_df)
 print(f'\tmax_spike_rates: {max_spike_rates.to_numpy()}')
+```
 
+```python
 active_filter_name = 'maze'
 active_spikes_df = curr_active_pipeline.filtered_sessions[active_filter_name].spikes_df.copy()
 print(f'active_filter_name: {active_filter_name}')
 unit_specific_binned_spike_rate, max_spike_rates, time_window_edges, time_window_edges_binning_info = simple_time_binned_firing_rates(active_spikes_df)
 print(f'\tmax_spike_rates: {max_spike_rates.to_numpy()}')
+```
 
-# KDiba Data:
-# time_bin_size_seconds: 0.5
-# active_filter_name: maze1
-# 	max_spike_rates: [28 30 32 24 34 16 36 26 22 36 32 30 88 60 28 26 40 40 26 44 36 26 38 14 22 24 10 22 40 24 24 26 18 48 40 14 38 20 48 44]
-# active_filter_name: maze2
-# 	max_spike_rates: [6 10 8 18 30 6 18 14 12 14 24 4 10 48 24 12 6 16 16 16 32 26 14 10 14 10 6 12 30 12 4 16 22 18 20 4 10 6 36 24]
-# active_filter_name: maze
-# 	max_spike_rates: [28 30 32 24 34 16 36 26 22 36 32 30 88 60 28 26 40 40 26 44 36 32 38 14 22 24 10 22 40 24 24 26 20 48 40 14 38 20 48 44]
-#
+KDiba Data:
+time_bin_size_seconds: 0.5
+active_filter_name: maze1
+	max_spike_rates: [28 30 32 24 34 16 36 26 22 36 32 30 88 60 28 26 40 40 26 44 36 26 38 14 22 24 10 22 40 24 24 26 18 48 40 14 38 20 48 44]
+active_filter_name: maze2
+	max_spike_rates: [6 10 8 18 30 6 18 14 12 14 24 4 10 48 24 12 6 16 16 16 32 26 14 10 14 10 6 12 30 12 4 16 22 18 20 4 10 6 36 24]
+active_filter_name: maze
+	max_spike_rates: [28 30 32 24 34 16 36 26 22 36 32 30 88 60 28 26 40 40 26 44 36 32 38 14 22 24 10 22 40 24 24 26 20 48 40 14 38 20 48 44]
 
+
+```python
 unit_specific_binned_spike_counts
+```
 
-# time_bin_size_seconds: 0.25
-# 	max_spike_rates: [36 36 36 36 60 20 40 48 40 48 40 44 100 92 36 32 80 52 32 48 52 36 68 24 44 36 16 32 44 36 48 36 36 52 48 28 40 24 72 52]
-#
-# time_bin_size_seconds: 0.5
-# 	max_spike_rates: [28 30 32 24 34 16 36 26 22 36 32 30 88 60 28 26 40 40 26 44 36 26 38 14 22 24 10 22 40 24 24 26 18 48 40 14 38 20 48 44]
-#     
-# time_bin_size_seconds: 1.0
-# 	max_spike_rates: [16 21 18 17 22 12 22 18 16 25 25 25 65 48 19 20 30 32 20 30 24 21 26 8 11 17 5 14 30 14 17 25 11 30 26 11 27 10 37 38]
-#
-# time_bin_size_seconds: 10.0
-# 	max_spike_rates: # array([3.6, 5.6, 2.5, 6.2, 7.2, 2.3, 7.4, 4.8, 3.3, 5.2, 15.3, 4.3, 21.8, 12.4, 7.5, 5.4, 4.8, 4.3, 4.9, 6, 9.5, 7.7, 2.6, 2.3, 4.1, 2.8, 1.3, 5.1, 11.5, 5.1, 3.2, 9.4, 3.7, 8.8, 9.7, 2.9, 5.2, 1.7, 12, 5.9])
-#     # Filtered pf only spikes: array([2.6, 3.9, 2, 3.6, 3.8, 1.3, 3.7, 1.8, 2, 2.6, 2.3, 1.4, 5.7, 6.1, 3.1, 2.7, 4.9, 3.3, 3.9, 3.3, 5.9, 2.7, 2.6, 1.4, 1.4, 2.9, 1, 2.3, 5.4, 2.4, 0.9, 3.6, 1.4, 4.5, 3.4, 0.8, 2.8, 1.1, 2.6, 4.9])
+time_bin_size_seconds: 0.25
+	max_spike_rates: [36 36 36 36 60 20 40 48 40 48 40 44 100 92 36 32 80 52 32 48 52 36 68 24 44 36 16 32 44 36 48 36 36 52 48 28 40 24 72 52]
 
-# +
+time_bin_size_seconds: 0.5
+	max_spike_rates: [28 30 32 24 34 16 36 26 22 36 32 30 88 60 28 26 40 40 26 44 36 26 38 14 22 24 10 22 40 24 24 26 18 48 40 14 38 20 48 44]
+    
+time_bin_size_seconds: 1.0
+	max_spike_rates: [16 21 18 17 22 12 22 18 16 25 25 25 65 48 19 20 30 32 20 30 24 21 26 8 11 17 5 14 30 14 17 25 11 30 26 11 27 10 37 38]
+
+time_bin_size_seconds: 10.0
+	max_spike_rates: # array([3.6, 5.6, 2.5, 6.2, 7.2, 2.3, 7.4, 4.8, 3.3, 5.2, 15.3, 4.3, 21.8, 12.4, 7.5, 5.4, 4.8, 4.3, 4.9, 6, 9.5, 7.7, 2.6, 2.3, 4.1, 2.8, 1.3, 5.1, 11.5, 5.1, 3.2, 9.4, 3.7, 8.8, 9.7, 2.9, 5.2, 1.7, 12, 5.9])
+    # Filtered pf only spikes: array([2.6, 3.9, 2, 3.6, 3.8, 1.3, 3.7, 1.8, 2, 2.6, 2.3, 1.4, 5.7, 6.1, 3.1, 2.7, 4.9, 3.3, 3.9, 3.3, 5.9, 2.7, 2.6, 1.4, 1.4, 2.9, 1, 2.3, 5.4, 2.4, 0.9, 3.6, 1.4, 4.5, 3.4, 0.8, 2.8, 1.1, 2.6, 4.9])
+
+```python
 # active_computation_results[filter_name]
 active_firing_rate_trends = active_computed_data['firing_rate_trends']
 list(active_firing_rate_trends.keys()) # ['active_rolling_window_times', 'mean_firing_rates', 'desired_window_length_seconds', 'desired_window_length_bins', 'active_firing_rates_df', 'moving_mean_firing_rates_df']
 
 active_firing_rate_trends.all_session_spikes['instantaneous_unit_specific_spike_rate']
-# -
+```
 
+```python
 moving_mean_firing_rates_df = active_firing_rate_trends['moving_mean_firing_rates_df']
 moving_mean_firing_rates_df
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## New 2022-07-31 Firing Rate Across-Session Printing with explicit time binning
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## New 2022-07-31 Firing Rate Across-Session Printing with explicit time binning
+<!-- #endregion -->
 
+```python
 from pyphocorehelpers.general_helpers import CodeConversion, inspect_callable_arguments
 from pyphocorehelpers.print_helpers import document_active_variables, print_keys_if_possible
+```
 
+```python
 # print_keys_if_possible('active_firing_rate_trends', active_firing_rate_trends, additional_excluded_item_classes=['pandas.core.series.Series'])
 print_keys_if_possible('active_firing_rate_trends', active_firing_rate_trends)
+```
 
-# +
+```python
 ### Reformat long class strings to suscint class names:
 import re ## required for strip_type_str_to_classname(...)
 
@@ -4572,18 +5515,23 @@ def _format_curr_value(depth_string, curr_key, type_string, type_name):
     return f"{depth_string}['{curr_key}']: {type_name}"
         
 print_keys_if_possible('active_firing_rate_trends', active_firing_rate_trends, custom_item_formatter=_format_curr_value)
-# -
+```
 
+```python
 document_active_variables(active_firing_rate_trends, enable_print=True)
+```
 
+```python
 active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
+```
 
-# +
+```python
 from pyphoplacecellanalysis.General.Mixins.DisplayHelpers import _print_active_firing_rate_trends_result_overview
 
 debug_print_active_firing_rate_trends_result_overview(active_firing_rate_trends)
+```
 
-# +
+```python
 computation_result_names = list(curr_active_pipeline.computation_results.keys()) # ['maze1', 'maze2']
 for a_result_name, a_computation_result in curr_active_pipeline.computation_results.items():
     print(f'>> {a_result_name}') ## e.g. 'maze1'
@@ -4594,21 +5542,26 @@ for a_result_name, a_computation_result in curr_active_pipeline.computation_resu
 # def across_epoch_computation_function(computation_results):
 #     """ an example of a function that operates across all computation_results. Computed after all computations are complete. """
 
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## Compute the firing rates in the windows corresponding to the sampling rate of the position bins, or better yet for the entire duration spent in a single position bin (splitting on bin-index changes
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## Compute the firing rates in the windows corresponding to the sampling rate of the position bins, or better yet for the entire duration spent in a single position bin (splitting on bin-index changes
+<!-- #endregion -->
 
+```python
 from neuropy.utils.mixins.binning_helpers import build_df_discretized_binned_position_columns
 active_pf_2D.filtered_spikes_df, (xbin, ybin), bin_info = build_df_discretized_binned_position_columns(active_pf_2D.filtered_spikes_df.copy(), bin_values=(active_pf_2D.xbin, active_pf_2D.ybin), active_computation_config=active_computation_config, force_recompute=False, debug_print=False)
 bin_info['mode'] = active_pf_2D.bin_info['mode'] # get the original mode used to compute the bins
 active_pf_2D.bin_info = bin_info # replace the bin_info with the updated version
 # active_pf_2D.filtered_spikes_df
+```
 
+```python
 # sess.spikes_df # no 'binned_x' column
 active_pf_2D.filtered_spikes_df
+```
 
-# +
+```python
 #### Need to compute the best-known transition times between position bins for all spikes as not to truncate the starts/ends of the bins (which would happen if doing a single cell at a time)
 # active_df.binned_x
 active_df['_binned_x_transitions'] = active_df['binned_x'].diff()
@@ -4620,12 +5573,14 @@ active_df_filtered_binned_x_transitions_only = active_df_filtered_binned_x_trans
 active_df_filtered_binned_x_transitions_only['bin_occupied_duration'] = active_df_filtered_binned_x_transitions_only['t_rel_seconds'].diff() # How long the animal spent in this bin before transitioning (along its axis)
 active_df_filtered_binned_x_transitions_only
 
-# -
+```
 
+```python
 transition_start_spike_index = active_df_filtered_binned_x_transitions_only.index
 transition_end_spike_index = transition_start_spike_index - 1 # the end of each occurs at the time of the previous one
+```
 
-# +
+```python
 #### In general, for each neuron, get the spikes that occured during each bin_occupation_event 'i' (from t_rel_seconds[i] to (t_rel_seconds[i] + bin_occupied_duration[i])) and divide by the bin_occupied_duration[i]
 # This will give the bin_occupation_event's spike_rate for each neuron which we can filter on (to find the neuron's that fire > 1Hz for this bin_occupation_event)
 
@@ -4638,29 +5593,37 @@ These (start_t, bin_occupied_duration, binned_x) tuples denote a unique event, t
 Within a given bin_occupation_event each neuron has an instantaneous bin firing rate given by: (number of spikes it fired during the event) / bin_occupied_duration
 
 """
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## Change to simplier non-time-dependent version:
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## Change to simplier non-time-dependent version:
+<!-- #endregion -->
 
+```python
 # Plot from the active_simpler_pf_densities_analysis
 out_app, out_win, out_imageView = pyqtplot_plot_image(active_pf_2D_dt.xbin_labels, active_pf_2D_dt.ybin_labels, active_simpler_pf_densities_analysis.n_neurons_meeting_firing_critiera_by_position_bins_2D)
+```
 
+```python
 # out = BinnedImageRenderingWindow(active_pf_2D_dt.curr_firing_maps_matrix, active_pf_2D_dt.xbin_labels, active_pf_2D_dt.ybin_labels)
 out = BasicBinnedImageRenderingWindow(active_pf_2D_dt.curr_firing_maps_matrix, active_pf_2D_dt.xbin_labels, active_pf_2D_dt.ybin_labels)
 # pyqtplot_plot_image(active_pf_2D_dt.xbin_labels, active_pf_2D_dt.ybin_labels, active_pf_2D_dt.curr_firing_maps_matrix)
+```
 
+```python
 # Compute the updated counts:
 current_spike_per_unit_per_bin_counts = active_df.value_counts(subset=['fragile_linear_neuron_IDX', 'binned_x', 'binned_y'], normalize=False, sort=False, ascending=True, dropna=True) # dropna=True
 current_spike_per_unit_per_bin_counts # pandas.core.series.Series
+```
 
-# +
+```python
 type(current_spike_per_unit_per_bin_counts) # pandas.core.series.Series
 # current_spike_per_unit_per_bin_counts[0]
 
 pd.DataFrame(current_spike_per_unit_per_bin_counts)
-# -
+```
 
+```python
 debug_print = True
 for (fragile_linear_neuron_IDX, xbin_label, ybin_label), count in current_spike_per_unit_per_bin_counts.iteritems():
     if debug_print:
@@ -4672,71 +5635,84 @@ for (fragile_linear_neuron_IDX, xbin_label, ybin_label), count in current_spike_
         print(f' last_firing_maps_matrix[fragile_linear_neuron_IDX: {fragile_linear_neuron_IDX}, (xbin_label-1): {xbin_label-1}, (ybin_label-1): {ybin_label-1}] += count: {count}')
         raise e
         
+```
 
-# +
+```python
 ## Now want it arranged by-bin instead of by-neuron:
 
 
 ## LATER: Also need to collapse over all binned_y for each binned_x (marginalize) - I think
+```
 
-# + [markdown] tags=[]
-# ## Get 2D Heatmaps of Velocity and Occupancy working:
-# NOTE: This works great, and is the best figure for overall Eloy pf_Density/velocity analyeses.
+<!-- #region tags=[] -->
+## Get 2D Heatmaps of Velocity and Occupancy working:
+NOTE: This works great, and is the best figure for overall Eloy pf_Density/velocity analyeses.
+<!-- #endregion -->
 
-# +
+```python
 from PendingNotebookCode import display_all_eloy_pf_density_measures_results
     
 out_all_eloy_pf_density_fig = display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results)
-# -
+```
 
+```python
 out_all_eloy_pf_density_fig.close()
+```
 
-# + [markdown] tags=[]
-# ## Test getting prominences with peak_prominence2d
+<!-- #region tags=[] -->
+## Test getting prominences with peak_prominence2d
+<!-- #endregion -->
 
-# + tags=[]
+```python tags=[]
 curr_display_function_name = '_display_pf_peak_prominence2d_default_quadrant_plots'
 out_figs, out_axes, out_idxs = curr_active_pipeline.display(curr_display_function_name, active_config_name) 
+```
 
-# + tags=[]
+```python tags=[]
 curr_display_function_name = 'plot_Prominence'
 built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
 with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_pdf_metadata) as pdf:
     for an_idx, a_fig in zip(active_peak_prominence_2d_results.neuron_extended_ids, out_figs):
         a_fig.suptitle(f'neuron: {an_idx.id}', fontsize=16)
         pdf.savefig(a_fig)
+```
 
-# + tags=[]
+```python tags=[]
 curr_display_function_name = '_display_pf_peak_prominence2d_plots'
 figure, ax = curr_active_pipeline.display(curr_display_function_name, active_config_name, neuron_id=2) 
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# # Quantitatively Analyzing the prominence computation results
-# For a single neuron:
-# Care about:
-#  - Pf Num of Peaks: expresses whether a cell responds selectively to a single location, is bi-modal, tri-modal, etc.
-#  - Peak Locations: (to determine the number of peaks per bin or region)
-#  - Peak Prominences/Relative heights
-#    Pf Sizes: defined by our bounding boxes
-#    Stability??
-#
-# QuantPeakResult
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+# Quantitatively Analyzing the prominence computation results
+For a single neuron:
+Care about:
+ - Pf Num of Peaks: expresses whether a cell responds selectively to a single location, is bi-modal, tri-modal, etc.
+ - Peak Locations: (to determine the number of peaks per bin or region)
+ - Peak Prominences/Relative heights
+   Pf Sizes: defined by our bounding boxes
+   Stability??
 
+QuantPeakResult
+<!-- #endregion -->
+
+```python
 list(active_peak_prominence_2d_results.keys())
 active_peak_prominence_2d_results.filtered_flat_peaks_df.columns # ['neuron_id', 'neuron_peak_firing_rate', 'summit_idx', 'summit_slice_idx', 'slice_level_multiplier', 'summit_slice_level', 'peak_relative_height', 'peak_prominence', 'peak_center_x', 'peak_center_y', 'summit_slice_x_width', 'summit_slice_y_width', 'summit_slice_center_x', 'summit_slice_center_y', 'peak_height', 'peak_center_binned_x', 'peak_center_binned_y', 'peak_center_avg_speed', 'peak_nearest_directional_boundary_bins', 'peak_nearest_directional_boundary_displacements', 'peak_nearest_directional_boundary_distances', 'nearest_directional_boundary_direction_idx', 'nearest_directional_boundary_direction_distance', 'nearest_x_boundary_distance', 'nearest_y_boundary_distance']
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ### Test distance to boundary by computing the distance to the nearest never-occupied bin
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+### Test distance to boundary by computing the distance to the nearest never-occupied bin
+<!-- #endregion -->
 
+```python
 # active_peak_prominence_2d_results.filtered_flat_peaks_df
 # active_eloy_analysis.avg_2D_speed_per_pos
 # active_peak_prominence_2d_results.filtered_flat_peaks_df
 subfiltered_peaks_df = active_peak_prominence_2d_results.filtered_flat_peaks_df[active_peak_prominence_2d_results.filtered_flat_peaks_df['summit_idx']==1].copy()
 subfiltered_peaks_df
+```
 
-# +
+```python
 # # correlated with 'summit_slice_x_width', 'summit_slice_y_width'
 x_distances = subfiltered_peaks_df['nearest_x_boundary_distance'].values # find the distance to nearest wall vertically
 y_distances = subfiltered_peaks_df['nearest_y_boundary_distance'].values # find the distance to nearest wall horizontally
@@ -4751,8 +5727,9 @@ slice_center_xy_points_pos_list = subfiltered_peaks_df[['summit_slice_center_x',
 slice_center_xy_points_pos_list.shape # (40, 2)
 
 peak_aclu = subfiltered_peaks_df.neuron_id.values
+```
 
-# +
+```python
 import matplotlib.pyplot as plt
 
 ## Plots for analyzing the distance from ends of maze:
@@ -4763,8 +5740,9 @@ lgd = ax.legend(['x_size', 'y_size'])
 ax.set_xlabel('distance from nearest x boundary [# bins]')
 ax.set_ylabel('placefield width [# bins]')
 fig.show()
-# -
+```
 
+```python
 ## Plots for analyzing the distance from sides of track
 fig, ax = plt.subplots(num=11, clear=True)
 im = ax.scatter(y_distances, x_width_num_bins)
@@ -4773,14 +5751,17 @@ lgd = ax.legend(['x_size', 'y_size'])
 ax.set_xlabel('distance from nearest y boundary [# bins]')
 ax.set_ylabel('placefield width [# bins]')
 fig.show()
+```
 
-# + [markdown] tags=[]
-# ## Render a figure to display the computed distances and their relations to the widths:
+<!-- #region tags=[] -->
+## Render a figure to display the computed distances and their relations to the widths:
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ### Trying to add annotations to the normal 2D MATPLOTLIB heatmaps with `annotate` command:
+<!-- #region tags=[] -->
+### Trying to add annotations to the normal 2D MATPLOTLIB heatmaps with `annotate` command:
+<!-- #endregion -->
 
-# +
+```python
 ## NEW DICT FORMAT:
 # 1 point for each neuron_id:
 peaks_overlay_points_data_dict = {aclu:dict(is_enabled=True, points_data=peak_center_xy_points_pos_list[aclu == peak_aclu,:], plot_opts={'markersize': 22, 'marker': '*', 'markeredgecolor': 'grey', 'linestyle': 'none', 'markerfacecolor': 'white', 'alpha': 0.85, 'label': 'peaks_overlay_points'},
@@ -4794,8 +5775,9 @@ extended_overlay_points_datasource_dicts = {'peaks_overlay_points': peaks_overla
 figure_format_config['enable_saving_to_disk'] = False
 # curr_active_pipeline.display('_display_2d_placefield_result_plot_ratemaps_2D', filter_name, plot_variable=enumTuningMap2DPlotVariables.SPIKES_MAPS, fignum=plots_fig_nums_dict[filter_name][0], **figure_format_config) # works!
 curr_active_pipeline.display('_display_2d_placefield_result_plot_ratemaps_2D', filter_name, plot_variable=enumTuningMap2DPlotVariables.TUNING_MAPS, fignum=plots_fig_nums_dict[filter_name][1], **figure_format_config, extended_overlay_points_datasource_dicts=extended_overlay_points_datasource_dicts)
-# -
+```
 
+```python
 curr_display_function_name = '_display_normal'
 built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
 with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_pdf_metadata) as pdf:
@@ -4803,8 +5785,9 @@ with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_p
     plots = [fig0, *figList1]
     for a_fig in plots:
         pdf.savefig(a_fig)
+```
 
-# +
+```python
 fig = figList1[0]
 ax_list = fig.axes
 
@@ -4817,8 +5800,9 @@ curr_edge_pos =
 curr_ax.annotate('', tuple(curr_peak_center), (0.4, 0.8), arrowprops={'arrowstyle':'<->'})
 
 # curr_ax.annotate('', (0.4, 0.2), (0.4, 0.8), arrowprops={'arrowstyle':'<->'})
+```
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow, add_bin_ticks, build_binned_imageItem
 
 # out.add_data(row=5, col=0, matrix=active_peak_prominence_2d_results.peak_counts.raw, xbins=active_xbins, ybins=active_ybins, name='pf_peak_counts_map', title='# pf peaks per Pos (X, Y)', variable_label='# pf peaks')
@@ -4832,22 +5816,25 @@ from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import Basic
 # out.add_data(row=5, col=0, matrix=active_peak_prominence_2d_results.peak_counts.raw, xbins=active_xbins, ybins=active_ybins, name='pf_peak_counts_map', title='# pf peaks per Pos (X, Y)', variable_label='# pf peaks')
 # out = BasicBinnedImageRenderingWindow(active_eloy_analysis.avg_2D_speed_per_pos, active_xbins, active_ybins, name='avg_velocity', title="Avg Velocity per Pos (X, Y)", variable_label='Avg Velocity')
 # out.add_data(row=2, col=0, matrix=active_eloy_analysis.pf_overlapDensity_2D, xbins=active_xbins, ybins=active_ybins, name='pf_overlapDensity', title='pf overlapDensity metric', variable_label='pf overlapDensity')
+```
 
-# + [markdown] tags=[]
-# ### Use Pandas' df.corr() method
+<!-- #region tags=[] -->
+### Use Pandas' df.corr() method
+<!-- #endregion -->
 
-# + tags=[]
+```python tags=[]
 subset_variable_names = ['neuron_peak_firing_rate', 'summit_slice_level', 'peak_relative_height', 'peak_prominence', 'peak_center_x', 'peak_center_y', 'summit_slice_x_width', 'summit_slice_y_width', 'summit_slice_center_x', 'summit_slice_center_y', 'peak_height', 'peak_center_avg_speed']
 active_input_matrix = active_peak_prominence_2d_results.filtered_flat_peaks_df[subset_variable_names].copy()
 
 # active_corr_matrix = active_input_matrix.corr(method='pearson') # default
 active_corr_matrix = active_input_matrix.corr(method='spearman') # spearman
 active_corr_matrix
+```
 
-# + tags=[]
+```python tags=[]
 ## Plot correlation matrix using imshow:
 import matplotlib
-# %matplotlib inline
+%matplotlib inline
 import matplotlib.pyplot as plt
 
 def _plot_df_correlation_matrix(active_corr_matrix):
@@ -4884,8 +5871,9 @@ def _plot_df_correlation_matrix(active_corr_matrix):
     return fig, ax, im
 
 fig, ax, im = _plot_df_correlation_matrix(active_corr_matrix)
+```
 
-# + tags=[]
+```python tags=[]
 from pyphocorehelpers.general_helpers import get_arguments_as_optional_dict, CodeConversion, inspect_callable_arguments
 
 # CodeConversion.get_arguments_as_optional_dict(size=3, mode='constant') # , **({'size': 3, 'mode': 'constant'} | kwargs)
@@ -4899,19 +5887,23 @@ from pyphocorehelpers.general_helpers import get_arguments_as_optional_dict, Cod
 
 
 pf_summits_analysis_peak_counts_results = active_peak_prominence_2d_results.peak_counts
-# -
+```
 
+```python
 ## Renders the active_peak_prominence_2d_results.peak_counts with varying methods of blurring:
 pf_summits_analysis_peak_counts_results = active_peak_prominence_2d_results.peak_counts
 out_peak_counts_fig = BasicBinnedImageRenderingWindow(pf_summits_analysis_peak_counts_results.raw, active_pf_2D.xbin_labels, active_pf_2D.ybin_labels, name='pf_peak_counts_map', title="# pf peaks per Pos (X, Y)", variable_label='# pf peaks')
 out_peak_counts_fig.add_data(row=5, col=0, matrix=pf_summits_analysis_peak_counts_results.uniform_blurred, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map_blurred', title='blurred # pf peaks per Pos (X, Y)', variable_label='blurred # pf peaks')
 out_peak_counts_fig.add_data(row=6, col=0, matrix=pf_summits_analysis_peak_counts_results.gaussian_blurred, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map_blurred gaussian', title='Gaussian blurred # pf peaks per Pos (X, Y)', variable_label='Gaussian blurred # pf peaks')
+```
 
+```python
 ## Add to existing plot:
 out.add_data(row=5, col=0, matrix=active_peak_prominence_2d_results.peak_counts.raw, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map', title='# pf peaks per Pos (X, Y)', variable_label='# pf peaks')
 out.add_data(row=6, col=0, matrix=active_peak_prominence_2d_results.peak_counts.gaussian_blurred, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='pf_peak_counts_map_blurred gaussian', title='Gaussian blurred # pf peaks per Pos (X, Y)', variable_label='Gaussian blurred # pf peaks')
+```
 
-# +
+```python
 ## TODO: now that I have an filtered_summits_analysis_df['peak_center_avg_speed'] associated with each peak, can now look at things like:
 # size vs. avg_speed
 # ??DENSITY?? vs. avg speed
@@ -4934,9 +5926,9 @@ filled_peak_counts_gaussian_blurred = masked_peak_counts_gaussian_blurred.filled
 corr = signal.correlate2d(filled_peak_counts_gaussian_blurred, filled_avg_2D_speed_per_pos, boundary='symm', mode='same')
 ## Show the corr plot in the open out_peak_counts_fig 
 out.add_data(row=7, col=0, matrix=corr, xbins=active_pf_2D.xbin_labels, ybins=active_pf_2D.ybin_labels, name='correlate2d(gauss_peak_counts, avg_2d_speed)', title='correlate2d(gauss_peak_counts, avg_2d_speed) per Pos (X, Y)', variable_label='corr')
+```
 
-
-# +
+```python
 ## Flatten all valid indicies of each variable to a matrix, to compute the relation between the variables as if each position was a separate independent sample
 def compute_flattened_finite_variable_vectors(xbins, ybins, avg_2D_speed_per_pos, matrix):
     """ Flatten all valid indicies of each variable to a matrix, to compute the relation between the variables as if each position was a separate independent sample 
@@ -4966,14 +5958,17 @@ good_indicies, flat_valid_xbin_centers, flat_valid_ybin_centers, flat_valid_avg_
     return good_indicies, flat_valid_xbin_centers, flat_valid_ybin_centers, flat_valid_avg_2D_speed_per_pos, flat_valid_peak_counts_gaussian_blurred
 
 good_indicies, flat_valid_xbin_centers, flat_valid_ybin_centers, flat_valid_avg_2D_speed_per_pos, flat_valid_peak_counts_gaussian_blurred = compute_flattened_finite_variable_vectors(xbins=active_peak_prominence_2d_results.xx, ybins=active_peak_prominence_2d_results.yy, avg_2D_speed_per_pos=active_eloy_analysis.avg_2D_speed_per_pos, matrix=active_peak_prominence_2d_results.peak_counts.gaussian_blurred)
-# -
+```
 
+```python
 import scipy.stats
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ### Linear Correlations
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+### Linear Correlations
+<!-- #endregion -->
 
-# +
+```python
 from scipy.stats import linregress
 
 x = flat_valid_avg_2D_speed_per_pos.copy()
@@ -4994,11 +5989,12 @@ ts = tinv(0.05, len(x)-2)
 print(f"slope (95%): {result.slope:.6f} +/- {ts*result.stderr:.6f}")
 print(f"intercept (95%): {result.intercept:.6f}"
       f" +/- {ts*result.intercept_stderr:.6f}")
-# -
+```
 
+```python
 ## Plot linear regression outputs:
 import matplotlib
-# %matplotlib inline
+%matplotlib inline
 import matplotlib.pyplot as plt
 plt.plot(x, y, 'o', label='original data')
 plt.xlabel('Velocity cm/sec')
@@ -5007,27 +6003,34 @@ plt.title('Linear Regressionf for animal speed vs. blurred peak count')
 plt.plot(x, result.intercept + result.slope*x, 'r', label='fitted line')
 plt.legend()
 plt.show()
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ### Rank Correlations
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+### Rank Correlations
+<!-- #endregion -->
 
+```python
 x = flat_valid_avg_2D_speed_per_pos.copy()
 y = flat_valid_peak_counts_gaussian_blurred.copy()
 # scipy.stats.rankdata(flat_valid_avg_2D_speed_per_pos)
 rho, p = scipy.stats.spearmanr(x, y)
 print(f'spearman rho: {rho:.6f}, p={p:.6f}')
+```
 
+```python
 tau, p = scipy.stats.kendalltau(x, y)
 print(f'kendalltau kau: {tau:.6f}, p={p:.6f}')
+```
 
-# + [markdown] tags=[]
-# ## Testing Variable Viewers
-# -
+<!-- #region tags=[] -->
+## Testing Variable Viewers
+<!-- #endregion -->
 
+```python
 from pyphocorehelpers.gui.tkinter.tk_tree_view import tk_tree_view
+```
 
-
+```python
 def visualise_dict(d, lvl=0):
     # go through the dictionary alphabetically 
     for k in sorted(d):
@@ -5046,23 +6049,27 @@ def visualise_dict(d, lvl=0):
         if type(d[k])==dict:
             # visualise THAT dictionary with +1 indent
             visualise_dict(d[k],lvl+1)
+```
 
-
+```python
 from pyphocorehelpers.print_helpers import print_value_overview_only, print_keys_if_possible, pprint, debug_dump_object_member_shapes
+```
 
-# +
+```python
 # tk_tree_view(peaks[1])
 # tk_tree_view(peaks)
 
 # tk_tree_view(ipcDataExplorer.plots.to_dict())
 visualise_dict(ipcDataExplorer.plots)
+```
 
-# +
+```python
 str(type(tuningCurvePlotData[2]['pdata_currActiveNeuronTuningCurve']))
 
 # pyvista.core.pointset.StructuredGrid
+```
 
-# +
+```python
 # print_keys_if_possible('plots_data', ipcDataExplorer.plots_data) # RenderPlotsData
 tuningCurvePlotData = ipcDataExplorer.plots_data['tuningCurvePlotData']
 # - tuningCurvePlotData: <class 'indexed.IndexedOrderedDict'>
@@ -5077,8 +6084,9 @@ tuningCurvePlotData = ipcDataExplorer.plots_data['tuningCurvePlotData']
 # 'occupancyPlotData'
 # tuningCurvePlotData.shape
 print_keys_if_possible('tuningCurvePlotData', tuningCurvePlotData) # RenderPlotsData
+```
 
-# +
+```python
 print_keys_if_possible('ipcDataExplorer.plots', ipcDataExplorer.plots, additional_excluded_item_classes=["<class 'vtkmodules.vtkRenderingOpenGL2.vtkOpenGLActor'>", "<class 'vtkmodules.vtkRenderingAnnotation.vtkLegendBoxActor'>"]) # RenderPlots
 # pcDataExplorer.plots: <class 'pyphocorehelpers.DataStructure.general_parameter_containers.RenderPlots'>
 # 	- name: <class 'str'>
@@ -5097,27 +6105,36 @@ print_keys_if_possible('ipcDataExplorer.plots', ipcDataExplorer.plots, additiona
         
 active_tuning_curve_plot_actors = ipcDataExplorer.plots['tuningCurvePlotActors']
 
-# -
+```
 
+```python
 debug_dump_object_member_shapes(tuningCurvePlotData)
+```
 
+```python
 visualise_dict(ipcDataExplorer.plots, lvl=1)
+```
 
+```python
 active_neuron_id = 2
 tuning_curve_is_visible = ipcDataExplorer.plots['tuningCurvePlotActors'][active_neuron_id].main.GetVisibility()
 tuning_curve_is_visible
+```
 
-# +
+```python
 # ipcDataExplorer.p.remove_actor(contours_mesh)
+```
 
-# + [markdown] tags=[]
-# ## Vedo display of contours testing
-# -
+<!-- #region tags=[] -->
+## Vedo display of contours testing
+<!-- #endregion -->
 
+```python
 plt = plot(active_peak_prominence_2d_results.xx, active_peak_prominence_2d_results.yy, slab, c='summer') # use a colormap
 show(plt, viewup='z').close()
+```
 
-# +
+```python
 '''Draw a z = f(x,y) surface specified as
 a string or as a reference to an external function.
 Red points indicate where the function does not exist!'''
@@ -5162,8 +6179,9 @@ Color map the value of the imaginary part
 plt = plot(lambda x,y: sin(log(x*y))/25, mode='complex')
 
 show(plt, comment, viewup='z').close()
+```
 
-# +
+```python
 isol = mesh0.isolines(n=10).color('w')
 isob = mesh0.isobands(n=5).addScalarBar(title="H=Elevation")
 
@@ -5186,12 +6204,14 @@ plt.at(1).show(isob)
 plt.at(2).show(mesh1, isol, ars, "Arrows=\nablaH")
 plt.at(3).show(mesh2, "Color=|\nablaH|")
 plt.interactive().close()
+```
 
-# + [markdown] tags=[]
-# # 2022-08-02 - New Simple Time-Dependent Placefield Overhaul
-# Idea: use simple dataframes and operations on them to easily get the placefield results for a given time range.
+<!-- #region tags=[] -->
+# 2022-08-02 - New Simple Time-Dependent Placefield Overhaul
+Idea: use simple dataframes and operations on them to easily get the placefield results for a given time range.
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.plot_placefields import pyqtplot_plot_image_array, pyqtplot_common_setup
 # Get flat list of images:
 # images = occupancy_weighted_tuning_maps_matrix # (43, 63, 63)
@@ -5213,45 +6233,68 @@ app, parent_root_widget, root_render_widget, plot_array, img_item_array, other_c
                                                                         app=None, parent_root_widget=None, root_render_widget=None)
 
 parent_root_widget.show()
-# -
+```
 
+```python
 active_pf_2D_dt.update(t=40.0, should_snapshot=False)
+```
 
+```python
 active_pf_2D_dt.snapshot()
+```
 
+```python
 # Bin the x, y positions
 active_pf_2D.build_position_df_discretized_binned_positions(active_pos_df=
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## 2022-08-12 - 2D Velocity per timestep
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## 2022-08-12 - 2D Velocity per timestep
+<!-- #endregion -->
 
+```python
 sess.position.to_dataframe()
+```
 
+```python
 importlib.reload(pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.pyqtplot_Flowchart)
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# # 2022-08-17 - Pipeline Re-exploration - Make less frustrating
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+# 2022-08-17 - Pipeline Re-exploration - Make less frustrating
+<!-- #endregion -->
 
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.Flowchart.pyqtplot_Flowchart import plot_flowchartWidget
 pipeline_flowchart_window, pipeline_flowchart_app = plot_flowchartWidget(title='PhoMainPipelineFlowchartApp')
 pipeline_flowchart_window.show()
+```
 
+```python
 pipeline_flowchart_window.flowchart
+```
 
+```python
 pipeline_flowchart_window.flowchart_nodes
+```
 
+```python
 CodeConversion.get_arguments_as_optional_dict(label='basedir', is_save_mode=False, path_type='folder', allows_multiple=False)
+```
 
+```python
 
+```
 
+```python
 
+```
 
-# + [markdown] tags=[]
-# # 2022-09-13 - 3D Firing Rates again
+<!-- #region tags=[] -->
+# 2022-09-13 - 3D Firing Rates again
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.SpecificTimeCurves import Specific3DTimeCurvesHelper
 curr_computations_results = curr_active_pipeline.computation_results[active_config_name]
 
@@ -5265,32 +6308,41 @@ binned_spike_counts_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_
 # binned_spike_rate_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_binned_spike_visualization_curves(curr_computations_results, active_curve_plotter_3d, spike_visualization_mode='rate')
 ## Spike Smoothed Moving Average Rate:
 # binned_spike_moving_average_rate_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_binned_spike_visualization_curves(curr_computations_results, active_curve_plotter_3d, spike_visualization_mode='mov_average')
-# -
+```
 
+```python
 
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# # ✅ NOW -2022-09-19 - Stacked Epoch Plots
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+# ✅ NOW -2022-09-19 - Stacked Epoch Plots
+<!-- #endregion -->
 
-# +
+```python
 ## Laps 
 from pyphoplacecellanalysis.GUI.PyVista.InteractivePlotter.Mixins.LapsVisualizationMixin import LapsVisualizationMixin
 
 # curr_active_pipeline.sess.compute_position_laps()
 curr_position_df, lap_specific_position_dfs = LapsVisualizationMixin._compute_laps_specific_position_dfs(curr_active_pipeline.sess)
 curr_position_df
-# -
+```
 
+```python
 len(lap_specific_position_dfs)
+```
 
+```python
 # Compute required data from session:
 # curr_position_df, lap_specific_position_dfs = LapsVisualizationMixin._compute_laps_specific_position_dfs(sess)
 curr_position_df = sess.position.to_dataframe()
 curr_position_df
+```
 
+```python
 sess.laps.lap_id
+```
 
-# +
+```python
 lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in sess.laps.lap_id] # dataframes split for each ID:
 
 laps_position_traces_list = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df in lap_specific_position_dfs]
@@ -5315,15 +6367,21 @@ lap_position_traces = dict(zip(sess.laps.lap_id, laps_position_traces_list))
 # active_page_laps_ids = laps_pages[active_page_index]
 # _add_specific_lap_trajectory(p, axs, linear_plotter_indicies, row_column_indicies, active_page_laps_ids, lap_position_traces, lap_time_ranges, use_time_gradient_line=True)
 # plt.ylim((125, 152))
-# -
+```
 
+```python
 laps_position_traces_list[0].shape # (2, 173)
+```
 
+```python
 laps_position_times_list[0].shape # (173,)
+```
 
+```python
 lap_position_traces
+```
 
-# +
+```python
 # ['start', 'stop']
 
 epochs = sess.laps.to_dataframe()
@@ -5331,14 +6389,16 @@ epoch_slices = epochs[['start', 'stop']].to_numpy()
 epoch_slices
 
 num_slices = np.shape(epoch_slices)[0]
-# -
+```
 
+```python
 epoch_slices.shape # (39, 2)
 curr_t_start, curr_t_end = epoch_slices[0,:]
 curr_t_start
 curr_t_end
+```
 
-# +
+```python
 ## Laps 
 from pyphoplacecellanalysis.GUI.PyVista.InteractivePlotter.Mixins.LapsVisualizationMixin import LapsVisualizationMixin
 
@@ -5351,23 +6411,33 @@ epochs = sess.laps.to_dataframe()
 epoch_slices = epochs[['start', 'stop']].to_numpy()
 epoch_description_list = [f'lap {epoch_tuple.lap_id} (maze: {epoch_tuple.maze_id}, direction: {epoch_tuple.lap_dir})' for epoch_tuple in epochs[['lap_id','maze_id','lap_dir']].itertuples()]
 # print(f'epoch_description_list: {epoch_description_list}') # epoch_descriptions: ['lap 41 (maze: 2, direction: 1)', 'lap 42 (maze: 2, direction: 0)', 'lap 43 (maze: 2, direction: 1)', 'lap 44 (maze: 2, direction: 0)', 'lap 45 (maze: 2, direction: 1)', 'lap 46 (maze: 2, direction: 0)', 'lap 47 (maze: 2, direction: 1)', 'lap 48 (maze: 2, direction: 0)', 'lap 49 (maze: 2, direction: 1)', 'lap 50 (maze: 2, direction: 0)', 'lap 51 (maze: 2, direction: 1)', 'lap 52 (maze: 2, direction: 0)', 'lap 53 (maze: 2, direction: 1)', 'lap 54 (maze: 2, direction: 0)', 'lap 55 (maze: 2, direction: 1)', 'lap 56 (maze: 2, direction: 0)', 'lap 57 (maze: 2, direction: 1)', 'lap 58 (maze: 2, direction: 0)', 'lap 59 (maze: 2, direction: 1)', 'lap 60 (maze: 2, direction: 0)', 'lap 61 (maze: 2, direction: 1)', 'lap 62 (maze: 2, direction: 0)', 'lap 63 (maze: 2, direction: 1)', 'lap 64 (maze: 2, direction: 0)', 'lap 65 (maze: 2, direction: 1)', 'lap 66 (maze: 2, direction: 0)', 'lap 67 (maze: 2, direction: 1)', 'lap 68 (maze: 2, direction: 0)', 'lap 69 (maze: 2, direction: 1)', 'lap 70 (maze: 2, direction: 0)', 'lap 71 (maze: 2, direction: 1)', 'lap 72 (maze: 2, direction: 0)', 'lap 73 (maze: 2, direction: 1)', 'lap 74 (maze: 2, direction: 0)', 'lap 75 (maze: 2, direction: 1)', 'lap 76 (maze: 2, direction: 0)', 'lap 77 (maze: 2, direction: 1)', 'lap 78 (maze: 2, direction: 0)', 'lap 79 (maze: 2, direction: 1)']
-# -
+```
 
+```python
 
+```
 
+```python
 from pyphoplacecellanalysis.Pho2D.PyQtPlots.Extensions.pyqtgraph_helpers import stacked_epoch_slices_view, stacked_epoch_slices_view_viewbox
+```
 
+```python
 stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_view(epoch_slices, laps_position_times_list, laps_position_traces_list, epoch_description_list, name='stacked_epoch_slices_view_laps')
 # params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
+```
 
+```python
 stacked_epoch_slices_view_viewbox_version_laps_containers = stacked_epoch_slices_view_viewbox(epoch_slices, laps_position_times_list, laps_position_traces_list, epoch_description_list, name='stacked_epoch_slices_view_viewbox_laps')
 # params, plots_data, plots, ui = stacked_epoch_slices_view_viewbox_version_laps_containers
+```
 
+```python
 curr_plot = root_render_widget.addPlot(row=curr_row, col=curr_col, title=curr_cell_identifier_string) # , name=curr_plot_identifier_string 
 curr_plot.setObjectName(curr_plot_identifier_string)
 curr_plot.showAxes(False)
+```
 
-# +
+```python
 # from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.SpecificTimeCurves import Specific3DTimeCurvesHelper
 
 
@@ -5383,14 +6453,17 @@ active_curve_plotter_3d = spike_raster_window.spike_raster_plt_3d # from a spike
 # binned_spike_rate_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_binned_spike_visualization_curves(curr_computations_results, active_curve_plotter_3d, spike_visualization_mode='rate')
 ## Spike Smoothed Moving Average Rate:
 binned_spike_moving_average_rate_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_binned_spike_visualization_curves(curr_computations_results, active_curve_plotter_3d, spike_visualization_mode='mov_average')
-# -
+```
 
+```python
 
+```
 
-# + [markdown] tags=[]
-# # 2022-09-23 Decoder Testing
+<!-- #region tags=[] -->
+# 2022-09-23 Decoder Testing
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_most_likely_position_comparsions, plot_1D_most_likely_position_comparsions
 from pyphocorehelpers.print_helpers import print_value_overview_only, print_keys_if_possible, debug_dump_object_member_shapes, safe_get_variable_shape
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BayesianPlacemapPositionDecoder, Zhang_Two_Step
@@ -5426,8 +6499,9 @@ new_decoder_spikes_df = new_decoder_pf2D.filtered_spikes_df.copy()
 new_decoder_spikes_df = new_decoder_spikes_df.spikes.add_binned_time_column(manual_time_window_edges, manual_time_window_edges_binning_info, debug_print=False)
 new_2D_decoder = BayesianPlacemapPositionDecoder(new_decoder_pf_params.time_bin_size, new_decoder_pf2D, new_decoder_spikes_df, manual_time_window_edges=manual_time_window_edges, manual_time_window_edges_binning_info=manual_time_window_edges_binning_info, debug_print=False)
 new_2D_decoder.compute_all() #  --> n = self.
+```
 
-# +
+```python
 # decoding_time_bin_size = new_2D_decoder.time_bin_size
 # decoding_time_bin_size = 0.01
 # decoding_time_bin_size = 0.1
@@ -5448,70 +6522,122 @@ active_time_bins = active_epoch_decoder_result.time_bin_edges[0]
 active_posterior_container = active_epoch_decoder_result.marginal_x_list[0]
 active_posterior = active_posterior_container.p_x_given_n
 active_most_likely_positions = active_posterior_container.most_likely_positions_1D
-# -
+```
 
+```python
 active_decoder = active_one_step_decoder
+```
 
+```python
 active_one_step_decoder.most_likely_positions.shape # (11880, 2)
+```
 
+```python
 active_one_step_decoder.most_likely_positions.shape
+```
 
+```python
 active_one_step_decoder.active_time_window_centers.shape # (11880,)
+```
 
+```python
 list(active_one_step_decoder.pf.filtered_pos_df.columns) # ['t', 'x', 'y', 'lin_pos', 'speed', 'binned_x', 'binned_y']
+```
 
+```python
 active_recursive_latent_pf_2Ds
+```
 
+```python
 active_second_order_pos_df
+```
 
+```python
 active_second_order_pos_df.position.speed
+```
 
+```python
 active_second_order_pos_df
+```
 
+```python
 active_pf_2D.plot_occupancy()
+```
 
+```python
 active_second_order_pf_2D.plot_occupancy()
 active_second_order_pf_2D.plot_ratemaps_2D()
+```
 
+```python
 active_second_order_2D_decoder.most_likely_positions
+```
 
+```python
 active_third_order_pf_1D, active_third_order_pf_2D, active_third_order_1D_decoder, active_third_order_2D_decoder = build_recurrsive_placefields(active_second_order_2D_decoder, next_order_computation_config=second_order_computation_config, spikes_df=active_second_order_2D_decoder.spikes_df, pos_df=active_second_order_2D_decoder.pf.filtered_pos_df, pos_linearization_method='isomap')
+```
 
+```python
 active_third_order_pf_2D.plot_occupancy()
+```
 
+```python
 active_third_order_pf_2D.plot_ratemaps_2D()
+```
 
+```python
 active_pf_1D.plot_ratemaps_1D()
+```
 
+```python
 active_second_order_pf_1D.plot_ratemaps_1D()
+```
 
+```python
 active_one_step_decoder.debug_dump_print()
+```
 
+```python
 active_one_step_decoder.most_likely_position_flat_indicies
 # active_one_step_decoder.most_likely_position_indicies
+```
 
+```python
 ## Build the virtual PfND
 pfs = active_one_step_decoder.pf # PfND
 # Build a virtual pos_df
 # active_one_step_decoder.pf.
 # pfs.ratemap.spikes_maps
+```
 
+```python
 ## Adds the 'binned_x' (and if 2D 'binned_y') columns to the position dataframe:
 if 'binned_x' not in self._filtered_pos_df.columns:
     self._filtered_pos_df, _, _, _ = PfND.build_position_df_discretized_binned_positions(self._filtered_pos_df, self.config, xbin_values=self.xbin, ybin_values=self.ybin, debug_print=False)
+```
 
+```python
 # The predicted positions are very dissimilar to the measured/recorded positions
 
+```
 
+```python
 active_second_order_spikes_df.columns
+```
 
+```python
 
+```
 
+```python
 
+```
 
+```python
 
+```
 
-# +
+```python
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_most_likely_position_comparsions, plot_1D_most_likely_position_comparsions
 
 active_decoder = active_one_step_decoder
@@ -5527,33 +6653,53 @@ fig, curr_ax = plot_1D_most_likely_position_comparsions(sess.position.to_datafra
                                                    enable_flat_line_drawing=False, debug_print=False)
 active_2d_plot.ui.matplotlib_view_widget.draw()
 active_2d_plot.sync_matplotlib_render_plot_widget()
-# -
+```
 
+```python
 curr_ax
+```
 
+```python
 active_decoder.marginal.x.revised_most_likely_positions_1D
+```
 
+```python
 marginals_x.most_likely_positions_1D
 marginals_x.all_attributes
+```
 
+```python
 active_2d_plot.ui.matplotlib_view_widget.fig.clear()
 active_2d_plot.ui.matplotlib_view_widget.draw()
+```
 
+```python
 time_bin_edges, p_x_given_n, most_likely_positions, curr_unit_marginal_x = active_decoder.hyper_perform_decode(sess.spikes_df, decoding_time_bin_size=decoding_time_bin_size, debug_print=False)
+```
 
+```python
 active_computation_results.computation_config
+```
 
+```python
 
+```
 
+```python
 laps_filter_epochs_decoder_result = active_decoder.decode_specific_epochs(sess.spikes_df, filter_epochs=laps_filter_epochs, decoding_time_bin_size=decoding_time_bin_size, debug_print=False)
 laps_plot_tuple = plot_decoded_epoch_slices(laps_filter_epochs, laps_filter_epochs_decoder_result, global_pos_df=sess.position.to_dataframe(), xbin=active_decoder.xbin,
                                                           enable_flat_line_drawing=enable_flat_line_drawing, debug_test_max_num_slices=debug_test_max_num_slices, name='stacked_epoch_slices_matplotlib_subplots_LAPS', debug_print=debug_print)
+```
 
+```python
 
+```
 
+```python
 
+```
 
-# +
+```python
 from neuropy.analyses.decoders import epochs_spkcount # for decode_specific_epochs
 from neuropy.utils.mixins.binning_helpers import BinningContainer # for epochs_spkcount getting the correct time bins
 
@@ -5577,84 +6723,123 @@ nbins = nbins[0]
 time_bin_container = time_bin_containers_list[0]
 time_bin_centers = time_bin_container.centers
 time_bin_edges = time_bin_container.edges
-# -
+```
 
+```python
 print(f'nbins: {nbins}') # nbins: 20716
 print(f'spkcount.shape: {spkcount.shape}') # spkcount.shape: (67, 20716)
 print(f'time_bin_centers.shape: {time_bin_centers.shape}') # time_bin_centers.shape: (20716,)
 print(f'\t {time_bin_centers}')
 print(f'time_bin_edges.shape: {time_bin_edges.shape}') # time_bin_edges.shape: (20717,)
 print(f'\t {time_bin_edges}')
+```
 
+```python
 time_bin_edges
+```
 
+```python
 compute_spanning_time_bin_edges, curr_binning_info = compute_spanning_bins(None, variable_start_value=t_start, variable_end_value=t_end, num_bins=nbins)
 compute_spanning_time_bin_centers = get_bin_centers(compute_spanning_time_bin_edges)
 most_likely_positions, p_x_given_n, most_likely_position_indicies = active_one_step_decoder.decode(spkcount, time_bin_size=time_bin_size, debug_print=debug_print)
 curr_unit_marginal_x = active_one_step_decoder.perform_build_marginals(p_x_given_n, most_likely_positions, debug_print=debug_print)
+```
 
+```python
 
+```
 
+```python
 print(f'compute_spanning_time_bin_centers.shape: {compute_spanning_time_bin_centers.shape}') # compute_spanning_time_bin_centers.shape: (20715,)
 print(f'\t {compute_spanning_time_bin_centers}') # [22.31 22.41 22.51 ... 2093.65 2093.75 2093.85]
 print(f'compute_spanning_time_bin_edges.shape: {compute_spanning_time_bin_edges.shape}') # compute_spanning_time_bin_edges.shape: (20716,)
 print(f'\t {compute_spanning_time_bin_edges}') # [22.26 22.36 22.46 ... 2093.7 2093.8 2093.9]
+```
 
+```python
 from pyphocorehelpers.indexing_helpers import BinningContainer
+```
 
+```python
 BinningContainer(edges=BinningContainer
+```
 
-# +
+```python
 time_bin_edges.shape # correct strangely
 
 print(f'time_bin_edges.shape: {time_bin_edges.shape}') # time_bin_edges.shape: (20716,)
 print(f'curr_binning_info: {curr_binning_info}') # curr_binning_info: BinningInfo(variable_extents=(22.26, 2093.8978568242164), step=0.10000665492755087, num_bins=20716, bin_indicies=array([    0,     1,     2, ..., 20713, 20714, 20715]))
 
-# -
+```
 
+```python
 curr_binning_info
+```
 
-# +
+```python
 ## Compare to manually building with compute_spanning_bins(...)
 
 curr_unit_correct_time_bin_edges, curr_binning_info = compute_spanning_bins(None, variable_start_value=filter_epochs.starts[i], variable_end_value=filter_epochs.stops[i], num_bins=curr_unit_num_bins)
 filter_epochs_decoder_result.time_bin_edges.append(curr_unit_correct_time_bin_edges)
 filter_epochs_decoder_result.time_bin_centers.append(get_bin_centers(curr_unit_correct_time_bin_edges))
-# -
+```
 
-# ## 2022-10-03 - Test Stacked_Epoch_Slice_* plotting customizations
+## 2022-10-03 - Test Stacked_Epoch_Slice_* plotting customizations
 
+```python
 display_output
+```
 
+```python
 active_pf_1D.plot_ratemaps_1D(sortby='id')
+```
 
+```python
 active_pf_2D.plot_ratemaps_1D()
+```
 
+```python
 curr_active_pipeline.reload_default_display_functions()
+```
 
+```python
 curr_active_pipeline.display('_display_1d_placefields', active_session_configuration_context=active_config_name)
+```
 
+```python
 lhs_sess = curr_active_pipeline.filtered_sessions['maze1_PYR']
 lhs_sess
+```
 
+```python
 lhs_sess.neurons.neuron_ids
+```
 
+```python
 rhs_sess = curr_active_pipeline.filtered_sessions['maze2_PYR']
 rhs_sess
+```
 
+```python
 rhs_sess.neurons.neuron_ids
+```
 
+```python
 
+```
 
+```python
 # np.setdiff1d(lhs_sess.neurons.neuron_ids, rhs_sess.neurons.neuron_ids)
 np.setxor1d(lhs_sess.neurons.neuron_ids, rhs_sess.neurons.neuron_ids)
+```
 
-# +
+```python
 # curr_active_pipeline.
 
 
+```
 
-# +
+```python
 from neuropy.utils.misc import safe_item
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
 
@@ -5662,105 +6847,153 @@ from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers imp
 computation_results = DynamicContainer.init_from_dict(curr_active_pipeline.computation_results)
 pf_neurons_diff = _compare_computation_results(computation_results.maze1_PYR, computation_results.maze2_PYR)
 pf_neurons_diff
-# -
+```
 
+```python
 computation_results.maze1_PYR
 curr_active_pipeline.filtered_contexts.maze1_PYR
+```
 
+```python
 _test_out = curr_active_pipeline.display('_display_placemaps_pyqtplot_2D', curr_active_pipeline.filtered_contexts.maze1_PYR)
 _test_out
+```
 
+```python
 print(list(pf_neurons_diff.either))
+```
 
+```python
 # Helpful for testing
 lhs_computation_results = computation_results.maze1_PYR
 rhs_computation_results = computation_results.maze2_PYR
+```
 
+```python
 pf_neurons_diff.shared.pairs
+```
 
+```python
 print(rhs_shared_IDXs_map)
+```
 
+```python
 pf_neurons_diff = _compare_computation_results(computation_results.maze2_PYR, computation_results.maze1_PYR)
 pf_neurons_diff
+```
 
+```python
 type(curr_active_pipeline.computation_results)
+```
 
+```python
 list(computation_results.keys())
+```
 
+```python
 list(computation_results.__dir__())
+```
 
+```python
 dir(computation_results)
+```
 
+```python
 computation_results.maze1_PYR.computed_data.pf1D.included_neuron_IDs
+```
 
+```python
 np.setdiff1d(computation_results.maze1_PYR.computed_data.pf1D.included_neuron_IDs, computation_results.maze2_PYR.computed_data.pf1D.included_neuron_IDs)
 # np.setxor1d(computation_results.maze1_PYR.computed_data.pf1D.included_neuron_IDs, computation_results.maze2_PYR.computed_data.pf1D.included_neuron_IDs)
+```
 
+```python
 computation_results.maze1_PYR.computed_data.pf1D.included_neuron_IDs
+```
 
+```python
 computation_results.maze2_PYR.computed_data.pf1D.included_neuron_IDs
+```
 
+```python
 np.setdiff1d(computation_results.maze1_PYR.computed_data.pf2D.ratemap.neuron_ids, computation_results.maze2_PYR.computed_data.pf2D.ratemap.neuron_ids)
 
+```
 
+```python
 computation_results.maze2_PYR.computed_data.pf2D.ratemap.neuron_ids
+```
 
-# + [markdown] tags=[]
-# # 👁️‍🗨️🟢2022-10-23 - Comparison Across Contexts:
-# -
+<!-- #region tags=[] -->
+# 👁️‍🗨️🟢2022-10-23 - Comparison Across Contexts:
+<!-- #endregion -->
 
-# `_display_context_nested_docks` already produces a window with docked sub-entries that can be used to show results across contexts.
+`_display_context_nested_docks` already produces a window with docked sub-entries that can be used to show results across contexts.
 
-# +
+```python
 # active_one_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None)
 # active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None)
 # active_recursive_latent_pf_1Ds = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_RecursiveLatent', None) # list
 # active_recursive_latent_pf_2Ds = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_RecursiveLatent', None) # list
 
 # active_identifying_filtered_session_ctx = curr_active_pipeline.filtered_contexts[active_config_name] # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
-# -
+```
 
+```python
 # active_identifying_filtered_session_ctx = curr_active_pipeline.filtered_contexts.maze1_PYR
 active_identifying_filtered_session_ctx = curr_active_pipeline.filtered_contexts.maze2_PYR
 _out = curr_active_pipeline.display('_display_recurrsive_latent_placefield_comparisons', active_identifying_filtered_session_ctx)
 curr_master_dock_win = _out['master_dock_win']
 curr_out_items = _out['out_items']
+```
 
+```python
 from pyphoplacecellanalysis.Pho2D.matplotlib.CustomMatplotlibWidget import CustomMatplotlibWidget
 from pyphoplacecellanalysis.GUI.PyQtPlot.DockingWidgets.DynamicDockDisplayAreaContent import CustomDockDisplayConfig # for context_nested_docks/single_context_nested_docks
 from pyphoplacecellanalysis.GUI.PyQtPlot.DockingWidgets.DynamicDockDisplayAreaContent import CustomCyclicColorsDockDisplayConfig, NamedColorScheme
 
+```
 
+```python
 ## Example recovering a specific dock item:
 _last_dock_item = curr_out_items[active_identifying_filtered_session_ctx.adding_context('display_fn', decoder_order='first', display_fn_name='plot_ratemaps_2D')]
 _last_dock_item
+```
 
+```python
 # curr_master_dock_win.perform_create_new_relative_dock
 # from pyphocorehelpers
 # print_value_overview_only(list(curr_master_dock_win.dynamic_display_dict.values())[0])
 list(curr_master_dock_win.dynamic_display_dict.values())[0]
 # print_keys_if_possible('dynamic_display_dict', curr_master_dock_win.dynamic_display_dict)
+```
 
+```python
 all_collected_dock_items = curr_master_dock_win.get_flat_dockitems_list()
 all_collected_dock_items
+```
 
+```python
 a_dock_item = all_collected_dock_items[0]
 # a_dock_item.pos()
 a_dock_item.geometry() # PyQt5.QtCore.QRect(0, 48, 640, 432
 a_dock_item.setOrientation('horizontal', force=True)
 a_dock_item.updateStyle()
+```
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.DockingWidgets.DynamicDockDisplayAreaContent import CustomCyclicColorsDockDisplayConfig, NamedColorScheme
 
 curr_config = CustomCyclicColorsDockDisplayConfig(named_color_scheme=NamedColorScheme.red)
 a_dock_item.label.config = curr_config
 a_dock_item.updateStyle()
-# -
+```
 
+```python
 [a_dock_item.geometry() for a_dock_item in all_collected_dock_items]
+```
 
-# +
+```python
 curr_master_dock_win.displayDockArea.saveState()
 
 # {'main': ('vertical',
@@ -5772,29 +7005,34 @@ curr_master_dock_win.displayDockArea.saveState()
 #    ('dock', 'kdiba|2006-6-08_14-26-15|maze1_PYR|third|plot_ratemaps_2D', {})],
 #   {'sizes': [67, 266, 67, 266, 67, 266]}),
 #  'float': []}
-# -
+```
 
+```python
 curr_master_dock_win.get_flat_dockitems_list()
+```
 
-# +
+```python
 fig.clear()
 fig
 
 mw.draw()
+```
 
-# +
+```python
 plt.subplots_adjust(bottom=0, top=1)
 mw.getFigure().set_facecolor('LightSteelBlue')
 mw.getFigure().set_edgecolor('Blue')
 mw.draw()
 
 
-# -
+```
 
+```python
 subplot.set_title('Custom Occupancy')
 mw.draw()
+```
 
-# +
+```python
 # mw.ax
 # active_second_order_pf_2D.plot_occupancy()
 # active_second_order_pf_2D.plot_ratemaps_2D()
@@ -5802,27 +7040,35 @@ mw.draw()
 active_first_order_2D_decoder = active_recursive_latent_pf_2Ds[0].get('pf2D_Decoder', None)
 active_second_order_2D_decoder = active_recursive_latent_pf_2Ds[1].get('pf2D_Decoder', None)
 active_third_order_2D_decoder = active_recursive_latent_pf_2Ds[2].get('pf2D_Decoder', None)
-# -
+```
 
+```python
 
+```
 
+```python
 pf_neurons_either = np.union1d(active_first_order_2D_decoder.ratemap.neuron_ids, active_second_order_2D_decoder.ratemap.neuron_ids)
 pf_neurons_either = np.union1d(pf_neurons_either, active_third_order_2D_decoder.ratemap.neuron_ids) 
 pf_neurons_either
+```
 
-# +
+```python
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
 
 # pf_neurons_diff = _compare_computation_results(computation_results.maze1_PYR, computation_results.maze2_PYR)
 pf_neurons_diff = _compare_computation_results(curr_active_pipeline.computation_results['maze'], curr_active_pipeline.computation_results['sprinkle'])
 pf_neurons_diff
-# -
+```
 
+```python
 print(list(pf_neurons_diff.either))
+```
 
+```python
 pf_neurons_diff.shared.pairs
+```
 
-# +
+```python
 # Create `master_dock_win` - centralized plot output window to collect individual figures/controls in (2022-08-18)
 display_output = active_display_output | curr_active_pipeline.display('_display_context_nested_docks', active_identifying_session_ctx, enable_gui=True, debug_print=True) # returns {'master_dock_win': master_dock_win, 'app': app, 'out_items': out_items}
 master_dock_win = display_output['master_dock_win']
@@ -5850,14 +7096,18 @@ def _get_curr_figure_format_config():
     return figure_format_config
 
 figure_format_config = _get_curr_figure_format_config()
-# -
+```
 
+```python
 # Plot the latent PF changes+
 curr_active_pipeline.reload_default_display_functions()
+```
 
+```python
 curr_active_pipeline.registered_display_function_names
+```
 
-# +
+```python
 # ==================================================================================================================== #
 ## GUI Placefields (pyqtplot_plot_image_array):
 
@@ -5878,29 +7128,31 @@ app, pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplo
 pyqtplot_pf2D_parent_root_widget.show()
 curr_master_dock_win.add_display_dock(identifier=active_identifying_ctx_string, widget=pyqtplot_pf2D_parent_root_widget, display_config=CustomDockDisplayConfig(showCloseButton=True))
 curr_out_items[active_identifying_ctx] = (pyqtplot_pf2D_parent_root_widget, pyqtplot_pf2D_root_render_widget, pyqtplot_pf2D_plot_array, pyqtplot_pf2D_img_item_array, pyqtplot_pf2D_other_components_array)
-# -
+```
 
-# ## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
+## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
 
-# + tags=[]
+```python tags=[]
 curr_active_pipeline.sess.paradigm
+```
 
-# + tags=[]
-# %matplotlib qt
+```python tags=[]
+%matplotlib qt
 active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
 
 graphics_output_dict = curr_active_pipeline.display('_display_jonathan_replay_firing_rate_comparison', active_identifying_session_ctx)
 fig, axs, plot_data = graphics_output_dict['fig'], graphics_output_dict['axs'], graphics_output_dict['plot_data']
 neuron_df, rdf, aclu_to_idx, irdf = plot_data['df'], plot_data['rdf'], plot_data['aclu_to_idx'], plot_data['irdf']
 axs
+```
 
-# + tags=[]
+```python tags=[]
 neuron_df
-# -
+```
 
-# ## 🗨️🟢 2022-11-05 - Pho-Jonathan Batch Outputs of Firing Rate Figures
+## 🗨️🟢 2022-11-05 - Pho-Jonathan Batch Outputs of Firing Rate Figures
 
-# +
+```python
 on_index_change_callback, g_index = graphics_output_dict['on_index_change']['callback'], graphics_output_dict['on_index_change']['g_index']
 curr_sess_ctx = curr_active_pipeline.sess.get_context()
 
@@ -5914,25 +7166,30 @@ for i in np.arange(neuron_df.shape[0]):
     curr_output_name = f'{curr_ctx.get_description()}'
     print(f'i: {i}, aclu: {aclu}, curr_output_name: {curr_output_name}')
     fig.savefig(fname=curr_output_name)
-# -
+```
 
+```python
 rgba_color='#aaaaff8c',
+```
 
-# +
+```python
 from elephant.statistics import mean_firing_rate, instantaneous_rate, time_histogram
 from quantities import ms, s, Hz
 from neo.core.spiketrain import SpikeTrain
 from elephant.kernels import GaussianKernel
 
 # instantaneous_rate(spiketrain1, sampling_period=20*ms, kernel=GaussianKernel(200*ms))
+```
 
-# +
+```python
 # curr_active_pipeline.active_sess_config
-# -
+```
 
+```python
 curr_active_pipeline.sess.neurons.sampling_rate
+```
 
-# +
+```python
 unit_split_spiketrains = [SpikeTrain(t_start=curr_active_pipeline.sess.t_start, t_stop=curr_active_pipeline.sess.t_stop, times=spiketrain_times, units=s) for spiketrain_times in curr_active_pipeline.sess.spikes_df.spikes.time_sliced(t_start=curr_active_pipeline.sess.t_start, t_stop=curr_active_pipeline.sess.t_stop).spikes.get_unit_spiketrains()]
 
 len(unit_split_spiketrains) # 52
@@ -5940,8 +7197,9 @@ len(unit_split_spiketrains) # 52
 
 sampling_rate = (1.0/curr_active_pipeline.sess.neurons.sampling_rate)*s #* Hz # 32552
 sampling_rate
+```
 
-# +
+```python
 # inst_rate = instantaneous_rate(unit_split_spiketrains, sampling_period=50*ms, kernel=GaussianKernel(200*ms))
 inst_rate = instantaneous_rate(unit_split_spiketrains, sampling_period=sampling_rate, kernel=GaussianKernel(200*ms))
 
@@ -5950,19 +7208,27 @@ print(type(inst_rate), f"of shape {inst_rate.shape}: {inst_rate.shape[0]} sample
 print('sampling rate:', inst_rate.sampling_rate)
 print('times (first 10 samples): ', inst_rate.times[:10])
 print('instantaneous rate (first 10 samples):', inst_rate.T[0, :10])
-# -
+```
 
+```python
 inst_rate
+```
 
+```python
 inst_rate2 = instantaneous_rate(unit_split_spiketrains, sampling_period=500*ms, kernel=GaussianKernel(200*ms))
 inst_rate2
+```
 
+```python
 inst_rate3 = instantaneous_rate(unit_split_spiketrains, sampling_period=500*ms, kernel=GaussianKernel(500*ms))
 inst_rate3
+```
 
+```python
 
+```
 
-# +
+```python
 histogram_count = time_histogram(unit_split_spiketrains, 500*ms, t_start=curr_active_pipeline.sess.t_start*s, output='rate') # , t_stop=curr_active_pipeline.sess.t_stop
 # histogram_count = time_histogram([spiketrain1], 500*ms, t_start=curr_active_pipeline.sess.t_start) # , t_stop=curr_active_pipeline.sess.t_stop
 print(type(histogram_count), f"of shape {histogram_count.shape}: {histogram_count.shape[0]} samples, {histogram_count.shape[1]} channel")
@@ -5973,32 +7239,44 @@ print('counts:', histogram_count.T[0])
 histogram_rate = time_histogram(unit_split_spiketrains, 500*ms, output='rate')
 print('times:', histogram_rate.times)
 print('rate:', histogram_rate.T[0])
-# -
+```
 
+```python
 histogram_rate.dimensionality # Dimensionality({millisecond: -1})
 inst_rate.rescale(units=
+```
 
+```python
 mean_firing_rate(unit_split_spiketrains, t_start=0*ms, t_stop=1000*ms)
+```
 
-# +
+```python
 # curr_display_function_name = 'phoJonathanBatchFiringRates'
 # built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
 # with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_pdf_metadata) as pdf:
 #     for an_idx, a_fig in zip(active_peak_prominence_2d_results.neuron_extended_ids, out_figs):
 #         a_fig.suptitle(f'neuron: {an_idx.id}', fontsize=16)
 #         pdf.savefig(a_fig)
-# -
+```
 
+```python
 inst_rate.times.shape # (21998,)
+```
 
+```python
 inst_rate.magnitude.shape # (21998, 52)
+```
 
+```python
 # spiketrain1 = unit_split_spiketrains[0]
 spiketrain1 = unit_split_spiketrains
+```
 
+```python
 inst_rate.t_start
+```
 
-# +
+```python
 import matplotlib.pyplot as plt
 plt.figure(dpi=150)
 
@@ -6028,14 +7306,18 @@ plt.ylabel('firing rate [{}]'.format(histogram_rate.dimensionality.latex))
 plt.xlim(inst_rate.t_start, inst_rate.t_stop)
 plt.legend()
 plt.show()
-# -
+```
 
+```python
 
+```
 
+```python
 
+```
 
-# +
-# %matplotlib qt5
+```python
+%matplotlib qt5
 from mpl_multitab import MplMultiTab
 ui = MplMultiTab(title='test_multi_tab')
 n = 100
@@ -6049,15 +7331,19 @@ for c in colours:
     ax = fig.subplots()
     ax.scatter(*np.random.randn(2, n), color=c)
 ui.show()
-# -
+```
 
+```python
 curr_active_pipeline.sess.mua.spike_counts.shape # (1133966,)
 curr_active_pipeline.sess.mua.firing_rate.shape # (1133966,)
+```
 
+```python
 curr_active_pipeline.sess.flattened_spiketrains.
+```
 
-# +
-# %matplotlib qt5
+```python
+%matplotlib qt5
 from pyphoplacecellanalysis.PhoPositionalData.plotting.placefield import plot_1d_placecell_validations
 
 config_name = 'maze1_PYR'
@@ -6067,194 +7353,262 @@ active_config = curr_active_pipeline.active_configs[config_name]
 out_mpl_item = plot_1d_placecell_validations(computation_result.computed_data['pf1D'], active_config.plotting_config, **{'modifier_string': 'lap_only', 'should_save': False}) # MatplotlibRenderPlots
 out_mpl_item.ui.show()
 
-# -
+```
 
+```python
 aclu_to_idx
+```
 
+```python
 len(aclu_to_idx) # 108 rows
+```
 
+```python
 aclu_to_idx
+```
 
+```python
 neuron_df # 69 rows
+```
 
+```python
 axs[0,1]
+```
 
+```python
 time_binned_unit_specific_binned_spike_rate
+```
 
-# +
+```python
 from pyphoplacecellanalysis.General.Mixins.DisplayHelpers import debug_print_active_firing_rate_trends_result_overview
 
 computation_result = list(curr_active_pipeline.computation_results.values())[-1]
 active_firing_rate_trends = computation_result.computed_data['firing_rate_trends']
 pf2D_Decoder = computation_result.computed_data['pf2D_Decoder']
 pf2D_Decoder.debug_dump_print()
-# -
+```
 
+```python
 active_firing_rate_trends.
+```
 
+```python
 active_firing_rate_trends.all_session_spikes.time_binning_container
+```
 
+```python
 active_firing_rate_trends.pf_included_spikes_only.time_binning_container = BinningContainer(edges=active_firing_rate_trends.pf_included_spikes_only.time_window_edges, edge_info=active_firing_rate_trends.pf_included_spikes_only.time_window_edges_binning_info)
+```
 
-# +
+```python
 from neuropy.utils.mixins.binning_helpers import BinningContainer
 
 active_firing_rate_trends.all_session_spikes.time_binning_container = BinningContainer(edges=active_firing_rate_trends.all_session_spikes.time_window_edges, edge_info=active_firing_rate_trends.all_session_spikes.time_window_edges_binning_info)
 active_firing_rate_trends.all_session_spikes.time_binning_container
-# -
+```
 
+```python
 ## The actual firing rate we want:
 time_bins = active_firing_rate_trends.all_session_spikes.time_binning_container.centers
 time_binned_unit_specific_binned_spike_rate = active_firing_rate_trends.all_session_spikes.time_binned_unit_specific_binned_spike_rate.T
+```
 
+```python
 np.shape(active_firing_rate_trends.all_session_spikes.time_binned_unit_specific_binned_spike_rate) # (4143, 70)
 active_firing_rate_trends.all_session_spikes.time_binned_unit_specific_binned_spike_rate[2]
+```
 
+```python
 np.shape(time_binned_unit_specific_binned_spike_rate)
+```
 
+```python
 time_binned_unit_specific_binned_spike_rate.T.iloc[0]
+```
 
+```python
 time_binned_unit_specific_binned_spike_rate.T[2]
+```
 
+```python
 try:
 time_binned_unit_specific_binned_spike_rate.T[0]
 except KeyError:
     
+```
 
-# +
+```python
 time_binned_unit_specific_binned_spike_rate.shape # (4143, 70)
 # time_bins.shape # (4143,)
 
 
 
-# -
+```
 
+```python
 fig = plt.figure()
 plt.plot(time_bins, time_binned_unit_specific_binned_spike_rate[0])
+```
 
+```python
 pf2D_Decoder.neuron_IDs
+```
 
+```python
 try:
     pf2D_Decoder.neuron_IDs.index(0)
 except ValueError as e:
     raise e
 # try:
+```
 
+```python
 debug_print_active_firing_rate_trends_result_overview(active_firing_rate_trends)
+```
 
-# Which best describes the transfer function between long and short?
-# - Position Scaling (random, non-negative)
-# - Position Translation (random)
-# - Rate Scaling (position preserved, only possible on overlapping parts)
+Which best describes the transfer function between long and short?
+- Position Scaling (random, non-negative)
+- Position Translation (random)
+- Rate Scaling (position preserved, only possible on overlapping parts)
 
-# active_curve_plotter_3d
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+active_curve_plotter_3d
+
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 # curr_computations_results.computed_data['pf2D_Decoder'].time_window_centers.shape #
 # unit_specific_time_binned_spike_counts = pf2D_Decoder.unit_specific_time_binned_spike_counts # (40, 17102)
 curr_active_pipeline.computation_results
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # unit_specific_time_binned_spike_counts.shape
 
 unit_specific_time_binned_spike_counts = pf2D_Decoder.unit_specific_time_binned_spike_counts
 unit_specific_time_binned_spike_counts
 # list(curr_computations_results.computed_data.keys())
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 unit_specific_time_binned_spike_counts[0].shape
-# -
+```
 
+```python
 unit_specific_time_binned_firing_rates = unit_specific_time_binned_spike_counts.astype(np.float32) / pf2D_Decoder.time_bin_size
 unit_specific_time_binned_firing_rates
+```
 
+```python
 fig = plt.figure()
 # plt.plot(pf2D_Decoder.time_window_edges, unit_specific_time_binned_firing_rates[0])
 plt.plot(pf2D_Decoder.time_window_edges, unit_specific_time_binned_firing_rates[0])
+```
 
+```python
 pf2D_Decoder.time_window_centers.shape
+```
 
+```python
 
+```
 
-# + [markdown] tags=[]
-# ## 🗨️🟢 2022-10-31 - Laps and Periods Overview
+<!-- #region tags=[] -->
+## 🗨️🟢 2022-10-31 - Laps and Periods Overview
+<!-- #endregion -->
 
-# + tags=[]
+```python tags=[]
 curr_active_pipeline.sess.laps
+```
 
-# + tags=[]
+```python tags=[]
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_lap_trajectories_2d
 # Complete Version:
 fig, axs, laps_pages = plot_lap_trajectories_2d(curr_active_pipeline.sess, curr_num_subplots=len(curr_active_pipeline.sess.laps.lap_id), active_page_index=0)
+```
 
-# + tags=[]
+```python tags=[]
 # Paginated Version:
 fig, axs, laps_pages = plot_lap_trajectories_2d(curr_active_pipeline.sess, curr_num_subplots=22, active_page_index=0)
 fig, axs, laps_pages = plot_lap_trajectories_2d(curr_active_pipeline.sess, curr_num_subplots=22, active_page_index=1)
+```
 
-# + tags=[]
+```python tags=[]
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_lap_trajectories_3d
-# %pdb on
+%pdb on
 p, laps_pages = plot_lap_trajectories_3d(curr_active_pipeline.sess, single_combined_plot=False, curr_num_subplots=len(curr_active_pipeline.sess.laps.lap_id), active_page_index=0)
 p.show()
+```
 
-# + tags=[]
+```python tags=[]
 p, laps_pages = plot_lap_trajectories_3d(curr_active_pipeline.sess, single_combined_plot=True)
 p.show()
+```
 
-# + tags=[]
+```python tags=[]
 curr_camera = p[0, 0].camera
 curr_camera
+```
 
-# + tags=[]
+```python tags=[]
 curr_camera.elevation
+```
 
-# + tags=[]
+```python tags=[]
 curr_camera.position
+```
 
-# + tags=[]
+```python tags=[]
 p[0, 0].set_background('black') #.set_background('black', top='white')
 p[0, 0].camera_position = 'yz'
 p[0, 0].camera.elevation = 45
+```
 
-# + tags=[]
+```python tags=[]
 p[0, 0].enable_parallel_projection()
 p[0, 0].camera.tight()
+```
 
-# + tags=[]
-# %matplotlib qt
+```python tags=[]
+%matplotlib qt
 active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
 
 graphics_output_dict = curr_active_pipeline.display('_display_jonathan_replay_firing_rate_comparison', active_identifying_session_ctx)
 fig, axs, plot_data = graphics_output_dict['fig'], graphics_output_dict['axs'], graphics_output_dict['plot_data']
 neuron_df, rdf, aclu_to_idx, irdf = plot_data['df'], plot_data['rdf'], plot_data['aclu_to_idx'], plot_data['irdf']
 axs
+```
 
-# + tags=[]
+```python tags=[]
 
+```
 
-# + tags=[]
+```python tags=[]
 
+```
 
-# + tags=[]
+```python tags=[]
 
+```
 
-# + tags=[]
+```python tags=[]
 curr_active_pipeline.sess.neurons.shank_ids
+```
 
-# + tags=[]
+```python tags=[]
 curr_active_pipeline.sess.neurons.neuron_ids
+```
 
-# + tags=[]
+```python tags=[]
 curr_active_pipeline.sess.neurons.neuron_type
+```
 
-# + tags=[]
+```python tags=[]
 new_ripple_df = pd.read_pickle(r'W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\ripple_df.pkl')
 new_ripple_df
+```
 
-# + tags=[]
+```python tags=[]
 from neuropy.core.flattened_spiketrains import safe_pandas_get_group
 # curr_active_pipeline.sess.
 
@@ -6269,39 +7623,54 @@ print(f'shank_split_channel_idxs: {shank_split_cell_info_dfs}')
 
 # unique_shank_ids: [1 2 3 4 8 9 10 12]
 # shank_split_channel_idxs: [[2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], [19, 20, 21, 22], [23, 24, 25], [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39], [40], [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55], [56, 57, 58, 59, 60]]
+```
 
-# + tags=[]
+```python tags=[]
 curr_active_pipeline.sess.n_neurons
+```
 
-# + tags=[]
+```python tags=[]
 unique_shank_ids
-# -
+```
 
+```python
 to_dataframe
+```
 
+```python
 test_output_shapes = [np.shape(a_result['pred_times']) for a_result in out_all_ripple_results['results'].values()]
 print(f'test_output_shapes: {test_output_shapes}')
 test_outputs = [a_result['pred_times'] for a_result in out_all_ripple_results['results'].values() if np.size(a_result['pred_times'])>0]
 test_outputs
+```
 
+```python
 np.size(test_outputs[1])
+```
 
+```python
 np.size(test_outputs[0])
+```
 
+```python
 np.size(test_outputs[2])
+```
 
+```python
 np.shape(test_outputs[1])
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# # 2022-11-01 - Test newly computed ripples and add them to the SpikeRasterWindow for visualization/comparison
-# Requires
-# ```
-# git clone https://github.com/CommanderPho/cnn_ripple.git
-# # # cd ./cnn_ripple
-# python -m pip install -e .
-# ```
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+# 2022-11-01 - Test newly computed ripples and add them to the SpikeRasterWindow for visualization/comparison
+Requires
+```
+git clone https://github.com/CommanderPho/cnn_ripple.git
+cd ./cnn_ripple
+python -m pip install -e .
+```
+<!-- #endregion -->
 
-# +
+```python
 import dill as pickle
 from cnn_ripple.PhoRippleDetectionTesting import ExtendedRippleDetection, main_compute_with_params_loaded_from_xml
 
@@ -6320,8 +7689,9 @@ prediction_timesteps = loaded_ripple_detector.continuous_ripple_prediction_times
 prediction_values = loaded_ripple_detector.continuous_ripple_shanks_prediction_values_array 
 new_ripple_df = loaded_ripple_detector.detected_ripple_epochs_df
 out_all_ripple_results =  DynamicContainer.init_from_dict(loaded_ripple_detector.out_all_ripple_results.copy())
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from neuropy.core import Epoch
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, SessionEpochs2DRenderTimeEpochs, PBE_2DRenderTimeEpochs, Laps2DRenderTimeEpochs, Replays_2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import NewRipples_2DRenderTimeEpochs
@@ -6364,142 +7734,193 @@ if active_3d_plot is not None:
     active_3d_plot.add_rendered_intervals(new_ripples_intervals_datasource, name='new_ripples')
     
    
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 widget.last_added_display_output
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_active_pipeline.display_output_history_list
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_active_pipeline.display_output_history_list
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_active_pipeline.last_added_display_output
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphocorehelpers.general_helpers import CodeConversion
 
 out_code = CodeConversion.convert_dictionary_to_defn_lines(curr_active_pipeline.last_added_display_output, dictionary_name='curr_active_pipeline.last_added_display_output', copy_to_clipboard=True)
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_context = curr_active_pipeline.display_output_history_list
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
-# -
+```
 
+```python
 loaded_ripple_detector.results
+```
 
+```python
 out = active_2d_plot.add_3D_time_curves(plot_dataframe=ripple_predictions_df)
+```
 
+```python
 curr_active_pipeline.sess.epochs
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 loaded_ripple_detector.ripple_df
-# -
+```
+
+```python
+
+```
+
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-
-
-
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_ripples_intervals_datasource.df
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.clear_all_rendered_intervals()
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
+```
 
-# + [markdown] scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# ## Embedded matplotlib_render_plot_widget display of new ripples
-# -
+<!-- #region scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+## Embedded matplotlib_render_plot_widget display of new ripples
+<!-- #endregion -->
 
+```python
 new_ripple_mpl_plot = active_2d_plot.add_new_matplotlib_render_plot_widget(name='new_ripple_predictions')
 widget, fig, ax = new_ripple_mpl_plot
+```
 
+```python
 widget.update()
+```
 
+```python
 widget.draw()
+```
 
+```python
 out = ax.plot(prediction_timesteps, np.squeeze(a_result['predictions']))
+```
 
-# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.sync_matplotlib_render_plot_widget() # Sync it with the active window:
+```
 
-# + [markdown] scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# # 🐞⛳️✳️ the 3D Interval Rects are CONFIRMED to be misaligned by exactly half of the window width.
+<!-- #region scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+# 🐞⛳️✳️ the 3D Interval Rects are CONFIRMED to be misaligned by exactly half of the window width.
+<!-- #endregion -->
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# `active_3d_plot.add_rendered_intervals(new_ripples_intervals_datasource, name='new_ripples')`
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+`active_3d_plot.add_rendered_intervals(new_ripples_intervals_datasource, name='new_ripples')`
+<!-- #endregion -->
 
-# + [markdown] scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
-# ![python_JwdIMVHpEQ.png](attachment:52498aab-31a8-4a0b-8add-0728809de9ab.png)
-# ![image.png](attachment:dabc70cf-76b1-45b6-b7a0-a3bf785e5391.png)
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+![python_JwdIMVHpEQ.png](attachment:52498aab-31a8-4a0b-8add-0728809de9ab.png)
+![image.png](attachment:dabc70cf-76b1-45b6-b7a0-a3bf785e5391.png)
+<!-- #endregion -->
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# # ◽📣 Rectangle Epoch Documentation Guide
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+# ◽📣 Rectangle Epoch Documentation Guide
+<!-- #endregion -->
 
-# IntervalsDatasource
-#
-# C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Model\Datasources\IntervalDatasource.py
-#
-# C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\EpochRenderingMixin.py
-# C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\RenderTimeEpoch3DMeshesMixin.py
-# C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\Render2DEventRectanglesHelper.py
-#
-# C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\Specific2DRenderTimeEpochs.py
-#
-#
+IntervalsDatasource
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## ◽📣 ✅ Testing 2D Rectangle Epochs on Raster Plot
+C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Model\Datasources\IntervalDatasource.py
 
-# +
+C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\EpochRenderingMixin.py
+C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\RenderTimeEpoch3DMeshesMixin.py
+C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\Render2DEventRectanglesHelper.py
+
+C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\GUI\PyQtPlot\Widgets\Mixins\RenderTimeEpochs\Specific2DRenderTimeEpochs.py
+
+
+
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## ◽📣 ✅ Testing 2D Rectangle Epochs on Raster Plot
+<!-- #endregion -->
+
+```python
 laps_interval_datasource = Specific2DRenderTimeEpochsHelper.build_Laps_render_time_epochs_datasource(curr_sess=sess, series_vertical_offset=max_series_top, series_height=1.0) # series_vertical_offset=42.0
 new_PBEs_interval_datasource = Specific2DRenderTimeEpochsHelper.build_PBEs_render_time_epochs_datasource(curr_sess=sess, series_vertical_offset=(max_series_top+1.0), series_height=3.0) # new_PBEs_interval_datasource
 
 ## General Adding:
 active_2d_plot.add_rendered_intervals(new_PBEs_interval_datasource, name='PBEs', child_plots=[background_static_scroll_plot_widget, main_plot_widget], debug_print=False)
 active_2d_plot.add_rendered_intervals(laps_interval_datasource, name='Laps', child_plots=[background_static_scroll_plot_widget, main_plot_widget], debug_print=False)
-# -
+```
 
+```python
 active_2d_plot.add_laps_intervals(sess)
+```
 
+```python
 active_2d_plot.remove_laps_intervals()
+```
 
-# +
+```python
 # active_2d_plot.add_PBEs_intervals(sess)
-# -
+```
 
+```python
 active_2d_plot.interval_rendering_plots
+```
 
+```python
 active_2d_plot.clear_all_rendered_intervals()
+```
 
+```python
 interval_info = active_2d_plot.list_all_rendered_intervals()
 interval_info
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## ◽📣 Test Updating Custom Epochs
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## ◽📣 Test Updating Custom Epochs
+<!-- #endregion -->
 
+```python
 interval_info = active_2d_plot.list_all_rendered_intervals()
 interval_info
+```
 
+```python
 active_2d_plot.clear_all_rendered_intervals()
+```
 
+```python
 active_2d_plot.interval_rendering_plots
+```
 
+```python
 
+```
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs
 
 # Need to deal with pg.mkPen(a_pen_color) and pg.mkBrush
@@ -6524,35 +7945,48 @@ def build_custom_epochs_dataframe_formatter(cls, **kwargs):
 
 interval_datasource = Ripples_2DRenderTimeEpochs.build_render_time_epochs_datasource(sess.laps.as_epoch_obj(), epochs_dataframe_formatter=build_custom_epochs_dataframe_formatter) # **({'series_vertical_offset': 42.0, 'series_height': 1.0} | kwargs)
 spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(interval_datasource, name='CustomRipples', debug_print=False) # removes the rendered intervals
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## ◽📣 Get list of existing interval rect datasources:
-# blah blah
-# -
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## ◽📣 Get list of existing interval rect datasources:
+blah blah
+<!-- #endregion -->
 
+```python
 # Plot items:
 active_2d_plot.interval_rendering_plots
+```
 
+```python
 
+```
 
+```python
 # active_2d_plot.interval_datasources.new_ripples
 interval_info = active_2d_plot.list_all_rendered_intervals()
 interval_info
+```
 
+```python
 active_2d_plot.interval_datasources # RenderPlotsData
 # datasource_to_update
+```
 
+```python
 active_2d_plot.interval_datasources.PBEs # IntervalsDatasource
+```
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## ◽📣 Update existing interval rects:
-# Write a function that takes your existing datasource dataframe and updates its columns.
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+## ◽📣 Update existing interval rects:
+Write a function that takes your existing datasource dataframe and updates its columns.
+<!-- #endregion -->
 
-# + [markdown] tags=[]
-# ### Before Update:
-# ![python_YwFQ3gs3K2.png](attachment:d13ff2db-bf10-457f-8184-9cf4f822eb38.png)
+<!-- #region tags=[] -->
+### Before Update:
+![python_YwFQ3gs3K2.png](attachment:d13ff2db-bf10-457f-8184-9cf4f822eb38.png)
+<!-- #endregion -->
 
-# +
+```python
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs
 # series_vertical_offset, series_height, pen, brush
 
@@ -6578,23 +8012,32 @@ def _updated_custom_interval_dataframe_visualization_columns_general_epoch(activ
 datasource_to_update = active_2d_plot.interval_datasources.new_ripples
 # datasource_to_update = active_2d_plot.interval_datasources.CustomRipples
 datasource_to_update.update_visualization_properties(_updated_custom_interval_dataframe_visualization_columns_general_epoch)
-# -
+```
 
-# ### Post Update:
-# ![python_LKGNtQCkQH.png](attachment:99906b90-2fdd-42ec-8536-ec0e52b73c68.png)
+### Post Update:
+![python_LKGNtQCkQH.png](attachment:99906b90-2fdd-42ec-8536-ec0e52b73c68.png)
 
+```python
 datasource_to_update.custom_datasource_name
+```
 
+```python
 datasource_to_update.df
+```
 
+```python
 spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(datasource_to_update, name='CustomRipples', debug_print=True) # removes the rendered intervals
+```
 
+```python
 
+```
 
-# + [markdown] tags=[]
-# # `matplotview` testing
+<!-- #region tags=[] -->
+# `matplotview` testing
+<!-- #endregion -->
 
-# +
+```python
 from neuropy.core import Epoch
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, SessionEpochs2DRenderTimeEpochs, PBE_2DRenderTimeEpochs, Laps2DRenderTimeEpochs, Replays_2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import NewRipples_2DRenderTimeEpochs
@@ -6630,39 +8073,51 @@ print(f'num_slices: {num_slices}')
 
 epoch_slices = new_ripple_df[['start','stop']].to_numpy()
 print(f'np.shape(epoch_slices): {np.shape(epoch_slices)}')
-# -
+```
 
+```python
 ripple_predictions_df
+```
 
+```python
 new_ripple_df
+```
 
-# +
+```python
 
 # , override_time_variable_name=override_time_variable_name
 debug_print = True
 
 
-# -
+```
 
+```python
 found_start_end_indicies
 range(0, 10)
 i = 0
 np.arange(found_start_end_indicies[i,0], found_start_end_indicies[i,1]+1, 1)
+```
 
-# +
+```python
 found_start_end_indicies[0] # array([266, 268], dtype=int64)
 
 
-# -
+```
 
+```python
 prediction_timesteps, prediction_values
+```
 
+```python
 found_start_indicies = found_start_end_indicies[:,0]
 found_end_indicies = found_start_end_indicies[:,1]
+```
 
+```python
 
+```
 
-# +
+```python
 ## MATPLOTLIB Imports:
 import matplotlib
 # configure backend here
@@ -6754,11 +8209,13 @@ for i, curr_ax in enumerate(plots.axs):
 #     curr_ax.add_artist(scalebar)
 
 
-# -
+```
 
+```python
 
+```
 
-# +
+```python
 # ## Global main plot (doesn't work)
 # fig_global, main_ax = plt.subplots()
 # # fig_global, (main_ax) = plt.subplots(1, 1)
@@ -6775,11 +8232,13 @@ main_ax.set_title(f'global predicted ripple probability: shank {shank_id}')
 # ax2.set_ylim(-5, 15)
 
 # fig_global.show()
-# -
+```
 
+```python
 plots.fig.show()
+```
 
-# +
+```python
 # laps_position_times_list = [np.squeeze(lap_pos_df[['t']].to_numpy()) for lap_pos_df in lap_specific_position_dfs]
 # laps_position_traces_list = [lap_pos_df[['x','y']].to_numpy().T for lap_pos_df in lap_specific_position_dfs]
 
@@ -6793,14 +8252,16 @@ from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slic
 
 stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_view(epoch_slices, laps_position_times_list, laps_position_traces_list, name=f'stacked_epoch_slices_view_new_ripples: shank {shank_id}')
 params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
-# -
+```
 
+```python
 
+```
 
-# # 2022-11-08 Jonathan-Pho Analyses
+# 2022-11-08 Jonathan-Pho Analyses
 
-# +
-# %matplotlib qt
+```python
+%matplotlib qt
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions import _final_compute_jonathan_replay_fr_analyses
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.MultiContextComparingDisplayFunctions import _make_jonathan_interactive_plot
 
@@ -6812,33 +8273,55 @@ neuron_IDs = np.unique(computation_results['maze_PYR'].sess.spikes_df.aclu)
 neuron_IDXs = np.arange(len(neuron_IDs))
 instantaneous_unit_specific_spike_rate = computation_results['maze_PYR']['computed_data']['firing_rate_trends'].all_session_spikes.instantaneous_unit_specific_spike_rate
 instantaneous_unit_specific_spike_rate_values = pd.DataFrame(instantaneous_unit_specific_spike_rate.magnitude, columns=neuron_IDs) # builds a df with times along the rows and aclu values along the columns in the style of unit_specific_binned_spike_counts
-# -
+```
 
+```python
 
+```
 
+```python
 instantaneous_unit_specific_spike_rate.times.magnitude.shape # (3429,)
+```
 
+```python
 instantaneous_unit_specific_spike_rate[:,0].shape # (3429, 1)
+```
 
+```python
 instantaneous_unit_specific_spike_rate.magnitude.shape # (3429, 71)
+```
 
+```python
 replays_df = owning_pipeline_reference.sess.pbe.to_dataframe()
 replays_df
+```
 
+```python
 sess.neuron_ids.shape
+```
 
+```python
 active_session_spikes_df = computation_result.sess.spikes_df.copy()
+```
 
+```python
 
+```
 
+```python
 neuron_IDs.shape
+```
 
+```python
 neuron_IDs = pf.ratemap.neuron_ids
 
+```
 
+```python
 active_firing_rate_trends.all_session_spikes.time_binned_unit_specific_binned_spike_rate
+```
 
-# +
+```python
 if include_whitelist is None:
     include_whitelist = owning_pipeline_reference.active_completed_computation_result_names # ['maze', 'sprinkle']
 
@@ -6883,12 +8366,18 @@ pos_df = sess.position.to_dataframe()
 # irdf = computation_result.computed_data['jonathan_firing_rate_analysis']['irdf']['irdf']
 # pos_df = computation_result.sess.position.to_dataframe()
 # compare_firing_rates(rdf, irdf)
-# -
+```
 
+```python
 graphics_output_dict, neuron_df = _make_jonathan_interactive_plot(sess, time_bins, time_binned_unit_specific_binned_spike_rate, pf1d_short, pf1d_long, pos_df, aclu_to_idx, rdf, irdf, show_inter_replay_frs=False)
 # output_dict = {'fig': fig, 'axs': ax, 'colors': colors}
 graphics_output_dict['plot_data'] = {'df': neuron_df, 'rdf':rdf, 'aclu_to_idx':aclu_to_idx, 'irdf':irdf}
+```
 
+```python
 rdf
+```
 
+```python
 
+```
