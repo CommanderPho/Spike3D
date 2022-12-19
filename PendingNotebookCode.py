@@ -38,10 +38,12 @@ def interleave(list1, list2):
     return [x for x in itertools.chain.from_iterable(itertools.izip_longest(list1,list2)) if x]
 
 
-def _get_common_cell_pf_results(long_pf1D, ):
+
+
+def _get_common_cell_pf_results(long_neuron_ids, short_neuron_ids):
     ## get shared neuron info:
     # this must be done after we rebuild the short_pf1D bins (if we need to) so they continue to match:
-    pf_neurons_diff = _compare_computation_results(long_results.pf1D.ratemap.neuron_ids, short_results.pf1D.ratemap.neuron_ids)
+    pf_neurons_diff = _compare_computation_results(long_neuron_ids, short_neuron_ids)
 
     shared_aclus = pf_neurons_diff.intersection #.shape (56,)
     print(f'shared_aclus: {shared_aclus}.\t np.shape: {np.shape(shared_aclus)}')
@@ -52,19 +54,19 @@ def _get_common_cell_pf_results(long_pf1D, ):
     print(f'short_only_aclus: {short_only_aclus}.\t np.shape: {np.shape(short_only_aclus)}')
 
     ## Get the normalized_tuning_curves only for the shared aclus (that are common across (long/short/global):
-    long_is_included = np.isin(long_pf1D.ratemap.neuron_ids, shared_aclus)  #.shape # (104, 63)
-    long_incl_aclus = np.array(long_pf1D.ratemap.neuron_ids)[long_is_included] #.shape # (98,)
+    long_is_included = np.isin(long_neuron_ids, shared_aclus)  #.shape # (104, 63)
+    long_incl_aclus = np.array(long_neuron_ids)[long_is_included] #.shape # (98,)
     long_incl_curves = long_pf1D.ratemap.normalized_tuning_curves[long_is_included]  #.shape # (98, 63)
     assert long_incl_aclus.shape[0] == long_incl_curves.shape[0] # (98,) == (98, 63)
 
-    short_is_included = np.isin(short_pf1D.ratemap.neuron_ids, shared_aclus)
-    short_incl_aclus = np.array(short_pf1D.ratemap.neuron_ids)[short_is_included] #.shape (98,)
+    short_is_included = np.isin(short_neuron_ids, shared_aclus)
+    short_incl_aclus = np.array(short_neuron_ids)[short_is_included] #.shape (98,)
     short_incl_curves = short_pf1D.ratemap.normalized_tuning_curves[short_is_included]  #.shape # (98, 40)
     assert short_incl_aclus.shape[0] == short_incl_curves.shape[0] # (98,) == (98, 63)
     # assert short_incl_curves.shape[1] == long_incl_curves.shape[1] # short and long should have the same bins
 
-    global_is_included = np.isin(global_pf1D.ratemap.neuron_ids, shared_aclus)
-    global_incl_aclus = np.array(global_pf1D.ratemap.neuron_ids)[global_is_included] #.shape (98,)
+    global_is_included = np.isin(global_neuron_ids, shared_aclus)
+    global_incl_aclus = np.array(global_neuron_ids)[global_is_included] #.shape (98,)
     global_incl_curves = global_pf1D.ratemap.normalized_tuning_curves[global_is_included]  #.shape # (98, 63)
     assert global_incl_aclus.shape[0] == global_incl_curves.shape[0] # (98,) == (98, 63)
     assert global_incl_curves.shape[1] == long_incl_curves.shape[1] # global and long should have the same bins
