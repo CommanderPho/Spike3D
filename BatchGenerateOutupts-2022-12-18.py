@@ -184,7 +184,7 @@ print(f'basedir: {str(basedir)}')
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
@@ -194,7 +194,9 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+curr_active_pipeline.save_pipeline()
+
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ### Burst Detection
 # -
 
@@ -248,7 +250,7 @@ del global_results.extended_stats.relative_entropy_analyses['snapshot_difference
 # curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ###  Compute Required Global Computations Manually:
 
 # +
@@ -387,7 +389,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 def _simple_surprise_plot():
     plt.plot(post_update_times, flat_relative_entropy_results)
-    
+
 
 
 plt.plot(post_update_times, flat_relative_entropy_results)
@@ -399,7 +401,7 @@ plt.plot(post_update_times.T, flat_jensen_shannon_distance_across_all_positions)
 # +
 # flat_relative_entropy_results.shape # (1, 63)
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # ## 🟢 2022-11-21 - 1D Ratemaps Before and After Track change (Long vs. Short track)
 # Working metrics for comparing overlaps of 1D placefields before and after track change
 # -
@@ -415,7 +417,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPred
 active_decoder = long_one_step_decoder_1D
 fig, axs = plot_spike_count_and_firing_rate_normalizations(active_decoder)
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2022-09-23 Decoder Testing
 
 # +
@@ -1116,7 +1118,7 @@ out_indicies, out_digitized_position_bins, out_within_lap_spikes_overlap = compu
 
 
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # `_display_short_long_pf1D_comparison` and `_display_short_long_pf1D_scalar_overlap_comparison`
 
 # +
@@ -1201,6 +1203,7 @@ active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapu
 # + tags=[]
 
 
+
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # ### Single (Session, Filter) Context Plotting:
 
@@ -1219,7 +1222,7 @@ print(curr_active_pipeline.registered_display_function_names)
 # %matplotlib qt
 ## NOTE THAT ONCE THIS IS SET TO qt, it cannot be undone!
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ### Systematic Display Function Testing
 
 # + [markdown] tags=[]
@@ -1447,10 +1450,11 @@ cum_spike_rates
 # + pycharm={"name": "#%%\n"}
 
 
+
 # + pycharm={"name": "#%%\n"}
 cum_spike_rates.plot(x='index', y='2')
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[]
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
 # ### Testing `ZhangReconstructionImplementation.time_bin_spike_counts_N_i(...)` and `ZhangReconstructionImplementation.compute_time_binned_spiking_activity(...)`
 
 # + pycharm={"name": "#%%\n"}
@@ -1483,7 +1487,8 @@ ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(sess_time_
 # + pycharm={"name": "#%%\n"}
 
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[]
+
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
 # # NEW 2022-12-14 - Efficient PfND_TimeDependent batch entropy computations:
 
 # + pycharm={"name": "#%%\n"}
@@ -1960,7 +1965,7 @@ out_plots[1].show()
 # a_plot.scene() # GraphicsScene
 export_pyqtgraph_plot(plots[0])
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # GUI/Widget Helpers
 
 # +
@@ -2153,7 +2158,20 @@ short_pf1D, did_update_bins = short_pf1D.conform_to_position_bins(long_pf1D)
 long_one_step_decoder_1D, short_one_step_decoder_1D  = [results_data.get('pf1D_Decoder', None) for results_data in (long_results, short_results)]
 short_one_step_decoder_1D.conform_to_position_bins(long_one_step_decoder_1D)
 # -
+long_two_step_decoder_1D, short_two_step_decoder_1D  = [results_data.get('pf1D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
 
+
+long_pf1D.ndim
+
+
+
+
+
+long_two_step_decoder = long_results.get('pf2D_TwoStepDecoder', None)
+long_two_step_decoder
+
+
+.
 
 
 # Let $x$ be the position

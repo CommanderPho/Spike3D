@@ -13,7 +13,7 @@ jupyter:
     name: conda-env-phoviz_ultimate_311-py
 ---
 
-```python pycharm={"is_executing": false} scene__Default Scene=true tags=["ActiveScene"]
+```python scene__Default pycharm={"is_executing": false} Scene=true tags=["ActiveScene"]
 """
 @author: pho
 """
@@ -133,145 +133,11 @@ def build_eloy_computation_configs(sess, **kwargs):
 # Load Appropriate Data and begin pipeline
 <!-- #endregion -->
 
-<!-- #region tags=[] -->
-## Bapun Format:
-<!-- #endregion -->
-
-```python pycharm={"is_executing": false} tags=[]
-active_data_mode_name = 'bapun'
-active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
-active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
-# basedir = r'R:\data\Bapun\RatS\Day5TwoNovel'
-basedir = r'W:\Data\Bapun\RatS\Day5TwoNovel'
-# basedir = r'/home/halechr/Data/Bapun/RatS/Day5TwoNovel'
-
-curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), force_reload=True, skip_save_on_initial_load=True) # damn this file is 21.1 GB!
-active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess)
-
-curr_active_pipeline.filter_sessions(active_session_filter_configurations)
-curr_active_pipeline.perform_computations(active_session_computation_configs[0],
-                                          computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_position_decoding_computation', '_perform_two_step_position_decoding_computation'],
-                                          # computation_functions_name_blacklist=['_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation'],
-                                          overwrite_extant_results=False) # SpikeAnalysisComputations._perform_spike_burst_detection_computation
-curr_active_pipeline.prepare_for_display(root_output_dir=r'Data/Output', should_smooth_maze=False) # TODO: pass a display config
-                                      
-## _perform_velocity_vs_pf_density_computation: causes AssertionError: After AOC normalization the sum over each cell should be 1.0, but it is not! [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan] with 1D placefields!
-```
-
-<!-- #region tags=[] -->
-### Test arbitrary filtering beyond active_session_filter_configurations:
-<!-- #endregion -->
-
-```python
-# import sys # required for sys.float_info.min
-from copy import deepcopy
-# from neuropy.core.epoch import NamedTimerange # Custom rippleOnly filters:
-
-## Adds the custom ComputationConfig with .pf_params.computation_epochs set to the ripple epochs only:
-dup_ripple_only_computation_config = deepcopy(active_session_computation_configs[0]) # make a deepcopy of the active computation config
-dup_ripple_only_computation_config.pf_params.computation_epochs = curr_active_pipeline.sess.ripple # set the computation epochs for the copy to the ripple epochs only
-# dup_ripple_only_computation_config.pf_params.speed_thresh = sys.float_info.min # no speed thresholding because we're wanting to look at the ripples
-dup_ripple_only_computation_config.pf_params.speed_thresh = 0.0 # no speed thresholding because we're wanting to look at the ripples
-active_session_computation_configs.append(dup_ripple_only_computation_config)
-# active_session_filter_configurations['maze1_rippleOnly'] = lambda x: (x.filtered_by_neuron_type('pyramidal').filtered_by_epoch(NamedTimerange(name='maze1_rippleOnly', start_end_times=[x.epochs['maze1'][0], x.epochs['maze2'][1]])), NamedTimerange(name='maze1_rippleOnly', start_end_times=[x.epochs['maze1'][0], x.epochs['maze2'][1]]))
-active_session_filter_configurations['maze1_rippleOnly'] = deepcopy(active_session_filter_configurations['maze1']) # this copy is just so that the values are recomputed with the appropriate config. This is a HACK
-active_session_filter_configurations['maze2_rippleOnly'] = deepcopy(active_session_filter_configurations['maze2']) # this copy is just so that the values are recomputed with the appropriate config. This is a HACK
-
-# active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-# active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess)
-curr_active_pipeline.filter_sessions(active_session_filter_configurations)
-curr_active_pipeline.perform_computations(active_session_computation_configs[1], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation'], fail_on_exception=False) # SpikeAnalysisComputations._perform_spike_burst_detection_computation
-curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=False) # TODO: pass a display config
-```
-
-```python pycharm={"is_executing": false} tags=[]
-# Loops through all the configs and ensure that they have the neuron identity info if they need it.
-curr_active_pipeline.perform_drop_computed_items(config_names_to_drop = ['maze1_rippleOnly', 'maze2_rippleOnly'])
-
-```
-
-```python pycharm={"is_executing": false} tags=[]
-## Test fixing broken/invalid paths for plotting_config:
-debug_print = True
-
-for _temp_curr_config_name in ['maze1_rippleOnly', 'maze2_rippleOnly']:
-    active_config = curr_active_pipeline.active_configs[_temp_curr_config_name]# InteractivePlaceCellConfig
-    # active_config
-    if debug_print:
-        print(f'_display_custom_user_function(computation_result, active_config, **kwargs):')
-    active_session_name = active_config.active_session_config.session_name
-    if debug_print:
-        print(f'active_session_name: {active_session_name}')
-    active_epoch_names = active_config.active_epochs
-    if debug_print:
-        print(f'active_epoch_names.name: {active_epoch_names.name}') # active_epoch_names: <NamedTimerange: {'name': 'maze1', 'start_end_times': array([  22.26      , 1739.15336412])};>
-    # active_epoch_names.name: maze1
-    _curr_safe_out_path = Path('output', active_session_name, _temp_curr_config_name)
-    curr_active_pipeline.active_configs[_temp_curr_config_name].plotting_config.change_active_out_parent_dir(new_parent=_curr_safe_out_path) # active_epoch_names.name
-    curr_active_pipeline.active_configs[_temp_curr_config_name].plotting_config.active_output_parent_dir = _curr_safe_out_path
-    # self.active_output_parent_dir
-    print(f"for {_temp_curr_config_name} - {curr_active_pipeline.active_configs[_temp_curr_config_name].plotting_config.get_figure_save_path('test')}")
-    
-    # self.active_configs[an_active_config_name]
-## Completely invalid path
-# active_config.plotting_config.active_output_parent_dir # WindowsPath('W:/Data/Output/2022-09-13/RatS-Day5TwoNovel-2020-12-04_07-55-09/maze1/speedThresh_0.00-gridBin_2.74-smooth_2.00-frateThresh_0.20-time_bin_size_1.00-computation_epochs_13811 epochs\narray([[1.6712, 1.7736],\n       [2.0536, 2.1744],\n       [4.9616, 5.3448],\n       ...,\n       [42274, 42274.2],\n       [42276.1, 42276.3],\n       [42298, 42298.1]])\n')
-
-```
-
-```python pycharm={"is_executing": false} tags=[]
-out_figure_save_original_root = active_config.plotting_config.get_figure_save_path('test') # 2022-01-16/
-out_figure_save_original_root
-# active_config.plotting_config = _set_figure_save_root_day_computed_mode(active_config.plotting_config, active_session_name, active_epoch_names.name, root_output_dir=root_output_dir, debug_print=debug_print)
-```
-
-```python pycharm={"is_executing": false} tags=[]
-curr_config.plotting_config.get_figure_save_path('test')
-# active_session_filter_configurations['maze2_rippleOnly']# = deepcopy(active_session_filter_configurations['maze2']) # this copy is just so that the values are recomputed with the appropriate config. This is a HACK
-#PlottingConfig(output_subplots_shape='1|5', output_parent_dir=Path('output', computation_result.sess.config.session_name, 'custom_laps'))
-```
-
-```python pycharm={"is_executing": false} tags=[]
-# %pdb on
-
-curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=False) # TODO: pass a display config
-```
-
-```python pycharm={"is_executing": false} tags=[]
-active_session_computation_configs.time
-```
-
-<!-- #region tags=[] -->
-### Bapun Open-Field Experiment (2022-08-09 Analysis)
-<!-- #endregion -->
-
-```python pycharm={"is_executing": false} tags=[]
-%pdb on
-from neuropy.core.session.SessionSelectionAndFiltering import build_custom_epochs_filters # used particularly to build Bapun-style filters
-
-active_data_mode_name = 'bapun'
-active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
-active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
-basedir = r'W:\Data\Bapun\RatN\Day4OpenField' # Apogee
-# basedir = '/Volumes/MoverNew/data/Bapun/RatN/Day4OpenField' # mac
-
-curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), force_reload=True, skip_save_on_initial_load=True)
-# active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, included_epoch_names=['maze','sprinkle']) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-# active_session_filter_configurations = build_custom_epochs_filters(curr_active_pipeline.sess, epoch_name_whitelist=['maze','sprinkle'])
-active_session_filter_configurations = build_custom_epochs_filters(curr_active_pipeline.sess, epoch_name_whitelist=['maze','sprinkle'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(curr_active_pipeline.sess, epoch_name_whitelist=['maze','sprinkle'])
-active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=1.0)
-curr_active_pipeline.filter_sessions(active_session_filter_configurations)
-curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_recursive_latent_placefield_decoding', '_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation']) # SpikeAnalysisComputations._perform_spike_burst_detection_computation
-curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=True) # TODO: pass a display config
-curr_active_pipeline.save_pipeline()
-```
-
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=["Rachel"] jp-MarkdownHeadingCollapsed=true -->
 ## Rachel Format:
 <!-- #endregion -->
 
-```python
+```python tags=["Rachel"]
 active_data_mode_name = 'rachel'
 active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
 active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
@@ -282,7 +148,7 @@ active_session_filter_configurations = active_data_mode_registered_class.build_d
 active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess)
 ```
 
-```python pycharm={"is_executing": false}
+```python pycharm={"is_executing": false} tags=["Rachel"]
 curr_active_pipeline.filter_sessions(active_session_filter_configurations)
 curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation']) # Causes "IndexError: index 59 is out of bounds for axis 0 with size 59"
 curr_active_pipeline.prepare_for_display(should_smooth_maze=True) # TODO: pass a display config
@@ -292,7 +158,7 @@ curr_active_pipeline.prepare_for_display(should_smooth_maze=True) # TODO: pass a
 ## KDiba Format:
 <!-- #endregion -->
 
-```python pycharm={"is_executing": false} tags=["main_run", "ActiveScene"]
+```python pycharm={"is_executing": false} tags=["main_run", "ActiveScene", "Diba"]
 # %%viztracer
 active_data_mode_name = 'kdiba'
 active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
@@ -1380,7 +1246,7 @@ win, all_dock_display_items, all_nested_dock_area_widgets, all_nested_dock_area_
 ## 🪟 3D Interactive Spike Raster Window
 <!-- #endregion -->
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import Specific2DRenderTimeEpochsHelper
 from pyphoplacecellanalysis.General.Model.Datasources.IntervalDatasource import IntervalsDatasource
 from pyphoplacecellanalysis.General.Model.RenderDataseries import RenderDataseries
@@ -1398,19 +1264,19 @@ main_plot_widget = active_2d_plot.plots.main_plot_widget # PlotItem
 background_static_scroll_plot_widget = active_2d_plot.plots.background_static_scroll_window_plot # PlotItem
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.splitter.childrenCollapsible
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.splitter.sizes() # backup sizes [505, 498]
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.mainSpike3DRasterWidget.setVisible(False)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 void MainWindow::on_pushButton_clicked() {
     ui->widgetToHide->setVisible(not ui->widgetToHide->isVisible() );
     if (not ui->widgetToHide->isVisible()) {
@@ -1422,7 +1288,7 @@ void MainWindow::on_pushButton_clicked() {
 }
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.SpecificTimeCurves import Specific3DTimeCurvesHelper
 
 # add_unit_time_binned_spike_visualization_curves
@@ -1445,84 +1311,84 @@ binned_spike_counts_curve_datasource = Specific3DTimeCurvesHelper.add_unit_time_
 # ValueError: all the input array dimensions for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 17101 and the array at index 1 has size 17102
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_3d_plot.clear_all_3D_time_curves()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.main_time_curves_view_legend.parentItem()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.main_time_curves_view_legend.setParentItem(active_2d_plot.ui.main_time_curves_view_widget)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.main_time_curves_view_legend.clear()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.clear_all_3D_time_curves()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.matplotlib_view_widget.ax
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # self.pw.addLegend()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.scrollAnimTimeline.setFrameRange(0, 100)
 spike_raster_window.ui.scrollAnimTimeline.setEndFrame(100)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.scrollAnimTimeline.setDuration(20)
 
 ## Slow motion scroll animation (for debugging):
 # spike_raster_window.ui.scrollAnimTimeline.setDuration(2000)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.params.animation_time_step
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.animation_time_step
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.ui.scrollAnimTimeline.start() # Do not start it
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_spike_t, curr_spike_y, curr_spike_pens, curr_n = spike_raster_window.spike_raster_plt_2d_build_all_spikes_data_values()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 list(display_output.keys())
 sess.spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 sess.spikes_df
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d.params.config_items
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.menus.custom_context_menus.add_renderables
 ```
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Compute whether each spike is included in the active placefield computation. Spikes might be excluded due to not meeting speed/firing-rate thresholds, being an unused cell type, or occuring outside the computational_epochs for which the pfs were computed for the active configuration
 <!-- #endregion -->
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.General.Mixins.SpikesRenderingBaseMixin import SpikeEmphasisState
 
 # De-emphasize spikes excluded from the placefield calculations:
@@ -1530,50 +1396,50 @@ is_spike_included_in_pf = np.isin(spike_raster_window.spike_raster_plt_2d.spikes
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included_in_pf), SpikeEmphasisState.Deemphasized)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 ## De-emphasize spikes that don't have their 'aclu' from a given set of indicies:
 # is_spike_included = np.where(spike_raster_window.spike_raster_plt_2d.spikes_df.aclu == 2)
 is_spike_included = spike_raster_window.spike_raster_plt_2d.spikes_df.aclu.to_numpy() == 2
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 is_spike_included = spike_raster_window.spike_raster_plt_2d.spikes_df.aclu.to_numpy() == 2
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d.update_spike_emphasis()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 actionNewConnectedDataExplorer_ipspikes = spike_raster_window.main_menu_window.ui.menus.global_window_menus.create_new_connected_widget.actions_dict['actionNewConnectedDataExplorer_ipspikes']
 actionNewConnectedDataExplorer_ipspikes
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 actionNewConnectedDataExplorer_ipspikes.disconnect()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # CreateNewDataExplorer_ipspikes_PlotterCommand(spike_raster_window, curr_active_pipeline, active_config_name, display_output)
 # actionNewConnectedDataExplorer_ipspikes.activate()
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.create_new_connected_widget.actions_dict['actionNewConnectedDataExplorer_ipspikes'].triggered.connect(CreateNewDataExplorer_ipspikes_PlotterCommand(spike_raster_window, curr_active_pipeline, active_config_name, display_output))
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.create_linked_widget
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.active_drivers_menu.removeAction() #activeMenuReference.active_drivers_menu
 
 actions_to_remove = spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.active_drivers_menu.actions()
@@ -1593,25 +1459,25 @@ for an_old_action in actions_to_remove:
     
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # for a_driveable_key in curr_drivable_items:
 spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.actions_dict
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _out_synchronized_plotter = curr_active_pipeline.display_output['comboSynchronizedPlotter']
 (controlling_widget, curr_sync_occupancy_plotter, curr_placefields_plotter), root_dockAreaWindow, app = _out_synchronized_plotter
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 root_dockAreaWindow.dynamic_display_dict
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 "widget"
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # test_is_drivable(curr_sync_occupancy_plotter) # True
 # test_is_driver(curr_sync_occupancy_plotter) # False
 
@@ -1625,7 +1491,7 @@ test_is_drivable(root_dockAreaWindow) # False
 # test_is_driver(root_dockAreaWindow) # False
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.External.pyqtgraph.dockarea.Dock import Dock
 
 # root_dockAreaWindow.children()
@@ -1642,7 +1508,7 @@ curr_display_dock_planning_helper_widgets[0]
 root_dockAreaWindow.find_display_dock()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
@@ -1650,7 +1516,7 @@ root_dockAreaWindow.find_display_dock()
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 def _test_available_drivers_changed():
     print(f'_test_available_drivers_changed()')
     spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update()
@@ -1668,23 +1534,23 @@ _connection_t2 = spike_raster_window.connection_man.sigAvailableDrivablesChanged
 _connection_t3 = spike_raster_window.connection_man.sigConnectionsChanged.connect(_test_available_connections_changed)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _connection_available_changed_1 = spike_raster_window.connection_man.sigAvailableDriversChanged.connect(spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update)
 _connection_available_changed_2 = spike_raster_window.connection_man.sigAvailableDrivablesChanged.connect(spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update)
 _connection_available_changed_3 = spike_raster_window.connection_man.sigConnectionsChanged.connect(spike_raster_window.main_menu_window.ui.menus.global_window_menus.debug.menu_provider_obj.DebugMenuProviderMixin_on_menus_update)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 ## Register the children items as drivables/drivers:
 root_dockAreaWindow.connection_man.register_drivable(curr_sync_occupancy_plotter)
 root_dockAreaWindow.connection_man.register_drivable(curr_placefields_plotter)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.connection_man.get_available_drivables()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 def closeEvent(self, event):
     reply = QMessageBox.question(self, 'Window Close', 'Are you sure you want to close the window?',
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -1696,83 +1562,83 @@ def closeEvent(self, event):
         event.ignore()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 spike_raster_window.spike_raster_plt_2d
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # spike_raster_window.connect_controlled_time_synchronized_plotter(controlled_plt=)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # spike_raster_window.
 curr_window = PhoMenuHelper.try_get_menu_window(spike_raster_window)
 curr_window # PhoBaseMainWindow 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 print_keys_if_possible('curr_window.ui.menus', curr_window.ui.menus, depth=1)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.all_refs
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 widget, renderable_menu, (submenu_menuItems, submenu_menuCallbacks, submenu_menu_Connections) = curr_window.ui.menus.global_window_menus.create_linked_widget.all_refs
 submenu_menuItems
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 CreateNewTimeSynchronizedPlotterCommand
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # active_pf_2D_dt
 display_output
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 display_output
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.GUI.Qt.Menus.SpecificMenus.CreateLinkedWidget_MenuProvider import CreateNewTimeSynchronizedPlotterCommand
 
 curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'] = CreateNewTimeSynchronizedPlotterCommand(spike_raster_window, active_pf_2D_dt, plotter_type='occupancy', display_output=display_output)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_pf_2D_dt.reset()
 active_pf_2D_dt.update(t=45.0, start_relative_t=True)
 curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'].execute('')
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_action = curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionTimeSynchronizedOccupancyPlotter'] # QAction 
 curr_action
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # curr_action.setParent()
 curr_action.parent() # <pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable.LocalMenus_AddRenderable at 0x229506cfb80>
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_action.parentWidget() # <pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable.LocalMenus_AddRenderable at 0x229506cfb80>
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parent() # <PyQt5.QtWidgets.QMenuBar at 0x229506cfca0>
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parentWidget() # <PyQt5.QtWidgets.QMenuBar at 0x229506cfca0>
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_dest_menubar = curr_window.menuBar()
 new_dest_menubar
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 oldLocalMenus_AddRenderable = curr_window.ui.menus.global_window_menus.create_linked_widget.all_refs # <pyphoplacecellanalysis.GUI.Qt.GlobalApplicationMenus.LocalMenus_AddRenderable.LocalMenus_AddRenderable at 0x229506cfb80>
 oldLocalMenus_AddRenderable
 
@@ -1785,23 +1651,23 @@ old_menu_item
 print(f'old_menu_item.title(): {old_menu_item.title()}')
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parent()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.parentWidget() # <PyQt5.QtWidgets.QMenuBar at 0x229506cfca0>
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.top_level_menu.setParent(new_dest_menubar)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 old_menu_item = old_menubar.children()[1] # <PyQt5.QtWidgets.QMenu at 0x229506cfd30>
 old_menu_item
 
@@ -1825,87 +1691,87 @@ old_children_items
 #  <PyQt5.QtWidgets.QAction at 0x229508d5d30>]
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # for an_item in old_children_items
 new_menu, new_children_items, new_actions = PhoMenuHelper.perform_copy_QMenu(old_menu_item, action_parent=curr_window, menu_parent=new_dest_menubar, debug_print=True)
 new_menu
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_menu
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_children_items
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_actions
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 {an_action.text():an_action for an_action in new_actions}
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 [an_action.parent() for an_action in new_actions]
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_menu.parent() == old_menubar
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_menu.setEnabled(new_menu.isEnabled())
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _new_connection = submenu_menuItems[0].triggered.connect(curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'])
 
 # _new_connection = submenu_menuItems[0].triggered.connect(CreateNewTimeSynchronizedPlotterCommand(spike_raster_window, active_pf_2D_dt, plotter_type='occupancy', display_output=display_output))
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 submenu_menuItems[0].triggered.disconnect()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 (self.menuCreate_Paired_Widget.menuAction()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_window.ui.menus.global_window_menus.create_linked_widget.actions_dict['actionCreateNewTimeSynchronizedOccupancyPlotter'] = submenu_menuItems[0].triggered.connect(CreateNewTimeSynchronizedPlotterCommand(spike_raster_window, active_pf_2D_dt, plotter_type='occupancy', display_output=display_output))
 
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _createLinkedWidget_menu_provider = CreateLinkedWidget_MenuProvider(render_widget=spike_raster_window)
 _createLinkedWidget_menu_provider.CreateLinkedWidget_MenuProvider_on_init()
 _createLinkedWidget_menu_provider.CreateLinkedWidget_MenuProvider_on_buildUI()
 # top_level_menu, actions_dict, all_refs = _createLinkedWidget_menu_provider.CreateLinkedWidget_MenuProvider_on_buildUI()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 _createLinkedWidget_menu_provider.activeMenuReference
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 rendered_epoch_rects_container = active_2d_plot.rendered_epochs['Replays'] # RenderedEpochsItemsContainer
 
 main_plot_curr_rects = rendered_epoch_rects_container[main_plot_widget] # IntervalRectsItem 
 main_plot_curr_rects
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 main_plot_curr_rects.getViewBox()
 
 view = main_plot_curr_rects.getViewBox()
@@ -5427,12 +5293,12 @@ plt.xlim([start_t, start_t+window_length])
 plt.legend()
 ```
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Exploring display_predicted_position_difference
 Draws an arrow from the measured position to the predicted position for each timestep
 <!-- #endregion -->
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.Pho2D.decoder_difference import display_predicted_position_difference
 
 active_resampled_pos_df = active_computed_data.extended_stats.time_binned_position_df.copy() # active_computed_data.extended_stats.time_binned_position_df  # 1717 rows × 16 columns
@@ -5440,7 +5306,7 @@ active_resampled_measured_positions = active_resampled_pos_df[['x','y']].to_nump
 display_predicted_position_difference(active_one_step_decoder, active_two_step_decoder, active_resampled_measured_positions)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_one_step_decoder.p_x_given_n.shape # (41, 26, 883)
 active_one_step_decoder.active_time_window_centers.shape # (883,)
 
@@ -5449,41 +5315,41 @@ np.where(np.isnan(active_one_step_decoder.p_x_given_n))
 np.nan_to_num(active_one_step_decoder.p_x_given_n, nan=0.0, posinf=1.0, neginf=0.0)
 ```
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Testing `_display_plot_marginal_1D_most_likely_position_comparisons`
 ✅ Conclusion: Seems to work as intended!
 <!-- #endregion -->
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 fig_x, ax_x = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, posterior_name='p_x_given_n_and_x_prev') ## Current plot
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_config_name
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 fig_y, ax_y = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, variable_name='y', posterior_name='p_x_given_n_and_x_prev') ## Current plot
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # Test setting previously extant axis:
 currFig, currAx = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, variable_name='x', posterior_name='p_x_given_n_and_x_prev', ax=ax_y) ## Current plot
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 currFig, currAx = curr_active_pipeline.display('_display_plot_marginal_1D_most_likely_position_comparisons', active_config_name, variable_name='x', posterior_name='p_x_given_n_and_x_prev', ax=active_2d_plot.ui.matplotlib_view_widget.ax) ## Current plot
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.ui.matplotlib_view_widget.draw()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Evaluating Two-Step Decoder:
 <!-- #endregion -->
 
@@ -7672,7 +7538,7 @@ Which best describes the transfer function between long and short?
 
 active_curve_plotter_3d
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 # curr_computations_results.computed_data['pf2D_Decoder'].time_window_centers.shape #
 # unit_specific_time_binned_spike_counts = pf2D_Decoder.unit_specific_time_binned_spike_counts # (40, 17102)
@@ -7680,7 +7546,7 @@ curr_active_pipeline.computation_results
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 # unit_specific_time_binned_spike_counts.shape
 
 unit_specific_time_binned_spike_counts = pf2D_Decoder.unit_specific_time_binned_spike_counts
@@ -7688,7 +7554,7 @@ unit_specific_time_binned_spike_counts
 # list(curr_computations_results.computed_data.keys())
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 unit_specific_time_binned_spike_counts[0].shape
 ```
 
@@ -7889,7 +7755,7 @@ new_ripple_df = loaded_ripple_detector.detected_ripple_epochs_df
 out_all_ripple_results =  DynamicContainer.init_from_dict(loaded_ripple_detector.out_all_ripple_results.copy())
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from neuropy.core import Epoch
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, SessionEpochs2DRenderTimeEpochs, PBE_2DRenderTimeEpochs, Laps2DRenderTimeEpochs, Replays_2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import NewRipples_2DRenderTimeEpochs
@@ -7934,37 +7800,37 @@ if active_3d_plot is not None:
    
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 widget.last_added_display_output
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_active_pipeline.display_output_history_list
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_active_pipeline.display_output_history_list
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_active_pipeline.last_added_display_output
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphocorehelpers.general_helpers import CodeConversion
 
 out_code = CodeConversion.convert_dictionary_to_defn_lines(curr_active_pipeline.last_added_display_output, dictionary_name='curr_active_pipeline.last_added_display_output', copy_to_clipboard=True)
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 curr_context = curr_active_pipeline.display_output_history_list
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
@@ -7980,7 +7846,7 @@ out = active_2d_plot.add_3D_time_curves(plot_dataframe=ripple_predictions_df)
 curr_active_pipeline.sess.epochs
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 loaded_ripple_detector.ripple_df
 ```
 
@@ -7988,24 +7854,24 @@ loaded_ripple_detector.ripple_df
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 new_ripples_intervals_datasource.df
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.clear_all_rendered_intervals()
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ## Embedded matplotlib_render_plot_widget display of new ripples
 <!-- #endregion -->
 
@@ -8026,19 +7892,19 @@ widget.draw()
 out = ax.plot(prediction_timesteps, np.squeeze(a_result['predictions']))
 ```
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 active_2d_plot.sync_matplotlib_render_plot_widget() # Sync it with the active window:
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 # 🐞⛳️✳️ the 3D Interval Rects are CONFIRMED to be misaligned by exactly half of the window width.
 <!-- #endregion -->
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 `active_3d_plot.add_rendered_intervals(new_ripples_intervals_datasource, name='new_ripples')`
 <!-- #endregion -->
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ![python_JwdIMVHpEQ.png](attachment:52498aab-31a8-4a0b-8add-0728809de9ab.png)
 ![image.png](attachment:dabc70cf-76b1-45b6-b7a0-a3bf785e5391.png)
 <!-- #endregion -->
