@@ -2158,17 +2158,13 @@ short_pf1D, did_update_bins = short_pf1D.conform_to_position_bins(long_pf1D)
 long_one_step_decoder_1D, short_one_step_decoder_1D  = [results_data.get('pf1D_Decoder', None) for results_data in (long_results, short_results)]
 short_one_step_decoder_1D.conform_to_position_bins(long_one_step_decoder_1D)
 # -
+## Get the two-step decoders for both the long and short:
+curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], prev_one_step_bayesian_decoder=, debug_print=True)
 long_two_step_decoder_1D, short_two_step_decoder_1D  = [results_data.get('pf1D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
 
 
-long_pf1D.ndim
+## Use the two-step decoder to decode the replay events:
 
-
-
-
-
-long_two_step_decoder = long_results.get('pf2D_TwoStepDecoder', None)
-long_two_step_decoder
 
 
 .
@@ -2192,7 +2188,17 @@ long_two_step_decoder
 
 
 
+# +
+from scipy import stats
+u = [0.5,0.2,0.3]
+v = [0.5,0.3,0.2]
 
+# create and array with cardinality 3 (your metric space is 3-dimensional and
+# where distance between each pair of adjacent elements is 1
+dists = [i for i in range(len(w1))]
+
+stats.wasserstein_distance(dists, dists, u, v)
+# -
 
 
 
