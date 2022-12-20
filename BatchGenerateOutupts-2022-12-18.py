@@ -177,14 +177,14 @@ print('!!! done running batch !!!')
 
 # + tags=["load", "single_session"]
 # # %pdb on
-basedir = local_session_paths_list[1] # NOT 3
+basedir = local_session_paths_list[2] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
@@ -194,7 +194,9 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
 
-curr_active_pipeline.save_pipeline()
+curr_active_pipeline.logger_path
+
+
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ### Burst Detection
@@ -2135,14 +2137,6 @@ active_2d_plot.ui.matplotlib_view_widget.draw()
 #
 
 # +
-# %matplotlib qt
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from pyphocorehelpers.plotting.figure_management import PhoActiveFigureManager2D
-from neuropy.core.neuron_identities import PlotStringBrevityModeEnum
-from neuropy.plotting.figure import Fig
-from neuropy.plotting.ratemaps import plot_ratemap_1D
-
 from PendingNotebookCode import find_epoch_names
 
 long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
@@ -2157,19 +2151,36 @@ global_pf1D = global_results.pf1D
 short_pf1D, did_update_bins = short_pf1D.conform_to_position_bins(long_pf1D)
 long_one_step_decoder_1D, short_one_step_decoder_1D  = [results_data.get('pf1D_Decoder', None) for results_data in (long_results, short_results)]
 short_one_step_decoder_1D.conform_to_position_bins(long_one_step_decoder_1D)
-# -
-## Get the two-step decoders for both the long and short:
-curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], prev_one_step_bayesian_decoder=, debug_print=True)
+
+## Build or get the two-step decoders for both the long and short:
 long_two_step_decoder_1D, short_two_step_decoder_1D  = [results_data.get('pf1D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
+if long_two_step_decoder_1D is None or short_two_step_decoder_1D is None:
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], computation_kwargs_list=[dict(ndim=1)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
+    long_two_step_decoder_1D, short_two_step_decoder_1D  = [results_data.get('pf1D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
+    assert (long_two_step_decoder_1D is not None and short_two_step_decoder_1D is not None)
+# -
 
 
-## Use the two-step decoder to decode the replay events:
+curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], computation_kwargs_list=[dict(ndim=2)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
+
+
+long_two_step_decoder_1D
+
+
+# # Use the two-step decoder to decode the replay events:
 
 
 
 .
 
 
+# %matplotlib qt
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from pyphocorehelpers.plotting.figure_management import PhoActiveFigureManager2D
+from neuropy.core.neuron_identities import PlotStringBrevityModeEnum
+from neuropy.plotting.figure import Fig
+from neuropy.plotting.ratemaps import plot_ratemap_1D
 # Let $x$ be the position
 #
 # https://notesonai.com/KL+Divergence
@@ -2225,3 +2236,24 @@ short_pf1D.bin_info
 long_one_step_decoder_1D.p_x_given_n.shape # .shape: (63, 12100)
 
 short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
+
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# # Future: theta-dependent placefields: build separate placefields for each phase of theta (binned in theta). There should be one set (where the animal is representing the present) that nearly perfectly predicts the animal's location.
+#     # the rest of the variability 
+#
+#     1. Basic Hilbert transform
+#     2. But Theta wave-shape (sawtooth) at higher running speeds.
+#         - do peak-to-trough and trough-to-peak separate
+#         ** Nat will send me something
+#         
+# - remember Eloy's theta-dependent placefields. I'm ashamed that I fucked up with Eloy.
+#
+# -
+
+
+# https://github.com/diba-lab/ephys/blob/master/Analysis/python/LFP/scripts/theta_phase_stim_verify.py
+# Nat's code for detecting the sawtooth theta is here (lines 271-393ish): https://github.com/diba-lab/ephys/blob/master/Analysis/python/LFP/scripts/theta_phase_stim_verify.py
+#
+# It's all based on this paper: https://www.jneurosci.org/content/32/2/423
+
+
