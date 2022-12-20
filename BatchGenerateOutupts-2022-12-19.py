@@ -194,7 +194,7 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
 
-curr_active_pipeline.l
+curr_active_pipeline.logger_path
 
 
 
