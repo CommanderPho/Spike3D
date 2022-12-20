@@ -183,8 +183,8 @@ print(f'basedir: {str(basedir)}')
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
@@ -194,11 +194,7 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
 
-curr_active_pipeline.l
-
-
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ### Burst Detection
 # -
 
@@ -252,7 +248,7 @@ del global_results.extended_stats.relative_entropy_analyses['snapshot_difference
 # curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ###  Compute Required Global Computations Manually:
 
 # +
@@ -493,26 +489,38 @@ short_long_rel_entr_curves # .shape # (101, 63)
 # ## Newest way of dropping bad laps:
 
 # + tags=[]
-from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping
+from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping, get_overlapping_indicies, OverlappingIntervalsFallbackBehavior
 from neuropy.core.epoch import Epoch
 from pyphocorehelpers.print_helpers import print_object_memory_usage  # used in batch_snapshotting(...) to show object memory usage
-
+from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import _plot_position_curves_figure
+from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
+fig, out_axes_list = _plot_position_curves_figure(sess.position, include_velocity=True, include_accel=True, figsize=(24, 10))
+ax0 = out_axes_list[0]
 sess = curr_active_pipeline.sess
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # ### 2022-12-18 - Short Non-Overlapping Intervals Detour:
 # -
 
-from neuropy.utils.efficient_interval_search import get_overlapping_indicies, OverlappingIntervalsFallbackBehavior
+curr_epochs_obj = deepcopy(sess.laps)
 
-curr_laps_obj = deepcopy(sess.laps)
-curr_laps_obj.to_dataframe()
+curr_epochs_obj = deepcopy(sess.ripple)
+curr_epochs_obj.to_dataframe()
 
-start_stop_times_arr = np.vstack([curr_laps_obj.starts, curr_laps_obj.stops]).T # (80, 2)
+start_stop_times_arr = np.vstack([curr_epochs_obj.starts, curr_epochs_obj.stops]).T # (80, 2)
 start_stop_times_arr.shape
 
+# +
 all_overlapping_lap_indicies = get_overlapping_indicies(start_stop_times_arr)
 all_overlapping_lap_indicies
+
+n_total_epochs = start_stop_times_arr.shape[0]
+n_overlapping = len(all_overlapping_lap_indicies)
+print(f'n_overlapping: {n_overlapping} of n_total_epochs: {n_total_epochs}')
+# -
+
+fig, out_axes_list = plot_laps_2d(sess, legacy_plotting_mode=False)
+out_axes_list[0].set_title('New Pho Position Thresholding Estimated Laps')
 
 
 # +
@@ -582,70 +590,6 @@ is_good_epoch = np.full((np.shape(start_stop_times_arr)[0],), True)
 from neuropy.analyses.laps import _build_new_lap_and_intra_lap_intervals # for _perform_time_dependent_pf_sequential_surprise_computation
 sess, combined_records_list = _build_new_lap_and_intra_lap_intervals(sess)
 
-# + tags=[]
-_perform_relative_entropy_analyses
-
-# +
-from neuropy.analyses.time_dependent_placefields import PfND_TimeDependent
-
-global_epoch_name = curr_active_pipeline.active_completed_computation_result_names[-1] # 'maze'
-global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
-
-## Get existing `pf1D_dt`:
-active_pf_1D_dt = global_results.pf1D_dt
-
-# ## Make new pf_1D_dt:
-computation_result = curr_active_pipeline.computation_results[global_epoch_name]
-active_session, pf_computation_config = computation_result.sess, computation_result.computation_config.pf_params
-active_session_spikes_df, active_pos, computation_config, active_epoch_placefields1D, active_epoch_placefields2D, included_epochs, should_force_recompute_placefields = active_session.spikes_df, active_session.position, pf_computation_config, None, None, pf_computation_config.computation_epochs, True
-active_pf_1D_dt = PfND_TimeDependent(deepcopy(active_session_spikes_df), deepcopy(active_pos.linear_pos_obj), epochs=included_epochs,
-                                    speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
-                                    grid_bin=computation_config.grid_bin, grid_bin_bounds=computation_config.grid_bin_bounds, smooth=computation_config.smooth)
-
-
-
-# + tags=[]
-_out_snapshots = active_pf_1D_dt.batch_snapshotting(combined_records_list, reset_at_start=True, debug_print=False)
-
-# + tags=[]
-_out_snapshots
-
-# + tags=[]
-print_object_memory_usage(_out_snapshots) # object size: 11.900370 MB
-# -
-
-# 'flat_relative_entropy_results'
-# pf_overlap_results, flat_relative_entropy_results = compute_snapshot_differences(active_pf_1D_dt)
-# post_update_times, pf_overlap_results, flat_relative_entropy_results, flat_jensen_shannon_distance_results = compute_snapshot_differences(_out_snapshots)
-post_update_times, pf_overlap_results, flat_relative_entropy_results, flat_jensen_shannon_distance_results = compute_snapshot_differences(active_pf_1D_dt.historical_snapshots)
-# relative_entropy_result_dicts_list = [a_val_dict['relative_entropy_result_dict'] for a_val_dict in pf_overlap_results]
-# long_short_rel_entr_curves_list = [a_val_dict['long_short_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list] # [0].shape # (108, 63) = (n_neurons, n_xbins)
-# short_long_rel_entr_curves_list = [a_val_dict['short_long_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list]
-# long_short_rel_entr_curves_frames = np.stack([a_val_dict['long_short_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list]) # build a 3D array (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
-# short_long_rel_entr_curves_frames = np.stack([a_val_dict['short_long_rel_entr_curve'] for a_val_dict in relative_entropy_result_dicts_list]) # build a 3D array (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
-
-flat_relative_entropy_results = np.vstack(flat_relative_entropy_results)
-
-
-
-sess.epochs
-
-post_update_times.shape
-
-flat_relative_entropy_results.shape # (149, 63) (n_windows, n_locations)
-
-flat_jensen_shannon_distance_results.shape
-
-len(snapshot_times) # we'll call the time being analyzed between snapshots: t, t+1 the snapshot t+1 since it incldues the contribution of these timepoints
-
-plt.plot(post_update_times, flat_relative_entropy_results)
-
-np.unique(flat_relative_entropy_results)
-
-np.unique(flat_jensen_shannon_distance_results)
-
-plt.axvline(1211.55808, color='k')
-
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # ## `active_pf_nD`, `active_pf_nD_dt` visualizations
 
@@ -697,7 +641,6 @@ LinearRegionItem
 
 VTickGroup
 
-# %pdb off
 import pyphoplacecellanalysis.External.pyqtgraph as pg
 from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.CustomLinearRegionItem import CustomLinearRegionItem
@@ -931,12 +874,32 @@ main_time_curves_view_widget =
 #         background_static_scroll_window_plot.setYRange(np.nanmin(curr_spike_y), np.nanmax(curr_spike_y), padding=0)
         
 #         return background_static_scroll_window_plot
+# -
+
+from neuropy.analyses.laps import estimation_session_laps, _subfn_perform_estimate_lap_splits_1D # for estimation_session_laps
+
+# %pdb off
+estimation_session_laps(curr_active_pipeline.sess, should_plot_laps_2d=True)
 
 # +
-from neuropy.analyses.laps import estimation_session_laps # for estimation_session_laps
+lap_change_indicies = _subfn_perform_estimate_lap_splits_1D(pos_df)
+(desc_crossing_begining_idxs, desc_crossing_midpoint_idxs, desc_crossing_ending_idxs), (asc_crossing_begining_idxs, asc_crossing_midpoint_idxs, asc_crossing_ending_idxs) = lap_change_indicies
 
-# %pdb on
-curr_active_pipeline.sess = estimation_session_laps(curr_active_pipeline.sess, should_plot_laps_2d=True)
+pos_times = pos_df['t'].to_numpy()
+desc_crossing_beginings, desc_crossing_midpoints, desc_crossing_endings, asc_crossing_beginings, asc_crossing_midpoints, asc_crossing_endings = [pos_times[idxs] for idxs in (desc_crossing_begining_idxs, desc_crossing_midpoint_idxs, desc_crossing_ending_idxs, asc_crossing_begining_idxs, asc_crossing_midpoint_idxs, asc_crossing_ending_idxs)]
+# -
+
+fig, ax = plt.subplots()
+# ax.plot(post_update_times, flat_surprise_across_all_positions)
+ax.set_ylabel('Relative Entropy across all positions')
+ax.set_xlabel('t (seconds)')
+epochs_collection, epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.epochs, ax, facecolor=('red','cyan'), alpha=0.1, edgecolors=None, labels_kwargs={'y_offset': -0.05, 'size': 14}, defer_render=True, debug_print=False)
+laps_epochs_collection, laps_epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.laps.as_epoch_obj(), ax, facecolor='red', edgecolors='black', labels_kwargs={'y_offset': -16.0, 'size':8}, defer_render=True, debug_print=False)
+replays_epochs_collection, replays_epoch_labels = draw_epoch_regions(active_filter_epoch_obj, ax, facecolor='orange', edgecolors=None, labels_kwargs=None, defer_render=False, debug_print=False)
+fig.suptitle('flat_surprise_across_all_positions')
+fig.show()
+
+curr_active_pipeline.sess.laps.to_dataframe()
 
 # +
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
@@ -978,7 +941,7 @@ hardcoded_track_midpoint_x = 150.0
 pos_df.x.aggregate(['nanmin','mean', 'median','nanmax'])
 
 # # %pdb off
-fig, out_axes_list = _plot_position_curves_figure(sess.position, include_velocity=True, include_accel=True, figsize=(24, 10))
+fig, out_axes_list = _plot_position_curves_figure(sess.position, include_velocity=True, include_accel=False, figsize=(24, 10))
 ax0 = out_axes_list[0]
 
 # +
@@ -1078,8 +1041,6 @@ curr_laps.from_estimated_laps()
 curr_laps_df = sess.laps.to_dataframe()
 curr_laps_df
 
-
-
 pos_df = sess.compute_position_laps() # ensures the laps are computed if they need to be:
 position_obj = sess.position
 position_obj.compute_higher_order_derivatives()
@@ -1120,7 +1081,7 @@ out_indicies, out_digitized_position_bins, out_within_lap_spikes_overlap = compu
 
 
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # `_display_short_long_pf1D_comparison` and `_display_short_long_pf1D_scalar_overlap_comparison`
 
 # +
@@ -1173,7 +1134,7 @@ from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchro
 curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
 curr_placefields_plotter.show()
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
 # ## ❌🆖 BROKEN Individual Plotting Outputs:
 
 # + [markdown] tags=[]
@@ -1490,7 +1451,7 @@ ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(sess_time_
 
 
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # # NEW 2022-12-14 - Efficient PfND_TimeDependent batch entropy computations:
 
 # + pycharm={"name": "#%%\n"}
@@ -1597,7 +1558,7 @@ neurons_obj_PYR.get_above_firing_rate(1.0)
 CodeConversion.get_arguments_as_optional_dict("ha='center', va='top', family='sans-serif', size=14")
 
 # + pycharm={"name": "#%%\n"}
-from PendingNotebookCode import add_epochs
+from neuropy.utils.matplotlib_helpers import draw_epoch_regions
 from neuropy.core.epoch import Epoch
 
 # + pycharm={"name": "#%%\n"}
@@ -1617,12 +1578,12 @@ active_filter_epoch_obj
 
 # + pycharm={"name": "#%%\n"} tags=["plot", "visualization"]
 fig, ax = plt.subplots()
-ax.plot(post_update_times, flat_surprise_across_all_positions)
+# ax.plot(post_update_times, flat_surprise_across_all_positions)
 ax.set_ylabel('Relative Entropy across all positions')
 ax.set_xlabel('t (seconds)')
-epochs_collection, epoch_labels = add_epochs(curr_active_pipeline.sess.epochs, ax, facecolor=('red','cyan'), alpha=0.1, edgecolors=None, labels_kwargs={'y_offset': -0.05, 'size': 14}, defer_render=True, debug_print=False)
-laps_epochs_collection, laps_epoch_labels = add_epochs(curr_active_pipeline.sess.laps.as_epoch_obj(), ax, facecolor='red', edgecolors='black', labels_kwargs={'y_offset': -16.0, 'size':8}, defer_render=True, debug_print=False)
-replays_epochs_collection, replays_epoch_labels = add_epochs(active_filter_epoch_obj, ax, facecolor='orange', edgecolors=None, labels_kwargs=None, defer_render=False, debug_print=False)
+epochs_collection, epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.epochs, ax, facecolor=('red','cyan'), alpha=0.1, edgecolors=None, labels_kwargs={'y_offset': -0.05, 'size': 14}, defer_render=True, debug_print=False)
+laps_epochs_collection, laps_epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.laps.as_epoch_obj(), ax, facecolor='red', edgecolors='black', labels_kwargs={'y_offset': -16.0, 'size':8}, defer_render=True, debug_print=False)
+replays_epochs_collection, replays_epoch_labels = draw_epoch_regions(active_filter_epoch_obj, ax, facecolor='orange', edgecolors=None, labels_kwargs=None, defer_render=False, debug_print=False)
 fig.suptitle('flat_surprise_across_all_positions')
 fig.show()
 
@@ -1638,7 +1599,7 @@ ax.imshow(flat_relative_entropy_results.T, extent=extents)
 ax.set_ylabel('Relative Entropy')
 ax.set_xlabel('t (seconds)')
 fig.suptitle('flat_relative_entropy_results.T')
-epochs_collection, epoch_labels = add_epochs(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
+epochs_collection, epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
 fig.show()
 
 # + pycharm={"name": "#%%\n"}
@@ -1655,7 +1616,7 @@ ax.plot(post_update_times, flat_relative_entropy_results)
 ax.set_ylabel('Relative Entropy')
 ax.set_xlabel('t (seconds)')
 fig.suptitle('flat_relative_entropy_results')
-epochs_collection, epoch_labels = add_epochs(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
+epochs_collection, epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
 fig.show()
 
 # + pycharm={"name": "#%%\n"}
@@ -1731,7 +1692,7 @@ ax.plot(post_update_times, normalized_flat_relative_entropy_results)
 ax.set_ylabel('Normalized Relative Entropy')
 ax.set_xlabel('t (seconds)')
 fig.suptitle('Normalized Relative Entropy')
-epochs_collection, epoch_labels = add_epochs(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
+epochs_collection, epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.epochs, ax, defer_render=False, debug_print=False)
 fig.show()
 
 # + [markdown] pycharm={"name": "#%%\n"} tags=[]
@@ -2167,7 +2128,9 @@ curr_active_pipeline.perform_specific_computation(computation_functions_name_whi
 long_two_step_decoder_1D
 
 
+# + [markdown] tags=[]
 # # Use the two-step decoder to decode the replay events:
+# -
 
 from neuropy.core.epoch import EpochsAccessor, Epoch
 
@@ -2185,6 +2148,7 @@ from neuropy.core.neuron_identities import PlotStringBrevityModeEnum
 from neuropy.plotting.figure import Fig
 from neuropy.plotting.ratemaps import plot_ratemap_1D
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
+from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 
 # +
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import DefaultComputationFunctions
@@ -2267,7 +2231,7 @@ long_one_step_decoder_1D.p_x_given_n.shape # .shape: (63, 12100)
 
 short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # Future: theta-dependent placefields: build separate placefields for each phase of theta (binned in theta). There should be one set (where the animal is representing the present) that nearly perfectly predicts the animal's location.
 #     # the rest of the variability 
 #
