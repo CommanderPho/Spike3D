@@ -87,7 +87,7 @@ global_data_root_parent_path = Path(r'W:\Data') # Windows Apogee
 # global_data_root_parent_path = Path(r'/Volumes/MoverNew/data') # rMBP
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[]
 # # Load Pipeline
 
 # + tags=["load"]
@@ -1983,22 +1983,16 @@ if long_two_step_decoder_1D is None or short_two_step_decoder_1D is None:
 # -
 
 
+curr_active_pipeline.reload_default_computation_functions()
+
+
 long_two_step_decoder_1D
 
 
 # + [markdown] tags=[]
 # # Use the two-step decoder to decode the replay events:
-# -
 
-from neuropy.core.epoch import EpochsAccessor, Epoch
-
-
-curr_active_pipeline.sess.replay
-
-
-curr_active_pipeline.sess.replay.epochs._obj
-
-
+# +
 # %matplotlib qt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -2009,13 +2003,17 @@ from neuropy.plotting.ratemaps import plot_ratemap_1D
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
 from neuropy.utils.matplotlib_helpers import plot_overlapping_epoch_analysis_diagnoser
 
+from neuropy.core.epoch import EpochsAccessor, Epoch
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import DefaultComputationFunctions
+# -
+
 # fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj())
 fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.ripple)
 
 
 
 # +
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import DefaultComputationFunctions
+
 
 # config_name = 'maze1'
 config_name = 'maze2'
@@ -2023,7 +2021,7 @@ decoding_time_bin_size = 1.0/30.0 # 0.03333333333333333
 # decoding_time_bin_size = 0.03 # 0.03333333333333333
 print(f'decoding_time_bin_size: {decoding_time_bin_size}')
 computation_result = curr_active_pipeline.computation_results[config_name]
-# computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size)
+# computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1)
 # filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Ripples', decoding_time_bin_size)]
 # -
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
@@ -2035,15 +2033,40 @@ epochs_df
 epochs_df = curr_active_pipeline.sess.pbe.to_dataframe().epochs.get_valid_df()
 epochs_df
 
-computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='replays', decoding_time_bin_size=decoding_time_bin_size)
+computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='replays', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1)
 filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Replays', decoding_time_bin_size)]
-computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='laps', decoding_time_bin_size=decoding_time_bin_size)
+# +
+## Perform a decoding for the specific epoch types
+computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='laps', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1)
 filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Laps', decoding_time_bin_size)]
-print(f'n_epochs: {active_filter_epochs.n_epochs}')
-computation_result.computed_data['specific_epochs_decoding']
+n_epochs = active_filter_epochs.n_epochs
+print(f'{n_epochs = }')
+
+# unwrap for a given epoch
+filter_epochs_decoder_result_epoch_lists = {a_key:a_list_variable for a_key, a_list_variable in filter_epochs_decoder_result.items() if not np.isscalar(a_list_variable)}
+filter_epochs_decoder_result_epoch_unwrapped_items = [{a_key.removesuffix('_list'):a_list_variable[an_epoch_idx] for a_key, a_list_variable in filter_epochs_decoder_result_epoch_lists.items()} for an_epoch_idx in np.arange(filter_epochs_decoder_result.num_filter_epochs)] # make separate dict for each epoch
+# -
+epoch_idx = 0 # show the epoch at index 0
+curr_epoch_result = filter_epochs_decoder_result_epoch_unwrapped_items[epoch_idx]
+## Validate:
+assert np.allclose(curr_epoch_result['marginal_x']['p_x_given_n'], curr_epoch_result['p_x_given_n']), f"1D Decoder should have an x-posterior equal to its own posterior"
+assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
+curr_epoch_result
+# filter_epochs_decoder_result: holds several lists of equal length
+print(list(filter_epochs_decoder_result.keys()))
+# filter_epochs_decoder_result: a container holding several lists with an item for each filter_epoch:
+# i = None # show the root list
+i = 0 # show the epoch at index 0
+for a_key, a_list_variable in filter_epochs_decoder_result.items():
+    if not np.isscalar(a_list_variable):
+        if i is not None:
+            a_list_variable = a_list_variable[i]
+        if isinstance(a_list_variable, (list, tuple)):
+            print(f'{a_key}: len:\t {len(a_list_variable)}')
+        else:
+            print(f'{a_key}: shape:\t {np.shape(a_list_variable)}')
 active_decoder_1d = computation_result.computed_data['pf1D_Decoder']
 active_decoder_2d = computation_result.computed_data['pf2D_Decoder']
-active_decoder_2d.debug_dump_print()
 ## Works to show the stacked decoded epochs plot!!
 if not isinstance(active_filter_epochs, pd.DataFrame):
     active_filter_epochs = active_filter_epochs.to_dataframe()
@@ -2060,7 +2083,8 @@ out_plot_tuple = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_d
 params, plots_data, plots, ui = out_plot_tuple
 
 ## try to fix marginals for 1D decoder:
-active_decoder = computation_result.computed_data['pf1D_Decoder']
+active_decoder_1d = computation_result.computed_data['pf1D_Decoder']
+active_decoder_1d
 
 active_decoder.p_x_given_n.shape
 
@@ -2143,7 +2167,7 @@ long_one_step_decoder_1D.p_x_given_n.shape # .shape: (63, 12100)
 
 short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # Future: theta-dependent placefields: build separate placefields for each phase of theta (binned in theta). There should be one set (where the animal is representing the present) that nearly perfectly predicts the animal's location.
 #     # the rest of the variability 
 #
@@ -2165,13 +2189,14 @@ short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 
 
 # # 🔝 NEXT 2022-12-20:
-# - [ ] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
+# - [X] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
 #     https://github.com/CommanderPho/pyPhoPlaceCellAnalysis/blob/master/src/pyphoplacecellanalysis/General/Pipeline/Stages/ComputationFunctions/DefaultComputationFunctions.py#L398
 #     
 # - Build out the 
 # See:
 # - [ ] TODO 2022-12-20 - Get Dropping overlapping epochs (both literal duplicates and overlapping) working reliably:
-# - [ ] TODO: get visual/interactive helper working (it's in the matplotlib_helpers)
+# - [ ] TODO: get visual/interactive helper working (it's in the matplotlib_helpers):
+#         `plot_overlapping_epoch_analysis_diagnoser`
 # - [ ] TODO: finish `KnownFilterEpochs`
 
 
