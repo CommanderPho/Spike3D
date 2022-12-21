@@ -1,5 +1,6 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
 from copy import deepcopy
+from typing import List
 from matplotlib.colors import ListedColormap
 from pathlib import Path
 import numpy as np
@@ -19,12 +20,187 @@ should_force_recompute_placefields = True
 should_display_2D_plots = True
 _debug_print = False
 
+
+# ==================================================================================================================== #
+# 2022-12-20 - Overlapping Intervals                                                                                   #
+# ==================================================================================================================== #
+# https://www.baeldung.com/cs/finding-all-overlapping-intervals
+
+# def eraseOverlapIntervals(intervals):
+#     """ https://leetcode.com/problems/non-overlapping-intervals/solutions/91702/python-simple-greedy-10-lines/ """
+#     if len(intervals) == 0:
+#         return 0
+#     intervals = sorted(intervals, key = lambda x:x[1])
+#     removeNum, curBorder = -1, intervals[0][1]
+#     for interval in intervals:
+#         if interval[0] < curBorder:
+#             removeNum += 1
+#         else:
+#             curBorder = interval[1]
+#     return removeNum
+
+def eraseOverlapIntervals(intervals: List[List[int]]) -> int:
+    """ https://leetcode.com/problems/non-overlapping-intervals/solutions/424634/python-greedy-w-optimizations-faster-then-99-5/ """
+    max_count = len(intervals)
+    if max_count  <= 1:
+        return 0
+    arr = sorted(intervals, key=lambda x: x[1])
+    counter = 0
+    last_end = float("-inf")
+    for elem in arr:
+        if elem[0] >= last_end:
+            last_end = elem[1]
+            counter += 1
+    return max_count - counter
+
+
+def removeCoveredIntervals(intervals: List[List[int]]) -> List[List[int]]:
+    """ 
+    https://leetcode.com/problems/remove-covered-intervals/solutions/879665/python-faster-than-99-using-dict/
+
+    Alternatives:
+        https://leetcode.com/problems/remove-covered-intervals/solutions/878478/python-simple-solution-explained-video-code-fastest/
+        https://leetcode.com/problems/remove-covered-intervals/solutions/1784520/python3-sorting-explained/?orderBy=most_votes&languageTags=python3
+
+    """
+    d=dict()   
+    high=-1
+    ans=0
+    out_intervals = []
+    totalIntervals = len(intervals)
+    
+    for i in range(len(intervals)):
+        if intervals[i][0] in d.keys():
+            if d[intervals[i][0]]< intervals[i][1]:
+                d[intervals[i][0]] = intervals[i][1]
+        else:
+            d[intervals[i][0]]  = intervals[i][1]
+    for i in sorted(d):
+        if d[i] > high:
+            high = d[i]
+            ans+=1
+            out_intervals.append(d[i])
+    return out_intervals
+
+
+def merge(intervals: List[List[int]], in_place=False) -> List[List[int]]:
+    """ NOTE: modifies initial array.
+    Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+     https://leetcode.com/problems/merge-intervals/solutions/350272/python3-sort-o-nlog-n/ """
+    if not in_place:
+        # return a copy so the original intervals aren't modified.
+        intervals = deepcopy(intervals)
+    intervals.sort(key =lambda x: x[0])
+    merged =[]
+    for i in intervals:
+        # if the list of merged intervals is empty 
+        # or if the current interval does not overlap with the previous,
+        # simply append it.
+        if not merged or merged[-1][-1] < i[0]:
+            merged.append(i)
+        # otherwise, there is overlap,
+        #so we merge the current and previous intervals.
+        else:
+            merged[-1][-1] = max(merged[-1][-1], i[-1])
+    return merged
+
+
+# Divide Intervals Into Minimum Number of Groups _____________________________________________________________________ #
+# """You are given a 2D integer array intervals where intervals[i] = [lefti, righti] represents the inclusive interval [lefti, righti].
+#     You have to divide the intervals into one or more groups such that each interval is in exactly one group, and no two intervals that are in the same group intersect each other.
+#     Return the minimum number of groups you need to make.
+# """
+
+import heapq
+def minGroups(intervals: List[List[int]]) -> int:
+    """ https://leetcode.com/problems/divide-intervals-into-minimum-number-of-groups/solutions/2560020/min-heap/?orderBy=most_votes&languageTags=python3
+
+    Alternatives:
+        https://leetcode.com/problems/divide-intervals-into-minimum-number-of-groups/solutions/2568422/python-runtime-o-nlogn-96-12-memory-o-n/
+    """
+    pq = []
+    for left, right in sorted(intervals):
+        if pq and pq[0] < left:
+            heapq.heappop(pq)
+        heapq.heappush(pq, right)
+    return pq
+
+
+## overlap between ranges:
+def overlap(a,b,c,d):
+    """ 
+    return 0 for identical intervals and None for non-overlapping intervals as required.
+    https://stackoverflow.com/questions/11026167/interval-overlap-size
+
+    For ranges, see: https://stackoverflow.com/questions/6821156/how-to-find-range-overlap-in-python 
+        `range(max(x[0], y[0]), min(x[-1], y[-1])+1)`
+    """
+    r = 0 if a==c and b==d else min(b,d)-max(a,c)
+    if r>=0: return r
+
+
+# def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+#     """ https://dev.to/codekagei/algorithm-to-merge-overlapping-intervals-found-in-a-list-python-solution-5819 """
+#     if len(intervals) <= 1:
+#         return intervals
+#     output = []
+#     intervals.sort()
+#     current = intervals[0]
+#     output.append(current)
+#     for i in range(len(intervals)):
+#         current2 = current[1];
+#         next1 = intervals[i][0]
+#         next2 = intervals[i][1]
+
+#         if current2 >= next1:
+#             current[1] = max(current2, next2)
+#         else:
+#             current = intervals[i]
+#             output.append(current)
+
+#     return output
+
+
 # ==================================================================================================================== #
 # 2022-12-18 - Added Standardization of Position bins between short and long                                           #
 # ==================================================================================================================== #
 
 from neuropy.analyses.placefields import PfND # for re-binning pf1D
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
+
+def merge_overlapping_intervals(intervals):
+    """ Doesn't seem to work. Generated by Chat-GPT """
+    # Sort the intervals by start time
+    intervals = sorted(intervals, key=lambda x: x[0])
+    # Initialize the result with the first interval
+    result = [intervals[0]]
+    # Iterate through the rest of the intervals
+    for interval in intervals[1:]:
+        # If the current interval overlaps with the last interval in the result,
+        # update the end time of the last interval to the maximum of the two end times
+        if interval[0] <= result[-1][1]:
+            result[-1][1] = max(result[-1][1], interval[1])
+        # Otherwise, append the current interval to the result
+        else:
+            result.append(interval)
+    return np.array(result)
+
+def split_overlapping_intervals(intervals):
+    """ Doesn't seem to work. Generated by Chat-GPT """
+    # Sort the intervals by start time
+    intervals = sorted(intervals, key=lambda x: x[0])
+
+    result = []
+    # Iterate through the intervals
+    for interval in intervals:
+        # If the current interval overlaps with the last interval in the result,
+        # split the current interval into two non-overlapping intervals
+        if result and interval[0] <= result[-1][1]:
+            result.append([result[-1][1], interval[1]])
+        # Otherwise, append the current interval to the result
+        else:
+            result.append(interval)
+    return np.array(result)
 
 
 ### Piso-based interval overlap removal
