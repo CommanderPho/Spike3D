@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.14.4
 #   kernelspec:
-#     display_name: Python [conda env:phoviz_ultimate_311]
+#     display_name: Python [conda env:phoviz_ultimate]
 #     language: python
-#     name: conda-env-phoviz_ultimate_311-py
+#     name: conda-env-phoviz_ultimate-py
 # ---
 
 # + [markdown] tags=[]
@@ -53,7 +53,7 @@ from benedict import benedict # https://github.com/fabiocaccamo/python-benedict#
 
 ## Pho's Custom Libraries:
 from pyphocorehelpers.general_helpers import CodeConversion
-from pyphocorehelpers.print_helpers import print_keys_if_possible, print_value_overview_only, document_active_variables
+from pyphocorehelpers.print_helpers import print_keys_if_possible, print_value_overview_only, document_active_variables, objsize, print_object_memory_usage
 
 # pyPhoPlaceCellAnalysis:
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # get_neuron_identities
@@ -105,13 +105,13 @@ local_session_root_parent_context = IdentifyingContext(format_name=active_data_m
 local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 ### Animal `vvp01`:
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
@@ -177,24 +177,42 @@ print('!!! done running batch !!!')
 
 # + tags=["load", "single_session"]
 # # %pdb on
-basedir = local_session_paths_list[2] # NOT 3
+basedir = local_session_paths_list[0] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle - full-good.pkl', skip_extended_batch_computations=True)
+
+# + tags=["load", "single_session"]
+print_object_memory_usage(curr_active_pipeline)
+
+# + tags=["load", "single_session"]
+print_object_memory_usage(curr_active_pipeline.sess)
+
+# + tags=["load", "single_session"]
+print_object_memory_usage(curr_active_pipeline.computation_results) # 22240.691080 MB
+
+# + tags=["load", "single_session"]
+print_object_memory_usage(curr_active_pipeline.computation_results['maze1'])
+
+# + tags=["load", "single_session"]
+print_object_memory_usage(curr_active_pipeline.computation_results['maze'])
+
+# + tags=["load", "single_session"]
+curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
 # -
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ### Burst Detection
 # -
 
@@ -248,7 +266,7 @@ del global_results.extended_stats.relative_entropy_analyses['snapshot_difference
 # curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ###  Compute Required Global Computations Manually:
 
 # +
@@ -399,7 +417,7 @@ plt.plot(post_update_times.T, flat_jensen_shannon_distance_across_all_positions)
 # +
 # flat_relative_entropy_results.shape # (1, 63)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ## 🟢 2022-11-21 - 1D Ratemaps Before and After Track change (Long vs. Short track)
 # Working metrics for comparing overlaps of 1D placefields before and after track change
 # -
@@ -415,7 +433,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPred
 active_decoder = long_one_step_decoder_1D
 fig, axs = plot_spike_count_and_firing_rate_normalizations(active_decoder)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2022-09-23 Decoder Testing
 
 # +
@@ -511,6 +529,7 @@ from neuropy.utils.efficient_interval_search import deduplicate_epochs
 from PendingNotebookCode import minGroups, merge, removeCoveredIntervals, eraseOverlapIntervals
 
 # + tags=[]
+
 
 
 # + tags=[]
@@ -928,7 +947,7 @@ out_indicies, out_digitized_position_bins, out_within_lap_spikes_overlap = compu
 
 
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # `_display_short_long_pf1D_comparison` and `_display_short_long_pf1D_scalar_overlap_comparison`
 
 # +
@@ -1298,7 +1317,7 @@ ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(sess_time_
 
 
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # NEW 2022-12-14 - Efficient PfND_TimeDependent batch entropy computations:
 
 # + pycharm={"name": "#%%\n"}
@@ -1775,7 +1794,7 @@ out_plots[1].show()
 # a_plot.scene() # GraphicsScene
 export_pyqtgraph_plot(plots[0])
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # GUI/Widget Helpers
 
 # +
@@ -1953,29 +1972,11 @@ short_results = curr_active_pipeline.computation_results[short_epoch_name]['comp
 global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
 
 recalculate_anyway = False
-# -
 
-
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import DefaultComputationFunctions
-
-
-curr_active_pipeline.stage.unregister_all_computation_functions()
-
-
-from collections import OrderedDict
-curr_active_pipeline.stage.registered_global_computation_function_dict = OrderedDict()
-curr_active_pipeline.stage.registered_computation_function_dict = OrderedDict()
-
-
-curr_active_pipeline.reload_default_computation_functions()
-
-
-import pyphoplacecellanalysis
-importlib.reload(pyphoplacecellanalysis)
 
 
 # +
-# %pdb on
+# # %pdb on
 # Make the 1D Placefields and Decoders conform between the long and the short epochs:
 long_pf1D = long_results.pf1D
 short_pf1D = short_results.pf1D
@@ -1991,16 +1992,11 @@ if recalculate_anyway or did_recompute or (long_two_step_decoder_1D is None) or 
     curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], computation_kwargs_list=[dict(ndim=1)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
     long_two_step_decoder_1D, short_two_step_decoder_1D  = [results_data.get('pf1D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
     assert (long_two_step_decoder_1D is not None and short_two_step_decoder_1D is not None)
+
+decoding_time_bin_size = long_one_step_decoder_1D.time_bin_size # 1.0/30.0 # 0.03333333333333333
+# decoding_time_bin_size = 0.03 # 0.03333333333333333
+print(f'decoding_time_bin_size: {decoding_time_bin_size}')
 # -
-
-
-short_one_step_decoder_1D.xbin
-
-
-
-
-
-short_pf1D.xbin
 
 
 # #### Get 2D Decoders for validation and comparisons:
@@ -2015,7 +2011,7 @@ global_pf2D = global_results.pf2D
 # long_one_step_decoder_2D, short_one_step_decoder_2D  = [results_data.get('pf2D_Decoder', None) for results_data in (long_results, short_results)]
 # long_two_step_decoder_2D, short_two_step_decoder_2D  = [results_data.get('pf2D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
 
-short_pf2D, did_update_bins = short_pf2D.conform_to_position_bins(long_pf2D)
+# short_pf2D, did_update_bins = short_pf2D.conform_to_position_bins(long_pf2D)
 long_one_step_decoder_2D, short_one_step_decoder_2D  = [results_data.get('pf2D_Decoder', None) for results_data in (long_results, short_results)]
 short_one_step_decoder_2D, did_recompute = short_one_step_decoder_2D.conform_to_position_bins(long_one_step_decoder_2D)
 
@@ -2029,9 +2025,6 @@ if recalculate_anyway or did_recompute or (long_two_step_decoder_2D is None) or 
 
 
 long_pf2D.xbin
-
-
-curr_active_pipeline.save_pipeline()
 
 
 short_pf2D.xbin
@@ -2080,8 +2073,8 @@ print(f'{np.sum(long_one_step_decoder_2D.marginal.x.p_x_given_n) =},\t {np.sum(l
 
 
 ## Validate:
-assert long_one_step_decoder_2D.marginal.x.p_x_given_n.shape == long_one_step_decoder_1D.p_x_given_n.shape, f"Must equal but: {long_one_step_decoder_1D.p_x_given_n.shape =} and {long_one_step_decoder_1D.p_x_given_n.shape =}"
-assert long_one_step_decoder_2D.marginal.x.most_likely_positions_1D.shape == long_one_step_decoder_1D.most_likely_positions.shape, f"Must equal but: {long_one_step_decoder_1D.most_likely_positions.shape =} and {long_one_step_decoder_1D.most_likely_positions.shape =}"
+assert long_one_step_decoder_2D.marginal.x.p_x_given_n.shape == long_one_step_decoder_1D.p_x_given_n.shape, f"Must equal but: {long_one_step_decoder_2D.marginal.x.p_x_given_n.shape =} and {long_one_step_decoder_1D.p_x_given_n.shape =}"
+assert long_one_step_decoder_2D.marginal.x.most_likely_positions_1D.shape == long_one_step_decoder_1D.most_likely_positions.shape, f"Must equal but: {long_one_step_decoder_2D.marginal.x.most_likely_positions_1D.shape =} and {long_one_step_decoder_1D.most_likely_positions.shape =}"
 
 
 ## validate values:
@@ -2091,19 +2084,40 @@ assert np.allclose(long_one_step_decoder_2D.marginal.x.p_x_given_n, long_one_ste
 assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
 curr_epoch_result
 
-
-
-
-
-curr_active_pipeline.reload_default_computation_functions()
-
-
-long_one_step_decoder_1D.time_bin_size
-
-
 # + [markdown] tags=[]
 # # Use the two-step decoder to decode the replay events:
+# -
 
+curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[long_epoch_name], filter_epochs='replay', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=2);
+config_name = long_epoch_name
+computation_result = curr_active_pipeline.computation_results[config_name]
+filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('replay', 0.03333, 2)]
+# +
+
+if isinstance(active_filter_epochs, pd.DataFrame):
+    n_epochs = np.shape(active_filter_epochs)[0]
+else:
+    n_epochs = active_filter_epochs.n_epochs
+print(f'{n_epochs = }')
+# -
+filter_epochs_decoder_result.most_likely_position_indicies_list[0,:]
+# +
+# unwrap for a given epoch
+filter_epochs_decoder_result_epoch_lists = {a_key:a_list_variable for a_key, a_list_variable in filter_epochs_decoder_result.items() if not np.isscalar(a_list_variable)}
+filter_epochs_decoder_result_epoch_unwrapped_items = [{a_key.removesuffix('_list'):a_list_variable[an_epoch_idx] for a_key, a_list_variable in filter_epochs_decoder_result_epoch_lists.items()} for an_epoch_idx in np.arange(filter_epochs_decoder_result.num_filter_epochs)] # make separate dict for each epoch
+
+# curr_epoch_result = [filter_epochs_decoder_result_epoch_unwrapped_items[epoch_idx]['most_likely_position_indicies'][0,:] for epoch_idx in np.arange(n_epochs)]
+
+# marginal_x_max_likelihoods = np.array([np.max(filter_epochs_decoder_result_epoch_unwrapped_items[epoch_idx]['marginal_x']['p_x_given_n'], axis=1) for epoch_idx in np.arange(n_epochs)]) # get the maximum likelihood of the most-likely decoded position to determine how confident we are about the decoding.
+marginal_x_max_likelihoods = [np.max(filter_epochs_decoder_result_epoch_unwrapped_items[epoch_idx]['marginal_x']['p_x_given_n'], axis=1) for epoch_idx in np.arange(n_epochs)] # get the maximum likelihood of the most-likely decoded position to determine how confident we are about the decoding.
+# print(f'{marginal_x_max_likelihoods.shape = }') # (307, 64)
+marginal_x_max_likelihoods
+# ## Validate:
+# assert np.allclose(curr_epoch_result['marginal_x']['p_x_given_n'], curr_epoch_result['p_x_given_n']), f"1D Decoder should have an x-posterior equal to its own posterior"
+# assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
+# curr_epoch_result
+# -
+filter_epochs_decoder_result.most_likely_positions_list
 # +
 # %matplotlib qt
 import matplotlib as mpl
@@ -2122,17 +2136,15 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.Default
 # fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj())
 fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.ripple)
 
-# %pdb off
-
+# +
 config_name = 'maze1'
 # config_name = 'maze2'
-decoding_time_bin_size = long_one_step_decoder_1D.time_bin_size # 1.0/30.0 # 0.03333333333333333
-# decoding_time_bin_size = 0.03 # 0.03333333333333333
-print(f'decoding_time_bin_size: {decoding_time_bin_size}')
+
 computation_result = curr_active_pipeline.computation_results[config_name]
 computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1);
 # filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Ripples', decoding_time_bin_size)]
 # curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, force_recompute=True, decoder_ndim=1);
+# -
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
 epochs_df
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_non_overlapping_df()
@@ -2148,7 +2160,6 @@ epochs_df.shape # (54, 9)
 # %pdb off
 ('lap', 0.03333, 1)
 curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1);
-curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='replay', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=2);
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
 epochs_df
 epochs_df = curr_active_pipeline.sess.ripple.to_dataframe().epochs.get_valid_df()
@@ -2188,11 +2199,11 @@ params, plots_data, plots, ui = out_plot_tuple
 ui.mw.setWindowTitle(default_figure_name)
 # -
 
-epoch_idx = 0 # show the epoch at index 0
+epoch_idx = 14 # show the epoch at index 0
 curr_epoch_result = filter_epochs_decoder_result_epoch_unwrapped_items[epoch_idx]
 ## Validate:
-assert np.allclose(curr_epoch_result['marginal_x']['p_x_given_n'], curr_epoch_result['p_x_given_n']), f"1D Decoder should have an x-posterior equal to its own posterior"
-assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
+# assert np.allclose(curr_epoch_result['marginal_x']['p_x_given_n'], curr_epoch_result['p_x_given_n']), f"1D Decoder should have an x-posterior equal to its own posterior"
+# assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
 curr_epoch_result
 # filter_epochs_decoder_result: holds several lists of equal length
 print(list(filter_epochs_decoder_result.keys()))
@@ -2207,15 +2218,6 @@ for a_key, a_list_variable in filter_epochs_decoder_result.items():
             print(f'{a_key}: len:\t {len(a_list_variable)}')
         else:
             print(f'{a_key}: shape:\t {np.shape(a_list_variable)}')
-active_decoder_1d = computation_result.computed_data['pf1D_Decoder']
-active_decoder_2d = computation_result.computed_data['pf2D_Decoder']
-default_figure_name
-
-## try to fix marginals for 1D decoder:
-active_decoder_1d = computation_result.computed_data['pf1D_Decoder']
-active_decoder_1d
-
-active_decoder.p_x_given_n.shape
 
 active_decoder.most_likely_positions.shape # (21209,) this seems wrong, isn't there supposed to be one at each timestep?
 
@@ -2315,7 +2317,16 @@ short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 #
 # It's all based on this paper: https://www.jneurosci.org/content/32/2/423
 
+# # Compute Kayla's suggested "confidence" metric regarding the decoded positions from the 2D x posteriors
 
+long_one_step_decoder_2D.marginal.x.p_x_given_n.shape # (64, 37172)
+# Get the most probable position and the bins to either side of it
+
+long_one_step_decoder_2D.marginal.x.two_step_most_likely_positions_1D.shape # (37172,)
+
+long_one_step_decoder_2D.most_likely_position_flat_indicies
+
+np.sum(
 
 # # 🔝 NEXT 2022-12-20:
 # - [X] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
@@ -2323,7 +2334,7 @@ short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 #     
 # - [ ] Look at Theta Idea in separate notebook
 # See:
-# - [ ] TODO 2022-12-20 - Get Dropping overlapping epochs (both literal duplicates and overlapping) working reliably:
+# - [X] TODO 2022-12-20 - Get Dropping overlapping epochs (both literal duplicates and overlapping) working reliably:
 # - [ ] TODO: get visual/interactive helper working (it's in the matplotlib_helpers):
 #         `plot_overlapping_epoch_analysis_diagnoser`
 # - [X] TODO: finish `KnownFilterEpochs`
