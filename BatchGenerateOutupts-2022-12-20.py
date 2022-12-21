@@ -2122,15 +2122,17 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.Default
 # fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj())
 fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.ripple)
 
+# %pdb off
+
 config_name = 'maze1'
 # config_name = 'maze2'
 decoding_time_bin_size = long_one_step_decoder_1D.time_bin_size # 1.0/30.0 # 0.03333333333333333
 # decoding_time_bin_size = 0.03 # 0.03333333333333333
 print(f'decoding_time_bin_size: {decoding_time_bin_size}')
 computation_result = curr_active_pipeline.computation_results[config_name]
-# computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1);
+computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1);
 # filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Ripples', decoding_time_bin_size)]
-curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=2);
+# curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, force_recompute=True, decoder_ndim=1);
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
 epochs_df
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_non_overlapping_df()
@@ -2138,10 +2140,14 @@ epochs_df
 min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666
 min_epoch_included_duration = 0.06666
 min_epoch_included_duration
+curr_active_pipeline.reload_default_display_functions()
 epochs_df[epochs_df.duration >= min_epoch_included_duration] # drop those epochs which are less than two decoding time bins
 epochs_df.duration.min()
 epochs_df.duration.max()
 epochs_df.shape # (54, 9)
+# %pdb off
+('lap', 0.03333, 1)
+curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1);
 curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='replay', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=2);
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
 epochs_df
