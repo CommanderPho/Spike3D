@@ -87,7 +87,7 @@ global_data_root_parent_path = Path(r'W:\Data') # Windows Apogee
 # global_data_root_parent_path = Path(r'/Volumes/MoverNew/data') # rMBP
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # Load Pipeline
 
 # + tags=["load"]
@@ -399,7 +399,7 @@ plt.plot(post_update_times.T, flat_jensen_shannon_distance_across_all_positions)
 # +
 # flat_relative_entropy_results.shape # (1, 63)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## 🟢 2022-11-21 - 1D Ratemaps Before and After Track change (Long vs. Short track)
 # Working metrics for comparing overlaps of 1D placefields before and after track change
 # -
@@ -486,17 +486,84 @@ short_long_rel_entr_curves = np.vstack([v['short_long_rel_entr_curve'] for k,v i
 short_long_rel_entr_curves # .shape # (101, 63)
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## Newest way of dropping bad laps:
+# ## 🔝 TODO 2022-12-20 - Get Dropping overlapping epochs (both literal duplicates and overlapping) working reliably:
+# TODO: get visual/interactive helper working (it's in the matplotlib_helpers)
 
 # + tags=[]
 from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping, get_overlapping_indicies, OverlappingIntervalsFallbackBehavior
 from neuropy.core.epoch import Epoch
 from pyphocorehelpers.print_helpers import print_object_memory_usage  # used in batch_snapshotting(...) to show object memory usage
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import _plot_position_curves_figure
+from neuropy.utils.matplotlib_helpers import plot_position_curves_figure # for plot_laps_2d
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
-fig, out_axes_list = _plot_position_curves_figure(sess.position, include_velocity=True, include_accel=True, figsize=(24, 10))
+fig, out_axes_list = plot_position_curves_figure(sess.position, include_velocity=True, include_accel=True, figsize=(24, 10))
 ax0 = out_axes_list[0]
 sess = curr_active_pipeline.sess
+
+# + tags=[]
+from PendingNotebookCode import minGroups, merge, removeCoveredIntervals, eraseOverlapIntervals
+
+# + tags=[]
+epoch_tuples = [list(epoch_tuple) for epoch_tuple in curr_epochs_df[['start','stop']].itertuples(index=False)] # returns a flat list of interval tuples
+print(f'len(epoch_tuples): {len(epoch_tuples)}')
+
+# + tags=[]
+curr_epochs_df
+
+# + tags=[]
+is_duplicated_epoch = curr_epochs_df.duplicated(subset=['start','stop'], keep='first')
+curr_epochs_df[is_duplicated_epoch]
+# curr_epochs_df[np.logical_not(is_duplicated_epoch)]
+
+# + tags=[]
+df = deepcopy(curr_epochs_df)
+df['index_original'] = df.groupby(['start','stop']).start.transform('idxmin')
+df[df.duplicated(subset=['start','stop'], keep='first')]
+
+# + tags=[]
+curr_epochs_df['integer_label'] = curr_epochs_df['label'].astype('int')
+curr_epochs_df
+
+# + tags=[]
+curr_epochs_df.sort_values(by='integer_label')
+
+# + tags=[]
+min_groups_epoch_tuples = minGroups(epoch_tuples)
+min_groups_epoch_tuples
+
+# + tags=[]
+print(f'len(min_groups_epoch_tuples): {len(min_groups_epoch_tuples)}')
+
+# + tags=[]
+merged_epoch_tuples = merge(epoch_tuples)
+print(f'len(merged_epoch_tuples): {len(merged_epoch_tuples)}')
+
+# + tags=[]
+covered_intervals_removed_epoch_tuples = removeCoveredIntervals(epoch_tuples)
+print(f'len(covered_intervals_removed_epoch_tuples): {len(covered_intervals_removed_epoch_tuples)}')
+
+
+# + tags=[]
+def debug_overlapping_epochs(epochs_df):
+    """
+    from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping, get_overlapping_indicies, OverlappingIntervalsFallbackBehavior
+    curr_epochs_obj = deepcopy(sess.ripple)
+    debug_overlapping_epochs(curr_epochs_obj.to_dataframe())
+    
+    """
+    start_stop_times_arr = np.vstack([epochs_df.epochs.starts, epochs_df.epochs.stops]).T # (80, 2)
+    # start_stop_times_arr.shape
+    all_overlapping_lap_indicies = get_overlapping_indicies(start_stop_times_arr)
+    n_total_epochs = start_stop_times_arr.shape[0]
+    n_overlapping = len(all_overlapping_lap_indicies)
+    print(f'n_overlapping: {n_overlapping} of n_total_epochs: {n_total_epochs}')
+    return all_overlapping_lap_indicies
+
+curr_epochs_obj = deepcopy(sess.ripple)
+curr_epochs_df = curr_epochs_obj.to_dataframe()
+all_overlapping_lap_indicies = debug_overlapping_epochs(curr_epochs_df)
+
+# + tags=[]
+curr_epochs_df.iloc[all_overlapping_lap_indicies, :]
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # ### 2022-12-18 - Short Non-Overlapping Intervals Detour:
@@ -507,62 +574,10 @@ curr_epochs_obj = deepcopy(sess.laps)
 curr_epochs_obj = deepcopy(sess.ripple)
 curr_epochs_obj.to_dataframe()
 
-start_stop_times_arr = np.vstack([curr_epochs_obj.starts, curr_epochs_obj.stops]).T # (80, 2)
-start_stop_times_arr.shape
 
-# +
-all_overlapping_lap_indicies = get_overlapping_indicies(start_stop_times_arr)
-all_overlapping_lap_indicies
-
-n_total_epochs = start_stop_times_arr.shape[0]
-n_overlapping = len(all_overlapping_lap_indicies)
-print(f'n_overlapping: {n_overlapping} of n_total_epochs: {n_total_epochs}')
-# -
 
 fig, out_axes_list = plot_laps_2d(sess, legacy_plotting_mode=False)
 out_axes_list[0].set_title('New Pho Position Thresholding Estimated Laps')
-
-
-# +
-def merge_overlapping_intervals(intervals):
-    """ Chat-GPT """
-    # Sort the intervals by start time
-    intervals = sorted(intervals, key=lambda x: x[0])
-
-    # Initialize the result with the first interval
-    result = [intervals[0]]
-
-    # Iterate through the rest of the intervals
-    for interval in intervals[1:]:
-        # If the current interval overlaps with the last interval in the result,
-        # update the end time of the last interval to the maximum of the two end times
-        if interval[0] <= result[-1][1]:
-            result[-1][1] = max(result[-1][1], interval[1])
-        # Otherwise, append the current interval to the result
-        else:
-            result.append(interval)
-    return np.array(result)
-
-def split_overlapping_intervals(intervals):
-    """ Chat-GPT """
-    # Sort the intervals by start time
-    intervals = sorted(intervals, key=lambda x: x[0])
-
-    result = []
-    # Iterate through the intervals
-    for interval in intervals:
-        # If the current interval overlaps with the last interval in the result,
-        # split the current interval into two non-overlapping intervals
-        if result and interval[0] <= result[-1][1]:
-            result.append([result[-1][1], interval[1]])
-        # Otherwise, append the current interval to the result
-        else:
-            result.append(interval)
-
-    return np.array(result)
-
-
-# -
 
 non_overlapping_start_stop_times_arr = split_overlapping_intervals(start_stop_times_arr)
 non_overlapping_start_stop_times_arr.shape # (75, 2)
@@ -590,7 +605,7 @@ is_good_epoch = np.full((np.shape(start_stop_times_arr)[0],), True)
 from neuropy.analyses.laps import _build_new_lap_and_intra_lap_intervals # for _perform_time_dependent_pf_sequential_surprise_computation
 sess, combined_records_list = _build_new_lap_and_intra_lap_intervals(sess)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ## `active_pf_nD`, `active_pf_nD_dt` visualizations
 
 # +
@@ -637,6 +652,30 @@ stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_view(epoch_slic
 # params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
 # -
 
+from neuropy.analyses.laps import estimation_session_laps, _subfn_perform_estimate_lap_splits_1D # for estimation_session_laps
+
+estimation_session_laps(curr_active_pipeline.sess, should_plot_laps_2d=True)
+
+# +
+from neuropy.utils.matplotlib_helpers import plot_overlapping_epoch_analysis_diagnoser
+
+fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj())
+        
+# -
+
+out_axes_list
+
+# +
+from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
+
+fig, out_axes_list = plot_laps_2d(curr_active_pipeline.sess, legacy_plotting_mode=True)
+out_axes_list[0].set_title('New Pho Position Thresholding Estimated Laps')
+fig.show()
+
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# ### PyQtGraph attempt to display better laps/epochs for debugging using LinearRegionItem
+# -
+
 LinearRegionItem
 
 VTickGroup
@@ -646,52 +685,6 @@ from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidget
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.CustomLinearRegionItem import CustomLinearRegionItem
 
 # +
-# fig, out_axes_list = _plot_position_curves_figure(position_obj, include_velocity=True, include_accel=True, figsize=(24, 10))
-
-# def _plot_position_curves_figure_pyqtgraph(position_obj, include_velocity=True, include_accel=False, figsize=(24, 10)):
-#     """ Renders a figure with a position curve and optionally its higher-order derivatives """
-#     num_subplots = 1
-#     out_axes_list = []
-#     if include_velocity:
-#         num_subplots = num_subplots + 1
-#     if include_accel:
-#         num_subplots = num_subplots + 1
-#     subplots=(num_subplots, 1)
-#     fig = plt.figure(figsize=figsize, clear=True)
-#     gs = plt.GridSpec(subplots[0], subplots[1], figure=fig, hspace=0.02)
-    
-#     ax0 = fig.add_subplot(gs[0])
-#     ax0.plot(position_obj.time, position_obj.x, 'k')
-#     ax0.set_ylabel('pos_x')
-#     out_axes_list.append(ax0)
-    
-#     if include_velocity:
-#         ax1 = fig.add_subplot(gs[1])
-#         # ax1.plot(position_obj.time, pos_df['velocity_x'], 'grey')
-#         # ax1.plot(position_obj.time, pos_df['velocity_x_smooth'], 'r')
-#         ax1.plot(position_obj.time, position_obj._data['velocity_x_smooth'], 'k')
-#         ax1.set_ylabel('Velocity_x')
-#         ax0.set_xticklabels([]) # this is intensionally ax[i-1], as we want to disable the tick labels on above plots        
-#         out_axes_list.append(ax1)
-
-#     if include_accel:  
-#         ax2 = fig.add_subplot(gs[2])
-#         # ax2.plot(position_obj.time, position_obj.velocity)
-#         # ax2.plot(position_obj.time, pos_df['velocity_x'])
-#         ax2.plot(position_obj.time, position_obj._data['acceleration_x'], 'k')
-#         # ax2.plot(position_obj.time, pos_df['velocity_y'])
-#         ax2.set_ylabel('Higher Order Terms')
-#         ax1.set_xticklabels([]) # this is intensionally ax[i-1], as we want to disable the tick labels on above plots
-#         out_axes_list.append(ax2)
-    
-#     # Shared:
-#     # ax0.get_shared_x_axes().join(ax0, ax1)
-#     ax0.get_shared_x_axes().join(*out_axes_list)
-#     ax0.set_xticklabels([])
-#     ax0.set_xlim([position_obj.time[0], position_obj.time[-1]])
-
-#     return fig, out_axes_list
-
 position_obj = curr_active_pipeline.sess.position
 include_velocity=True
 include_accel=False
@@ -721,7 +714,6 @@ mw.show()
 mw.setWindowTitle('Position Plot with Laps')
 
 # +
-
 new_canvas = view.addPlot(title="Position")
 new_canvas.showGrid(x = True, y = True)
 new_canvas.setLabel('left', "Position")
@@ -788,9 +780,6 @@ l.addWidget(pw)
 #     pw3.setLabel('bottom', 'Time', units='s')
 #     out_axes_list.append(p3)
 # -
-
-
-
 mw.show()
 
 mw.close()
@@ -874,39 +863,9 @@ main_time_curves_view_widget =
 #         background_static_scroll_window_plot.setYRange(np.nanmin(curr_spike_y), np.nanmax(curr_spike_y), padding=0)
         
 #         return background_static_scroll_window_plot
-# -
 
-from neuropy.analyses.laps import estimation_session_laps, _subfn_perform_estimate_lap_splits_1D # for estimation_session_laps
-
-# %pdb off
-estimation_session_laps(curr_active_pipeline.sess, should_plot_laps_2d=True)
-
-# +
-lap_change_indicies = _subfn_perform_estimate_lap_splits_1D(pos_df)
-(desc_crossing_begining_idxs, desc_crossing_midpoint_idxs, desc_crossing_ending_idxs), (asc_crossing_begining_idxs, asc_crossing_midpoint_idxs, asc_crossing_ending_idxs) = lap_change_indicies
-
-pos_times = pos_df['t'].to_numpy()
-desc_crossing_beginings, desc_crossing_midpoints, desc_crossing_endings, asc_crossing_beginings, asc_crossing_midpoints, asc_crossing_endings = [pos_times[idxs] for idxs in (desc_crossing_begining_idxs, desc_crossing_midpoint_idxs, desc_crossing_ending_idxs, asc_crossing_begining_idxs, asc_crossing_midpoint_idxs, asc_crossing_ending_idxs)]
-# -
-
-fig, ax = plt.subplots()
-# ax.plot(post_update_times, flat_surprise_across_all_positions)
-ax.set_ylabel('Relative Entropy across all positions')
-ax.set_xlabel('t (seconds)')
-epochs_collection, epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.epochs, ax, facecolor=('red','cyan'), alpha=0.1, edgecolors=None, labels_kwargs={'y_offset': -0.05, 'size': 14}, defer_render=True, debug_print=False)
-laps_epochs_collection, laps_epoch_labels = draw_epoch_regions(curr_active_pipeline.sess.laps.as_epoch_obj(), ax, facecolor='red', edgecolors='black', labels_kwargs={'y_offset': -16.0, 'size':8}, defer_render=True, debug_print=False)
-replays_epochs_collection, replays_epoch_labels = draw_epoch_regions(active_filter_epoch_obj, ax, facecolor='orange', edgecolors=None, labels_kwargs=None, defer_render=False, debug_print=False)
-fig.suptitle('flat_surprise_across_all_positions')
-fig.show()
-
-curr_active_pipeline.sess.laps.to_dataframe()
-
-# +
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
-
-fig, out_axes_list = plot_laps_2d(curr_active_pipeline.sess, legacy_plotting_mode=True)
-out_axes_list[0].set_title('New Pho Position Thresholding Estimated Laps')
-fig.show()
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# ### Approach: try to compute brand-new laps using estimation_session_laps(sess):
 
 # +
 import matplotlib.pyplot as plt
@@ -917,7 +876,7 @@ from scipy.ndimage import gaussian_filter, gaussian_filter1d, interpolation
 from neuropy.analyses.laps import estimation_session_laps # Newest pho laps estimation
 from pyphoplacecellanalysis.Analysis.reliability import compute_lap_to_lap_reliability
 
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import _plot_position_curves_figure
+from neuropy.utils.matplotlib_helpers import plot_position_curves_figure # for plot_laps_2d
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
 
 curr_result_label = 'maze1'
@@ -925,7 +884,6 @@ sess = curr_active_pipeline.filtered_sessions[curr_result_label]
 sess = curr_active_pipeline.sess
 
 # +
-# ## Approach: try to compute brand-new laps using estimation_session_laps(sess):
 # sess = estimation_session_laps(sess)
 # -
 
@@ -944,97 +902,6 @@ pos_df.x.aggregate(['nanmin','mean', 'median','nanmax'])
 fig, out_axes_list = _plot_position_curves_figure(sess.position, include_velocity=True, include_accel=False, figsize=(24, 10))
 ax0 = out_axes_list[0]
 
-# +
-assert set(['x','velocity_x_smooth']).issubset(pos_df.columns), 'pos_df requires the columns "x", and "velocity_x_smooth" at a minimum'
-zero_centered_x = pos_df['x'] - hardcoded_track_midpoint_x
-zero_crossings_x = np.diff(np.sign(zero_centered_x))
-# Find ascending crossings:
-asc_crossing_midpoints = np.where(zero_crossings_x > 0)[0] # (24,), corresponding to increasing positions
-# find descending crossings:
-desc_crossing_midpoints = np.where(zero_crossings_x < 0)[0] # (24,)
-print(f'desc_crossings_x: {np.shape(desc_crossing_midpoints)}, asc_crossings_x: {np.shape(asc_crossing_midpoints)}') # desc_crossings_x: (24,), asc_crossings_x: (24,)
-# desc_crossings_x: (43,), asc_crossings_x: (42,)
-
-desc_crossing_beginings = np.zeros_like(desc_crossing_midpoints)
-desc_crossing_endings = np.zeros_like(desc_crossing_midpoints)
-
-asc_crossing_beginings = np.zeros_like(asc_crossing_midpoints)
-asc_crossing_endings = np.zeros_like(asc_crossing_midpoints)
-
-# +
-# desc_crossings_x: (43,), asc_crossings_x: (42,)
-# -
-
-zero_crossings_x.nonzero()[0].shape # (85,)
-
-# +
-if len(desc_crossing_midpoints) > len(asc_crossing_midpoints):
-    print(f'WARNING: must drop last desc_crossing_midpoint.')
-    assert len(desc_crossing_midpoints) > 1
-    desc_crossing_midpoints = desc_crossing_midpoints[:-1] # all but the very last which is dropped
-    
-elif len(asc_crossing_midpoints) > len(desc_crossing_midpoints):
-    print(f'WARNING: must drop last asc_crossing_midpoints.')
-    assert len(asc_crossing_midpoints) > 1
-    asc_crossing_midpoints = asc_crossing_midpoints[:-1] # all but the very last which is dropped
-    
-assert len(asc_crossing_midpoints) == len(desc_crossing_midpoints), f"desc_crossings_x: {np.shape(desc_crossing_midpoints)}, asc_crossings_x: {np.shape(asc_crossing_midpoints)}"
-desc_crossing_midpoints, asc_crossing_midpoints
-# -
-
-is_starting_with_ascend = (asc_crossing_midpoints[0] < desc_crossing_midpoints[0]) # True if the animal is starting at the lower half (bottom) of the track, meaning the first motion is an ascending one
-is_starting_with_ascend
-
-desc_crossing_midpoints, asc_crossing_midpoints
-
-# +
-debug_draw = False
-
-# testing-only, work on a single crossing:
-for a_desc_crossing_i in np.arange(len(desc_crossing_midpoints)):
-    a_desc_crossing = desc_crossing_midpoints[a_desc_crossing_i]
-    # print(f'a_desc_crossing: {a_desc_crossing}')
-    # pos_df.loc[a_desc_crossing:, :]
-    curr_remainder_pos_df = pos_df.loc[a_desc_crossing:, :]
-    # pos_df.loc[a_desc_crossing:, ['velocity_x_smooth']]
-    curr_next_transition_points = curr_remainder_pos_df[curr_remainder_pos_df['velocity_x_smooth'] > 0.0].index # the first increasing
-    curr_next_transition_point = curr_next_transition_points[0] # desc endings
-    desc_crossing_endings[a_desc_crossing_i] = curr_next_transition_point
-
-    # Preceeding points:
-    curr_preceeding_pos_df = pos_df.loc[0:a_desc_crossing, :]
-    curr_prev_transition_points = curr_preceeding_pos_df[curr_preceeding_pos_df['velocity_x_smooth'] > 0.0].index # the last increasing # TODO: this is not quite right.
-    curr_prev_transition_point = curr_prev_transition_points[-1] # Get last (nearest to curr_preceeding_pos_df's end) point. desc beginings
-    desc_crossing_beginings[a_desc_crossing_i] = curr_prev_transition_point
-    if debug_draw:
-        ax0.scatter(curr_points[curr_next_transition_point,0], curr_points[curr_next_transition_point,1], s=15, c='orange')
-        ax0.vlines(curr_points[curr_next_transition_point,0], 0, 1, transform=ax0.get_xaxis_transform(), colors='r')
-# -
-
-for a_asc_crossing_i in np.arange(len(asc_crossing_midpoints)):
-    an_asc_crossing = asc_crossing_midpoints[a_asc_crossing_i]
-    # print(f'a_desc_crossing: {a_desc_crossing}')
-    # pos_df.loc[a_desc_crossing:, :]
-    curr_remainder_pos_df = pos_df.loc[an_asc_crossing:, :]
-    # pos_df.loc[a_desc_crossing:, ['velocity_x_smooth']]
-    curr_next_transition_points = curr_remainder_pos_df[curr_remainder_pos_df['velocity_x_smooth'] < 0.0].index # the first decreasing
-    curr_next_transition_point = curr_next_transition_points[0] # asc endings
-    asc_crossing_endings[a_asc_crossing_i] = curr_next_transition_point
-    if debug_draw:
-        ax0.scatter(curr_points[curr_next_transition_point,0], curr_points[curr_next_transition_point,1], s=15, c='orange')
-        ax0.vlines(curr_points[curr_next_transition_point,0], 0, 1, transform=ax0.get_xaxis_transform(), colors='g')
-
-    # Preceeding points:
-    curr_preceeding_pos_df = pos_df.loc[0:an_asc_crossing, :]
-    curr_prev_transition_points = curr_preceeding_pos_df[curr_preceeding_pos_df['velocity_x_smooth'] < 0.0].index #
-    curr_prev_transition_point = curr_prev_transition_points[-1] # Get last (nearest to curr_preceeding_pos_df's end) point. desc beginings
-    asc_crossing_beginings[a_asc_crossing_i] = curr_prev_transition_point
-
-## Outputs
-desc_crossing_beginings, desc_crossing_midpoints, desc_crossing_endings, asc_crossing_beginings, asc_crossing_midpoints, asc_crossing_endings
-
-
-
 curr_laps = sess.laps
 curr_laps.from_estimated_laps()
 
@@ -1047,12 +914,6 @@ position_obj.compute_higher_order_derivatives()
 pos_df = position_obj.compute_smoothed_position_info(N=20) ## Smooth the velocity curve to apply meaningful logic to it
 pos_df = position_obj.to_dataframe()
 pos_df
-
-# + [markdown] tags=[]
-# ### Missing 'start_position_index' and 'end_position_index' for laps:
-#
-# Seems to be added by `NeuroPy.neuropy.core.laps.Laps.from_estimated_laps` 
-#     `NeuroPy.neuropy.analyses.laps.estimation_session_laps`
 
 # +
 # fig, out_axes_list = plot_laps_2d(sess, legacy_plotting_mode=True)
@@ -1451,7 +1312,7 @@ ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(sess_time_
 
 
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # NEW 2022-12-14 - Efficient PfND_TimeDependent batch entropy computations:
 
 # + pycharm={"name": "#%%\n"}
@@ -1928,7 +1789,7 @@ out_plots[1].show()
 # a_plot.scene() # GraphicsScene
 export_pyqtgraph_plot(plots[0])
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # GUI/Widget Helpers
 
 # +
@@ -2122,9 +1983,6 @@ if long_two_step_decoder_1D is None or short_two_step_decoder_1D is None:
 # -
 
 
-curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], computation_kwargs_list=[dict(ndim=2)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
-
-
 long_two_step_decoder_1D
 
 
@@ -2133,6 +1991,7 @@ long_two_step_decoder_1D
 # -
 
 from neuropy.core.epoch import EpochsAccessor, Epoch
+
 
 curr_active_pipeline.sess.replay
 
@@ -2148,7 +2007,12 @@ from neuropy.core.neuron_identities import PlotStringBrevityModeEnum
 from neuropy.plotting.figure import Fig
 from neuropy.plotting.ratemaps import plot_ratemap_1D
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
+from neuropy.utils.matplotlib_helpers import plot_overlapping_epoch_analysis_diagnoser
+
+# fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj())
+fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.ripple)
+
+
 
 # +
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import DefaultComputationFunctions
@@ -2159,20 +2023,67 @@ decoding_time_bin_size = 1.0/30.0 # 0.03333333333333333
 # decoding_time_bin_size = 0.03 # 0.03333333333333333
 print(f'decoding_time_bin_size: {decoding_time_bin_size}')
 computation_result = curr_active_pipeline.computation_results[config_name]
-computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size)
-filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Ripples', decoding_time_bin_size)]
-print(f'n_epochs: {active_filter_epochs.n_epochs}')
+# computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size)
+# filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Ripples', decoding_time_bin_size)]
 # -
+epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
+epochs_df
+epochs_df = curr_active_pipeline.sess.ripple.to_dataframe().epochs.get_valid_df()
+epochs_df
+epochs_df = curr_active_pipeline.sess.pbe.to_dataframe().epochs.get_valid_df()
+epochs_df
+epochs_df = curr_active_pipeline.sess.pbe.to_dataframe().epochs.get_valid_df()
+epochs_df
+
+computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='replays', decoding_time_bin_size=decoding_time_bin_size)
+filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Replays', decoding_time_bin_size)]
+computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='laps', decoding_time_bin_size=decoding_time_bin_size)
+filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Laps', decoding_time_bin_size)]
+print(f'n_epochs: {active_filter_epochs.n_epochs}')
+computation_result.computed_data['specific_epochs_decoding']
+active_decoder_1d = computation_result.computed_data['pf1D_Decoder']
+active_decoder_2d = computation_result.computed_data['pf2D_Decoder']
+active_decoder_2d.debug_dump_print()
+## Works to show the stacked decoded epochs plot!!
+if not isinstance(active_filter_epochs, pd.DataFrame):
+    active_filter_epochs = active_filter_epochs.to_dataframe()
 # filter_epochs.columns # ['epoch_id', 'rel_id', 'start', 'end', 'replay_r', 'replay_p', 'template_id', 'flat_replay_idx', 'duration']
-                    if not 'stop' in active_filter_epochs.columns:
-                        # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
-                        active_filter_epochs['stop'] = active_filter_epochs['end'].copy()
+if not 'stop' in active_filter_epochs.columns:
+    # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
+    active_filter_epochs['stop'] = active_filter_epochs['end'].copy()
 ## Actual plotting portion:
 # Workaround Requirements:
-active_decoder = computation_result.computed_data['pf2D_Decoder']
+active_decoder = computation_result.computed_data['pf1D_Decoder']
+# active_decoder = computation_result.computed_data['pf2D_Decoder']
 out_plot_tuple = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=computation_result.sess.position.to_dataframe(), xbin=active_decoder.xbin,
                                                         **{'name':default_figure_name, 'debug_test_max_num_slices':1024, 'enable_flat_line_drawing':False, 'debug_print': False})
 params, plots_data, plots, ui = out_plot_tuple
+
+## try to fix marginals for 1D decoder:
+active_decoder = computation_result.computed_data['pf1D_Decoder']
+
+active_decoder.p_x_given_n.shape
+
+active_decoder.most_likely_positions.shape # (21209,) this seems wrong, isn't there supposed to be one at each timestep?
+
+active_decoder.debug_dump_print()
+
+active_decoder.marginal.x.p_x_given_n.shape
+
+active_decoder.marginal.x.most_likely_positions_1D
+
+list(filter_epochs_decoder_result.keys())
+i = 0
+
+curr_marginal_x = filter_epochs_decoder_result.marginal_x_list[i]
+curr_marginal_x
+
+curr_p_x_given_n = filter_epochs_decoder_result.p_x_given_n_list[i]
+curr_p_x_given_n.shape
+
+
+
+# +
 # Let $x$ be the position
 #
 # https://notesonai.com/KL+Divergence
@@ -2188,6 +2099,7 @@ params, plots_data, plots, ui = out_plot_tuple
 #
 # - [ ] Try Wasserstein distance: https://stats.stackexchange.com/questions/351947/whats-the-maximum-value-of-kullback-leibler-kl-divergence/352008#352008
 #
+# -
 
 
 
@@ -2231,7 +2143,7 @@ long_one_step_decoder_1D.p_x_given_n.shape # .shape: (63, 12100)
 
 short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # Future: theta-dependent placefields: build separate placefields for each phase of theta (binned in theta). There should be one set (where the animal is representing the present) that nearly perfectly predicts the animal's location.
 #     # the rest of the variability 
 #
@@ -2249,5 +2161,16 @@ short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 # Nat's code for detecting the sawtooth theta is here (lines 271-393ish): https://github.com/diba-lab/ephys/blob/master/Analysis/python/LFP/scripts/theta_phase_stim_verify.py
 #
 # It's all based on this paper: https://www.jneurosci.org/content/32/2/423
+
+
+
+# # 🔝 NEXT 2022-12-20:
+# - [ ] Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
+#     https://github.com/CommanderPho/pyPhoPlaceCellAnalysis/blob/master/src/pyphoplacecellanalysis/General/Pipeline/Stages/ComputationFunctions/DefaultComputationFunctions.py#L398
+#     
+# - Build out the 
+# See:
+# - [ ] TODO 2022-12-20 - Get Dropping overlapping epochs (both literal duplicates and overlapping) working reliably:
+# - [ ] TODO: get visual/interactive helper working (it's in the matplotlib_helpers)
 
 
