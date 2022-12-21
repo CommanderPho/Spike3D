@@ -2037,7 +2037,7 @@ computation_result = DefaultComputationFunctions._perform_specific_epochs_decodi
 filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Replays', decoding_time_bin_size)]
 # +
 ## Perform a decoding for the specific epoch types
-computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='laps', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1)
+computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=2)
 filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Laps', decoding_time_bin_size)]
 n_epochs = active_filter_epochs.n_epochs
 print(f'{n_epochs = }')
@@ -2046,6 +2046,27 @@ print(f'{n_epochs = }')
 filter_epochs_decoder_result_epoch_lists = {a_key:a_list_variable for a_key, a_list_variable in filter_epochs_decoder_result.items() if not np.isscalar(a_list_variable)}
 filter_epochs_decoder_result_epoch_unwrapped_items = [{a_key.removesuffix('_list'):a_list_variable[an_epoch_idx] for a_key, a_list_variable in filter_epochs_decoder_result_epoch_lists.items()} for an_epoch_idx in np.arange(filter_epochs_decoder_result.num_filter_epochs)] # make separate dict for each epoch
 # -
+curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1)
+
+# +
+## Works to show the stacked decoded epochs plot!!
+if not isinstance(active_filter_epochs, pd.DataFrame):
+    active_filter_epochs = active_filter_epochs.to_dataframe()
+# filter_epochs.columns # ['epoch_id', 'rel_id', 'start', 'end', 'replay_r', 'replay_p', 'template_id', 'flat_replay_idx', 'duration']
+if not 'stop' in active_filter_epochs.columns:
+    # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
+    active_filter_epochs['stop'] = active_filter_epochs['end'].copy()
+## Actual plotting portion:
+# Workaround Requirements:
+active_decoder = computation_result.computed_data['pf1D_Decoder']
+# active_decoder = computation_result.computed_data['pf2D_Decoder']
+out_plot_tuple = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=computation_result.sess.position.to_dataframe(), xbin=active_decoder.xbin,
+                                                        **{'name':default_figure_name, 'debug_test_max_num_slices':1024, 'enable_flat_line_drawing':False, 'debug_print': False})
+params, plots_data, plots, ui = out_plot_tuple
+
+ui.mw.setWindowTitle(default_figure_name)
+# -
+
 epoch_idx = 0 # show the epoch at index 0
 curr_epoch_result = filter_epochs_decoder_result_epoch_unwrapped_items[epoch_idx]
 ## Validate:
@@ -2067,20 +2088,7 @@ for a_key, a_list_variable in filter_epochs_decoder_result.items():
             print(f'{a_key}: shape:\t {np.shape(a_list_variable)}')
 active_decoder_1d = computation_result.computed_data['pf1D_Decoder']
 active_decoder_2d = computation_result.computed_data['pf2D_Decoder']
-## Works to show the stacked decoded epochs plot!!
-if not isinstance(active_filter_epochs, pd.DataFrame):
-    active_filter_epochs = active_filter_epochs.to_dataframe()
-# filter_epochs.columns # ['epoch_id', 'rel_id', 'start', 'end', 'replay_r', 'replay_p', 'template_id', 'flat_replay_idx', 'duration']
-if not 'stop' in active_filter_epochs.columns:
-    # Make sure it has the 'stop' column which is expected as opposed to the 'end' column
-    active_filter_epochs['stop'] = active_filter_epochs['end'].copy()
-## Actual plotting portion:
-# Workaround Requirements:
-active_decoder = computation_result.computed_data['pf1D_Decoder']
-# active_decoder = computation_result.computed_data['pf2D_Decoder']
-out_plot_tuple = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=computation_result.sess.position.to_dataframe(), xbin=active_decoder.xbin,
-                                                        **{'name':default_figure_name, 'debug_test_max_num_slices':1024, 'enable_flat_line_drawing':False, 'debug_print': False})
-params, plots_data, plots, ui = out_plot_tuple
+default_figure_name
 
 ## try to fix marginals for 1D decoder:
 active_decoder_1d = computation_result.computed_data['pf1D_Decoder']
