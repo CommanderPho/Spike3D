@@ -2009,6 +2009,9 @@ print(f'decoding_time_bin_size: {decoding_time_bin_size}')
 # -
 
 
+
+
+
 np.shape(long_one_step_decoder_1D.P_x) # (63, 1)
 np.shape(long_one_step_decoder_1D.F) # (63, 62)
 long_one_step_decoder_1D.num_time_windows
@@ -2027,7 +2030,7 @@ assert posterior_uncertainty_measure.shape == (long_one_step_decoder_1D.num_time
 posterior_uncertainty_measure
 
 
-
+np.amax
 
 
 # #### Get 2D Decoders for validation and comparisons:
@@ -2347,6 +2350,11 @@ short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 # Nat's code for detecting the sawtooth theta is here (lines 271-393ish): https://github.com/diba-lab/ephys/blob/master/Analysis/python/LFP/scripts/theta_phase_stim_verify.py
 #
 # It's all based on this paper: https://www.jneurosci.org/content/32/2/423
+#
+#
+#
+# ### Seee https://github.com/CommanderPho/NeuroPy/blob/main/neuropy/analyses/oscillations.py#L268
+#
 
 # # Compute Kayla's suggested "confidence" metric regarding the decoded positions from the 2D x posteriors
 
