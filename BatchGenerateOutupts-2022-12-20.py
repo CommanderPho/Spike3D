@@ -183,8 +183,8 @@ print(f'basedir: {str(basedir)}')
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=True)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
@@ -995,7 +995,7 @@ from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchro
 curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
 curr_placefields_plotter.show()
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## ❌🆖 BROKEN Individual Plotting Outputs:
 
 # + [markdown] tags=[]
@@ -1312,7 +1312,7 @@ ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(sess_time_
 
 
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # NEW 2022-12-14 - Efficient PfND_TimeDependent batch entropy computations:
 
 # + pycharm={"name": "#%%\n"}
@@ -1789,7 +1789,7 @@ out_plots[1].show()
 # a_plot.scene() # GraphicsScene
 export_pyqtgraph_plot(plots[0])
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # GUI/Widget Helpers
 
 # +
@@ -1966,7 +1966,7 @@ long_results = curr_active_pipeline.computation_results[long_epoch_name]['comput
 short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
 global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
 
-recalculate_anyway = True
+recalculate_anyway = False
 # -
 
 
@@ -2286,7 +2286,7 @@ long_one_step_decoder_1D.p_x_given_n.shape # .shape: (63, 12100)
 
 short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # # Future: theta-dependent placefields: build separate placefields for each phase of theta (binned in theta). There should be one set (where the animal is representing the present) that nearly perfectly predicts the animal's location.
 #     # the rest of the variability 
 #
