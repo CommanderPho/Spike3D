@@ -490,41 +490,40 @@ short_long_rel_entr_curves # .shape # (101, 63)
 # TODO: get visual/interactive helper working (it's in the matplotlib_helpers)
 
 # + tags=[]
+# %pdb off
+
+# + tags=[]
 from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping, get_overlapping_indicies, OverlappingIntervalsFallbackBehavior
 from neuropy.core.epoch import Epoch
 from pyphocorehelpers.print_helpers import print_object_memory_usage  # used in batch_snapshotting(...) to show object memory usage
 from neuropy.utils.matplotlib_helpers import plot_position_curves_figure # for plot_laps_2d
 from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
-fig, out_axes_list = plot_position_curves_figure(sess.position, include_velocity=True, include_accel=True, figsize=(24, 10))
-ax0 = out_axes_list[0]
+
+# + tags=[]
 sess = curr_active_pipeline.sess
 
 # + tags=[]
+fig, out_axes_list = plot_position_curves_figure(sess.position, include_velocity=True, include_accel=True, figsize=(24, 10))
+ax0 = out_axes_list[0]
+
+# + tags=[]
+from neuropy.utils.efficient_interval_search import deduplicate_epochs
 from PendingNotebookCode import minGroups, merge, removeCoveredIntervals, eraseOverlapIntervals
+
+# + tags=[]
+
+
+# + tags=[]
+curr_epochs_df = sess.replay.epochs.get_valid_df()
+print(f'{np.shape(curr_epochs_df) = }')
+
+# + tags=[]
+curr_epochs_df = deduplicate_epochs(curr_epochs_df, agressive_deduplicate=True)
+print(f'{np.shape(curr_epochs_df) = }')
 
 # + tags=[]
 epoch_tuples = [list(epoch_tuple) for epoch_tuple in curr_epochs_df[['start','stop']].itertuples(index=False)] # returns a flat list of interval tuples
 print(f'len(epoch_tuples): {len(epoch_tuples)}')
-
-# + tags=[]
-curr_epochs_df
-
-# + tags=[]
-is_duplicated_epoch = curr_epochs_df.duplicated(subset=['start','stop'], keep='first')
-curr_epochs_df[is_duplicated_epoch]
-# curr_epochs_df[np.logical_not(is_duplicated_epoch)]
-
-# + tags=[]
-df = deepcopy(curr_epochs_df)
-df['index_original'] = df.groupby(['start','stop']).start.transform('idxmin')
-df[df.duplicated(subset=['start','stop'], keep='first')]
-
-# + tags=[]
-curr_epochs_df['integer_label'] = curr_epochs_df['label'].astype('int')
-curr_epochs_df
-
-# + tags=[]
-curr_epochs_df.sort_values(by='integer_label')
 
 # + tags=[]
 min_groups_epoch_tuples = minGroups(epoch_tuples)
@@ -541,25 +540,12 @@ print(f'len(merged_epoch_tuples): {len(merged_epoch_tuples)}')
 covered_intervals_removed_epoch_tuples = removeCoveredIntervals(epoch_tuples)
 print(f'len(covered_intervals_removed_epoch_tuples): {len(covered_intervals_removed_epoch_tuples)}')
 
-
 # + tags=[]
-def debug_overlapping_epochs(epochs_df):
-    """
-    from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping, get_overlapping_indicies, OverlappingIntervalsFallbackBehavior
-    curr_epochs_obj = deepcopy(sess.ripple)
-    debug_overlapping_epochs(curr_epochs_obj.to_dataframe())
-    
-    """
-    start_stop_times_arr = np.vstack([epochs_df.epochs.starts, epochs_df.epochs.stops]).T # (80, 2)
-    # start_stop_times_arr.shape
-    all_overlapping_lap_indicies = get_overlapping_indicies(start_stop_times_arr)
-    n_total_epochs = start_stop_times_arr.shape[0]
-    n_overlapping = len(all_overlapping_lap_indicies)
-    print(f'n_overlapping: {n_overlapping} of n_total_epochs: {n_total_epochs}')
-    return all_overlapping_lap_indicies
+from neuropy.utils.efficient_interval_search import debug_overlapping_epochs
 
-curr_epochs_obj = deepcopy(sess.ripple)
-curr_epochs_df = curr_epochs_obj.to_dataframe()
+# curr_epochs_obj = deepcopy(sess.ripple)
+# curr_epochs_df = curr_epochs_obj.to_dataframe()
+curr_epochs_df = deepcopy(sess.replay)
 all_overlapping_lap_indicies = debug_overlapping_epochs(curr_epochs_df)
 
 # + tags=[]
@@ -2011,6 +1997,9 @@ if recalculate_anyway or did_recompute or (long_two_step_decoder_1D is None) or 
 short_one_step_decoder_1D.xbin
 
 
+
+
+
 short_pf1D.xbin
 
 
@@ -2040,6 +2029,9 @@ if recalculate_anyway or did_recompute or (long_two_step_decoder_2D is None) or 
 
 
 long_pf2D.xbin
+
+
+curr_active_pipeline.save_pipeline()
 
 
 short_pf2D.xbin
@@ -2138,7 +2130,19 @@ print(f'decoding_time_bin_size: {decoding_time_bin_size}')
 computation_result = curr_active_pipeline.computation_results[config_name]
 # computation_result = DefaultComputationFunctions._perform_specific_epochs_decoding(computation_result, curr_active_pipeline.active_configs[config_name], filter_epochs='ripple', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1);
 # filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('Ripples', decoding_time_bin_size)]
-curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=1);
+curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='lap', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=2);
+epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
+epochs_df
+epochs_df = curr_active_pipeline.sess.replay.epochs.get_non_overlapping_df()
+epochs_df
+min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666
+min_epoch_included_duration = 0.06666
+min_epoch_included_duration
+epochs_df[epochs_df.duration >= min_epoch_included_duration] # drop those epochs which are less than two decoding time bins
+epochs_df.duration.min()
+epochs_df.duration.max()
+epochs_df.shape # (54, 9)
+curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_session_configuration_context=curr_active_pipeline.filtered_contexts[config_name], filter_epochs='replay', decoding_time_bin_size=decoding_time_bin_size, decoder_ndim=2);
 epochs_df = curr_active_pipeline.sess.replay.epochs.get_valid_df()
 epochs_df
 epochs_df = curr_active_pipeline.sess.ripple.to_dataframe().epochs.get_valid_df()
