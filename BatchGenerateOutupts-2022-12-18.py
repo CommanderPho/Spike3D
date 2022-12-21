@@ -2165,12 +2165,13 @@ short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 
 
 # # 🔝 NEXT 2022-12-20:
-# - [ ] Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
+# - [ ] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
 #     https://github.com/CommanderPho/pyPhoPlaceCellAnalysis/blob/master/src/pyphoplacecellanalysis/General/Pipeline/Stages/ComputationFunctions/DefaultComputationFunctions.py#L398
 #     
 # - Build out the 
 # See:
 # - [ ] TODO 2022-12-20 - Get Dropping overlapping epochs (both literal duplicates and overlapping) working reliably:
 # - [ ] TODO: get visual/interactive helper working (it's in the matplotlib_helpers)
+# - [ ] TODO: finish `KnownFilterEpochs`
 
 
