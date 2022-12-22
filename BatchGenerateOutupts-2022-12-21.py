@@ -2023,16 +2023,7 @@ np.shape(long_one_step_decoder_1D.neuron_IDs) # (62,)
 long_one_step_decoder_1D.debug_dump_print()
 
 
-# average over positions to find the maximum likelihood in the posterior (value only) for each timebin. This is a rough estimate for how certain we are about each timebin.
-posterior_uncertainty_measure = np.max(long_one_step_decoder_1D.p_x_given_n, axis=0) # each value will be between (0.0, 1.0]
-assert posterior_uncertainty_measure.shape == (long_one_step_decoder_1D.num_time_windows, ), f"{posterior_uncertainty_measure.shape = } must be of shape {(long_one_step_decoder_1D.num_time_windows, ) = }"
-# also: reciprocal measure: `posterior_uncertainty_measure = 1.0/posterior_uncertainty_measure` so by dividing by this value gives you a value in the range (+Inf, 1.0)
-posterior_uncertainty_measure
-
-
-np.amax
-
-
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # #### Get 2D Decoders for validation and comparisons:
 
 
@@ -2118,7 +2109,7 @@ assert np.allclose(long_one_step_decoder_2D.marginal.x.p_x_given_n, long_one_ste
 assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
 curr_epoch_result
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # Use the two-step decoder to decode the replay events:
 # -
 
@@ -2261,16 +2252,11 @@ active_decoder.marginal.x.p_x_given_n.shape
 
 active_decoder.marginal.x.most_likely_positions_1D
 
-list(filter_epochs_decoder_result.keys())
-i = 0
-
 curr_marginal_x = filter_epochs_decoder_result.marginal_x_list[i]
 curr_marginal_x
 
 curr_p_x_given_n = filter_epochs_decoder_result.p_x_given_n_list[i]
 curr_p_x_given_n.shape
-
-
 
 # +
 # Let $x$ be the position
@@ -2288,12 +2274,6 @@ curr_p_x_given_n.shape
 #
 # - [ ] Try Wasserstein distance: https://stats.stackexchange.com/questions/351947/whats-the-maximum-value-of-kullback-leibler-kl-divergence/352008#352008
 #
-# -
-
-
-
-
-
 # +
 from scipy import stats
 u = [0.5,0.2,0.3]
@@ -2304,26 +2284,6 @@ v = [0.5,0.3,0.2]
 dists = [i for i in range(len(w1))]
 
 stats.wasserstein_distance(dists, dists, u, v)
-# -
-
-
-
-#
-
-#
-
-
-
-long_one_step_decoder_1D.xbin.shape
-
-short_one_step_decoder_1D.xbin.shape
-
-
-
-long_pf1D.bin_info
-
-short_pf1D.bin_info
-
 # +
 # p_x_given_n.shape # (63, 12100)
 # -
@@ -2331,30 +2291,6 @@ short_pf1D.bin_info
 long_one_step_decoder_1D.p_x_given_n.shape # .shape: (63, 12100)
 
 short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
-# # Future: theta-dependent placefields: build separate placefields for each phase of theta (binned in theta). There should be one set (where the animal is representing the present) that nearly perfectly predicts the animal's location.
-#     # the rest of the variability 
-#
-#     1. Basic Hilbert transform
-#     2. But Theta wave-shape (sawtooth) at higher running speeds.
-#         - do peak-to-trough and trough-to-peak separate
-#         ** Nat will send me something
-#         
-# - remember Eloy's theta-dependent placefields. I'm ashamed that I fucked up with Eloy.
-#
-# -
-
-
-# https://github.com/diba-lab/ephys/blob/master/Analysis/python/LFP/scripts/theta_phase_stim_verify.py
-# Nat's code for detecting the sawtooth theta is here (lines 271-393ish): https://github.com/diba-lab/ephys/blob/master/Analysis/python/LFP/scripts/theta_phase_stim_verify.py
-#
-# It's all based on this paper: https://www.jneurosci.org/content/32/2/423
-#
-#
-#
-# ### Seee https://github.com/CommanderPho/NeuroPy/blob/main/neuropy/analyses/oscillations.py#L268
-#
 
 # # Compute Kayla's suggested "confidence" metric regarding the decoded positions from the 2D x posteriors
 
@@ -2367,7 +2303,7 @@ long_one_step_decoder_2D.most_likely_position_flat_indicies
 
 np.sum(
 
-# # 🔝 NEXT 2022-12-20:
+# # NEXT 2022-12-20:
 # - [X] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
 #     https://github.com/CommanderPho/pyPhoPlaceCellAnalysis/blob/master/src/pyphoplacecellanalysis/General/Pipeline/Stages/ComputationFunctions/DefaultComputationFunctions.py#L398
 #     
@@ -2386,4 +2322,31 @@ np.sum(
 #
 # 2D is left, 1D is right. Both for 'maze1' so it's not a re-binning issue.
 
+
+
+# # 🔝 2022-12-21 - For Tomorrow
+# - [ ] Got decoded replays for each respective epoch, but now need to decode the opposite epoch's replays to see how much better/worse they are. 
+# ![python_tEnURoUa4v.png](attachment:a0eece65-37ef-4023-a717-c91b6f5e467f.png)
+
+
+# average over positions to find the maximum likelihood in the posterior (value only) for each timebin. This is a rough estimate for how certain we are about each timebin.
+long_posterior_uncertainty_measure = np.max(long_one_step_decoder_1D.p_x_given_n, axis=0) # each value will be between (0.0, 1.0]
+assert long_posterior_uncertainty_measure.shape == (long_one_step_decoder_1D.num_time_windows, ), f"{long_posterior_uncertainty_measure.shape = } must be of shape {(long_one_step_decoder_1D.num_time_windows, ) = }"
+# also: reciprocal measure: `posterior_uncertainty_measure = 1.0/posterior_uncertainty_measure` so by dividing by this value gives you a value in the range (+Inf, 1.0)
+long_posterior_uncertainty_measure
+
+
+short_posterior_uncertainty_measure = np.max(short_one_step_decoder_1D.p_x_given_n, axis=0) # each value will be between (0.0, 1.0]
+assert short_posterior_uncertainty_measure.shape == (short_one_step_decoder_1D.num_time_windows, ), f"{short_posterior_uncertainty_measure.shape = } must be of shape {(short_one_step_decoder_1D.num_time_windows, ) = }"
+# also: reciprocal measure: `posterior_uncertainty_measure = 1.0/posterior_uncertainty_measure` so by dividing by this value gives you a value in the range (+Inf, 1.0)
+short_posterior_uncertainty_measure
+
+
+long_one_step_decoder_1D.active_time_window_centers
+
+
+plt.plot(long_one_step_decoder_1D.active_time_window_centers, long_posterior_uncertainty_measure)
+
+
+plt.plot(short_one_step_decoder_1D.active_time_window_centers, short_posterior_uncertainty_measure)
 
