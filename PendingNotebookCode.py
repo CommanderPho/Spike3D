@@ -498,35 +498,6 @@ def process_session_plots(curr_active_pipeline, active_config_name, debug_print=
     return active_identifying_filtered_session_ctx, programmatic_display_function_testing_output_parent_path
     
 
-
-
-
-class Plot(object):
-    """a member dot accessor for display functions.
-
-    Can call like: `plot._display_1d_placefields`
-
-    """
-    def __init__(self, curr_active_pipeline):
-        super(Plot, self).__init__()
-        self._pipeline_reference = curr_active_pipeline
-
-    def __dir__(self):
-        return self._pipeline_reference.registered_display_function_names # ['area', 'perimeter', 'location']
-    
-    def __getattr__(self, k):
-        if '__getstate__' in k: # a trick to make spyder happy when inspecting dotdict
-            def _dummy():
-                pass
-            return _dummy
-        # return self[k]
-        # return self._pipeline_reference.display(display_function=k, active_identifying_session_ctx=self._pipeline_reference.sess.get_context())
-        return self._pipeline_reference.display(display_function=k, active_session_configuration_context=list(self._pipeline_reference.filtered_contexts.values())[-1])
-
-
-
-
-
 # ==================================================================================================================== #
 # 2022-08-18                                                                                                           #
 # ==================================================================================================================== #

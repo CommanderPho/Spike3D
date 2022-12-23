@@ -1,0 +1,1850 @@
+[
+    {
+        "type": "Group",
+        "name": "Placefield Plotting",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "lM3pOCrKjXIS6k9e",
+        "iconColor": "rgb(0, 139, 139)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\PlacefieldVisualSelectionControls\\qt_placefield.py",
+        "parent_id": "lM3pOCrKjXIS6k9e",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\PlacefieldVisualSelectionControls\\qt_placefield.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "aTNhkr01uHD2m5MF"
+    },
+    {
+        "type": "Group",
+        "name": "Spikes Plotting",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "PXtahGg8DKuMw7HE",
+        "iconColor": "rgb(173, 255, 47)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\spikes_mixins.py",
+        "parent_id": "PXtahGg8DKuMw7HE",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\spikes_mixins.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "3C6JjEVTIpHKeLfU"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\placefield_plotting_mixins.py",
+        "parent_id": "lM3pOCrKjXIS6k9e",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\placefield_plotting_mixins.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "w5BZn9y3fEDTQH2W"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\general_plotting_mixins.py",
+        "parent_id": "PXtahGg8DKuMw7HE",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\general_plotting_mixins.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "dFIxYhluOKrGQELX"
+    },
+    {
+        "type": "Group",
+        "name": "Pf Visual Selection Widget",
+        "parent_id": "lM3pOCrKjXIS6k9e",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Ya9zJDHxkZpVeyOo"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\PlacefieldVisualSelectionControls\\PlacefieldVisualSelectionControlWidget.py",
+        "parent_id": "Ya9zJDHxkZpVeyOo",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\PlacefieldVisualSelectionControls\\PlacefieldVisualSelectionControlWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "MJLZVzhpGQWw0e8I"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\PlacefieldVisualSelectionControlsBar\\PlacefieldVisualSelectionControlsBarWidget.py",
+        "parent_id": "Ya9zJDHxkZpVeyOo",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\PlacefieldVisualSelectionControlsBar\\PlacefieldVisualSelectionControlsBarWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "uNywS8e562bv4zTC"
+    },
+    {
+        "type": "Group",
+        "name": "SpikeRasterWidgets",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "EijDdOT7rXeKW8pL",
+        "iconColor": "rgb(255, 255, 0)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike3DRaster.py",
+        "parent_id": "EijDdOT7rXeKW8pL",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike3DRaster.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "1nHY2Nj5dlPJq3DT"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\SpikeRasterBase.py",
+        "parent_id": "EijDdOT7rXeKW8pL",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\SpikeRasterBase.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "GYCaRk4HfIEPqim0"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike2DRaster.py",
+        "parent_id": "EijDdOT7rXeKW8pL",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike2DRaster.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ahytNDRATlpUdrSx"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\spike_raster_widgets.py",
+        "parent_id": "EijDdOT7rXeKW8pL",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\spike_raster_widgets.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "GIQWHB2xpYRirUfu"
+    },
+    {
+        "type": "Group",
+        "name": "Pipeline",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "hVKHoO5g8QFNbiY7",
+        "iconColor": "rgb(102, 51, 153)"
+    },
+    {
+        "type": "Group",
+        "name": "UserFunctions",
+        "parent_id": "hVKHoO5g8QFNbiY7",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "hdNCgaSKbiVRQ9zs",
+        "iconColor": "rgb(102, 51, 153)"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions",
+        "parent_id": "hdNCgaSKbiVRQ9zs",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Vjkdh32JlvUE8T1B"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\ComputationFunctions",
+        "parent_id": "hdNCgaSKbiVRQ9zs",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\ComputationFunctions",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "NzYHG6MXECS42sxb"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\NeuropyPipeline.py",
+        "parent_id": "hVKHoO5g8QFNbiY7",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\NeuropyPipeline.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "TC1WiIQc4Jd80ZEp"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyVista\\InteractivePlotter\\InteractivePlaceCellTuningCurvesDataExplorer.py",
+        "parent_id": "lM3pOCrKjXIS6k9e",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyVista\\InteractivePlotter\\InteractivePlaceCellTuningCurvesDataExplorer.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "6uv1SpX8qrk7fTbV"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\spikeAndPositions.py",
+        "parent_id": "lM3pOCrKjXIS6k9e",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\spikeAndPositions.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "NwiThIVpcgS7Keft"
+    },
+    {
+        "type": "Group",
+        "name": "3D Time Curves",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "1CdvBR2sA4Ytk9hn"
+    },
+    {
+        "type": "Group",
+        "name": "SpikeRasterWidgets",
+        "parent_id": "1CdvBR2sA4Ytk9hn",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "nLGFy36Yo7r1TPMq"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike3DRaster.py",
+        "parent_id": "nLGFy36Yo7r1TPMq",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike3DRaster.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "7Pl2hpz58kIjJemy"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike3DRaster_Vedo.py",
+        "parent_id": "nLGFy36Yo7r1TPMq",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\SpikeRasterWidgets\\Spike3DRaster_Vedo.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "eIwgfaLoQAO59p2V"
+    },
+    {
+        "type": "Group",
+        "name": "Other",
+        "parent_id": "1CdvBR2sA4Ytk9hn",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "kaAEtd5Ing18jG0y"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\RenderTimeEpochMeshesMixin.py",
+        "parent_id": "kaAEtd5Ing18jG0y",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\RenderTimeEpochMeshesMixin.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "JzZ2KHPYq6rFWNns"
+    },
+    {
+        "type": "Group",
+        "name": "Dynamic Connections/Menus",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "RSMHz1BFeOYog2VZ",
+        "iconColor": "rgb(0, 0, 139)"
+    },
+    {
+        "type": "Group",
+        "name": "Windowing/GUI",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "wMX7GKQJqp2fRHbE",
+        "iconColor": "rgb(0, 0, 205)"
+    },
+    {
+        "type": "Group",
+        "name": "Windows",
+        "parent_id": "wMX7GKQJqp2fRHbE",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "san51Grq2eyIMBuv",
+        "iconColor": "rgb(0, 0, 205)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\MainWindowWrapper.py",
+        "parent_id": "san51Grq2eyIMBuv",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\MainWindowWrapper.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "r89Jcfh6lK2i57pn"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\SpikeRasterWindows\\Spike3DRasterWindowWidget.py",
+        "parent_id": "san51Grq2eyIMBuv",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\SpikeRasterWindows\\Spike3DRasterWindowWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ikDtO45JTUV3waEn"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Mixins\\Menus",
+        "parent_id": "RSMHz1BFeOYog2VZ",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Mixins\\Menus",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "g9IVoK3npDMiyOdW"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Vedo",
+        "parent_id": "nLGFy36Yo7r1TPMq",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Vedo",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "eTwu1DbtNHv6OF9g"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\NotesAndDocumentation\\2022-04-14-3DTimeCurvesAndDatasources.md",
+        "parent_id": "1CdvBR2sA4Ytk9hn",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\NotesAndDocumentation\\2022-04-14-3DTimeCurvesAndDatasources.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "JkSTQYUplbj28rFa"
+    },
+    {
+        "type": "Group",
+        "name": "Flowchart GUI",
+        "parent_id": "hVKHoO5g8QFNbiY7",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "0aiwzmodgtYkOs3J",
+        "iconColor": "rgb(0, 0, 205)"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Flowchart",
+        "parent_id": "0aiwzmodgtYkOs3J",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Flowchart",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "tKd0y75HlwbGDIL9"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Windows\\pyqtplot_MainWindow.py",
+        "parent_id": "0aiwzmodgtYkOs3J",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Windows\\pyqtplot_MainWindow.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "k8vG7p0hfiO5AcUx"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Windows\\MainPipelineWindowWithDockArea.ui",
+        "parent_id": "0aiwzmodgtYkOs3J",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Windows\\MainPipelineWindowWithDockArea.ui",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ZKpj4QzyUJ8WxnrS"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages",
+        "parent_id": "hVKHoO5g8QFNbiY7",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "YEtSfKPrX5dAlG91"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockAreaWrapper.py",
+        "parent_id": "san51Grq2eyIMBuv",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockAreaWrapper.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ierEX7OKfBYN1TCs"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\GlobalConnectionManager.py",
+        "parent_id": "RSMHz1BFeOYog2VZ",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\GlobalConnectionManager.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "l2r9oqMyHfJ7zxEQ"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\ModelViewMixin Conventions.md",
+        "parent_id": "wMX7GKQJqp2fRHbE",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\ModelViewMixin Conventions.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "1MdNyDCw7Q5KtR0n"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\PyQtPlots\\TimeSynchronizedPlotters",
+        "parent_id": "lM3pOCrKjXIS6k9e",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\PyQtPlots\\TimeSynchronizedPlotters",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "zgKrQ4vGRp2Y97Tq"
+    },
+    {
+        "type": "Group",
+        "name": "Model",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "lnxbMHXdCt07kZ9J",
+        "iconColor": "rgb(25, 25, 112)"
+    },
+    {
+        "type": "Group",
+        "name": "Datasources",
+        "parent_id": "lnxbMHXdCt07kZ9J",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "XfbUd1AlLPxEpN0c",
+        "iconColor": "rgb(0, 191, 255)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\Datasources\\Datasources.py",
+        "parent_id": "XfbUd1AlLPxEpN0c",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\Datasources\\Datasources.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "pckWXY8MIBQ5rLZv"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\Datasources\\CurveDatasource.py",
+        "parent_id": "XfbUd1AlLPxEpN0c",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\Datasources\\CurveDatasource.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "4ds8l6QCoDaTqkuW"
+    },
+    {
+        "type": "Group",
+        "name": "Configs",
+        "parent_id": "lnxbMHXdCt07kZ9J",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "1OQRocVAf7jshBp5"
+    },
+    {
+        "type": "Group",
+        "name": "Documentation",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "LBqyWzJHK689sGID",
+        "iconColor": "rgb(128, 128, 128)"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\NotesAndDocumentation",
+        "parent_id": "LBqyWzJHK689sGID",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\NotesAndDocumentation",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "QRUkclXmOCxTgieq"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\Install_Instructions.md",
+        "parent_id": "LBqyWzJHK689sGID",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\Install_Instructions.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "nXpkal1VRIDs4BoG"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\README.md",
+        "parent_id": "LBqyWzJHK689sGID",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\README.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "WDPhinebXrAIkH30"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\RenderDataseries.py",
+        "parent_id": "1CdvBR2sA4Ytk9hn",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\RenderDataseries.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "74vnjC1BhXORcmbk"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\general_plotting_mixins.py",
+        "parent_id": "1OQRocVAf7jshBp5",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\general_plotting_mixins.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "a0HxNzXY5yeG9O2V"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\GlobalApplicationMenus",
+        "parent_id": "RSMHz1BFeOYog2VZ",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\GlobalApplicationMenus",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "3RUP4VTstzDeYESX"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Flowchart\\FlowchartNotes.md",
+        "parent_id": "LBqyWzJHK689sGID",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Flowchart\\FlowchartNotes.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "dYQvxgf2kzerU65a"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Flowchart\\pyqtplot_Flowchart.py",
+        "parent_id": "san51Grq2eyIMBuv",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Flowchart\\pyqtplot_Flowchart.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "5SXpkxhyPlnUWoMu"
+    },
+    {
+        "type": "Group",
+        "name": "TopLevel",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "rDfKsG1knuZW9x5S",
+        "iconColor": "rgb(50, 205, 50)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\iPython_PipelineRun.ipy",
+        "parent_id": "rDfKsG1knuZW9x5S",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\iPython_PipelineRun.ipy",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "zUr35NudVOYZ0tBp"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\python_PipelineRun.py",
+        "parent_id": "rDfKsG1knuZW9x5S",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\python_PipelineRun.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "jrvU2iHutNlJS7CT"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\Jupyter_FlowchartPipeline.ipynb",
+        "parent_id": "rDfKsG1knuZW9x5S",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\Jupyter_FlowchartPipeline.ipynb",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "iC50TkfcX9lwzWnZ"
+    },
+    {
+        "type": "Group",
+        "name": "Requirements",
+        "parent_id": "LBqyWzJHK689sGID",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "10nXAfSqk3wPoJby"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\requirements.txt",
+        "parent_id": "10nXAfSqk3wPoJby",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\requirements.txt",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "2Bvl1fSEpaYbhXtZ"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\TestNeuropyPipeline82.ipynb",
+        "parent_id": "rDfKsG1knuZW9x5S",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\TestNeuropyPipeline82.ipynb",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "OF3tpPigdxKX9fnw"
+    },
+    {
+        "type": "Group",
+        "name": "Examples",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "UtXveM5OxdYlPEow",
+        "iconColor": "rgb(105, 105, 105)"
+    },
+    {
+        "type": "Group",
+        "name": "PyQtGraph Examples",
+        "parent_id": "UtXveM5OxdYlPEow",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "kjbapyshUxVSHdn9"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "DvukqVB0MUPKYZl9"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\PyQtPlot_ParameterTree_Example.py",
+        "parent_id": "UtXveM5OxdYlPEow",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\PyQtPlot_ParameterTree_Example.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "FmZe0c4Q1V8kMfCl"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\PyQtPlot_ParameterTree_Filter.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\PyQtPlot_ParameterTree_Filter.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "9CsNVdG0bwoymacn"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ZavzmNY1t4M3qWnL"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\parametertree.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\parametertree.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "aORE2mTVJQMBbsA1"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Plpk4y1mWDjrgGbR"
+    },
+    {
+        "type": "Group",
+        "name": "Features",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "xUqNdZLW8RBaj96t",
+        "iconColor": "rgb(0, 255, 0)"
+    },
+    {
+        "type": "Group",
+        "name": "Exporting",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "XjnrIeBRhxaVl2w0"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\ParameterTrees\\ExportPipelineParametersTree.py",
+        "parent_id": "XjnrIeBRhxaVl2w0",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\ParameterTrees\\ExportPipelineParametersTree.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "P3ZoegQyKhf8snuz"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Mixins\\ExportHelpers.py",
+        "parent_id": "XjnrIeBRhxaVl2w0",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Mixins\\ExportHelpers.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "YfOVKJH5TQhumoSX"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\load_exported.py",
+        "parent_id": "XjnrIeBRhxaVl2w0",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\load_exported.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "qNivuhMteSQ37wfn"
+    },
+    {
+        "type": "Group",
+        "name": "Graphics/Rendering",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "hf4ZMbGPeHxzqrLA",
+        "iconColor": "rgb(0, 206, 209)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\DataSeriesToSpatial.py",
+        "parent_id": "hf4ZMbGPeHxzqrLA",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\DataSeriesToSpatial.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "N7I1LJ5tzliE38Un"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\testNonInteractiveSpyder.py",
+        "parent_id": "rDfKsG1knuZW9x5S",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\testNonInteractiveSpyder.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "hKvqxf1RYHIT94gO"
+    },
+    {
+        "type": "Group",
+        "name": "2D Time Epochs",
+        "parent_id": "hf4ZMbGPeHxzqrLA",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "1pHPzwjgTvbk8lQm"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\GraphicsObjects\\IntervalRectsItem.py",
+        "parent_id": "1pHPzwjgTvbk8lQm",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\GraphicsObjects\\IntervalRectsItem.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "L6CK9kYQVOlaGhuZ"
+    },
+    {
+        "type": "Group",
+        "name": "Reference_and_Examples",
+        "parent_id": "LBqyWzJHK689sGID",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "XFlU907bEYZC8vQx"
+    },
+    {
+        "type": "Group",
+        "name": "pyqtgraph",
+        "parent_id": "XFlU907bEYZC8vQx",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "yOshUm85VXYcKqIn"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\graphicsItems\\GraphicsWidgetAnchor.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\graphicsItems\\GraphicsWidgetAnchor.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "D9BXcM7P8Y0SjodH"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\graphicsItems\\GraphicsWidgetAnchor.py",
+        "parent_id": "yOshUm85VXYcKqIn",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\graphicsItems\\GraphicsWidgetAnchor.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "48TE5yOvQ10UAXRB"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "QeF0XYCiKbj89ks6"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.ui",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.ui",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "e2U6smzTgPjW78DR"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "RYDc7qUXgLj43NhF"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.py",
+        "parent_id": "yOshUm85VXYcKqIn",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ik3TF85I4XMP9rRE"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.ui",
+        "parent_id": "yOshUm85VXYcKqIn",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem_QtDesigner.ui",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "sit2jRm4eScdWZbx"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem.py",
+        "parent_id": "yOshUm85VXYcKqIn",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\DateAxisItem.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "P5fY1aZ7pSThGMIo"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\pyqtplot_basic.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\pyqtplot_basic.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "1h2g0vmruAbIJ6pM"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\ModelViewMixin Conventions.md",
+        "parent_id": "LBqyWzJHK689sGID",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\ModelViewMixin Conventions.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "uNMHheoW6IZ5JL3y"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\pyqtplot_Legend.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\pyqtplot_Legend.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "m5uBQMj23OcPynto"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\pyqtplot_DataTreeWidget.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\pyqtplot_DataTreeWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "FWyek6aVSh9o2qlA"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Mixins\\PhoMainAppWindowBase.py",
+        "parent_id": "san51Grq2eyIMBuv",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Mixins\\PhoMainAppWindowBase.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ZEnQR9OBxFTf6gCh"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\NonInteractiveWrapper.py",
+        "parent_id": "rDfKsG1knuZW9x5S",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\NonInteractiveWrapper.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "KGbFo6ElPqt4N8fu"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\ModelViewMixin Conventions.md",
+        "parent_id": "10nXAfSqk3wPoJby",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\ModelViewMixin Conventions.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "RenN0EjCxw4oFrkB"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\NotesAndDocumentation\\2022-06-20-RenderItems.md",
+        "parent_id": "LBqyWzJHK689sGID",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\NotesAndDocumentation\\2022-06-20-RenderItems.md",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "2Bf3uhTYrp9El5DU"
+    },
+    {
+        "type": "Group",
+        "name": "Importing",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "wloXBpeIFdx0zDiH"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\import_data.py",
+        "parent_id": "wloXBpeIFdx0zDiH",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\import_data.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "MHiElS7JRBz0asfr"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\load_exported.py",
+        "parent_id": "wloXBpeIFdx0zDiH",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\load_exported.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "3yG1Ptd6EViSF9MO"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\MatFileBrowser",
+        "parent_id": "wloXBpeIFdx0zDiH",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\MatFileBrowser",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "dh9xjtSqw6nBpNLA"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\Filesystem\\HDF5",
+        "parent_id": "wloXBpeIFdx0zDiH",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\Filesystem\\HDF5",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "0mrOBiCQJ3971hbS"
+    },
+    {
+        "type": "Group",
+        "name": "To Explore Later",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "cqRBDILz7Tsk2Q4C"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\exceptionHandling.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\exceptionHandling.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "24uNroaWp7MZxVlv"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\debug.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\debug.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "LZdFaVH0SQOcKryN"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\console",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\console",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "gxhbHJlFwQkLBr8R"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Mixins\\DisplayHelpers.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Mixins\\DisplayHelpers.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "8NlsxqfLHFdIrw2X"
+    },
+    {
+        "type": "Group",
+        "name": "Placefield Densities and Prominences",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "BDltdIjUT2YpMg6N",
+        "iconColor": "rgb(255, 69, 0)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\peak_prominences.py",
+        "parent_id": "BDltdIjUT2YpMg6N",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\peak_prominences.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "w3U9ct8oJpqSx2z1"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions\\EloyAnalysis.py",
+        "parent_id": "BDltdIjUT2YpMg6N",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions\\EloyAnalysis.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "glTxD5oLMdCn9ier"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\peak_prominence2d.py",
+        "parent_id": "BDltdIjUT2YpMg6N",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\peak_prominence2d.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "rTypcw4gslNPu5MR"
+    },
+    {
+        "type": "Group",
+        "name": "Window Positioning",
+        "parent_id": "wMX7GKQJqp2fRHbE",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "27IZd16OEmpuxiJP"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\plotting\\figure_management.py",
+        "parent_id": "27IZd16OEmpuxiJP",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\plotting\\figure_management.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "rGUdusj9nRVLFX4H"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\plotting\\historical_results.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\plotting\\historical_results.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "veRZKBHxMVq5049Y"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\TopLevelWindowHelper.py",
+        "parent_id": "27IZd16OEmpuxiJP",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\TopLevelWindowHelper.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Qe1PtEDs5UiXAfY9"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\widget_positioning_helpers.py",
+        "parent_id": "27IZd16OEmpuxiJP",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\widget_positioning_helpers.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "FBgYO9kApmCXSEoz"
+    },
+    {
+        "type": "Group",
+        "name": "Representation Decoding",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "wqrtgx0KGEO7DATo",
+        "iconColor": "rgb(128, 0, 0)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\decoding.py",
+        "parent_id": "wqrtgx0KGEO7DATo",
+        "fsPath": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\decoding.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "uZJURA8Pv7L1fz9S"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Decoder",
+        "parent_id": "wqrtgx0KGEO7DATo",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Decoder",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "gFlR0fdx94nLiemk"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions\\DecoderPredictionError.py",
+        "parent_id": "wqrtgx0KGEO7DATo",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions\\DecoderPredictionError.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "fd2McEPNj5WwH7pZ"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\decoder_difference.py",
+        "parent_id": "wqrtgx0KGEO7DATo",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\decoder_difference.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ryKdRICEx01NLUTc"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\plotting\\figure_management.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\plotting\\figure_management.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "5bvs3eF9f4WxQADn"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockAreaWrapper.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockAreaWrapper.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "G8nq7FXNP5g0xCQv"
+    },
+    {
+        "type": "Group",
+        "name": "DockingWidgets",
+        "parent_id": "wMX7GKQJqp2fRHbE",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "cOyG9Ej5DoISTilw"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockAreaWrapper.py",
+        "parent_id": "cOyG9Ej5DoISTilw",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockAreaWrapper.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Ri9aIJSeWvxTP5mg"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockPlanningHelperWidget",
+        "parent_id": "cOyG9Ej5DoISTilw",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\DockPlanningHelperWidget",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "F68tyj3LDqOuvZTc"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\Working\\pyqtgraph_2d_plotter_widget.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQtPlot\\Working\\pyqtgraph_2d_plotter_widget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "VEOrjzAkiwgu6TLb"
+    },
+    {
+        "type": "Group",
+        "name": "GUI Controls",
+        "parent_id": "wMX7GKQJqp2fRHbE",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "H7uZvsWw4a1OVBj5",
+        "iconColor": "rgb(0, 128, 128)"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\InlineFilesystemPathSelectWidget",
+        "parent_id": "H7uZvsWw4a1OVBj5",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\InlineFilesystemPathSelectWidget",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "R5dFtUza6K81qNyI"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\ToggleButton.py",
+        "parent_id": "H7uZvsWw4a1OVBj5",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\ToggleButton.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "daJhLbCoWD6z4n72"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\MatFileBrowser\\MatFileBrowser.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\MatFileBrowser\\MatFileBrowser.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "6yWTQm73iEvAKMXf"
+    },
+    {
+        "type": "Group",
+        "name": "Extras",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "GVBNYQoX5aIyfCui"
+    },
+    {
+        "type": "Group",
+        "name": "Data File Browsers",
+        "parent_id": "GVBNYQoX5aIyfCui",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "VulXgUQTDEbatZfS"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\MatFileBrowser",
+        "parent_id": "VulXgUQTDEbatZfS",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Params\\MatFileBrowser",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "oJ043zvUFSpIHPW9"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\Filesystem\\HDF5\\silx_hdf5_viewer.py",
+        "parent_id": "VulXgUQTDEbatZfS",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\Filesystem\\HDF5\\silx_hdf5_viewer.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "kNxwPIYl5bmUKQiS"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\RenderTimeEpochs",
+        "parent_id": "1pHPzwjgTvbk8lQm",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\RenderTimeEpochs",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "AayeNKIHfzmBjMSh"
+    },
+    {
+        "type": "Group",
+        "name": "Slix Best Examples",
+        "parent_id": "UtXveM5OxdYlPEow",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "GE2pPo4uTVWLCH3l",
+        "iconColor": "rgb(255, 255, 0)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\customSilxView.py",
+        "parent_id": "GE2pPo4uTVWLCH3l",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\customSilxView.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "fuBE9ARGi6dr4myU"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\plotCurveLegendWidget.py",
+        "parent_id": "GE2pPo4uTVWLCH3l",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\plotCurveLegendWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "9qg0WX1RBQoSl8uI"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\plotWidget.py",
+        "parent_id": "GE2pPo4uTVWLCH3l",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\plotWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "NwuBrx17jSHkZ8cz"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\analyses\\brainstates.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\analyses\\brainstates.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "MUqwe9tObhiZdmjS"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\contextMenu.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\contextMenu.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "cmGwuEQ7VxfOS0HT"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\contextMenu.py",
+        "parent_id": "H7uZvsWw4a1OVBj5",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\contextMenu.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "KeyxSHUIqYBn7NF5"
+    },
+    {
+        "type": "Group",
+        "name": "ExceptionHandling",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "HFJVtXrB1M208QDK",
+        "iconColor": "rgb(205, 92, 92)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\exceptionHandling.py",
+        "parent_id": "HFJVtXrB1M208QDK",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\exceptionHandling.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "sz3V5ja7OnlphE4d"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\reload.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\reload.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "3W2LVXJDp5QGmlC9"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\functions.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\functions.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Kg4U6DimQlcOX8qE"
+    },
+    {
+        "type": "Group",
+        "name": "Context Menus",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "xSyGVdTKANH7Qfgr"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\plot3dContextMenu.py",
+        "parent_id": "xSyGVdTKANH7Qfgr",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\plot3dContextMenu.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "aDZm14gqp9kfdATl"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\contextMenu.py",
+        "parent_id": "xSyGVdTKANH7Qfgr",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\contextMenu.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "qGnRmNP2hjxJAXTo"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\GLViewWidget.py",
+        "parent_id": "kjbapyshUxVSHdn9",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\GLViewWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "u0ecEogw65qnXUBI"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\GLViewWidget.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\examples\\GLViewWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "mRL3DsGbevorAH61"
+    },
+    {
+        "type": "Group",
+        "name": "Custom Window Titlebar",
+        "parent_id": "UtXveM5OxdYlPEow",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Dvfrz32RTBbOp4WZ"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQt\\testCustomTitlebar.py",
+        "parent_id": "Dvfrz32RTBbOp4WZ",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQt\\testCustomTitlebar.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "dslFZzb8YkARmBXn"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQt\\pyqt_custom_titlebar_setter",
+        "parent_id": "Dvfrz32RTBbOp4WZ",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\PyQt\\pyqt_custom_titlebar_setter",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "i813I5WJsKxp7YBV"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\TimeCurves",
+        "parent_id": "1CdvBR2sA4Ytk9hn",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\Mixins\\TimeCurves",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "pBzayrN5uAItjHRC"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\occupancy_plotting_mixins.py",
+        "parent_id": "1OQRocVAf7jshBp5",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plotting\\mixins\\occupancy_plotting_mixins.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Q8Izqfg57lV9iZSB"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\simplewidget.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\simplewidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "bDSBRVfHKcwdI5pe"
+    },
+    {
+        "type": "Group",
+        "name": "Trash",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "FiMpBf3SzvyVXeD0"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\writetoh5.py",
+        "parent_id": "FiMpBf3SzvyVXeD0",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\writetoh5.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "lmXwasIi5qdDWg9x"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyVista\\InteractivePlotter\\Mixins\\InteractivePlotterMixins.py",
+        "parent_id": "hf4ZMbGPeHxzqrLA",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyVista\\InteractivePlotter\\Mixins\\InteractivePlotterMixins.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "TtvNVMwujcq26QYX"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\analyses\\decoders.py",
+        "parent_id": "wqrtgx0KGEO7DATo",
+        "fsPath": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\analyses\\decoders.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "vMUBZf8PraK9IhQG"
+    },
+    {
+        "type": "Group",
+        "name": "Unit Tests",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "bCZQhsfVI5N8LkOB",
+        "iconColor": "rgb(128, 0, 128)"
+    },
+    {
+        "type": "Group",
+        "name": "Matplotlib Wrappers",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "78yQLV3NF2TrUqGW"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Matplotlib\\embedding_in_qt_sgskip.py",
+        "parent_id": "78yQLV3NF2TrUqGW",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Matplotlib\\embedding_in_qt_sgskip.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "BVtpMYRkxDnucJqo"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\widgets\\MatplotlibWidget.py",
+        "parent_id": "78yQLV3NF2TrUqGW",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\External\\pyqtgraph\\widgets\\MatplotlibWidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "gFVpUT6SjDdhIyXb"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\PyVista\\CascadingDynamicPlotsList.py",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\PyVista\\CascadingDynamicPlotsList.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ZitA8eQ3PVJfC7Dd"
+    },
+    {
+        "type": "Group",
+        "name": "Containers/Wrappers",
+        "parent_id": "lnxbMHXdCt07kZ9J",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "O4RTbul9a6FCotH3",
+        "iconColor": "rgb(154, 205, 50)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\connections_container.py",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\Qt\\connections_container.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "dU9yJ1qhG2lIjvMB"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\PyVista\\CascadingDynamicPlotsList.py",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\PyVista\\CascadingDynamicPlotsList.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "NopvSTyBwzjAg1Z9"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\PhoUIContainer.py",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\PhoUIContainer.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ZL8NOpnCBc0Ab2sF"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\interaction_helpers.py",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\gui\\interaction_helpers.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "pzcqF5eER0wIMamJ"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\ComputationResults.py",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\ComputationResults.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "d346P2uahycRIrZx"
+    },
+    {
+        "type": "Group",
+        "name": "FigureConfigGuis",
+        "parent_id": "H7uZvsWw4a1OVBj5",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "iVWnDIsSYh5pOeCl"
+    },
+    {
+        "type": "Group",
+        "name": "2022-10-31-ToExploreSoon",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "G3ndo07QmMTWlhOb"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Analysis\\reliability.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Analysis\\reliability.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "EorxOyVk8Bhi74tQ"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyVista\\InteractivePlotter\\Mixins\\LapsVisualizationMixin.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyVista\\InteractivePlotter\\Mixins\\LapsVisualizationMixin.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "tQgK3YTAMIw4GjhX"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\TESTING\\testing_notebooks\\PhoMatFileBrowsingTesting.ipynb",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\TESTING\\testing_notebooks\\PhoMatFileBrowsingTesting.ipynb",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "IOjUduNP4SyBmoTG"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\TESTING\\testing_notebooks\\SessionFolderLoadingTests.ipynb",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\TESTING\\testing_notebooks\\SessionFolderLoadingTests.ipynb",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "sOSAyZDTv04lepoH"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\TESTING\\testing_notebooks\\Custom_ComputationResults_DataTreeWidget.ipynb",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\EXTERNAL\\TESTING\\testing_notebooks\\Custom_ComputationResults_DataTreeWidget.ipynb",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "PjxWtTueRCyiXpz2"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\customDataView.py",
+        "parent_id": "GE2pPo4uTVWLCH3l",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\customDataView.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "OP7DLt0XTJ14z83x"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\simplewidget.py",
+        "parent_id": "GE2pPo4uTVWLCH3l",
+        "fsPath": "c:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021\\LibrariesExamples\\Silx\\silx_examples\\simplewidget.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "WqFmUZxidO3gQaeh"
+    },
+    {
+        "type": "Group",
+        "name": "stacked_epoch_slices",
+        "parent_id": "hf4ZMbGPeHxzqrLA",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "p7jYBfkAtGFuVhgE",
+        "iconColor": "rgb(255, 255, 0)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\stacked_epoch_slices.py",
+        "parent_id": "p7jYBfkAtGFuVhgE",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\stacked_epoch_slices.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "x97UMIknQX5eNBSv"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions\\DecoderPredictionError.py",
+        "parent_id": "p7jYBfkAtGFuVhgE",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\DisplayFunctions\\DecoderPredictionError.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "BnbW6lF72P0L4fNU"
+    },
+    {
+        "type": "Group",
+        "name": "Intervals",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "I6LHVt9mlvBjq4Tp",
+        "iconColor": "rgb(107, 142, 35)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\efficient_interval_search.py",
+        "parent_id": "I6LHVt9mlvBjq4Tp",
+        "fsPath": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\efficient_interval_search.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "k8LAo6lYmSuqwI0N"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\mixins\\time_slicing.py",
+        "parent_id": "I6LHVt9mlvBjq4Tp",
+        "fsPath": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\mixins\\time_slicing.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "EyavqBomLVOAk5xf"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\signal_process.py",
+        "parent_id": "I6LHVt9mlvBjq4Tp",
+        "fsPath": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\signal_process.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Ui48nze9b7u3EJM0"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\signal_process.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\NeuroPy\\neuropy\\utils\\signal_process.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "BF8Z4SHmxlbgXqw5"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Unused\\RadialMenu.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Unused\\RadialMenu.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "VQ9NXEkUrAcJqyp8"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\DataStructure\\RenderPlots",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\DataStructure\\RenderPlots",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "DjESxPny0VrdTuZs"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\DataStructure\\dynamic_parameters.py",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\DataStructure\\dynamic_parameters.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "AMCEBUvQkcfdXVqg"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\DataStructure\\general_parameter_containers.py",
+        "parent_id": "O4RTbul9a6FCotH3",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoCoreHelpers\\src\\pyphocorehelpers\\DataStructure\\general_parameter_containers.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "jdIN7FwZos8eVD19"
+    },
+    {
+        "type": "Group",
+        "name": "GuiHelpers",
+        "parent_id": "cqRBDILz7Tsk2Q4C",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "LcwWPViQy3Xz0n9q"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\PyQtPlots\\Extensions\\pyqtgraph_helpers.py",
+        "parent_id": "LcwWPViQy3Xz0n9q",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\Pho2D\\PyQtPlots\\Extensions\\pyqtgraph_helpers.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "rig3WwcAQIHMLXam"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Menus\\PhoMenuHelper.py",
+        "parent_id": "RSMHz1BFeOYog2VZ",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Menus\\PhoMenuHelper.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "b67sqDilOp2WPoJc"
+    },
+    {
+        "type": "Directory",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Menus",
+        "parent_id": "RSMHz1BFeOYog2VZ",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\Qt\\Menus",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "sE5CRM0bBHFPjq2m"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\helpers.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\GUI\\PyQtPlot\\Widgets\\helpers.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "GTFdiOspceACfQx7"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plot_data.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\plot_data.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "R2Y3hpaNmOEyG4Lt"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\process_data.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\process_data.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "WjKeoPpaYN7cAFmq"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\analysis\\neuronal_dimensionality_reduction.py",
+        "parent_id": "G3ndo07QmMTWlhOb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\PhoPositionalData\\analysis\\neuronal_dimensionality_reduction.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "qK3cdWN2jt7CRB6k"
+    },
+    {
+        "type": "Group",
+        "name": "TimeBinningAndDiscretizing",
+        "parent_id": "xUqNdZLW8RBaj96t",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "QDABjZgNq8nLKkzb",
+        "iconColor": "rgb(250, 250, 210)"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\ComputationFunctions\\SpikeAnalysis.py",
+        "parent_id": "QDABjZgNq8nLKkzb",
+        "fsPath": "c:\\Users\\pho\\repos\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\ComputationFunctions\\SpikeAnalysis.py",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "pnwoS9DZels4EAMT"
+    }
+]

@@ -176,8 +176,8 @@ print('!!! done running batch !!!')
 # # Single basedir (non-batch) testing:
 
 # + tags=["load", "single_session"]
-# # %pdb on
-basedir = local_session_paths_list[0] # NOT 3
+# %pdb on
+basedir = local_session_paths_list[1] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
@@ -1841,49 +1841,58 @@ widget.draw()
 
 # + [markdown] tags=[]
 # ## Exploring 'Plot' Helper class:
-
-# +
-from PendingNotebookCode import Plot
-
-
-plot = Plot(curr_active_pipeline)
-plot
 # -
 
+curr_active_pipeline.plot._display_1d_placefields
 
+curr_active_pipeline.plot._display_1d_placefields
 
-class Plot(object):
-    """a member dot accessor for display functions.
+curr_active_pipeline.plot._display_spike_rasters_pyqtplot_2D
 
-    Can call like: `plot._display_1d_placefields`
-
-    """
-    def __init__(self, curr_active_pipeline):
-        super(Plot, self).__init__()
-        self._pipeline_reference = curr_active_pipeline
-
-    def __dir__(self):
-        return self._pipeline_reference.registered_display_function_names # ['area', 'perimeter', 'location']
-    
-    def __getattr__(self, k):
-        if '__getstate__' in k: # a trick to make spyder happy when inspecting dotdict
-            def _dummy():
-                pass
-            return _dummy
-        # return self[k]
-        # return self._pipeline_reference.display(display_function=k, active_identifying_session_ctx=self._pipeline_reference.sess.get_context())
-        return self._pipeline_reference.display(display_function=k, active_session_configuration_context=list(self._pipeline_reference.filtered_contexts.values())[-1])
-
-
-plot._display_1d_placefields
-
-plot._display_spike_rasters_pyqtplot_2D
-
-plot._display_3d_image_plotter
+curr_active_pipeline.plot._display_3d_image_plotter
 
 curr_active_pipeline.display('_display_1d_placefield_validations', active_session_configuration_context=curr_active_pipeline.filtered_contexts.maze)
 
 list(curr_active_pipeline.filtered_contexts.values())[-1]
+
+
+
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# ### Spike Emphasis/Visibility Adjustmeents:
+# Compute whether each spike is included in the active placefield computation. Spikes might be excluded due to not meeting speed/firing-rate thresholds, being an unused cell type, or occuring outside the computational_epochs for which the pfs were computed for the active configuration
+
+# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+from pyphoplacecellanalysis.General.Mixins.SpikesRenderingBaseMixin import SpikeEmphasisState
+
+# De-emphasize spikes excluded from the placefield calculations:
+is_spike_included_in_pf = np.isin(active_2d_plot.spikes_df.index, active_pf_2D.filtered_spikes_df.index)
+active_2d_plot.update_spike_emphasis(np.logical_not(is_spike_included_in_pf), SpikeEmphasisState.Deemphasized)
+
+# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+## De-epmhasize spikes that aren't pyramidal-type neurons:
+pyr_only_neuron_ids = curr_active_pipeline.sess.neurons.get_neuron_type(query_neuron_type='pyr').neuron_ids
+is_spike_included = active_2d_plot.find_rows_matching_cell_ids(pyr_only_neuron_ids)
+active_2d_plot.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Hidden)
+
+# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+## De-emphasize spikes that don't have their 'aclu' from a given set of indicies:
+# is_spike_included = np.where(spike_raster_window.spike_raster_plt_2d.spikes_df.aclu == 2)
+is_spike_included = spike_raster_window.spike_raster_plt_2d.spikes_df.aclu.to_numpy() == 2
+spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
+
+# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+is_spike_included = spike_raster_window.spike_raster_plt_2d.spikes_df.aclu.to_numpy() == 2
+spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
+
+# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
+
+# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+spike_raster_window.spike_raster_plt_2d.update_spike_emphasis()
+
+# + scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+## Reset spike emphasis:
+active_2d_plot.reset_spike_emphasis()
 
 # + [markdown] tags=[]
 # ### `matplotlib_view_widget` examples from 241 notebook:
@@ -1961,7 +1970,7 @@ custom_2D_decoder_container.fig, custom_2D_decoder_container.ax = plot_1D_most_l
 
 active_2d_plot.ui.matplotlib_view_widget.draw()
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[]
 # # 🔜✳️ 2022-12-16 - Get 1D one_step_decoder for both short/long
 # Compute the relative entropy between those posteriors and 
 #
@@ -2097,7 +2106,7 @@ assert np.allclose(long_one_step_decoder_2D.marginal.x.p_x_given_n, long_one_ste
 assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
 curr_epoch_result
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # # Use the two-step decoder to decode the replay events:
 # -
 
@@ -2247,22 +2256,6 @@ curr_p_x_given_n = filter_epochs_decoder_result.p_x_given_n_list[i]
 curr_p_x_given_n.shape
 
 # +
-# Let $x$ be the position
-#
-# https://notesonai.com/KL+Divergence
-# https://observablehq.com/@stwind/forward-and-reverse-kl-divergences
-# https://notesonai.com/Maximum+Likelihood+Estimation
-#
-# Alternative Measures:
-#     https://notesonai.com/Jensen%E2%80%93Shannon+Divergence - overcomes becoming infinity when the distributions don't overlap
-#
-# https://stats.stackexchange.com/questions/188903/intuition-on-the-kullback-leibler-kl-divergence
-# https://blogs.rstudio.com/ai/posts/2020-02-19-kl-divergence/
-# https://www.linkedin.com/pulse/kl-divergence-some-interesting-facts-niraj-kumar
-#
-# - [ ] Try Wasserstein distance: https://stats.stackexchange.com/questions/351947/whats-the-maximum-value-of-kullback-leibler-kl-divergence/352008#352008
-#
-# +
 from scipy import stats
 u = [0.5,0.2,0.3]
 v = [0.5,0.3,0.2]
@@ -2291,8 +2284,6 @@ long_one_step_decoder_2D.marginal.x.two_step_most_likely_positions_1D.shape # (3
 
 long_one_step_decoder_2D.most_likely_position_flat_indicies
 
-np.sum(
-
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # NEXT 2022-12-20:
 # - [X] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
@@ -2314,8 +2305,22 @@ np.sum(
 #
 # 2D is left, 1D is right. Both for 'maze1' so it's not a re-binning issue.
 
-
-
+# +
+# Let $x$ be the position
+#
+# https://notesonai.com/KL+Divergence
+# https://observablehq.com/@stwind/forward-and-reverse-kl-divergences
+# https://notesonai.com/Maximum+Likelihood+Estimation
+#
+# Alternative Measures:
+#     https://notesonai.com/Jensen%E2%80%93Shannon+Divergence - overcomes becoming infinity when the distributions don't overlap
+#
+# https://stats.stackexchange.com/questions/188903/intuition-on-the-kullback-leibler-kl-divergence
+# https://blogs.rstudio.com/ai/posts/2020-02-19-kl-divergence/
+# https://www.linkedin.com/pulse/kl-divergence-some-interesting-facts-niraj-kumar
+#
+# - [ ] Try Wasserstein distance: https://stats.stackexchange.com/questions/351947/whats-the-maximum-value-of-kullback-leibler-kl-divergence/352008#352008
+#
 # + [markdown] tags=[]
 # # 🔝 2022-12-21 - For Tomorrow
 # - [ ] Got decoded replays for each respective epoch, but now need to decode the opposite epoch's replays to see how much better/worse they are. 
@@ -2339,17 +2344,6 @@ curr_active_pipeline.sess.replay
 
 
 long_replay_df
-
-
-pd.set_option("display.max_rows", None)
-
-
-# + tags=[]
-short_replay_df.drop(columns=['epoch_id', 'rel_id'])
-
-
-# + tags=[]
-
 
 
 # + tags=["decoder"]

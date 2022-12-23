@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.14.4
 #   kernelspec:
-#     display_name: Python [conda env:phoviz_ultimate_311]
+#     display_name: Python [conda env:phoviz_ultimate]
 #     language: python
-#     name: conda-env-phoviz_ultimate_311-py
+#     name: conda-env-phoviz_ultimate-py
 # ---
 
 # + scene__Default pycharm={"is_executing": false} Scene=true tags=["ActiveScene"]

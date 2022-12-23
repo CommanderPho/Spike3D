@@ -51,6 +51,7 @@
 			"-o",
 			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
 		],
+		"favorites.sortDirection": "DESC",
 	},
 	"extensions": {
 		"recommendations": [
