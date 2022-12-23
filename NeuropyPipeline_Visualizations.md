@@ -4531,19 +4531,7 @@ new_decoder.debug_dump_print()
 ```
 
 ```python
-
-```
-
-```python
 active_pf_1D.plot_ratemaps_1D()
-```
-
-```python
-active_pf_1D.
-```
-
-```python
-
 ```
 
 <!-- #region tags=[] -->
