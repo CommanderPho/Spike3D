@@ -176,8 +176,8 @@ print('!!! done running batch !!!')
 # # Single basedir (non-batch) testing:
 
 # + tags=["load", "single_session"]
-# %pdb on
-basedir = local_session_paths_list[1] # NOT 3
+# # %pdb on
+basedir = local_session_paths_list[0] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
@@ -205,9 +205,6 @@ print_object_memory_usage(curr_active_pipeline.computation_results['maze1'])
 
 # + tags=["load", "single_session"]
 print_object_memory_usage(curr_active_pipeline.computation_results['maze'])
-
-# + tags=["load", "single_session"]
-curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
 # -
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
@@ -417,7 +414,7 @@ plt.plot(post_update_times.T, flat_jensen_shannon_distance_across_all_positions)
 # +
 # flat_relative_entropy_results.shape # (1, 63)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ## 🟢 2022-11-21 - 1D Ratemaps Before and After Track change (Long vs. Short track)
 # Working metrics for comparing overlaps of 1D placefields before and after track change
 # -
@@ -443,7 +440,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPred
 active_decoder = long_one_step_decoder_1D
 fig, axs = plot_spike_count_and_firing_rate_normalizations(active_decoder)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2022-09-23 Decoder Testing
 
 # +
@@ -492,10 +489,6 @@ new_1D_decoder.most_likely_positions
 
 long_one_step_decoder_1D.p_x_given_n
 
-
-
-
-
 global_results.pf2D_Decoder.time_window_edges.shape # (62912,)
 
 curr_active_pipeline.sess.spikes_df
@@ -512,113 +505,6 @@ aclu_keys = [k for k,v in relative_entropy_overlap_dict.items() if v is not None
 # len(aclu_keys) # 101
 short_long_rel_entr_curves = np.vstack([v['short_long_rel_entr_curve'] for k,v in relative_entropy_overlap_dict.items() if v is not None])
 short_long_rel_entr_curves # .shape # (101, 63)
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ## DONE 2022-12-20 - Get Dropping overlapping epochs (both literal duplicates and overlapping) working reliably:
-# TODO: get visual/interactive helper working (it's in the matplotlib_helpers)
-
-# + tags=[]
-# %pdb off
-
-# + tags=[]
-from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, drop_overlapping, get_overlapping_indicies, OverlappingIntervalsFallbackBehavior
-from neuropy.core.epoch import Epoch
-from pyphocorehelpers.print_helpers import print_object_memory_usage  # used in batch_snapshotting(...) to show object memory usage
-from neuropy.utils.matplotlib_helpers import plot_position_curves_figure # for plot_laps_2d
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
-
-# + tags=[]
-sess = curr_active_pipeline.sess
-
-# + tags=[]
-fig, out_axes_list = plot_position_curves_figure(sess.position, include_velocity=True, include_accel=True, figsize=(24, 10))
-ax0 = out_axes_list[0]
-
-# + tags=[]
-from neuropy.utils.efficient_interval_search import deduplicate_epochs
-from PendingNotebookCode import minGroups, merge, removeCoveredIntervals, eraseOverlapIntervals
-
-# + tags=[]
-
-
-
-# + tags=[]
-curr_epochs_df = sess.replay.epochs.get_valid_df()
-print(f'{np.shape(curr_epochs_df) = }')
-
-# + tags=[]
-curr_epochs_df = deduplicate_epochs(curr_epochs_df, agressive_deduplicate=True)
-print(f'{np.shape(curr_epochs_df) = }')
-
-# + tags=[]
-epoch_tuples = [list(epoch_tuple) for epoch_tuple in curr_epochs_df[['start','stop']].itertuples(index=False)] # returns a flat list of interval tuples
-print(f'len(epoch_tuples): {len(epoch_tuples)}')
-
-# + tags=[]
-min_groups_epoch_tuples = minGroups(epoch_tuples)
-min_groups_epoch_tuples
-
-# + tags=[]
-print(f'len(min_groups_epoch_tuples): {len(min_groups_epoch_tuples)}')
-
-# + tags=[]
-merged_epoch_tuples = merge(epoch_tuples)
-print(f'len(merged_epoch_tuples): {len(merged_epoch_tuples)}')
-
-# + tags=[]
-covered_intervals_removed_epoch_tuples = removeCoveredIntervals(epoch_tuples)
-print(f'len(covered_intervals_removed_epoch_tuples): {len(covered_intervals_removed_epoch_tuples)}')
-
-# + tags=[]
-from neuropy.utils.efficient_interval_search import debug_overlapping_epochs
-
-# curr_epochs_obj = deepcopy(sess.ripple)
-# curr_epochs_df = curr_epochs_obj.to_dataframe()
-curr_epochs_df = deepcopy(sess.replay)
-all_overlapping_lap_indicies = debug_overlapping_epochs(curr_epochs_df)
-
-# + tags=[]
-curr_epochs_df.iloc[all_overlapping_lap_indicies, :]
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ### 2022-12-18 - Short Non-Overlapping Intervals Detour:
-# -
-
-curr_epochs_obj = deepcopy(sess.laps)
-
-curr_epochs_obj = deepcopy(sess.ripple)
-curr_epochs_obj.to_dataframe()
-
-
-
-fig, out_axes_list = plot_laps_2d(sess, legacy_plotting_mode=False)
-out_axes_list[0].set_title('New Pho Position Thresholding Estimated Laps')
-
-non_overlapping_start_stop_times_arr = split_overlapping_intervals(start_stop_times_arr)
-non_overlapping_start_stop_times_arr.shape # (75, 2)
-
-
-## Get overlap intervals between all_overlapping lap_indicies:
-np.intersect1d(
-
-
-
-overlapping_laps_obj = curr_laps_obj.filtered_by_lap_flat_index(overlapping_lap_indicies)
-overlapping_laps_obj.to_dataframe()
-
-overlapping_lap_indicies
-
-following_overlapping_lap
-
-# Get the "good" (non-overlapping) laps only, dropping the rest:
-is_good_epoch = np.full((np.shape(start_stop_times_arr)[0],), True)
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ### 2022-12-13 way of dropping bad laps
-
-# + tags=[]
-from neuropy.analyses.laps import _build_new_lap_and_intra_lap_intervals # for _perform_time_dependent_pf_sequential_surprise_computation
-sess, combined_records_list = _build_new_lap_and_intra_lap_intervals(sess)
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ## `active_pf_nD`, `active_pf_nD_dt` visualizations
@@ -680,284 +566,7 @@ fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, cu
 
 out_axes_list
 
-# +
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
-
-fig, out_axes_list = plot_laps_2d(curr_active_pipeline.sess, legacy_plotting_mode=True)
-out_axes_list[0].set_title('New Pho Position Thresholding Estimated Laps')
-fig.show()
-
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
-# ### PyQtGraph attempt to display better laps/epochs for debugging using LinearRegionItem
-# -
-
-LinearRegionItem
-
-VTickGroup
-
-import pyphoplacecellanalysis.External.pyqtgraph as pg
-from pyphoplacecellanalysis.External.pyqtgraph.Qt import QtCore, QtGui, QtWidgets
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.CustomLinearRegionItem import CustomLinearRegionItem
-
-# +
-position_obj = curr_active_pipeline.sess.position
-include_velocity=True
-include_accel=False
-
-num_subplots = 1
-# out_axes_list = []
-out_canvas_list = []
-out_curve_list = []
-
-if include_velocity:
-    num_subplots = num_subplots + 1
-if include_accel:
-    num_subplots = num_subplots + 1
-
-# app = pg.mkQApp()
-mw = QtWidgets.QMainWindow()
-mw.setWindowTitle('Position Curves With Laps')
-mw.resize(1200, 800)
-
-view = pg.GraphicsLayoutWidget()  ## GraphicsView with GraphicsLayout inserted by default
-mw.setCentralWidget(view)
-# cw = QtWidgets.QWidget()
-# mw.setCentralWidget(cw)
-# l = QtWidgets.QVBoxLayout()
-# cw.setLayout(l)
-mw.show()
-mw.setWindowTitle('Position Plot with Laps')
-
-# +
-new_canvas = view.addPlot(title="Position")
-new_canvas.showGrid(x = True, y = True)
-new_canvas.setLabel('left', "Position")
-new_canvas.setLabel('bottom', "Time")
-new_curve = new_canvas.plot(pen=pen, symbolBrush=symbolBrush, symbolSize=symbolSize)
-new_curve.setData(x=xData, y=yData)
-
-# s1 = pg.ScatterPlotItem(size=10, pen='k', symbolBrush=(255,0,0), symbolPen='w', brush=pg.mkBrush(255, 255, 255, 120))
-# l1 = pg.PlotDataItem(antialias=True, pen=pen_aps_model)
-# pg.LineSegmentROI(size
-# .plot(np.random.normal(size=100), pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
-
-def build_spot_data(pos):
-    spots = [{'pos': pos[:,i], 'data': 1} for i in range(np.shape(pos)[1])] # + [{'pos': [0,0], 'data': 1}]
-    return spots
-    
-spots = build_spot_data(test_points)
-s1.addPoints(spots)
-w1.addItem(s1)
-# s1.sigClicked.connect(clicked)
-
-# mw.show()
-
-app.exec()
-
-# -
-
-new_canvas = view.addPlot(title="Position")
-new_canvas.showGrid(x = True, y = True)
-new_canvas.setLabel('left', "Position")
-new_canvas.setLabel('bottom', "Time")
-out_canvas_list.append(new_canvas)
-new_curve = new_canvas.plot(pen=pen, symbolBrush=symbolBrush, symbolSize=symbolSize)
-new_curve.setData(x=position_obj.time, y=position_obj._data['velocity_x_smooth'])
-out_curve_list.append(new_curve)
-app.exec()
-
-# +
-pw = pg.PlotWidget()  ## giving the plots names allows us to link their axes together
-l.addWidget(pw)
-# pw.setLabel('left', 'Position')
-# pw.setLabel('bottom', 'Time', units='s')
-# out_axes_list.append(pw)
-
-
-
-# # p1 = pw1.plot()
-# # p1.setPen((200,200,100))    
-# # pw.plot(position_obj.time, position_obj._data['velocity_x_smooth'], 'k')
-
-# if include_velocity:
-#     pw2 = pg.PlotWidget(name='Velocity')
-#     l.addWidget(pw2)
-#     pw2.setLabel('left', 'Velocity')
-#     pw2.setLabel('bottom', 'Time', units='s')
-#     out_axes_list.append(pw2)
-#     # p2 = pw2.plot()
-#     # p2.setPen((200,200,100))
-
-# if include_accel:
-#     pw3 = pg.PlotWidget()
-#     l.addWidget(pw3)
-#     pw3.setLabel('left', 'Accel.')
-#     pw3.setLabel('bottom', 'Time', units='s')
-#     out_axes_list.append(p3)
-# -
-mw.show()
-
-mw.close()
-
-# +
-## Create an empty plot curve to be filled later, set its pen
-p1 = pw.plot()
-p1.setPen((200,200,100))
-
-## Add in some extra graphics
-rect = QtWidgets.QGraphicsRectItem(QtCore.QRectF(0, 0, 1, 5e-11))
-rect.setPen(pg.mkPen(100, 200, 100))
-pw.addItem(rect)
-
-pw.setLabel('left', 'Position', units='V')
-pw.setLabel('bottom', 'Time', units='s')
-pw.setXRange(0, 2)
-pw.setYRange(0, 1e-10)
-
-
-new_curves_separate_plot = target_graphics_layout_widget.addPlot(row=row, col=col, rowspan=rowspan, colspan=colspan) # PlotItem
-new_curves_separate_plot.setObjectName(name)
-
-# Setup axes bounds for the bottom windowed plot:
-# new_curves_separate_plot.hideAxis('left')
-new_curves_separate_plot.showAxis('left')
-new_curves_separate_plot.hideAxis('bottom') # hide the shared time axis since it's synced with the other plot
-# new_curves_separate_plot.showAxis('bottom')
-
-new_curves_separate_plot.setMouseEnabled(x=False, y=True)
-
-# # setup the new_curves_separate_plot to have a linked X-axis to the other scroll plot:
-main_plot_widget = self.plots.main_plot_widget # PlotItem
-new_curves_separate_plot.setXLink(main_plot_widget) # works to synchronize the main zoomed plot (current window) with the epoch_rect_separate_plot (rectangles plotter)
-
-
-main_time_curves_view_widget = 
-# def ScrollRasterPreviewWindow_on_BuildUI(self, background_static_scroll_window_plot):
-
-#         # Common Tick Label
-#         vtick = QtGui.QPainterPath()
-#         vtick.moveTo(0, -0.5)
-#         vtick.lineTo(0, 0.5)
-        
-#         #############################
-#         ## Bottom Windowed Scroll Plot/Widget:
-
-#         # ALL Spikes in the preview window:
-#         curr_spike_x, curr_spike_y, curr_spike_pens, self.plots_data.all_spots, curr_n = self._build_all_spikes_data_values()
-        
-#         self.plots.preview_overview_scatter_plot = pg.ScatterPlotItem(name='spikeRasterOverviewWindowScatterPlotItem', pxMode=True, symbol=vtick, size=5, pen={'color': 'w', 'width': 1})
-#         self.plots.preview_overview_scatter_plot.setObjectName('preview_overview_scatter_plot') # this seems necissary, the 'name' parameter in addPlot(...) seems to only change some internal property related to the legend AND drastically slows down the plotting
-#         self.plots.preview_overview_scatter_plot.opts['useCache'] = True
-#         self.plots.preview_overview_scatter_plot.addPoints(self.plots_data.all_spots) # , hoverable=True
-#         background_static_scroll_window_plot.addItem(self.plots.preview_overview_scatter_plot)
-        
-#         # Add the linear region overlay:
-#         # self.ui.scroll_window_region = pg.LinearRegionItem(pen=pg.mkPen('#fff'), brush=pg.mkBrush('#f004'), hoverBrush=pg.mkBrush('#fff4'), hoverPen=pg.mkPen('#f00'), clipItem=self.plots.preview_overview_scatter_plot) # bound the LinearRegionItem to the plotted data
-        
-#         self.ui.scroll_window_region = CustomLinearRegionItem(pen=pg.mkPen('#fff'), brush=pg.mkBrush('#f004'), hoverBrush=pg.mkBrush('#fff4'), hoverPen=pg.mkPen('#f00'), clipItem=self.plots.preview_overview_scatter_plot) # bound the LinearRegionItem to the plotted data
-#         self.ui.scroll_window_region.setObjectName('scroll_window_region')
-#         self.ui.scroll_window_region.setZValue(10)
-#         # Add the LinearRegionItem to the ViewBox, but tell the ViewBox to exclude this item when doing auto-range calculations.
-#         background_static_scroll_window_plot.addItem(self.ui.scroll_window_region, ignoreBounds=True)
-#         self.ui.scroll_window_region.sigRegionChanged.connect(self._Render2DScrollWindowPlot_on_linear_region_item_update)
-
-        
-#         # Setup axes bounds for the bottom windowed plot:
-#         background_static_scroll_window_plot.hideAxis('left')
-#         background_static_scroll_window_plot.hideAxis('bottom')
-#         # background_static_scroll_window_plot.setLabel('bottom', 'Time', units='s')
-#         background_static_scroll_window_plot.setMouseEnabled(x=False, y=False)
-#         background_static_scroll_window_plot.disableAutoRange('xy')
-#         # background_static_scroll_window_plot.enableAutoRange(x=False, y=False)
-#         background_static_scroll_window_plot.setAutoVisible(x=False, y=False)
-#         background_static_scroll_window_plot.setAutoPan(x=False, y=False)
-        
-#         # Setup range for plot:
-#         earliest_t, latest_t = self.spikes_window.total_df_start_end_times
-#         background_static_scroll_window_plot.setXRange(earliest_t, latest_t, padding=0)
-#         background_static_scroll_window_plot.setYRange(np.nanmin(curr_spike_y), np.nanmax(curr_spike_y), padding=0)
-        
-#         return background_static_scroll_window_plot
-
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
-# ### Approach: try to compute brand-new laps using estimation_session_laps(sess):
-
-# +
-import matplotlib.pyplot as plt
-from neuropy.utils.misc import is_iterable
-from neuropy.plotting.figure import pretty_plot
-from scipy.ndimage import gaussian_filter, gaussian_filter1d, interpolation
-
-from neuropy.analyses.laps import estimation_session_laps # Newest pho laps estimation
-from pyphoplacecellanalysis.Analysis.reliability import compute_lap_to_lap_reliability
-
-from neuropy.utils.matplotlib_helpers import plot_position_curves_figure # for plot_laps_2d
-from pyphoplacecellanalysis.PhoPositionalData.plotting.laps import plot_laps_2d
-
-curr_result_label = 'maze1'
-sess = curr_active_pipeline.filtered_sessions[curr_result_label]
-sess = curr_active_pipeline.sess
-
-# +
-# sess = estimation_session_laps(sess)
-# -
-
-active_pf_1D_dt.snapshot()
-
-even_lap_specific_epochs.to_dataframe()
-
-curr_active_pipeline.sess.laps.to_dataframe()
-
-pos_df = sess.position.to_dataframe()
-hardcoded_track_midpoint_x = 150.0
-
-pos_df.x.aggregate(['nanmin','mean', 'median','nanmax'])
-
-# # %pdb off
-fig, out_axes_list = _plot_position_curves_figure(sess.position, include_velocity=True, include_accel=False, figsize=(24, 10))
-ax0 = out_axes_list[0]
-
-curr_laps = sess.laps
-curr_laps.from_estimated_laps()
-
-curr_laps_df = sess.laps.to_dataframe()
-curr_laps_df
-
-pos_df = sess.compute_position_laps() # ensures the laps are computed if they need to be:
-position_obj = sess.position
-position_obj.compute_higher_order_derivatives()
-pos_df = position_obj.compute_smoothed_position_info(N=20) ## Smooth the velocity curve to apply meaningful logic to it
-pos_df = position_obj.to_dataframe()
-pos_df
-
-# +
-# fig, out_axes_list = plot_laps_2d(sess, legacy_plotting_mode=True)
-fig, out_axes_list = plot_laps_2d(sess, legacy_plotting_mode=False)
-out_axes_list[0].set_title('New Pho Position Thresholding Estimated Laps')
-
-curr_cell_idx = 2 
-# curr_cell_idx = 3 # good for end platform analysis
-curr_cell_ID = sess.spikes_df.spikes.neuron_ids[curr_cell_idx]
-print(f'curr_cell_idx: {curr_cell_idx}, curr_cell_ID: {curr_cell_ID}')
-
-# pre-filter by spikes that occur in one of the included laps for the filtered_spikes_df
-filtered_spikes_df = sess.spikes_df.copy()
-time_variable_name = filtered_spikes_df.spikes.time_variable_name # 't_rel_seconds'
-
-lap_ids = sess.laps.lap_id
-# lap_flat_idxs = sess.laps.get_lap_flat_indicies(lap_ids)
-
-out_indicies, out_digitized_position_bins, out_within_lap_spikes_overlap = compute_lap_to_lap_reliability(curr_active_pipeline.computation_results[curr_result_label].computed_data['pf2D'], filtered_spikes_df, lap_ids, curr_cell_idx, debug_print=False, plot_results=True);
-
-# compute_reliability_metrics(out_indicies, out_digitized_position_bins, out_within_lap_spikes_overlap, debug_print=False, plot_results=False)
-
-# # curr_kdiba_pipeline.computation_results['maze1'].computed_data['pf2D'].plotRaw_v_time(curr_cell_idx)
-# _test_plotRaw_v_time(curr_kdiba_pipeline.computation_results[curr_result_label].computed_data['pf2D'], curr_cell_idx)
-# -
-
-
-
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # # `_display_short_long_pf1D_comparison` and `_display_short_long_pf1D_scalar_overlap_comparison`
 
 # +
@@ -1010,7 +619,7 @@ from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchro
 curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
 curr_placefields_plotter.show()
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## ❌🆖 BROKEN Individual Plotting Outputs:
 
 # + [markdown] tags=[]
@@ -1327,7 +936,7 @@ ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(sess_time_
 
 
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # # NEW 2022-12-14 - Efficient PfND_TimeDependent batch entropy computations:
 
 # + pycharm={"name": "#%%\n"}
@@ -1431,9 +1040,6 @@ neurons_obj_PYR.neuron_ids
 neurons_obj_PYR.get_above_firing_rate(1.0)
 
 # + pycharm={"name": "#%%\n"}
-CodeConversion.get_arguments_as_optional_dict("ha='center', va='top', family='sans-serif', size=14")
-
-# + pycharm={"name": "#%%\n"}
 from neuropy.utils.matplotlib_helpers import draw_epoch_regions
 from neuropy.core.epoch import Epoch
 
@@ -1529,20 +1135,11 @@ bb = a_label.get_extents()
 bb
 
 # + pycharm={"name": "#%%\n"}
-collection.sticky_edges
-
-# + pycharm={"name": "#%%\n"}
 out = curr_ax.broken_barh([epoch_tuples[0]], (0, 1), facecolors='tab:blue')
 out
 
 # + pycharm={"name": "#%%\n"}
 curr_ax.get_figure().canvas.draw()
-
-# + pycharm={"name": "#%%\n"}
-curr_span_ymin
-
-# + pycharm={"name": "#%%\n"}
-curr_span_ymax
 
 # + pycharm={"name": "#%%\n"} tags=["temp"]
 from numpy import inf
@@ -1624,8 +1221,6 @@ fig.show()
 
 # + pycharm={"name": "#%%\n"} tags=["visualization"]
 from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow, LayoutScrollability
-
-
 
 out = BasicBinnedImageRenderingWindow(flat_relative_entropy_results, post_update_times, active_pf_1D_dt.xbin_labels, name='relative_entropy', title="Relative Entropy per Pos (X) @ time (t)", variable_label='Rel Entropy', scrollability_mode=LayoutScrollability.NON_SCROLLABLE)
 out
@@ -1839,7 +1434,7 @@ widget.draw()
 
 widget.draw()
 
-# + [markdown] tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # ## Exploring 'Plot' Helper class:
 # -
 
@@ -2364,6 +1959,8 @@ short_decoding_of_long_epochs_results = _compute_epoch_posterior_confidences(sho
 long_decoding_of_long_epochs_results = _compute_epoch_posterior_confidences(long_decoding_of_long_epochs_results)
 short_decoding_of_short_epochs_results = _compute_epoch_posterior_confidences(short_decoding_of_short_epochs_results)
 
+long_decoding_of_long_epochs_results
+
 # Self (long-long and short-short) confidence calculations:
 # These posteriors are decoded over the entire epoch time, not just during replays:
 # also: reciprocal measure: `posterior_uncertainty_measure = 1.0/posterior_uncertainty_measure` so by dividing by this value gives you a value in the range (+Inf, 1.0)
@@ -2389,15 +1986,15 @@ import matplotlib.pyplot as plt
 fig, ax = plt.subplots()
 
 ### Old entire posterior decoding for same:
-plt.plot(long_one_step_decoder_1D.active_time_window_centers, long_posterior_uncertainty_measure, linestyle='', marker='o',  markersize=2, label='long') # , color='k'
+# plt.plot(long_one_step_decoder_1D.active_time_window_centers, long_posterior_uncertainty_measure, linestyle='', marker='o',  markersize=2, label='long') # , color='k'
 # plt.plot(short_one_step_decoder_1D.active_time_window_centers, short_posterior_uncertainty_measure, linestyle='', marker='o',  markersize=2, label='short')
 
 ## Plot Congruent Decodings:
-# plt.plot(np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_long')
-# plt.plot(np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='short_decoding_of_short') 
-## Plot Oppposite Decodings:
-# plt.plot(np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_short')
-# plt.plot(np.concatenate(short_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(short_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='short_decoding_of_long') 
+ax.plot(np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_long')
+ax.plot(np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='short_decoding_of_short') 
+# Plot Oppposite Decodings:
+ax.plot(np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_short')
+ax.plot(np.concatenate(short_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(short_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='short_decoding_of_long') 
 
 plt.legend()
 plt.title('Decoding Maximum Posterior Confidence')
@@ -2406,17 +2003,51 @@ plt.ylabel('Maximum Confidence')
 # -
 
 
+
+
+
+# +
+# custom_2D_decoder_container.ax
+
+def _temp_most_likely_position_decoder_plot_sync_window(start_t, end_t):
+    global ax
+    with plt.ion():
+        ax.set_xlim(start_t, end_t)    
+        plt.draw()
+
+ax.set_xlim(active_2d_plot.spikes_window.active_window_start_time, active_2d_plot.spikes_window.active_window_end_time)
+
+sync_connection = active_2d_plot.window_scrolled.connect(_temp_most_likely_position_decoder_plot_sync_window) # connect the window_scrolled event to the _on_window_updated function
+# -
+
+
+# Given what I've seen on the decoded weights: it looks like the 1st derivative of animal position is what's ultimately decoded (see a step-wise jump from the start/end of the track)
+
+
+
+# +
+widget, fig, ax = active_2d_plot.add_new_matplotlib_render_plot_widget(name='RelativeEntropy')
+
+## plot the `post_update_times`, and `flat_relative_entropy_results`
+_temp_out = ax.plot(post_update_times, flat_relative_entropy_results)
+
+# Perform Initial (one-time) update from source -> controlled:
+# This syncs the new widget up to the full data window (the entire session), not the active window:
+widget.on_window_changed(active_2d_plot.spikes_window.total_data_start_time, active_2d_plot.spikes_window.total_data_end_time)
+widget.draw()
+# -
+
+ax.plot(np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_long')
+ax.plot(np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='short_decoding_of_short') 
+# Plot Oppposite Decodings:
+ax.plot(np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_short')
+ax.plot(np.concatenate(short_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(short_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='short_decoding_of_long')
+widget.draw()
+
+active_2d_plot.sync_matplotlib_render_plot_widget()
+
 # # Dataframe holds each epoch and the decoding confidence for each decoder
 
 
-
-# Import the plot editor
-from pltEditorTool import plotEditor
-# Define the data
-x_data = [long_one_step_decoder_1D.active_time_window_centers, short_one_step_decoder_1D.active_time_window_centers, np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_x)]
-y_data = [long_posterior_uncertainty_measure, short_posterior_uncertainty_measure, np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_y)]
-label_data = ['long_posterior_confidence','short_posterior_confidence','long_decoding_of_short'] # ,'short_decoding_of_long'
-# Call the editor, it will open in a separate window
-plotEditor(x=x_data, y=y_data, labels=label_data)
 
 

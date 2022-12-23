@@ -3731,13 +3731,7 @@ fig1, axs1 = plot_most_likely_position_comparsions(active_one_step_decoder, sess
 
 new_decoder.debug_dump_print()
 
-
-
 active_pf_1D.plot_ratemaps_1D()
-
-active_pf_1D.
-
-
 
 # + [markdown] tags=[]
 # ### Test out NeuroPy's decoders
