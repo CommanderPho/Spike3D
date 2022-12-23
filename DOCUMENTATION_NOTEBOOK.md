@@ -134,7 +134,7 @@ Helper Functions:
 ```
 <!-- #endregion -->
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 # ◽📣 Rectangle Epoch Documentation Guide
 <!-- #endregion -->
 
@@ -174,11 +174,11 @@ add_PBEs_intervals/remove_PBEs_intervals
 Here you can see many short intervals rendered as cyan rectangles on the floor of the 3D Raster
 <!-- #endregion -->
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 `active_3d_plot.add_rendered_intervals(new_ripples_intervals_datasource, name='new_ripples')`
 <!-- #endregion -->
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ![python_JwdIMVHpEQ.png](attachment:52498aab-31a8-4a0b-8add-0728809de9ab.png)
 ![image.png](attachment:dabc70cf-76b1-45b6-b7a0-a3bf785e5391.png)
 <!-- #endregion -->
@@ -276,11 +276,11 @@ interval_datasource = Ripples_2DRenderTimeEpochs.build_render_time_epochs_dataso
 spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(interval_datasource, name='CustomRipples', debug_print=False) # removes the rendered intervals
 ```
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Concise Update:
 <!-- #endregion -->
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs, inline_mkColor
 ## Inline Concise: Position Replays, PBEs, and Ripples all below the scatter:
 # active_2d_plot.interval_datasources.Replays.update_visualization_properties(lambda active_df, **kwargs: General2DRenderTimeEpochs._update_df_visualization_columns(active_df, y_location=-10.0, height=7.5, pen_color=inline_mkColor('orange', 0.8), brush_color=inline_mkColor('orange', 0.5), **kwargs)) ## Fully inline
@@ -297,11 +297,11 @@ active_2d_plot.update_rendered_intervals_visualization_properties(epochs_update_
 
 ```
 
-<!-- #region pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Build Stacked Layout:
 <!-- #endregion -->
 
-```python pycharm={"is_executing": false, "name": "#%%\n"} scene__Default Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
 desired_interval_height_ratios = [2.0, 2.0, 1.0, 0.1, 1.0, 1.0, 1.0] # ratio of heights to each interval
 required_vertical_offsets, required_interval_heights = EpochRenderingMixin.build_stacked_epoch_layout(desired_interval_height_ratios, epoch_render_stack_height=20.0, interval_stack_location='below')
 stacked_epoch_layout_dict = {interval_key:dict(y_location=y_location, height=height) for interval_key, y_location, height in zip(rendered_interval_keys, required_vertical_offsets, required_interval_heights)} # Build a stacked_epoch_layout_dict to update the display
