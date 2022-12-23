@@ -21,6 +21,34 @@ should_display_2D_plots = True
 _debug_print = False
 
 
+
+# ==================================================================================================================== #
+# 2022-12-22 - Posterior Confidences/Certainties                                                                       #
+# ==================================================================================================================== #
+
+def _compute_epoch_posterior_confidences(X_decoding_of_Y_epochs_results):
+    """ average over positions to find the maximum likelihood in the posterior (value only) for each timebin. This is a rough estimate for how certain we are about each timebin.
+    Usage:
+        from PendingNotebookCode import _compute_epoch_posterior_confidences
+        long_decoding_of_short_epochs_results = _compute_epoch_posterior_confidences(long_decoding_of_short_epochs_results)
+        short_decoding_of_long_epochs_results = _compute_epoch_posterior_confidences(short_decoding_of_long_epochs_results)
+    """
+    # loop through each returned epoch and compute its measurez:
+    X_decoding_of_Y_epochs_results.posterior_uncertainty_measure = [] # one for each decoded epoch
+    ## combined_plottables variables refer to concatenating the values for each epoch so they can be plotted using a single matplotlib command:
+    X_decoding_of_Y_epochs_results.combined_plottables_x = []
+    X_decoding_of_Y_epochs_results.combined_plottables_y = []
+    
+    for i, time_bin_container, p_x_given_n in zip(np.arange(X_decoding_of_Y_epochs_results.num_filter_epochs), X_decoding_of_Y_epochs_results.time_bin_containers, X_decoding_of_Y_epochs_results.p_x_given_n_list):
+        # average over positions to find the maximum likelihood in the posterior (value only) for each timebin. This is a rough estimate for how certain we are about each timebin.
+        posterior_uncertainty_measure = np.max(p_x_given_n, axis=0) # each value will be between (0.0, 1.0]
+        X_decoding_of_Y_epochs_results.posterior_uncertainty_measure.append(posterior_uncertainty_measure)
+        X_decoding_of_Y_epochs_results.combined_plottables_x.append(time_bin_container.centers)
+        X_decoding_of_Y_epochs_results.combined_plottables_y.append(posterior_uncertainty_measure)
+    return X_decoding_of_Y_epochs_results
+
+
+
 # ==================================================================================================================== #
 # 2022-12-20 - Overlapping Intervals                                                                                   #
 # ==================================================================================================================== #
