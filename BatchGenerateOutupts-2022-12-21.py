@@ -212,7 +212,7 @@ curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ### Burst Detection
 # -
 
@@ -266,7 +266,7 @@ del global_results.extended_stats.relative_entropy_analyses['snapshot_difference
 # curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ###  Compute Required Global Computations Manually:
 
 # +
@@ -417,7 +417,7 @@ plt.plot(post_update_times.T, flat_jensen_shannon_distance_across_all_positions)
 # +
 # flat_relative_entropy_results.shape # (1, 63)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # ## 🟢 2022-11-21 - 1D Ratemaps Before and After Track change (Long vs. Short track)
 # Working metrics for comparing overlaps of 1D placefields before and after track change
 # -
@@ -957,7 +957,7 @@ out_indicies, out_digitized_position_bins, out_within_lap_spikes_overlap = compu
 
 
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # # `_display_short_long_pf1D_comparison` and `_display_short_long_pf1D_scalar_overlap_comparison`
 
 # +
@@ -1010,7 +1010,7 @@ from pyphoplacecellanalysis.Pho2D.PyQtPlots.TimeSynchronizedPlotters.TimeSynchro
 curr_placefields_plotter = TimeSynchronizedPlacefieldsPlotter(active_pf_2D_dt)
 curr_placefields_plotter.show()
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ## ❌🆖 BROKEN Individual Plotting Outputs:
 
 # + [markdown] tags=[]
@@ -1327,7 +1327,7 @@ ZhangReconstructionImplementation._validate_time_binned_spike_rate_df(sess_time_
 
 
 
-# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] pycharm={"name": "#%%\n"} tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # NEW 2022-12-14 - Efficient PfND_TimeDependent batch entropy computations:
 
 # + pycharm={"name": "#%%\n"}
@@ -1804,7 +1804,7 @@ out_plots[1].show()
 # a_plot.scene() # GraphicsScene
 export_pyqtgraph_plot(plots[0])
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # GUI/Widget Helpers
 
 # +
@@ -1984,7 +1984,6 @@ global_results = curr_active_pipeline.computation_results[global_epoch_name]['co
 recalculate_anyway = False
 
 
-
 # +
 # # %pdb on
 # Make the 1D Placefields and Decoders conform between the long and the short epochs:
@@ -2007,18 +2006,11 @@ decoding_time_bin_size = long_one_step_decoder_1D.time_bin_size # 1.0/30.0 # 0.0
 # decoding_time_bin_size = 0.03 # 0.03333333333333333
 print(f'decoding_time_bin_size: {decoding_time_bin_size}')
 # -
-
-
-
-
-
 np.shape(long_one_step_decoder_1D.P_x) # (63, 1)
 np.shape(long_one_step_decoder_1D.F) # (63, 62)
 long_one_step_decoder_1D.num_time_windows
 long_one_step_decoder_1D.ndim
 np.shape(long_one_step_decoder_1D.neuron_IDs) # (62,)
-
-
 
 long_one_step_decoder_1D.debug_dump_print()
 
@@ -2109,7 +2101,7 @@ assert np.allclose(long_one_step_decoder_2D.marginal.x.p_x_given_n, long_one_ste
 assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
 curr_epoch_result
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
 # # Use the two-step decoder to decode the replay events:
 # -
 
@@ -2292,7 +2284,9 @@ long_one_step_decoder_1D.p_x_given_n.shape # .shape: (63, 12100)
 
 short_one_step_decoder_1D.p_x_given_n.shape # .shape: (40, 8659)
 
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # Compute Kayla's suggested "confidence" metric regarding the decoded positions from the 2D x posteriors
+# -
 
 long_one_step_decoder_2D.marginal.x.p_x_given_n.shape # (64, 37172)
 # Get the most probable position and the bins to either side of it
@@ -2303,6 +2297,7 @@ long_one_step_decoder_2D.most_likely_position_flat_indicies
 
 np.sum(
 
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # NEXT 2022-12-20:
 # - [X] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
 #     https://github.com/CommanderPho/pyPhoPlaceCellAnalysis/blob/master/src/pyphoplacecellanalysis/General/Pipeline/Stages/ComputationFunctions/DefaultComputationFunctions.py#L398
@@ -2313,6 +2308,7 @@ np.sum(
 # - [ ] TODO: get visual/interactive helper working (it's in the matplotlib_helpers):
 #         `plot_overlapping_epoch_analysis_diagnoser`
 # - [X] TODO: finish `KnownFilterEpochs`
+# -
 
 # - [ ] TODO: debug why 1D outputs completely fail to match the actual animal's plotted position. Are they just inverted or something?
 #     - pretty sure it's 'lin_pos' vs. 'x' in the position dataframe
@@ -2324,16 +2320,54 @@ np.sum(
 
 
 
+# + [markdown] tags=[]
 # # 🔝 2022-12-21 - For Tomorrow
 # - [ ] Got decoded replays for each respective epoch, but now need to decode the opposite epoch's replays to see how much better/worse they are. 
 # ![python_tEnURoUa4v.png](attachment:a0eece65-37ef-4023-a717-c91b6f5e467f.png)
+# -
 
+
+# ## we need to finish DA computations for DA other epoch. DECODE ON FUTURE MAYNE.
+
+
+long_session, short_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name]]
+long_replay_df, short_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session]]
+## Decode on the opposite epoch:
+long_decoding_of_short_epochs_results = long_one_step_decoder_1D.decode_specific_epochs(spikes_df=global_pf1D.filtered_spikes_df, filter_epochs=short_replay_df, decoding_time_bin_size=decoding_time_bin_size)
+short_decoding_of_long_epochs_results = short_one_step_decoder_1D.decode_specific_epochs(spikes_df=global_pf1D.filtered_spikes_df, filter_epochs=long_replay_df, decoding_time_bin_size=decoding_time_bin_size)
+
+
+long_decoding_of_short_epochs_results.num_filter_epochs
+
+len(long_decoding_of_short_epochs_results.time_bin_edges)
+
+len(long_decoding_of_short_epochs_results.p_x_given_n_list)
+
+
+# +
+def _compute_epoch_posterior_uncertainties(long_decoding_of_short_epochs_results):
+    # loop through each returned epoch and compute its measurez:
+    long_decoding_of_short_epochs_results.posterior_uncertainty_measure = [] # one for each decoded epoch
+    long_decoding_of_short_epochs_results.combined_plottables_x = []
+    long_decoding_of_short_epochs_results.combined_plottables_y = []
+    
+    for i, time_bin_container, p_x_given_n in zip(np.arange(long_decoding_of_short_epochs_results.num_filter_epochs), long_decoding_of_short_epochs_results.time_bin_containers, long_decoding_of_short_epochs_results.p_x_given_n_list):
+        # average over positions to find the maximum likelihood in the posterior (value only) for each timebin. This is a rough estimate for how certain we are about each timebin.
+        posterior_uncertainty_measure = np.max(p_x_given_n, axis=0) # each value will be between (0.0, 1.0]
+        long_decoding_of_short_epochs_results.posterior_uncertainty_measure.append(posterior_uncertainty_measure)
+        long_decoding_of_short_epochs_results.combined_plottables_x.append(time_bin_container.centers)
+        long_decoding_of_short_epochs_results.combined_plottables_y.append(posterior_uncertainty_measure)
+    return long_decoding_of_short_epochs_results
+
+long_decoding_of_short_epochs_results = _compute_epoch_posterior_uncertainties(long_decoding_of_short_epochs_results)
+long_decoding_of_short_epochs_results = _compute_epoch_posterior_uncertainties(long_decoding_of_short_epochs_results)
+# -
 
 # average over positions to find the maximum likelihood in the posterior (value only) for each timebin. This is a rough estimate for how certain we are about each timebin.
 long_posterior_uncertainty_measure = np.max(long_one_step_decoder_1D.p_x_given_n, axis=0) # each value will be between (0.0, 1.0]
 assert long_posterior_uncertainty_measure.shape == (long_one_step_decoder_1D.num_time_windows, ), f"{long_posterior_uncertainty_measure.shape = } must be of shape {(long_one_step_decoder_1D.num_time_windows, ) = }"
 # also: reciprocal measure: `posterior_uncertainty_measure = 1.0/posterior_uncertainty_measure` so by dividing by this value gives you a value in the range (+Inf, 1.0)
-long_posterior_uncertainty_measure
+# long_posterior_uncertainty_measure
 
 
 short_posterior_uncertainty_measure = np.max(short_one_step_decoder_1D.p_x_given_n, axis=0) # each value will be between (0.0, 1.0]
@@ -2342,11 +2376,31 @@ assert short_posterior_uncertainty_measure.shape == (short_one_step_decoder_1D.n
 short_posterior_uncertainty_measure
 
 
-long_one_step_decoder_1D.active_time_window_centers
+# %matplotlib qt
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots()
 
 
 plt.plot(long_one_step_decoder_1D.active_time_window_centers, long_posterior_uncertainty_measure)
 
 
 plt.plot(short_one_step_decoder_1D.active_time_window_centers, short_posterior_uncertainty_measure)
+
+
+np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_x)
+
+np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_y)
+
+plt.plot(np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_y), label='long_decoding_of_short', ) 
+
+# Import the plot editor
+from pltEditorTool import plotEditor
+# Define the data
+x_data = [long_one_step_decoder_1D.active_time_window_centers, short_one_step_decoder_1D.active_time_window_centers, np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_x)]
+y_data = [long_posterior_uncertainty_measure, short_posterior_uncertainty_measure, np.concatenate(long_decoding_of_short_epochs_results.combined_plottables_y)]
+label_data = ['long_posterior_confidence','short_posterior_confidence','long_decoding_of_short'] # ,'short_decoding_of_long'
+# Call the editor, it will open in a separate window
+plotEditor(x=x_data, y=y_data, labels=label_data)
+
 
