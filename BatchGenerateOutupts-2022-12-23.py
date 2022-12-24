@@ -28,6 +28,8 @@ import importlib
 from pathlib import Path
 from benedict import benedict
 import numpy as np
+import pandas as pd
+from pandas_profiling import ProfileReport ## for dataframe viewing
 
 # required to enable non-blocking interaction:
 # # %gui qt
@@ -209,7 +211,7 @@ print_object_memory_usage(curr_active_pipeline.computation_results['maze'])
 
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ### Burst Detection
 # -
 
@@ -535,7 +537,8 @@ active_pf_2D.plot_ratemaps_2D(**({'subplots': (None, 9), 'resolution_multiplier'
 
 # +
 from pyphoplacecellanalysis.GUI.PyVista.InteractivePlotter.Mixins.LapsVisualizationMixin import LapsVisualizationMixin
-from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_view, stacked_epoch_slices_view_viewbox
+# from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_view, stacked_epoch_slices_view_viewbox # pyqtgraph versions (don't work)
+from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_matplotlib_build_view, stacked_epoch_slices_matplotlib_build_insets_view
 
 sess = curr_active_pipeline.sess
 curr_position_df, lap_specific_position_dfs = LapsVisualizationMixin._compute_laps_specific_position_dfs(sess)
@@ -549,13 +552,8 @@ epoch_slices = epochs[['start', 'stop']].to_numpy()
 epoch_description_list = [f'lap {epoch_tuple.lap_id} (maze: {epoch_tuple.maze_id}, direction: {epoch_tuple.lap_dir})' for epoch_tuple in epochs[['lap_id','maze_id','lap_dir']].itertuples()]
 # print(f'epoch_description_list: {epoch_description_list}') # epoch_descriptions: ['lap 41 (maze: 2, direction: 1)', 'lap 42 (maze: 2, direction: 0)', ..., 'lap 79 (maze: 2, direction: 1)']
 
-stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_view(epoch_slices, laps_position_times_list, laps_position_traces_list, epoch_description_list, name='stacked_epoch_slices_view_laps')
+stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_matplotlib_build_view(epoch_slices, laps_position_times_list, laps_position_traces_list, epoch_description_list) # name='stacked_epoch_slices_view_laps'
 # params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
-# -
-
-from neuropy.analyses.laps import estimation_session_laps, _subfn_perform_estimate_lap_splits_1D # for estimation_session_laps
-
-estimation_session_laps(curr_active_pipeline.sess, should_plot_laps_2d=True)
 
 # +
 from neuropy.utils.matplotlib_helpers import plot_overlapping_epoch_analysis_diagnoser
@@ -598,6 +596,17 @@ out = curr_active_pipeline.display('_display_short_long_pf1D_comparison', active
                                    short_kwargs={'sortby': sort_idx, 'single_cell_pfmap_processing_fn': short_single_cell_pfmap_processing_fn, 'curve_hatch_style': {'hatch':'///', 'edgecolor':'k'}},
                                   )
 ax = out.axes[0]
+
+# +
+widget, fig, ax = active_2d_plot.add_new_matplotlib_render_plot_widget(name='RelativeEntropy')
+
+## plot the `post_update_times`, and `flat_relative_entropy_results`
+_temp_out = ax.plot(post_update_times, flat_relative_entropy_results)
+
+# Perform Initial (one-time) update from source -> controlled:
+# This syncs the new widget up to the full data window (the entire session), not the active window:
+widget.on_window_changed(active_2d_plot.spikes_window.total_data_start_time, active_2d_plot.spikes_window.total_data_end_time)
+widget.draw()
 
 # +
 ## Overlap Scalar Comparisons: plots a comparison of a specific type of scalar values for all cells
@@ -1413,7 +1422,6 @@ from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaste
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike3DRaster import Spike3DRaster
 from pyphoplacecellanalysis.GUI.Qt.SpikeRasterWindows.Spike3DRasterWindowWidget import Spike3DRasterWindowWidget
 
-
 found_spike_raster_windows = TopLevelWindowHelper.all_widgets(pg.mkQApp(), searchType=Spike3DRasterWindowWidget)
 assert len(found_spike_raster_windows) == 1, f"found {len(found_spike_raster_windows)} Spike3DRasterWindowWidget windows using TopLevelWindowHelper.all_widgets(...) but require exactly one."
 spike_raster_window = found_spike_raster_windows[0]
@@ -1436,13 +1444,13 @@ widget.on_window_changed(active_2d_plot.spikes_window.total_data_start_time, act
 widget.draw()
 # -
 
-
+active_2d_plot.ui.matplotlib_view_widgets
 
 widget.draw()
 
 main_plot_widget
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[]
 # ## Exploring 'Plot' Helper class:
 # -
 
@@ -1458,9 +1466,7 @@ curr_active_pipeline.display('_display_1d_placefield_validations', active_sessio
 
 list(curr_active_pipeline.filtered_contexts.values())[-1]
 
-
-
-# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+# + scene__Default [markdown] pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] jp-MarkdownHeadingCollapsed=true
 # ### Spike Emphasis/Visibility Adjustmeents:
 # Compute whether each spike is included in the active placefield computation. Spikes might be excluded due to not meeting speed/firing-rate thresholds, being an unused cell type, or occuring outside the computational_epochs for which the pfs were computed for the active configuration
 
@@ -1572,6 +1578,11 @@ custom_2D_decoder_container.fig, custom_2D_decoder_container.ax = plot_1D_most_l
                                                    enable_flat_line_drawing=False, debug_print=False)
 
 active_2d_plot.ui.matplotlib_view_widget.draw()
+# -
+
+active_2d_plot.add_new_matplotlib_render_plot_widget('Custom Decoder')
+
+curr_widget, curr_fig, curr_ax = active_2d_plot.find_matplotlib_render_plot_widget('Custom Decoder')
 
 # + [markdown] tags=[]
 # # 🔜✳️ 2022-12-16 - Get 1D one_step_decoder for both short/long
@@ -1950,7 +1961,7 @@ long_replay_df
 
 
 # + tags=["decoder"]
-## Decode on the opposite epoch:
+## Decode on the replays of the opposite epoch:
 long_decoding_of_short_epochs_results = long_one_step_decoder_1D.decode_specific_epochs(spikes_df=global_pf1D.filtered_spikes_df, filter_epochs=short_replay_df, decoding_time_bin_size=decoding_time_bin_size)
 short_decoding_of_long_epochs_results = short_one_step_decoder_1D.decode_specific_epochs(spikes_df=global_pf1D.filtered_spikes_df, filter_epochs=long_replay_df, decoding_time_bin_size=decoding_time_bin_size)
 ## Decode on congruent epoch:
@@ -1976,6 +1987,13 @@ long_posterior_uncertainty_measure = np.max(long_one_step_decoder_1D.p_x_given_n
 assert long_posterior_uncertainty_measure.shape == (long_one_step_decoder_1D.num_time_windows, ), f"{long_posterior_uncertainty_measure.shape = } must be of shape {(long_one_step_decoder_1D.num_time_windows, ) = }"
 
 
+# Set the overflow property to scroll
+long_replay_df.style.set_properties(overflow='scroll', max_height='200px')
+
+
+
+
+
 np.min(short_posterior_uncertainty_measure) # 0.18...
 
 
@@ -1986,14 +2004,59 @@ np.max(short_posterior_uncertainty_measure)
 
 
 # +
+## https://github.com/ydataai/pandas-profiling
+# profile = ProfileReport(long_replay_df, title="Pandas Profiling Report") ## try out the new profiler
+# profile.to_notebook_iframe()
+# don't like this one.
+
+
+# +
+# also have https://github.com/fbdesignpro/sweetviz to try
+# -
+
+
+display(long_replay_df)
+
+
+import dtale # https://github.com/man-group/dtale
+
+
+# Assigning a reference to a running D-Tale process.
+d = dtale.show(long_one_step_decoder_1D.p_x_given_n, notebook=True)
+
+
+long_one_step_decoder_1D_df = pd.DataFrame(dict(time_window_centers=long_one_step_decoder_1D.time_window_centers, p_x_given_n=long_one_step_decoder_1D.p_x_given_n))
+long_one_step_decoder_1D_df
+
+
+long_one_step_decoder_1D.p_x_given_n.shape
+
+
+# Using Python's `webbrowser` package it will try and open your server's default browser to this process.
+d.open_browser()
+
+
+# +
+# Accessing data associated with D-Tale process.
+# tmp = d.data.copy()
+# tmp['d'] = 4
+
+# Altering data associated with D-Tale process
+# FYI: this will clear any front-end settings you have at the time for this process (filter, sorts, formatting)
+d.data = long_one_step_decoder_1D.p_x_given_n
+
+# Shutting down D-Tale process
+d.kill()
+
+# +
 # %matplotlib qt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 fig, ax = plt.subplots()
 
 ### Old entire posterior decoding for same:
-# plt.plot(long_one_step_decoder_1D.active_time_window_centers, long_posterior_uncertainty_measure, linestyle='', marker='o',  markersize=2, label='long') # , color='k'
-# plt.plot(short_one_step_decoder_1D.active_time_window_centers, short_posterior_uncertainty_measure, linestyle='', marker='o',  markersize=2, label='short')
+# ax.plot(long_one_step_decoder_1D.active_time_window_centers, long_posterior_uncertainty_measure, linestyle='', marker='o',  markersize=2, label='long') # , color='k'
+# ax.plot(short_one_step_decoder_1D.active_time_window_centers, short_posterior_uncertainty_measure, linestyle='', marker='o',  markersize=2, label='short')
 
 ## Plot Congruent Decodings:
 ax.plot(np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_long')
@@ -2006,10 +2069,6 @@ plt.legend()
 plt.title('Decoding Maximum Posterior Confidence')
 plt.xlabel('Time [sec]')
 plt.ylabel('Maximum Confidence')
-# -
-
-
-
 
 
 # +
@@ -2027,22 +2086,6 @@ sync_connection = active_2d_plot.window_scrolled.connect(_temp_most_likely_posit
 # -
 
 
-# Given what I've seen on the decoded weights: it looks like the 1st derivative of animal position is what's ultimately decoded (see a step-wise jump from the start/end of the track)
-
-
-
-# +
-widget, fig, ax = active_2d_plot.add_new_matplotlib_render_plot_widget(name='RelativeEntropy')
-
-## plot the `post_update_times`, and `flat_relative_entropy_results`
-_temp_out = ax.plot(post_update_times, flat_relative_entropy_results)
-
-# Perform Initial (one-time) update from source -> controlled:
-# This syncs the new widget up to the full data window (the entire session), not the active window:
-widget.on_window_changed(active_2d_plot.spikes_window.total_data_start_time, active_2d_plot.spikes_window.total_data_end_time)
-widget.draw()
-# -
-
 ax.plot(np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_x), np.concatenate(long_decoding_of_long_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='long_decoding_of_long')
 ax.plot(np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_x), np.concatenate(short_decoding_of_short_epochs_results.combined_plottables_y), linestyle='', marker='o',  markersize=2, label='short_decoding_of_short') 
 # Plot Oppposite Decodings:
@@ -2054,6 +2097,54 @@ active_2d_plot.sync_matplotlib_render_plot_widget()
 
 # # Dataframe holds each epoch and the decoding confidence for each decoder
 
+long_decoding_of_long_epochs_results
 
 
 
+# # Custom Decoder Plotting 2022-12-23:
+
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_1D_most_likely_position_comparsions
+
+widget, fig, ax = active_2d_plot.add_new_matplotlib_render_plot_widget(name='CustomDecoder')
+
+# +
+## plot the `post_update_times`, and `flat_relative_entropy_results`
+_temp_out = ax.plot(post_update_times, flat_relative_entropy_results)
+
+# Perform Initial (one-time) update from source -> controlled:
+# This syncs the new widget up to the full data window (the entire session), not the active window:
+widget.on_window_changed(active_2d_plot.spikes_window.total_data_start_time, active_2d_plot.spikes_window.total_data_end_time)
+widget.draw()
+# -
+
+# curr_widget, curr_fig, curr_ax = active_2d_plot.find_matplotlib_render_plot_widget('CustomDecoder')
+widget, fig, ax = active_2d_plot.find_matplotlib_render_plot_widget('CustomDecoder')
+
+## Build the custom decoder:
+pho_custom_decoder = long_one_step_decoder_1D
+marginal_posterior_x = pho_custom_decoder.marginal.x.p_x_given_n
+
+curr_fig, curr_ax = plot_1D_most_likely_position_comparsions(sess.position.to_dataframe(), time_window_centers=pho_custom_decoder.active_time_window_centers, xbin=pho_custom_decoder.xbin,
+                                                        posterior=marginal_posterior_x,
+                                                        active_most_likely_positions_1D=pho_custom_decoder.marginal.x.most_likely_positions_1D,
+                                                        enable_flat_line_drawing=False, debug_print=False, ax=curr_ax)
+
+widget.draw()
+
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster import SynchronizedPlotMode
+active_2d_plot.sync_matplotlib_render_plot_widget('CustomDecoder', sync_mode=SynchronizedPlotMode.TO_GLOBAL_DATA)
+
+_test_connection = active_2d_plot.sync_matplotlib_render_plot_widget('CustomDecoder', sync_mode=SynchronizedPlotMode.TO_WINDOW)
+_test_connection
+
+active_2d_plot.ui.matplotlib_view_widgets
+
+curr_ax.get_xlim()
+
+np.save('marginal_posterior_x.npy', marginal_posterior_x)
+
+marginal_posterior_x
+
+from pandas_profiling import ProfileReport
+
+|
