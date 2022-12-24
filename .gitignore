@@ -84,3 +84,6 @@ EXTERNAL/Design/Icons/SplitLayers/SVG/Spike3D LogoText_SPIKE.svg
 .vscode/bookmarks.json
 iframe_figures
 bayes_decoder_test_data.npz
+
+.autoversion
+marginal_posterior_x.npy
