@@ -221,16 +221,54 @@ document_active_variables(curr_active_pipeline.computation_results['maze1'].comp
 from pyphocorehelpers.print_helpers import TypePrintMode
 
 # + tags=["load", "single_session"]
-TypePrintMode._convert_FQDN_to_NAME_ONLY('pandas.core.frame.DataFrame') == 'DataFrame'
-
-TypePrintMode._convert_FQDN_to_NAME_ONLY('numpy.ndarray') == 'ndarray'
-
-TypePrintMode._convert_FQDN_to_NAME_ONLY('float') == 'float'
+TypePrintMode.FULL_TYPE_STRING.convert("<class 'neuropy.utils.dynamic_container.DynamicContainer'>", new_type=TypePrintMode.FULL_TYPE_FQDN)
 
 # + tags=["load", "single_session"]
-TypePrintMode.FULL_TYPE_STRING.convert("<class 'pandas.core.frame.DataFrame'>", new_type=TypePrintMode.FULL_TYPE_FQDN) == 'pandas.core.frame.DataFrame'
-TypePrintMode.FULL_TYPE_STRING.convert("<class 'pandas.core.frame.DataFrame'>", new_type=TypePrintMode.FULL_TYPE_STRING) == "<class 'pandas.core.frame.DataFrame'>" # unaltered
-TypePrintMode.FULL_TYPE_STRING.convert("<class 'pandas.core.frame.DataFrame'>", new_type=TypePrintMode.TYPE_NAME_ONLY) == 'DataFrame'
+type_string = "<class 'neuropy.utils.dynamic_container.DynamicContainer'>"
+TypePrintMode.FULL_TYPE_STRING.convert(type_string, new_type=TypePrintMode.FULL_TYPE_STRING)
+
+# + tags=["load", "single_session"]
+TypePrintMode.FULL_TYPE_STRING.convert(type_string, new_type=TypePrintMode.TYPE_NAME_ONLY)
+
+# + tags=["load", "single_session"]
+TypePrintMode
+
+
+# + tags=["load", "single_session"]
+def _test_convert(a_type_string):
+    return TypePrintMode.FULL_TYPE_STRING.convert(a_type_string, new_type=TypePrintMode.TYPE_NAME_ONLY)
+
+
+# + tags=["load", "single_session"]
+_test_convert(type_string)
+
+# + tags=["load", "single_session"]
+print_keys_if_possible('computation_config', curr_active_pipeline.computation_results['maze1'].computation_config, custom_item_formatter=(lambda depth_string, curr_key, type_string, type_name: f"{depth_string}- {curr_key}: {type_name}"))
+
+# + tags=["load", "single_session"]
+curr_active_pipeline.computation_results['maze1'].computation_config.pf_params
+
+# + tags=["load", "single_session"]
+curr_active_pipeline.computation_results['maze1'].computation_config.spike_analysis
+
+# + tags=["load", "single_session"]
+print_keys_if_possible('computation_config', curr_active_pipeline.computation_results['maze1'].computation_config, custom_item_formatter=(lambda depth_string, curr_key, type_string, type_name: f"{depth_string}- {curr_key}: {_test_convert(type_string)}"))
+
+# + tags=["load", "single_session"]
+print_keys_if_possible('computation_config', curr_active_pipeline.computation_results['maze1'].computation_config, custom_item_formatter=(lambda depth_string, curr_key, type_string, type_name: f"{depth_string}- {curr_key}: <{TypePrintMode.FULL_TYPE_STRING.convert(type_string, new_type=TypePrintMode.TYPE_NAME_ONLY)}>"))
+
+# + tags=["load", "single_session"]
+type(PlacefieldComputationParameters)
+
+# + tags=["load", "single_session"]
+PlacefieldComputationParameters(speed_thresh=4, # cm/sec
+                                grid_bin=
+
+# + tags=["load", "single_session"]
+TypePrintMode.FULL_TYPE_STRING.convert("<class 'neuropy.utils.dynamic_container.DynamicContainer'>", new_type=TypePrintMode.TYPE_NAME_ONLY)
+
+# + tags=["load", "single_session"]
+print_keys_if_possible('computation_config', curr_active_pipeline.computation_results['maze1'].computation_config, custom_item_formatter=(lambda depth_string, curr_key, type_string, type_name: f"{depth_string}- {curr_key}: {TypePrintMode.FULL_TYPE_STRING.convert(type_name, new_type=TypePrintMode.TYPE_NAME_ONLY)}"))
 
 # + tags=["load", "single_session"]
 PlacefieldComputationParameters

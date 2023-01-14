@@ -87,3 +87,5 @@ bayes_decoder_test_data.npz
 
 .autoversion
 marginal_posterior_x.npy
+node_modules/.yarn-integrity
+yarn.lock
