@@ -37,3 +37,4 @@ dill~=0.3.5.1
 elephant~=0.11.2
 quantities~=0.13.0
 neo~=0.11.1
+dtale~=2.9.0
