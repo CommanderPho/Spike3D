@@ -178,7 +178,7 @@ print('!!! done running batch !!!')
 # # Single basedir (non-batch) testing:
 
 # + tags=["load", "single_session"]
-# # %pdb on
+# %pdb on
 basedir = local_session_paths_list[0] # NOT 3
 print(f'basedir: {str(basedir)}')
 
