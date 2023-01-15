@@ -111,14 +111,14 @@ local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
-
-### Animal `vvp01`:
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+
+### Animal `vvp01`:
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
@@ -186,7 +186,7 @@ print(f'basedir: {str(basedir)}')
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=False, debug_print=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, force_reload=True, skip_extended_batch_computations=False, debug_print=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
@@ -235,12 +235,15 @@ grid_bin_bounds = None
 # time_bin_size = 0.03333 #1.0/30.0 # decode at 30fps to match the position sampling frequency
 # time_bin_size = 0.1 # 10 fps
 
-active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=time_bin_size, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
-active_session_computation_configs
+active_computation_configs_list = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=time_bin_size, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
+active_computation_configs_list
+
+active_computation_configs_dict = {'default': active_computation_configs_list[0]}
 
 # + jupyter={"outputs_hidden": false}
 ## Duplicate the default computation config to modify it:
-temp_comp_params = deepcopy(active_session_computation_configs[0])
+# temp_comp_params = deepcopy(active_session_computation_configs[0])
+temp_comp_params = deepcopy(active_computation_configs_dict['default'])
 
 # temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
 temp_comp_params.pf_params.speed_thresh = 4 # 4.0 cm/sec
@@ -250,7 +253,9 @@ temp_comp_params.pf_params.frate_thresh = 1 # Minimum for non-smoothed peak is 1
 temp_comp_params
 
 # Add it to the array of computation configs:
-active_session_computation_configs.append(temp_comp_params)
+# active_session_computation_configs.append(temp_comp_params)
+active_computation_configs_dict['custom'] = temp_comp_params
+active_computation_configs_dict
 
 # + tags=["load", "single_session"]
 # Whitelist Mode:
@@ -268,25 +273,10 @@ computation_functions_name_blacklist=None
 # computation_functions_name_whitelist=None
 # computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
 
-curr_active_pipeline.perform_computations(active_session_computation_configs[1], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+# curr_active_pipeline.perform_computations(active_session_computation_configs[1], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
 
-# + jupyter={"outputs_hidden": false}
-from pyphocorehelpers.print_helpers import ANSI_Coloring
-
-# ansi_highlighted_type_string = ANSI_Coloring.ansi_highlight_only_suffix(type_string)
-# print(ansi_highlighted_type_string)
-
-def _plain_text_format_curr_value(depth_string, curr_key, type_string, type_name, is_omitted_from_expansion=False):
-    return f"{depth_string}- {curr_key}: {type_name}{' (children omitted)' if is_omitted_from_expansion else ''}"
-
-def _rich_text_format_curr_value(depth_string, curr_key, type_string, type_name, is_omitted_from_expansion=False):
-    # return f"{depth_string}- {bcolors.OKBLUE}{curr_key}{bcolors.ENDC}: {bcolors.OKGREEN}{type_name}{bcolors.ENDC}{(bcolors.WARNING + ' (children omitted)' + bcolors.ENDC) if is_omitted_from_expansion else ''}"
-    return f"{depth_string}- {bcolors.OKBLUE}{curr_key}{bcolors.ENDC}: {bcolors.OKGREEN}{ANSI_Coloring.ansi_highlight_only_suffix(type_name, suffix_color=bcolors.BOLD)}{bcolors.ENDC}{(bcolors.WARNING + ' (children omitted)' + bcolors.ENDC) if is_omitted_from_expansion else ''}"
-
-
-# + jupyter={"outputs_hidden": false}
-type_string = 'pyphoplacecellanalysis.General.Model.ComputationResults.ComputationResult'
-
+## new multi-computation-configs mode:
+curr_active_pipeline.perform_computations(active_computation_configs_dict, computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
 
 # + jupyter={"outputs_hidden": false}
 print_keys_if_possible('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'], custom_item_formatter=_rich_text_format_curr_value)
@@ -321,22 +311,6 @@ curr_active_pipeline.active_configs['maze1'].filter_config
 curr_active_pipeline.active_configs['maze1'].computation_config
 
 
-# + jupyter={"outputs_hidden": false}
-doc_printer.reveal_output_files_in_system_file_manager()
-
-
-# + jupyter={"outputs_hidden": false}
-## Write variables out to files:
-dp.write_to_files()
-# dp
-
-
-# + jupyter={"outputs_hidden": false}
-with managed_resource(timeout=3600) as resource:
-    # Resource is released at the end of this block,
-    # even if code in the block raises an exception
-
-
 # + tags=["load", "single_session"]
 curr_active_pipeline.active_sess_config.get_description()
 
@@ -351,28 +325,6 @@ debug_dump_object_member_shapes(curr_active_pipeline.computation_results['maze1'
 
 # + jupyter={"outputs_hidden": false}
 document_active_variables(curr_active_pipeline.computation_results['maze1'].computation_config, enable_print=True)
-
-# + tags=["load", "single_session"]
-TypePrintMode.FULL_TYPE_STRING.convert("<class 'neuropy.utils.dynamic_container.DynamicContainer'>", new_type=TypePrintMode.FULL_TYPE_FQDN)
-
-# + tags=["load", "single_session"]
-type_string = "<class 'neuropy.utils.dynamic_container.DynamicContainer'>"
-TypePrintMode.FULL_TYPE_STRING.convert(type_string, new_type=TypePrintMode.FULL_TYPE_STRING)
-
-# + tags=["load", "single_session"]
-TypePrintMode.FULL_TYPE_STRING.convert(type_string, new_type=TypePrintMode.TYPE_NAME_ONLY)
-
-
-# + tags=["load", "single_session"]
-def _test_convert(a_type_string):
-    return TypePrintMode.FULL_TYPE_STRING.convert(a_type_string, new_type=TypePrintMode.TYPE_NAME_ONLY)
-
-
-# + tags=["load", "single_session"]
-_test_convert(type_string)
-
-# + tags=["load", "single_session"]
-print_keys_if_possible('computation_config', curr_active_pipeline.computation_results['maze1'].computation_config, custom_item_formatter=(lambda depth_string, curr_key, type_string, type_name: f"{depth_string}- {curr_key}: {type_name}"))
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.computation_results['maze1'].computation_config.pf_params
