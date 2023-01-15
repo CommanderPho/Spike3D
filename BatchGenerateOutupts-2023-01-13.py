@@ -16,7 +16,7 @@
 # + [markdown] tags=[]
 # # Imports
 
-# + tags=["imports"] pycharm={"is_executing": true}
+# + pycharm={"is_executing": true} tags=["imports"]
 # %config IPCompleter.use_jedi = False
 # %pdb off
 # # %load_ext viztracer
@@ -238,6 +238,20 @@ grid_bin_bounds = None
 active_session_computation_configs = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=time_bin_size, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
 active_session_computation_configs
 
+# + jupyter={"outputs_hidden": false}
+## Duplicate the default computation config to modify it:
+temp_comp_params = deepcopy(active_session_computation_configs[0])
+
+# temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
+temp_comp_params.pf_params.speed_thresh = 4 # 4.0 cm/sec
+temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
+temp_comp_params.pf_params.smooth = (None, None) # No smoothing
+temp_comp_params.pf_params.frate_thresh = 1 # Minimum for non-smoothed peak is 1Hz
+temp_comp_params
+
+# Add it to the array of computation configs:
+active_session_computation_configs.append(temp_comp_params)
+
 # + tags=["load", "single_session"]
 # Whitelist Mode:
 computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
@@ -255,27 +269,6 @@ computation_functions_name_blacklist=None
 # computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
 
 curr_active_pipeline.perform_computations(active_session_computation_configs[1], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
-
-# + jupyter={"outputs_hidden": false}
-## Duplicate the default computation config to modify it:
-temp_comp_params = deepcopy(active_session_computation_configs[0])
-
-# temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
-temp_comp_params.pf_params.speed_thresh = 4 # 4.0 cm/sec
-temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
-temp_comp_params.pf_params.smooth = (None, None) # No smoothing
-temp_comp_params.pf_params.frate_thresh = 1 # Minimum for non-smoothed peak is 1Hz
-temp_comp_params
-
-# Add it to the array of computation configs:
-active_session_computation_configs.append(temp_comp_params)
-
-# + jupyter={"outputs_hidden": false}
-from rich.console import Console
-
-rich_console = Console()
-rich_console.print("Where there is a [bold cyan]Will[/bold cyan] there [u]is[/u] a [i]way[/i].")
-
 
 # + jupyter={"outputs_hidden": false}
 from pyphocorehelpers.print_helpers import ANSI_Coloring
@@ -307,15 +300,29 @@ doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/p
 doc_printer.save_documentation('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'])
 
 
+# + jupyter={"outputs_hidden": false} tags=[]
+from ansi2html import Ansi2HTMLConverter # used by DocumentationFilePrinter to build html document from ansi-color coded version
+from pyphocorehelpers.print_helpers import DocumentationFilePrinter
+
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='InteractivePlaceCellConfig')
+doc_printer.save_documentation('InteractivePlaceCellConfig', curr_active_pipeline.active_configs['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap'])
+# doc_printer.reveal_output_files_in_system_file_manager()
+
+
 # + jupyter={"outputs_hidden": false}
-"""
+curr_active_pipeline.active_configs
 
-font-family: "Lucida Console", "Courier New", monospace; font-size: 12px;
 
-"""
+# + jupyter={"outputs_hidden": false}
+curr_active_pipeline.active_configs['maze1'].filter_config
 
-custom_css_content_dict = {'font-family':'"Lucida Console", "Courier New", monospace', 'font-size':'12px'} # 'font-family: "Lucida Console", "Courier New", monospace; font-size: 12px;'
-custom_css_content_dict
+
+# + jupyter={"outputs_hidden": false}
+curr_active_pipeline.active_configs['maze1'].computation_config
+
+
+# + jupyter={"outputs_hidden": false}
+doc_printer.reveal_output_files_in_system_file_manager()
 
 
 # + jupyter={"outputs_hidden": false}
