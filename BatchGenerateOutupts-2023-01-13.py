@@ -186,7 +186,7 @@ print(f'basedir: {str(basedir)}')
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, force_reload=True, skip_extended_batch_computations=False, debug_print=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
@@ -297,6 +297,29 @@ from pyphocorehelpers.print_helpers import DocumentationFilePrinter
 doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='InteractivePlaceCellConfig')
 doc_printer.save_documentation('InteractivePlaceCellConfig', curr_active_pipeline.active_configs['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap'])
 # doc_printer.reveal_output_files_in_system_file_manager()
+
+
+# + jupyter={"outputs_hidden": false} tags=[]
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='NeuropyPipeline')
+doc_printer.save_documentation('NeuropyPipeline', curr_active_pipeline, non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger']) # 'Logger'
+
+
+# + jupyter={"outputs_hidden": false} tags=[]
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='DisplayPipelineStage')
+doc_printer.save_documentation('DisplayPipelineStage', curr_active_pipeline.stage, non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger']) # 'Logger'
+
+
+# + jupyter={"outputs_hidden": false} tags=[]
+stage# doc_printer.reveal_output_files_in_system_file_manager()
+
+
+# + jupyter={"outputs_hidden": false} tags=[]
+filtered_context = curr_active_pipeline.filtered_contexts['maze1']
+filtered_context.adding_context(collision_prefix='computation_params', comp_params_name=a_computation_config_name)
+
+
+# + jupyter={"outputs_hidden": false} tags=[]
+curr_active_pipeline.stage
 
 
 # + jupyter={"outputs_hidden": false}
