@@ -178,7 +178,7 @@ print('!!! done running batch !!!')
 # # Single basedir (non-batch) testing:
 
 # + tags=["load", "single_session"]
-# %pdb on
+# %pdb off
 basedir = local_session_paths_list[0] # NOT 3
 print(f'basedir: {str(basedir)}')
 
@@ -194,10 +194,10 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle - full-good.pkl', skip_extended_batch_computations=True)
 
 # + tags=["load", "single_session"]
-curr_active_pipeline.save_pipeline()
+curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE)
 
 # + tags=["load", "single_session"]
-
+curr_active_pipeline.display(display_function=
 
 
 # + [markdown] tags=["load", "single_session"]
@@ -214,7 +214,6 @@ active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHol
 
 active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
 active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
-
 
 # curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties,
 #     override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename=active_pickle_filename, skip_save_on_initial_load=True)
@@ -245,17 +244,22 @@ grid_bin_bounds = None
 active_computation_configs_list = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=time_bin_size, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
 active_computation_configs_list
 
-active_computation_configs_dict = {'default': active_computation_configs_list[0]}
+active_computation_configs_dict = {'params[0]': active_computation_configs_list[0]}
+
+# + jupyter={"outputs_hidden": false}
+# params[0]:
+curr_active_pipeline.computation_results['maze_params[0]'].computation_config
+
 
 # + jupyter={"outputs_hidden": false}
 ## Duplicate the default computation config to modify it:
 # temp_comp_params = deepcopy(active_session_computation_configs[0])
-temp_comp_params = deepcopy(active_computation_configs_dict['default'])
+temp_comp_params = deepcopy(active_computation_configs_dict['params[0]'])
 
 # temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
 temp_comp_params.pf_params.speed_thresh = 4 # 4.0 cm/sec
 temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
-temp_comp_params.pf_params.smooth = (None, None) # No smoothing
+temp_comp_params.pf_params.smooth = (0.0, 0.0) # No smoothing
 temp_comp_params.pf_params.frate_thresh = 1 # Minimum for non-smoothed peak is 1Hz
 temp_comp_params
 
@@ -413,17 +417,7 @@ PlacefieldComputationParameters
 # + jupyter={"outputs_hidden": false}
 _test_new_comp_params = PlacefieldComputationParameters(speed_thresh=4)
 _test_new_comp_params
-
-
 # -
-
-# # TODO 2023-01-13 - Simple Serialization/Deserialization Versioning System
-# ## Define migration strategies for missing variables using a sucinct (but not esoteric) syntax
-
-class VersionedSerializable:
-    ## recieves a dict on deserialization
-
-
 
 # # Continued previous...
 
