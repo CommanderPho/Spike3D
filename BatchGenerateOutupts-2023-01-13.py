@@ -186,7 +186,7 @@ print(f'basedir: {str(basedir)}')
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
@@ -195,6 +195,9 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.save_pipeline()
+
+# + tags=["load", "single_session"]
+
 
 # + [markdown] tags=["load", "single_session"]
 # ## Computing with custom computation config:
