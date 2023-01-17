@@ -61,5 +61,19 @@
 			"phohale.pho-pyqt-class-generator",
 			"berublan.vscode-log-viewer"
 		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+		{
+			"name": "Python: Current File",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"console": "integratedTerminal",
+			"justMyCode": true,
+            "env": {"PYDEVD_WARN_SLOW_RESOLVE_TIMEOUT": "2"}
+		}
+	]
 	}
 }
