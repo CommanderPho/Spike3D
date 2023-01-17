@@ -45,7 +45,7 @@ from copy import deepcopy
 from numba import jit
 import numpy as np
 import pandas as pd
-from benedict import benedict # https://github.com/fabiocaccamo/python-benedict#usage
+from benedict import benedict # https://github.com/fabiocaccamo/python-benedict#usage install via `python -m pip install python-benedict`
 
 # Pho's Formatting Preferences
 # from pyphocorehelpers.preferences_helpers import set_pho_preferences, set_pho_preferences_concise, set_pho_preferences_verbose
