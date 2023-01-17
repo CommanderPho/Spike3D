@@ -16,7 +16,7 @@
 # + [markdown] tags=[]
 # # Imports
 
-# + pycharm={"is_executing": true} tags=["imports"]
+# + tags=["imports"]
 # %config IPCompleter.use_jedi = False
 # %pdb off
 # # %load_ext viztracer
@@ -193,6 +193,9 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle - full-good.pkl', skip_extended_batch_computations=True)
 
+# + jupyter={"outputs_hidden": false}
+4096*4
+
 # + tags=["load", "single_session"]
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE)
 
@@ -203,7 +206,7 @@ curr_active_pipeline.display(display_function=
 # + [markdown] tags=["load", "single_session"]
 # ## Computing with custom computation config:
 
-# + tags=["load", "single_session"]
+# + jupyter={"outputs_hidden": false}
 ## From https://github.com/CommanderPho/pyPhoPlaceCellAnalysis/blob/master/src/pyphoplacecellanalysis/General/NonInteractiveWrapper.py#L256
 
 fail_on_exception = True
@@ -246,12 +249,6 @@ active_computation_configs_list
 
 active_computation_configs_dict = {'params[0]': active_computation_configs_list[0]}
 
-# + jupyter={"outputs_hidden": false}
-# params[0]:
-curr_active_pipeline.computation_results['maze_params[0]'].computation_config
-
-
-# + jupyter={"outputs_hidden": false}
 ## Duplicate the default computation config to modify it:
 # temp_comp_params = deepcopy(active_session_computation_configs[0])
 temp_comp_params = deepcopy(active_computation_configs_dict['params[0]'])
@@ -288,6 +285,10 @@ computation_functions_name_blacklist=None
 
 ## new multi-computation-configs mode:
 curr_active_pipeline.perform_computations(active_computation_configs_dict, computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+
+# + tags=["load", "single_session"]
+batch_extended_computations(curr_active_pipeline, include_global_functions=False, fail_on_exception=True, progress_print=True, debug_print=False)
+
 
 # + jupyter={"outputs_hidden": false}
 print_keys_if_possible('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'], custom_item_formatter=_rich_text_format_curr_value)

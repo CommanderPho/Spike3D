@@ -1,0 +1,200 @@
+"""
+
+Can run via:
+
+# change directory to PhoPy3DPositionAnalysis2021 repo
+cd 'C:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021'
+# Call iPython:
+ipython iPython_PipelineRun.ipy
+
+jupyter qtconsole
+# change directory to PhoPy3DPositionAnalysis2021 repo
+cd 'C:\\Users\\pho\\repos\\PhoPy3DPositionAnalysis2021'
+
+
+pip install pyqt6 qt6-applications qt6-tools pyqt6-plugins pyqt6-sip pyqt6-qt6 pyqt6-sip
+
+pip install PyQt6
+
+"""
+# %load_ext autoreload
+# %autoreload 2
+import sys
+import importlib
+from pathlib import Path
+from benedict import benedict
+import numpy as np
+import pandas as pd
+
+# required to enable non-blocking interaction:
+# # %gui qt
+# # !env QT_API="pyqt5"
+# %gui qt5
+# # %gui qt6
+# from PyQt5.Qt import QApplication
+# # start qt event loop
+# _instance = QApplication.instance()
+# if not _instance:
+#     _instance = QApplication([])
+# app = _instance
+
+from copy import deepcopy
+from numba import jit
+import numpy as np
+import pandas as pd
+from benedict import benedict # https://github.com/fabiocaccamo/python-benedict#usage
+
+# Pho's Formatting Preferences
+# from pyphocorehelpers.preferences_helpers import set_pho_preferences, set_pho_preferences_concise, set_pho_preferences_verbose
+# set_pho_preferences_concise()
+
+## Pho's Custom Libraries:
+from pyphocorehelpers.general_helpers import CodeConversion
+from pyphocorehelpers.print_helpers import print_keys_if_possible, print_value_overview_only, document_active_variables, objsize, print_object_memory_usage, debug_dump_object_member_shapes, TypePrintMode
+
+# pyPhoPlaceCellAnalysis:
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # get_neuron_identities
+
+# NeuroPy (Diba Lab Python Repo) Loading
+# from neuropy import core
+from neuropy.analyses.placefields import PlacefieldComputationParameters
+from neuropy.core.epoch import NamedTimerange
+from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
+from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
+from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
+from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
+from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
+
+## For computation parameters:
+from neuropy.analyses.placefields import PlacefieldComputationParameters
+from neuropy.utils.dynamic_container import DynamicContainer
+from neuropy.utils.result_context import IdentifyingContext
+from neuropy.core.session.Formats.BaseDataSessionFormats import find_local_session_paths
+
+# from PendingNotebookCode import _perform_batch_plot, _build_batch_plot_kwargs
+from pyphoplacecellanalysis.General.NonInteractiveWrapper import batch_load_session, batch_extended_computations, SessionBatchProgress, batch_programmatic_figures, batch_extended_programmatic_figures
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme
+
+session_batch_status = {}
+session_batch_errors = {}
+enable_saving_to_disk = False
+
+global_data_root_parent_path = Path(r'W:\Data') # Windows Apogee
+# global_data_root_parent_path = Path(r'/media/MAX/Data') # Diba Lab Workstation Linux
+# global_data_root_parent_path = Path(r'/Volumes/MoverNew/data') # rMBP
+assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
+
+# + [markdown] tags=[]
+# # Load Pipeline
+
+# + tags=["load"]
+# ==================================================================================================================== #
+# Load Data                                                                                                            #
+# ==================================================================================================================== #
+
+active_data_mode_name = 'kdiba'
+
+## Data must be pre-processed using the MATLAB script located here: 
+#     neuropy/data_session_pre_processing_scripts/KDIBA/IIDataMat_Export_ToPython_2022_08_01.m
+# From pre-computed .mat files:
+
+local_session_root_parent_context = IdentifyingContext(format_name=active_data_mode_name) # , animal_name='', configuration_name='one', session_name=self.session_name
+local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
+
+## Animal `gor01`:
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+
+### Animal `vvp01`:
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='two')
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+
+## Build session contexts list:
+local_session_contexts_list = [local_session_parent_context.adding_context(collision_prefix='sess', session_name=a_name) for a_name in local_session_names_list] # [IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>, ..., IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-13_14-42-6')>]
+
+## Initialize `session_batch_status` with the NOT_STARTED status if it doesn't already have a different status
+for curr_session_basedir in local_session_paths_list:
+    curr_session_status = session_batch_status.get(curr_session_basedir, None)
+    if curr_session_status is None:
+        session_batch_status[curr_session_basedir] = SessionBatchProgress.NOT_STARTED # set to not started if not present
+        # session_batch_status[curr_session_basedir] = SessionBatchProgress.COMPLETED # set to not started if not present
+
+
+# # + tags=["batch", "load"]
+# include_programmatic_figures = False # if True, batch_programmatic_figures and batch_extended_programmatic_figures will be ran for each session. Othewise only the computations will be done and the data saved.
+# batch_saving_mode = PipelineSavingScheme.TEMP_THEN_OVERWRITE
+# # batch_saving_mode = PipelineSavingScheme.OVERWRITE_IN_PLACE
+# # batch_saving_mode = PipelineSavingScheme.SKIP_SAVING # useful for just loading the pipelines and doing something with the result (like plotting)
+
+# ## Run batch queue
+# for curr_sess_ctx, curr_session_basedir, curr_session_name in zip(local_session_contexts_list, local_session_paths_list, local_session_names_list):
+#     print(f'curr_session_basedir: {str(curr_session_basedir)}')
+#     curr_session_status = session_batch_status.get(curr_session_basedir, None)
+#     if curr_session_status.name != SessionBatchProgress.COMPLETED.name:
+#         session_batch_status[curr_session_basedir] = SessionBatchProgress.NOT_STARTED
+#         try:
+#             session_batch_status[curr_session_basedir] = SessionBatchProgress.RUNNING
+#             curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, curr_session_basedir, force_reload=True, saving_mode=batch_saving_mode, fail_on_exception=True, skip_extended_batch_computations=False, time_bin_size=0.1)
+#             # newly_computed_values = batch_extended_computations(curr_active_pipeline, fail_on_exception=True, progress_print=True, debug_print=False) # doing extended batch computations in batch_load_session does not work for some strange reason.
+#             # if len(newly_computed_values) > 0:
+#             #         curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
+                    
+#             if include_programmatic_figures:
+#                 active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
+#                 batch_extended_programmatic_figures(curr_active_pipeline)
+                
+#             session_batch_status[curr_session_basedir] = SessionBatchProgress.COMPLETED
+#             session_batch_errors[curr_session_basedir] = None # clear any error entry
+#             print(f'completed processing for {curr_session_basedir}.') # : {active_identifying_session_ctx}
+#         except Exception as e:
+#             tb = traceback.format_exc()
+#             print(f'ERROR processing {curr_session_basedir} with error {e}\n{tb}')
+#             session_batch_status[curr_session_basedir] = SessionBatchProgress.ABORTED
+#             session_batch_errors[curr_session_basedir] = (e, tb)
+#             # raise e
+#     else:
+#         print(f'\t already completed')
+
+# print(f'session_batch_status: {session_batch_status}')
+# print('!!! done running batch !!!')
+
+# + [markdown] tags=[]
+# # Single basedir (non-batch) testing:
+
+# + tags=["load", "single_session"]
+# %pdb off
+basedir = local_session_paths_list[0] # NOT 3
+print(f'basedir: {str(basedir)}')
+
+# ==================================================================================================================== #
+# Load Pipeline                                                                                                        #
+# ==================================================================================================================== #
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
+## SAVE AFTERWARDS!
+
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle - full-good.pkl', skip_extended_batch_computations=True)
+
+
+### DEBUG:
+# from IPython import embed; embed()
+# import ipdb; ipdb.set_trace()
+
+# + tags=["load", "single_session"]
+batch_extended_computations(curr_active_pipeline, include_global_functions=False, fail_on_exception=True, progress_print=True, debug_print=False)
+
+# + jupyter={"outputs_hidden": false}
+print_keys_if_possible('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'], custom_item_formatter=_rich_text_format_curr_value)
+
