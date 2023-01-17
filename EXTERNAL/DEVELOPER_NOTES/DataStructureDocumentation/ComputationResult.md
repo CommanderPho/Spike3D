@@ -1,0 +1,536 @@
+ComputationResult - printed by print_keys_if_possible on 2023-01-15
+===================================================================================================
+
+
+- ComputationResult: pyphoplacecellanalysis.General.Model.ComputationResults.ComputationResult
+	- sess: neuropy.core.session.dataSession.DataSession
+		- config: neuropy.core.session.Formats.SessionSpecifications.SessionConfig
+			- format_name: str
+			- basepath: pathlib.WindowsPath
+			- session_name: str
+			- session_spec: neuropy.core.session.Formats.SessionSpecifications.SessionFolderSpec
+				- required_files: list - (4,)
+				- optional_files: list - (2,)
+				- additional_validation_requirements: list - (0,)
+			- session_context: neuropy.utils.result_context.IdentifyingContext
+				- format_name: str
+				- animal: str
+				- exper_name: str
+				- session_name: str
+			- is_resolved: bool
+			- resolved_required_filespecs_dict: dict
+				- W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.xml: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+					- fileSpecString: str
+					- suggestedBaseName: str
+					- description: str
+					- session_load_callback: method
+				- W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.spikeII.mat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+					- fileSpecString: str
+					- suggestedBaseName: str
+					- description: str
+					- session_load_callback: NoneType
+				- W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.position_info.mat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+					- fileSpecString: str
+					- suggestedBaseName: str
+					- description: str
+					- session_load_callback: NoneType
+				- W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.epochs_info.mat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+					- fileSpecString: str
+					- suggestedBaseName: str
+					- description: str
+					- session_load_callback: NoneType
+			- resolved_optional_filespecs_dict: dict
+				- W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.eeg: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+					- fileSpecString: str
+					- suggestedBaseName: str
+					- description: str
+					- session_load_callback: method
+				- W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.dat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+					- fileSpecString: str
+					- suggestedBaseName: str
+					- description: str
+					- session_load_callback: method
+			- absolute_start_timestamp: float
+			- position_sampling_rate_Hz: float
+		- is_loaded: bool
+		- filePrefix: pathlib.WindowsPath
+		- recinfo: neuropy.io.neuroscopeio.NeuroscopeIO
+			- source_file: pathlib.WindowsPath
+			- eeg_filename: pathlib.WindowsPath
+			- dat_filename: pathlib.WindowsPath
+			- skipped_channels: numpy.ndarray - (0,)
+			- channel_groups: numpy.ndarray - (12, 8)
+			- discarded_channels: numpy.ndarray - (0,)
+			- sig_dtype: int
+			- dat_sampling_rate: int
+			- eeg_sampling_rate: int
+			- n_channels: int
+			- good_channels: numpy.ndarray - (96,)
+		- eegfile: neuropy.io.binarysignalio.BinarysignalIO
+			- sampling_rate: int
+			- n_channels: int
+			- dtype: str
+			- source_file: pathlib.WindowsPath
+			- _raw_traces: numpy.memmap - (96, 3239936)
+		- datfile: NoneType
+		- neurons: neuropy.core.neurons.Neurons
+			- _filename: NoneType
+			- _metadata: NoneType
+			- spiketrains: numpy.ndarray - (64,)
+			- _neuron_ids: numpy.ndarray - (64,)
+			- _reverse_cellID_index_map: dict (children omitted) - OMITTED TYPE WITH NO SHAPE
+			- _extended_neuron_properties_df: NoneType
+			- waveforms: NoneType
+			- shank_ids: numpy.ndarray - (64,)
+			- _neuron_type: numpy.ndarray - (64,)
+			- peak_channels: NoneType
+			- _sampling_rate: int
+			- t_start: numpy.float64
+			- t_stop: numpy.float64
+		- probegroup: NoneType
+		- position: neuropy.core.position.Position
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _data: pandas.core.frame.DataFrame (children omitted) - (37051, 7)
+		- paradigm: neuropy.core.epoch.Epoch
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _df: pandas.core.frame.DataFrame (children omitted) - (2, 4)
+		- ripple: neuropy.core.epoch.Epoch
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _df: pandas.core.frame.DataFrame (children omitted) - (4978, 6)
+		- mua: neuropy.core.neurons.Mua
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _spike_counts: numpy.ndarray - (1236266,)
+			- t_start: numpy.float64
+			- _bin_size: float
+		- laps: neuropy.core.laps.Laps
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _data: pandas.core.frame.DataFrame (children omitted) - (40, 16)
+		- flattened_spiketrains: neuropy.core.flattened_spiketrains.FlattenedSpiketrains
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _time_variable_name: str
+			- _spikes_df: pandas.core.frame.DataFrame (children omitted) - (488487, 22)
+			- t_start: float
+		- pbe: neuropy.core.epoch.Epoch
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _df: pandas.core.frame.DataFrame (children omitted) - (45, 4)
+		- replay: pandas.core.frame.DataFrame (children omitted) - (661, 9)
+	- computation_config: neuropy.utils.dynamic_container.DynamicContainer
+		- pf_params: neuropy.analyses.placefields.PlacefieldComputationParameters
+			- speed_thresh: float
+			- grid_bin: tuple - (2,)
+			- grid_bin_bounds: tuple - (2,)
+			- smooth: tuple - (2,)
+			- frate_thresh: float
+			- time_bin_size: float
+			- computation_epochs: NoneType
+		- spike_analysis: neuropy.utils.dynamic_container.DynamicContainer
+			- max_num_spikes_per_neuron: int
+			- kleinberg_parameters: neuropy.utils.dynamic_container.DynamicContainer
+				- s: int
+				- gamma: float
+			- use_progress_bar: bool
+			- debug_print: bool
+	- computed_data: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+		- pf1D: neuropy.analyses.placefields.PfND
+			- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+				- speed_thresh: float
+				- grid_bin: tuple - (2,)
+				- grid_bin_bounds: tuple - (2,)
+				- smooth: tuple - (2,)
+				- frate_thresh: float
+			- position_srate: numpy.float64
+			- ndim: numpy.int32
+			- xbin: numpy.ndarray - (64,)
+			- ybin: NoneType
+			- bin_info: dict
+				- mode: str
+				- xstep: numpy.float64
+				- xnum_bins: int
+			- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 22)
+			- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (37051, 5)
+			- ratemap: neuropy.core.ratemap.Ratemap
+				- _filename: NoneType
+				- _metadata: NoneType
+				- spikes_maps: numpy.ndarray - (62, 63)
+				- tuning_curves: numpy.ndarray - (62, 63)
+				- unsmoothed_tuning_maps: numpy.ndarray - (62, 63)
+				- _neuron_ids: list - (62,)
+				- _neuron_extended_ids: list - (62, 3)
+				- xbin: numpy.ndarray - (64,)
+				- ybin: NoneType
+				- occupancy: numpy.ndarray - (63,)
+			- ratemap_spiketrains: list - (62,)
+			- ratemap_spiketrains_pos: list - (62, 1)
+			- _save_intermediate_spikes_maps: bool
+			- _included_thresh_neurons_indx: NoneType
+			- _peak_frate_filter_function: NoneType
+		- pf2D: neuropy.analyses.placefields.PfND
+			- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+				- speed_thresh: float
+				- grid_bin: tuple - (2,)
+				- grid_bin_bounds: tuple - (2,)
+				- smooth: tuple - (2,)
+				- frate_thresh: float
+			- position_srate: numpy.float64
+			- ndim: numpy.int32
+			- xbin: numpy.ndarray - (65,)
+			- ybin: numpy.ndarray - (64,)
+			- bin_info: dict
+				- mode: str
+				- xstep: numpy.float64
+				- xnum_bins: int
+				- ystep: numpy.float64
+				- ynum_bins: int
+			- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 22)
+			- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (37051, 7)
+			- ratemap: neuropy.core.ratemap.Ratemap
+				- _filename: NoneType
+				- _metadata: NoneType
+				- spikes_maps: numpy.ndarray - (63, 64, 63)
+				- tuning_curves: numpy.ndarray - (63, 64, 63)
+				- unsmoothed_tuning_maps: numpy.ndarray - (63, 64, 63)
+				- _neuron_ids: list - (63,)
+				- _neuron_extended_ids: list - (63, 3)
+				- xbin: numpy.ndarray - (65,)
+				- ybin: numpy.ndarray - (64,)
+				- occupancy: numpy.ndarray - (64, 63)
+			- ratemap_spiketrains: list - (63,)
+			- ratemap_spiketrains_pos: list - (63, 2)
+			- _save_intermediate_spikes_maps: bool
+			- _included_thresh_neurons_indx: NoneType
+			- _peak_frate_filter_function: NoneType
+		- pf1D_dt: neuropy.analyses.time_dependent_placefields.PfND_TimeDependent
+			- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+				- speed_thresh: float
+				- grid_bin: tuple - (2,)
+				- grid_bin_bounds: tuple - (2,)
+				- smooth: tuple - (2,)
+				- frate_thresh: float
+			- position_srate: numpy.float64
+			- ndim: numpy.int32
+			- xbin: numpy.ndarray - (64,)
+			- ybin: NoneType
+			- bin_info: dict
+				- mode: str
+				- xstep: numpy.float64
+				- xnum_bins: int
+			- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 22)
+			- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (37051, 5)
+			- last_t: float
+			- historical_snapshots: collections.OrderedDict
+				- 0.0: neuropy.analyses.time_dependent_placefields.PlacefieldSnapshot
+					- num_position_samples_occupancy: numpy.ndarray - (63,)
+					- num_position_samples_smoothed_occupancy: NoneType
+					- seconds_occupancy: numpy.ndarray - (63,)
+					- normalized_occupancy: numpy.ndarray - (63,)
+					- spikes_maps_matrix: numpy.ndarray - (64, 63)
+					- smoothed_spikes_maps_matrix: NoneType
+					- occupancy_weighted_tuning_maps_matrix: numpy.ndarray - (64, 63)
+			- fragile_linear_neuron_IDXs: numpy.ndarray - (64,)
+			- n_fragile_linear_neuron_IDXs: int
+			- _included_thresh_neurons_indx: numpy.ndarray - (64,)
+			- _save_intermediate_spikes_maps: bool
+			- curr_spikes_maps_matrix: numpy.ndarray - (64, 63)
+			- curr_smoothed_spikes_maps_matrix: NoneType
+			- curr_num_pos_samples_occupancy_map: numpy.ndarray - (63,)
+			- curr_num_pos_samples_smoothed_occupancy_map: NoneType
+			- curr_seconds_occupancy: numpy.ndarray - (63,)
+			- curr_normalized_occupancy: numpy.ndarray - (63,)
+			- curr_occupancy_weighted_tuning_maps_matrix: numpy.ndarray - (64, 63)
+			- _peak_frate_filter_function: function
+		- pf2D_dt: neuropy.analyses.time_dependent_placefields.PfND_TimeDependent
+			- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+				- speed_thresh: float
+				- grid_bin: tuple - (2,)
+				- grid_bin_bounds: tuple - (2,)
+				- smooth: tuple - (2,)
+				- frate_thresh: float
+			- position_srate: numpy.float64
+			- ndim: numpy.int32
+			- xbin: numpy.ndarray - (65,)
+			- ybin: numpy.ndarray - (64,)
+			- bin_info: dict
+				- mode: str
+				- xstep: numpy.float64
+				- xnum_bins: int
+				- ystep: numpy.float64
+				- ynum_bins: int
+			- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 25)
+			- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (37050, 7)
+			- last_t: float
+			- historical_snapshots: collections.OrderedDict
+				- 0.0: neuropy.analyses.time_dependent_placefields.PlacefieldSnapshot
+					- num_position_samples_occupancy: numpy.ndarray - (64, 63)
+					- num_position_samples_smoothed_occupancy: NoneType
+					- seconds_occupancy: numpy.ndarray - (64, 63)
+					- normalized_occupancy: numpy.ndarray - (64, 63)
+					- spikes_maps_matrix: numpy.ndarray - (64, 64, 63)
+					- smoothed_spikes_maps_matrix: NoneType
+					- occupancy_weighted_tuning_maps_matrix: numpy.ndarray - (64, 64, 63)
+			- fragile_linear_neuron_IDXs: numpy.ndarray - (64,)
+			- n_fragile_linear_neuron_IDXs: int
+			- _included_thresh_neurons_indx: numpy.ndarray - (64,)
+			- _save_intermediate_spikes_maps: bool
+			- curr_spikes_maps_matrix: numpy.ndarray - (64, 64, 63)
+			- curr_smoothed_spikes_maps_matrix: NoneType
+			- curr_num_pos_samples_occupancy_map: numpy.ndarray - (64, 63)
+			- curr_num_pos_samples_smoothed_occupancy_map: NoneType
+			- curr_seconds_occupancy: numpy.ndarray - (64, 63)
+			- curr_normalized_occupancy: numpy.ndarray - (64, 63)
+			- curr_occupancy_weighted_tuning_maps_matrix: numpy.ndarray - (64, 64, 63)
+			- _peak_frate_filter_function: function
+		- pf1D_Decoder: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BayesianPlacemapPositionDecoder
+			- time_bin_size: float
+			- pf: neuropy.analyses.placefields.PfND
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2,)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (64,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: numpy.float64
+					- xnum_bins: int
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 22)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (37051, 5)
+				- ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (62, 63)
+					- tuning_curves: numpy.ndarray - (62, 63)
+					- unsmoothed_tuning_maps: numpy.ndarray - (62, 63)
+					- _neuron_ids: list - (62,)
+					- _neuron_extended_ids: list - (62, 3)
+					- xbin: numpy.ndarray - (64,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (63,)
+				- ratemap_spiketrains: list - (62,)
+				- ratemap_spiketrains_pos: list - (62, 1)
+				- _save_intermediate_spikes_maps: bool
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 23)
+			- debug_print: bool
+			- neuron_IDXs: numpy.ndarray - (62,)
+			- neuron_IDs: list - (62,)
+			- F: numpy.ndarray - (63, 62)
+			- P_x: numpy.ndarray - (63, 1)
+			- time_binning_container: neuropy.utils.mixins.binning_helpers.BinningContainer
+				- edges: numpy.ndarray - (37173,)
+				- centers: numpy.ndarray - (37172,)
+				- edge_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+					- variable_extents: list - (2,)
+					- step: numpy.float64
+					- num_bins: int
+					- bin_indicies: numpy.ndarray - (37173,)
+				- center_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+					- variable_extents: list - (2,)
+					- step: numpy.float64
+					- num_bins: int
+					- bin_indicies: numpy.ndarray - (37172,)
+			- unit_specific_time_binned_spike_counts: numpy.ndarray - (62, 36805)
+			- total_spike_counts_per_window: numpy.ndarray - (36805,)
+			- flat_p_x_given_n: numpy.ndarray - (63, 37172)
+			- p_x_given_n: numpy.ndarray - (63, 37172)
+			- most_likely_position_flat_indicies: numpy.ndarray - (37172,)
+			- most_likely_position_indicies: NoneType
+			- marginal: neuropy.utils.dynamic_container.DynamicContainer
+				- x: neuropy.utils.dynamic_container.DynamicContainer
+					- p_x_given_n: numpy.ndarray - (63, 37172)
+					- most_likely_positions_1D: numpy.ndarray - (37172,)
+					- revised_most_likely_positions_1D: numpy.ndarray - (37172,)
+				- y: NoneType
+			- most_likely_positions: numpy.ndarray - (37172,)
+			- revised_most_likely_positions: numpy.ndarray - (37172,)
+		- pf2D_Decoder: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BayesianPlacemapPositionDecoder
+			- time_bin_size: float
+			- pf: neuropy.analyses.placefields.PfND
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2,)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (65,)
+				- ybin: numpy.ndarray - (64,)
+				- bin_info: dict
+					- mode: str
+					- xstep: numpy.float64
+					- xnum_bins: int
+					- ystep: numpy.float64
+					- ynum_bins: int
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 22)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (37051, 7)
+				- ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (63, 64, 63)
+					- tuning_curves: numpy.ndarray - (63, 64, 63)
+					- unsmoothed_tuning_maps: numpy.ndarray - (63, 64, 63)
+					- _neuron_ids: list - (63,)
+					- _neuron_extended_ids: list - (63, 3)
+					- xbin: numpy.ndarray - (65,)
+					- ybin: numpy.ndarray - (64,)
+					- occupancy: numpy.ndarray - (64, 63)
+				- ratemap_spiketrains: list - (63,)
+				- ratemap_spiketrains_pos: list - (63, 2)
+				- _save_intermediate_spikes_maps: bool
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- spikes_df: pandas.core.frame.DataFrame (children omitted) - (156357, 23)
+			- debug_print: bool
+			- neuron_IDXs: numpy.ndarray - (63,)
+			- neuron_IDs: list - (63,)
+			- F: numpy.ndarray - (4032, 63)
+			- P_x: numpy.ndarray - (4032, 1)
+			- time_binning_container: neuropy.utils.mixins.binning_helpers.BinningContainer
+				- edges: numpy.ndarray - (37173,)
+				- centers: numpy.ndarray - (37172,)
+				- edge_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+					- variable_extents: list - (2,)
+					- step: numpy.float64
+					- num_bins: int
+					- bin_indicies: numpy.ndarray - (37173,)
+				- center_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+					- variable_extents: list - (2,)
+					- step: numpy.float64
+					- num_bins: int
+					- bin_indicies: numpy.ndarray - (37172,)
+			- unit_specific_time_binned_spike_counts: numpy.ndarray - (63, 36805)
+			- total_spike_counts_per_window: numpy.ndarray - (36805,)
+			- flat_p_x_given_n: numpy.ndarray - (4032, 37172)
+			- p_x_given_n: numpy.ndarray - (64, 63, 37172)
+			- most_likely_position_flat_indicies: numpy.ndarray - (37172,)
+			- most_likely_position_indicies: NoneType
+			- marginal: neuropy.utils.dynamic_container.DynamicContainer
+				- x: neuropy.utils.dynamic_container.DynamicContainer
+					- p_x_given_n: numpy.ndarray - (64, 37172)
+					- most_likely_positions_1D: numpy.ndarray - (37172,)
+					- revised_most_likely_positions_1D: numpy.ndarray - (37172,)
+					- p_x_given_n_and_x_prev: numpy.ndarray - (64, 37172)
+					- two_step_most_likely_positions_1D: numpy.ndarray - (37172,)
+				- y: neuropy.utils.dynamic_container.DynamicContainer
+					- p_x_given_n: numpy.ndarray - (63, 37172)
+					- most_likely_positions_1D: numpy.ndarray - (37172,)
+					- revised_most_likely_positions_1D: numpy.ndarray - (37172,)
+					- p_x_given_n_and_x_prev: numpy.ndarray - (63, 37172)
+					- two_step_most_likely_positions_1D: numpy.ndarray - (37172,)
+			- most_likely_positions: numpy.ndarray - (37172, 2)
+			- revised_most_likely_positions: numpy.ndarray - (37172, 2)
+			- p_x_given_n_and_x_prev: numpy.ndarray - (64, 63, 37172)
+			- two_step_most_likely_positions: numpy.ndarray - (37172, 2)
+		- pf2D_TwoStepDecoder: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+			- xbin: numpy.ndarray - (64,)
+			- ybin: numpy.ndarray - (63,)
+			- avg_speed_per_pos: numpy.ndarray - (64, 63)
+			- K: numpy.float64
+			- V: float
+			- sigma_t_all: numpy.ndarray - (64, 63)
+			- flat_sigma_t_all: numpy.ndarray - (4032,)
+			- C: float
+			- k: float
+			- all_x: numpy.ndarray - (64, 63, 2)
+			- flat_all_x: list - (4032, 2)
+			- original_all_x_shape: tuple - (2,)
+			- flat_p_x_given_n_and_x_prev: numpy.ndarray - (4032, 37172)
+			- p_x_given_n_and_x_prev: numpy.ndarray - (64, 63, 37172)
+			- most_likely_position_indicies: numpy.ndarray - (2, 37172)
+			- most_likely_positions: numpy.ndarray - (37172, 2)
+			- all_scaling_factors_k: numpy.ndarray - (37172,)
+			- most_likely_position_flat_indicies: numpy.ndarray - (37172,)
+			- marginal: neuropy.utils.dynamic_container.DynamicContainer
+				- x: neuropy.utils.dynamic_container.DynamicContainer
+					- p_x_given_n: numpy.ndarray - (64, 37172)
+					- most_likely_positions_1D: numpy.ndarray - (37172,)
+				- y: neuropy.utils.dynamic_container.DynamicContainer
+					- p_x_given_n: numpy.ndarray - (63, 37172)
+					- most_likely_positions_1D: numpy.ndarray - (37172,)
+		- RatemapPeaksAnalysis: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+			- mask_results: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+				- fp_list: tuple - (63,)
+				- df_list: tuple - (63,)
+			- topo_results: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+				- fp_list: tuple - (63,)
+				- df_list: tuple - (63,)
+				- persistence_df_list: tuple - (63,)
+				- peak_xy_points_pos_list: list - 63
+			- final_filtered_results: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+				- df_list: list - (63,)
+				- peak_xy_points_pos_list: list - 63
+				- peaks_are_included_list: list - (63,)
+		- extended_stats: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+			- time_binned_positioned_resampler: pandas.core.resample.TimedeltaIndexResampler (children omitted) - OMITTED TYPE WITH NO SHAPE
+			- time_binned_position_df: pandas.core.frame.DataFrame (children omitted) - (37092, 7)
+			- time_binned_position_mean: pandas.core.frame.DataFrame (children omitted) - (21, 5)
+			- time_binned_position_covariance: pandas.core.frame.DataFrame (children omitted) - (5, 5)
+		- firing_rate_trends: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+			- time_bin_size_seconds: float
+			- all_session_spikes: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+				- time_binning_container: neuropy.utils.mixins.binning_helpers.BinningContainer
+					- edges: numpy.ndarray - (2474,)
+					- centers: numpy.ndarray - (2473,)
+					- edge_info: pyphocorehelpers.indexing_helpers.BinningInfo
+						- variable_extents: tuple - (2,)
+						- step: float
+						- num_bins: int
+						- bin_indicies: numpy.ndarray - (2474,)
+					- center_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+						- variable_extents: tuple - (2,)
+						- step: numpy.float64
+						- num_bins: int
+						- bin_indicies: numpy.ndarray - (2473,)
+				- time_window_edges: numpy.ndarray - (2474,)
+				- time_window_edges_binning_info: pyphocorehelpers.indexing_helpers.BinningInfo
+					- variable_extents: tuple - (2,)
+					- step: float
+					- num_bins: int
+					- bin_indicies: numpy.ndarray - (2474,)
+				- time_binned_unit_specific_binned_spike_rate: pandas.core.frame.DataFrame (children omitted) - (2473, 64)
+				- time_binned_unit_specific_binned_spike_counts: pandas.core.frame.DataFrame (children omitted) - (2473, 64)
+				- min_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+				- mean_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+				- median_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+				- max_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+				- instantaneous_unit_specific_spike_rate: neo.core.analogsignal.AnalogSignal - (5175, 64)
+				- instantaneous_unit_specific_spike_rate_values_df: pandas.core.frame.DataFrame (children omitted) - (5175, 64)
+			- pf_included_spikes_only: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+				- time_binning_container: neuropy.utils.mixins.binning_helpers.BinningContainer
+					- edges: numpy.ndarray - (2455,)
+					- centers: numpy.ndarray - (2454,)
+					- edge_info: pyphocorehelpers.indexing_helpers.BinningInfo
+						- variable_extents: tuple - (2,)
+						- step: float
+						- num_bins: int
+						- bin_indicies: numpy.ndarray - (2455,)
+					- center_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+						- variable_extents: tuple - (2,)
+						- step: numpy.float64
+						- num_bins: int
+						- bin_indicies: numpy.ndarray - (2454,)
+				- time_window_edges: numpy.ndarray - (2455,)
+				- time_window_edges_binning_info: pyphocorehelpers.indexing_helpers.BinningInfo
+					- variable_extents: tuple - (2,)
+					- step: float
+					- num_bins: int
+					- bin_indicies: numpy.ndarray - (2455,)
+				- time_binned_unit_specific_binned_spike_rate: pandas.core.frame.DataFrame (children omitted) - (2454, 64)
+				- time_binned_unit_specific_binned_spike_counts: pandas.core.frame.DataFrame (children omitted) - (2454, 64)
+				- min_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+				- mean_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+				- median_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+				- max_spike_rates: pandas.core.series.Series (children omitted) - (64,)
+	- accumulated_errors: NoneType

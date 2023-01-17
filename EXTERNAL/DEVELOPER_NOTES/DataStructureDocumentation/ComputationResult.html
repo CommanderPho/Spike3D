@@ -1,0 +1,559 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>DOCS<ComputationResult></title>
+<style type="text/css">
+.ansi2html-content { display: inline; font-family: "Lucida Console", "Courier New", monospace; font-size: 8px; white-space: pre-wrap; word-wrap: break-word; }
+.body_foreground { color: #FF0000; }
+.body_background { background-color: #FFFFFF; }
+.inv_foreground { color: #AAAAAA; }
+.inv_background { background-color: #000000; }
+.ansi1 { font-weight: bold; }
+.ansi91 { color: #ff0000; }
+.ansi93 { color: #ffff00; }
+.ansi94 { color: #5c5cff; }
+.ansi95 { color: #ff00ff; }
+</style>
+</head>
+<body class="body_foreground body_background" style="font-size: normal;" >
+<pre class="ansi2html-content">
+<span class="ansi1"></span><span class="ansi1 ansi91">ComputationResult</span> - printed by DocumentationFilePrinter on 2023-01-15
+===================================================================================================
+- <span class="ansi94">ComputationResult</span>: <span class="ansi95">pyphoplacecellanalysis.General.Model.</span><span class="ansi1 ansi95">ComputationResult</span>
+	- <span class="ansi94">sess</span>: <span class="ansi95">neuropy.core.session.</span><span class="ansi1 ansi95">DataSession</span>
+		- <span class="ansi94">config</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionConfig</span>
+			- <span class="ansi94">format_name</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+			- <span class="ansi94">basepath</span>: <span class="ansi95"></span><span class="ansi1 ansi95">WindowsPath</span>
+			- <span class="ansi94">session_name</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+			- <span class="ansi94">session_spec</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionFolderSpec</span>
+				- <span class="ansi94">required_files</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (4,)
+				- <span class="ansi94">optional_files</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (2,)
+				- <span class="ansi94">additional_validation_requirements</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (0,)
+			- <span class="ansi94">session_context</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">IdentifyingContext</span>
+				- <span class="ansi94">format_name</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+				- <span class="ansi94">animal</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+				- <span class="ansi94">exper_name</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+				- <span class="ansi94">session_name</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+			- <span class="ansi94">is_resolved</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">resolved_required_filespecs_dict</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+				- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.xml</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionFileSpec</span>
+					- <span class="ansi94">fileSpecString</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">suggestedBaseName</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">description</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">session_load_callback</span>: <span class="ansi95"></span><span class="ansi1 ansi95">method</span>
+				- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.spikeII.mat</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionFileSpec</span>
+					- <span class="ansi94">fileSpecString</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">suggestedBaseName</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">description</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">session_load_callback</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.position_info.mat</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionFileSpec</span>
+					- <span class="ansi94">fileSpecString</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">suggestedBaseName</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">description</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">session_load_callback</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.epochs_info.mat</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionFileSpec</span>
+					- <span class="ansi94">fileSpecString</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">suggestedBaseName</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">description</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">session_load_callback</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">resolved_optional_filespecs_dict</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+				- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.eeg</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionFileSpec</span>
+					- <span class="ansi94">fileSpecString</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">suggestedBaseName</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">description</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">session_load_callback</span>: <span class="ansi95"></span><span class="ansi1 ansi95">method</span>
+				- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.dat</span>: <span class="ansi95">neuropy.core.session.Formats.</span><span class="ansi1 ansi95">SessionFileSpec</span>
+					- <span class="ansi94">fileSpecString</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">suggestedBaseName</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">description</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">session_load_callback</span>: <span class="ansi95"></span><span class="ansi1 ansi95">method</span>
+			- <span class="ansi94">absolute_start_timestamp</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">position_sampling_rate_Hz</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+		- <span class="ansi94">is_loaded</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+		- <span class="ansi94">filePrefix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">WindowsPath</span>
+		- <span class="ansi94">recinfo</span>: <span class="ansi95">neuropy.io.</span><span class="ansi1 ansi95">NeuroscopeIO</span>
+			- <span class="ansi94">source_file</span>: <span class="ansi95"></span><span class="ansi1 ansi95">WindowsPath</span>
+			- <span class="ansi94">eeg_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">WindowsPath</span>
+			- <span class="ansi94">dat_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">WindowsPath</span>
+			- <span class="ansi94">skipped_channels</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (0,)
+			- <span class="ansi94">channel_groups</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (12, 8)
+			- <span class="ansi94">discarded_channels</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (0,)
+			- <span class="ansi94">sig_dtype</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">dat_sampling_rate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">eeg_sampling_rate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">n_channels</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">good_channels</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (96,)
+		- <span class="ansi94">eegfile</span>: <span class="ansi95">neuropy.io.</span><span class="ansi1 ansi95">BinarysignalIO</span>
+			- <span class="ansi94">sampling_rate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">n_channels</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">dtype</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+			- <span class="ansi94">source_file</span>: <span class="ansi95"></span><span class="ansi1 ansi95">WindowsPath</span>
+			- <span class="ansi94">_raw_traces</span>: <span class="ansi95"></span><span class="ansi1 ansi95">memmap</span> - (96, 3239936)
+		- <span class="ansi94">datfile</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+		- <span class="ansi94">neurons</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Neurons</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">spiketrains</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">_neuron_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">_reverse_cellID_index_map</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span><span class="ansi93"> (children omitted)</span> - OMITTED TYPE WITH NO SHAPE
+			- <span class="ansi94">_extended_neuron_properties_df</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">waveforms</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">shank_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">_neuron_type</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">peak_channels</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_sampling_rate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">t_start</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+			- <span class="ansi94">t_stop</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+		- <span class="ansi94">probegroup</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+		- <span class="ansi94">position</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Position</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_data</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37051, 7)
+		- <span class="ansi94">paradigm</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Epoch</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (2, 4)
+		- <span class="ansi94">ripple</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Epoch</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (4978, 6)
+		- <span class="ansi94">mua</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Mua</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_spike_counts</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (1236266,)
+			- <span class="ansi94">t_start</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+			- <span class="ansi94">_bin_size</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+		- <span class="ansi94">laps</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Laps</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_data</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (40, 16)
+		- <span class="ansi94">flattened_spiketrains</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">FlattenedSpiketrains</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_time_variable_name</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+			- <span class="ansi94">_spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (488487, 22)
+			- <span class="ansi94">t_start</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+		- <span class="ansi94">pbe</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Epoch</span>
+			- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (45, 4)
+		- <span class="ansi94">replay</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (661, 9)
+	- <span class="ansi94">computation_config</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+		- <span class="ansi94">pf_params</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldComputationParameters</span>
+			- <span class="ansi94">speed_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">grid_bin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+			- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+			- <span class="ansi94">smooth</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+			- <span class="ansi94">frate_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">time_bin_size</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">computation_epochs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+		- <span class="ansi94">spike_analysis</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+			- <span class="ansi94">max_num_spikes_per_neuron</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">kleinberg_parameters</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+				- <span class="ansi94">s</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+				- <span class="ansi94">gamma</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">use_progress_bar</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">debug_print</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+	- <span class="ansi94">computed_data</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+		- <span class="ansi94">pf1D</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PfND</span>
+			- <span class="ansi94">config</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldComputationParameters</span>
+				- <span class="ansi94">speed_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+				- <span class="ansi94">grid_bin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">smooth</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">frate_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">position_srate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+			- <span class="ansi94">ndim</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int32</span>
+			- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">bin_info</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+				- <span class="ansi94">mode</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+				- <span class="ansi94">xstep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">xnum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 22)
+			- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37051, 5)
+			- <span class="ansi94">ratemap</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Ratemap</span>
+				- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62, 63)
+				- <span class="ansi94">tuning_curves</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62, 63)
+				- <span class="ansi94">unsmoothed_tuning_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62, 63)
+				- <span class="ansi94">_neuron_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62,)
+				- <span class="ansi94">_neuron_extended_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62, 3)
+				- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+				- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+			- <span class="ansi94">ratemap_spiketrains</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62,)
+			- <span class="ansi94">ratemap_spiketrains_pos</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62, 1)
+			- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">_included_thresh_neurons_indx</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_peak_frate_filter_function</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+		- <span class="ansi94">pf2D</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PfND</span>
+			- <span class="ansi94">config</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldComputationParameters</span>
+				- <span class="ansi94">speed_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+				- <span class="ansi94">grid_bin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">smooth</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">frate_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">position_srate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+			- <span class="ansi94">ndim</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int32</span>
+			- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (65,)
+			- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">bin_info</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+				- <span class="ansi94">mode</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+				- <span class="ansi94">xstep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">xnum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+				- <span class="ansi94">ystep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">ynum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 22)
+			- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37051, 7)
+			- <span class="ansi94">ratemap</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Ratemap</span>
+				- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 64, 63)
+				- <span class="ansi94">tuning_curves</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 64, 63)
+				- <span class="ansi94">unsmoothed_tuning_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 64, 63)
+				- <span class="ansi94">_neuron_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63,)
+				- <span class="ansi94">_neuron_extended_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63, 3)
+				- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (65,)
+				- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+				- <span class="ansi94">occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">ratemap_spiketrains</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63,)
+			- <span class="ansi94">ratemap_spiketrains_pos</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63, 2)
+			- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">_included_thresh_neurons_indx</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">_peak_frate_filter_function</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+		- <span class="ansi94">pf1D_dt</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PfND_TimeDependent</span>
+			- <span class="ansi94">config</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldComputationParameters</span>
+				- <span class="ansi94">speed_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+				- <span class="ansi94">grid_bin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">smooth</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">frate_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">position_srate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+			- <span class="ansi94">ndim</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int32</span>
+			- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">bin_info</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+				- <span class="ansi94">mode</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+				- <span class="ansi94">xstep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">xnum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 22)
+			- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37051, 5)
+			- <span class="ansi94">last_t</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">historical_snapshots</span>: <span class="ansi95"></span><span class="ansi1 ansi95">OrderedDict</span>
+				- <span class="ansi94">0.0</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldSnapshot</span>
+					- <span class="ansi94">num_position_samples_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+					- <span class="ansi94">num_position_samples_smoothed_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">seconds_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+					- <span class="ansi94">normalized_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+					- <span class="ansi94">spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+					- <span class="ansi94">smoothed_spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">occupancy_weighted_tuning_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">fragile_linear_neuron_IDXs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">n_fragile_linear_neuron_IDXs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">_included_thresh_neurons_indx</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">curr_spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">curr_smoothed_spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">curr_num_pos_samples_occupancy_map</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+			- <span class="ansi94">curr_num_pos_samples_smoothed_occupancy_map</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">curr_seconds_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+			- <span class="ansi94">curr_normalized_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+			- <span class="ansi94">curr_occupancy_weighted_tuning_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">_peak_frate_filter_function</span>: <span class="ansi95"></span><span class="ansi1 ansi95">function</span>
+		- <span class="ansi94">pf2D_dt</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PfND_TimeDependent</span>
+			- <span class="ansi94">config</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldComputationParameters</span>
+				- <span class="ansi94">speed_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+				- <span class="ansi94">grid_bin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">smooth</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+				- <span class="ansi94">frate_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">position_srate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+			- <span class="ansi94">ndim</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int32</span>
+			- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (65,)
+			- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">bin_info</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+				- <span class="ansi94">mode</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+				- <span class="ansi94">xstep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">xnum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+				- <span class="ansi94">ystep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">ynum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 25)
+			- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37050, 7)
+			- <span class="ansi94">last_t</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">historical_snapshots</span>: <span class="ansi95"></span><span class="ansi1 ansi95">OrderedDict</span>
+				- <span class="ansi94">0.0</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldSnapshot</span>
+					- <span class="ansi94">num_position_samples_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+					- <span class="ansi94">num_position_samples_smoothed_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">seconds_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+					- <span class="ansi94">normalized_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+					- <span class="ansi94">spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 64, 63)
+					- <span class="ansi94">smoothed_spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">occupancy_weighted_tuning_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 64, 63)
+			- <span class="ansi94">fragile_linear_neuron_IDXs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">n_fragile_linear_neuron_IDXs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+			- <span class="ansi94">_included_thresh_neurons_indx</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">curr_spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 64, 63)
+			- <span class="ansi94">curr_smoothed_spikes_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">curr_num_pos_samples_occupancy_map</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">curr_num_pos_samples_smoothed_occupancy_map</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">curr_seconds_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">curr_normalized_occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">curr_occupancy_weighted_tuning_maps_matrix</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 64, 63)
+			- <span class="ansi94">_peak_frate_filter_function</span>: <span class="ansi95"></span><span class="ansi1 ansi95">function</span>
+		- <span class="ansi94">pf1D_Decoder</span>: <span class="ansi95">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi95">BayesianPlacemapPositionDecoder</span>
+			- <span class="ansi94">time_bin_size</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">pf</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PfND</span>
+				- <span class="ansi94">config</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldComputationParameters</span>
+					- <span class="ansi94">speed_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+					- <span class="ansi94">grid_bin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">smooth</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">frate_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+				- <span class="ansi94">position_srate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">ndim</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int32</span>
+				- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+				- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">bin_info</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+					- <span class="ansi94">mode</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">xstep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+					- <span class="ansi94">xnum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+				- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 22)
+				- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37051, 5)
+				- <span class="ansi94">ratemap</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Ratemap</span>
+					- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62, 63)
+					- <span class="ansi94">tuning_curves</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62, 63)
+					- <span class="ansi94">unsmoothed_tuning_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62, 63)
+					- <span class="ansi94">_neuron_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62,)
+					- <span class="ansi94">_neuron_extended_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62, 3)
+					- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+					- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+				- <span class="ansi94">ratemap_spiketrains</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62,)
+				- <span class="ansi94">ratemap_spiketrains_pos</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62, 1)
+				- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+				- <span class="ansi94">_included_thresh_neurons_indx</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">_peak_frate_filter_function</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 23)
+			- <span class="ansi94">debug_print</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">neuron_IDXs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62,)
+			- <span class="ansi94">neuron_IDs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (62,)
+			- <span class="ansi94">F</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 62)
+			- <span class="ansi94">P_x</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 1)
+			- <span class="ansi94">time_binning_container</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningContainer</span>
+				- <span class="ansi94">edges</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37173,)
+				- <span class="ansi94">centers</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+				- <span class="ansi94">edge_info</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningInfo</span>
+					- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (2,)
+					- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+					- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+					- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37173,)
+				- <span class="ansi94">center_info</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningInfo</span>
+					- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (2,)
+					- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+					- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+					- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">unit_specific_time_binned_spike_counts</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (62, 36805)
+			- <span class="ansi94">total_spike_counts_per_window</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (36805,)
+			- <span class="ansi94">flat_p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 37172)
+			- <span class="ansi94">p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 37172)
+			- <span class="ansi94">most_likely_position_flat_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">most_likely_position_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">marginal</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+				- <span class="ansi94">x</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+					- <span class="ansi94">p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 37172)
+					- <span class="ansi94">most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+					- <span class="ansi94">revised_most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+				- <span class="ansi94">y</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">most_likely_positions</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">revised_most_likely_positions</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+		- <span class="ansi94">pf2D_Decoder</span>: <span class="ansi95">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi95">BayesianPlacemapPositionDecoder</span>
+			- <span class="ansi94">time_bin_size</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">pf</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PfND</span>
+				- <span class="ansi94">config</span>: <span class="ansi95">neuropy.analyses.</span><span class="ansi1 ansi95">PlacefieldComputationParameters</span>
+					- <span class="ansi94">speed_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+					- <span class="ansi94">grid_bin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">smooth</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">frate_thresh</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+				- <span class="ansi94">position_srate</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+				- <span class="ansi94">ndim</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int32</span>
+				- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (65,)
+				- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+				- <span class="ansi94">bin_info</span>: <span class="ansi95"></span><span class="ansi1 ansi95">dict</span>
+					- <span class="ansi94">mode</span>: <span class="ansi95"></span><span class="ansi1 ansi95">str</span>
+					- <span class="ansi94">xstep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+					- <span class="ansi94">xnum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+					- <span class="ansi94">ystep</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+					- <span class="ansi94">ynum_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+				- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 22)
+				- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37051, 7)
+				- <span class="ansi94">ratemap</span>: <span class="ansi95">neuropy.core.</span><span class="ansi1 ansi95">Ratemap</span>
+					- <span class="ansi94">_filename</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">_metadata</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+					- <span class="ansi94">spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 64, 63)
+					- <span class="ansi94">tuning_curves</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 64, 63)
+					- <span class="ansi94">unsmoothed_tuning_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 64, 63)
+					- <span class="ansi94">_neuron_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63,)
+					- <span class="ansi94">_neuron_extended_ids</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63, 3)
+					- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (65,)
+					- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+					- <span class="ansi94">occupancy</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+				- <span class="ansi94">ratemap_spiketrains</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63,)
+				- <span class="ansi94">ratemap_spiketrains_pos</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63, 2)
+				- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+				- <span class="ansi94">_included_thresh_neurons_indx</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+				- <span class="ansi94">_peak_frate_filter_function</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">spikes_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (156357, 23)
+			- <span class="ansi94">debug_print</span>: <span class="ansi95"></span><span class="ansi1 ansi95">bool</span>
+			- <span class="ansi94">neuron_IDXs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+			- <span class="ansi94">neuron_IDs</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63,)
+			- <span class="ansi94">F</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (4032, 63)
+			- <span class="ansi94">P_x</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (4032, 1)
+			- <span class="ansi94">time_binning_container</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningContainer</span>
+				- <span class="ansi94">edges</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37173,)
+				- <span class="ansi94">centers</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+				- <span class="ansi94">edge_info</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningInfo</span>
+					- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (2,)
+					- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+					- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+					- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37173,)
+				- <span class="ansi94">center_info</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningInfo</span>
+					- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (2,)
+					- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+					- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+					- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">unit_specific_time_binned_spike_counts</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 36805)
+			- <span class="ansi94">total_spike_counts_per_window</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (36805,)
+			- <span class="ansi94">flat_p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (4032, 37172)
+			- <span class="ansi94">p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63, 37172)
+			- <span class="ansi94">most_likely_position_flat_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">most_likely_position_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+			- <span class="ansi94">marginal</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+				- <span class="ansi94">x</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+					- <span class="ansi94">p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 37172)
+					- <span class="ansi94">most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+					- <span class="ansi94">revised_most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+					- <span class="ansi94">p_x_given_n_and_x_prev</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 37172)
+					- <span class="ansi94">two_step_most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+				- <span class="ansi94">y</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+					- <span class="ansi94">p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 37172)
+					- <span class="ansi94">most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+					- <span class="ansi94">revised_most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+					- <span class="ansi94">p_x_given_n_and_x_prev</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 37172)
+					- <span class="ansi94">two_step_most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">most_likely_positions</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172, 2)
+			- <span class="ansi94">revised_most_likely_positions</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172, 2)
+			- <span class="ansi94">p_x_given_n_and_x_prev</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63, 37172)
+			- <span class="ansi94">two_step_most_likely_positions</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172, 2)
+		- <span class="ansi94">pf2D_TwoStepDecoder</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+			- <span class="ansi94">xbin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64,)
+			- <span class="ansi94">ybin</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63,)
+			- <span class="ansi94">avg_speed_per_pos</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">K</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+			- <span class="ansi94">V</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">sigma_t_all</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63)
+			- <span class="ansi94">flat_sigma_t_all</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (4032,)
+			- <span class="ansi94">C</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">k</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">all_x</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63, 2)
+			- <span class="ansi94">flat_all_x</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (4032, 2)
+			- <span class="ansi94">original_all_x_shape</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+			- <span class="ansi94">flat_p_x_given_n_and_x_prev</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (4032, 37172)
+			- <span class="ansi94">p_x_given_n_and_x_prev</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 63, 37172)
+			- <span class="ansi94">most_likely_position_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2, 37172)
+			- <span class="ansi94">most_likely_positions</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172, 2)
+			- <span class="ansi94">all_scaling_factors_k</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">most_likely_position_flat_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+			- <span class="ansi94">marginal</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+				- <span class="ansi94">x</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+					- <span class="ansi94">p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (64, 37172)
+					- <span class="ansi94">most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+				- <span class="ansi94">y</span>: <span class="ansi95">neuropy.utils.</span><span class="ansi1 ansi95">DynamicContainer</span>
+					- <span class="ansi94">p_x_given_n</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (63, 37172)
+					- <span class="ansi94">most_likely_positions_1D</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (37172,)
+		- <span class="ansi94">RatemapPeaksAnalysis</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+			- <span class="ansi94">mask_results</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+				- <span class="ansi94">fp_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (63,)
+				- <span class="ansi94">df_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (63,)
+			- <span class="ansi94">topo_results</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+				- <span class="ansi94">fp_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (63,)
+				- <span class="ansi94">df_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (63,)
+				- <span class="ansi94">persistence_df_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (63,)
+				- <span class="ansi94">peak_xy_points_pos_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - 63
+			- <span class="ansi94">final_filtered_results</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+				- <span class="ansi94">df_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63,)
+				- <span class="ansi94">peak_xy_points_pos_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - 63
+				- <span class="ansi94">peaks_are_included_list</span>: <span class="ansi95"></span><span class="ansi1 ansi95">list</span> - (63,)
+		- <span class="ansi94">extended_stats</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+			- <span class="ansi94">time_binned_positioned_resampler</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">TimedeltaIndexResampler</span><span class="ansi93"> (children omitted)</span> - OMITTED TYPE WITH NO SHAPE
+			- <span class="ansi94">time_binned_position_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (37092, 7)
+			- <span class="ansi94">time_binned_position_mean</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (21, 5)
+			- <span class="ansi94">time_binned_position_covariance</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (5, 5)
+		- <span class="ansi94">firing_rate_trends</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+			- <span class="ansi94">time_bin_size_seconds</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+			- <span class="ansi94">all_session_spikes</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+				- <span class="ansi94">time_binning_container</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningContainer</span>
+					- <span class="ansi94">edges</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2474,)
+					- <span class="ansi94">centers</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2473,)
+					- <span class="ansi94">edge_info</span>: <span class="ansi95">pyphocorehelpers.</span><span class="ansi1 ansi95">BinningInfo</span>
+						- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+						- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+						- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+						- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2474,)
+					- <span class="ansi94">center_info</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningInfo</span>
+						- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+						- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+						- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+						- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2473,)
+				- <span class="ansi94">time_window_edges</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2474,)
+				- <span class="ansi94">time_window_edges_binning_info</span>: <span class="ansi95">pyphocorehelpers.</span><span class="ansi1 ansi95">BinningInfo</span>
+					- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+					- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+					- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2474,)
+				- <span class="ansi94">time_binned_unit_specific_binned_spike_rate</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (2473, 64)
+				- <span class="ansi94">time_binned_unit_specific_binned_spike_counts</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (2473, 64)
+				- <span class="ansi94">min_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+				- <span class="ansi94">mean_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+				- <span class="ansi94">median_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+				- <span class="ansi94">max_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+				- <span class="ansi94">instantaneous_unit_specific_spike_rate</span>: <span class="ansi95">neo.core.</span><span class="ansi1 ansi95">AnalogSignal</span> - (5175, 64)
+				- <span class="ansi94">instantaneous_unit_specific_spike_rate_values_df</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (5175, 64)
+			- <span class="ansi94">pf_included_spikes_only</span>: <span class="ansi95">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi95">DynamicParameters</span>
+				- <span class="ansi94">time_binning_container</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningContainer</span>
+					- <span class="ansi94">edges</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2455,)
+					- <span class="ansi94">centers</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2454,)
+					- <span class="ansi94">edge_info</span>: <span class="ansi95">pyphocorehelpers.</span><span class="ansi1 ansi95">BinningInfo</span>
+						- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+						- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+						- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+						- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2455,)
+					- <span class="ansi94">center_info</span>: <span class="ansi95">neuropy.utils.mixins.</span><span class="ansi1 ansi95">BinningInfo</span>
+						- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+						- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float64</span>
+						- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+						- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2454,)
+				- <span class="ansi94">time_window_edges</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2455,)
+				- <span class="ansi94">time_window_edges_binning_info</span>: <span class="ansi95">pyphocorehelpers.</span><span class="ansi1 ansi95">BinningInfo</span>
+					- <span class="ansi94">variable_extents</span>: <span class="ansi95"></span><span class="ansi1 ansi95">tuple</span> - (2,)
+					- <span class="ansi94">step</span>: <span class="ansi95"></span><span class="ansi1 ansi95">float</span>
+					- <span class="ansi94">num_bins</span>: <span class="ansi95"></span><span class="ansi1 ansi95">int</span>
+					- <span class="ansi94">bin_indicies</span>: <span class="ansi95"></span><span class="ansi1 ansi95">ndarray</span> - (2455,)
+				- <span class="ansi94">time_binned_unit_specific_binned_spike_rate</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (2454, 64)
+				- <span class="ansi94">time_binned_unit_specific_binned_spike_counts</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">DataFrame</span><span class="ansi93"> (children omitted)</span> - (2454, 64)
+				- <span class="ansi94">min_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+				- <span class="ansi94">mean_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+				- <span class="ansi94">median_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+				- <span class="ansi94">max_spike_rates</span>: <span class="ansi95">pandas.core.</span><span class="ansi1 ansi95">Series</span><span class="ansi93"> (children omitted)</span> - (64,)
+	- <span class="ansi94">accumulated_errors</span>: <span class="ansi95"></span><span class="ansi1 ansi95">NoneType</span>
+
+</pre>
+</body>
+
+</html>
