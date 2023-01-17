@@ -1,0 +1,6 @@
+Found existing installation: PyQt5-sip 12.11.0
+Uninstalling PyQt5-sip-12.11.0:
+  Would remove:
+    c:\users\pho\miniconda3\envs\phoviz_ultimate\lib\site-packages\pyqt5\sip.cp39-win_amd64.pyd
+    c:\users\pho\miniconda3\envs\phoviz_ultimate\lib\site-packages\pyqt5_sip-12.11.0.dist-info\*
+Proceed (Y/n)?   Successfully uninstalled PyQt5-sip-12.11.0

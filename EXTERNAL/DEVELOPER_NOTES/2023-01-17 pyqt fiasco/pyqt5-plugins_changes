@@ -1,0 +1,6 @@
+Found existing installation: pyqt5-plugins 5.15.4.2.2
+Uninstalling pyqt5-plugins-5.15.4.2.2:
+  Would remove:
+    c:\users\pho\miniconda3\envs\phoviz_ultimate\lib\site-packages\pyqt5_plugins-5.15.4.2.2.dist-info\*
+    c:\users\pho\miniconda3\envs\phoviz_ultimate\lib\site-packages\pyqt5_plugins\*
+Proceed (Y/n)?   Successfully uninstalled pyqt5-plugins-5.15.4.2.2
