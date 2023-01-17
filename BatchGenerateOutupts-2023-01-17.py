@@ -193,15 +193,8 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle - full-good.pkl', skip_extended_batch_computations=True)
 
-# + jupyter={"outputs_hidden": false}
-4096*4
-
 # + tags=["load", "single_session"]
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE)
-
-# + tags=["load", "single_session"]
-curr_active_pipeline.display(display_function=
-
 
 # + [markdown] tags=["load", "single_session"]
 # ## Computing with custom computation config:
