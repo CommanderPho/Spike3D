@@ -1,0 +1,7 @@
+Found existing installation: pyqt5-tools 5.15.4.3.2
+Uninstalling pyqt5-tools-5.15.4.3.2:
+  Would remove:
+    c:\users\pho\miniconda3\envs\phoviz_ultimate\lib\site-packages\pyqt5_tools-5.15.4.3.2.dist-info\*
+    c:\users\pho\miniconda3\envs\phoviz_ultimate\lib\site-packages\pyqt5_tools\*
+    c:\users\pho\miniconda3\envs\phoviz_ultimate\scripts\pyqt5-tools.exe
+Proceed (Y/n)?   Successfully uninstalled pyqt5-tools-5.15.4.3.2

@@ -195,6 +195,4 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 # + tags=["load", "single_session"]
 batch_extended_computations(curr_active_pipeline, include_global_functions=False, fail_on_exception=True, progress_print=True, debug_print=False)
 
-# + jupyter={"outputs_hidden": false}
-print_keys_if_possible('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'], custom_item_formatter=_rich_text_format_curr_value)
 
