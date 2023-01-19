@@ -185,19 +185,25 @@ print(f'basedir: {str(basedir)}')
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=True, skip_extended_batch_computations=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=False, skip_extended_batch_computations=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
 ## SAVE AFTERWARDS!
 
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle - full-good.pkl', skip_extended_batch_computations=True)
+
+# Load custom-parameters pipeline ('loadedSessPickle_customParams_2023-01-18.pkl'):
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.pickle_path
 
 # + tags=["load", "single_session"]
-curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, active_pickle_filename='single_params')
+curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl')
+
+# + tags=["load", "single_session"]
+
+
 
 # + tags=["load", "single_session"]
 # IDEA: Convert the computation configs into a context.
@@ -217,15 +223,6 @@ active_data_session_types_registered_classes_dict = DataSessionFormatRegistryHol
 
 active_data_mode_registered_class = active_data_session_types_registered_classes_dict[active_data_mode_name]
 active_data_mode_type_properties = known_data_session_type_properties_dict[active_data_mode_name]
-
-# curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties,
-#     override_basepath=Path(basedir), override_post_load_functions=[], force_reload=force_reload, active_pickle_filename=active_pickle_filename, skip_save_on_initial_load=True)
-
-# active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess, epoch_name_whitelist=epoch_name_whitelist) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-# if debug_print:
-#     print(f'active_session_filter_configurations: {active_session_filter_configurations}')
-
-# curr_active_pipeline.filter_sessions(active_session_filter_configurations, changed_filters_ignore_list=['maze1','maze2','maze'], debug_print=False)
 
 # ## Compute shared grid_bin_bounds for all epochs from the global positions:
 # global_unfiltered_session = curr_active_pipeline.sess
@@ -247,11 +244,11 @@ grid_bin_bounds = None
 active_computation_configs_list = active_data_mode_registered_class.build_default_computation_configs(sess=curr_active_pipeline.sess, time_bin_size=time_bin_size, grid_bin_bounds=grid_bin_bounds) #1.0/30.0 # decode at 30fps to match the position sampling frequency
 active_computation_configs_list
 
-active_computation_configs_dict = {'params[0]': active_computation_configs_list[0]}
+active_computation_configs_dict = {'default': active_computation_configs_list[0]}
 
 ## Duplicate the default computation config to modify it:
 # temp_comp_params = deepcopy(active_session_computation_configs[0])
-temp_comp_params = deepcopy(active_computation_configs_dict['params[0]'])
+temp_comp_params = deepcopy(active_computation_configs_dict['default'])
 
 # temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
 temp_comp_params.pf_params.speed_thresh = 4 # 4.0 cm/sec
@@ -266,7 +263,7 @@ active_computation_configs_dict['custom'] = temp_comp_params
 active_computation_configs_dict
 
 # + tags=["load", "single_session"]
-# Whitelist Mode:
+# Compute with the new computation config:
 computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
                                     '_perform_position_decoding_computation', 
                                     # '_perform_firing_rate_trends_computation',
@@ -275,59 +272,18 @@ computation_functions_name_whitelist=['_perform_baseline_placefield_computation'
                                     '_perform_two_step_position_decoding_computation',
                                     # '_perform_recursive_latent_placefield_decoding'
                                  ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
-computation_functions_name_blacklist=None
 
-# # Blacklist Mode:
-# computation_functions_name_whitelist=None
-# computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
+curr_active_pipeline.perform_computations(active_computation_configs_dict['custom'], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=None, fail_on_exception=fail_on_exception, debug_print=debug_print, overwrite_extant_results=True) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
 
-# curr_active_pipeline.perform_computations(active_session_computation_configs[1], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
-
-## new multi-computation-configs mode:
-curr_active_pipeline.perform_computations(active_computation_configs_dict, computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, debug_print=debug_print) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+# + tags=["load", "single_session"]
+curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl')
 
 # + tags=["load", "single_session"]
 batch_extended_computations(curr_active_pipeline, include_global_functions=False, fail_on_exception=True, progress_print=True, debug_print=False)
 
 
 # + jupyter={"outputs_hidden": false}
-print_keys_if_possible('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'], custom_item_formatter=_rich_text_format_curr_value)
 
-
-# + jupyter={"outputs_hidden": false}
-from ansi2html import Ansi2HTMLConverter # used by DocumentationFilePrinter to build html document from ansi-color coded version
-from pyphocorehelpers.print_helpers import DocumentationFilePrinter
-
-doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='ComputationResult')
-doc_printer.save_documentation('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'])
-
-
-# + jupyter={"outputs_hidden": false} tags=[]
-from ansi2html import Ansi2HTMLConverter # used by DocumentationFilePrinter to build html document from ansi-color coded version
-from pyphocorehelpers.print_helpers import DocumentationFilePrinter
-
-doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='InteractivePlaceCellConfig')
-doc_printer.save_documentation('InteractivePlaceCellConfig', curr_active_pipeline.active_configs['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap'])
-# doc_printer.reveal_output_files_in_system_file_manager()
-
-
-# + jupyter={"outputs_hidden": false} tags=[]
-doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='NeuropyPipeline')
-doc_printer.save_documentation('NeuropyPipeline', curr_active_pipeline, non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger']) # 'Logger'
-
-
-# + jupyter={"outputs_hidden": false} tags=[]
-doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='DisplayPipelineStage')
-doc_printer.save_documentation('DisplayPipelineStage', curr_active_pipeline.stage, non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger']) # 'Logger'
-
-
-# + jupyter={"outputs_hidden": false} tags=[]
-stage# doc_printer.reveal_output_files_in_system_file_manager()
-
-
-# + jupyter={"outputs_hidden": false} tags=[]
-filtered_context = curr_active_pipeline.filtered_contexts['maze1']
-filtered_context.adding_context(collision_prefix='computation_params', comp_params_name=a_computation_config_name)
 
 
 # + jupyter={"outputs_hidden": false} tags=[]
@@ -1891,14 +1847,11 @@ curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_sessio
 config_name = long_epoch_name
 computation_result = curr_active_pipeline.computation_results[config_name]
 filter_epochs_decoder_result, active_filter_epochs, default_figure_name = computation_result.computed_data['specific_epochs_decoding'][('replay', 0.03333, 2)]
-# +
-
 if isinstance(active_filter_epochs, pd.DataFrame):
     n_epochs = np.shape(active_filter_epochs)[0]
 else:
     n_epochs = active_filter_epochs.n_epochs
 print(f'{n_epochs = }')
-# -
 filter_epochs_decoder_result.most_likely_position_indicies_list[0,:]
 # +
 # unwrap for a given epoch

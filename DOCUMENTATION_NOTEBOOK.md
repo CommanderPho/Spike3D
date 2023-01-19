@@ -517,7 +517,7 @@ curr_active_pipeline.save_pipeline()
 
 ```
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## Time-Dependent Placefields Documentation:
 
 ### Resetting State:
@@ -558,3 +558,56 @@ self.curr_normalized_occupancy = self.curr_seconds_occupancy.copy()
 self.curr_occupancy_weighted_tuning_maps_matrix = np.zeros((self.n_fragile_linear_neuron_IDXs, *dims_coord_tuple), dtype=float) # will have units of # spikes/sec
 self.historical_snapshots = OrderedDict({})
 ```
+
+<!-- #region jupyter={"outputs_hidden": false} -->
+# Data Structure Documentation Generation
+The functions below generate documentation in .md and .html format from passed data structures.
+<!-- #endregion -->
+
+
+```python jupyter={"outputs_hidden": false}
+print_keys_if_possible('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'], custom_item_formatter=_rich_text_format_curr_value)
+```
+
+
+```python jupyter={"outputs_hidden": false}
+from ansi2html import Ansi2HTMLConverter # used by DocumentationFilePrinter to build html document from ansi-color coded version
+from pyphocorehelpers.print_helpers import DocumentationFilePrinter
+
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='ComputationResult')
+doc_printer.save_documentation('ComputationResult', curr_active_pipeline.computation_results['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map'])
+```
+
+
+```python jupyter={"outputs_hidden": false} tags=[]
+from ansi2html import Ansi2HTMLConverter # used by DocumentationFilePrinter to build html document from ansi-color coded version
+from pyphocorehelpers.print_helpers import DocumentationFilePrinter
+
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='InteractivePlaceCellConfig')
+doc_printer.save_documentation('InteractivePlaceCellConfig', curr_active_pipeline.active_configs['maze1'], non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap'])
+# doc_printer.reveal_output_files_in_system_file_manager()
+```
+
+
+```python jupyter={"outputs_hidden": false} tags=[]
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='NeuropyPipeline')
+doc_printer.save_documentation('NeuropyPipeline', curr_active_pipeline, non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger']) # 'Logger'
+```
+
+
+```python jupyter={"outputs_hidden": false} tags=[]
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='DisplayPipelineStage')
+doc_printer.save_documentation('DisplayPipelineStage', curr_active_pipeline.stage, non_expanded_item_keys=['_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger']) # 'Logger'
+```
+
+
+```python jupyter={"outputs_hidden": false} tags=[]
+stage# doc_printer.reveal_output_files_in_system_file_manager()
+```
+
+
+```python jupyter={"outputs_hidden": false} tags=[]
+filtered_context = curr_active_pipeline.filtered_contexts['maze1']
+filtered_context.adding_context(collision_prefix='computation_params', comp_params_name=a_computation_config_name)
+```
+
