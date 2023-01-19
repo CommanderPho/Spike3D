@@ -187,16 +187,19 @@ print(f'basedir: {str(basedir)}')
 # ==================================================================================================================== #
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=False, skip_extended_batch_computations=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True) # temp no-save
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=False) # temp no-save
 ## SAVE AFTERWARDS!
 
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
 # Load custom-parameters pipeline ('loadedSessPickle_customParams_2023-01-18.pkl'):
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.pickle_path
+
+# + tags=["load", "single_session"]
+curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl')
@@ -262,13 +265,16 @@ temp_comp_params
 active_computation_configs_dict['custom'] = temp_comp_params
 active_computation_configs_dict
 
+# {'default': DynamicContainer({'pf_params': <PlacefieldComputationParameters: {'speed_thresh': 10.0, 'grid_bin': (3.8185290701194465, 2.036075534862613), 'grid_bin_bounds': (None, None), 'smooth': (2.0, 2.0), 'frate_thresh': 0.2, 'time_bin_size': 0.03333, 'computation_epochs': None};>, 'spike_analysis': DynamicContainer({'max_num_spikes_per_neuron': 20000, 'kleinberg_parameters': DynamicContainer({'s': 2, 'gamma': 0.2}), 'use_progress_bar': False, 'debug_print': False})}),
+#  'custom': DynamicContainer({'pf_params': <PlacefieldComputationParameters: {'speed_thresh': 4, 'grid_bin': (2, 2), 'grid_bin_bounds': (None, None), 'smooth': (0.0, 0.0), 'frate_thresh': 1, 'time_bin_size': 0.03333, 'computation_epochs': None};>, 'spike_analysis': DynamicContainer({'max_num_spikes_per_neuron': 20000, 'kleinberg_parameters': DynamicContainer({'s': 2, 'gamma': 0.2}), 'use_progress_bar': False, 'debug_print': False})})}
+
 # + tags=["load", "single_session"]
 # Compute with the new computation config:
 computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
                                     '_perform_position_decoding_computation', 
-                                    # '_perform_firing_rate_trends_computation',
-                                    # '_perform_pf_find_ratemap_peaks_computation',
-                                    # '_perform_time_dependent_pf_sequential_surprise_computation'
+                                    '_perform_firing_rate_trends_computation',
+                                    '_perform_pf_find_ratemap_peaks_computation',
+                                    '_perform_time_dependent_pf_sequential_surprise_computation'
                                     '_perform_two_step_position_decoding_computation',
                                     # '_perform_recursive_latent_placefield_decoding'
                                  ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
@@ -282,8 +288,159 @@ curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN
 batch_extended_computations(curr_active_pipeline, include_global_functions=False, fail_on_exception=True, progress_print=True, debug_print=False)
 
 
-# + jupyter={"outputs_hidden": false}
+# + [markdown] jupyter={"outputs_hidden": false}
+# # Test getting FULL context from pipeline
 
+
+# + jupyter={"outputs_hidden": false}
+# Helpful references: https://github.com/CommanderPho/pyPhoPlaceCellAnalysis/blob/feature%2Frefactor-to-klepto/src/pyphoplacecellanalysis/General/Mixins/ExportHelpers.py#L271
+# active_session_figures_out_path = session_context_to_relative_path(figures_parent_out_path, active_identifying_session_ctx)
+
+# Perform for each filtered context:
+debug_print = True
+for filter_name, a_filtered_context in curr_active_pipeline.filtered_contexts.items():
+    if debug_print:
+        print(f'filter_name: {filter_name}: "{a_filtered_context.get_description()}"')
+    # Get the desired computation function context:
+    
+    active_identifying_ctx = a_filtered_context
+    # for a_key, a_value in a_computation_config.items():
+    #     # IdentifyingContext.init_from_dict(a_value.__dict__) 
+    #     active_identifying_ctx = active_identifying_ctx.adding_context(a_key, **a_value.__dict__) # a_key is collision_prefix
+
+    # hard-coded version:
+    a_pf_params = a_computation_config['pf_params'].to_dict() # .__dict__
+    active_identifying_ctx = active_identifying_ctx.adding_context('pf_params', **a_pf_params) # a_key is collision_prefix
+    a_spike_analysis = a_computation_config['spike_analysis'].to_dict()
+    active_identifying_ctx = active_identifying_ctx.adding_context('spike_analysis', **a_spike_analysis) # a_key is collision_prefix
+
+    # # Add in the desired display variable:
+    # active_identifying_ctx = active_identifying_display_ctx.adding_context('filter_epochs', **active_display_fn_kwargs) # , filter_epochs='ripple' ## TODO: this is only right for a single function!
+    
+    final_context = active_identifying_ctx # Display/Variable context mode
+    active_identifying_ctx_string = final_context.get_description(separator='_', include_property_names=True, replace_separator_in_property_names='-') # Get final discription string
+    if debug_print:
+        print(f'active_identifying_ctx_string: "{active_identifying_ctx_string}"')
+        
+        
+# # Finally, add the display function to the active context
+# active_identifying_ctx = active_identifying_filtered_session_ctx.adding_context('display_fn', display_fn_name='figure_format_config_widget')
+# active_identifying_ctx_string = active_identifying_ctx.get_description(separator='|') # Get final discription string:
+# if debug_print:
+#     print(f'active_identifying_ctx_string: {active_identifying_ctx_string}')
+
+
+# + jupyter={"outputs_hidden": false}
+curr_active_pipeline.filtered_contexts
+
+
+# + jupyter={"outputs_hidden": false}
+filter_name = 'maze1'
+a_computation_result = curr_active_pipeline.computation_results[filter_name]
+a_computation_config = a_computation_result.computation_config # DynamicContainer({'pf_params': <PlacefieldComputationParameters: {'speed_thresh': 4, 'grid_bin': (2, 2), 'grid_bin_bounds': (None, None), 'smooth': (0.0, 0.0), 'frate_thresh': 1, 'time_bin_size': 0.03333, 'computation_epochs': None};>, 'spike_analysis': DynamicContainer({'max_num_spikes_per_neuron': 20000, 'kleinberg_parameters': DynamicContainer({'s': 2, 'gamma': 0.2}), 'use_progress_bar': False, 'debug_print': False})})
+
+
+
+# + jupyter={"outputs_hidden": false}
+a_computation_config.diff(other_object={})
+
+
+# + jupyter={"outputs_hidden": false}
+a_pf_params = a_computation_config['pf_params'].__dict__
+# a_pf_params.str_for_attributes_list_display()
+
+a_spike_analysis = a_computation_config['spike_analysis'].to_dict()
+# a_spike_analysis.str_for_attributes_list_display()
+
+
+# + jupyter={"outputs_hidden": false}
+a_spike_analysis.to_dict()
+
+
+# + jupyter={"outputs_hidden": false}
+a_computation_config_context = IdentifyingContext.init_from_dict(a_pf_params.__dict__)
+a_computation_config_context.keypaths()
+
+
+# + jupyter={"outputs_hidden": false}
+# a_computation_config_context = IdentifyingContext.init_from_dict({a_key:a_value for a_key, a_value in a_computation_config.items()})
+
+a_computation_config_context = IdentifyingContext.init_from_dict({a_key:IdentifyingContext.init_from_dict(a_value.__dict__) for a_key, a_value in a_computation_config.items()})
+a_computation_config_context.keypaths()
+a_computation_config_context
+
+
+# + jupyter={"outputs_hidden": false}
+a_computation_config.__dict__
+
+
+# + jupyter={"outputs_hidden": false}
+a_computation_config # DynamicContainer({'pf_params': <PlacefieldComputationParameters: {'speed_thresh': 4, 'grid_bin': (2, 2), 'grid_bin_bounds': (None, None), 'smooth': (0.0, 0.0), 'frate_thresh': 1, 'time_bin_size': 0.03333, 'computation_epochs': None};>, 'spike_analysis': DynamicContainer({'max_num_spikes_per_neuron': 20000, 'kleinberg_parameters': DynamicContainer({'s': 2, 'gamma': 0.2}), 'use_progress_bar': False, 'debug_print': False})})
+
+
+# + jupyter={"outputs_hidden": false}
+# def recursively_dictify(obj):
+#     if isinstance(obj, dict):
+#         for key, value in obj.items():
+#             obj[key] = recursively_dictify(value)
+#         return obj
+#     elif hasattr(obj, '__dict__'):
+#         return recursively_dictify(obj.__dict__)
+#     elif hasattr(obj, '__iter__'):
+#         return [recursively_dictify(v) for v in obj]
+#     else:
+#         return obj
+
+# a_dictified_computation_config = recursively_dictify(a_computation_config)
+# a_dictified_computation_config
+
+
+# + [markdown] jupyter={"outputs_hidden": false}
+# # Test `klepto` for persistance framework:
+
+
+# + jupyter={"outputs_hidden": false}
+import klepto
+from klepto.archives import dir_archive
+
+# dir_archive(
+    
+# Use klepto's `dump` function to save the object to disk
+# klepto.dump(curr_active_pipeline, 'my_custom_object.pkl')
+
+# demo = dir_archive('curr_active_pipeline_test', curr_active_pipeline, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
+
+demo = dir_archive('computation_results', curr_active_pipeline.computation_results, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
+demo
+
+
+# + jupyter={"outputs_hidden": false}
+demo.dump()
+
+
+# + jupyter={"outputs_hidden": false}
+del demo
+
+
+# + jupyter={"outputs_hidden": false}
+global_computation_results = dir_archive('global_computation_results', curr_active_pipeline.global_computation_results, serialized=True)
+global_computation_results.dump()
+
+
+# + jupyter={"outputs_hidden": false}
+# demo is empty, load from disk
+demo = dir_archive('computation_results', {}, serialized=True)
+demo.load() # load from disk
+demo
+
+
+# + jupyter={"outputs_hidden": false}
+# @memoize(keymap=hasher, ignore=('self','**'))
+
+
+
+# + [markdown] jupyter={"outputs_hidden": false}
+# # Other
 
 
 # + jupyter={"outputs_hidden": false} tags=[]
