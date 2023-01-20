@@ -166,7 +166,7 @@ add_PBEs_intervals/remove_PBEs_intervals
 ## Screenshots
 <!-- #endregion -->
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
 ### 3D Interval Rects
 #rectangles #IntervalRectsItem #interval #PBEs #3d #spike3d 
 
@@ -183,7 +183,7 @@ Here you can see many short intervals rendered as cyan rectangles on the floor o
 ![image.png](attachment:dabc70cf-76b1-45b6-b7a0-a3bf785e5391.png)
 <!-- #endregion -->
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## ◽📣 ✅ Testing 2D Rectangle Epochs on Raster Plot
 <!-- #endregion -->
 
@@ -221,7 +221,7 @@ interval_info = active_2d_plot.list_all_rendered_intervals()
 interval_info
 ```
 
-<!-- #region tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## 📣 Programmatically adding several epoch rectangles by calling the addRenderable context menu functions all at once for SpikeRaster2D
 <!-- #endregion -->
 
@@ -232,7 +232,7 @@ for a_command in menu_commands:
     add_renderables_menu[a_command].trigger()    
 ```
 
-<!-- #region tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## ◽📣 Updating Epochs visual appearance
 <!-- #endregion -->
 
@@ -297,7 +297,7 @@ active_2d_plot.update_rendered_intervals_visualization_properties(epochs_update_
 
 ```
 
-<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] jp-MarkdownHeadingCollapsed=true -->
 ### Build Stacked Layout:
 <!-- #endregion -->
 
@@ -308,7 +308,7 @@ stacked_epoch_layout_dict = {interval_key:dict(y_location=y_location, height=hei
 active_2d_plot.update_rendered_intervals_visualization_properties(stacked_epoch_layout_dict)
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## ◽📣 Get list of existing interval rect datasources:
 blah blah
 <!-- #endregion -->
@@ -333,7 +333,7 @@ active_2d_plot.interval_datasources # RenderPlotsData
 active_2d_plot.interval_datasources.PBEs # IntervalsDatasource
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## ◽📣 Update existing interval rects:
 Write a function that takes your existing datasource dataframe and updates its columns.
 <!-- #endregion -->
@@ -433,7 +433,7 @@ stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_view(epoch_slic
 params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
 ```
 
-<!-- #region tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## ◽📣 Removing/Clearing existing interval rects:
 <!-- #endregion -->
 

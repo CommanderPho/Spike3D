@@ -107,18 +107,18 @@ local_session_root_parent_context = IdentifyingContext(format_name=active_data_m
 local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
-# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
-# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 ### Animal `vvp01`:
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
@@ -182,21 +182,23 @@ print('!!! done running batch !!!')
 
 # + tags=["load", "single_session"]
 # %pdb off
-basedir = local_session_paths_list[0] # NOT 3
+basedir = local_session_paths_list[1] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=False, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=False) # temp no-save
 # SAVE AFTERWARDS!
+
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
 
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
 # Load custom-parameters pipeline ('loadedSessPickle_customParams_2023-01-18.pkl'):
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.pickle_path
@@ -208,7 +210,7 @@ curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl')
 
 # + tags=["load", "single_session"]
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import _test_save_pipeline_data_to_h5, load_pipeline_data_from_h5
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import _test_save_pipeline_data_to_h5
 finalized_output_cache_file='./pipeline_cache_store_2023-01-19.h5'
 
 
@@ -218,7 +220,7 @@ finalized_output_cache_file
 
 
 # + tags=["load", "single_session"]
-load_pipeline_data_from_h5(
+
 
 
 # + tags=["load", "single_session"]
@@ -419,12 +421,8 @@ from klepto.archives import dir_archive
 
 # demo = dir_archive('curr_active_pipeline_test', curr_active_pipeline, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
 
-demo = dir_archive('computation_results', curr_active_pipeline.computation_results, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
-demo
-
-
-# + jupyter={"outputs_hidden": false}
-demo.dump()
+computation_results = dir_archive('computation_results', curr_active_pipeline.computation_results, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
+computation_results.dump()
 
 
 # + jupyter={"outputs_hidden": false}
@@ -434,6 +432,12 @@ del demo
 # + jupyter={"outputs_hidden": false}
 global_computation_results = dir_archive('global_computation_results', curr_active_pipeline.global_computation_results, serialized=True)
 global_computation_results.dump()
+
+
+# + jupyter={"outputs_hidden": false}
+curr_active_pipeline
+
+active_configs
 
 
 # + jupyter={"outputs_hidden": false}
@@ -452,12 +456,62 @@ demo
 # # Other
 
 
-# + jupyter={"outputs_hidden": false} tags=[]
-curr_active_pipeline.stage
+# + [markdown] jupyter={"outputs_hidden": false}
+# # Dump the whole pipeline to dir_archive at once:
 
 
 # + jupyter={"outputs_hidden": false}
-curr_active_pipeline.active_configs
+_subfield_value = dir_archive('curr_active_pipeline', curr_active_pipeline.__getstate__(), serialized=True)
+_subfield_value.dump()
+
+
+# + [markdown] jupyter={"outputs_hidden": false}
+# ## Dump the member variables individually (not needed if the above works):
+
+
+# + jupyter={"outputs_hidden": false}
+['computation_results','global_computation_results']
+['active_sess_config','stage','active_configs']
+
+
+# + jupyter={"outputs_hidden": false}
+for a_subfield in ['active_sess_config','active_configs']:
+    print(f"serializing '{a_subfield}'...")
+    # .to_dict()
+    try:
+        _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield), serialized=True)
+    except TypeError:
+         _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield).to_dict(), serialized=True)
+    _subfield_value.dump()
+
+
+# + jupyter={"outputs_hidden": false}
+a_subfield = 'stage'
+print(f"serializing '{a_subfield}'...")
+# .to_dict()
+try:
+    _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield), serialized=True)
+except TypeError:
+     _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield).to_dict(), serialized=True)
+_subfield_value.dump()
+
+
+# + [markdown] jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[]
+# ## Printing/Docs generation
+
+
+# + jupyter={"outputs_hidden": false}
+from pyphocorehelpers.print_helpers import DocumentationFilePrinter, print_keys_if_possible
+# -
+
+
+doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='NeuropyPipeline')
+doc_printer.save_documentation('NeuropyPipeline', curr_active_pipeline, non_expanded_item_keys=['stage','_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger', 'plot', '_plot_object'],
+                               additional_excluded_item_classes=["<class 'pyphoplacecellanalysis.General.Pipeline.Stages.Display.Plot'>"], max_depth=0) # 'Logger'
+
+
+# + jupyter={"outputs_hidden": false}
+str(type(curr_active_pipeline.plot))
 
 
 # + jupyter={"outputs_hidden": false}
@@ -481,7 +535,13 @@ print_keys_if_possible('computation_config', curr_active_pipeline.computation_re
 debug_dump_object_member_shapes(curr_active_pipeline.computation_results['maze1'].computation_config)
 
 # + jupyter={"outputs_hidden": false}
-document_active_variables(curr_active_pipeline.computation_results['maze1'].computation_config, enable_print=True)
+print(list(curr_active_pipeline.__dict__.keys())) # ['pipeline_name', 'session_data_type', '_stage', '_logger', '_persistance_state', '_plot_object']
+
+# + jupyter={"outputs_hidden": false}
+print_keys_if_possible('
+
+# + jupyter={"outputs_hidden": false}
+document_active_variables(curr_active_pipeline, enable_print=True)
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.computation_results['maze1'].computation_config.pf_params
@@ -2442,20 +2502,52 @@ from pandas_profiling import ProfileReport
 
 # +
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import KnownFilterEpochs
+from PendingNotebookCode import find_epoch_names
+
+long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
+long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
+short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
+global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
 
 long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
 # long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
 # long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
 
-min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
-# active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
+# curr_active_pipeline.active_configs['maze'].co
+decoding_time_bin_size = 0.000001
 # -
 
-# %pdb on
-long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=min_epoch_included_duration)
+min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
+# active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
+
+# +
+def build_labels_if_empty(df):
+    print(f"df: {df}")
+    if np.alltrue([(str(a_lbl)=='') for a_lbl in df['label']]):
+        df['label'] = [str(an_idx) for an_idx in df.index] # regular str label
+        # df = df.reset_index(drop=True) # do we need this for some reason?
+        df['integer_label'] = [int(float(an_idx)) for an_idx in df.index] # integer_label label
+        print(f'labels were missing. Adding "label" and "integer_label".')
+    else:
+        print(f"df['label']: {df['label']}")
+    return df
+
+short_session.ripple._df = build_labels_if_empty(short_session.ripple.to_dataframe())
+# -
+
+short_session.ripple._df.epochs.get_valid_df()
+
+external_computed_ripple_df['label'] = [str(an_idx) for an_idx in external_computed_ripple_df.index]
+external_computed_ripple_df = external_computed_ripple_df.reset_index(drop=True)
+
+# %pdb off
+long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None)
 long_replay_df
 
-long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.PBE.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=min_epoch_included_duration) for a_session in [long_session, short_session, global_session]]
+long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=min_epoch_included_duration, debug_print=True) for a_session in [long_session, short_session, global_session]]
+
+global_replay_df
 
 # active_firing_rate_trends = computation_result.computed_data['firing_rate_trends']
 #
