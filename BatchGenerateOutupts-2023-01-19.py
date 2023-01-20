@@ -419,10 +419,55 @@ from klepto.archives import dir_archive
 # Use klepto's `dump` function to save the object to disk
 # klepto.dump(curr_active_pipeline, 'my_custom_object.pkl')
 
-# demo = dir_archive('curr_active_pipeline_test', curr_active_pipeline, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
+_subfield_value = dir_archive('curr_active_pipeline', curr_active_pipeline.__getstate__(), serialized=True)
+_subfield_value.dump()
 
-computation_results = dir_archive('computation_results', curr_active_pipeline.computation_results, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
-computation_results.dump()
+# computation_results = dir_archive('computation_results', curr_active_pipeline.computation_results, serialized=True) # TypeError: 'NeuropyPipeline' object is not iterable
+# computation_results.dump()
+
+
+# + [markdown] jupyter={"outputs_hidden": false} tags=[] jp-MarkdownHeadingCollapsed=true
+# ### Dump the whole pipeline to dir_archive at once:
+
+
+# + jupyter={"outputs_hidden": false}
+_subfield_value = dir_archive('curr_active_pipeline', curr_active_pipeline.__getstate__(), serialized=True)
+_subfield_value.dump()
+
+
+# + [markdown] jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[]
+# ### Dump the member variables individually (not needed if the above works):
+
+
+# + jupyter={"outputs_hidden": false}
+['computation_results','global_computation_results']
+['active_sess_config','stage','active_configs']
+
+
+# + jupyter={"outputs_hidden": false}
+for a_subfield in ['active_sess_config','active_configs']:
+    print(f"serializing '{a_subfield}'...")
+    # .to_dict()
+    try:
+        _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield), serialized=True)
+    except TypeError:
+         _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield).to_dict(), serialized=True)
+    _subfield_value.dump()
+
+
+# + jupyter={"outputs_hidden": false}
+a_subfield = 'stage'
+print(f"serializing '{a_subfield}'...")
+# .to_dict()
+try:
+    _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield), serialized=True)
+except TypeError:
+     _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield).to_dict(), serialized=True)
+_subfield_value.dump()
+
+
+# + jupyter={"outputs_hidden": false}
+
 
 
 # + jupyter={"outputs_hidden": false}
@@ -452,48 +497,8 @@ demo
 
 
 
-# + [markdown] jupyter={"outputs_hidden": false}
+# + [markdown] jupyter={"outputs_hidden": false} tags=[] jp-MarkdownHeadingCollapsed=true
 # # Other
-
-
-# + [markdown] jupyter={"outputs_hidden": false}
-# # Dump the whole pipeline to dir_archive at once:
-
-
-# + jupyter={"outputs_hidden": false}
-_subfield_value = dir_archive('curr_active_pipeline', curr_active_pipeline.__getstate__(), serialized=True)
-_subfield_value.dump()
-
-
-# + [markdown] jupyter={"outputs_hidden": false}
-# ## Dump the member variables individually (not needed if the above works):
-
-
-# + jupyter={"outputs_hidden": false}
-['computation_results','global_computation_results']
-['active_sess_config','stage','active_configs']
-
-
-# + jupyter={"outputs_hidden": false}
-for a_subfield in ['active_sess_config','active_configs']:
-    print(f"serializing '{a_subfield}'...")
-    # .to_dict()
-    try:
-        _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield), serialized=True)
-    except TypeError:
-         _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield).to_dict(), serialized=True)
-    _subfield_value.dump()
-
-
-# + jupyter={"outputs_hidden": false}
-a_subfield = 'stage'
-print(f"serializing '{a_subfield}'...")
-# .to_dict()
-try:
-    _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield), serialized=True)
-except TypeError:
-     _subfield_value = dir_archive(a_subfield, getattr(curr_active_pipeline, a_subfield).to_dict(), serialized=True)
-_subfield_value.dump()
 
 
 # + [markdown] jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[]
@@ -2514,7 +2519,7 @@ long_session, short_session, global_session = [curr_active_pipeline.filtered_ses
 # long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
 
 # curr_active_pipeline.active_configs['maze'].co
-decoding_time_bin_size = 0.000001
+decoding_time_bin_size = 0.001
 # -
 
 min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
@@ -2541,23 +2546,30 @@ external_computed_ripple_df['label'] = [str(an_idx) for an_idx in external_compu
 external_computed_ripple_df = external_computed_ripple_df.reset_index(drop=True)
 
 # %pdb off
-long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-# long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None)
+
+# long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
 long_replay_df
 
-long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=min_epoch_included_duration, debug_print=True) for a_session in [long_session, short_session, global_session]]
+long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
 
 global_replay_df
 
+long_results.
+
+# +
+computed_data = long_results
 # active_firing_rate_trends = computation_result.computed_data['firing_rate_trends']
-#
-# active_rolling_window_times = active_firing_rate_trends['active_rolling_window_times']
-# mean_firing_rates = active_firing_rate_trends['mean_firing_rates']
-# moving_mean_firing_rates_df = active_firing_rate_trends['moving_mean_firing_rates_df']
-# # moving_mean_firing_rates_df # 3969 rows x 43 columns
-# # mean_firing_rates
-# # pg.plot(mean_firing_rates)
-# # np.shape(moving_mean_firing_rates_df) # (3969, 43)
-# good_only_moving_mean_firing_rates_df = moving_mean_firing_rates_df.dropna() # 3910 rows x 43 columns
+active_firing_rate_trends = computed_data['firing_rate_trends']
+
+active_rolling_window_times = active_firing_rate_trends['active_rolling_window_times']
+mean_firing_rates = active_firing_rate_trends['mean_firing_rates']
+moving_mean_firing_rates_df = active_firing_rate_trends['moving_mean_firing_rates_df']
+# moving_mean_firing_rates_df # 3969 rows x 43 columns
+# mean_firing_rates
+# pg.plot(mean_firing_rates)
+# np.shape(moving_mean_firing_rates_df) # (3969, 43)
+good_only_moving_mean_firing_rates_df = moving_mean_firing_rates_df.dropna() # 3910 rows x 43 columns
+# -
 
 #
