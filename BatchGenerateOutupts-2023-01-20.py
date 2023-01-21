@@ -2640,3 +2640,13 @@ from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
 # print(f'x_frs_index: {x_frs_index}, y_frs_index: {y_frs_index}')
 
 
+
+# # 🔜✳️🐞🔟 2023-01-20 - NeuropyPipeline pickling issues and potential solution
+#
+# See "C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\DEVELOPER_NOTES\2023-01-20 pickling errors" folder
+#
+# and 
+#
+# obsidian://open?vault=PhoGlobalObsidian2022&file=DailyObsidianLog%2F%F0%9F%94%9C%E2%9C%B3%EF%B8%8F%F0%9F%90%9E%F0%9F%94%9F%20NeuropyPipeline%20pickling%20issues%20-%202023-01-20
+
+
