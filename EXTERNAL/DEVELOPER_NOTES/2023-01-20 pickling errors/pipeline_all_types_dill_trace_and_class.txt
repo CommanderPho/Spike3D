@@ -1,0 +1,103 @@
++- T4: <class 'pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline.NeuropyPipeline'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline.NeuropyPipeline
+|+- T4: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.Display.DisplayPipelineStage'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.Display.DisplayPipelineStage
+||+- T4: <class 'pathlib.WindowsPath'> 	|||||		 pathlib.WindowsPath
+|||+- T4: <class 'neuropy.core.session.dataSession.DataSession'> 	|||||		 neuropy.core.session.dataSession.DataSession
+||||+- T4: <class 'neuropy.core.session.Formats.SessionSpecifications.SessionConfig'> 	|||||		 neuropy.core.session.Formats.SessionSpecifications.SessionConfig
+|||||+- T4: <class 'neuropy.core.session.Formats.SessionSpecifications.SessionFolderSpec'> 	|||||		 neuropy.core.session.Formats.SessionSpecifications.SessionFolderSpec
+||||||+- T4: <class 'neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec'> 	|||||		 neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_xml_file of <class 'neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass'> 	|||||		 neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass
+||||||||+- T1: <class 'method'> 	|||||		 method
+||||||||+- T4: <class 'neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass'> 	|||||		 neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_eegfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+||||||||+- T4: <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_datfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+|||||+- T4: <class 'neuropy.utils.result_context.IdentifyingContext'> 	|||||		 neuropy.utils.result_context.IdentifyingContext
+||||+- T4: <class 'neuropy.io.neuroscopeio.NeuroscopeIO'> 	|||||		 neuropy.io.neuroscopeio.NeuroscopeIO
+||||||+- T4: <class 'numpy.ndarray'> 	|||||		 numpy.ndarray
+||||||+- T4: <class 'numpy.dtype'> 	|||||		 numpy.dtype
+||||+- T4: <class 'neuropy.io.binarysignalio.BinarysignalIO'> 	|||||		 neuropy.io.binarysignalio.BinarysignalIO
+||||+- T4: <class 'neuropy.core.neurons.Neurons'> 	|||||		 neuropy.core.neurons.Neurons
+||||+- T4: <class 'neuropy.core.position.Position'> 	|||||		 neuropy.core.position.Position
+|||||+- T4: <class 'pandas.core.frame.DataFrame'> 	|||||		 pandas.core.frame.DataFrame
+||||||+- T4: <class 'pandas.core.internals.managers.BlockManager'> 	|||||		 pandas.core.internals.managers.BlockManager
+|||||||+- T1: <class 'slice'> 	|||||		 slice
+||||||+- T4: <class 'pandas.core.indexes.base.Index'> 	|||||		 pandas.core.indexes.base.Index
+||||||+- T4: <class 'pandas.core.indexes.numeric.Int64Index'> 	|||||		 pandas.core.indexes.numeric.Int64Index
+||||+- T4: <class 'neuropy.core.epoch.Epoch'> 	|||||		 neuropy.core.epoch.Epoch
+||||+- T4: <class 'neuropy.core.neurons.Mua'> 	|||||		 neuropy.core.neurons.Mua
+||||+- T4: <class 'neuropy.core.laps.Laps'> 	|||||		 neuropy.core.laps.Laps
+||||+- T4: <class 'neuropy.core.flattened_spiketrains.FlattenedSpiketrains'> 	|||||		 neuropy.core.flattened_spiketrains.FlattenedSpiketrains
+||||||+- T4: <class 'pandas.core.indexes.range.RangeIndex'> 	|||||		 pandas.core.indexes.range.RangeIndex
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_xml_file of <class 'neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass'> 	|||||		 neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_eegfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_datfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+||||||+- T4: <class 'pandas.core.arrays.categorical.Categorical'> 	|||||		 pandas.core.arrays.categorical.Categorical
+||||||+- T4: <class 'pandas.core.dtypes.dtypes.CategoricalDtype'> 	|||||		 pandas.core.dtypes.dtypes.CategoricalDtype
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_xml_file of <class 'neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass'> 	|||||		 neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_eegfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_datfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_xml_file of <class 'neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass'> 	|||||		 neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat.KDibaOldDataSessionFormatRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_eegfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+|||||||+- Me1: <bound method DataSessionFormatBaseRegisteredClass._load_datfile of <class 'neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass'> 	|||||		 neuropy.core.session.Formats.BaseDataSessionFormats.DataSessionFormatBaseRegisteredClass
+|||+- T4: <class 'neuropy.core.epoch.NamedTimerange'> 	|||||		 neuropy.core.epoch.NamedTimerange
+||+- T4: <class 'pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters'> 	|||||		 pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+|||+- T4: <class 'pyphoplacecellanalysis.General.Configs.DynamicConfigs.InteractivePlaceCellConfig'> 	|||||		 pyphoplacecellanalysis.General.Configs.DynamicConfigs.InteractivePlaceCellConfig
+|||||+- T4: <class 'pyphoplacecellanalysis.General.Configs.DynamicConfigs.VideoOutputModeConfig'> 	|||||		 pyphoplacecellanalysis.General.Configs.DynamicConfigs.VideoOutputModeConfig
+|||||+- T4: <class 'pyphoplacecellanalysis.General.Configs.DynamicConfigs.PlottingConfig'> 	|||||		 pyphoplacecellanalysis.General.Configs.DynamicConfigs.PlottingConfig
+|||||||+- T4: <class 'neuropy.core.neuron_identities.NeuronIdentity'> 	|||||		 neuropy.core.neuron_identities.NeuronIdentity
+|||||||+- T4: <class 'matplotlib.colors.ListedColormap'> 	|||||		 matplotlib.colors.ListedColormap
+|||||+- T4: <class 'neuropy.utils.dynamic_container.DynamicContainer'> 	|||||		 neuropy.utils.dynamic_container.DynamicContainer
+|||||||+- T4: <class 'neuropy.analyses.placefields.PlacefieldComputationParameters'> 	|||||		 neuropy.analyses.placefields.PlacefieldComputationParameters
+|||+- T4: <class 'pyphoplacecellanalysis.General.Model.ComputationResults.ComputationResult'> 	|||||		 pyphoplacecellanalysis.General.Model.ComputationResults.ComputationResult
+|||||||+- T4: <class 'neuropy.analyses.placefields.PfND'> 	|||||		 neuropy.analyses.placefields.PfND
+||||||||+- T4: <class 'neuropy.core.ratemap.Ratemap'> 	|||||		 neuropy.core.ratemap.Ratemap
+|||||||||+- T6: <class 'neuropy.core.neuron_identities.NeuronExtendedIdentityTuple'> 	|||||		 neuropy.core.neuron_identities.NeuronExtendedIdentityTuple
+|||||||+- T4: <class 'neuropy.analyses.time_dependent_placefields.PfND_TimeDependent'> 	|||||		 neuropy.analyses.time_dependent_placefields.PfND_TimeDependent
+||||||||+- T4: <class 'collections.OrderedDict'> 	|||||		 collections.OrderedDict
+||||||||+- T4: <class 'neuropy.analyses.time_dependent_placefields.PlacefieldSnapshot'> 	|||||		 neuropy.analyses.time_dependent_placefields.PlacefieldSnapshot
+|||||||+- T4: <class 'pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BayesianPlacemapPositionDecoder'> 	|||||		 pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BayesianPlacemapPositionDecoder
+||||||||+- T4: <class 'neuropy.utils.mixins.binning_helpers.BinningContainer'> 	|||||		 neuropy.utils.mixins.binning_helpers.BinningContainer
+|||||||||+- T4: <class 'neuropy.utils.mixins.binning_helpers.BinningInfo'> 	|||||		 neuropy.utils.mixins.binning_helpers.BinningInfo
+|||||||||||+- T2: <class 'findpeaks.findpeaks.findpeaks'> 	|||||		 findpeaks.findpeaks.findpeaks
+||||||||||||+- T1: <class 'type'> 	|||||		 type
+||||||||||||+- T1: <class 'object'> 	|||||		 object
+||||||||||||||+- T4: <class 'matplotlib.colors.LinearSegmentedColormap'> 	|||||		 matplotlib.colors.LinearSegmentedColormap
+||||||||||||+- T4: <class '_frozen_importlib_external.SourceFileLoader'> 	|||||		 _frozen_importlib_external.SourceFileLoader
+||||||||||||+- T4: <class '_frozen_importlib.ModuleSpec'> 	|||||		 _frozen_importlib.ModuleSpec
+||||||||||||||+- T4: <class 'scipy._lib.deprecation._DeprecationHelperStr'> 	|||||		 scipy._lib.deprecation._DeprecationHelperStr
+||||||||||||+- T2: <class 'caerus.caerus.caerus'> 	|||||		 caerus.caerus.caerus
+|||||||||||||+- T4: <class 'tqdm.std.tqdm'> 	|||||		 tqdm.std.tqdm
+|||||||||||+- T4: <class 'pandas.core.series.Series'> 	|||||		 pandas.core.series.Series
+||||||||||||+- T4: <class 'pandas.core.internals.managers.SingleBlockManager'> 	|||||		 pandas.core.internals.managers.SingleBlockManager
+|||||||||+- T4: <class 'pandas.core.resample.TimedeltaIndexResampler'> 	|||||		 pandas.core.resample.TimedeltaIndexResampler
+||||||||||+- T4: <class 'pandas.core.resample.TimeGrouper'> 	|||||		 pandas.core.resample.TimeGrouper
+|||||||||||+- T4: <class 'pandas._libs.tslibs.offsets.Micro'> 	|||||		 pandas._libs.tslibs.offsets.Micro
+|||||||||||+- T4: <class 'pandas.core.indexes.timedeltas.TimedeltaIndex'> 	|||||		 pandas.core.indexes.timedeltas.TimedeltaIndex
+||||||||||||+- T4: <class 'pandas.core.arrays.timedeltas.TimedeltaArray'> 	|||||		 pandas.core.arrays.timedeltas.TimedeltaArray
+||||||||||+- T4: <class 'pandas.core.groupby.ops.BinGrouper'> 	|||||		 pandas.core.groupby.ops.BinGrouper
+||||||||||||+- T4: <class 'pandas._libs.tslibs.offsets.Minute'> 	|||||		 pandas._libs.tslibs.offsets.Minute
+||||||||||||+- T4: <class 'pyphocorehelpers.indexing_helpers.BinningInfo'> 	|||||		 pyphocorehelpers.indexing_helpers.BinningInfo
+|||||||||||+- T4: <class 'neo.core.analogsignal.AnalogSignal'> 	|||||		 neo.core.analogsignal.AnalogSignal
+|||||||||||+- T4: <class 'quantities.quantity.Quantity'> 	|||||		 quantities.quantity.Quantity
+|||||||||||+- T4: <class 'quantities.dimensionality.Dimensionality'> 	|||||		 quantities.dimensionality.Dimensionality
+|||||||||||+- T4: <class 'quantities.unitquantity.UnitQuantity'> 	|||||		 quantities.unitquantity.UnitQuantity
+|||||||||||+- T4: <class 'quantities.unitquantity.UnitTime'> 	|||||		 quantities.unitquantity.UnitTime
+|||||||||||+- T4: <class 'neo.core.dataobject.ArrayDict'> 	|||||		 neo.core.dataobject.ArrayDict
+|||||||||||+- T1: <class 'dict'> 	|||||		 dict
+|||+- T4: <class 'pyphocorehelpers.mixins.member_enumerating.AllFunctionEnumeratingMixin'> 	|||||		 pyphocorehelpers.mixins.member_enumerating.AllFunctionEnumeratingMixin
+|||+- T2: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ComputationFunctionRegistryHolder.ComputationFunctionRegistryHolder'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ComputationFunctionRegistryHolder.ComputationFunctionRegistryHolder
+||||+- T4: <class 'pyphocorehelpers.mixins.auto_registering.RegistryHolder'> 	|||||		 pyphocorehelpers.mixins.auto_registering.RegistryHolder
+|||||||+- T1: <class 'str'> 	|||||		 str
+|||||||+- T4: <class 'typing.ForwardRef'> 	|||||		 typing.ForwardRef
+||||||+- T2: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions.DefaultComputationFunctions'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions.DefaultComputationFunctions
+|||||||+- T4: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ComputationFunctionRegistryHolder.ComputationFunctionRegistryHolder'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ComputationFunctionRegistryHolder.ComputationFunctionRegistryHolder
+|||||||||||+- T1: <class 'int'> 	|||||		 int
+||||||+- T2: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.PlacefieldComputations.PlacefieldComputations'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.PlacefieldComputations.PlacefieldComputations
+||||||+- T2: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.PlacefieldDensityAnalysisComputationFunctions.PlacefieldDensityAnalysisComputationFunctions'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.PlacefieldDensityAnalysisComputationFunctions.PlacefieldDensityAnalysisComputationFunctions
+||||||+- T4: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions
+||||||+- T4: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ExtendedStats.ExtendedStatsComputations'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.ExtendedStats.ExtendedStatsComputations
+||||||+- T4: <class 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis.SpikeAnalysisComputations'> 	|||||		 pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis.SpikeAnalysisComputations
+||||||+- T1: <class 'classmethod'> 	|||||		 classmethod
+||||+- T4: <class 'pyphoplacecellanalysis.Analysis.Decoder.reconstruction.Zhang_Two_Step'> 	|||||		 pyphoplacecellanalysis.Analysis.Decoder.reconstruction.Zhang_Two_Step
+|||||+- T4: <class 'enum.EnumMeta'> 	|||||		 enum.EnumMeta
+|||||||+- T1: <class 'property'> 	|||||		 property

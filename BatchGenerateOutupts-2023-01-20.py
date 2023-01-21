@@ -2609,7 +2609,7 @@ from neuropy.core import Epoch
 # long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
 
 # +
-from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies
+from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies, plot_long_short_firing_rate_indicies
 
 spikes_df = curr_active_pipeline.sess.spikes_df
 long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
@@ -2621,30 +2621,22 @@ long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filter
 x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path='temp_2023-01-20_results.pkl')
 # -
 from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
-# +
-# 
-# [spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays]
-
-backup_dict = dict(zip(['spikes_df', 'long_laps', 'short_laps', 'global_laps', 'long_replays', 'short_replays', 'global_replays'], [spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays]))
-# -
-backup_results_dict = dict(zip(['long_mean_laps_frs', 'long_mean_replays_frs'], [long_mean_laps_frs, long_mean_replays_frs]))
-saveData('temp_2023-01-20_results.pkl', backup_results_dict)
-backup_results_dict = dict(zip(['long_mean_laps_frs', 'long_mean_replays_frs', 'short_mean_laps_frs', 'short_mean_replays_frs'], [long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs]))
-saveData('temp_2023-01-20_results.pkl', backup_results_dict)
-saveData('temp_2023-01-20.pkl', backup_dict)
 # Load previously computed from data:
 long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs, x_frs_index, y_frs_index = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\data\temp_2023-01-20_results_final.pkl").values()
+# +
 # Plot long|short firing rate index:
 # %matplotlib qt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-plt.scatter(x_frs_index.values(), y_frs_index.values())
-plt.xlabel('$\\frac{L_{R}-S_{R}}{L_{R} + S_{R}}$', fontsize=16)
-plt.ylabel('$\\frac{L_{\\theta}-S_{\\theta}}{L_{\\theta} + S_{\\theta}}$', fontsize=16)
-plt.title('Computed long ($L$)|short($S$) firing rate indicies')
-# +
+from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
 
-# print(f'x_frs_index: {x_frs_index}, y_frs_index: {y_frs_index}')
+plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index)
+# plt.scatter(x_frs_index.values(), y_frs_index.values())
+# plt.xlabel('$\\frac{L_{R}-S_{R}}{L_{R} + S_{R}}$', fontsize=16)
+# plt.ylabel('$\\frac{L_{\\theta}-S_{\\theta}}{L_{\\theta} + S_{\\theta}}$', fontsize=16)
+# plt.title('Computed long ($L$)|short($S$) firing rate indicies')
 # -
+from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
+# print(f'x_frs_index: {x_frs_index}, y_frs_index: {y_frs_index}')
 
 
