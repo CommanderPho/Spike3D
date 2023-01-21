@@ -189,11 +189,11 @@ print(f'basedir: {str(basedir)}')
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=False, skip_extended_batch_computations=False)
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
+# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=False) # temp no-save
 # SAVE AFTERWARDS!
 
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
 
 # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
@@ -202,6 +202,46 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.pickle_path
+
+# + tags=["load", "single_session"]
+global_data_root_parent_path.joinpath('loadedSessPickle.pkl')
+
+# + tags=["load", "single_session"]
+import dill as pickle # requires mamba install dill -c conda-forge
+import dill.detect
+# from dill import detect
+dill.detect.trace(True)
+ignore=False
+
+import dill.settings
+dumps(absolute) == dumps(absolute, recurse=True)
+False
+dill.settings['recurse'] = True
+dumps(absolute) == dumps(absolute, recurse=True)
+True
+
+
+# + tags=["load", "single_session"]
+pickle_log_file = 'pickle_log_2023-01-20_ignore_false.md'
+with dill.detect.trace(pickle_log_file, mode='w') as log:
+    log("> curr_active_pipeline = %r", curr_active_pipeline)
+    dill.dumps(curr_active_pipeline, ignore=False)
+    # undill
+    # log('done')
+    # log("> squared = %r", squared)
+    # dumps(squared)
+
+# + tags=["load", "single_session"]
+pickle_log_file = 'pickle_log_2023-01-20_subtypes.md'
+with dill.detect.trace(pickle_log_file, mode='w') as log:
+    log("> curr_active_pipeline = %r", curr_active_pipeline)
+    dill.dumps(curr_active_pipeline, ignore=False)
+
+# + tags=["load", "single_session"]
+pickle_log_file = 'pickle_log_2023-01-20_badtypes.md'
+with dill.detect.trace(pickle_log_file, mode='w') as log:
+    log("> curr_active_pipeline = %r", curr_active_pipeline)
+    # log("> BADTYPES = %r", dill.detect.badtypes(curr_active_pipeline))
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
@@ -227,7 +267,7 @@ finalized_output_cache_file
 # IDEA: Convert the computation configs into a context.
 
 
-# + [markdown] tags=["load", "single_session"] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=["load", "single_session"] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## Computing with custom computation config:
 
 # + jupyter={"outputs_hidden": false}
@@ -303,7 +343,7 @@ curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN
 batch_extended_computations(curr_active_pipeline, include_global_functions=False, fail_on_exception=True, progress_print=True, debug_print=False)
 
 
-# + [markdown] jupyter={"outputs_hidden": false}
+# + [markdown] jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[]
 # # Test getting FULL context from pipeline
 
 
@@ -2553,37 +2593,58 @@ short_session.ripple._df.epochs.get_valid_df()
 external_computed_ripple_df['label'] = [str(an_idx) for an_idx in external_computed_ripple_df.index]
 external_computed_ripple_df = external_computed_ripple_df.reset_index(drop=True)
 
+long_session.replay
+
+from neuropy.core import Epoch
+
 # %pdb off
 
-# long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-long_replay_df
+# + tags=["BROKEN"]
 
-long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
+# # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# long_replay_df
 
-global_replay_df
-
-long_results.
-
-# +
-computed_data = long_results
-# active_firing_rate_trends = computation_result.computed_data['firing_rate_trends']
-active_firing_rate_trends = computed_data['firing_rate_trends']
-
-active_rolling_window_times = active_firing_rate_trends['active_rolling_window_times']
-mean_firing_rates = active_firing_rate_trends['mean_firing_rates']
-moving_mean_firing_rates_df = active_firing_rate_trends['moving_mean_firing_rates_df']
-# moving_mean_firing_rates_df # 3969 rows x 43 columns
-# mean_firing_rates
-# pg.plot(mean_firing_rates)
-# np.shape(moving_mean_firing_rates_df) # (3969, 43)
-good_only_moving_mean_firing_rates_df = moving_mean_firing_rates_df.dropna() # 3910 rows x 43 columns
+# + tags=["BROKEN"]
+# long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
 
 # +
 from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies
 
-spikes_df = curr_active_pipeline.
-x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays)
+spikes_df = curr_active_pipeline.sess.spikes_df
+long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
+
+# backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
+# spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
+
+x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path='temp_2023-01-20_results.pkl')
+# -
+from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
+# +
+# 
+# [spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays]
+
+backup_dict = dict(zip(['spikes_df', 'long_laps', 'short_laps', 'global_laps', 'long_replays', 'short_replays', 'global_replays'], [spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays]))
+# -
+backup_results_dict = dict(zip(['long_mean_laps_frs', 'long_mean_replays_frs'], [long_mean_laps_frs, long_mean_replays_frs]))
+saveData('temp_2023-01-20_results.pkl', backup_results_dict)
+backup_results_dict = dict(zip(['long_mean_laps_frs', 'long_mean_replays_frs', 'short_mean_laps_frs', 'short_mean_replays_frs'], [long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs]))
+saveData('temp_2023-01-20_results.pkl', backup_results_dict)
+saveData('temp_2023-01-20.pkl', backup_dict)
+# Load previously computed from data:
+long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs, x_frs_index, y_frs_index = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\data\temp_2023-01-20_results_final.pkl").values()
+# Plot long|short firing rate index:
+# %matplotlib qt
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+plt.scatter(x_frs_index.values(), y_frs_index.values())
+plt.xlabel('$\\frac{L_{R}-S_{R}}{L_{R} + S_{R}}$', fontsize=16)
+plt.ylabel('$\\frac{L_{\\theta}-S_{\\theta}}{L_{\\theta} + S_{\\theta}}$', fontsize=16)
+plt.title('Computed long ($L$)|short($S$) firing rate indicies')
+# +
+
+# print(f'x_frs_index: {x_frs_index}, y_frs_index: {y_frs_index}')
 # -
 
 
