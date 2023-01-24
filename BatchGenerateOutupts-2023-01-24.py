@@ -107,13 +107,13 @@ local_session_root_parent_context = IdentifyingContext(format_name=active_data_m
 local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 ### Animal `vvp01`:
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
@@ -380,6 +380,7 @@ batch_extended_computations(curr_active_pipeline, include_global_functions=False
 
 # + [markdown] jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[]
 # # Test getting FULL context from pipeline
+# 2023-01-24 - TODO: either add a decorator that declares each set of parameters (computation params, filter params, session, etc) as a context-adhering class (basically dict-convertable) or refactor
 
 
 # + jupyter={"outputs_hidden": false}
@@ -2595,6 +2596,7 @@ from pandas_profiling import ProfileReport
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import KnownFilterEpochs
 from PendingNotebookCode import find_epoch_names
 
+active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
 long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
 long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
 short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
@@ -2606,47 +2608,17 @@ long_session, short_session, global_session = [curr_active_pipeline.filtered_ses
 
 # curr_active_pipeline.active_configs['maze'].co
 decoding_time_bin_size = 0.001
-# -
 
 min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
 # active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
 
+active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
+temp_save_filename = f'{active_context.get_description()}_results.pkl'
+temp_fig_filename = f'{active_context.get_description()}.png'
+print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
+
 # +
-def build_labels_if_empty(df):
-    print(f"df: {df}")
-    if np.alltrue([(str(a_lbl)=='') for a_lbl in df['label']]):
-        df['label'] = [str(an_idx) for an_idx in df.index] # regular str label
-        # df = df.reset_index(drop=True) # do we need this for some reason?
-        df['integer_label'] = [int(float(an_idx)) for an_idx in df.index] # integer_label label
-        print(f'labels were missing. Adding "label" and "integer_label".')
-    else:
-        print(f"df['label']: {df['label']}")
-    return df
-
-short_session.ripple._df = build_labels_if_empty(short_session.ripple.to_dataframe())
-# -
-
-short_session.ripple._df.epochs.get_valid_df()
-
-external_computed_ripple_df['label'] = [str(an_idx) for an_idx in external_computed_ripple_df.index]
-external_computed_ripple_df = external_computed_ripple_df.reset_index(drop=True)
-
-long_session.replay
-
 from neuropy.core import Epoch
-
-# %pdb off
-
-# + tags=["BROKEN"]
-
-# # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-# long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-# long_replay_df
-
-# + tags=["BROKEN"]
-# long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
-
-# +
 from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies, plot_long_short_firing_rate_indicies
 
 spikes_df = curr_active_pipeline.sess.spikes_df
@@ -2656,11 +2628,7 @@ long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filter
 # backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
 # spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
 
-x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path='temp_2023-01-20_results.pkl')
-# -
-from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
-# Load previously computed from data:
-long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs, x_frs_index, y_frs_index = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\data\temp_2023-01-20_results_final.pkl").values()
+x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
 # +
 # Plot long|short firing rate index:
 # %matplotlib qt
@@ -2673,12 +2641,60 @@ plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index)
 # plt.xlabel('$\\frac{L_{R}-S_{R}}{L_{R} + S_{R}}$', fontsize=16)
 # plt.ylabel('$\\frac{L_{\\theta}-S_{\\theta}}{L_{\\theta} + S_{\\theta}}$', fontsize=16)
 # plt.title('Computed long ($L$)|short($S$) firing rate indicies')
+# active_identifying_session_ctx.get_description(separator='/')
+plt.suptitle(f'{active_identifying_session_ctx.get_description(separator="/")}')
+fig = plt.gcf()
+fig.savefig(fname=temp_fig_filename, transparent=True)
 # -
-from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
-# print(f'x_frs_index: {x_frs_index}, y_frs_index: {y_frs_index}')
+# # Other experimentation:
+# + [markdown] tags=["BROKEN"]
+# from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
+#
+# figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
+# active_session_figures_out_path = session_context_to_relative_path(figures_parent_out_path, active_identifying_session_ctx)
+# print(f'curr_session_parent_out_path: {active_session_figures_out_path}')
+# active_session_figures_out_path.mkdir(parents=True, exist_ok=True) # make folder if needed
+#
+# active_session_figures_out_path.joinpath()
 
+# + [markdown] tags=["BROKEN"]
+# def build_labels_if_empty(df):
+#     print(f"df: {df}")
+#     if np.alltrue([(str(a_lbl)=='') for a_lbl in df['label']]):
+#         df['label'] = [str(an_idx) for an_idx in df.index] # regular str label
+#         # df = df.reset_index(drop=True) # do we need this for some reason?
+#         df['integer_label'] = [int(float(an_idx)) for an_idx in df.index] # integer_label label
+#         print(f'labels were missing. Adding "label" and "integer_label".')
+#     else:
+#         print(f"df['label']: {df['label']}")
+#     return df
+#
+# short_session.ripple._df = build_labels_if_empty(short_session.ripple.to_dataframe())
+#
+# short_session.ripple._df.epochs.get_valid_df()
+#
+# external_computed_ripple_df['label'] = [str(an_idx) for an_idx in external_computed_ripple_df.index]
+# external_computed_ripple_df = external_computed_ripple_df.reset_index(drop=True)
+#
+# long_session.replay
+#
+# # # %pdb off
+#
+#
+# # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# # long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# # long_replay_df
+#
+# # long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
+#
+# str(curr_active_pipeline.active_sess_config.get_context())
+#
+# create_daily_programmatic_display_function_testing_folder_if_needed
+# -
 
-
+from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
+# Load previously computed from data:
+long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs, x_frs_index, y_frs_index = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\data\temp_2023-01-20_results_final.pkl").values()
 # # 🔜✳️🐞🔟 2023-01-20 - NeuropyPipeline pickling issues and potential solution
 #
 # See "C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\DEVELOPER_NOTES\2023-01-20 pickling errors" folder
