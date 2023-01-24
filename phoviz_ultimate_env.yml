@@ -1,8 +1,4 @@
 channels:
-  - pytorch
-  - plotly
-  - nixtla
-  - pyviz
   - conda-forge
   - defaults
 dependencies:
