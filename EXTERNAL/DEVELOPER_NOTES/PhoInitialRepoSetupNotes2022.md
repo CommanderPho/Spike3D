@@ -37,7 +37,8 @@ mamba install ipython ipykernel pyscaffold pyscaffoldext-dsproject tox matplotli
 
 ## New 2022-06-09 Rachel Setup:
 
-git clone -b pho_variant --single-branch https://github.com/CommanderPho/NeuroPy.git
+<!-- git clone -b pho_variant --single-branch https://github.com/CommanderPho/NeuroPy.git -->
+git clone -b develop --single-branch https://github.com/CommanderPho/NeuroPy.git
 git clone -b develop --single-branch https://github.com/CommanderPho/pyPhoCoreHelpers.git
 git clone -b develop --single-branch https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
 git clone -b develop --single-branch https://github.com/CommanderPho/Spike3D.git
@@ -60,3 +61,26 @@ python -m pip install ipython ipykernel numpy pandas scipy cupy numba hdf5storag
 
 
 python -m pip install matplotlib seaborn pymc pyqt5 pyvista pyvistaqt vaex ipympl jupyter-rfb colorcet PyOpenGL PyOpenGL_accelerate ipywidgets ipygany ipyvolume ipyvtklink panel jupyter_bokeh bqplot qtawesome vedo 
+
+
+
+
+
+
+
+python -m pigar gen -f ../dev-requirements.txt ../
+
+python -m pigar gen -f ../pigar-requirements.txt ../
+
+
+Environment
+
+
+cd 
+python -m pigar -p ../../requirements.txt
+
+cd C:\Users\pho\repos\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis
+python -m pigar -p ../../requirements.txt
+
+cd C:\Users\pho\repos\PhoPy3DPositionAnalysis2021
+python -m pigar -p ../../requirements.txt
