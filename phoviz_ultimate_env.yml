@@ -137,8 +137,6 @@ dependencies:
   - pybursts
   - pyct-core
   - pyevtk=1.5.0
-  - pyinstaller
-  - pyinstaller-hooks-contrib=2022.9
   - pyinstrument
   - pylustrator
   - pymc

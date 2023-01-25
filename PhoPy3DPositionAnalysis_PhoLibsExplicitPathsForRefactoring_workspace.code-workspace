@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../pyPhoCoreHelpers"
+		},
+		{
+			"path": "W:/Data/greatlakes_halechr"
 		}
 	],
 	"settings": {
