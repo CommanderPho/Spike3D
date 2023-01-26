@@ -2729,8 +2729,10 @@ def convert_Intervals_to_Epoch_obj(intervals: P.Interval):
 # P.from_string(P.to_string(long_replays_intervals), conv=float)
 
 ### Get global intervals above/below a given speed threshold:
-def find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpolated: bool) -> list:
-    """ written by ChatGPT 2023-01-26 """
+def _find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpolated: bool) -> list:
+    """ written by ChatGPT 2023-01-26
+    Used by `_filter_epochs_by_speed`
+    """
     # speed_threshold_comparison_operator_fn: defines the function to compare a given speed with the threshold (e.g. > or <)
     speed_threshold_comparison_operator_fn = lambda a_speed, a_speed_thresh: (a_speed > a_speed_thresh) # greater than
     # speed_threshold_comparison_operator_fn = lambda a_speed, a_speed_thresh: (a_speed < a_speed_thresh) # less than
@@ -2778,42 +2780,42 @@ def find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpo
             intervals.append((start_time, end_time))
     return intervals
 
-# sample Dataframe
+def _filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=2.0, debug_print=False):
+    """ Filter *_replays_Interval by requiring them to be below the speed """
+    start_end_tuples_interval_list = _find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
+    above_speed_threshold_intervals = _convert_start_end_tuples_list_to_Intervals(start_end_tuples_interval_list)
+    if debug_print:
+        print(f'len(above_speed_threshold_intervals): {len(above_speed_threshold_intervals)}')
+
+    # find the intervals below the threshold speed by taking the complement:
+    below_speed_threshold_intervals = above_speed_threshold_intervals.complement()
+    if debug_print:
+        print(f'len(below_speed_threshold_intervals): {len(below_speed_threshold_intervals)}')
+        # print(f'len(long_replays): {len(long_replays)}, len(short_replays): {len(short_replays)}, len(global_replays): {len(global_replays)}')
+        print(f'Pre-speed-filtering: long_replays.n_epochs: {long_replays.n_epochs}, short_replays.n_epochs: {short_replays.n_epochs}, global_replays.n_epochs: {global_replays.n_epochs}')
+    long_replays_Interval, short_replays_Interval, global_replays_Interval = [_convert_start_end_tuples_list_to_Intervals(zip(a_replays_epoch_obj.starts, a_replays_epoch_obj.stops)) for a_replays_epoch_obj in [long_replays, short_replays, global_replays]] # returns P.Interval objects
+
+    ## Filter *_replays_Interval by requiring them to be below the speed:
+    long_replays_Interval, short_replays_Interval, global_replays_Interval = [below_speed_threshold_intervals.intersection(a_replays_Interval_obj) for a_replays_Interval_obj in [long_replays_Interval, short_replays_Interval, global_replays_Interval]] # returns P.Interval objects
+
+    ## Convert back to Epoch objects:
+    long_replays, short_replays, global_replays = [convert_Intervals_to_Epoch_obj(a_replays_Interval_obj) for a_replays_Interval_obj in [long_replays_Interval, short_replays_Interval, global_replays_Interval]] # returns P.Interval objects
+    if debug_print:
+        print(f'Post-speed-filtering: long_replays.n_epochs: {long_replays.n_epochs}, short_replays.n_epochs: {short_replays.n_epochs}, global_replays.n_epochs: {global_replays.n_epochs}')
+    return long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals
+
+
+# Filter *_replays_Interval by requiring them to be below the speed:
 speed_thresh = 2.0
 speed_df = global_session.position.to_dataframe()
-
-# call function
-start_end_tuples_interval_list = find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
-above_speed_threshold_intervals = _convert_start_end_tuples_list_to_Intervals(start_end_tuples_interval_list)
-print(f'len(above_speed_threshold_intervals): {len(above_speed_threshold_intervals)}')
-
-# find the intervals below the threshold speed by taking the complement:
-below_speed_threshold_intervals = above_speed_threshold_intervals.complement()
-print(f'len(below_speed_threshold_intervals): {len(below_speed_threshold_intervals)}')
-
-# +
-## Convert to dataframes or Epoch objects if needed for something else:
-speed_threshold_epochs_df = convert_Intervals_to_epochs_df(speed_threshold_intervals)
-print(f'len(speed_threshold_epochs_df): {len(speed_threshold_epochs_df)}')
-# speed_threshold_epochs_df
-
-below_speed_threshold_epochs_df = convert_Intervals_to_epochs_df(below_speed_threshold_intervals)
-print(f'len(below_speed_threshold_epochs_df): {len(below_speed_threshold_epochs_df)}')
-# below_speed_threshold_epochs_df
+long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = _filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=2.0)
 # -
 
-long_replays_Interval, short_replays_Interval, global_replays_Interval = [_convert_start_end_tuples_list_to_Intervals(zip(a_replays_epoch_obj.starts, a_replays_epoch_obj.stops)) for a_replays_epoch_obj in [long_replays, short_replays, global_replays]] # returns P.Interval objects
+long_replays.n_epochs
 
 # Store associated values with `P.IntervalDict()`:
 d = P.IntervalDict()
 d
-
-## Filter long_replays_intervals by requiring them to be below the speed:
-long_replays_intervals = below_speed_threshold_intervals.intersection(long_replays_intervals)
-long_replays_intervals
-
-## Filter *_replays_Interval by requiring them to be below the speed:
-long_replays_Interval, short_replays_Interval, global_replays_Interval = [below_speed_threshold_intervals.intersection(a_replays_Interval_obj) for a_replays_Interval_obj in [long_replays_Interval, short_replays_Interval, global_replays_Interval]] # returns P.Interval objects
 
 len(long_replays_Interval)
 len(short_replays_Interval)
