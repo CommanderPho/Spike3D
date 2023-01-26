@@ -2728,46 +2728,7 @@ def convert_Intervals_to_Epoch_obj(intervals: P.Interval):
 # P.to_string(long_replays_intervals)
 # P.from_string(P.to_string(long_replays_intervals), conv=float)
 
-
-# -
-
-# Can build an Epoch object version:
-combined_epoch_obj = convert_Intervals_to_Epoch_obj(long_replays_intervals)
-combined_epoch_obj
-
-# + tags=["EXAMPLE_ONLY"]
-_convert_Intervals_to_4uples_list(long_replays_intervals)
-
-epochs_df = convert_Intervals_to_epochs_df(long_replays_intervals)
-epochs_df
-
-long_replays_intervals = P.from_data([(P.CLOSED, start, stop, P.CLOSED) for start, stop in zip(long_replays.starts, long_replays.stops)])
-long_replays_intervals
-
-## Back from intervals:
-decoded_interval_tuples_list = P.to_data(long_replays_intervals)
-decoded_interval_tuples_list
-
-## Convert tuples list to epochs dataframe:
-combined_df = pd.DataFrame.from_records(decoded_interval_tuples_list, columns=['is_interval_start_closed','start','stop','is_interval_end_closed'], exclude=['is_interval_start_closed','is_interval_end_closed'], coerce_float=True)
-combined_df['label'] = combined_df.index.astype("str") # add the required 'label' column so it can be convereted into an Epoch object
-combined_df[['start','stop']] = combined_df[['start','stop']].astype('float')
-combined_df = combined_df.epochs.get_valid_df() # calling the .epochs.get_valid_df() method ensures all the appropriate columns are added (such as 'duration') to be used as an epochs_df
-combined_df
-
-# Can build an Epoch object version:
-combined_epoch_obj = Epoch(epochs=combined_df)
-combined_epoch_obj
-# -
-
-# Store associated values with `P.IntervalDict()`:
-d = P.IntervalDict()
-d
-
-# +
-import numpy as np
-import pandas as pd
-
+### Get global intervals above/below a given speed threshold:
 def find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpolated: bool) -> list:
     """ written by ChatGPT 2023-01-26 """
     # speed_threshold_comparison_operator_fn: defines the function to compare a given speed with the threshold (e.g. > or <)
@@ -2817,63 +2778,46 @@ def find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpo
             intervals.append((start_time, end_time))
     return intervals
 
-
-# def find_intervals_above_speed(df, speed_thresh):
-#     """
-#     Function that takes a pd.DataFrame with the columns ['t','speed'] of measured animal speed sampled at 30Hz and finds the list of intervals denoted (start_time, end_time) where the speed exceeds a certain value speed_thresh: float
-    
-#     :param df: pd.DataFrame with the columns ['t','speed']
-#     :param speed_thresh: float
-#     :return: List of tuples denoting (start_time, end_time) for intervals that exceeded speed_thresh
-#     """
-#     intervals = []
-    
-#     # Iterate over the dataframe
-#     for index, row in df.iterrows():
-#         # Check if the current speed is greater than or equal to the threshold
-#         if row['speed'] >= speed_thresh:
-#             # If it is, then we check if we are in the middle of an interval
-#             if intervals:
-#                 # If we are, then we just update the end time
-#                 intervals[-1][1] = row['t']
-#             else:
-#                 # If not, then we add a new interval to the list
-#                 intervals.append([row['t'], row['t']])
-    
-#     return intervals
-
-
 # sample Dataframe
-# speed_df = pd.DataFrame({'t': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 'speed': [0, 2, 4, 6, 8, 10, 8, 6, 4, 2]})
+speed_thresh = 2.0
 speed_df = global_session.position.to_dataframe()
 
 # call function
-speed_thresh = 2.0
 start_end_tuples_interval_list = find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
-# start_end_tuples_interval_list = find_intervals_above_speed_interpolated(speed_df, speed_thresh)
-# print(start_end_tuples_interval_list)
-
-speed_threshold_intervals = _convert_start_end_tuples_list_to_Intervals(start_end_tuples_interval_list)
-speed_threshold_intervals
+above_speed_threshold_intervals = _convert_start_end_tuples_list_to_Intervals(start_end_tuples_interval_list)
+print(f'len(above_speed_threshold_intervals): {len(above_speed_threshold_intervals)}')
 
 # find the intervals below the threshold speed by taking the complement:
-below_speed_threshold_intervals = speed_threshold_intervals.complement()
-below_speed_threshold_intervals
+below_speed_threshold_intervals = above_speed_threshold_intervals.complement()
+print(f'len(below_speed_threshold_intervals): {len(below_speed_threshold_intervals)}')
 
+# +
+## Convert to dataframes or Epoch objects if needed for something else:
 speed_threshold_epochs_df = convert_Intervals_to_epochs_df(speed_threshold_intervals)
 print(f'len(speed_threshold_epochs_df): {len(speed_threshold_epochs_df)}')
 # speed_threshold_epochs_df
 
 below_speed_threshold_epochs_df = convert_Intervals_to_epochs_df(below_speed_threshold_intervals)
 print(f'len(below_speed_threshold_epochs_df): {len(below_speed_threshold_epochs_df)}')
-below_speed_threshold_epochs_df
+# below_speed_threshold_epochs_df
 # -
+
+long_replays_Interval, short_replays_Interval, global_replays_Interval = [_convert_start_end_tuples_list_to_Intervals(zip(a_replays_epoch_obj.starts, a_replays_epoch_obj.stops)) for a_replays_epoch_obj in [long_replays, short_replays, global_replays]] # returns P.Interval objects
+
+# Store associated values with `P.IntervalDict()`:
+d = P.IntervalDict()
+d
 
 ## Filter long_replays_intervals by requiring them to be below the speed:
 long_replays_intervals = below_speed_threshold_intervals.intersection(long_replays_intervals)
 long_replays_intervals
 
-len(long_replays_intervals)
+## Filter *_replays_Interval by requiring them to be below the speed:
+long_replays_Interval, short_replays_Interval, global_replays_Interval = [below_speed_threshold_intervals.intersection(a_replays_Interval_obj) for a_replays_Interval_obj in [long_replays_Interval, short_replays_Interval, global_replays_Interval]] # returns P.Interval objects
+
+len(long_replays_Interval)
+len(short_replays_Interval)
+len(global_replays_Interval)
 
 # +
 # i = 0
@@ -2884,20 +2828,6 @@ len(long_replays_intervals)
 #     print(f"df.loc[df.index[i], 'speed']: {df.loc[df.index[i], 'speed']}")
 #     assert df.loc[df.index[i], 'speed'] == df.loc[i, 'speed']
 # -
-
-speed_df[speed_df['speed'] >= speed_thresh]
-
-long_replays_intervals.complement()
-
-
-long_replays_intervals
-
-
-# Intervals can be converted to/from a list of 4-uples:
-x = [(True, (2011, 3, 15), (2013, 10, 10), False)]
-P.from_data(x, conv=lambda v: datetime.date(*v))
-
-P.to_data(x, conv=lambda v: (v.year, v.month, v.day))
 
 # # Other experimentation:
 # + [markdown] tags=["BROKEN"]
