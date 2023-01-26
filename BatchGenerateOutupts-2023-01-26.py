@@ -126,6 +126,11 @@ local_session_paths_list, local_session_names_list =  find_local_session_paths(l
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
+### Animal `pin01`:
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='pin01', exper_name='one')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # no exper_name ('one' or 'two') folders for this animal.
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['redundant','showclus','sleep','tmaze'])
+
 ## Build session contexts list:
 local_session_contexts_list = [local_session_parent_context.adding_context(collision_prefix='sess', session_name=a_name) for a_name in local_session_names_list] # [IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>, ..., IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-13_14-42-6')>]
 
@@ -2578,30 +2583,32 @@ from pandas_profiling import ProfileReport
 # ❓❗❇️🔜👁️‍🗨️ 2023-01-24 - Do we want to include replays or laps where a unit isn't active at all in that cell's firing rate average? These points would drag down the average rather quickly and could reflect the animal not visiting that cell's place instead of some property of the cell itself.
 
 # +
-# # %pdb off
+# %pdb off
 # # %pdb on
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import KnownFilterEpochs
 from PendingNotebookCode import find_epoch_names
 from neuropy.core import Epoch
+from neuropy.core.session.dataSession import DataSession
 from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies, plot_long_short_firing_rate_indicies
 
-# with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_firing_rate_indicies.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
-active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
-long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
-long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-long_computation_results, short_computation_results, global_computation_results = [curr_active_pipeline.computation_results[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # *_results just shortcut for computation_result['computed_data']
+with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_firing_rate_indicies.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
+    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
+    long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
+    long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    long_computation_results, short_computation_results, global_computation_results = [curr_active_pipeline.computation_results[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # *_results just shortcut for computation_result['computed_data']
 
-active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
+    active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
 
-spikes_df = curr_active_pipeline.sess.spikes_df
-long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    spikes_df = curr_active_pipeline.sess.spikes_df
+    long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
 
-try:
-    long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
-except AttributeError as e:
+    # try:
+    #     long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
+    # except (AttributeError, KeyError) as e:
+        # print(f'e: {e}')
     # AttributeError: 'DataSession' object has no attribute 'replay'. Fallback to PBEs?
-    filter_epochs = a_session.pbe # Epoch object
+    # filter_epochs = a_session.pbe # Epoch object
     filter_epoch_replacement_type = KnownFilterEpochs.PBE
 
     # filter_epochs = a_session.ripple # Epoch object
@@ -2612,8 +2619,10 @@ except AttributeError as e:
     print(f'missing .replay epochs, using {filter_epoch_replacement_type} as surrogate replays...')
     active_context = active_context.adding_context(collision_prefix='replay_surrogate', replays=filter_epoch_replacement_type.name)
 
-    # long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].pbe.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
-    long_replays, short_replays, global_replays = [KnownFilterEpochs.perform_get_filter_epochs_df(sess=a_computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration) for a_computation_result in [long_computation_results, short_computation_results, global_computation_results]] # returns Epoch objects
+    ## Working:
+    # long_replays, short_replays, global_replays = [KnownFilterEpochs.perform_get_filter_epochs_df(sess=a_computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration) for a_computation_result in [long_computation_results, short_computation_results, global_computation_results]] # returns Epoch objects
+    # New sess.compute_estimated_replay_epochs(...) based method:
+    long_replays, short_replays, global_replays = [DataSession.compute_estimated_replay_epochs(curr_active_pipeline.filtered_sessions[an_epoch_name]) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
 
 # backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
 # spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
@@ -2624,49 +2633,6 @@ temp_fig_filename = f'{active_context.get_description()}.png'
 print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
 
 x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
-
-# -
-long_replay_df = KnownFilterEpochs.PBE.process_functionList(sess=long_session, min_epoch_included_duration=None, debug_print=True)[0]
-# long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-# +
-# long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
-# long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
-# +
-a_session = long_session
-computation_result = long_computation_results
-default_figure_name = ''
-# filter_epochs = a_session.pbe # Epoch object
-filter_epochs = a_session.ripple # Epoch object
-decoding_time_bin_size = 0.03333
-min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
-
-## Full `process_functionList` way (WORKS):
-# active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(sess=computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
-# active_filter_epochs
-
-
-active_filter_epochs = KnownFilterEpochs.process_functionList(sess=computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)[0]
-active_filter_epochs
-
-
-# active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=KnownFilterEpochs.RIPPLE, min_epoch_included_duration=None, debug_print=True)
-# # active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=KnownFilterEpochs.PBE, min_epoch_included_duration=None, debug_print=True)
-# active_filter_epochs
-# -
-# %pdb off
-active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(sess=computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration)
-active_filter_epochs_native
-# # %pdb on
-active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(sess=computation_result.sess, filter_epochs=KnownFilterEpochs.RIPPLE, min_epoch_included_duration=min_epoch_included_duration)
-active_filter_epochs_native
-# + tags=[]
-KnownFilterEpochs.RIPPLE
-# -
-str(KnownFilterEpochs.RIPPLE.name)
-str(KnownFilterEpochs.RIPPLE.value)
-active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=str(KnownFilterEpochs.RIPPLE.value), min_epoch_included_duration=None, debug_print=True)
-# active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=KnownFilterEpochs.PBE, min_epoch_included_duration=None, debug_print=True)
-active_filter_epochs
 
 # +
 # Plot long|short firing rate index:
@@ -2687,157 +2653,20 @@ with ProgressMessagePrinter(_temp_full_fig_save_path, 'Saving', 'plot_long_short
     fig.show()
 # -
 
-active_f
-
 # # 2023-01-26 - 'portion' interval library for doing efficient interval calculations:
 
 # +
 import portion as P
-
-def _convert_start_end_tuples_list_to_Intervals(start_end_tuples_list):
-    return P.from_data([(P.CLOSED, start, stop, P.CLOSED) for start, stop in start_end_tuples_list])
-
-def _convert_Intervals_to_4uples_list(intervals: P.Interval):
-    return P.to_data(intervals)
-
-def _convert_4uples_list_to_epochs_df(tuples_list):
-    """ Convert tuples list to epochs dataframe """
-    if len(tuples_list) > 0:
-        assert len(tuples_list[0]) == 4
-    combined_df = pd.DataFrame.from_records(tuples_list, columns=['is_interval_start_closed','start','stop','is_interval_end_closed'], exclude=['is_interval_start_closed','is_interval_end_closed'], coerce_float=True)
-    combined_df['label'] = combined_df.index.astype("str") # add the required 'label' column so it can be convereted into an Epoch object
-    combined_df[['start','stop']] = combined_df[['start','stop']].astype('float')
-    combined_df = combined_df.epochs.get_valid_df() # calling the .epochs.get_valid_df() method ensures all the appropriate columns are added (such as 'duration') to be used as an epochs_df
-    return combined_df
-
-def convert_Intervals_to_epochs_df(intervals: P.Interval) -> pd.DataFrame:
-    """ 
-    Usage:
-        epochs_df = convert_Intervals_to_epochs_df(long_replays_intervals)
-    """
-    return _convert_4uples_list_to_epochs_df(_convert_Intervals_to_4uples_list(intervals))
-
-def convert_Intervals_to_Epoch_obj(intervals: P.Interval):
-    """ build an Epoch object version
-    Usage:
-        combined_epoch_obj = convert_Intervals_to_Epoch_obj(long_replays_intervals)
-    """
-    return Epoch(epochs=convert_Intervals_to_epochs_df(intervals))
-
-# # to_string/from_string:
-# P.to_string(long_replays_intervals)
-# P.from_string(P.to_string(long_replays_intervals), conv=float)
-
-### Get global intervals above/below a given speed threshold:
-def _find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpolated: bool) -> list:
-    """ written by ChatGPT 2023-01-26
-    Used by `_filter_epochs_by_speed`
-    """
-    # speed_threshold_comparison_operator_fn: defines the function to compare a given speed with the threshold (e.g. > or <)
-    speed_threshold_comparison_operator_fn = lambda a_speed, a_speed_thresh: (a_speed > a_speed_thresh) # greater than
-    # speed_threshold_comparison_operator_fn = lambda a_speed, a_speed_thresh: (a_speed < a_speed_thresh) # less than
-    speed_threshold_condition_fn = lambda start_speed, end_speed, speed_thresh: speed_threshold_comparison_operator_fn(start_speed, speed_thresh) and speed_threshold_comparison_operator_fn(end_speed, speed_thresh)
-    # curr_df_record_fn = lambda i, col_name='speed': df.loc[i, col_name]
-    curr_df_record_fn = lambda i, col_name='speed': df.loc[df.index[i], col_name]
-    df = df.copy()
-    df.index = df.index.astype(int) #use astype to convert to int
-    # df = df.reset_index(drop=True) # reset and drop the index so the `df.loc[i, *]` and  `df.loc[df.index[i], *]` align    
-    intervals = []
-    start_time = None
-    for i in range(len(df)):
-        curr_t = curr_df_record_fn(i, col_name='t')
-        curr_speed = curr_df_record_fn(i, col_name='speed')
-        if speed_threshold_comparison_operator_fn(curr_speed, speed_thresh):
-            if start_time is None:
-                start_time = df.loc[i, 't']
-                # start_time = df.loc[df.index[i], 't']
-                # start_time = curr_t
-        else:
-            if start_time is not None:
-                end_time = df.loc[i, 't']
-                # end_time = df.loc[df.index[i], 't']
-                # end_time = curr_t
-                if is_interpolated:
-                    start_speed = np.interp(start_time, df.t, df.speed)
-                    end_speed = np.interp(end_time, df.t, df.speed)
-                    if speed_threshold_condition_fn(start_speed, end_speed, speed_thresh):
-                        intervals.append((start_time, end_time))
-                else:
-                    intervals.append((start_time, end_time))
-                start_time = None
-                
-    # Last (unclosed) interval:
-    if start_time is not None:
-        end_time = df.loc[len(df)-1, 't']
-        # end_time = df.loc[df.index[len(df)-1], 't']
-        # end_time = curr_df_record_fn((len(df)-1), col_name='t')
-        if is_interpolated:
-            start_speed = np.interp(start_time, df.t, df.speed)
-            end_speed = np.interp(end_time, df.t, df.speed)
-            if speed_threshold_condition_fn(start_speed, end_speed, speed_thresh):
-                intervals.append((start_time, end_time))
-        else:
-            intervals.append((start_time, end_time))
-    return intervals
-
-# def _filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=2.0, debug_print=False):
-#     """ Filter *_replays_Interval by requiring them to be below the speed """
-#     start_end_tuples_interval_list = _find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
-#     above_speed_threshold_intervals = _convert_start_end_tuples_list_to_Intervals(start_end_tuples_interval_list)
-#     if debug_print:
-#         print(f'len(above_speed_threshold_intervals): {len(above_speed_threshold_intervals)}')
-
-#     # find the intervals below the threshold speed by taking the complement:
-#     below_speed_threshold_intervals = above_speed_threshold_intervals.complement()
-#     if debug_print:
-#         print(f'len(below_speed_threshold_intervals): {len(below_speed_threshold_intervals)}')
-#         # print(f'len(long_replays): {len(long_replays)}, len(short_replays): {len(short_replays)}, len(global_replays): {len(global_replays)}')
-#         print(f'Pre-speed-filtering: long_replays.n_epochs: {long_replays.n_epochs}, short_replays.n_epochs: {short_replays.n_epochs}, global_replays.n_epochs: {global_replays.n_epochs}')
-
-#     long_replays_Interval, short_replays_Interval, global_replays_Interval = [_convert_start_end_tuples_list_to_Intervals(zip(a_replays_epoch_obj.starts, a_replays_epoch_obj.stops)) for a_replays_epoch_obj in [long_replays, short_replays, global_replays]] # returns P.Interval objects
-#     ## Filter *_replays_Interval by requiring them to be below the speed:
-#     long_replays_Interval, short_replays_Interval, global_replays_Interval = [below_speed_threshold_intervals.intersection(a_replays_Interval_obj) for a_replays_Interval_obj in [long_replays_Interval, short_replays_Interval, global_replays_Interval]] # returns P.Interval objects
-#     ## Convert back to Epoch objects:
-#     long_replays, short_replays, global_replays = [convert_Intervals_to_Epoch_obj(a_replays_Interval_obj) for a_replays_Interval_obj in [long_replays_Interval, short_replays_Interval, global_replays_Interval]] # returns P.Interval objects
-#     if debug_print:
-#         print(f'Post-speed-filtering: long_replays.n_epochs: {long_replays.n_epochs}, short_replays.n_epochs: {short_replays.n_epochs}, global_replays.n_epochs: {global_replays.n_epochs}')
-#     return long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals
-
-
-def filter_epochs_by_speed(speed_df, *epoch_args, speed_thresh=2.0, debug_print=False):
-    """ Filter *_replays_Interval by requiring them to be below the speed 
-    *epoch_args = long_replays, short_replays, global_replays
-    """
-    start_end_tuples_interval_list = _find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
-    above_speed_threshold_intervals = _convert_start_end_tuples_list_to_Intervals(start_end_tuples_interval_list)
-    if debug_print:
-        print(f'len(above_speed_threshold_intervals): {len(above_speed_threshold_intervals)}')
-    # find the intervals below the threshold speed by taking the complement:
-    below_speed_threshold_intervals = above_speed_threshold_intervals.complement()
-    if debug_print:
-        print(f'len(below_speed_threshold_intervals): {len(below_speed_threshold_intervals)}')
-        # print(f'len(long_replays): {len(long_replays)}, len(short_replays): {len(short_replays)}, len(global_replays): {len(global_replays)}')
-        # print(f'Pre-speed-filtering: long_replays.n_epochs: {long_replays.n_epochs}, short_replays.n_epochs: {short_replays.n_epochs}, global_replays.n_epochs: {global_replays.n_epochs}')
-        print(f'Pre-speed-filtering: ' + ', '.join([f"n_epochs: {an_interval.n_epochs}" for an_interval in epoch_args]))
-    
-    # Only this part depends on *epoch_args:
-    if debug_print:
-        print(f'len(epoch_args): {len(epoch_args)}')
-    epoch_args_Interval = [_convert_start_end_tuples_list_to_Intervals(zip(a_replays_epoch_obj.starts, a_replays_epoch_obj.stops)) for a_replays_epoch_obj in epoch_args] # returns P.Interval objects
-    ## Filter *_replays_Interval by requiring them to be below the speed:
-    epoch_args_Interval = [below_speed_threshold_intervals.intersection(a_replays_Interval_obj) for a_replays_Interval_obj in epoch_args_Interval] # returns P.Interval objects
-    ## Convert back to Epoch objects:
-    epoch_args = [convert_Intervals_to_Epoch_obj(a_replays_Interval_obj) for a_replays_Interval_obj in epoch_args_Interval] # returns P.Interval objects
-    if debug_print:
-        # print(f'Post-speed-filtering: long_replays.n_epochs: {long_replays.n_epochs}, short_replays.n_epochs: {short_replays.n_epochs}, global_replays.n_epochs: {global_replays.n_epochs}')
-        print(f'Post-speed-filtering: ' + ', '.join([f"n_epochs: {an_interval.n_epochs}" for an_interval in epoch_args]))
-    return *epoch_args, above_speed_threshold_intervals, below_speed_threshold_intervals
+from neuropy.utils.efficient_interval_search import filter_epochs_by_speed
+from neuropy.utils.efficient_interval_search import convert_Intervals_to_Epoch_obj, convert_Intervals_to_epochs_df
 
 # Filter *_replays_Interval by requiring them to be below the speed:
 speed_thresh = 2.0
 speed_df = global_session.position.to_dataframe()
 long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=speed_thresh, debug_print=True)
 # -
+
+compute_estimated_replay_epochs
 
 long_replays.n_epochs
 
