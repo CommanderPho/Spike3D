@@ -19,7 +19,8 @@
 # + tags=["imports"]
 # %config IPCompleter.use_jedi = False
 # %pdb off
-# # %load_ext viztracer
+# %load_ext viztracer
+from viztracer import VizTracer
 # %load_ext autoreload
 # %autoreload 2
 import sys
@@ -56,6 +57,7 @@ from benedict import benedict # https://github.com/fabiocaccamo/python-benedict#
 ## Pho's Custom Libraries:
 from pyphocorehelpers.general_helpers import CodeConversion
 from pyphocorehelpers.print_helpers import print_keys_if_possible, print_value_overview_only, document_active_variables, objsize, print_object_memory_usage, debug_dump_object_member_shapes, TypePrintMode
+from pyphocorehelpers.print_helpers import get_now_day_str, get_now_time_str, get_now_time_precise_str
 
 # pyPhoPlaceCellAnalysis:
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import NeuropyPipeline # get_neuron_identities
@@ -182,23 +184,36 @@ print('!!! done running batch !!!')
 
 # + tags=["load", "single_session"]
 # %pdb off
+# # %%viztracer
 basedir = local_session_paths_list[0] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=False, skip_extended_batch_computations=False)
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=False) # temp no-save
-# SAVE AFTERWARDS!
+with VizTracer(output_file=f"viztracer_{get_now_time_str()}-batch_load_session.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
+    # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=False, skip_extended_batch_computations=False)
+    # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
+    # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=False) # temp no-save
+    # SAVE AFTERWARDS!
 
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
+    active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+                                            # '_perform_position_decoding_computation', 
+                                            '_perform_firing_rate_trends_computation',
+                                            # '_perform_pf_find_ratemap_peaks_computation',
+                                            # '_perform_time_dependent_pf_sequential_surprise_computation'
+                                            # '_perform_two_step_position_decoding_computation',
+                                            # '_perform_recursive_latent_placefield_decoding'
+                                        ]
+    
+    curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir,
+                                              computation_functions_name_whitelist=active_computation_functions_name_whitelist,
+                                              saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
 
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
+    # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
-# Load custom-parameters pipeline ('loadedSessPickle_customParams_2023-01-18.pkl'):
-# curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
+    # Load custom-parameters pipeline ('loadedSessPickle_customParams_2023-01-18.pkl'):
+    # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
 
 # + tags=["load", "single_session"]
 # %pdb on
@@ -378,8 +393,17 @@ curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN
 batch_extended_computations(curr_active_pipeline, include_global_functions=False, fail_on_exception=True, progress_print=True, debug_print=False)
 
 
+# + [markdown] tags=["load", "single_session"]
+# # 🔜✳️🐞🔟 2023-01-20 - NeuropyPipeline pickling issues and potential solution
+# See "C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\DEVELOPER_NOTES\2023-01-20 pickling errors" folder
+#
+# and 
+#
+# obsidian://open?vault=PhoGlobalObsidian2022&file=DailyObsidianLog%2F%F0%9F%94%9C%E2%9C%B3%EF%B8%8F%F0%9F%90%9E%F0%9F%94%9F%20NeuropyPipeline%20pickling%20issues%20-%202023-01-20
+
+
 # + [markdown] jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[]
-# # Test getting FULL context from pipeline
+# ## Test getting FULL context from pipeline
 # 2023-01-24 - TODO: either add a decorator that declares each set of parameters (computation params, filter params, session, etc) as a context-adhering class (basically dict-convertable) or refactor
 
 
@@ -483,7 +507,7 @@ a_computation_config # DynamicContainer({'pf_params': <PlacefieldComputationPara
 
 
 # + [markdown] jupyter={"outputs_hidden": false}
-# # 2023-01-19 - Test `klepto` for persistance framework:
+# ## 2023-01-19 - Test `klepto` for persistance framework:
 
 
 # + jupyter={"outputs_hidden": false}
@@ -691,8 +715,8 @@ PlacefieldComputationParameters
 # + jupyter={"outputs_hidden": false}
 _test_new_comp_params = PlacefieldComputationParameters(speed_thresh=4)
 _test_new_comp_params
-# -
 
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # Continued previous...
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
@@ -926,7 +950,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPred
 active_decoder = long_one_step_decoder_1D
 fig, axs = plot_spike_count_and_firing_rate_normalizations(active_decoder)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2022-09-23 Decoder Testing
 
 # +
@@ -1048,7 +1072,7 @@ fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, cu
 
 out_axes_list
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # `_display_short_long_pf1D_comparison` and `_display_short_long_pf1D_scalar_overlap_comparison`
 
 # +
@@ -2552,89 +2576,71 @@ marginal_posterior_x
 
 from pandas_profiling import ProfileReport
 
-# # 2023-01-19 - Replay Fr vs. Lap Fr.
+# # 🔝✳️ 2023-01-19 - Replay Fr vs. Lap Fr.
 #
 # Upon review it looks like much of this is very similar to `compute_evening_morning_parition` and `FiringRateActivitySource`
 #
 # 2023-01-24 - I think `compute_evening_morning_parition` would be great to have across laps in addition to replays. It could pretty easily be epoch general so long as the epochs don't overlap.
 
 # +
+# # %pdb off
+# # %pdb on
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import KnownFilterEpochs
 from PendingNotebookCode import find_epoch_names
-
-active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
-long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
-long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
-short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
-global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
-
-long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-# long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
-# long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
-
-# decoding_time_bin_size = 0.001
-# min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
-# active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
-
-active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
-temp_save_filename = f'{active_context.get_description()}_results.pkl'
-temp_fig_filename = f'{active_context.get_description()}.png'
-print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
-
-# +
 from neuropy.core import Epoch
 from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies, plot_long_short_firing_rate_indicies
 
-spikes_df = curr_active_pipeline.sess.spikes_df
-long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
+with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_firing_rate_indicies.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
+    
+    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
+    long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
+    long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
+    short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
+    global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
 
-# backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
-# spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
-# -
-# %pdb off
-# %pdb on
-x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
-# +
-# Find the aclu of all cells that fire during at least one of the epochs:
-# spikes_df.spikes.get_split_by_unit()
-# spikes_df.spikes.get_unit_spiketrains()
-spikes_df.spikes.neuron_ids
+    long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    # long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
+    # long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
 
-# min_epoch_included_duration
-# -
+    # active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
 
+    active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
+    temp_save_filename = f'{active_context.get_description()}_results.pkl'
+    temp_fig_filename = f'{active_context.get_description()}.png'
+    print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
 
-# +
-from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import _compare_computation_results
+    spikes_df = curr_active_pipeline.sess.spikes_df
+    long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
 
-# get shared neuron info:
-pf_neurons_diff = _compare_computation_results(long_results.pf1D.ratemap.neuron_ids, short_results.pf1D.ratemap.neuron_ids)
-curr_any_context_neurons = pf_neurons_diff.either
-n_neurons = pf_neurons_diff.shared.n_neurons
-shared_fragile_neuron_IDXs = pf_neurons_diff.shared.shared_fragile_neuron_IDXs
+    # backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
+    # spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
 
-overlap_dict = {aclu:pf_overlap_conv_results[i] for i, aclu in enumerate(curr_any_context_neurons)}
-# print(f"{[pf_overlap_conv_results[i] for i, aclu in enumerate(curr_any_context_neurons)]}")
-# print(f"{[(pf_overlap_conv_results[i] or {}).get('full', {}).get('area', 0.0) for i, aclu in enumerate(curr_any_context_neurons)]}")    
-overlap_areas = [(pf_overlap_conv_results[i] or {}).get('full', {}).get('area', 0.0) for i, aclu in enumerate(curr_any_context_neurons)]
+    x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
 # +
 # Plot long|short firing rate index:
 # %matplotlib qt
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
+from neuropy.utils.mixins.print_helpers import ProgressMessagePrinter
 
-plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index)
-# plt.scatter(x_frs_index.values(), y_frs_index.values())
-# plt.xlabel('$\\frac{L_{R}-S_{R}}{L_{R} + S_{R}}$', fontsize=16)
-# plt.ylabel('$\\frac{L_{\\theta}-S_{\\theta}}{L_{\\theta} + S_{\\theta}}$', fontsize=16)
-# plt.title('Computed long ($L$)|short($S$) firing rate indicies')
-# active_identifying_session_ctx.get_description(separator='/')
-plt.suptitle(f'{active_identifying_session_ctx.get_description(separator="/")}')
-fig = plt.gcf()
-fig.savefig(fname=temp_fig_filename, transparent=True)
+fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
+_temp_full_fig_save_path = fig_save_parent_path.joinpath(temp_fig_filename)
+with ProgressMessagePrinter(_temp_full_fig_save_path, 'Saving', 'plot_long_short_firing_rate_indicies results'):
+    plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index)
+    # plt.scatter(x_frs_index.values(), y_frs_index.values())
+    # plt.xlabel('$\\frac{L_{R}-S_{R}}{L_{R} + S_{R}}$', fontsize=16)
+    # plt.ylabel('$\\frac{L_{\\theta}-S_{\\theta}}{L_{\\theta} + S_{\\theta}}$', fontsize=16)
+    # plt.title('Computed long ($L$)|short($S$) firing rate indicies')
+    # active_identifying_session_ctx.get_description(separator='/')
+    plt.suptitle(f'{active_identifying_session_ctx.get_description(separator="/")}')
+    fig = plt.gcf()
+    fig.set_size_inches([8.5, 7.25]) # size figure so the x and y labels aren't cut off
+    fig.savefig(fname=_temp_full_fig_save_path, transparent=True)
+    fig.show()
 # -
+
 # # Other experimentation:
 # + [markdown] tags=["BROKEN"]
 # from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
@@ -2667,7 +2673,7 @@ fig.savefig(fname=temp_fig_filename, transparent=True)
 #
 # long_session.replay
 #
-# # # %pdb off
+# # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
@@ -2684,12 +2690,6 @@ fig.savefig(fname=temp_fig_filename, transparent=True)
 from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
 # Load previously computed from data:
 long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs, x_frs_index, y_frs_index = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\data\temp_2023-01-20_results_final.pkl").values()
-# # 🔜✳️🐞🔟 2023-01-20 - NeuropyPipeline pickling issues and potential solution
-#
-# See "C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\DEVELOPER_NOTES\2023-01-20 pickling errors" folder
-#
-# and 
-#
-# obsidian://open?vault=PhoGlobalObsidian2022&file=DailyObsidianLog%2F%F0%9F%94%9C%E2%9C%B3%EF%B8%8F%F0%9F%90%9E%F0%9F%94%9F%20NeuropyPipeline%20pickling%20issues%20-%202023-01-20
+
 
 
