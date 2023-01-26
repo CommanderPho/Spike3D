@@ -113,14 +113,14 @@ local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
-
-### Animal `vvp01`:
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+
+### Animal `vvp01`:
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
@@ -950,7 +950,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPred
 active_decoder = long_one_step_decoder_1D
 fig, axs = plot_spike_count_and_firing_rate_normalizations(active_decoder)
 
-# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2022-09-23 Decoder Testing
 
 # +
@@ -2020,9 +2020,7 @@ curr_widget, curr_fig, curr_ax = active_2d_plot.find_matplotlib_render_plot_widg
 from PendingNotebookCode import find_epoch_names
 
 long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
-long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
-short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
-global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
+long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
 
 recalculate_anyway = False
 
@@ -2369,12 +2367,7 @@ long_one_step_decoder_2D.most_likely_position_flat_indicies
 from PendingNotebookCode import find_epoch_names
 
 long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
-long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
-short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
-global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
-
-
-# + tags=["decoder"]
+long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
 long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
 long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
 # -
@@ -2594,29 +2587,46 @@ with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_f
     
     active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
     long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
-    long_results = curr_active_pipeline.computation_results[long_epoch_name]['computed_data']
-    short_results = curr_active_pipeline.computation_results[short_epoch_name]['computed_data']
-    global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
-
     long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    # long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
-    # long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
-
-    # active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
-
+    long_computation_results, short_computation_results, global_computation_results = [curr_active_pipeline.computation_results[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # *_results just shortcut for computation_result['computed_data']
+    
     active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
-    temp_save_filename = f'{active_context.get_description()}_results.pkl'
+    # temp_save_filename = f'{active_context.get_description()}_results.pkl'
+    temp_save_filename = None # disable caching the `compute_long_short_firing_rate_indicies` results.
     temp_fig_filename = f'{active_context.get_description()}.png'
     print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
-
     spikes_df = curr_active_pipeline.sess.spikes_df
     long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
-
+    
+    try:
+        long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
+    except AttributeError as e:
+        # AttributeError: 'DataSession' object has no attribute 'replay'. Fallback to PBEs?
+        
+        
     # backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
     # spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
 
     x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
+    
+# -
+long_replay_df = KnownFilterEpochs.PBE.process_functionList(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# +
+# long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
+# long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
+# -
+a_session = long_session
+computation_result = long_computation_results
+default_figure_name = ''
+filter_epochs = a_session.pbe # Epoch object
+decoding_time_bin_size = 0.03333
+min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
+active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
+active_filter_epochs
+
+epoch_description_list
 # +
 # Plot long|short firing rate index:
 # %matplotlib qt
@@ -2629,11 +2639,6 @@ fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Resul
 _temp_full_fig_save_path = fig_save_parent_path.joinpath(temp_fig_filename)
 with ProgressMessagePrinter(_temp_full_fig_save_path, 'Saving', 'plot_long_short_firing_rate_indicies results'):
     plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index)
-    # plt.scatter(x_frs_index.values(), y_frs_index.values())
-    # plt.xlabel('$\\frac{L_{R}-S_{R}}{L_{R} + S_{R}}$', fontsize=16)
-    # plt.ylabel('$\\frac{L_{\\theta}-S_{\\theta}}{L_{\\theta} + S_{\\theta}}$', fontsize=16)
-    # plt.title('Computed long ($L$)|short($S$) firing rate indicies')
-    # active_identifying_session_ctx.get_description(separator='/')
     plt.suptitle(f'{active_identifying_session_ctx.get_description(separator="/")}')
     fig = plt.gcf()
     fig.set_size_inches([8.5, 7.25]) # size figure so the x and y labels aren't cut off
