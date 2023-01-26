@@ -2666,17 +2666,9 @@ speed_df = global_session.position.to_dataframe()
 long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=speed_thresh, debug_print=True)
 # -
 
-compute_estimated_replay_epochs
-
-long_replays.n_epochs
-
 # Store associated values with `P.IntervalDict()`:
 d = P.IntervalDict()
 d
-
-len(long_replays_Interval)
-len(short_replays_Interval)
-len(global_replays_Interval)
 
 # +
 # i = 0
