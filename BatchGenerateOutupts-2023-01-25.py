@@ -185,7 +185,7 @@ print('!!! done running batch !!!')
 # + tags=["load", "single_session"]
 # %pdb off
 # # %%viztracer
-basedir = local_session_paths_list[2] # NOT 3
+basedir = local_session_paths_list[0] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
