@@ -2584,7 +2584,6 @@ from neuropy.core import Epoch
 from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies, plot_long_short_firing_rate_indicies
 
 with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_firing_rate_indicies.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
-    
     active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
     long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
     long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
@@ -2603,7 +2602,12 @@ with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_f
         long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
     except AttributeError as e:
         # AttributeError: 'DataSession' object has no attribute 'replay'. Fallback to PBEs?
-        
+        # filter_epochs = a_session.pbe # Epoch object
+        filter_epochs = a_session.ripple # Epoch object
+        decoding_time_bin_size = 0.03333
+        min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
+        # long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].pbe.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
+        long_replays, short_replays, global_replays = [KnownFilterEpochs.perform_get_filter_epochs_df(computation_result=a_computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration) for a_computation_result in [long_computation_results, short_computation_results, global_computation_results]] # returns Epoch objects
         
     # backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
     # spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
@@ -2611,22 +2615,48 @@ with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_f
     x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
     
 # -
-long_replay_df = KnownFilterEpochs.PBE.process_functionList(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+long_replay_df = KnownFilterEpochs.PBE.process_functionList(sess=long_session, min_epoch_included_duration=None, debug_print=True)[0]
 # long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
 # +
 # long_replay_df, short_replay_df, global_replay_df = [a_session.replay.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
 # long_replay_df, short_replay_df, global_replay_df = [a_session.pbe._df.epochs.get_non_overlapping_df(debug_print=True).epochs.get_epochs_longer_than(decoding_time_bin_size*2.0, debug_print=True) for a_session in [long_session, short_session, global_session]]
-# -
+# +
 a_session = long_session
 computation_result = long_computation_results
 default_figure_name = ''
-filter_epochs = a_session.pbe # Epoch object
+# filter_epochs = a_session.pbe # Epoch object
+filter_epochs = a_session.ripple # Epoch object
 decoding_time_bin_size = 0.03333
 min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
-active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
+
+## Full `process_functionList` way (WORKS):
+# active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
+# active_filter_epochs
+
+
+active_filter_epochs = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)[0]
 active_filter_epochs
 
-epoch_description_list
+
+# active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=KnownFilterEpochs.RIPPLE, min_epoch_included_duration=None, debug_print=True)
+# # active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=KnownFilterEpochs.PBE, min_epoch_included_duration=None, debug_print=True)
+# active_filter_epochs
+# -
+# %pdb off
+active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration)
+active_filter_epochs_native
+# # %pdb on
+active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(computation_result=computation_result, filter_epochs=KnownFilterEpochs.RIPPLE, min_epoch_included_duration=min_epoch_included_duration)
+active_filter_epochs_native
+# + tags=[]
+KnownFilterEpochs.RIPPLE
+# -
+str(KnownFilterEpochs.RIPPLE.name)
+str(KnownFilterEpochs.RIPPLE.value)
+active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=str(KnownFilterEpochs.RIPPLE.value), min_epoch_included_duration=None, debug_print=True)
+# active_filter_epochs = KnownFilterEpochs._perform_get_filter_epochs_df(a_session, filter_epochs=KnownFilterEpochs.PBE, min_epoch_included_duration=None, debug_print=True)
+active_filter_epochs
+
 # +
 # Plot long|short firing rate index:
 # %matplotlib qt
