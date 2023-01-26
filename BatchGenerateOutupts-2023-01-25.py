@@ -185,7 +185,7 @@ print('!!! done running batch !!!')
 # + tags=["load", "single_session"]
 # %pdb off
 # # %%viztracer
-basedir = local_session_paths_list[0] # NOT 3
+basedir = local_session_paths_list[2] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
@@ -2574,6 +2574,8 @@ from pandas_profiling import ProfileReport
 # Upon review it looks like much of this is very similar to `compute_evening_morning_parition` and `FiringRateActivitySource`
 #
 # 2023-01-24 - I think `compute_evening_morning_parition` would be great to have across laps in addition to replays. It could pretty easily be epoch general so long as the epochs don't overlap.
+#
+# ❓❗❇️🔜👁️‍🗨️ 2023-01-24 - Do we want to include replays or laps where a unit isn't active at all in that cell's firing rate average? These points would drag down the average rather quickly and could reflect the animal not visiting that cell's place instead of some property of the cell itself.
 
 # +
 # # %pdb off
@@ -2591,10 +2593,7 @@ with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_f
     long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # *_results just shortcut for computation_result['computed_data']
     
     active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
-    # temp_save_filename = f'{active_context.get_description()}_results.pkl'
-    temp_save_filename = None # disable caching the `compute_long_short_firing_rate_indicies` results.
-    temp_fig_filename = f'{active_context.get_description()}.png'
-    print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
+    
     spikes_df = curr_active_pipeline.sess.spikes_df
     long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
     
@@ -2602,16 +2601,28 @@ with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_f
         long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
     except AttributeError as e:
         # AttributeError: 'DataSession' object has no attribute 'replay'. Fallback to PBEs?
-        # filter_epochs = a_session.pbe # Epoch object
-        filter_epochs = a_session.ripple # Epoch object
+        filter_epochs = a_session.pbe # Epoch object
+        filter_epoch_replacement_type = KnownFilterEpochs.PBE
+        
+        # filter_epochs = a_session.ripple # Epoch object
+        # filter_epoch_replacement_type = KnownFilterEpochs.RIPPLE
+        
         decoding_time_bin_size = 0.03333
         min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
+        print(f'missing .replay epochs, using {filter_epoch_replacement_type} as surrogate replays...')
+        active_context = active_context.adding_context(collision_prefix='replay_surrogate', replays=filter_epoch_replacement_type.name)
+        
         # long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].pbe.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
         long_replays, short_replays, global_replays = [KnownFilterEpochs.perform_get_filter_epochs_df(computation_result=a_computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration) for a_computation_result in [long_computation_results, short_computation_results, global_computation_results]] # returns Epoch objects
         
     # backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
     # spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
 
+    # temp_save_filename = f'{active_context.get_description()}_results.pkl'
+    temp_save_filename = None # disable caching the `compute_long_short_firing_rate_indicies` results.
+    temp_fig_filename = f'{active_context.get_description()}.png'
+    print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
+    
     x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
     
 # -
