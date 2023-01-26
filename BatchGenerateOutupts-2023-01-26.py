@@ -2691,14 +2691,58 @@ active_f
 
 # # 2023-01-26 - 'portion' interval library for doing efficient interval calculations:
 
+# +
 import portion as P
 
-long_replays_intervals = P.from_data([(P.CLOSED, start, stop, P.CLOSED) for start, stop in zip(long_replays.starts, long_replays.stops)])
-long_replays_intervals
+def _convert_start_end_tuples_list_to_Intervals(start_end_tuples_list):
+    return P.from_data([(P.CLOSED, start, stop, P.CLOSED) for start, stop in start_end_tuples_list])
+
+def _convert_Intervals_to_4uples_list(intervals: P.Interval):
+    return P.to_data(intervals)
+
+def _convert_4uples_list_to_epochs_df(tuples_list):
+    """ Convert tuples list to epochs dataframe """
+    if len(tuples_list) > 0:
+        assert len(tuples_list[0]) == 4
+    combined_df = pd.DataFrame.from_records(tuples_list, columns=['is_interval_start_closed','start','stop','is_interval_end_closed'], exclude=['is_interval_start_closed','is_interval_end_closed'], coerce_float=True)
+    combined_df['label'] = combined_df.index.astype("str") # add the required 'label' column so it can be convereted into an Epoch object
+    combined_df[['start','stop']] = combined_df[['start','stop']].astype('float')
+    combined_df = combined_df.epochs.get_valid_df() # calling the .epochs.get_valid_df() method ensures all the appropriate columns are added (such as 'duration') to be used as an epochs_df
+    return combined_df
+
+def convert_Intervals_to_epochs_df(intervals: P.Interval) -> pd.DataFrame:
+    """ 
+    Usage:
+        epochs_df = convert_Intervals_to_epochs_df(long_replays_intervals)
+    """
+    return _convert_4uples_list_to_epochs_df(_convert_Intervals_to_4uples_list(intervals))
+
+def convert_Intervals_to_Epoch_obj(intervals: P.Interval):
+    """ build an Epoch object version
+    Usage:
+        combined_epoch_obj = convert_Intervals_to_Epoch_obj(long_replays_intervals)
+    """
+    return Epoch(epochs=convert_Intervals_to_epochs_df(intervals))
 
 # to_string/from_string:
 P.to_string(long_replays_intervals)
 P.from_string(P.to_string(long_replays_intervals), conv=float)
+
+# -
+
+# Can build an Epoch object version:
+combined_epoch_obj = convert_Intervals_to_Epoch_obj(long_replays_intervals)
+combined_epoch_obj
+
+_convert_Intervals_to_4uples_list(long_replays_intervals)
+
+epochs_df = convert_Intervals_to_epochs_df(long_replays_intervals)
+epochs_df
+
+long_replays_intervals = P.from_data([(P.CLOSED, start, stop, P.CLOSED) for start, stop in zip(long_replays.starts, long_replays.stops)])
+long_replays_intervals
+
+
 
 # +
 ## Back from intervals:
@@ -2725,53 +2769,18 @@ d
 import numpy as np
 import pandas as pd
 
-# def find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float) -> list:
-#     intervals = []
-#     start_time = None
-#     for i in range(len(df)):
-#         if df.loc[df.index[i], 'speed'] > speed_thresh:
-#             if start_time is None:
-#                 start_time = df.loc[i, 't']
-#         else:
-#             if start_time is not None:
-#                 end_time = df.loc[i, 't']
-#                 intervals.append((start_time, end_time))
-#                 start_time = None
-#     if start_time is not None:
-#         intervals.append((start_time, df.loc[len(df)-1, 't']))
-#     return intervals
-
-# def find_intervals_above_speed_interpolated(df: pd.DataFrame, speed_thresh: float) -> list:
-#     """ replaced `df.loc[i, 'speed']` -> `df.loc[df.index[i], 'speed']` """
-#     intervals = []
-#     start_time = None
-#     for i in range(len(df)):
-#         if df.loc[df.index[i], 'speed'] > speed_thresh:
-#             if start_time is None:
-#                 start_time = df.loc[i, 't']
-#         else:
-#             if start_time is not None:
-#                 end_time = df.loc[i, 't']
-#                 start_speed = np.interp(start_time, df.t, df.speed)
-#                 end_speed = np.interp(end_time, df.t, df.speed)
-#                 if start_speed > speed_thresh and end_speed > speed_thresh:
-#                     intervals.append((start_time, end_time))
-#                 start_time = None
-#     if start_time is not None:
-#         end_time = df.loc[len(df)-1, 't']
-#         start_speed = np.interp(start_time, df.t, df.speed)
-#         end_speed = np.interp(end_time, df.t, df.speed)
-#         if start_speed > speed_thresh and end_speed > speed_thresh:
-#             intervals.append((start_time, end_time))
-#     return intervals
-
-
 def find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpolated: bool) -> list:
     """ written by ChatGPT 2023-01-26 """
+    # speed_threshold_comparison_operator_fn: defines the function to compare a given speed with the threshold (e.g. > or <)
+    speed_threshold_comparison_operator_fn = lambda a_speed, a_speed_thresh: (a_speed > a_speed_thresh) # greater than
+    # speed_threshold_comparison_operator_fn = lambda a_speed, a_speed_thresh: (a_speed < a_speed_thresh) # less than
+    # speed_threshold_condition_fn = lambda start_speed, end_speed, speed_thresh: (start_speed > speed_thresh and end_speed > speed_thresh)
+    speed_threshold_condition_fn = lambda start_speed, end_speed, speed_thresh: speed_threshold_comparison_operator_fn(start_speed, speed_thresh) and speed_threshold_comparison_operator_fn(end_speed, speed_thresh)
     intervals = []
     start_time = None
     for i in range(len(df)):
-        if df.loc[df.index[i], 'speed'] > speed_thresh:
+        # if df.loc[df.index[i], 'speed'] > speed_thresh:
+        if speed_threshold_comparison_operator_fn(df.loc[df.index[i], 'speed'], speed_thresh):
             if start_time is None:
                 start_time = df.loc[i, 't']
         else:
@@ -2780,25 +2789,25 @@ def find_intervals_above_speed(df: pd.DataFrame, speed_thresh: float, is_interpo
                 if is_interpolated:
                     start_speed = np.interp(start_time, df.t, df.speed)
                     end_speed = np.interp(end_time, df.t, df.speed)
-                    if start_speed > speed_thresh and end_speed > speed_thresh:
+                    if speed_threshold_condition_fn(start_speed, end_speed, speed_thresh): #start_speed > speed_thresh and end_speed > speed_thresh:
                         intervals.append((start_time, end_time))
                 else:
                     intervals.append((start_time, end_time))
                 start_time = None
+                
+    # Last (unclosed) interval:
     if start_time is not None:
         end_time = df.loc[len(df)-1, 't']
         if is_interpolated:
             start_speed = np.interp(start_time, df.t, df.speed)
             end_speed = np.interp(end_time, df.t, df.speed)
-            if start_speed > speed_thresh and end_speed > speed_thresh:
+            if speed_threshold_condition_fn(start_speed, end_speed, speed_thresh): # start_speed > speed_thresh and end_speed > speed_thresh:
                 intervals.append((start_time, end_time))
         else:
             intervals.append((start_time, end_time))
     return intervals
 
 
-            
-            
 # def find_intervals_above_speed(df, speed_thresh):
 #     """
 #     Function that takes a pd.DataFrame with the columns ['t','speed'] of measured animal speed sampled at 30Hz and finds the list of intervals denoted (start_time, end_time) where the speed exceeds a certain value speed_thresh: float
@@ -2830,10 +2839,18 @@ speed_df = global_session.position.to_dataframe()
 
 # call function
 speed_thresh = 2.0
-interval = find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
-# interval = find_intervals_above_speed_interpolated(speed_df, speed_thresh)
-print(interval)
+start_end_tuples_interval_list = find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
+# start_end_tuples_interval_list = find_intervals_above_speed_interpolated(speed_df, speed_thresh)
+# print(start_end_tuples_interval_list)
+
+speed_threshold_intervals = _convert_start_end_tuples_list_to_Intervals(start_end_tuples_interval_list)
+speed_threshold_intervals
+
+speed_threshold_epochs_df = convert_Intervals_to_epochs_df(speed_threshold_intervals)
+speed_threshold_epochs_df
 # -
+
+
 
 speed_df.at[0, 'speed']
 
