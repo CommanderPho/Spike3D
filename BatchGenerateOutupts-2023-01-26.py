@@ -2612,8 +2612,8 @@ except AttributeError as e:
     print(f'missing .replay epochs, using {filter_epoch_replacement_type} as surrogate replays...')
     active_context = active_context.adding_context(collision_prefix='replay_surrogate', replays=filter_epoch_replacement_type.name)
 
-    # long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].pbe.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
-    long_replays, short_replays, global_replays = [KnownFilterEpochs.perform_get_filter_epochs_df(computation_result=a_computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration) for a_computation_result in [long_computation_results, short_computation_results, global_computation_results]] # returns Epoch objects
+    # long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].pbe.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
+    long_replays, short_replays, global_replays = [KnownFilterEpochs.perform_get_filter_epochs_df(sess=a_computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration) for a_computation_result in [long_computation_results, short_computation_results, global_computation_results]] # returns Epoch objects
 
 # backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
 # spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
@@ -2641,11 +2641,11 @@ decoding_time_bin_size = 0.03333
 min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
 
 ## Full `process_functionList` way (WORKS):
-# active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
+# active_filter_epochs, default_figure_name, epoch_description_list = KnownFilterEpochs.process_functionList(sess=computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)
 # active_filter_epochs
 
 
-active_filter_epochs = KnownFilterEpochs.process_functionList(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)[0]
+active_filter_epochs = KnownFilterEpochs.process_functionList(sess=computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration, default_figure_name=default_figure_name)[0]
 active_filter_epochs
 
 
@@ -2654,10 +2654,10 @@ active_filter_epochs
 # active_filter_epochs
 # -
 # %pdb off
-active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(computation_result=computation_result, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration)
+active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(sess=computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration)
 active_filter_epochs_native
 # # %pdb on
-active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(computation_result=computation_result, filter_epochs=KnownFilterEpochs.RIPPLE, min_epoch_included_duration=min_epoch_included_duration)
+active_filter_epochs_native = KnownFilterEpochs.perform_get_filter_epochs_df(sess=computation_result.sess, filter_epochs=KnownFilterEpochs.RIPPLE, min_epoch_included_duration=min_epoch_included_duration)
 active_filter_epochs_native
 # + tags=[]
 KnownFilterEpochs.RIPPLE
