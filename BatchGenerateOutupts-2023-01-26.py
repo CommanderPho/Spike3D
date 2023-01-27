@@ -113,14 +113,14 @@ local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
-
-### Animal `vvp01`:
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+
+### Animal `vvp01`:
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
@@ -2583,6 +2583,30 @@ from pandas_profiling import ProfileReport
 # ❓❗❇️🔜👁️‍🗨️ 2023-01-24 - Do we want to include replays or laps where a unit isn't active at all in that cell's firing rate average? These points would drag down the average rather quickly and could reflect the animal not visiting that cell's place instead of some property of the cell itself.
 
 # +
+from pyphoplacecellanalysis.temp import pipeline_complete_compute_long_short_fr_indicies, plot_long_short_firing_rate_indicies # , compute_long_short_firing_rate_indicies
+
+# New unified `pipeline_complete_compute_long_short_fr_indicies(...)` method for entire pipeline:
+x_frs_index, y_frs_index, active_context = pipeline_complete_compute_long_short_fr_indicies(curr_active_pipeline)
+
+# +
+# Plot long|short firing rate index:
+# %matplotlib qt
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
+from neuropy.utils.mixins.print_helpers import ProgressMessagePrinter
+
+fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
+plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index, active_context, fig_save_parent_path=fig_save_parent_path)
+
+# _temp_full_fig_save_path = fig_save_parent_path.joinpath(temp_fig_filename)
+# with ProgressMessagePrinter(_temp_full_fig_save_path, 'Saving', 'plot_long_short_firing_rate_indicies results'):
+#     plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index, active_identifying_session_ctx)  
+# -
+
+# ### Backup prev long-winded way:
+
+# +
 # %pdb off
 # # %pdb on
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import KnownFilterEpochs
@@ -2633,24 +2657,6 @@ temp_fig_filename = f'{active_context.get_description()}.png'
 print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
 
 x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
-
-# +
-# Plot long|short firing rate index:
-# %matplotlib qt
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
-from neuropy.utils.mixins.print_helpers import ProgressMessagePrinter
-
-fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
-_temp_full_fig_save_path = fig_save_parent_path.joinpath(temp_fig_filename)
-with ProgressMessagePrinter(_temp_full_fig_save_path, 'Saving', 'plot_long_short_firing_rate_indicies results'):
-    plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index)
-    plt.suptitle(f'{active_identifying_session_ctx.get_description(separator="/")}')
-    fig = plt.gcf()
-    fig.set_size_inches([8.5, 7.25]) # size figure so the x and y labels aren't cut off
-    fig.savefig(fname=_temp_full_fig_save_path, transparent=True)
-    fig.show()
 # -
 
 # # 2023-01-26 - 'portion' interval library for doing efficient interval calculations:
@@ -2712,7 +2718,7 @@ d
 #
 # long_session.replay
 #
-# # # # # # # %pdb off
+# # # # # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
