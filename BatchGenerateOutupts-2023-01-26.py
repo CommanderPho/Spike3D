@@ -113,23 +113,23 @@ local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
-
-### Animal `vvp01`:
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
 local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
 local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+
+### Animal `vvp01`:
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='two')
 # local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
 # local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
-### Animal `pin01`:
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='pin01', exper_name='one')
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # no exper_name ('one' or 'two') folders for this animal.
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['redundant','showclus','sleep','tmaze'])
+# ### Animal `pin01`:
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='pin01', exper_name='one')
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # no exper_name ('one' or 'two') folders for this animal.
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['redundant','showclus','sleep','tmaze'])
 
 ## Build session contexts list:
 local_session_contexts_list = [local_session_parent_context.adding_context(collision_prefix='sess', session_name=a_name) for a_name in local_session_names_list] # [IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>, ..., IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-13_14-42-6')>]
@@ -147,10 +147,28 @@ session_batch_status
 global_data_root_parent_path
 
 # + tags=["batch", "load"]
+from pyphocorehelpers.DataStructure.dynamic_parameters import DynamicParameters # to replace simple PlacefieldComputationParameters
+from pyphoplacecellanalysis.General.Pipeline.Stages.Computation import ComputedPipelineStage
+# %matplotlib qt
+import matplotlib.pyplot as plt
+from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies # used in `batch_extended_programmatic_figures()`
+
 include_programmatic_figures = False # if True, batch_programmatic_figures and batch_extended_programmatic_figures will be ran for each session. Othewise only the computations will be done and the data saved.
-batch_saving_mode = PipelineSavingScheme.TEMP_THEN_OVERWRITE
+# batch_saving_mode = PipelineSavingScheme.TEMP_THEN_OVERWRITE
 # batch_saving_mode = PipelineSavingScheme.OVERWRITE_IN_PLACE
-# batch_saving_mode = PipelineSavingScheme.SKIP_SAVING # useful for just loading the pipelines and doing something with the result (like plotting)
+batch_saving_mode = PipelineSavingScheme.SKIP_SAVING # useful for just loading the pipelines and doing something with the result (like plotting)
+
+active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+                                            # '_perform_position_decoding_computation', 
+                                            '_perform_firing_rate_trends_computation',
+                                            # '_perform_pf_find_ratemap_peaks_computation',
+                                            # '_perform_time_dependent_pf_sequential_surprise_computation'
+                                            # '_perform_two_step_position_decoding_computation',
+                                            # '_perform_recursive_latent_placefield_decoding'
+                                        ]
+        
+# extended_computations_include_whitelist=None # do all
+extended_computations_include_whitelist=['long_short_fr_indicies_analyses'] # do only specifiedl
 
 ## Run batch queue
 for curr_sess_ctx, curr_session_basedir, curr_session_name in zip(local_session_contexts_list, local_session_paths_list, local_session_names_list):
@@ -160,11 +178,21 @@ for curr_sess_ctx, curr_session_basedir, curr_session_name in zip(local_session_
         session_batch_status[curr_session_basedir] = SessionBatchProgress.NOT_STARTED
         try:
             session_batch_status[curr_session_basedir] = SessionBatchProgress.RUNNING
-            curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, curr_session_basedir, force_reload=True, saving_mode=batch_saving_mode, fail_on_exception=True, skip_extended_batch_computations=False, time_bin_size=0.1)
+            curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, curr_session_basedir,
+                                                      computation_functions_name_whitelist=active_computation_functions_name_whitelist,
+                                                      force_reload=True, saving_mode=batch_saving_mode, fail_on_exception=True, skip_extended_batch_computations=True, time_bin_size=5.0)
+            
             # newly_computed_values = batch_extended_computations(curr_active_pipeline, fail_on_exception=True, progress_print=True, debug_print=False) # doing extended batch computations in batch_load_session does not work for some strange reason.
             # if len(newly_computed_values) > 0:
             #         curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
-                    
+                
+            newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
+            
+            # Plot long|short firing rate index:
+            fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
+            curr_active_pipeline.display('_display_short_long_firing_rate_index_comparison', curr_active_pipeline.sess.get_context(), fig_save_parent_path=fig_save_parent_path)
+            plt.close() # closes the current figure
+            
             if include_programmatic_figures:
                 active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
                 batch_extended_programmatic_figures(curr_active_pipeline)
@@ -190,7 +218,7 @@ print('!!! done running batch !!!')
 # + tags=["load", "single_session"]
 # %pdb off
 # # %%viztracer
-basedir = local_session_paths_list[0] # NOT 3
+basedir = local_session_paths_list[1] # NOT 3
 print(f'basedir: {str(basedir)}')
 
 # ==================================================================================================================== #
@@ -213,12 +241,69 @@ with VizTracer(output_file=f"viztracer_{get_now_time_str()}-batch_load_session.j
     
     curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir,
                                               computation_functions_name_whitelist=active_computation_functions_name_whitelist,
-                                              saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False)
+                                              saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
 
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
     # Load custom-parameters pipeline ('loadedSessPickle_customParams_2023-01-18.pkl'):
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
+
+# + tags=["load", "single_session"]
+newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
+
+# + tags=["load", "single_session"]
+# %pdb on
+fail_on_exception=False
+progress_print=True 
+debug_print=False
+newly_computed_values = []
+
+_comp_name = 'long_short_fr_indicies_analyses'
+try:
+    ## Get global `long_short_fr_indicies_analysis` results:
+    long_short_fr_indicies_analysis_results = curr_active_pipeline.global_computation_results.computed_data['long_short_fr_indicies_analysis']
+    x_frs_index, y_frs_index = long_short_fr_indicies_analysis_results['x_frs_index'], long_short_fr_indicies_analysis_results['y_frs_index'] # use the all_results_dict as the computed data value
+    active_context = long_short_fr_indicies_analysis_results['active_context']
+    if progress_print:
+        print(f'{_comp_name} already computed.')
+except (AttributeError, KeyError) as e:
+    if progress_print or debug_print:
+        print(f'{_comp_name} missing.')
+    if debug_print:
+        print(f'\t encountered error: {e}\n{traceback.format_exc()}\n.')
+    if progress_print or debug_print:
+        print(f'\t Recomputing {_comp_name}...')
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_short_long_firing_rate_analyses'], fail_on_exception=True, debug_print=False) # fail_on_exception MUST be True or error handling is all messed up 
+    print(f'\t done.')
+    long_short_fr_indicies_analysis_results = curr_active_pipeline.global_computation_results.computed_data['long_short_fr_indicies_analysis']
+    x_frs_index, y_frs_index = long_short_fr_indicies_analysis_results['x_frs_index'], long_short_fr_indicies_analysis_results['y_frs_index'] # use the all_results_dict as the computed data value
+    active_context = long_short_fr_indicies_analysis_results['active_context']
+    newly_computed_values.append(_comp_name)
+except Exception as e:
+    raise e
+
+# + tags=["load", "single_session"]
+newly_computed_values
+
+# + tags=["load", "single_session"]
+
+
+# + tags=["load", "single_session"]
+# %pdb off
+curr_active_pipeline.display('_display_short_long_firing_rate_index_comparison', curr_active_pipeline.sess.get_context())
+
+# + tags=["load", "single_session"]
+# Plot long|short firing rate index:
+fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
+curr_active_pipeline.display('_display_short_long_firing_rate_index_comparison', curr_active_pipeline.sess.get_context(), fig_save_parent_path=fig_save_parent_path)
+
+# + tags=["load", "single_session"]
+long_short_fr_indicies_analysis_results = curr_active_pipeline.global_computation_results.computed_data['long_short_fr_indicies_analysis']
+x_frs_index, y_frs_index = long_short_fr_indicies_analysis_results['x_frs_index'], long_short_fr_indicies_analysis_results['y_frs_index'] # use the all_results_dict as the computed data value
+active_context = long_short_fr_indicies_analysis_results['active_context']
+
+# + tags=["load", "single_session"]
+curr_act
 
 # + tags=["load", "single_session"]
 curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
@@ -237,7 +322,39 @@ finalized_output_cache_file
 
 
 # + tags=["load", "single_session"]
+from pyphocorehelpers.DataStructure.dynamic_parameters import DynamicParameters # to replace simple PlacefieldComputationParameters
+from pyphoplacecellanalysis.General.Pipeline.Stages.Computation import ComputedPipelineStage
 
+# build global_computation_results to hold results:
+if curr_active_pipeline.global_computation_results is None:
+    print(f'global_computation_results is None. Building initial global_computation_results...')
+    curr_active_pipeline.global_computation_results = DynamicParameters()
+    curr_active_pipeline.global_computation_results = curr_active_pipeline._build_initial_computationResult(curr_active_pipeline.sess, None) # returns a computation result. This stores the computation config used to compute it.
+    
+curr_active_pipeline.global_computation_results # .computed_data = 
+curr_active_pipeline.global_computation_results.computed_data = DynamicParameters()
+curr_active_pipeline.global_computation_results.accumulated_errors = DynamicParameters()
+
+
+# + tags=["load", "single_session"]
+newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
+
+
+# + tags=["load", "single_session"]
+# %matplotlib qt
+from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies # used in `batch_extended_programmatic_figures()`
+
+# Plot long|short firing rate index:
+fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
+long_short_fr_indicies_analysis_results = curr_active_pipeline.global_computation_results.computed_data['long_short_fr_indicies_analysis']
+x_frs_index, y_frs_index = long_short_fr_indicies_analysis_results['x_frs_index'], long_short_fr_indicies_analysis_results['y_frs_index'] # use the all_results_dict as the computed data value
+active_context = long_short_fr_indicies_analysis_results['active_context']
+plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index, active_context, fig_save_parent_path=fig_save_parent_path)
+
+
+# + tags=["load", "single_session"]
+## Call `batch_extended_programmatic_figures(curr_active_pipeline)` to run `plot_long_short_firing_rate_indicies`
+batch_extended_programmatic_figures(curr_active_pipeline)
 
 
 # + tags=["load", "single_session"]
@@ -2586,7 +2703,10 @@ from pandas_profiling import ProfileReport
 from pyphoplacecellanalysis.temp import pipeline_complete_compute_long_short_fr_indicies, plot_long_short_firing_rate_indicies # , compute_long_short_firing_rate_indicies
 
 # New unified `pipeline_complete_compute_long_short_fr_indicies(...)` method for entire pipeline:
-x_frs_index, y_frs_index, active_context = pipeline_complete_compute_long_short_fr_indicies(curr_active_pipeline)
+x_frs_index, y_frs_index, active_context, all_results_dict = pipeline_complete_compute_long_short_fr_indicies(curr_active_pipeline)
+
+# +
+# objsize.get_deep_size(all_results_dict)
 
 # +
 # Plot long|short firing rate index:
@@ -2718,7 +2838,7 @@ d
 #
 # long_session.replay
 #
-# # # # # # # # %pdb off
+# # # # # # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
