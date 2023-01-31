@@ -109,13 +109,13 @@ local_session_root_parent_context = IdentifyingContext(format_name=active_data_m
 local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
-# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
-# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 ### Animal `vvp01`:
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
@@ -143,15 +143,11 @@ for curr_session_basedir in local_session_paths_list:
 
 session_batch_status
 
-# + tags=["load"]
-global_data_root_parent_path
-
 # + tags=["batch", "load"]
 from pyphocorehelpers.DataStructure.dynamic_parameters import DynamicParameters # to replace simple PlacefieldComputationParameters
 from pyphoplacecellanalysis.General.Pipeline.Stages.Computation import ComputedPipelineStage
 # %matplotlib qt
 import matplotlib.pyplot as plt
-from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies # used in `batch_extended_programmatic_figures()`
 
 include_programmatic_figures = False # if True, batch_programmatic_figures and batch_extended_programmatic_figures will be ran for each session. Othewise only the computations will be done and the data saved.
 # batch_saving_mode = PipelineSavingScheme.TEMP_THEN_OVERWRITE
@@ -250,6 +246,52 @@ with VizTracer(output_file=f"viztracer_{get_now_time_str()}-batch_load_session.j
 
 # + tags=["load", "single_session"]
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
+newly_computed_values
+
+# + tags=["load", "single_session"]
+# Plot long|short firing rate index:
+long_short_fr_indicies_analysis_results = curr_active_pipeline.global_computation_results.computed_data['long_short_fr_indicies_analysis']
+x_frs_index, y_frs_index = long_short_fr_indicies_analysis_results['x_frs_index'], long_short_fr_indicies_analysis_results['y_frs_index'] # use the all_results_dict as the computed data value
+# active_context = long_short_fr_indicies_analysis_results['active_context']
+# fig, _temp_full_fig_save_path = _plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index, active_context, fig_save_parent_path=fig_save_parent_path, debug_print=debug_print)
+
+# + tags=["load", "single_session"]
+
+
+# + tags=["load", "single_session"]
+long_mean_laps_all_frs, long_mean_replays_all_frs, short_mean_laps_all_frs, short_mean_replays_all_frs = [long_short_fr_indicies_analysis_results[k] for k in ['long_mean_laps_all_frs', 'long_mean_replays_all_frs', 'short_mean_laps_all_frs', 'short_mean_replays_all_frs']]
+
+# + tags=["load", "single_session"]
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions import _unwrap_aclu_epoch_values_dict_to_array, _compute_epochs_num_aclu_inclusions
+
+aclus_long, long_mean_replays_all_frs_mat = _unwrap_aclu_epoch_values_dict_to_array(long_mean_replays_all_frs)
+aclus_short, short_mean_replays_all_frs_mat = _unwrap_aclu_epoch_values_dict_to_array(short_mean_replays_all_frs)
+assert aclus_long == aclus_short
+n_aclus = len(aclus_long)
+print(f'{n_aclus = }')
+n_long_epochs = np.shape(long_mean_replays_all_frs_mat)[1]
+n_short_epochs = np.shape(short_mean_replays_all_frs_mat)[1]
+n_combined_epochs = n_long_epochs + n_short_epochs
+print(f'{n_long_epochs = }, {n_short_epochs = }, {n_combined_epochs = }')
+n_min_cells_for_epoch_included_as_replay_candidate = int(0.30 * float(n_aclus))
+print(f'{n_min_cells_for_epoch_included_as_replay_candidate = }')
+
+# + tags=["load", "single_session"]
+min_inclusion_fr_thresh = 19.01 # Hz
+is_cell_included_in_epoch_mat = long_mean_replays_all_frs_mat > min_inclusion_fr_thresh
+is_cell_included_in_epoch_mat
+# num_cells_included_in_epoch_mat: the num unique cells included in each epoch that mean the min_inclusion_fr_thresh criteria. Should have one value per epoch of interest.
+num_cells_included_in_epoch_mat = np.sum(is_cell_included_in_epoch_mat, 0)
+num_cells_included_in_epoch_mat
+
+
+_compute_epochs_num_aclu_inclusions(long_mean_replays_all_frs_mat, min_inclusion_fr_thresh=1.0)
+
+# + tags=["load", "single_session"]
+_compute_epochs_num_aclu_inclusions(short_mean_replays_all_frs_mat, min_inclusion_fr_thresh=1.0)
+
+# + tags=["load", "single_session"]
+
 
 # + tags=["load", "single_session"]
 # %pdb on
@@ -2839,7 +2881,7 @@ d
 #
 # long_session.replay
 #
-# # # # # # # # # # %pdb off
+# # # # # # # # # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
