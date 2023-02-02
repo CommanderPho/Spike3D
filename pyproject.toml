@@ -10,6 +10,7 @@ python = ">=3.9,<3.11"
 # pyphocorehelpers = {path = "C:/Users/pho/repos/pyPhoCoreHelpers"}
 # neuropy = {path = "C:/Users/pho/repos/NeuroPy"}
 pyphoplacecellanalysis = {path = "C:/Users/pho/repos/pyPhoPlaceCellAnalysis"}
+numba = "^0.56.4"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
