@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "spike3d"
+version = "0.1.0"
+description = "Primary 3D Analysis Package"
+authors = ["Pho Hale <CommanderPho@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+# pyphocorehelpers = {path = "C:/Users/pho/repos/pyPhoCoreHelpers"}
+# neuropy = {path = "C:/Users/pho/repos/NeuroPy"}
+
+
+[tool.poetry.group.dev.dependencies]
+pip = "^23.0"
+pyphoplacecellanalysis = {path = "C:/Users/pho/repos/pyPhoPlaceCellAnalysis"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
