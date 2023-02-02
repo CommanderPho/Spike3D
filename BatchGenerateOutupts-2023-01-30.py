@@ -256,9 +256,6 @@ x_frs_index, y_frs_index = long_short_fr_indicies_analysis_results['x_frs_index'
 # fig, _temp_full_fig_save_path = _plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index, active_context, fig_save_parent_path=fig_save_parent_path, debug_print=debug_print)
 
 # + tags=["load", "single_session"]
-
-
-# + tags=["load", "single_session"]
 long_mean_laps_all_frs, long_mean_replays_all_frs, short_mean_laps_all_frs, short_mean_replays_all_frs = [long_short_fr_indicies_analysis_results[k] for k in ['long_mean_laps_all_frs', 'long_mean_replays_all_frs', 'short_mean_laps_all_frs', 'short_mean_replays_all_frs']]
 
 # + tags=["load", "single_session"]
@@ -291,6 +288,7 @@ _compute_epochs_num_aclu_inclusions(long_mean_replays_all_frs_mat, min_inclusion
 _compute_epochs_num_aclu_inclusions(short_mean_replays_all_frs_mat, min_inclusion_fr_thresh=1.0)
 
 # + tags=["load", "single_session"]
+
 
 
 # + tags=["load", "single_session"]
@@ -2881,7 +2879,7 @@ d
 #
 # long_session.replay
 #
-# # # # # # # # # # # # %pdb off
+# # # # # # # # # # # # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
