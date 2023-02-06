@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.14.4
 #   kernelspec:
-#     display_name: Python [conda env:mamba_neuropy]
+#     display_name: Python 3 (ipykernel)
 #     language: python
-#     name: conda-env-mamba_neuropy-py
+#     name: python3
 # ---
 
 # + [markdown] tags=[]
@@ -2879,7 +2879,7 @@ d
 #
 # long_session.replay
 #
-# # # # # # # # # # # # # # # # %pdb off
+# # # # # # # # # # # # # # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
