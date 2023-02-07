@@ -11,6 +11,19 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/co
 sudo yum install python39 python39-pip
 sudo alternatives --set python /usr/bin/python3.9
 
+
+#### Windows:
+Use Chocolatey to install pyenv
+```
+choco install pyenv-win
+refreshEnv
+pyenv install 3.9.13
+pyenv local 3.9.13
+```
+
+
+
+
 ### Install Poetry:
 curl -sSL https://install.python-poetry.org | python3 -
 
