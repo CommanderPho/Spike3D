@@ -755,18 +755,6 @@ files = [
 graph = ["objgraph (>=1.7.2)"]
 
 [[package]]
-name = "docutils"
-version = "0.19"
-description = "Docutils -- Python Documentation Utilities"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "docutils-0.19-py3-none-any.whl", hash = "sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc"},
-    {file = "docutils-0.19.tar.gz", hash = "sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6"},
-]
-
-[[package]]
 name = "elephant"
 version = "0.11.2"
 description = "Elephant is a package for analysis of electrophysiology data in Python"
@@ -894,17 +882,6 @@ files = [
 
 [package.dependencies]
 wcwidth = ">=0.2.5"
-
-[[package]]
-name = "future"
-version = "0.18.3"
-description = "Clean single-source support for Python 3 and 2"
-category = "main"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-files = [
-    {file = "future-0.18.3.tar.gz", hash = "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"},
-]
 
 [[package]]
 name = "h5py"
@@ -1947,6 +1924,33 @@ files = [
 dev = ["black", "bumpver", "coveralls", "isort", "pip-tools", "pytest", "pytest-cov"]
 
 [[package]]
+name = "opencv-python"
+version = "4.7.0.68"
+description = "Wrapper package for OpenCV python bindings."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "opencv-python-4.7.0.68.tar.gz", hash = "sha256:9829e6efedde1d1b8419c5bd4d62d289ecbf44ae35b843c6da9e3cbcba1a9a8a"},
+    {file = "opencv_python-4.7.0.68-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:abc6adfa8694f71a4caffa922b279bd9d96954a37eee40b147f613c64310b411"},
+    {file = "opencv_python-4.7.0.68-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:86f4b60b9536948f16d2170ba3a9b22d3955a957dc61a9bc56e53692c6db2c7e"},
+    {file = "opencv_python-4.7.0.68-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6d1c993811f92ddd7919314ada7b9be1f23db1c73f1384915c834dee8549c0b9"},
+    {file = "opencv_python-4.7.0.68-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3a00e12546e5578f6bb7ed408c37fcfea533d74e9691cfaf40926f6b43295577"},
+    {file = "opencv_python-4.7.0.68-cp37-abi3-win32.whl", hash = "sha256:e770e9f653a0e5e72b973adb8213fae2df4642730ba1faf31e73a54287a4d5d4"},
+    {file = "opencv_python-4.7.0.68-cp37-abi3-win_amd64.whl", hash = "sha256:7a08f9d1f9dd52de63a7bb448ab7d6d4a1a85b767c2358501d968d1e4d95098d"},
+]
+
+[package.dependencies]
+numpy = [
+    {version = ">=1.21.0", markers = "python_version <= \"3.9\" and platform_system == \"Darwin\" and platform_machine == \"arm64\""},
+    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
+    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
+    {version = ">=1.19.3", markers = "python_version >= \"3.6\" and platform_system == \"Linux\" and platform_machine == \"aarch64\" or python_version >= \"3.9\""},
+    {version = ">=1.17.0", markers = "python_version >= \"3.7\""},
+    {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
+]
+
+[[package]]
 name = "openpyxl"
 version = "3.1.0"
 description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
@@ -2460,18 +2464,6 @@ files = [
 ]
 
 [[package]]
-name = "pycodestyle"
-version = "2.10.0"
-description = "Python style guide checker"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pycodestyle-2.10.0-py2.py3-none-any.whl", hash = "sha256:8a4eaf0d0495c7395bdab3589ac2db602797d76207242c17d470186815706610"},
-    {file = "pycodestyle-2.10.0.tar.gz", hash = "sha256:347187bdb476329d98f695c213d7295a846d1152ff4fe9bacb8a9590b8ee7053"},
-]
-
-[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -2505,18 +2497,6 @@ doc = ["nbsite", "sphinx-ioam-theme"]
 tests = ["flake8", "pytest"]
 
 [[package]]
-name = "pyflakes"
-version = "3.0.1"
-description = "passive checker of Python programs"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pyflakes-3.0.1-py2.py3-none-any.whl", hash = "sha256:ec55bf7fe21fff7f1ad2f7da62363d749e2a470500eab1b555334b67aa1ef8cf"},
-    {file = "pyflakes-3.0.1.tar.gz", hash = "sha256:ec8b276a6b60bd80defed25add7e439881c19e64850afd9b346283d4165fd0fd"},
-]
-
-[[package]]
 name = "pygments"
 version = "2.14.0"
 description = "Pygments is a syntax highlighting package written in Python."
@@ -2542,6 +2522,31 @@ files = [
     {file = "PyOpenGL-3.1.6-py2-none-any.whl", hash = "sha256:57c597d989178e1413002df6b923619f6d29807501dece1c60cc6f12c0c8e8a7"},
     {file = "PyOpenGL-3.1.6-py3-none-any.whl", hash = "sha256:a7139bc3e15d656feae1f7e3ef68c799941ed43fadc78177a23db7e946c20738"},
     {file = "PyOpenGL-3.1.6.tar.gz", hash = "sha256:8ea6c8773927eda7405bffc6f5bb93be81569a7b05c8cac50cd94e969dce5e27"},
+]
+
+[[package]]
+name = "pyopengl-accelerate"
+version = "3.1.6"
+description = "Acceleration code for PyOpenGL"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "PyOpenGL-accelerate-3.1.6.tar.gz", hash = "sha256:ad8a300256eca25228261de16f741e51a30f34f1e1b1cf68359f5c62dbcdcdc3"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp27-cp27m-win32.whl", hash = "sha256:bf2ab411f5a8b60be82b950e173732ecc90d68cfb1f96fe514a0137ae2f5c014"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp27-cp27m-win_amd64.whl", hash = "sha256:bb05c5700e6e7dc47e04c7cf0b7ca917029d61968b9b3ea0702870cea831908f"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp310-cp310-win32.whl", hash = "sha256:02625dc72a5813bc4ecfc95d8d6d8f47668d29e03a469af376cabe8c9a41efda"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp310-cp310-win_amd64.whl", hash = "sha256:3f178eddf12f4b248469d363ae2c4f1cc0ea0335f9a6703da2fb4c44e21a88b4"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp35-cp35m-win32.whl", hash = "sha256:f05628ea4c2425c0dcaabfb54747e209becdc8a6322d192c78ea5df7e1360d4a"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp35-cp35m-win_amd64.whl", hash = "sha256:c531775131936e8d46bee4520fd938b89286aa8bb8f251b154dfd101e717ffc4"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp36-cp36m-win32.whl", hash = "sha256:7550f8049788c16f3a0ec3ffdc0c75ed0b6cf995661fa046cdec7753e34b202f"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp36-cp36m-win_amd64.whl", hash = "sha256:9311e0abfcca752bf94ba18c360f1d69b6bd3188fb946dd58fb84138bac038ba"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp37-cp37m-win32.whl", hash = "sha256:c070e40154b4bb472e55ac7b30e170f6224d525111872f9af01ea1f67089c5bc"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp37-cp37m-win_amd64.whl", hash = "sha256:7eda1eeda3782d6dab2a86145a6511fa9f08b56ba1c593fb480a74477c5d7361"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp38-cp38-win32.whl", hash = "sha256:16d74e60229e94b596d7c280577638d77f2900bd80a4dc325f6d1039376c82fe"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp38-cp38-win_amd64.whl", hash = "sha256:95346d10db577ba42587677f8071408258b16c55ee7c1cc549ae8ecdf3d893dd"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp39-cp39-win32.whl", hash = "sha256:1011841fed437d6d4b8ed77dde62eb2a0dc0b1cf6feb9805bb2a2481b1017384"},
+    {file = "PyOpenGL_accelerate-3.1.6-cp39-cp39-win_amd64.whl", hash = "sha256:2c6d5bbff45d76125ff684b9231442668f9d7101175568bd1da1d54c8ade725f"},
 ]
 
 [[package]]
@@ -2604,9 +2609,11 @@ elephant = "^0.11.2"
 findpeaks = "^2.4.4"
 klepto = "^0.2.3"
 neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"}
+opencv-python = "^4.7.0.68"
 pandas-flavor = "^0.3.0"
 param = "^1.12.3"
 pybursts = "^0.1.1"
+pyopengl-accelerate = "^3.1.6"
 pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"}
 qtmodern = "^0.2.0"
 shapely = "^2.0.1"
@@ -2615,71 +2622,7 @@ shapely = "^2.0.1"
 type = "git"
 url = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"
 reference = "HEAD"
-resolved_reference = "33529e34d1fa07e21872e8da85cb7d44302f066f"
-
-[[package]]
-name = "pyqode-core"
-version = "2.12.1"
-description = "PyQt/PySide Source Code Editor Widget"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyqode.core-2.12.1-py2.py3-none-any.whl", hash = "sha256:ad80a0de4938dbcf74f42f0d70c08e37ffacc9bb32b77e9964609455e17e321e"},
-    {file = "pyqode.core-2.12.1.tar.gz", hash = "sha256:776bdb3c0fb6b5de73b24ffaf36466499b96eede5a042be23c3ad09169f30b68"},
-]
-
-[package.dependencies]
-future = "*"
-pygments = "*"
-"pyqode.qt" = "*"
-
-[[package]]
-name = "pyqode-json"
-version = "2.10.0"
-description = "Adds JSon support to pyqode.core"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyqode.json-2.10.0-py2.py3-none-any.whl", hash = "sha256:5d3bd3e1f7293289a28485e504241dd0cb83f236d31a2a906059d5d17be9bc74"},
-    {file = "pyqode.json-2.10.0.tar.gz", hash = "sha256:b788884b4e625b8f388ba9c130f12bdc2364a221a4e1f61d35feab800d5c4aaf"},
-]
-
-[package.dependencies]
-"pyqode.core" = "*"
-
-[[package]]
-name = "pyqode-python"
-version = "2.12.1"
-description = "Adds python support to pyqode.core"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyqode.python-2.12.1-py2.py3-none-any.whl", hash = "sha256:c265ff1222b86e37564ec48a8f6f7fa0c694a20299f0e07b555f939c934f5656"},
-    {file = "pyqode.python-2.12.1.tar.gz", hash = "sha256:17079b014562dafa608eed210f73dc39b7a6d44d4e0bdbabff7c45b8d184e074"},
-]
-
-[package.dependencies]
-docutils = "*"
-jedi = "*"
-pycodestyle = "*"
-pyflakes = "*"
-"pyqode.core" = "*"
-"pyqode.qt" = "*"
-
-[[package]]
-name = "pyqode-qt"
-version = "2.10.0"
-description = "Shim library that wraps PyQt5, PyQt4 and PySide"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyqode.qt-2.10.0-py2.py3-none-any.whl", hash = "sha256:9533e81920cf54e78417c2ac5e3b8ff5179cd2f1c714db9b836ba4c6e15f2515"},
-    {file = "pyqode.qt-2.10.0.tar.gz", hash = "sha256:cfe97d85b210f0d77663c9df47bcb25bbb7cbbe2d9f58c0a9fd94e5e1d7daa2f"},
-]
+resolved_reference = "380ad3d985b88514a846634e8d77240a7695237c"
 
 [[package]]
 name = "pyqt5"
@@ -4117,4 +4060,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "da5edbeaf7d04e722b14b1079a3cc0695e42e351b9769a330be140d69b848aa6"
+content-hash = "11f6a302582b6e37e6934167e6d68abdcc09114fbff6a44e69e4ee6d6fc90be3"
