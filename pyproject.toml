@@ -24,6 +24,7 @@ wrapt = "1.11.2"
 mpl-multitab = {git = "https://github.com/CommanderPho/mpl-multitab.git"} # poetry add git+https://github.com/CommanderPho/mpl-multitab.git
 ansi2html = {git = "https://github.com/CommanderPho/ansi2html.git"} # poetry add git+https://github.com/CommanderPho/ansi2html.git
 vedo = {git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working"} # poetry add git+https://github.com/CommanderPho/vedo.git#release/pho-working
+pyqode-core = "^2.12.1"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
