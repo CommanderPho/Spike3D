@@ -14,15 +14,16 @@ numba = "^0.56.4"
 neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"}
 pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"}
 pybursts = "^0.1.1"
-# pyvista = "^0.38.1"
 pyvista = "^0.36.1"
-vedo = "^2023.4.3"
 pyvistaqt = "^0.9.0"
-mpl-multitab = "^0.0.1"
 loguru = "^0.6.0" # required for mpl-multitab
 pyopengl = "^3.1.6"
 qtawesome = "^1.2.2"
-haesleinhuepf-pyqode-python = "^2.15.2"
+haesleinhuepf-pyqode-python = {git = "https://github.com/CommanderPho/pyqode.python.git"}
+wrapt = "1.11.2"
+mpl-multitab = {git = "https://github.com/CommanderPho/mpl-multitab.git"} # poetry add git+https://github.com/CommanderPho/mpl-multitab.git
+ansi2html = {git = "https://github.com/CommanderPho/ansi2html.git"} # poetry add git+https://github.com/CommanderPho/ansi2html.git
+vedo = {git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working"} # poetry add git+https://github.com/CommanderPho/vedo.git#release/pho-working
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
