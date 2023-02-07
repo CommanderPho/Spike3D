@@ -6,6 +6,12 @@ brew install poetry
 poetry add git+https://github.com/CommanderPho/NeuroPy.git
 <!-- poetry add git+https://github.com/CommanderPho/pyPhoCoreHelpers.git -->
 poetry add git+https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
+poetry add git+https://github.com/CommanderPho/mpl-multitab.git
+poetry add git+https://github.com/CommanderPho/ansi2html.git
+poetry add git+https://github.com/CommanderPho/vedo.git#release/pho-working
+poetry add git+https://github.com/CommanderPho/pyqode.python.git
+
+poetry add git+https://github.com/CommanderPho/cnn_ripple.git
 
 
 poetry shell
