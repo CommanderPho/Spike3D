@@ -945,45 +945,6 @@ files = [
 numpy = ">=1.14.5"
 
 [[package]]
-name = "haesleinhuepf-pyqode-core"
-version = "2.15.5"
-description = "PyQt/PySide Source Code Editor Widget"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "haesleinhuepf-pyqode.core-2.15.5.tar.gz", hash = "sha256:3b8ca2623244cccc5d7cf3ab02906375a597686d670bab772049e18177db16eb"},
-    {file = "haesleinhuepf_pyqode.core-2.15.5-py2.py3-none-any.whl", hash = "sha256:229b0ae4ba230408e1bc9ebef3b60a905dcb1fdb632d464a7037886fa4b55d4c"},
-]
-
-[package.dependencies]
-future = "*"
-pygments = "*"
-
-[[package]]
-name = "haesleinhuepf-pyqode-python"
-version = "0.0.1"
-description = "Adds python support to pyqode.core"
-category = "main"
-optional = false
-python-versions = ">=3.9"
-files = []
-develop = false
-
-[package.dependencies]
-docutils = "*"
-"haesleinhuepf-pyqode.core" = "*"
-jedi = "*"
-pycodestyle = "*"
-pyflakes = "*"
-
-[package.source]
-type = "git"
-url = "https://github.com/CommanderPho/pyqode.python.git"
-reference = "HEAD"
-resolved_reference = "818440b3207a9ea2cfd4ddbd52b9b37a0d54a1f7"
-
-[[package]]
 name = "hdf5storage"
 version = "0.1.19"
 description = "Utilities to read/write Python types to/from HDF5 files, including MATLAB v7.3 MAT files."
@@ -2674,6 +2635,41 @@ pygments = "*"
 "pyqode.qt" = "*"
 
 [[package]]
+name = "pyqode-json"
+version = "2.10.0"
+description = "Adds JSon support to pyqode.core"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyqode.json-2.10.0-py2.py3-none-any.whl", hash = "sha256:5d3bd3e1f7293289a28485e504241dd0cb83f236d31a2a906059d5d17be9bc74"},
+    {file = "pyqode.json-2.10.0.tar.gz", hash = "sha256:b788884b4e625b8f388ba9c130f12bdc2364a221a4e1f61d35feab800d5c4aaf"},
+]
+
+[package.dependencies]
+"pyqode.core" = "*"
+
+[[package]]
+name = "pyqode-python"
+version = "2.12.1"
+description = "Adds python support to pyqode.core"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyqode.python-2.12.1-py2.py3-none-any.whl", hash = "sha256:c265ff1222b86e37564ec48a8f6f7fa0c694a20299f0e07b555f939c934f5656"},
+    {file = "pyqode.python-2.12.1.tar.gz", hash = "sha256:17079b014562dafa608eed210f73dc39b7a6d44d4e0bdbabff7c45b8d184e074"},
+]
+
+[package.dependencies]
+docutils = "*"
+jedi = "*"
+pycodestyle = "*"
+pyflakes = "*"
+"pyqode.core" = "*"
+"pyqode.qt" = "*"
+
+[[package]]
 name = "pyqode-qt"
 version = "2.10.0"
 description = "Shim library that wraps PyQt5, PyQt4 and PySide"
@@ -4121,4 +4117,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "734a926802b4affa6de167a38062340cebf4f7fc88dde2a8b628f18b93c0fa41"
+content-hash = "da5edbeaf7d04e722b14b1079a3cc0695e42e351b9769a330be140d69b848aa6"
