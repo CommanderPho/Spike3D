@@ -755,18 +755,6 @@ files = [
 graph = ["objgraph (>=1.7.2)"]
 
 [[package]]
-name = "docutils"
-version = "0.19"
-description = "Docutils -- Python Documentation Utilities"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "docutils-0.19-py3-none-any.whl", hash = "sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc"},
-    {file = "docutils-0.19.tar.gz", hash = "sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6"},
-]
-
-[[package]]
 name = "elephant"
 version = "0.11.2"
 description = "Elephant is a package for analysis of electrophysiology data in Python"
@@ -896,17 +884,6 @@ files = [
 wcwidth = ">=0.2.5"
 
 [[package]]
-name = "future"
-version = "0.18.3"
-description = "Clean single-source support for Python 3 and 2"
-category = "main"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-files = [
-    {file = "future-0.18.3.tar.gz", hash = "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"},
-]
-
-[[package]]
 name = "h5py"
 version = "3.8.0"
 description = "Read and write HDF5 files from Python"
@@ -943,22 +920,6 @@ files = [
 
 [package.dependencies]
 numpy = ">=1.14.5"
-
-[[package]]
-name = "haesleinhuepf-pyqode-core"
-version = "2.15.5"
-description = "PyQt/PySide Source Code Editor Widget"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "haesleinhuepf-pyqode.core-2.15.5.tar.gz", hash = "sha256:3b8ca2623244cccc5d7cf3ab02906375a597686d670bab772049e18177db16eb"},
-    {file = "haesleinhuepf_pyqode.core-2.15.5-py2.py3-none-any.whl", hash = "sha256:229b0ae4ba230408e1bc9ebef3b60a905dcb1fdb632d464a7037886fa4b55d4c"},
-]
-
-[package.dependencies]
-future = "*"
-pygments = "*"
 
 [[package]]
 name = "hdf5storage"
@@ -2356,7 +2317,7 @@ tabulate = "*"
 name = "pip"
 version = "23.0"
 description = "The PyPA recommended tool for installing Python packages."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2503,18 +2464,6 @@ files = [
 ]
 
 [[package]]
-name = "pycodestyle"
-version = "2.10.0"
-description = "Python style guide checker"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pycodestyle-2.10.0-py2.py3-none-any.whl", hash = "sha256:8a4eaf0d0495c7395bdab3589ac2db602797d76207242c17d470186815706610"},
-    {file = "pycodestyle-2.10.0.tar.gz", hash = "sha256:347187bdb476329d98f695c213d7295a846d1152ff4fe9bacb8a9590b8ee7053"},
-]
-
-[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -2546,18 +2495,6 @@ build = ["param (>=1.7.0)", "setuptools"]
 cmd = ["pyyaml", "requests"]
 doc = ["nbsite", "sphinx-ioam-theme"]
 tests = ["flake8", "pytest"]
-
-[[package]]
-name = "pyflakes"
-version = "3.0.1"
-description = "passive checker of Python programs"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pyflakes-3.0.1-py2.py3-none-any.whl", hash = "sha256:ec55bf7fe21fff7f1ad2f7da62363d749e2a470500eab1b555334b67aa1ef8cf"},
-    {file = "pyflakes-3.0.1.tar.gz", hash = "sha256:ec8b276a6b60bd80defed25add7e439881c19e64850afd9b346283d4165fd0fd"},
-]
 
 [[package]]
 name = "pygments"
@@ -2685,31 +2622,7 @@ shapely = "^2.0.1"
 type = "git"
 url = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"
 reference = "HEAD"
-resolved_reference = "17d8906f4a781f60c21bbb716788df11e4271806"
-
-[[package]]
-name = "pyqode-python"
-version = "3.0.1"
-description = "Adds python support to pyqode.core"
-category = "main"
-optional = false
-python-versions = ">=3.9"
-files = []
-develop = false
-
-[package.dependencies]
-docutils = "*"
-"haesleinhuepf-pyqode.core" = "*"
-jedi = "*"
-pip = "^23.0"
-pycodestyle = "*"
-pyflakes = "*"
-
-[package.source]
-type = "git"
-url = "https://github.com/CommanderPho/pyqode.python.git"
-reference = "no-poetry"
-resolved_reference = "58c2f1d69485be4855744c93b9fa74f361b11db8"
+resolved_reference = "9959fbde8bc6a4d7db029a609db49c054ceca95f"
 
 [[package]]
 name = "pyqt5"
@@ -4147,4 +4060,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "7db930d787a32edb6753a2444fd98ce1c30f012e0e4a3186a20b4d77265962fb"
+content-hash = "11f6a302582b6e37e6934167e6d68abdcc09114fbff6a44e69e4ee6d6fc90be3"
