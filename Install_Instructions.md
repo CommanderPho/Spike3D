@@ -2,6 +2,18 @@
 
 brew install poetry
 
+#### Linux (RHEL 8):
+<!-- sudo dnf install wget yum-utils make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
+wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz  -->
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_installing-and-using-python_configuring-basic-system-settings
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_configuring-the-unversioned-python_configuring-basic-system-settings
+# To install Python 3.9.X and set it as the default system python:
+sudo yum install python39 python39-pip
+sudo alternatives --set python /usr/bin/python3.9
+
+### Install Poetry:
+curl -sSL https://install.python-poetry.org | python3 -
+
 
 poetry add git+https://github.com/CommanderPho/NeuroPy.git
 <!-- poetry add git+https://github.com/CommanderPho/pyPhoCoreHelpers.git -->

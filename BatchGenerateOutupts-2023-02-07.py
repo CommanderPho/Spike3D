@@ -220,24 +220,24 @@ print(f'basedir: {str(basedir)}')
 # ==================================================================================================================== #
 # Load Pipeline                                                                                                        #
 # ==================================================================================================================== #
-with VizTracer(output_file=f"viztracer_{get_now_time_str()}-batch_load_session.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
+# with VizTracer(output_file=f"viztracer_{get_now_time_str()}-batch_load_session.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE, force_reload=False, skip_extended_batch_computations=False)
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False)
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=False) # temp no-save
     # SAVE AFTERWARDS!
 
-    active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
-                                            # '_perform_position_decoding_computation', 
-                                            '_perform_firing_rate_trends_computation',
-                                            # '_perform_pf_find_ratemap_peaks_computation',
-                                            # '_perform_time_dependent_pf_sequential_surprise_computation'
-                                            # '_perform_two_step_position_decoding_computation',
-                                            # '_perform_recursive_latent_placefield_decoding'
-                                        ]
-    
-    curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir,
-                                              computation_functions_name_whitelist=active_computation_functions_name_whitelist,
-                                              saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
+active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+                                        # '_perform_position_decoding_computation', 
+                                        '_perform_firing_rate_trends_computation',
+                                        # '_perform_pf_find_ratemap_peaks_computation',
+                                        # '_perform_time_dependent_pf_sequential_surprise_computation'
+                                        # '_perform_two_step_position_decoding_computation',
+                                        # '_perform_recursive_latent_placefield_decoding'
+                                    ]
+
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir,
+                                          computation_functions_name_whitelist=active_computation_functions_name_whitelist,
+                                          saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
 
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
@@ -2074,7 +2074,7 @@ widget.draw()
 main_plot_widget
 
 # + [markdown] tags=[]
-# ## Exploring 'Plot' Helper class:
+# ## 🎨 Exploring 'Plot' Helper class:
 # -
 
 curr_active_pipeline.plot._display_1d_placefields
@@ -2901,5 +2901,25 @@ long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_repla
 out = curr_active_pipeline.sess.perform_compute_estimated_replay_epochs()
 out
 
+
+out2 = curr_active_pipeline.filtered_sessions['maze'].perform_compute_estimated_replay_epochs()
+out2
+
+active_sess = curr_active_pipeline.filtered_sessions['maze']
+active_sess
+
+active_sess.replay
+
+active_sess.pbe
+
+active_sess.custom_replay = deepcopy(out2)
+
+active_sess.custom_replay
+
+active_sess.epochs
+
+active_sess.comput
+# Ideally could access all of the 'Epoch'-type members (or Epoch-convertable dataframes) the object (session in this case) has. This allows visualizations to "discover" the possible types of data they can visualize without having to code a custom menu-item/visualization/etc for each type of epoch. Ideally this like a "trait" or something, perhaps a property decorator?
+# Makes the most sense for computed data?
 
 
