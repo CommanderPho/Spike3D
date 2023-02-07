@@ -8,9 +8,9 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.4
   kernelspec:
-    display_name: Python [conda env:phoviz_ultimate]
+    display_name: spike3d-poetry
     language: python
-    name: conda-env-phoviz_ultimate-py
+    name: spike3d-poetry
 ---
 
 <!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
@@ -166,7 +166,7 @@ add_PBEs_intervals/remove_PBEs_intervals
 ## Screenshots
 <!-- #endregion -->
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 ### 3D Interval Rects
 #rectangles #IntervalRectsItem #interval #PBEs #3d #spike3d 
 
@@ -174,16 +174,16 @@ add_PBEs_intervals/remove_PBEs_intervals
 Here you can see many short intervals rendered as cyan rectangles on the floor of the 3D Raster
 <!-- #endregion -->
 
-<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default Scene=true pycharm={"is_executing": false, "name": "#%%\n"} tags=["ActiveScene", "gui", "launch", "main_run"] -->
 `active_3d_plot.add_rendered_intervals(new_ripples_intervals_datasource, name='new_ripples')`
 <!-- #endregion -->
 
-<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default Scene=true pycharm={"is_executing": false, "name": "#%%\n"} tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ![python_JwdIMVHpEQ.png](attachment:52498aab-31a8-4a0b-8add-0728809de9ab.png)
 ![image.png](attachment:dabc70cf-76b1-45b6-b7a0-a3bf785e5391.png)
 <!-- #endregion -->
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## ◽📣 ✅ Testing 2D Rectangle Epochs on Raster Plot
 <!-- #endregion -->
 
@@ -221,7 +221,7 @@ interval_info = active_2d_plot.list_all_rendered_intervals()
 interval_info
 ```
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## 📣 Programmatically adding several epoch rectangles by calling the addRenderable context menu functions all at once for SpikeRaster2D
 <!-- #endregion -->
 
@@ -232,7 +232,7 @@ for a_command in menu_commands:
     add_renderables_menu[a_command].trigger()    
 ```
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## ◽📣 Updating Epochs visual appearance
 <!-- #endregion -->
 
@@ -276,11 +276,11 @@ interval_datasource = Ripples_2DRenderTimeEpochs.build_render_time_epochs_dataso
 spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(interval_datasource, name='CustomRipples', debug_print=False) # removes the rendered intervals
 ```
 
-<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] -->
+<!-- #region scene__Default Scene=true pycharm={"is_executing": false, "name": "#%%\n"} tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Concise Update:
 <!-- #endregion -->
 
-```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python Scene=true pycharm={"is_executing": false, "name": "#%%\n"} scene__Default tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs, inline_mkColor
 ## Inline Concise: Position Replays, PBEs, and Ripples all below the scatter:
 # active_2d_plot.interval_datasources.Replays.update_visualization_properties(lambda active_df, **kwargs: General2DRenderTimeEpochs._update_df_visualization_columns(active_df, y_location=-10.0, height=7.5, pen_color=inline_mkColor('orange', 0.8), brush_color=inline_mkColor('orange', 0.5), **kwargs)) ## Fully inline
@@ -297,18 +297,18 @@ active_2d_plot.update_rendered_intervals_visualization_properties(epochs_update_
 
 ```
 
-<!-- #region scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region scene__Default Scene=true jp-MarkdownHeadingCollapsed=true pycharm={"is_executing": false, "name": "#%%\n"} tags=["ActiveScene", "gui", "launch", "main_run"] -->
 ### Build Stacked Layout:
 <!-- #endregion -->
 
-```python scene__Default pycharm={"is_executing": false, "name": "#%%\n"} Scene=true tags=["ActiveScene", "gui", "launch", "main_run"]
+```python Scene=true pycharm={"is_executing": false, "name": "#%%\n"} scene__Default tags=["ActiveScene", "gui", "launch", "main_run"]
 desired_interval_height_ratios = [2.0, 2.0, 1.0, 0.1, 1.0, 1.0, 1.0] # ratio of heights to each interval
 required_vertical_offsets, required_interval_heights = EpochRenderingMixin.build_stacked_epoch_layout(desired_interval_height_ratios, epoch_render_stack_height=20.0, interval_stack_location='below')
 stacked_epoch_layout_dict = {interval_key:dict(y_location=y_location, height=height) for interval_key, y_location, height in zip(rendered_interval_keys, required_vertical_offsets, required_interval_heights)} # Build a stacked_epoch_layout_dict to update the display
 active_2d_plot.update_rendered_intervals_visualization_properties(stacked_epoch_layout_dict)
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## ◽📣 Get list of existing interval rect datasources:
 blah blah
 <!-- #endregion -->
@@ -333,7 +333,7 @@ active_2d_plot.interval_datasources # RenderPlotsData
 active_2d_plot.interval_datasources.PBEs # IntervalsDatasource
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## ◽📣 Update existing interval rects:
 Write a function that takes your existing datasource dataframe and updates its columns.
 <!-- #endregion -->
@@ -433,7 +433,7 @@ stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_view(epoch_slic
 params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
 ```
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## ◽📣 Removing/Clearing existing interval rects:
 <!-- #endregion -->
 
