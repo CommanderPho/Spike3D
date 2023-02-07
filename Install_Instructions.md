@@ -1,10 +1,33 @@
+## Updated 2023-02-06 Poetry Environment Install
+
+brew install poetry
+
+
+poetry add git+https://github.com/CommanderPho/NeuroPy.git
+<!-- poetry add git+https://github.com/CommanderPho/pyPhoCoreHelpers.git -->
+poetry add git+https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
+
+
+poetry shell
+
+
+poetry install --all-extras
+
+
+
+
+----
+(spike3d-py3.10) (base) ➜  Spike3D git:(master) ✗ which python
+/Users/pho/Library/Caches/pypoetry/virtualenvs/spike3d-b38JC3r7-py3.10/bin/python
+
+
+
+
+
+----------------
 
 conda install -c conda-forge jupyterlab
-
-
-conda cr
 mamba create -n viz3d matplotlib seaborn pymc jupyterlab pyvista vaex ipympl hdf5storage ipywidgets ipygany ipyvolume ipyvtklink panel -c conda-forge
-
 
 # Updated 2022-03-08 Environment Install
 ## Creates the new environment from the .yml file:
