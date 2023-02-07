@@ -14,6 +14,15 @@ numba = "^0.56.4"
 neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"}
 pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"}
 pybursts = "^0.1.1"
+# pyvista = "^0.38.1"
+pyvista = "^0.36.1"
+vedo = "^2023.4.3"
+pyvistaqt = "^0.9.0"
+mpl-multitab = "^0.0.1"
+loguru = "^0.6.0" # required for mpl-multitab
+pyopengl = "^3.1.6"
+qtawesome = "^1.2.2"
+haesleinhuepf-pyqode-python = "^2.15.2"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
