@@ -671,14 +671,23 @@ ssh = ["bcrypt (>=3.1.5)"]
 test = ["hypothesis (>=1.11.4,!=3.79.2)", "iso8601", "pretend", "pytest (>=6.2.0)", "pytest-benchmark", "pytest-cov", "pytest-subtests", "pytest-xdist", "pytz"]
 
 [[package]]
-name = "cupy"
+name = "cupy-cuda11x"
 version = "11.5.0"
 description = "CuPy: NumPy & SciPy for GPU"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "cupy-11.5.0.tar.gz", hash = "sha256:4bc8565bded22cc89b210fd9fb48a5d5316f30701e12bb23852a60314e1f9f6e"},
+    {file = "cupy_cuda11x-11.5.0-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:f801152415393ddcfb3818707c8c93058e63421755259584432f7414270e8882"},
+    {file = "cupy_cuda11x-11.5.0-cp310-cp310-win_amd64.whl", hash = "sha256:6a5b363c36815a57bb2ef55daa99d07a8903d43af6f595b8d62552f28a2c4401"},
+    {file = "cupy_cuda11x-11.5.0-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:5fd21e5d8b9d2e9c59cdc046d4f905fa931f2a3db3f0842aad30f98d77c6bbf9"},
+    {file = "cupy_cuda11x-11.5.0-cp311-cp311-win_amd64.whl", hash = "sha256:4e44f2ab9b960d9dfbf9bb7b6fe188d6473d32cc9322fc271d5f9b6f2afaadf3"},
+    {file = "cupy_cuda11x-11.5.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:e49ec76479b0b9e5f8982b4cc92e2da7590ced73f0d2de3688b61ffa2e668219"},
+    {file = "cupy_cuda11x-11.5.0-cp37-cp37m-win_amd64.whl", hash = "sha256:ba7fcffdbf688a0de96b2bf93b7b19f5288ca6a02accac3235010beea4c35b3f"},
+    {file = "cupy_cuda11x-11.5.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:8e59b728a4432347a5062a5b2d8941657f048c9771869ed8c0d50ad4fc120485"},
+    {file = "cupy_cuda11x-11.5.0-cp38-cp38-win_amd64.whl", hash = "sha256:4a308a6fd5f481d894eb563056ef6fce776027db4a739cc0c47976311d6996db"},
+    {file = "cupy_cuda11x-11.5.0-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:ca6fccb29f5f3b5fb481689b17067557faec8f9358448910a050a8e80e5eddf7"},
+    {file = "cupy_cuda11x-11.5.0-cp39-cp39-win_amd64.whl", hash = "sha256:8da616fabbeb410dd264bda724c3a2d2b289f4b2f32ede96bc91f6b0f058f72e"},
 ]
 
 [package.dependencies]
@@ -1942,7 +1951,7 @@ files = [
 
 [[package]]
 name = "neuropy"
-version = "0.0.3"
+version = "0.0.5"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "main"
 optional = false
@@ -1951,7 +1960,7 @@ files = []
 develop = false
 
 [package.dependencies]
-cupy = {version = "^11.5.0", optional = true}
+cupy-cuda11x = {version = "^11.5.0", optional = true}
 h5py = "^3.8.0"
 hdf5storage = "^0.1.19"
 hmmlearn = "^0.2.8"
@@ -1971,14 +1980,14 @@ scipy = "^1.6"
 seaborn = "^0.12.2"
 
 [package.extras]
-acceleration = ["cupy (>=11.5.0,<12.0.0)", "numba (>=0.56.4,<0.57.0)"]
+acceleration = ["cupy-cuda11x (>=11.5.0,<12.0.0)", "numba (>=0.56.4,<0.57.0)"]
 gui = ["tqdm (>=4.64.1,<5.0.0)"]
 
 [package.source]
 type = "git"
 url = "https://github.com/CommanderPho/NeuroPy.git"
 reference = "HEAD"
-resolved_reference = "a5d97999c4105c96388c0d52475a3c162b47d546"
+resolved_reference = "ba817f52ef0dbb4e11988b42a58417cf4c62873e"
 
 [[package]]
 name = "numba"
@@ -2745,7 +2754,7 @@ shapely = "^2.0.1"
 type = "git"
 url = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"
 reference = "HEAD"
-resolved_reference = "2323aaa87f97ba5edf6427ed4edd5c14394a6750"
+resolved_reference = "86cdf6a09583216f4ee1a07e02efff559453b0ae"
 
 [[package]]
 name = "pyqt5"
@@ -4183,4 +4192,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "3c843c822aa755cee65fbaa0105bb24e4774708aa576a8fdf7ab2ac069437d6a"
+content-hash = "2fac221a4156ec3c5475d800553be388ce7a1b558b7bb779e9548a26778c161b"
