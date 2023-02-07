@@ -30,7 +30,7 @@ vedo = {git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-wor
 # "pho-pyqode-core" = {git = "https://github.com/CommanderPho/pyqode.core.git"}
 # "pyqode.python" = {git = "https://github.com/CommanderPho/pyqode.python.git"} # to fix: AttributeError: module 'pyflakes.messages' has no attribute 'ReturnWithArgsInsideGenerator'
 # no-poetry
-"pyqode.python" = {git = "https://github.com/CommanderPho/pyqode.python.git", rev = "no-poetry"}
+# "pyqode.python" = {git = "https://github.com/CommanderPho/pyqode.python.git", rev = "no-poetry"}
 # poetry add git+https://github.com/CommanderPho/pyqode.python.git#no-poetry
 # pyqode-python = "^2.12.1"
 # pyqode-json = "^2.10.0"
