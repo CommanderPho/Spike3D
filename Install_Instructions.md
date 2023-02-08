@@ -18,7 +18,8 @@ Use Chocolatey to install pyenv
 choco install pyenv-win
 refreshEnv
 pyenv install 3.9.13
-pyenv local 3.9.13
+pyenv local 3.9.13 # this sets the new install to be the local Python version (in the directory where this command is ran)
+
 ```
 
 
@@ -55,7 +56,7 @@ poetry install --all-extras
 
 
 ## Run Poetry environment in globally installed Jupyter-lab (as kernel):
-
+`poetry run ipython kernel install --user --name=spike3d-poetry`
 ```
 (spike3d-py3.9) C:\Users\pho\repos\PhoPy3DPositionAnalysis2021>poetry run ipython kernel install --user --name=spike3d-poetry
 Installed kernelspec spike3d-poetry in C:\Users\pho\AppData\Roaming\jupyter\kernels\spike3d-poetry
