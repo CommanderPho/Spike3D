@@ -153,13 +153,13 @@ tests-no-zope = ["cloudpickle", "cloudpickle", "hypothesis", "hypothesis", "mypy
 
 [[package]]
 name = "autobahn"
-version = "23.1.1"
+version = "23.1.2"
 description = "WebSocket client & server library, WAMP real-time framework"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "autobahn-23.1.1.tar.gz", hash = "sha256:a88882ab4700ee9eee46c69c38e2b625f6fda48ab1ce61cf7b58b23cf2fadcb8"},
+    {file = "autobahn-23.1.2.tar.gz", hash = "sha256:c5ef8ca7422015a1af774a883b8aef73d4954c9fcd182c9b5244e08e973f7c3a"},
 ]
 
 [package.dependencies]
@@ -169,7 +169,7 @@ setuptools = "*"
 txaio = ">=21.2.1"
 
 [package.extras]
-all = ["PyGObject (>=3.40.0)", "argon2_cffi (>=20.1.0)", "attrs (>=20.3.0)", "base58 (>=2.1.0)", "cbor2 (>=5.2.0)", "cffi (>=1.14.5)", "click (>=8.1.2)", "ecdsa (>=0.16.1)", "eth-abi (>=2.1.1)", "flatbuffers (>=22.12.6)", "hkdf (>=0.0.3)", "jinja2 (>=2.11.3)", "mnemonic (>=0.19)", "msgpack (>=1.0.2)", "passlib (>=1.7.4)", "py-ecc (>=5.1.0)", "py-eth-sig-utils (>=0.4.0)", "py-multihash (>=2.0.1)", "py-ubjson (>=0.16.1)", "pynacl (>=1.4.0)", "pyopenssl (>=20.0.1)", "python-snappy (>=0.6.0)", "pytrie (>=0.4.0)", "qrcode (>=7.3.1)", "rlp (>=2.0.1)", "service_identity (>=18.1.0)", "spake2 (>=0.8)", "twisted (>=20.3.0)", "ujson (>=4.0.2)", "web3 (>=5.31.3)", "xbr (>=21.2.1)", "yapf (==0.29.0)", "zlmdb (>=21.2.1)", "zope.interface (>=5.2.0)"]
+all = ["PyGObject (>=3.40.0)", "argon2_cffi (>=20.1.0)", "attrs (>=20.3.0)", "base58 (>=2.1.0)", "cbor2 (>=5.2.0)", "cffi (>=1.14.5)", "click (>=8.1.2)", "ecdsa (>=0.16.1)", "eth-abi @ git+https://github.com/ethereum/eth-abi.git@v4.0.0-beta.2", "flatbuffers (>=22.12.6)", "hkdf (>=0.0.3)", "jinja2 (>=2.11.3)", "mnemonic (>=0.19)", "msgpack (>=1.0.2)", "passlib (>=1.7.4)", "py-ecc (>=5.1.0)", "py-eth-sig-utils (>=0.4.0)", "py-multihash (>=2.0.1)", "py-ubjson (>=0.16.1)", "pynacl (>=1.4.0)", "pyopenssl (>=20.0.1)", "python-snappy (>=0.6.0)", "pytrie (>=0.4.0)", "qrcode (>=7.3.1)", "rlp (>=2.0.1)", "service_identity (>=18.1.0)", "spake2 (>=0.8)", "twisted (>=20.3.0)", "ujson (>=4.0.2)", "web3[ipfs] @ git+https://github.com/ethereum/web3.py.git@v6.0.0-beta.9", "xbr (>=21.2.1)", "yapf (==0.29.0)", "zlmdb (>=21.2.1)", "zope.interface (>=5.2.0)"]
 compress = ["python-snappy (>=0.6.0)"]
 dev = ["backports.tempfile (>=1.0)", "bumpversion (>=0.5.3)", "codecov (>=2.0.15)", "flake8 (<5)", "humanize (>=0.5.1)", "mypy (>=0.610)", "passlib", "pep8-naming (>=0.3.3)", "pip (>=9.0.1)", "pyenchant (>=1.6.6)", "pyflakes (>=1.0.0)", "pyinstaller (>=4.2)", "pylint (>=1.9.2)", "pytest (>=3.4.2)", "pytest-aiohttp", "pytest-asyncio (>=0.14.0)", "pytest-runner (>=2.11.1)", "pyyaml (>=4.2b4)", "qualname", "sphinx (>=1.7.1)", "sphinx-autoapi (>=1.7.0)", "sphinx_rtd_theme (>=0.1.9)", "sphinxcontrib-images (>=0.9.1)", "tox (>=4.2.8)", "tox-gh-actions (>=2.2.0)", "twine (>=3.3.0)", "twisted (>=22.10.0)", "txaio (>=20.4.1)", "watchdog (>=0.8.3)", "wheel (>=0.36.2)", "yapf (==0.29.0)"]
 encryption = ["pynacl (>=1.4.0)", "pyopenssl (>=20.0.1)", "pytrie (>=0.4.0)", "qrcode (>=7.3.1)", "service_identity (>=18.1.0)"]
@@ -178,7 +178,7 @@ scram = ["argon2_cffi (>=20.1.0)", "cffi (>=1.14.5)", "passlib (>=1.7.4)"]
 serialization = ["cbor2 (>=5.2.0)", "flatbuffers (>=22.12.6)", "msgpack (>=1.0.2)", "py-ubjson (>=0.16.1)", "ujson (>=4.0.2)"]
 twisted = ["attrs (>=20.3.0)", "twisted (>=20.3.0)", "zope.interface (>=5.2.0)"]
 ui = ["PyGObject (>=3.40.0)"]
-xbr = ["base58 (>=2.1.0)", "cbor2 (>=5.2.0)", "click (>=8.1.2)", "ecdsa (>=0.16.1)", "eth-abi (>=2.1.1)", "hkdf (>=0.0.3)", "jinja2 (>=2.11.3)", "mnemonic (>=0.19)", "py-ecc (>=5.1.0)", "py-eth-sig-utils (>=0.4.0)", "py-multihash (>=2.0.1)", "rlp (>=2.0.1)", "spake2 (>=0.8)", "twisted (>=20.3.0)", "web3 (>=5.31.3)", "xbr (>=21.2.1)", "yapf (==0.29.0)", "zlmdb (>=21.2.1)"]
+xbr = ["base58 (>=2.1.0)", "cbor2 (>=5.2.0)", "click (>=8.1.2)", "ecdsa (>=0.16.1)", "eth-abi @ git+https://github.com/ethereum/eth-abi.git@v4.0.0-beta.2", "hkdf (>=0.0.3)", "jinja2 (>=2.11.3)", "mnemonic (>=0.19)", "py-ecc (>=5.1.0)", "py-eth-sig-utils (>=0.4.0)", "py-multihash (>=2.0.1)", "rlp (>=2.0.1)", "spake2 (>=0.8)", "twisted (>=20.3.0)", "web3[ipfs] @ git+https://github.com/ethereum/web3.py.git@v6.0.0-beta.9", "xbr (>=21.2.1)", "yapf (==0.29.0)", "zlmdb (>=21.2.1)"]
 
 [[package]]
 name = "automat"
@@ -1909,6 +1909,18 @@ files = [
 ]
 
 [[package]]
+name = "objprint"
+version = "0.2.2"
+description = "A library that can print Python objects in human readable format"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "objprint-0.2.2-py3-none-any.whl", hash = "sha256:9f50bb3b7cbe95b6d22c79e4f08a5273e3f7e5ff5ce35e146f6e7854abd276a0"},
+    {file = "objprint-0.2.2.tar.gz", hash = "sha256:90f2f3c19dfda1b5eb50d87d82ccbc20511ca4f02c4878553c56edc711e39689"},
+]
+
+[[package]]
 name = "objsize"
 version = "0.6.1"
 description = "Traversal over Python's objects subtree and calculate the total size of the subtree in bytes (deep size)."
@@ -2525,31 +2537,6 @@ files = [
 ]
 
 [[package]]
-name = "pyopengl-accelerate"
-version = "3.1.6"
-description = "Acceleration code for PyOpenGL"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "PyOpenGL-accelerate-3.1.6.tar.gz", hash = "sha256:ad8a300256eca25228261de16f741e51a30f34f1e1b1cf68359f5c62dbcdcdc3"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp27-cp27m-win32.whl", hash = "sha256:bf2ab411f5a8b60be82b950e173732ecc90d68cfb1f96fe514a0137ae2f5c014"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp27-cp27m-win_amd64.whl", hash = "sha256:bb05c5700e6e7dc47e04c7cf0b7ca917029d61968b9b3ea0702870cea831908f"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp310-cp310-win32.whl", hash = "sha256:02625dc72a5813bc4ecfc95d8d6d8f47668d29e03a469af376cabe8c9a41efda"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp310-cp310-win_amd64.whl", hash = "sha256:3f178eddf12f4b248469d363ae2c4f1cc0ea0335f9a6703da2fb4c44e21a88b4"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp35-cp35m-win32.whl", hash = "sha256:f05628ea4c2425c0dcaabfb54747e209becdc8a6322d192c78ea5df7e1360d4a"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp35-cp35m-win_amd64.whl", hash = "sha256:c531775131936e8d46bee4520fd938b89286aa8bb8f251b154dfd101e717ffc4"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp36-cp36m-win32.whl", hash = "sha256:7550f8049788c16f3a0ec3ffdc0c75ed0b6cf995661fa046cdec7753e34b202f"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp36-cp36m-win_amd64.whl", hash = "sha256:9311e0abfcca752bf94ba18c360f1d69b6bd3188fb946dd58fb84138bac038ba"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp37-cp37m-win32.whl", hash = "sha256:c070e40154b4bb472e55ac7b30e170f6224d525111872f9af01ea1f67089c5bc"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp37-cp37m-win_amd64.whl", hash = "sha256:7eda1eeda3782d6dab2a86145a6511fa9f08b56ba1c593fb480a74477c5d7361"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp38-cp38-win32.whl", hash = "sha256:16d74e60229e94b596d7c280577638d77f2900bd80a4dc325f6d1039376c82fe"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp38-cp38-win_amd64.whl", hash = "sha256:95346d10db577ba42587677f8071408258b16c55ee7c1cc549ae8ecdf3d893dd"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp39-cp39-win32.whl", hash = "sha256:1011841fed437d6d4b8ed77dde62eb2a0dc0b1cf6feb9805bb2a2481b1017384"},
-    {file = "PyOpenGL_accelerate-3.1.6-cp39-cp39-win_amd64.whl", hash = "sha256:2c6d5bbff45d76125ff684b9231442668f9d7101175568bd1da1d54c8ade725f"},
-]
-
-[[package]]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -2591,7 +2578,7 @@ QtPy = "^2.1.0"
 type = "git"
 url = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"
 reference = "HEAD"
-resolved_reference = "34bfa11c4f9b7f0c1a8b3bb89562498f3d1f97b2"
+resolved_reference = "9566713e49d5fd45f37605dcf87ace1f349ebf4c"
 
 [[package]]
 name = "pyphoplacecellanalysis"
@@ -2613,7 +2600,6 @@ opencv-python = "^4.7.0.68"
 pandas-flavor = "^0.3.0"
 param = "^1.12.3"
 pybursts = "^0.1.1"
-pyopengl-accelerate = "^3.1.6"
 pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"}
 qtmodern = "^0.2.0"
 shapely = "^2.0.1"
@@ -2622,7 +2608,7 @@ shapely = "^2.0.1"
 type = "git"
 url = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"
 reference = "HEAD"
-resolved_reference = "9959fbde8bc6a4d7db029a609db49c054ceca95f"
+resolved_reference = "394e61716b4ca77230c26679463dc65182df5706"
 
 [[package]]
 name = "pyqt5"
@@ -3723,6 +3709,58 @@ reference = "release/pho-working"
 resolved_reference = "a0784a47d1b1a92f71b81f153c12856ccf7ec242"
 
 [[package]]
+name = "viztracer"
+version = "0.15.6"
+description = "A debugging and profiling tool that can trace and visualize python code execution"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "viztracer-0.15.6-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:73fbd8e6f7ebe7e1eb78dd6bedbec7b8a217aa9d4910d880268de26ec8089590"},
+    {file = "viztracer-0.15.6-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:917b6709d4880ecd4419fb627290e27026a3e01b45bd965f02b147579f093893"},
+    {file = "viztracer-0.15.6-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.manylinux_2_24_i686.whl", hash = "sha256:92253c2d83b30527ac423dc5be2f4a0bc68473548e81d91367cc98c915589824"},
+    {file = "viztracer-0.15.6-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f4598cf49fa4f58f476996df00af9b13c0300fd5e236629214cae4a409839a66"},
+    {file = "viztracer-0.15.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5f50c0f33d6396c19923d91f797baff8b7a3b8a08c3419164cc9e2a58af5bae4"},
+    {file = "viztracer-0.15.6-cp310-cp310-win32.whl", hash = "sha256:d9646c4f2ee4cde6f643d7060b5dd5d23e79e3689c9b1c55d3afa5a60d4a3572"},
+    {file = "viztracer-0.15.6-cp310-cp310-win_amd64.whl", hash = "sha256:dc65dcb8284d9b632c9abb2ab1185fba547a1eb419b33848a062927e9e1ddb89"},
+    {file = "viztracer-0.15.6-cp311-cp311-macosx_10_15_x86_64.whl", hash = "sha256:96ce96695583ca845d6d4b1bede44e2330a5fe672541ba066d723b215e4ba0d2"},
+    {file = "viztracer-0.15.6-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1a783a30fe759adc08ce482d6d3c94df1fd89ef4906b2b77ff3c43a6982365e7"},
+    {file = "viztracer-0.15.6-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.manylinux_2_24_i686.whl", hash = "sha256:95590ae898e8388bd4961d977977afa496fbe35f378f4f2f3b869d2e62ff0edb"},
+    {file = "viztracer-0.15.6-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c1ee3d8cf988f38018c6820d55292eb21781b95ec8bec29e9afd1d61dab28a13"},
+    {file = "viztracer-0.15.6-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b9d077b5415eb01792fb53362ab6142beb35914c655dae3d98df6000637267d1"},
+    {file = "viztracer-0.15.6-cp311-cp311-win32.whl", hash = "sha256:b7136f84f626676e18573dae0913525880cf156d16b9ddc5e7ec806d092c03d4"},
+    {file = "viztracer-0.15.6-cp311-cp311-win_amd64.whl", hash = "sha256:b393f15a66618c87fb7eeb2e072c35aa25c4b9449b37f82e3f00067bdd10b20b"},
+    {file = "viztracer-0.15.6-cp37-cp37m-macosx_10_15_x86_64.whl", hash = "sha256:4c579da3430a29e6bebb43f52487690aa120d0c3680e4039fc0db0a606cb4355"},
+    {file = "viztracer-0.15.6-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4210c39e8c40bbfdeda96d402f99ffdd6b078e8ab3d2137829f4833c5876bc27"},
+    {file = "viztracer-0.15.6-cp37-cp37m-manylinux_2_17_i686.manylinux2014_i686.manylinux_2_24_i686.whl", hash = "sha256:221362a11cd11942cd7c741335f5a805bd9293a0e762c36949bcc760fc1b5bca"},
+    {file = "viztracer-0.15.6-cp37-cp37m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1a702dfcbc9c6ad2a52f0cc1eb95f93620cdc2101637ae43d636d107e73df818"},
+    {file = "viztracer-0.15.6-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:08570e77d57263e3cac4279f5e60f280c1250cb04b1245e37da0cd4479abe9ef"},
+    {file = "viztracer-0.15.6-cp37-cp37m-win32.whl", hash = "sha256:e817ffe06d5a3cfd85abc98bdce6b03561069f3200f5e329cfca003366bfa83f"},
+    {file = "viztracer-0.15.6-cp37-cp37m-win_amd64.whl", hash = "sha256:33bb4a5990cb183c7150c435249cf4481974b9698cfebcd71fdba24de3458932"},
+    {file = "viztracer-0.15.6-cp38-cp38-macosx_10_15_x86_64.whl", hash = "sha256:35dce1ee0963baa9c6f032306f1c93f826ac3ac685f8d5d1e1749e5da927e270"},
+    {file = "viztracer-0.15.6-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9e46b5a5d057d549fcf5e0de830595286c8800dfa419c0d648f11fb1f5f7ac5d"},
+    {file = "viztracer-0.15.6-cp38-cp38-manylinux_2_17_i686.manylinux2014_i686.manylinux_2_24_i686.whl", hash = "sha256:12eb68546fa995b08f576d6dd97cd8b55c5f7bb45e0886652890ffebf2ffa781"},
+    {file = "viztracer-0.15.6-cp38-cp38-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c50a6e36cae6cbc571bd761dbbcba14e14069eafadc38745fd1fbae14a2a3538"},
+    {file = "viztracer-0.15.6-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:abd349608ee9efaf2cb3d0dc6c18a42ca3288ba32e0a4e8838afc9965e11e59a"},
+    {file = "viztracer-0.15.6-cp38-cp38-win32.whl", hash = "sha256:a5b8112ac24443345058b1bfe91b78cedea59a51cf8ac05d8912d642d88ee5e5"},
+    {file = "viztracer-0.15.6-cp38-cp38-win_amd64.whl", hash = "sha256:41117c0b8f418b1694cc95b48c6f1a28fd1936efe6d4e2982475bfe194d46d1b"},
+    {file = "viztracer-0.15.6-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:9df88a236685a3b368a3c33176b1e660c792fed67f4dfb29970c61b96769e88a"},
+    {file = "viztracer-0.15.6-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a0fef6e892356becfdf6c9d4b43ee6ff3349fecad0f2e0be068326e227e71c98"},
+    {file = "viztracer-0.15.6-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.manylinux_2_24_i686.whl", hash = "sha256:b7a0c216fd5eb29a6f8e0b3f546270b29738666a57df44fa7ccf0d7b31445099"},
+    {file = "viztracer-0.15.6-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7054ed15a10f8052c5f85d21e712df5cd6ed53c7b6c1d2aac9d482fee42b9743"},
+    {file = "viztracer-0.15.6-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ca356949ca34fc4462ae467fcd281ea96722442f67824214f5868d30551bc96b"},
+    {file = "viztracer-0.15.6-cp39-cp39-win32.whl", hash = "sha256:a0f927339a30442b0cf87c37e573c8b0423374f8664ec0daab29052fb9134d4a"},
+    {file = "viztracer-0.15.6-cp39-cp39-win_amd64.whl", hash = "sha256:c0bb60a012e130413ce2d0d7452349869e0bc09e8fc39053df60215b218915b8"},
+    {file = "viztracer-0.15.6.tar.gz", hash = "sha256:cfdbb2ae1a00f4903ec80ac1f9fadaf8f777f3d61082b98abd993795bd3da282"},
+]
+
+[package.dependencies]
+objprint = ">=0.1.3"
+
+[package.extras]
+full = ["orjson", "rich"]
+
+[[package]]
 name = "vtk"
 version = "9.0.3"
 description = "VTK is an open-source toolkit for 3D computer graphics, image processing, and visualization"
@@ -4060,4 +4098,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "11f6a302582b6e37e6934167e6d68abdcc09114fbff6a44e69e4ee6d6fc90be3"
+content-hash = "056446db6f88a8c6ea2ac7ef7006e1cb8016c107171e0e5b927726537a21c607"
