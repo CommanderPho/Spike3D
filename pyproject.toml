@@ -11,8 +11,8 @@ python = ">=3.9,<3.11"
 # neuropy = {path = "C:/Users/pho/repos/NeuroPy"}
 # pyphoplacecellanalysis = {path = "C:/Users/pho/repos/pyPhoPlaceCellAnalysis"}
 numba = "^0.56.4"
-neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"} # , rev = "main", extras = ["acceleration"]
-pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"}
+neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git", develop=true} # , rev = "main", extras = ["acceleration"]
+pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", develop=true}
 pybursts = "^0.1.1"
 pyvista = "^0.36.1"
 pyvistaqt = "^0.9.0"

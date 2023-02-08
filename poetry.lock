@@ -1797,7 +1797,7 @@ category = "main"
 optional = false
 python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 h5py = "^3.8.0"
@@ -2588,7 +2588,7 @@ category = "main"
 optional = false
 python-versions = ">=3.9,<3.11"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 dill = "^0.3.6"
@@ -4098,4 +4098,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "056446db6f88a8c6ea2ac7ef7006e1cb8016c107171e0e5b927726537a21c607"
+content-hash = "f6156787e31523d5fe9e6d1168f832ddaed67b94839ac5c36c1aed5139c463eb"
