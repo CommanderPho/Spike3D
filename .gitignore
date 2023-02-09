@@ -92,3 +92,4 @@ yarn.lock
 EXTERNAL/DEVELOPER_NOTES/2023-01-17 pyqt fiasco/MALNAMED.7z
 pipeline_cache_store_2023-01-19.h5
 viztracer_2023-01-*.json
+viztracer_*.json
