@@ -2916,7 +2916,31 @@ out = active_sess.perform_compute_estimated_replay_epochs()
 out
 
 
-out2 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, maximum_speed_thresh=2.0)
+# %pdb off
+out2 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=0.600, maximum_speed_thresh=2.0)
+# out2 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=2.0)
+out2
+
+type(out2)
+
+# %pdb off
+max_duration = 0.6
+min_duration = 0.06
+an_epoch = deepcopy(out2)
+
+an_epoch.to_dataframe()
+
+# +
+Epoch
+
+an_epoch = an_epoch.to_dataframe()[an_epoch.durations <= max_duration]
+an_epoch
+# -
+
+
+
+an_epoch.
+
 out2
 
 out3 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.1, maximum_speed_thresh=2.0)
@@ -3050,21 +3074,8 @@ active_sess.perform_compute_estimated_replay_epochs.__mask__()
 
 
 # +
+# Converting Shit
 
+# +
 
-def print_args(func):
-    """ A decorator that extracts the arguments from its decorated function and prints them """
-    def wrapper(*args, **kwargs):
-        print(f"Arguments: {args}")
-        print(f"Keyword arguments: {kwargs}")
-        return func(*args, **kwargs)
-    return wrapper
-
-@print_args
-def add(x, y):
-    return x + y
-
-add(2, 5)
-# -
-
-
+active_2d_plot.add_rendered_intervals(new_PBEs_interval_datasource, name='PBEs', child_plots=[background_static_scroll_plot_widget, main_plot_widget], debug_print=False)
