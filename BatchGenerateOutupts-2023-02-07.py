@@ -50,6 +50,8 @@ import numpy as np
 import pandas as pd
 from benedict import benedict # https://github.com/fabiocaccamo/python-benedict#usage
 
+from klepto.archives import file_archive, sql_archive, dict_archive
+
 # Pho's Formatting Preferences
 # from pyphocorehelpers.preferences_helpers import set_pho_preferences, set_pho_preferences_concise, set_pho_preferences_verbose
 # set_pho_preferences_concise()
@@ -109,13 +111,13 @@ local_session_root_parent_context = IdentifyingContext(format_name=active_data_m
 local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 ### Animal `vvp01`:
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
@@ -178,16 +180,24 @@ for curr_sess_ctx, curr_session_basedir, curr_session_name in zip(local_session_
                                                       computation_functions_name_whitelist=active_computation_functions_name_whitelist,
                                                       force_reload=True, saving_mode=batch_saving_mode, fail_on_exception=True, skip_extended_batch_computations=True, time_bin_size=5.0)
             
-            # newly_computed_values = batch_extended_computations(curr_active_pipeline, fail_on_exception=True, progress_print=True, debug_print=False) # doing extended batch computations in batch_load_session does not work for some strange reason.
-            # if len(newly_computed_values) > 0:
-            #         curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
+            ## 2023-02-08 - Compute estimated replay intervals from the PBEs and export them to a neuroscope file
+            active_sess = curr_active_pipeline.filtered_sessions['maze']
+            out = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.01, maximum_speed_thresh=2.0)
+            out.filename = active_sess.basepath.joinpath(active_sess.name).with_suffix('.derived')
+            final_export_path = out.to_neuroscope(ext='PHO')
+            print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
+
+#             ## 2023-01-* - Call extended computations to build `_display_short_long_firing_rate_index_comparison` figures:
+#             # newly_computed_values = batch_extended_computations(curr_active_pipeline, fail_on_exception=True, progress_print=True, debug_print=False) # doing extended batch computations in batch_load_session does not work for some strange reason.
+#             # if len(newly_computed_values) > 0:
+#             #         curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE)
                 
-            newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
+#             newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
             
-            # Plot long|short firing rate index:
-            fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
-            curr_active_pipeline.display('_display_short_long_firing_rate_index_comparison', curr_active_pipeline.sess.get_context(), fig_save_parent_path=fig_save_parent_path)
-            plt.close() # closes the current figure
+#             # Plot long|short firing rate index:
+#             fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
+#             curr_active_pipeline.display('_display_short_long_firing_rate_index_comparison', curr_active_pipeline.sess.get_context(), fig_save_parent_path=fig_save_parent_path)
+#             plt.close() # closes the current figure
             
             if include_programmatic_figures:
                 active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
@@ -245,7 +255,7 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
 
 # + tags=["load", "single_session"]
-newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=False)
+newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=True)
 newly_computed_values
 
 # + tags=["load", "single_session"]
@@ -2897,16 +2907,123 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loa
 # Load previously computed from data:
 long_mean_laps_frs, long_mean_replays_frs, short_mean_laps_frs, short_mean_replays_frs, x_frs_index, y_frs_index = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\data\temp_2023-01-20_results_final.pkl").values()
 
+
+
+active_sess = curr_active_pipeline.filtered_sessions['maze']
+
 # perform_compute_estimated_replay_epochs
-out = curr_active_pipeline.sess.perform_compute_estimated_replay_epochs()
+out = active_sess.perform_compute_estimated_replay_epochs()
 out
 
 
-out2 = curr_active_pipeline.filtered_sessions['maze'].perform_compute_estimated_replay_epochs()
+out2 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, maximum_speed_thresh=2.0)
 out2
 
+out3 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.1, maximum_speed_thresh=2.0)
+out3
+
+# +
+import os
+import pynapple as nap
+from pynapple.core.interval_set import IntervalSet
+
+def write_neuroscope_intervals(isets, name, parent_path, basename, extension='derived.evt'):
+    """Write events to load with neuroscope (e.g. ripples start and ends)
+    
+    Written 2023-02-08 to save computed replays out to .evt file to be read in by Neuroscope, but unfortunately it looks like the Epoch.to_neuroscope(...) function already works just as well (if not better) and doesn't require pynapple...
+
+    Parameters
+    ----------
+    extension : str
+        The extension of the file (e.g. basename.evt.py.rip)
+    isets : IntervalSet
+        The IntervalSet to write
+    name : str
+        The name of the events (e.g. Ripples)
+    """
+    start = isets.as_units("ms")["start"].values
+    ends = isets.as_units("ms")["end"].values
+
+    datatowrite = np.vstack((start, ends)).T.flatten()
+
+    n = len(isets)
+
+    texttowrite = np.vstack(
+        (
+            (np.repeat(np.array([name + " start"]), n)),
+            (np.repeat(np.array([name + " end"]), n)),
+        )
+    ).T.flatten()
+
+    evt_file = os.path.join(parent_path, basename + extension)
+
+    f = open(evt_file, "w")
+    for t, n in zip(datatowrite, texttowrite):
+        f.writelines("{:1.6f}".format(t) + "\t" + n + "\n")
+    f.close()
+
+    return evt_file
+
+outIntervalSet = IntervalSet(start=out.starts, end=out.stops, time_units="s")
+write_neuroscope_intervals(outIntervalSet, 'pho_replays', str(active_sess.basepath), active_sess.name, extension='.PHO.evt')
+# -
+
+active_sess.name
+
+active_sess.basepath
+
+# +
+parent_path = active_sess.basepath
+
+# parent_path.with_suffix
+# -
+
+## Compute estimated replay intervals from the PBEs and export them to a neuroscope file
 active_sess = curr_active_pipeline.filtered_sessions['maze']
-active_sess
+out = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, maximum_speed_thresh=2.0)
+out.filename = active_sess.basepath.joinpath(active_sess.name).with_suffix('.derived')
+final_export_path = out.to_neuroscope()
+print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
+
+
+nap_session = nap.load_session(str(active_sess.basepath), 'neurosuite')
+nap_session
+
+from pynapple.io import write_neuroscope_intervals
+neurosuite
+
+write_neuroscope_intervals
+
+_context_cache = active_sess.perform_compute_estimated_replay_epochs.__cache__()
+_context_cache
+
+
+
+_context_cache.to_frame()
+
+
+# +
+def rebuild_arguments_from_stringmap_key(a_tuple_str):
+    """ rebuilds the arg, kwargs from a cached function call that was cached using the keymap 'stringmap' """
+    NULL = 'NULL'
+    # each key is a tuple containing (args, kwargs) for the function
+    # print(f'{a_tuple_str =}, len: {len(a_tuple_str)}')
+    a_tuple = eval(a_tuple_str) # eval the string back into a real Python tuple
+    args, kwargs = a_tuple
+    # remove NULL entries
+    kwargs = {k:v for k, v in kwargs.items() if v != 'NULL'}
+    # print(kwargs)
+    # print(f'{(args, kwargs) =}')
+    return args, kwargs
+    
+_context_cache_recovered_args = {}
+
+for a_key_str in _context_cache.keys():
+    args, kwargs = rebuild_arguments_from_stringmap_key(a_key_str)
+    _context_cache_recovered_args[a_key_str] = (args, kwargs)
+    
+_context_cache_recovered_args
+# -
 
 active_sess.replay
 
@@ -2921,5 +3038,33 @@ active_sess.epochs
 active_sess.comput
 # Ideally could access all of the 'Epoch'-type members (or Epoch-convertable dataframes) the object (session in this case) has. This allows visualizations to "discover" the possible types of data they can visualize without having to code a custom menu-item/visualization/etc for each type of epoch. Ideally this like a "trait" or something, perhaps a property decorator?
 # Makes the most sense for computed data?
+
+active_sess.perform_compute_estimated_replay_epochs.dump()
+
+active_sess.perform_compute_estimated_replay_epochs.info()
+
+active_sess.perform_compute_estimated_replay_epochs.__map__()
+
+active_sess.perform_compute_estimated_replay_epochs.__mask__()
+
+
+
+# +
+
+
+def print_args(func):
+    """ A decorator that extracts the arguments from its decorated function and prints them """
+    def wrapper(*args, **kwargs):
+        print(f"Arguments: {args}")
+        print(f"Keyword arguments: {kwargs}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@print_args
+def add(x, y):
+    return x + y
+
+add(2, 5)
+# -
 
 
