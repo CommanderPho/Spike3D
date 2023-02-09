@@ -4,13 +4,13 @@
 			"path": "."
 		},
 		{
-			"path": "..\\NeuroPy"
-		},
-		{
 			"path": "..\\pyPhoCoreHelpers\\src\\pyphocorehelpers"
 		},
 		{
 			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+		},
+		{
+			"path": "../NeuroPy/neuropy"
 		}
 	],
 	"settings": {
