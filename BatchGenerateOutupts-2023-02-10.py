@@ -894,7 +894,7 @@ _test_new_comp_params
 with VizTracer(output_file=f"viztracer_{get_now_time_str()}-perform_spike_burst_detection_computation.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
     global_epoch_name = curr_active_pipeline.active_completed_computation_result_names[-1] # 'maze'
     global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']    
-    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_spike_burst_detection_computation'], enabled_filter_names=[global_epoch_name], fail_on_exception=True, debug_print=False)
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_spike_burst_detection_computation'], enabled_filter_names=[global_epoch_name], fail_on_exception=True, debug_print=False, computation_kwargs_list=[dict(debug_print=True)])
     active_burst_info = global_results['burst_detection']
     active_burst_intervals = active_burst_info['burst_intervals']
     # active_burst_intervals
@@ -2886,7 +2886,7 @@ d
 #
 # long_session.replay
 #
-# # # # # # # # # # # # # # # # # # %pdb off
+# # # # # # # # # # # # # # # # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
@@ -2938,6 +2938,48 @@ from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Render2
 output_display_items = Render2DEventRectanglesHelper.add_event_rectangles(active_2d_plot, active_burst_intervals) # {'interval_rects_item': active_interval_rects_item}
 active_interval_rects_item = output_display_items['interval_rects_item']
 active_interval_rects_item
+
+from neuropy.core.neurons import NeuronType
+
+NeuronType.from_string(NeuronType.PYRAMIDAL.shortClassName)
+
+
+def get_neuron_type(self, query_neuron_type):
+    """ filters self by the specified query_neuron_type, only returning neurons that match. """
+    if isinstance(query_neuron_type, NeuronType):
+        query_neuron_type = query_neuron_type
+    elif isinstance(query_neuron_type, str):
+        query_neuron_type_str = query_neuron_type
+        query_neuron_type = NeuronType.from_string(query_neuron_type_str) ## Works
+    else:
+        print('error!')
+        return []
+    flattened_spiketrains = deepcopy(self)
+    included_df = flattened_spiketrains.spikes_df[(flattened_spiketrains.spikes_df.cell_type == query_neuron_type)]
+    return FlattenedSpiketrains(included_df, t_start=flattened_spiketrains.t_start, metadata=flattened_spiketrains.metadata)
+
+
+
+active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr')
+active_spikes_df
+
+all_aclus = active_spikes_df.spikes.neuron_ids
+all_spiketrains_list = active_spikes_df.spikes.get_unit_spiketrains()
+
+# These contain spike_dfs for all units split by each epoch:
+epoch_split_spike_dfs = [active_spikes_df.spikes.time_sliced(t_start, t_stop) for t_start, t_stop in zip(out2.starts, out2.stops)] # oh, very fast actually!
+epoch_first_last_spike_times = [a_spikes_df. for a_spikes_df in epoch_split_spike_dfs]
+
+# Split the spikes_df up by epochs, and then for each epoch split that up by unit
+epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(out2.starts, out2.stops)] # still rather fast!
+
+## 🔟🔜⛳️ TODO: CRITICAL! Look into this, this looks powerful.
+from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+
+
+epoch_split_unit_split_spiketrains
+
+epoch_split_spike_dfs[1]
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-08 - pynapple exploration and custom `write_neuroscope_intervals` function
@@ -3012,7 +3054,7 @@ final_export_path = out.to_neuroscope()
 print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-08 - Automatic context using function decorators:
 # -
 
@@ -3069,7 +3111,7 @@ active_sess.perform_compute_estimated_replay_epochs.__mask__()
 
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # Adding custom rendered intervals easily to 2D plot
 
 # +
