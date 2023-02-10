@@ -111,13 +111,13 @@ local_session_root_parent_context = IdentifyingContext(format_name=active_data_m
 local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
-# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
-# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
-# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='one') # IdentifyingContext<('kdiba', 'gor01', 'one')>
+local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name) # 'gor01', 'one'
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
-local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
-local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
+# local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='gor01', exper_name='two')
+# local_session_parent_path = local_session_root_parent_path.joinpath(local_session_parent_context.animal, local_session_parent_context.exper_name)
+# local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=[])
 
 ### Animal `vvp01`:
 # local_session_parent_context = local_session_root_parent_context.adding_context(collision_prefix='animal', animal='vvp01', exper_name='one')
@@ -891,12 +891,13 @@ _test_new_comp_params
 # ### Burst Detection
 # -
 
-global_epoch_name = curr_active_pipeline.active_completed_computation_result_names[-1] # 'maze'
-global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']    
-curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_spike_burst_detection_computation'], enabled_filter_names=[global_epoch_name], fail_on_exception=True, debug_print=False)
-active_burst_info = global_results['burst_detection']
-active_burst_intervals = active_burst_info['burst_intervals']
-active_burst_intervals
+with VizTracer(output_file=f"viztracer_{get_now_time_str()}-perform_spike_burst_detection_computation.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
+    global_epoch_name = curr_active_pipeline.active_completed_computation_result_names[-1] # 'maze'
+    global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']    
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_spike_burst_detection_computation'], enabled_filter_names=[global_epoch_name], fail_on_exception=True, debug_print=False)
+    active_burst_info = global_results['burst_detection']
+    active_burst_intervals = active_burst_info['burst_intervals']
+    # active_burst_intervals
 
 ## Add the burst_detection burst_intervals to the active_2d_plot:
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Render2DEventRectanglesHelper import Render2DEventRectanglesHelper
