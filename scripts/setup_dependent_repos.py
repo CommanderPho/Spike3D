@@ -20,10 +20,15 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 import os
 from pathlib import Path
 
+enable_install_for_child_repos = False
+
 script_dir = Path(os.path.dirname(os.path.abspath(__file__))) # /home/halechr/repos/Spike3D/scripts
 print(f'script_dir: {script_dir}')
-root_dir = script_dir.parent
+root_dir = script_dir.parent # Spike3D root repo dir
+os.chdir(root_dir)
+os.system("git pull") # pull changes first for main repo
 
+## Pull for children repos:
 dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis"]
 dependent_repos_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in dependent_repos]
 
@@ -39,7 +44,10 @@ for repo in dependent_repos_paths:
     os.chdir(repo)
     os.system("git pull")
     os.system("poetry lock")
-    os.system("poetry install") # is this needed? I think it installs in that specific environment.
+    if enable_install_for_child_repos:
+        os.system("poetry install") # is this needed? I think it installs in that specific environment.
 
+os.chdir(root_dir) # change back to the root repo dir
+os.system("poetry lock")
+os.system("poetry install") # is this needed? I think it installs in that specific environment.
 print(f'done with all.')
-os.chdir(root_dir)

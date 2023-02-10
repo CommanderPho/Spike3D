@@ -2939,39 +2939,118 @@ output_display_items = Render2DEventRectanglesHelper.add_event_rectangles(active
 active_interval_rects_item = output_display_items['interval_rects_item']
 active_interval_rects_item
 
-from neuropy.core.neurons import NeuronType
-
-NeuronType.from_string(NeuronType.PYRAMIDAL.shortClassName)
 
 
-def get_neuron_type(self, query_neuron_type):
-    """ filters self by the specified query_neuron_type, only returning neurons that match. """
-    if isinstance(query_neuron_type, NeuronType):
-        query_neuron_type = query_neuron_type
-    elif isinstance(query_neuron_type, str):
-        query_neuron_type_str = query_neuron_type
-        query_neuron_type = NeuronType.from_string(query_neuron_type_str) ## Works
-    else:
-        print('error!')
-        return []
-    flattened_spiketrains = deepcopy(self)
-    included_df = flattened_spiketrains.spikes_df[(flattened_spiketrains.spikes_df.cell_type == query_neuron_type)]
-    return FlattenedSpiketrains(included_df, t_start=flattened_spiketrains.t_start, metadata=flattened_spiketrains.metadata)
+# # 2023-02-10 - Trimming and Filtering Estimated Replay Epochs based on cell activity and pyramidal cell start/end times:
 
+# +
+from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
 
-
+active_sess = curr_active_pipeline.filtered_sessions['maze']
+active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=0.600, maximum_speed_thresh=2.0)
 active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr')
-active_spikes_df
 
-all_aclus = active_spikes_df.spikes.neuron_ids
-all_spiketrains_list = active_spikes_df.spikes.get_unit_spiketrains()
+spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_num_unique_aclu_inclusions=1)
+# -
 
-# These contain spike_dfs for all units split by each epoch:
-epoch_split_spike_dfs = [active_spikes_df.spikes.time_sliced(t_start, t_stop) for t_start, t_stop in zip(out2.starts, out2.stops)] # oh, very fast actually!
-epoch_first_last_spike_times = [a_spikes_df. for a_spikes_df in epoch_split_spike_dfs]
+all_aclus
+
+OrderedDict
+
+
+
+# +
+epoch_split_spike_dfs_aclu_spikecounts = [a_spike_df['aclu'].value_counts().to_dict() for a_spike_df in epoch_split_spike_dfs] # This code takes the column 'aclu' from the Pandas DataFrame df, counts the number of occurrences of each unique value, and converts the resulting Pandas Series object to a dictionary using to_dict(). The keys in the dictionary correspond to each unique aclu value and their count.
+epoch_split_spike_dfs_aclu_spikecounts
+
+# epoch_split_spike_dfs_aclu_firingrates_Hz = [np.array(list(a_spike_count_dict.values()))/trimmed_epoch_duration for trimmed_epoch_duration, a_spike_count_dict in zip(spike_trimmed_active_epochs.durations, epoch_split_spike_dfs_aclu_spikecounts)]
+epoch_split_spike_dfs_aclu_firingrates_Hz = [{an_aclu:(float(a_count)/trimmed_epoch_duration) for an_aclu, a_count in a_spike_count_dict.items()} for trimmed_epoch_duration, a_spike_count_dict in zip(spike_trimmed_active_epochs.durations, epoch_split_spike_dfs_aclu_spikecounts)]
+epoch_split_spike_dfs_aclu_firingrates_Hz
+# -
+
+n_neurons = len(all_aclus)
+shared_fragile_neuron_IDXs = np.arange(n_neurons) # [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69]
+aclu_to_shared_fragile_IDX_map = {aclu:idx for idx, aclu in zip(shared_fragile_neuron_IDXs, all_aclus)} # reverse lookup map from aclu to shared fragile index
+
+_a_test_fr_dict = epoch_split_spike_dfs_aclu_firingrates_Hz[0].copy()
+print(_a_test_fr_dict)
+
+# +
+from indexed import IndexedOrderedDict
+# from collections import OrderedDict
+# zero_fr_array = np.zeros_like(all_aclus)
+
+# zero_fr_array[np.array([aclu_to_shared_fragile_IDX_map[an_aclu] for an_aclu in _a_test_fr_dict.vl])
+# zero_fr_dict = IndexedOrderedDict({an_aclu:0.0 for an_aclu in all_aclus})
+zero_fr_dict = IndexedOrderedDict.fromkeys(all_aclus, value=0.0)
+dense_epoch_split_frs = [deepcopy(zero_fr_dict) for _ in np.arange(n_neurons)]
+# Loop through each epoch and update the non-zero entries in the dense_epoch_split_frs item's values
+# for _a_test_fr_dict, a_dense_fr_dict in zip(epoch_split_spike_dfs_aclu_firingrates_Hz, dense_epoch_split_frs):
+#     a_dense_fr_dict.update(_a_test_fr_dict)
+    
+dense_epoch_split_frs = [(a_dense_fr_dict | _a_test_fr_dict) for _a_test_fr_dict, a_dense_fr_dict in zip(epoch_split_spike_dfs_aclu_firingrates_Hz, dense_epoch_split_frs)]
+dense_epoch_split_frs
+# -
+
+dense_epoch_split_frs_array = np.vstack([np.array(a_dense_fr_dict.values()) for a_dense_fr_dict in dense_epoch_split_frs]) # .shape: (60, 70)
+dense_epoch_split_frs_array
+
+dense_epoch_split_frs
+
+IndexedOrderedDict.fromkeys(all_aclus, value=0.0)
+
+a_dense_fr_dict
+
+zero_fr_dict
+
+_a_test_fr_dict
+
+aclu_to_shared_fragile_IDX_map[
+
+[safe_pandas_get_group(self._obj.groupby('aclu'), neuron_id) for neuron_id in included_neuron_ids]
+
+# +
+[a_spike_df. for trimmed_epoch_duration, a_spike_df in zip(epoch_split_spike_dfs, spike_trimmed_active_epochs)]
+
+# aclu
+# -
+
+a_spike_df = epoch_split_spike_dfs[0].copy()
+a_spike_df
+
+a_spike_df['cell_counts'] = a_spike_df.aclu.map(a_spike_df.aclu.value_counts())
+a_spike_df
+
+# +
+a_spike_df['aclu'].value_counts().to_dict() # This code takes the column 'aclu' from the Pandas DataFrame df, counts the number of occurrences of each unique value, and converts the resulting Pandas Series object to a dictionary using to_dict(). The keys in the dictionary correspond to each unique aclu value and their count.
+
+
+# -
+
+spike_trimmed_active_epochs
+
+len(epoch_first_last_spike_times)
+
+active_epochs.n_epochs
+
+len(is_epoch_empty_spikes_df)
 
 # Split the spikes_df up by epochs, and then for each epoch split that up by unit
 epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(out2.starts, out2.stops)] # still rather fast!
+
+
+    
+
+# +
+min_inclusion_fr_thresh = 19.01 # Hz
+is_cell_included_in_epoch_mat = long_mean_replays_all_frs_mat > min_inclusion_fr_thresh
+is_cell_included_in_epoch_mat
+# num_cells_included_in_epoch_mat: the num unique cells included in each epoch that meet the min_inclusion_fr_thresh criteria. Should have one value per epoch of interest.
+num_cells_included_in_epoch_mat = np.sum(is_cell_included_in_epoch_mat, 0)
+num_cells_included_in_epoch_mat
+
+_compute_epochs_num_aclu_inclusions(long_mean_replays_all_frs_mat, min_inclusion_fr_thresh=1.0)
+# -
 
 ## 🔟🔜⛳️ TODO: CRITICAL! Look into this, this looks powerful.
 from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
@@ -2981,7 +3060,7 @@ epoch_split_unit_split_spiketrains
 
 epoch_split_spike_dfs[1]
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-08 - pynapple exploration and custom `write_neuroscope_intervals` function
 
 # +
@@ -3054,7 +3133,7 @@ final_export_path = out.to_neuroscope()
 print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-08 - Automatic context using function decorators:
 # -
 
@@ -3111,7 +3190,7 @@ active_sess.perform_compute_estimated_replay_epochs.__mask__()
 
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # Adding custom rendered intervals easily to 2D plot
 
 # +
