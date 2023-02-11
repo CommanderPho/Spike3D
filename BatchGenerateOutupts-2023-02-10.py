@@ -2939,7 +2939,7 @@ output_display_items = Render2DEventRectanglesHelper.add_event_rectangles(active
 active_interval_rects_item = output_display_items['interval_rects_item']
 active_interval_rects_item
 
-
+active_sess.pbe
 
 # # 2023-02-10 - Trimming and Filtering Estimated Replay Epochs based on cell activity and pyramidal cell start/end times:
 
@@ -2947,15 +2947,21 @@ active_interval_rects_item
 from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
 
 active_sess = curr_active_pipeline.filtered_sessions['maze']
-active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=0.600, maximum_speed_thresh=2.0)
+# active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=0.600, maximum_speed_thresh=1.0)
+active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=1.0)
 active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr')
 
+print(f'active_epochs: {active_epochs}')
 # spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_num_unique_aclu_inclusions=1)
 spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus, dense_epoch_split_frs_mat, is_cell_active_in_epoch_mat = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
 # -
 
+spike_trimmed_active_epochs
+
 num_cells_active_in_epoch_mat = np.sum(is_cell_active_in_epoch_mat, 1)
-num_cells_active_in_epoch_mat
+print(f'num_cells_active_in_epoch_mat: {num_cells_active_in_epoch_mat}')
+num_epochs_for_cell_active_mat = np.sum(is_cell_active_in_epoch_mat, 0).T
+print(f'num_epochs_for_cell_active_mat: {num_epochs_for_cell_active_mat}')
 
 # Split the spikes_df up by epochs, and then for each epoch split that up by unit
 epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(out2.starts, out2.stops)] # still rather fast!
