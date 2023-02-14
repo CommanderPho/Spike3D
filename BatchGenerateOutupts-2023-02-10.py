@@ -2840,6 +2840,8 @@ speed_df = global_session.position.to_dataframe()
 long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=speed_thresh, debug_print=True)
 # -
 
+
+
 # Store associated values with `P.IntervalDict()`:
 d = P.IntervalDict()
 d
@@ -2886,7 +2888,7 @@ d
 #
 # long_session.replay
 #
-# # # # # # # # # # # # # # # # # # # %pdb off
+# # # # # # # # # # # # # # # # # # # # # %pdb off
 #
 #
 # # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
@@ -2911,6 +2913,22 @@ active_sess = curr_active_pipeline.filtered_sessions['maze']
 # perform_compute_estimated_replay_epochs
 out = active_sess.perform_compute_estimated_replay_epochs()
 out
+
+
+# +
+from neuropy.core.epoch import Epoch
+
+ripple_interval_obj = active_sess.ripple.to_PortionInterval()
+# ripple_interval_obj
+
+replays_Interval_obj = out.to_PortionInterval()
+# replays_Interval_obj
+
+Epoch.from_PortionInterval(replays_Interval_obj.intersection(ripple_interval_obj))
+# -
+
+
+
 
 
 # %pdb off
@@ -2958,6 +2976,8 @@ spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus, dense_epoch_split
 
 spike_trimmed_active_epochs
 
+
+
 num_cells_active_in_epoch_mat = np.sum(is_cell_active_in_epoch_mat, 1)
 print(f'num_cells_active_in_epoch_mat: {num_cells_active_in_epoch_mat}')
 num_epochs_for_cell_active_mat = np.sum(is_cell_active_in_epoch_mat, 0).T
@@ -2967,7 +2987,7 @@ print(f'num_epochs_for_cell_active_mat: {num_epochs_for_cell_active_mat}')
 epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(out2.starts, out2.stops)] # still rather fast!
 
 
-    
+
 
 ## 🔟🔜⛳️ TODO: CRITICAL! Look into this, this looks powerful.
 from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
@@ -3050,7 +3070,7 @@ final_export_path = out.to_neuroscope()
 print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-08 - Automatic context using function decorators:
 # -
 
@@ -3107,7 +3127,7 @@ active_sess.perform_compute_estimated_replay_epochs.__mask__()
 
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # Adding custom rendered intervals easily to 2D plot
 
 # +
