@@ -771,6 +771,30 @@ demo
 # @memoize(keymap=hasher, ignore=('self','**'))
 
 
+# + [markdown] jupyter={"outputs_hidden": false}
+# # 2023-02-14 - Test `srsly` for serialization via `msg_pack`:
+
+
+# + tags=[]
+import srsly
+msg = srsly.msgpack_dumps(curr_active_pipeline.computation_results)
+
+
+# + tags=[]
+import joblib
+
+persist_filename = 'test.joblib'
+
+
+# + tags=[]
+with open(persist_filename, 'wb') as fo:  
+    joblib.dump(curr_active_pipeline, fo)
+
+
+# + tags=[]
+with open(persist_filename, 'rb') as fo:  
+    joblib.load(fo)
+
 
 # + [markdown] jupyter={"outputs_hidden": false} tags=[]
 # # Other
@@ -788,6 +812,24 @@ from pyphocorehelpers.print_helpers import DocumentationFilePrinter, print_keys_
 doc_printer = DocumentationFilePrinter(doc_output_parent_folder=Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/EXTERNAL/DEVELOPER_NOTES/DataStructureDocumentation'), doc_name='NeuropyPipeline')
 doc_printer.save_documentation('NeuropyPipeline', curr_active_pipeline, non_expanded_item_keys=['stage','_reverse_cellID_index_map', 'pf_listed_colormap', 'computation_results', 'active_configs', 'logger', 'plot', '_plot_object'],
                                additional_excluded_item_classes=["<class 'pyphoplacecellanalysis.General.Pipeline.Stages.Display.Plot'>"], max_depth=16) # 'Logger'
+
+# +
+# import pickle
+import dill as pickle
+
+def find_unpickleable_classes(cls):
+    unpickleable = []
+    for subclass in cls.__subclasses__():
+        try:
+            pickle.Pickler(pickle.BytesIO()).persistent_id(subclass)
+        except pickle.PicklingError:
+            unpickleable.append(subclass)
+        else:
+            unpickleable.extend(find_unpickleable_classes(subclass))
+    return unpickleable
+
+find_unpickleable_classes(type(curr_active_pipeline))
+# -
 
 
 
