@@ -1,4 +1,4 @@
-NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
+NeuropyPipeline - printed by print_keys_if_possible on 2023-02-14
 ===================================================================================================
 
 
@@ -220,7 +220,7 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 				- position: neuropy.core.position.Position
 					- _filename: NoneType
 					- _metadata: NoneType
-					- _data: pandas.core.frame.DataFrame (children omitted) - (36310, 7)
+					- _data: pandas.core.frame.DataFrame (children omitted) - (36310, 5)
 				- paradigm: neuropy.core.epoch.Epoch
 					- _filename: NoneType
 					- _metadata: NoneType
@@ -247,7 +247,11 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 					- t_start: float
 				- pbe: neuropy.core.epoch.Epoch
 					- _filename: NoneType
-					- _metadata: NoneType
+					- _metadata: dict
+						- thresh: tuple - (2,)
+						- min_dur: float
+						- merge_dur: float
+						- max_dur: float
 					- _df: pandas.core.frame.DataFrame (children omitted) - (40, 4)
 				- replay: pandas.core.frame.DataFrame (children omitted) - (749, 9)
 			- maze2: neuropy.core.session.dataSession.DataSession
@@ -338,7 +342,7 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 				- position: neuropy.core.position.Position
 					- _filename: NoneType
 					- _metadata: NoneType
-					- _data: pandas.core.frame.DataFrame (children omitted) - (26443, 7)
+					- _data: pandas.core.frame.DataFrame (children omitted) - (26443, 5)
 				- paradigm: neuropy.core.epoch.Epoch
 					- _filename: NoneType
 					- _metadata: NoneType
@@ -365,7 +369,11 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 					- t_start: float
 				- pbe: neuropy.core.epoch.Epoch
 					- _filename: NoneType
-					- _metadata: NoneType
+					- _metadata: dict
+						- thresh: tuple - (2,)
+						- min_dur: float
+						- merge_dur: float
+						- max_dur: float
 					- _df: pandas.core.frame.DataFrame (children omitted) - (30, 4)
 				- replay: pandas.core.frame.DataFrame (children omitted) - (677, 9)
 			- maze: neuropy.core.session.dataSession.DataSession
@@ -456,7 +464,7 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 				- position: neuropy.core.position.Position
 					- _filename: NoneType
 					- _metadata: NoneType
-					- _data: pandas.core.frame.DataFrame (children omitted) - (62753, 7)
+					- _data: pandas.core.frame.DataFrame (children omitted) - (62753, 5)
 				- paradigm: neuropy.core.epoch.Epoch
 					- _filename: NoneType
 					- _metadata: NoneType
@@ -483,7 +491,11 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 					- t_start: float
 				- pbe: neuropy.core.epoch.Epoch
 					- _filename: NoneType
-					- _metadata: NoneType
+					- _metadata: dict
+						- thresh: tuple - (2,)
+						- min_dur: float
+						- merge_dur: float
+						- max_dur: float
 					- _df: pandas.core.frame.DataFrame (children omitted) - (70, 4)
 				- replay: pandas.core.frame.DataFrame (children omitted) - (1426, 9)
 		- filtered_epochs: dict
@@ -517,7 +529,132 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 				- filter_name: str
 		- active_configs: dict (children omitted) - OMITTED TYPE WITH NO SHAPE
 		- computation_results: dict (children omitted) - OMITTED TYPE WITH NO SHAPE
-		- global_computation_results: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+		- global_computation_results: pyphoplacecellanalysis.General.Model.ComputationResults.ComputationResult
+			- sess: neuropy.core.session.dataSession.DataSession
+				- config: neuropy.core.session.Formats.SessionSpecifications.SessionConfig
+					- format_name: str
+					- basepath: pathlib.WindowsPath
+					- session_name: str
+					- session_spec: neuropy.core.session.Formats.SessionSpecifications.SessionFolderSpec
+						- required_files: list - (4,)
+						- optional_files: list - (2,)
+						- additional_validation_requirements: list - (0,)
+					- session_context: neuropy.utils.result_context.IdentifyingContext
+						- format_name: str
+						- animal: str
+						- exper_name: str
+						- session_name: str
+					- is_resolved: bool
+					- resolved_required_filespecs_dict: dict
+						- W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.xml: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+							- fileSpecString: str
+							- suggestedBaseName: str
+							- description: str
+							- session_load_callback: method
+						- W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.spikeII.mat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+							- fileSpecString: str
+							- suggestedBaseName: str
+							- description: str
+							- session_load_callback: NoneType
+						- W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.position_info.mat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+							- fileSpecString: str
+							- suggestedBaseName: str
+							- description: str
+							- session_load_callback: NoneType
+						- W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.epochs_info.mat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+							- fileSpecString: str
+							- suggestedBaseName: str
+							- description: str
+							- session_load_callback: NoneType
+					- resolved_optional_filespecs_dict: dict
+						- W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.eeg: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+							- fileSpecString: str
+							- suggestedBaseName: str
+							- description: str
+							- session_load_callback: method
+						- W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.dat: neuropy.core.session.Formats.SessionSpecifications.SessionFileSpec
+							- fileSpecString: str
+							- suggestedBaseName: str
+							- description: str
+							- session_load_callback: method
+					- absolute_start_timestamp: float
+					- position_sampling_rate_Hz: float
+				- is_loaded: bool
+				- filePrefix: pathlib.WindowsPath
+				- recinfo: neuropy.io.neuroscopeio.NeuroscopeIO
+					- source_file: pathlib.WindowsPath
+					- eeg_filename: pathlib.WindowsPath
+					- dat_filename: pathlib.WindowsPath
+					- skipped_channels: numpy.ndarray - (0,)
+					- channel_groups: numpy.ndarray - (9,)
+					- discarded_channels: numpy.ndarray - (0,)
+					- sig_dtype: int
+					- dat_sampling_rate: int
+					- eeg_sampling_rate: int
+					- n_channels: int
+					- good_channels: numpy.ndarray - (96,)
+				- eegfile: neuropy.io.binarysignalio.BinarysignalIO
+					- _raw_traces: numpy.memmap - (96, 2639400)
+					- sampling_rate: int
+					- n_channels: int
+					- dtype: str
+					- source_file: pathlib.WindowsPath
+				- datfile: NoneType
+				- neurons: neuropy.core.neurons.Neurons
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spiketrains: numpy.ndarray - (108,)
+					- _neuron_ids: numpy.ndarray - (108,)
+					- _reverse_cellID_index_map: dict (children omitted) - OMITTED TYPE WITH NO SHAPE
+					- _extended_neuron_properties_df: NoneType
+					- waveforms: NoneType
+					- shank_ids: numpy.ndarray - (108,)
+					- _neuron_type: numpy.ndarray - (108,)
+					- peak_channels: NoneType
+					- _sampling_rate: int
+					- t_start: int
+					- t_stop: numpy.float64
+				- probegroup: NoneType
+				- position: neuropy.core.position.Position
+					- _filename: pathlib.WindowsPath
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (63192, 5)
+				- paradigm: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (2, 4)
+				- ripple: neuropy.core.epoch.Epoch
+					- _filename: pathlib.WindowsPath
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (6010, 6)
+				- mua: neuropy.core.neurons.Mua
+					- _filename: pathlib.WindowsPath
+					- _metadata: NoneType
+					- _spike_counts: numpy.ndarray - (2108138,)
+					- t_start: int
+					- _bin_size: float
+				- laps: neuropy.core.laps.Laps
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (80, 16)
+				- flattened_spiketrains: neuropy.core.flattened_spiketrains.FlattenedSpiketrains
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _time_variable_name: str
+					- _spikes_df: pandas.core.frame.DataFrame (children omitted) - (1014937, 22)
+					- t_start: float
+				- pbe: neuropy.core.epoch.Epoch
+					- _filename: pathlib.WindowsPath
+					- _metadata: dict
+						- thresh: tuple - (2,)
+						- min_dur: float
+						- merge_dur: float
+						- max_dur: float
+					- _df: pandas.core.frame.DataFrame (children omitted) - (70, 4)
+				- replay: pandas.core.frame.DataFrame (children omitted) - (1426, 9)
+			- computation_config: NoneType
+			- computed_data: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
+			- accumulated_errors: pyphocorehelpers.DataStructure.dynamic_parameters.DynamicParameters
 		- registered_computation_function_dict: collections.OrderedDict
 			- _perform_firing_rate_trends_computation: function
 				- is_global: bool
@@ -550,6 +687,8 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 			- _perform_baseline_placefield_computation: function
 				- is_global: bool
 		- registered_global_computation_function_dict: collections.OrderedDict
+			- _perform_short_long_firing_rate_analyses: function
+				- is_global: bool
 			- _perform_short_long_pf_overlap_analyses: function
 				- is_global: bool
 			- _perform_jonathan_replay_firing_rate_analyses: function
@@ -589,6 +728,7 @@ NeuropyPipeline - printed by print_keys_if_possible on 2023-01-24
 			- _display_batch_pho_jonathan_replay_firing_rate_comparison: function
 			- _display_context_nested_docks: function
 			- _display_jonathan_interactive_replay_firing_rate_comparison: function
+			- _display_short_long_firing_rate_index_comparison: function
 			- _display_short_long_pf1D_comparison: function
 			- _display_short_long_pf1D_scalar_overlap_comparison: function
 	- _logger: logging.Logger (children omitted) - OMITTED TYPE WITH NO SHAPE
