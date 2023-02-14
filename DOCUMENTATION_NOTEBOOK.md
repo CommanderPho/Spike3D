@@ -280,7 +280,7 @@ spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(interval_datasour
 ### Concise Update:
 <!-- #endregion -->
 
-```python Scene=true pycharm={"is_executing": false, "name": "#%%\n"} scene__Default tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default Scene=true pycharm={"is_executing": false, "name": "#%%\n"} tags=["ActiveScene", "gui", "launch", "main_run"]
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, Ripples_2DRenderTimeEpochs, inline_mkColor
 ## Inline Concise: Position Replays, PBEs, and Ripples all below the scatter:
 # active_2d_plot.interval_datasources.Replays.update_visualization_properties(lambda active_df, **kwargs: General2DRenderTimeEpochs._update_df_visualization_columns(active_df, y_location=-10.0, height=7.5, pen_color=inline_mkColor('orange', 0.8), brush_color=inline_mkColor('orange', 0.5), **kwargs)) ## Fully inline
@@ -301,7 +301,8 @@ active_2d_plot.update_rendered_intervals_visualization_properties(epochs_update_
 ### Build Stacked Layout:
 <!-- #endregion -->
 
-```python Scene=true pycharm={"is_executing": false, "name": "#%%\n"} scene__Default tags=["ActiveScene", "gui", "launch", "main_run"]
+```python scene__Default Scene=true pycharm={"is_executing": false, "name": "#%%\n"} tags=["ActiveScene", "gui", "launch", "main_run"]
+rendered_interval_keys = list(interval_info.keys())
 desired_interval_height_ratios = [2.0, 2.0, 1.0, 0.1, 1.0, 1.0, 1.0] # ratio of heights to each interval
 required_vertical_offsets, required_interval_heights = EpochRenderingMixin.build_stacked_epoch_layout(desired_interval_height_ratios, epoch_render_stack_height=20.0, interval_stack_location='below')
 stacked_epoch_layout_dict = {interval_key:dict(y_location=y_location, height=height) for interval_key, y_location, height in zip(rendered_interval_keys, required_vertical_offsets, required_interval_heights)} # Build a stacked_epoch_layout_dict to update the display
@@ -391,7 +392,7 @@ datasource_to_update.df
 ```
 
 ```python
-spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(datasource_to_update, name='CustomRipples', debug_print=True) # removes the rendered intervals
+spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(datasource_to_update, name='CustomRipples', debug_print=True) 
 ```
 
 ```python

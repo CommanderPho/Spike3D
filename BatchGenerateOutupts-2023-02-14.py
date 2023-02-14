@@ -247,7 +247,7 @@ active_computation_functions_name_whitelist=['_perform_baseline_placefield_compu
 
 curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir,
                                           computation_functions_name_whitelist=active_computation_functions_name_whitelist,
-                                          saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
+                                          saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
 
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
@@ -782,7 +782,14 @@ demo
 
 # + tags=[]
 import srsly
+
+
+# + tags=[]
 msg = srsly.msgpack_dumps(curr_active_pipeline.computation_results)
+
+
+# + tags=[]
+
 
 
 # + [markdown] tags=[]
@@ -2087,7 +2094,12 @@ active_2d_plot.ui.matplotlib_view_widgets
 
 widget.draw()
 
+
+
 main_plot_widget
+
+_display_spike_rasters_window # can these be made not to display the spikes as they do currently? E.g., just the intervals?
+_display_spike_rasters_pyqtplot_2D
 
 # + [markdown] tags=[]
 # ## 🎨 Exploring 'Plot' Helper class:
@@ -2758,98 +2770,62 @@ from pandas_profiling import ProfileReport
 # ❓❗❇️🔜👁️‍🗨️ 2023-01-24 - Do we want to include replays or laps where a unit isn't active at all in that cell's firing rate average? These points would drag down the average rather quickly and could reflect the animal not visiting that cell's place instead of some property of the cell itself.
 
 # +
-from pyphoplacecellanalysis.temp import pipeline_complete_compute_long_short_fr_indicies, plot_long_short_firing_rate_indicies # , compute_long_short_firing_rate_indicies
-
-# New unified `pipeline_complete_compute_long_short_fr_indicies(...)` method for entire pipeline:
-x_frs_index, y_frs_index, active_context, all_results_dict = pipeline_complete_compute_long_short_fr_indicies(curr_active_pipeline)
-
-# +
 # objsize.get_deep_size(all_results_dict)
-
-# +
-# Plot long|short firing rate index:
-# %matplotlib qt
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from pyphoplacecellanalysis.temp import plot_long_short_firing_rate_indicies
-from neuropy.utils.mixins.print_helpers import ProgressMessagePrinter
-
-fig_save_parent_path = Path(r'E:\Dropbox (Personal)\Active\Kamran Diba Lab\Results from 2023-01-20 - LongShort Firing Rate Indicies')
-plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index, active_context, fig_save_parent_path=fig_save_parent_path)
-
-# _temp_full_fig_save_path = fig_save_parent_path.joinpath(temp_fig_filename)
-# with ProgressMessagePrinter(_temp_full_fig_save_path, 'Saving', 'plot_long_short_firing_rate_indicies results'):
-#     plot_long_short_firing_rate_indicies(x_frs_index, y_frs_index, active_identifying_session_ctx)  
-
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# ### Backup prev long-winded way:
-
-# +
-# %pdb off
-# # %pdb on
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import KnownFilterEpochs
-from PendingNotebookCode import find_epoch_names
-from neuropy.core import Epoch
-from neuropy.core.session.dataSession import DataSession
-from pyphoplacecellanalysis.temp import compute_long_short_firing_rate_indicies, plot_long_short_firing_rate_indicies
-
-with VizTracer(output_file=f"viztracer_{get_now_time_str()}-compute_long_short_firing_rate_indicies.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
-    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06' # curr_sess_ctx # IdentifyingContext<('kdiba', 'gor01', 'one', '2006-6-07_11-26-53')>
-    long_epoch_name, short_epoch_name, global_epoch_name = find_epoch_names(curr_active_pipeline)
-    long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    long_computation_results, short_computation_results, global_computation_results = [curr_active_pipeline.computation_results[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # *_results just shortcut for computation_result['computed_data']
-
-    active_context = active_identifying_session_ctx.adding_context(collision_prefix='fn', fn_name='long_short_firing_rate_indicies')
-
-    spikes_df = curr_active_pipeline.sess.spikes_df
-    long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-
-    # try:
-    #     long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping   epochs since the function to remove overlapping ones seems to be broken
-    # except (AttributeError, KeyError) as e:
-        # print(f'e: {e}')
-    # AttributeError: 'DataSession' object has no attribute 'replay'. Fallback to PBEs?
-    # filter_epochs = a_session.pbe # Epoch object
-    filter_epoch_replacement_type = KnownFilterEpochs.PBE
-
-    # filter_epochs = a_session.ripple # Epoch object
-    # filter_epoch_replacement_type = KnownFilterEpochs.RIPPLE
-
-    decoding_time_bin_size = 0.03333
-    min_epoch_included_duration = decoding_time_bin_size * float(2) # 0.06666 # all epochs shorter than min_epoch_included_duration will be excluded from analysis
-    print(f'missing .replay epochs, using {filter_epoch_replacement_type} as surrogate replays...')
-    active_context = active_context.adding_context(collision_prefix='replay_surrogate', replays=filter_epoch_replacement_type.name)
-
-    ## Working:
-    # long_replays, short_replays, global_replays = [KnownFilterEpochs.perform_get_filter_epochs_df(sess=a_computation_result.sess, filter_epochs=filter_epochs, min_epoch_included_duration=min_epoch_included_duration) for a_computation_result in [long_computation_results, short_computation_results, global_computation_results]] # returns Epoch objects
-    # New sess.compute_estimated_replay_epochs(...) based method:
-    long_replays, short_replays, global_replays = [DataSession.compute_estimated_replay_epochs(curr_active_pipeline.filtered_sessions[an_epoch_name]) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # NOTE: this includes a few overlapping epochs since the function to remove overlapping ones seems to be broken
-
-# backup_dict = loadData(r"C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\temp_2023-01-20.pkl")
-# spikes_df, long_laps, short_laps, global_laps, long_replays, short_replays, global_replays = backup_dict.values()
-
-# temp_save_filename = f'{active_context.get_description()}_results.pkl'
-temp_save_filename = None # disable caching the `compute_long_short_firing_rate_indicies` results.
-temp_fig_filename = f'{active_context.get_description()}.png'
-print(f'temp_save_filename: {temp_save_filename},\ntemp_fig_filename: {temp_fig_filename}')
-
-x_frs_index, y_frs_index = compute_long_short_firing_rate_indicies(spikes_df, long_laps, long_replays, short_laps, short_replays, save_path=temp_save_filename) # 'temp_2023-01-24_results.pkl'
 # -
 
 # # 2023-01-26 - 'portion' interval library for doing efficient interval calculations:
 
-# +
+from neuropy.core.epoch import Epoch
 import portion as P
 from neuropy.utils.efficient_interval_search import filter_epochs_by_speed
-from neuropy.utils.efficient_interval_search import convert_Intervals_to_Epoch_obj, convert_Intervals_to_epochs_df
-
+from neuropy.utils.efficient_interval_search import convert_PortionInterval_to_Epoch_obj, convert_Epoch_obj_to_PortionInterval_obj
 # Filter *_replays_Interval by requiring them to be below the speed:
 speed_thresh = 2.0
+global_session = curr_active_pipeline.filtered_sessions['maze']
+global_replays = Epoch(epochs=global_session.replay.epochs.get_valid_df())
 speed_df = global_session.position.to_dataframe()
-long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=speed_thresh, debug_print=True)
+global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = filter_epochs_by_speed(speed_df, global_replays, speed_thresh=speed_thresh, debug_print=True)
+# long_replays, short_replays, global_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = filter_epochs_by_speed(speed_df, long_replays, short_replays, global_replays, speed_thresh=speed_thresh, debug_print=True)
+global_ripple = global_session.ripple
+global_pbe = global_session.pbe
+
+
+high_speed_epochs = convert_PortionInterval_to_Epoch_obj(above_speed_threshold_intervals)
+high_speed_epochs
+
+
+# +
+## Plot them all on the epoch rect viewer:
+
+import srsly
+output_parent_folder = Path('C:/Users/pho/repos/PhoPy3DPositionAnalysis2021/data')
+output_path = output_parent_folder.joinpath(f"{curr_active_pipeline.session_name}")
+print(f'writing out to {output_path}')
 # -
 
+
+global_ripple.as_array()
+
+
+# +
+# srsly.write_gzip_json(path=output_path, data=dict(global_ripples=global_ripple., global_pbes=global_pbe, global_replays=global_replays))
+# srsly.write_gzip_json(path=output_path, data=dict(global_ripples=global_ripple.to_dataframe(), global_pbes=global_pbe.to_dataframe(), global_replays=global_replays.to_dataframe()))
+# global_ripple.to_dataframe().to
+
+all_df = dict(global_ripples=global_ripple.to_dataframe(), global_pbes=global_pbe.to_dataframe(), global_replays=global_replays.to_dataframe())
+# -
+
+
+#consider all_df as a list of dataframes
+with pd.HDFStore('df_store.h5') as df_store:
+    for i in all_df.keys():
+        df_store[i] = all_df[i]
+
+
+new_all_df = dict()
+with pd.HDFStore('df_store.h5') as df_store:
+    for i in df_store.keys():
+        new_all_df[i] = df_store[i]
 
 
 # Store associated values with `P.IntervalDict()`:
@@ -2927,26 +2903,16 @@ out = active_sess.perform_compute_estimated_replay_epochs()
 out
 
 
-# +
-from neuropy.core.epoch import Epoch
+out1 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=0.600, maximum_speed_thresh=2.0)
+out1
 
-ripple_interval_obj = active_sess.ripple.to_PortionInterval()
-# ripple_interval_obj
-
-replays_Interval_obj = out.to_PortionInterval()
-# replays_Interval_obj
-
-Epoch.from_PortionInterval(replays_Interval_obj.intersection(ripple_interval_obj))
-# -
-
-
-# %pdb off
-out2 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=0.600, maximum_speed_thresh=2.0)
-# out2 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=2.0)
-# out2
+out2 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=2.0)
+out2
 
 out3 = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=0.1, maximum_speed_thresh=2.0)
 out3
+
+
 
 # # 2023-02-10 - _perform_spike_burst_detection_computation to get burst during replay events:
 
@@ -2968,6 +2934,7 @@ active_interval_rects_item
 
 active_sess.pbe
 
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-10 - Trimming and Filtering Estimated Replay Epochs based on cell activity and pyramidal cell start/end times:
 
 # +
@@ -3004,7 +2971,7 @@ epoch_split_unit_split_spiketrains
 
 epoch_split_spike_dfs[1]
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-08 - pynapple exploration and custom `write_neuroscope_intervals` function
 
 # +
@@ -3077,7 +3044,7 @@ final_export_path = out.to_neuroscope()
 print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-08 - Automatic context using function decorators:
 # -
 
@@ -3144,13 +3111,27 @@ from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specifi
 from pyphoplacecellanalysis.General.Model.Datasources.IntervalDatasource import IntervalsDatasource
 
 # new_PBEs_interval_datasource = Specific2DRenderTimeEpochsHelper.build_PBEs_render_time_epochs_datasource(curr_sess=sess, series_vertical_offset=(max_series_top+1.0), series_height=3.0) # new_PBEs_interval_datasource
+# -
 
-import sys
+# #### Getting the existing `Spike3DRasterWindowWidget`
 
-def is_reloaded_instance(obj, classinfo):
-    return isinstance(obj, classinfo) and sys.getrefcount(classinfo) > 1
+# +
+from pyphocorehelpers.gui.Qt.TopLevelWindowHelper import TopLevelWindowHelper
+import pyphoplacecellanalysis.External.pyqtgraph as pg # Used to get the app for TopLevelWindowHelper.top_level_windows
+## For searching with `TopLevelWindowHelper.all_widgets(...)`:
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster import Spike2DRaster
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike3DRaster import Spike3DRaster
+from pyphoplacecellanalysis.GUI.Qt.SpikeRasterWindows.Spike3DRasterWindowWidget import Spike3DRasterWindowWidget
 
-
+found_spike_raster_windows = TopLevelWindowHelper.all_widgets(pg.mkQApp(), searchType=Spike3DRasterWindowWidget)
+assert len(found_spike_raster_windows) == 1, f"found {len(found_spike_raster_windows)} Spike3DRasterWindowWidget windows using TopLevelWindowHelper.all_widgets(...) but require exactly one."
+spike_raster_window = found_spike_raster_windows[0]
+# Extras:
+active_2d_plot = spike_raster_window.spike_raster_plt_2d # <pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster.Spike2DRaster at 0x196c7244280>
+active_3d_plot = spike_raster_window.spike_raster_plt_3d # <pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster.Spike2DRaster at 0x196c7244280>
+main_graphics_layout_widget = active_2d_plot.ui.main_graphics_layout_widget # GraphicsLayoutWidget
+main_plot_widget = active_2d_plot.plots.main_plot_widget # PlotItem
+background_static_scroll_plot_widget = active_2d_plot.plots.background_static_scroll_window_plot # PlotItem
 # -
 
 # %pdb off
@@ -3179,9 +3160,57 @@ _temp_out = curr_active_pipeline.display('_display_plot_decoded_epoch_slices', a
 
 
 
+# curr_active_pipeline.display(display_function='
 add_renderables_menu = active_2d_plot.ui.menus.custom_context_menus.add_renderables[0].programmatic_actions_dict
 menu_commands = ['AddTimeIntervals.PBEs', 'AddTimeIntervals.Ripples', 'AddTimeIntervals.Replays', 'AddTimeIntervals.Laps', 'AddTimeIntervals.Session.Epochs']
 for a_command in menu_commands:
     add_renderables_menu[a_command].trigger()    
+
+
+
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.EpochRenderingMixin import EpochRenderingMixin
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs
+
+
+# +
+def build_custom_epochs_dataframe_formatter(cls, **kwargs):
+    def _add_interval_dataframe_visualization_columns_general_epoch(active_df):
+        """ Adds the remaining _required_interval_visualization_columns specifically for PBEs
+        """
+        num_intervals = np.shape(active_df)[0]
+        ## parameters:
+        y_location = 0.0
+        height = 20.5
+        pen_color = pg.mkColor('w')
+        pen_color.setAlphaF(0.8)
+
+        brush_color = pg.mkColor('grey')
+        brush_color.setAlphaF(0.5)
+
+        ## Update the dataframe's visualization columns:
+        active_df = cls._update_df_visualization_columns(active_df, y_location=y_location, height=height, pen_color=pen_color, brush_color=brush_color, **kwargs)
+        return active_df
+    return _add_interval_dataframe_visualization_columns_general_epoch
+
+interval_datasource = Ripples_2DRenderTimeEpochs.build_render_time_epochs_datasource(sess.laps.as_epoch_obj(), epochs_dataframe_formatter=build_custom_epochs_dataframe_formatter) # **({'series_vertical_offset': 42.0, 'series_height': 1.0} | kwargs)
+spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(interval_datasource, name='CustomRipples', debug_print=False) # removes the rendered intervals
+# -
+
+named_interval_epochs_dict = dict(zip(['replays0', 'replays1', 'replays2', 'replays3'], [out, out1, out2, out3]))
+interval_datasources_dict = {k:General2DRenderTimeEpochs.build_render_time_epochs_datasource(active_epochs_obj=v) for k, v in named_interval_epochs_dict.items()}
+out_graphics = {k:active_2d_plot.add_rendered_intervals(v, name=k) for k, v in interval_datasources_dict.items()}
+
+high_speed_epochs_ds = General2DRenderTimeEpochs.build_render_time_epochs_datasource(active_epochs_obj=high_speed_epochs)
+active_2d_plot.add_rendered_intervals(high_speed_epochs_ds, name='high_speed')
+
+interval_info = active_2d_plot.list_all_rendered_intervals()
+interval_info
+
+# desired_interval_height_ratios = [2.0, 2.0, 1.0, 0.1, 1.0, 1.0, 1.0] # ratio of heights to each interval
+rendered_interval_keys = list(interval_info.keys())
+desired_interval_height_ratios = [1.0] * len(interval_info) # ratio of heights to each interval
+required_vertical_offsets, required_interval_heights = EpochRenderingMixin.build_stacked_epoch_layout(desired_interval_height_ratios, epoch_render_stack_height=80.0, interval_stack_location='below')
+stacked_epoch_layout_dict = {interval_key:dict(y_location=y_location, height=height) for interval_key, y_location, height in zip(rendered_interval_keys, required_vertical_offsets, required_interval_heights)} # Build a stacked_epoch_layout_dict to update the display
+active_2d_plot.update_rendered_intervals_visualization_properties(stacked_epoch_layout_dict)
 
 
