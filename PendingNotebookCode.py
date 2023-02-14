@@ -21,6 +21,13 @@ should_display_2D_plots = True
 _debug_print = False
 
 
+import sys
+
+def is_reloaded_instance(obj, classinfo):
+    """ determines if a class instance is a reloaded instance of a class"""
+    return isinstance(obj, classinfo) and sys.getrefcount(classinfo) > 1
+
+
 
 # ==================================================================================================================== #
 # 2022-12-22 - Posterior Confidences/Certainties                                                                       #
