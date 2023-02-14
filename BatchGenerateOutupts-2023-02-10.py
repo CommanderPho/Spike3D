@@ -2043,6 +2043,8 @@ export_pyqtgraph_plot(plots[0])
 
 curr_active_pipeline.plot._display_spike_rasters_pyqtplot_2D('maze1')
 
+curr_active_pipeline.display('_display_spike_rasters_pyqtplot_2D', 'maze')
+
 # +
 from pyphocorehelpers.gui.Qt.TopLevelWindowHelper import TopLevelWindowHelper
 import pyphoplacecellanalysis.External.pyqtgraph as pg # Used to get the app for TopLevelWindowHelper.top_level_windows
@@ -2846,6 +2848,7 @@ long_replays, short_replays, global_replays, above_speed_threshold_intervals, be
 d = P.IntervalDict()
 d
 
+
 # +
 # i = 0
 # for i in range(len(df)):
@@ -2867,39 +2870,40 @@ d
 #
 # active_session_figures_out_path.joinpath()
 
-# + [markdown] tags=["BROKEN"]
-# def build_labels_if_empty(df):
-#     print(f"df: {df}")
-#     if np.alltrue([(str(a_lbl)=='') for a_lbl in df['label']]):
-#         df['label'] = [str(an_idx) for an_idx in df.index] # regular str label
-#         # df = df.reset_index(drop=True) # do we need this for some reason?
-#         df['integer_label'] = [int(float(an_idx)) for an_idx in df.index] # integer_label label
-#         print(f'labels were missing. Adding "label" and "integer_label".')
-#     else:
-#         print(f"df['label']: {df['label']}")
-#     return df
-#
-# short_session.ripple._df = build_labels_if_empty(short_session.ripple.to_dataframe())
-#
-# short_session.ripple._df.epochs.get_valid_df()
-#
-# external_computed_ripple_df['label'] = [str(an_idx) for an_idx in external_computed_ripple_df.index]
-# external_computed_ripple_df = external_computed_ripple_df.reset_index(drop=True)
-#
-# long_session.replay
-#
-# # # # # # # # # # # # # # # # # # # # # %pdb off
-#
-#
-# # # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-# # long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
-# # long_replay_df
-#
-# # long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
-#
-# str(curr_active_pipeline.active_sess_config.get_context())
-#
-# create_daily_programmatic_display_function_testing_folder_if_needed
+# + tags=["BROKEN"]
+def build_labels_if_empty(df):
+    print(f"df: {df}")
+    if np.alltrue([(str(a_lbl)=='') for a_lbl in df['label']]):
+        df['label'] = [str(an_idx) for an_idx in df.index] # regular str label
+        # df = df.reset_index(drop=True) # do we need this for some reason?
+        df['integer_label'] = [int(float(an_idx)) for an_idx in df.index] # integer_label label
+        print(f'labels were missing. Adding "label" and "integer_label".')
+    else:
+        print(f"df['label']: {df['label']}")
+    return df
+
+short_session.ripple._df = build_labels_if_empty(short_session.ripple.to_dataframe())
+
+short_session.ripple._df.epochs.get_valid_df()
+
+external_computed_ripple_df['label'] = [str(an_idx) for an_idx in external_computed_ripple_df.index]
+external_computed_ripple_df = external_computed_ripple_df.reset_index(drop=True)
+
+long_session.replay
+
+# + tags=["BROKEN"]
+# # # # # # # # # # # # # # # # # # # %pdb off
+
+
+# # long_replay_df = KnownFilterEpochs.PBE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# long_replay_df = KnownFilterEpochs.RIPPLE.get_filter_epochs_df(sess=long_session, min_epoch_included_duration=None, debug_print=True)
+# long_replay_df
+
+# long_replay_df, short_replay_df, global_replay_df = [KnownFilterEpochs.LAP.get_filter_epochs_df(sess=a_session, min_epoch_included_duration=None, debug_print=False) for a_session in [long_session, short_session, global_session]]
+
+str(curr_active_pipeline.active_sess_config.get_context())
+
+create_daily_programmatic_display_function_testing_folder_if_needed
 # -
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
@@ -2926,9 +2930,6 @@ replays_Interval_obj = out.to_PortionInterval()
 
 Epoch.from_PortionInterval(replays_Interval_obj.intersection(ripple_interval_obj))
 # -
-
-
-
 
 
 # %pdb off
@@ -2975,8 +2976,6 @@ spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus, dense_epoch_split
 # -
 
 spike_trimmed_active_epochs
-
-
 
 num_cells_active_in_epoch_mat = np.sum(is_cell_active_in_epoch_mat, 1)
 print(f'num_cells_active_in_epoch_mat: {num_cells_active_in_epoch_mat}')
@@ -3169,3 +3168,12 @@ window.add_epoch('replays_out3')
 # -
 
 _temp_out = curr_active_pipeline.display('_display_plot_decoded_epoch_slices', active_config_name, filter_epochs='laps', debug_test_max_num_slices=16)
+
+
+
+add_renderables_menu = active_2d_plot.ui.menus.custom_context_menus.add_renderables[0].programmatic_actions_dict
+menu_commands = ['AddTimeIntervals.PBEs', 'AddTimeIntervals.Ripples', 'AddTimeIntervals.Replays', 'AddTimeIntervals.Laps', 'AddTimeIntervals.Session.Epochs']
+for a_command in menu_commands:
+    add_renderables_menu[a_command].trigger()    
+
+
