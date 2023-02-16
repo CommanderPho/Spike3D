@@ -2101,7 +2101,7 @@ main_plot_widget
 _display_spike_rasters_window # can these be made not to display the spikes as they do currently? E.g., just the intervals?
 _display_spike_rasters_pyqtplot_2D
 
-# + [markdown] tags=[]
+# + [markdown] tags=["visualization"]
 # ## 🎨 Exploring 'Plot' Helper class:
 # -
 
@@ -2109,11 +2109,15 @@ curr_active_pipeline.plot._display_1d_placefields
 
 curr_active_pipeline.plot._display_1d_placefields
 
-curr_active_pipeline.plot._display_spike_rasters_pyqtplot_2D
+# + tags=["visualization"]
+spike_raster_plt_2d, spike_raster_plt_3d, spike_raster_window = curr_active_pipeline.plot._display_spike_rasters_pyqtplot_2D.values()
 
+# + tags=["visualization"]
 curr_active_pipeline.plot._display_3d_image_plotter
 
+# + tags=["visualization"]
 curr_active_pipeline.display('_display_1d_placefield_validations', active_session_configuration_context=curr_active_pipeline.filtered_contexts.maze)
+# -
 
 list(curr_active_pipeline.filtered_contexts.values())[-1]
 
@@ -2791,7 +2795,7 @@ global_pbe = global_session.pbe
 
 
 high_speed_epochs = convert_PortionInterval_to_Epoch_obj(above_speed_threshold_intervals)
-high_speed_epochs
+low_speed_epochs = convert_PortionInterval_to_Epoch_obj(below_speed_threshold_intervals)
 
 
 # +
@@ -2841,10 +2845,10 @@ d
 #     print(f"df.loc[i, 'speed']: {df.loc[i, 'speed']}")
 #     print(f"df.loc[df.index[i], 'speed']: {df.loc[df.index[i], 'speed']}")
 #     assert df.loc[df.index[i], 'speed'] == df.loc[i, 'speed']
-# -
 
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # Other experimentation:
-# + [markdown] tags=["BROKEN"]
+# # # + [markdown] tags=["BROKEN"]
 # from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
 #
 # figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
@@ -2914,7 +2918,9 @@ out3
 
 
 
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-10 - _perform_spike_burst_detection_computation to get burst during replay events:
+# -
 
 # %pdb on
 curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_spike_burst_detection_computation'], enabled_filter_names=['maze'], debug_print=True)
@@ -2971,7 +2977,7 @@ epoch_split_unit_split_spiketrains
 
 epoch_split_spike_dfs[1]
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-08 - pynapple exploration and custom `write_neuroscope_intervals` function
 
 # +
@@ -3044,7 +3050,7 @@ final_export_path = out.to_neuroscope()
 print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-08 - Automatic context using function decorators:
 # -
 
@@ -3169,39 +3175,25 @@ for a_command in menu_commands:
 
 
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.EpochRenderingMixin import EpochRenderingMixin
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs
-
-
-# +
-def build_custom_epochs_dataframe_formatter(cls, **kwargs):
-    def _add_interval_dataframe_visualization_columns_general_epoch(active_df):
-        """ Adds the remaining _required_interval_visualization_columns specifically for PBEs
-        """
-        num_intervals = np.shape(active_df)[0]
-        ## parameters:
-        y_location = 0.0
-        height = 20.5
-        pen_color = pg.mkColor('w')
-        pen_color.setAlphaF(0.8)
-
-        brush_color = pg.mkColor('grey')
-        brush_color.setAlphaF(0.5)
-
-        ## Update the dataframe's visualization columns:
-        active_df = cls._update_df_visualization_columns(active_df, y_location=y_location, height=height, pen_color=pen_color, brush_color=brush_color, **kwargs)
-        return active_df
-    return _add_interval_dataframe_visualization_columns_general_epoch
-
-interval_datasource = Ripples_2DRenderTimeEpochs.build_render_time_epochs_datasource(sess.laps.as_epoch_obj(), epochs_dataframe_formatter=build_custom_epochs_dataframe_formatter) # **({'series_vertical_offset': 42.0, 'series_height': 1.0} | kwargs)
-spike_raster_window.spike_raster_plt_2d.add_rendered_intervals(interval_datasource, name='CustomRipples', debug_print=False) # removes the rendered intervals
-# -
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, inline_mkColor
 
 named_interval_epochs_dict = dict(zip(['replays0', 'replays1', 'replays2', 'replays3'], [out, out1, out2, out3]))
 interval_datasources_dict = {k:General2DRenderTimeEpochs.build_render_time_epochs_datasource(active_epochs_obj=v) for k, v in named_interval_epochs_dict.items()}
 out_graphics = {k:active_2d_plot.add_rendered_intervals(v, name=k) for k, v in interval_datasources_dict.items()}
 
+# +
 high_speed_epochs_ds = General2DRenderTimeEpochs.build_render_time_epochs_datasource(active_epochs_obj=high_speed_epochs)
 active_2d_plot.add_rendered_intervals(high_speed_epochs_ds, name='high_speed')
+
+low_speed_epochs_ds = General2DRenderTimeEpochs.build_render_time_epochs_datasource(active_epochs_obj=low_speed_epochs)
+active_2d_plot.add_rendered_intervals(low_speed_epochs_ds, name='low_speed')
+
+epochs_update_dict = {
+    'high_speed':dict(y_location=-10.0, height=7.5, pen_color=inline_mkColor('orange', 0.8), brush_color=inline_mkColor('red', 0.5)),
+    'low_speed':dict(y_location=-2.0, height=7.5, pen_color=inline_mkColor('orange', 0.8), brush_color=inline_mkColor('pink', 0.5)),
+}
+active_2d_plot.update_rendered_intervals_visualization_properties(epochs_update_dict)
+# -
 
 interval_info = active_2d_plot.list_all_rendered_intervals()
 interval_info
@@ -3213,4 +3205,100 @@ required_vertical_offsets, required_interval_heights = EpochRenderingMixin.build
 stacked_epoch_layout_dict = {interval_key:dict(y_location=y_location, height=height) for interval_key, y_location, height in zip(rendered_interval_keys, required_vertical_offsets, required_interval_heights)} # Build a stacked_epoch_layout_dict to update the display
 active_2d_plot.update_rendered_intervals_visualization_properties(stacked_epoch_layout_dict)
 
+# # 2023-02-15 - Test and fix `filter_epochs_by_speed` - I think the output is inverted
 
+# +
+from neuropy.utils.efficient_interval_search import _find_intervals_above_speed
+from neuropy.utils.efficient_interval_search import _convert_start_end_tuples_list_to_PortionInterval, convert_PortionInterval_to_Epoch_obj
+
+a_session = curr_active_pipeline.filtered_sessions['maze']
+speed_thresh = 10.0
+speed_df = a_session.position.to_dataframe()
+start_end_tuples_interval_list = _find_intervals_above_speed(speed_df, speed_thresh, is_interpolated=True)
+above_speed_threshold_intervals = _convert_start_end_tuples_list_to_PortionInterval(start_end_tuples_interval_list)
+print(f'len(above_speed_threshold_intervals): {len(above_speed_threshold_intervals)}')
+# find the intervals below the threshold speed by taking the complement:
+below_speed_threshold_intervals = above_speed_threshold_intervals.complement()
+
+high_speed_epochs = convert_PortionInterval_to_Epoch_obj(above_speed_threshold_intervals)
+low_speed_epochs = convert_PortionInterval_to_Epoch_obj(below_speed_threshold_intervals)
+# -
+
+spike_raster_plt_2d, spike_raster_plt_3d, spike_raster_window = curr_active_pipeline.plot._display_spike_rasters_pyqtplot_2D.values()
+
+active_2d_plot = spike_raster_plt_2d
+
+# +
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.EpochRenderingMixin import EpochRenderingMixin
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Specific2DRenderTimeEpochs import General2DRenderTimeEpochs, inline_mkColor
+
+## Add to SpikeRaster2D:
+high_speed_epochs_ds = General2DRenderTimeEpochs.build_render_time_epochs_datasource(active_epochs_obj=high_speed_epochs)
+active_2d_plot.add_rendered_intervals(high_speed_epochs_ds, name='high_speed')
+
+low_speed_epochs_ds = General2DRenderTimeEpochs.build_render_time_epochs_datasource(active_epochs_obj=low_speed_epochs)
+active_2d_plot.add_rendered_intervals(low_speed_epochs_ds, name='low_speed')
+
+epochs_update_dict = {
+    'high_speed':dict(y_location=-10.0, height=7.5, pen_color=inline_mkColor('orange', 0.8), brush_color=inline_mkColor('red', 0.9)),
+    'low_speed':dict(y_location=-2.0, height=7.5, pen_color=inline_mkColor('orange', 0.8), brush_color=inline_mkColor('pink', 0.9)),
+}
+active_2d_plot.update_rendered_intervals_visualization_properties(epochs_update_dict)
+
+# +
+from pyphoplacecellanalysis.General.Mixins.SpikesRenderingBaseMixin import SpikeEmphasisState
+
+# Hide all spikes entirely to focus on the epochs:
+active_2d_plot.update_spike_emphasis(new_emphasis_state=SpikeEmphasisState.Hidden)
+# -
+
+curr_replays = a_session.
+curr_replays, above_speed_threshold_intervals, below_speed_threshold_intervals = filter_epochs_by_speed(a_session.position.to_dataframe(), curr_replays, speed_thresh=maximum_speed_thresh, debug_print=debug_print)
+
+pos_df = a_session.position.compute_higher_order_derivatives()
+pos_df = a_session.position.compute_smoothed_position_info()
+pos_df
+
+import matplotlib.pyplot as plt
+# %matplotlib qt
+pos_df['speed'].plot()
+plt.show()
+
+np.max(a_session.position.velocity_x)
+
+np.nanmax(pos_df.velocity_x_smooth)
+
+np.nanmin(pos_df.velocity_x_smooth)
+
+out_widget, embedded_fig, embedded_ax = active_2d_plot.add_new_matplotlib_render_plot_widget(row=1, col=0, name='matplotlib_view_widget')
+pos_df[['t', 'x', 'lin_pos', 'speed', 'velocity_x', 'x_smooth', 'velocity_x_smooth']].plot(x='t', ax=embedded_ax, subplots=[('x', 'x_smooth', 'lin_pos'), ('speed', 'velocity_x', 'velocity_x_smooth')])
+active_2d_plot.sync_matplotlib_render_plot_widget(identifier='matplotlib_view_widget')
+
+import mplcursors
+
+# Add value trace to axes
+mplcursors.cursor(active_2d_plot.ui.matplotlib_view_widgets['matplotlib_view_widget'].axes, hover=True)
+
+# +
+from matplotlib import ticker
+for ax in active_2d_plot.ui.matplotlib_view_widgets['matplotlib_view_widget'].axes:
+    # Display grid lines
+    ax.grid(False)
+    # Set the y-axis ticks and grid lines
+    ax.yaxis.set_ticks_position('left')  # Display ticks on the left side only
+    ax.yaxis.set_major_locator(ticker.LinearLocator(numticks=3))
+    ax.yaxis.grid(True, which='major', linestyle='--', color='gray', alpha=0.5)  # Display major grid lines
+    # yticks = [0, 2, 4, 6, 8, 10]
+    y_bottom, y_top = ax.get_ybound()
+    # yticks = np.arange(y_bottom, y_top+1, 2)
+    yticks = np.linspace(y_bottom, y_top, num=10)
+    ax.set_yticks(yticks)
+    
+out_widget.draw()
+# -
+
+out_widget.draw()
+
+embedded_ax
+
+add_new_matplotlib_render_plot_widget(self, row=1, col=0, name='matplotlib_view_widget')
