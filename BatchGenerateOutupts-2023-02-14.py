@@ -2848,7 +2848,7 @@ d
 
 # + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # Other experimentation:
-# # # # + [markdown] tags=["BROKEN"]
+# # # # # + [markdown] tags=["BROKEN"]
 # from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
 #
 # figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
@@ -2972,15 +2972,14 @@ epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_star
 
 
 
-## 🔟🔜⛳️ TODO: CRITICAL! Look into this, this looks powerful.
-from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+
 
 
 epoch_split_unit_split_spiketrains
 
 epoch_split_spike_dfs[1]
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-08 - pynapple exploration and custom `write_neuroscope_intervals` function
 
 # +
@@ -3053,7 +3052,7 @@ final_export_path = out.to_neuroscope()
 print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-08 - Automatic context using function decorators:
 # -
 
@@ -3110,7 +3109,7 @@ active_sess.perform_compute_estimated_replay_epochs.__mask__()
 
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # Adding custom rendered intervals easily to 2D plot
 
 # +
@@ -3208,6 +3207,7 @@ required_vertical_offsets, required_interval_heights = EpochRenderingMixin.build
 stacked_epoch_layout_dict = {interval_key:dict(y_location=y_location, height=height) for interval_key, y_location, height in zip(rendered_interval_keys, required_vertical_offsets, required_interval_heights)} # Build a stacked_epoch_layout_dict to update the display
 active_2d_plot.update_rendered_intervals_visualization_properties(stacked_epoch_layout_dict)
 
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-15 - Test and fix `filter_epochs_by_speed` - I think the output is inverted
 
 # +
@@ -3315,11 +3315,87 @@ from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_
 active_sess = curr_active_pipeline.filtered_sessions['maze']
 active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
 active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
-print(f'active_epochs: {active_epochs}')
-# -
 
 spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus, dense_epoch_split_frs_mat, is_cell_active_in_epoch_mat = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
 
+# +
+## 🔟🔜⛳️ TODO: CRITICAL! Look into this, this looks powerful.
+
+
+def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
+    from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+    
+    # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
+    active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1) # uses new add_epochs_id_identity
+
+    # Get all aclus and epoch_idxs used throughout the entire spikes_df:
+    all_aclus = active_spikes_df['aclu'].unique()
+    all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
+
+    # first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spikes
+    first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spikes
+    # rank the aclu values by their first t value in each Probe_Epoch_id
+    ranked_aclus = first_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
+    # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
+    ranked_aclus_dict = {}
+    for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
+        if epoch_id not in ranked_aclus_dict:
+            ranked_aclus_dict[epoch_id] = {}
+        ranked_aclus_dict[epoch_id][aclu] = rank
+    # ranked_aclus_dict
+    return ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus
+
+epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
+
+
+# -
+
+# # Spearman rank-order tests:
+# WARNING, from documentation: Although calculation of the p-value does not make strong assumptions about the distributions underlying the samples, it is only accurate for very large samples (>500 observations). For smaller sample sizes, consider a permutation test (see Examples section below).
+
+# +
+
+def compute_rankordered_stats(epoch_ranked_aclus_dict):
+    import scipy.stats
+    
+    epoch_ranked_aclus_stats_dict = {epoch_id:scipy.stats.spearmanr(np.array(list(rank_dict.keys())), np.array(list(rank_dict.values()))) for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+    # epoch_ranked_aclus_stats_dict
+
+    # Spearman statistic (correlation) values:
+    epoch_ranked_aclus_stats_corr_values = np.array([np.abs(rank_stats.statistic) for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+    outside_epochs_ranked_aclus_stats_corr_value = epoch_ranked_aclus_stats_corr_values[0]
+    epoch_ranked_aclus_stats_corr_values = epoch_ranked_aclus_stats_corr_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+    # Spearman p-values:
+    epoch_ranked_aclus_stats_p_values = np.array([rank_stats.pvalue for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+    outside_epochs_ranked_aclus_stats_p_value = epoch_ranked_aclus_stats_p_values[0]
+    epoch_ranked_aclus_stats_p_values = epoch_ranked_aclus_stats_p_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+    return epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value)
+
+epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = compute_rankordered_stats(epoch_ranked_aclus_dict)
+
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# ### 2023-02-16 TODO: try to overcome issue with small sample sizes mentioned above by performing the permutation test:
+
+# +
+# def statistic(x):  # permute only `x`
+#     return scipy.stats.spearmanr(x, y).statistic
+# res_exact = scipy.stats.permutation_test((x,), statistic, permutation_type='pairings')
+res_asymptotic = scipy.stats.spearmanr(x, y)
+res_exact.pvalue, res_asymptotic.pvalue  # asymptotic pvalue is too low
+
+# scipy.stats.permutation_test((x,), (lambda x: scipy.stats.spearmanr(x, y).statistic), permutation_type='pairings')
+
+
+## Compute the exact value using permutations:
+# epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.keys())),), (lambda x: scipy.stats.spearmanr(x, np.array(list(rank_dict.values()))).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.values())),), (lambda y: scipy.stats.spearmanr(np.array(list(rank_dict.keys())), y).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()} # ValueError: each sample in `data` must contain two or more observations along `axis`.
+epoch_ranked_aclus_stats_exact_dict
+
+
+# + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
+# ### `compute_weighted_center_of_masses` fix attempt:
 
 # +
 def compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_spike_dfs):
@@ -3328,6 +3404,11 @@ def compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_s
     
     MAJOR CONCEPTUAL FAULT: spike_trimmed_active_epochs are trimmed to the first/last spike FOR ALL CELLS IN THE EPOCH, but I think the "weighted CoM" computation depends on a cell-specific active interval aligned to the first/last spike FOR THAT SINGLE CELL, which isn't the case.
         TODO: INVESTIGATE and see if this is an issue, I suspect that it is!
+        
+    TODO: update to work in the same manner as the other ranking functions called in `compute_rankordered_spikes_during_epochs` such as .first() and .median()
+    
+    Usage:
+        weighted_center_of_masses, unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_spike_dfs)
     """
     # `unweighted_center_of_masses` are the exact center of the given epoch based only on the epoch's start and end time.
     unweighted_center_of_masses = spike_trimmed_active_epochs.starts + (spike_trimmed_active_epochs.durations/2.0)
@@ -3340,7 +3421,9 @@ def compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_s
     weighted_center_of_masses = weighted_center_of_masses + unweighted_center_of_masses
     return weighted_center_of_masses, unweighted_center_of_masses
 
-weighted_center_of_masses, unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_spike_dfs)
+# weighted_center_of_masses, unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_spike_dfs)
+
+
 # -
 
 a_df = epoch_split_spike_dfs[0]
@@ -3355,8 +3438,6 @@ unit_unweighted_center_of_masses = {aclu:(t_start + ((t_stop - t_start)/2.0)) fo
 unit_unweighted_center_of_masses
 # -
 
-self._obj[self.time_variable_name].values
-
 # Split the spikes_df up by epochs, and then for each epoch split that up by unit
 epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(spike_trimmed_active_epochs.starts, spike_trimmed_active_epochs.stops)] # still rather fast!
 
@@ -3366,26 +3447,35 @@ a_df.spikes.get_unit_spiketrains(included_neuron_ids=all_aclus)
 
 epoch_split_spike_dfs
 
+# ### Explore laps' sequential ordering to sanity check replay sequence detectiona and rank-ordering:
+
 # +
+from neuropy.core import Epoch
 from neuropy.utils.efficient_interval_search import trim_epochs_to_first_last_spikes
 
 ## Conceptually laps should have a strong sequental ordering of activity and can serve as a sanity check for replay sequence detection and rank-ordering
 
 # Get laps epochs:
 active_sess = curr_active_pipeline.filtered_sessions['maze']
-active_laps_epochs = active_sess.laps.as_epoch_obj()
+# active_laps_epochs = active_sess.laps.as_epoch_obj()
+active_laps_epochs = Epoch.from_PortionInterval(active_sess.laps.as_epoch_obj().to_PortionInterval()) # Converting the epochs to a portion interval and back fixes overlapping intervals.
 
 # Spike trim the laps epochs as well:
 active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
 all_laps_aclus = active_spikes_df.spikes.neuron_ids
 spike_trimmed_active_laps_epochs, laps_epoch_split_spike_dfs = trim_epochs_to_first_last_spikes(active_spikes_df, active_laps_epochs)
-laps_weighted_center_of_masses, laps_unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_laps_epochs, laps_epoch_split_spike_dfs)
+# laps_weighted_center_of_masses, laps_unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_laps_epochs, laps_epoch_split_spike_dfs)
+spike_trimmed_active_laps_epochs
+
+## Compute the Rank-Order Stats for the laps:
+laps_epoch_ranked_aclus_dict, active_spikes_df, all_laps_epoch_ids, laps_all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_laps_epochs)
+laps_epoch_ranked_aclus_stats_corr_values, laps_epoch_ranked_aclus_stats_p_values, (laps_outside_epochs_ranked_aclus_stats_corr_value, laps_outside_epochs_ranked_aclus_stats_p_value) = compute_rankordered_stats(laps_epoch_ranked_aclus_dict)
+laps_epoch_ranked_aclus_stats_p_values
 # -
 
-num_cells_active_in_epoch_mat = np.sum(is_cell_active_in_epoch_mat, 1)
-print(f'num_cells_active_in_epoch_mat: {num_cells_active_in_epoch_mat}')
-num_epochs_for_cell_active_mat = np.sum(is_cell_active_in_epoch_mat, 0).T
-print(f'num_epochs_for_cell_active_mat: {num_epochs_for_cell_active_mat}')
+
+
+
 
 # Split the spikes_df up by epochs, and then for each epoch split that up by unit
 epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(out2.starts, out2.stops)] # still rather fast!
