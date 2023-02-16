@@ -2848,7 +2848,7 @@ d
 
 # + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # Other experimentation:
-# # # + [markdown] tags=["BROKEN"]
+# # # # + [markdown] tags=["BROKEN"]
 # from pyphoplacecellanalysis.General.Mixins.ExportHelpers import create_daily_programmatic_display_function_testing_folder_if_needed, session_context_to_relative_path
 #
 # figures_parent_out_path = create_daily_programmatic_display_function_testing_folder_if_needed()
@@ -2932,6 +2932,7 @@ active_burst_intervals = active_burst_info['burst_intervals']
 
 ## Add the burst_detection burst_intervals to the active_2d_plot:
 from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.Render2DEventRectanglesHelper import Render2DEventRectanglesHelper
+active_2d_plot = spike_raster_plt_2d
 # active_burst_info = global_results['burst_detection']
 # active_burst_intervals = active_burst_info['burst_intervals']
 output_display_items = Render2DEventRectanglesHelper.add_event_rectangles(active_2d_plot, active_burst_intervals) # {'interval_rects_item': active_interval_rects_item}
@@ -2939,6 +2940,8 @@ active_interval_rects_item = output_display_items['interval_rects_item']
 active_interval_rects_item
 
 active_sess.pbe
+
+
 
 # + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-10 - Trimming and Filtering Estimated Replay Epochs based on cell activity and pyramidal cell start/end times:
@@ -2977,7 +2980,7 @@ epoch_split_unit_split_spiketrains
 
 epoch_split_spike_dfs[1]
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # 2023-02-08 - pynapple exploration and custom `write_neuroscope_intervals` function
 
 # +
@@ -3050,7 +3053,7 @@ final_export_path = out.to_neuroscope()
 print(f'Exporting estimated replays to Neuroscope .evt file: {final_export_path}')
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # 2023-02-08 - Automatic context using function decorators:
 # -
 
@@ -3107,7 +3110,7 @@ active_sess.perform_compute_estimated_replay_epochs.__mask__()
 
 
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # # Adding custom rendered intervals easily to 2D plot
 
 # +
@@ -3303,3 +3306,65 @@ out_widget.draw()
 embedded_ax
 
 add_new_matplotlib_render_plot_widget(self, row=1, col=0, name='matplotlib_view_widget')
+
+# # 2023-02-16 - Simple "weighted-center-of-mass" method of determing cell firing order in a timeseries
+
+# +
+from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
+
+active_sess = curr_active_pipeline.filtered_sessions['maze']
+active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
+active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
+print(f'active_epochs: {active_epochs}')
+# -
+
+spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus, dense_epoch_split_frs_mat, is_cell_active_in_epoch_mat = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
+
+
+# +
+def compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_spike_dfs):
+    """ `weighted_center_of_masses` takes into account the offsets of the number of spikes as not to allow start/end outliers to unduely influence the rank-ordering.
+    TODO: Validate weighted_center_of_masses by plotting as a line over each interval and ensuring that it looks correct.
+    
+    MAJOR CONCEPTUAL FAULT: spike_trimmed_active_epochs are trimmed to the first/last spike FOR ALL CELLS IN THE EPOCH, but I think the "weighted CoM" computation depends on a cell-specific active interval aligned to the first/last spike FOR THAT SINGLE CELL, which isn't the case.
+        TODO: INVESTIGATE and see if this is an issue, I suspect that it is!
+    """
+    # `unweighted_center_of_masses` are the exact center of the given epoch based only on the epoch's start and end time.
+    unweighted_center_of_masses = spike_trimmed_active_epochs.starts + (spike_trimmed_active_epochs.durations/2.0)
+
+    # `weighted_center_of_masses` takes into account the offsets of the number of spikes as not to allow start/end outliers to unduely influence the rank-ordering.
+    weighted_center_of_masses = np.zeros_like(unweighted_center_of_masses)
+    for i, (unweighted_c_o_m, a_df) in enumerate(zip(unweighted_center_of_masses, epoch_split_spike_dfs)):
+        weighted_center_of_masses[i] = np.sum(a_df[a_df.spikes.time_variable_name].values-unweighted_c_o_m)
+
+    weighted_center_of_masses = weighted_center_of_masses + unweighted_center_of_masses
+    return weighted_center_of_masses, unweighted_center_of_masses
+
+weighted_center_of_masses, unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_spike_dfs)
+# -
+
+epoch_split_spike_dfs
+
+# +
+from neuropy.utils.efficient_interval_search import trim_epochs_to_first_last_spikes
+
+## Conceptually laps should have a strong sequental ordering of activity and can serve as a sanity check for replay sequence detection and rank-ordering
+
+# Get laps epochs:
+active_sess = curr_active_pipeline.filtered_sessions['maze']
+active_laps_epochs = active_sess.laps.as_epoch_obj()
+
+# Spike trim the laps epochs as well:
+active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
+all_laps_aclus = active_spikes_df.spikes.neuron_ids
+spike_trimmed_active_laps_epochs, laps_epoch_split_spike_dfs = trim_epochs_to_first_last_spikes(active_spikes_df, active_laps_epochs)
+laps_weighted_center_of_masses, laps_unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_laps_epochs, laps_epoch_split_spike_dfs)
+# -
+
+num_cells_active_in_epoch_mat = np.sum(is_cell_active_in_epoch_mat, 1)
+print(f'num_cells_active_in_epoch_mat: {num_cells_active_in_epoch_mat}')
+num_epochs_for_cell_active_mat = np.sum(is_cell_active_in_epoch_mat, 0).T
+print(f'num_epochs_for_cell_active_mat: {num_epochs_for_cell_active_mat}')
+
+# Split the spikes_df up by epochs, and then for each epoch split that up by unit
+epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(out2.starts, out2.stops)] # still rather fast!
