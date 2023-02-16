@@ -87,13 +87,7 @@ main_time_curves_view_widget creates new PlotDataItems by calling self.ui.main_t
 
 ```
 
-<!-- #region tags=[] -->
-## Screenshots
-<!-- #endregion -->
-
-![[WithPBE_Epochs.png|500]]
-
-
+<!-- #region tags=["procedure"] -->
 ### Procedure: Adding new Curves:
 1. Copy pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.SpecificTimeCurves.PositionRenderTimeCurves into a new structure, changing as needed to display your desired variables
 2. Add your new curve class to the import list at the top of `pyphoplacecellanalysis.GUI.Qt.Menus.LocalMenus_AddRenderable.LocalMenus_AddRenderable` 
@@ -102,6 +96,18 @@ main_time_curves_view_widget creates new PlotDataItems by calling self.ui.main_t
 4. Save and compile the .ui file (In VSCode: Right click > Compile .ui file)
 5. Inside `LocalMenus_AddRenderable.build_renderable_menu(...)` add the appropriate entry to the `submenu_addTimeCurves` and `submenu_addTimeCurvesCallbacks` arrays.
 	1. `lambda evt=None: VelocityRenderTimeCurves.add_render_time_curves(curr_sess=sess, destination_plot=destination_plot),`
+<!-- #endregion -->
+
+<!-- #region tags=["TODO"] -->
+##### TODO: Time-curve adding improvements
+Enable users to 'register' new curves which are then added to the menu and the plot
+<!-- #endregion -->
+
+<!-- #region tags=[] -->
+## Screenshots
+<!-- #endregion -->
+
+![[WithPBE_Epochs.png|500]]
 
 <!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 # `matplotlib_view_widget`
@@ -466,7 +472,109 @@ iplapsDataExplorer
 curr_active_pipeline.display('_display_3d_interactive_tuning_curves_plotter', 'maze1_PYR') # works!
 ```
 
-<!-- #region tags=[] -->
+```python
+
+```
+
+<!-- #region -->
+### Adjusting Spike Emphasis:
+#### Usage Examples:
+```python
+from pyphoplacecellanalysis.General.Mixins.SpikesRenderingBaseMixin import SpikeEmphasisState
+
+## Example 1: De-emphasize spikes excluded from the placefield calculations:
+is_spike_included_in_pf = np.isin(spike_raster_window.spike_raster_plt_2d.spikes_df.index, active_pf_2D.filtered_spikes_df.index)
+spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included_in_pf), SpikeEmphasisState.Deemphasized)
+
+## Example 2: De-emphasize spikes that don't have their 'aclu' from a given set of indicies:
+is_spike_included = spike_raster_window.spike_raster_plt_2d.spikes_df.aclu.to_numpy() == 2
+spike_raster_window.spike_raster_plt_2d.update_spike_emphasis(np.logical_not(is_spike_included), SpikeEmphasisState.Deemphasized)
+
+## Example 3: De-emphasize all spikes 
+active_2d_plot.update_spike_emphasis(new_emphasis_state=SpikeEmphasisState.Deemphasized)
+
+## Example 4: Hide all spikes entirely
+active_2d_plot.update_spike_emphasis(new_emphasis_state=SpikeEmphasisState.Hidden)
+```
+
+#### Notes
+Looks like there is very advanced emphasis functionality that I haven't explored. See Code example below:
+```python
+
+# SpikeEmphasisState
+state_alpha = {SpikeEmphasisState.Hidden: 0.01,
+			   SpikeEmphasisState.Deemphasized: 0.1,
+			   SpikeEmphasisState.Default: 0.5,
+			   SpikeEmphasisState.Emphasized: 1.0,
+}
+
+# state_color_adjust_fcns: functions that take the base color and call build_adjusted_color to get the adjusted color for each state
+state_color_adjust_fcns = {SpikeEmphasisState.Hidden: lambda x: build_adjusted_color(x),
+			   SpikeEmphasisState.Deemphasized: lambda x: build_adjusted_color(x, saturation_scale=0.35, value_scale=0.8),
+			   SpikeEmphasisState.Default: lambda x: build_adjusted_color(x),
+			   SpikeEmphasisState.Emphasized: lambda x: build_adjusted_color(x, value_scale=1.25),
+}
+
+```
+<!-- #endregion -->
+
+<!-- #region -->
+### Assigning Cell Colors
+Working calls:
+```python
+
+## Set the colors of the raster window from the ipcDataExplorer window:
+spike_raster_window.update_neurons_color_data(updated_neuron_render_configs=ipcDataExplorer.active_neuron_render_configs_map)
+
+
+```
+
+```python
+
+""" Cell Coloring functions:
+"""
+def _setup_neurons_color_data(self, neuron_colors_list=None, coloring_mode='color_by_index_order'):
+	""" 
+	neuron_colors_list: a list of neuron colors
+		if None provided will call DataSeriesColorHelpers._build_cell_color_map(...) to build them.
+	
+	Requires:
+		self.fragile_linear_neuron_IDXs
+		self.n_cells
+	
+	Sets:
+		self.params.neuron_qcolors
+		self.params.neuron_qcolors_map
+		self.params.neuron_colors: ndarray of shape (4, self.n_cells)
+		self.params.neuron_colors_hex
+		
+
+	Known Calls: Seemingly only called from:
+		SpikesRenderingBaseMixin.helper_setup_neuron_colors_and_order(...)
+	"""
+
+def update_neurons_color_data(self, updated_neuron_render_configs):
+        """updates the colors for each neuron/cell given the updated_neuron_render_configs map
+        updated_neuron_render_configs: {2: SingleNeuronPlottingExtended(color='#843c39', extended_values_dictionary={}, isVisible=False, name='2', spikesVisible=False),
+		 3: SingleNeuronPlottingExtended(color='#924744', extended_values_dictionary={}, isVisible=False, name='3', spikesVisible=False),
+		 4: SingleNeuronPlottingExtended(color='#9f5350', extended_values_dictionary={}, isVisible=False, name='4', spikesVisible=False),
+		 ... ,
+		 109: SingleNeuronPlottingExtended(color='#f0aee7', extended_values_dictionary={}, isVisible=False, name='109', spikesVisible=False)}
+ 
+```
+<!-- #endregion -->
+
+```python
+
+```
+
+```python
+
+```
+
+# 🏻‍💻 DEVELOPER SECTION
+
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## TODO/PENDING
 <!-- #endregion -->
 
@@ -480,8 +588,8 @@ new_interval_rects_item = Render2DEventRectanglesHelper.build_IntervalRectsItem_
 new_interval_rects_item.setToolTip(name) # The tooltip is set generically here to 'PBEs', 'Replays' or whatever the dataseries name is
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] -->
-# 👨🏻‍💻📚 Computation Functions Documentation Guide
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+## 👨🏻‍💻📚 Computation Functions Documentation Guide
 <!-- #endregion -->
 
 ```python
@@ -492,7 +600,7 @@ curr_active_pipeline.global_computation_results
 curr_active_pipeline.computation_results
 ```
 
-Registering a new computation function
+### Registering a new computation function
 
 ```python
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions import MultiContextComputationFunctions
@@ -500,7 +608,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 curr_active_pipeline.register_computation(computation_function=MultiContextComputationFunctions._perform_jonathan_replay_firing_rate_analyses, is_global=True, registered_name='_perform_jonathan_replay_firing_rate_analyses')
 ```
 
-Performing a specific computation:
+### Performing a specific computation:
 
 ```python
 curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses'], fail_on_exception=True, debug_print=True) # , progress_logger_callback=print
@@ -511,14 +619,10 @@ curr_active_pipeline.save_pipeline()
 ```
 
 <!-- #region tags=[] -->
-# Computation Classes Documentation
+## Computation Classes Documentation
 <!-- #endregion -->
 
-```python
-
-```
-
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## Time-Dependent Placefields Documentation:
 
 ### Resetting State:
@@ -531,9 +635,7 @@ snapshot(self): """ takes a snapshot of the current values at this time."""
 ### Restore Snapshots:
 restore_from_snapshot(self, snapshot_t)
     apply_snapshot_data(self, snapshot_t, snapshot_data)
-
-
-    
+  
 <!-- #endregion -->
 
 ```python
@@ -560,8 +662,8 @@ self.curr_occupancy_weighted_tuning_maps_matrix = np.zeros((self.n_fragile_linea
 self.historical_snapshots = OrderedDict({})
 ```
 
-<!-- #region jupyter={"outputs_hidden": false} -->
-# Data Structure Documentation Generation
+<!-- #region jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[] -->
+## Data Structure Documentation Generation
 The functions below generate documentation in .md and .html format from passed data structures.
 <!-- #endregion -->
 
