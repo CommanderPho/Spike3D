@@ -3343,6 +3343,27 @@ def compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_s
 weighted_center_of_masses, unweighted_center_of_masses = compute_weighted_center_of_masses(spike_trimmed_active_epochs, epoch_split_spike_dfs)
 # -
 
+a_df = epoch_split_spike_dfs[0]
+a_df
+
+# +
+# unit_start_stop_times = {aclu:(np.nanmin(a_cell_df.spikes.times), np.nanmax(a_cell_df.spikes.times)) for aclu, a_cell_df in zip(a_df.spikes.neuron_ids, a_df.spikes.get_split_by_unit())}
+
+unit_start_stop_times = {aclu:(np.nanmin(a_cell_df.spikes.times), np.nanmax(a_cell_df.spikes.times)) for aclu, a_cell_df in zip(a_df.spikes.neuron_ids, a_df.spikes.get_split_by_unit())}
+# unit_start_stop_durations = {aclu:(t_stop - t_start) for aclu, (t_start, t_stop) in unit_start_stop_times.items()}
+unit_unweighted_center_of_masses = {aclu:(t_start + ((t_stop - t_start)/2.0)) for aclu, (t_start, t_stop) in unit_start_stop_times.items()}
+unit_unweighted_center_of_masses
+# -
+
+self._obj[self.time_variable_name].values
+
+# Split the spikes_df up by epochs, and then for each epoch split that up by unit
+epoch_split_unit_split_spiketrains = [active_spikes_df.spikes.time_sliced(t_start, t_stop).spikes.get_unit_spiketrains(included_neuron_ids=all_aclus) for t_start, t_stop in zip(spike_trimmed_active_epochs.starts, spike_trimmed_active_epochs.stops)] # still rather fast!
+
+a_df[a_df.spikes.time_variable_name].values
+
+a_df.spikes.get_unit_spiketrains(included_neuron_ids=all_aclus)
+
 epoch_split_spike_dfs
 
 # +
