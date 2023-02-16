@@ -3274,6 +3274,7 @@ out_widget, embedded_fig, embedded_ax = active_2d_plot.add_new_matplotlib_render
 pos_df[['t', 'x', 'lin_pos', 'speed', 'velocity_x', 'x_smooth', 'velocity_x_smooth']].plot(x='t', ax=embedded_ax, subplots=[('x', 'x_smooth', 'lin_pos'), ('speed', 'velocity_x', 'velocity_x_smooth')])
 active_2d_plot.sync_matplotlib_render_plot_widget(identifier='matplotlib_view_widget')
 
+import matplotlib.pyplot as plt
 import mplcursors
 
 # Add value trace to axes
