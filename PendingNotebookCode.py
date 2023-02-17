@@ -28,6 +28,107 @@ def is_reloaded_instance(obj, classinfo):
     return isinstance(obj, classinfo) and sys.getrefcount(classinfo) > 1
 
 
+# ==================================================================================================================== #
+# 2022-02-17 - Giving up on Rank-Order Sequence Analysis                                                               #
+# ==================================================================================================================== #
+""" 
+    after convincing Kamran that the sample size of the diferent replays made them uncomparable.
+"""
+
+# # 2023-02-16 - Simple "weighted-center-of-mass" method of determing cell firing order in a timeseries
+
+# +
+
+
+def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
+    """ 
+    Usage:
+        from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
+
+        active_sess = curr_active_pipeline.filtered_sessions['maze']
+        active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
+        active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
+
+        spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus, dense_epoch_split_frs_mat, is_cell_active_in_epoch_mat = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
+        epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
+"""
+    from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+    
+    # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
+    active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1) # uses new add_epochs_id_identity
+
+    # Get all aclus and epoch_idxs used throughout the entire spikes_df:
+    all_aclus = active_spikes_df['aclu'].unique()
+    all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
+
+    # first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spikes
+    first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spikes
+    # rank the aclu values by their first t value in each Probe_Epoch_id
+    ranked_aclus = first_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
+    # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
+    ranked_aclus_dict = {}
+    for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
+        if epoch_id not in ranked_aclus_dict:
+            ranked_aclus_dict[epoch_id] = {}
+        ranked_aclus_dict[epoch_id][aclu] = rank
+    # ranked_aclus_dict
+    return ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus
+
+# -
+
+
+# +
+
+def compute_rankordered_stats(epoch_ranked_aclus_dict):
+    """ Spearman rank-order tests:
+        
+    WARNING, from documentation: Although calculation of the p-value does not make strong assumptions about the distributions underlying the samples, it is only accurate for very large samples (>500 observations). For smaller sample sizes, consider a permutation test (see Examples section below).
+
+    Usage: 
+        
+        epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = compute_rankordered_stats(epoch_ranked_aclus_dict)
+
+    """
+    import scipy.stats
+    
+    epoch_ranked_aclus_stats_dict = {epoch_id:scipy.stats.spearmanr(np.array(list(rank_dict.keys())), np.array(list(rank_dict.values()))) for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+    # epoch_ranked_aclus_stats_dict
+
+    # Spearman statistic (correlation) values:
+    epoch_ranked_aclus_stats_corr_values = np.array([np.abs(rank_stats.statistic) for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+    outside_epochs_ranked_aclus_stats_corr_value = epoch_ranked_aclus_stats_corr_values[0]
+    epoch_ranked_aclus_stats_corr_values = epoch_ranked_aclus_stats_corr_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+    # Spearman p-values:
+    epoch_ranked_aclus_stats_p_values = np.array([rank_stats.pvalue for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+    outside_epochs_ranked_aclus_stats_p_value = epoch_ranked_aclus_stats_p_values[0]
+    epoch_ranked_aclus_stats_p_values = epoch_ranked_aclus_stats_p_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+    return epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value)
+
+
+# # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# # ### 2023-02-16 TODO: try to overcome issue with small sample sizes mentioned above by performing the permutation test:
+
+# # +
+# # def statistic(x):  # permute only `x`
+# #     return scipy.stats.spearmanr(x, y).statistic
+# # res_exact = scipy.stats.permutation_test((x,), statistic, permutation_type='pairings')
+# res_asymptotic = scipy.stats.spearmanr(x, y)
+# res_exact.pvalue, res_asymptotic.pvalue  # asymptotic pvalue is too low
+
+# # scipy.stats.permutation_test((x,), (lambda x: scipy.stats.spearmanr(x, y).statistic), permutation_type='pairings')
+
+# ## Compute the exact value using permutations:
+# # epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.keys())),), (lambda x: scipy.stats.spearmanr(x, np.array(list(rank_dict.values()))).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+# epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.values())),), (lambda y: scipy.stats.spearmanr(np.array(list(rank_dict.keys())), y).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()} # ValueError: each sample in `data` must contain two or more observations along `axis`.
+# epoch_ranked_aclus_stats_exact_dict
+
+
+
+
+
+
 
 # ==================================================================================================================== #
 # 2022-12-22 - Posterior Confidences/Certainties                                                                       #
