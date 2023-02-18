@@ -18,8 +18,40 @@ jupyter:
 This notebook serves to contain the final, mostly user-level documentation for Spike3D
 <!-- #endregion -->
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
-# Rendered Time Curves Documentation Guide
+<!-- #region tags=[] -->
+# `SpikeRaster2D`, `SpikeRaster3D`, and `Spike3DRasterWindowWidget`
+<!-- #endregion -->
+
+```python
+# Create a new `SpikeRaster2D` instance using `_display_spike_raster_pyqtplot_2D` and capture its outputs:
+active_2d_plot, active_3d_plot, spike_raster_window = curr_active_pipeline.plot._display_spike_rasters_pyqtplot_2D.values()
+```
+
+<!-- #region tags=[] -->
+### Getting the existing `Spike3DRasterWindowWidget`
+<!-- #endregion -->
+
+```python
+from pyphocorehelpers.gui.Qt.TopLevelWindowHelper import TopLevelWindowHelper
+import pyphoplacecellanalysis.External.pyqtgraph as pg # Used to get the app for TopLevelWindowHelper.top_level_windows
+## For searching with `TopLevelWindowHelper.all_widgets(...)`:
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster import Spike2DRaster
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike3DRaster import Spike3DRaster
+from pyphoplacecellanalysis.GUI.Qt.SpikeRasterWindows.Spike3DRasterWindowWidget import Spike3DRasterWindowWidget
+
+found_spike_raster_windows = TopLevelWindowHelper.all_widgets(pg.mkQApp(), searchType=Spike3DRasterWindowWidget)
+assert len(found_spike_raster_windows) == 1, f"found {len(found_spike_raster_windows)} Spike3DRasterWindowWidget windows using TopLevelWindowHelper.all_widgets(...) but require exactly one."
+spike_raster_window = found_spike_raster_windows[0]
+# Extras:
+active_2d_plot = spike_raster_window.spike_raster_plt_2d # <pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster.Spike2DRaster at 0x196c7244280>
+active_3d_plot = spike_raster_window.spike_raster_plt_3d # <pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster.Spike2DRaster at 0x196c7244280>
+main_graphics_layout_widget = active_2d_plot.ui.main_graphics_layout_widget # GraphicsLayoutWidget
+main_plot_widget = active_2d_plot.plots.main_plot_widget # PlotItem
+background_static_scroll_plot_widget = active_2d_plot.plots.background_static_scroll_window_plot # PlotItem
+```
+
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+## Rendered Time Curves Documentation Guide
 
 #### `PyQtGraphSpecificTimeCurvesMixin(TimeCurvesViewMixin)`: mostly overriden for Spike2DRaster, but defines main plotting functions for Spike3DRaster
 pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.RenderTimeCurvesMixin.PyQtGraphSpecificTimeCurvesMixin
@@ -109,7 +141,7 @@ Enable users to 'register' new curves which are then added to the menu and the p
 
 ![[WithPBE_Epochs.png|500]]
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 # `matplotlib_view_widget`
 <!-- #endregion -->
 
@@ -140,7 +172,7 @@ Helper Functions:
 ```
 <!-- #endregion -->
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
 # ◽📣 Rectangle Epoch Documentation Guide
 <!-- #endregion -->
 
@@ -451,7 +483,7 @@ active_2d_plot.remove_rendered_intervals(name='PBEs', child_plots_removal_list=[
 active_2d_plot.remove_rendered_intervals(name='PBEs') # Tests removing a single series ('PBEs') from all plots it's on
 ```
 
-<!-- #region tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 # 3D (PyVista/Vedo/etc)-based plots:
 <!-- #endregion -->
 
@@ -572,7 +604,9 @@ def update_neurons_color_data(self, updated_neuron_render_configs):
 
 ```
 
+<!-- #region tags=[] -->
 # 🏻‍💻 DEVELOPER SECTION
+<!-- #endregion -->
 
 <!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## TODO/PENDING
@@ -588,7 +622,7 @@ new_interval_rects_item = Render2DEventRectanglesHelper.build_IntervalRectsItem_
 new_interval_rects_item.setToolTip(name) # The tooltip is set generically here to 'PBEs', 'Replays' or whatever the dataseries name is
 ```
 
-<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## 👨🏻‍💻📚 Computation Functions Documentation Guide
 <!-- #endregion -->
 
@@ -618,11 +652,11 @@ curr_active_pipeline.perform_specific_computation(computation_functions_name_whi
 curr_active_pipeline.save_pipeline()
 ```
 
-<!-- #region tags=[] -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## Computation Classes Documentation
 <!-- #endregion -->
 
-<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
+<!-- #region tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] -->
 ## Time-Dependent Placefields Documentation:
 
 ### Resetting State:
@@ -662,7 +696,7 @@ self.curr_occupancy_weighted_tuning_maps_matrix = np.zeros((self.n_fragile_linea
 self.historical_snapshots = OrderedDict({})
 ```
 
-<!-- #region jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[] -->
+<!-- #region jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true -->
 ## Data Structure Documentation Generation
 The functions below generate documentation in .md and .html format from passed data structures.
 <!-- #endregion -->
