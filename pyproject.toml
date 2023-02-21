@@ -49,8 +49,6 @@ pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 
 
-
-
 [tool.poetry.group.example.dependencies]
 silx = "^1.1.2"
 pyqt-custom-titlebar-window = "^0.0.50"
