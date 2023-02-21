@@ -237,7 +237,7 @@ print(f'basedir: {str(basedir)}')
     # SAVE AFTERWARDS!
 
 active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
-                                        # '_perform_position_decoding_computation', 
+                                        '_perform_position_decoding_computation', 
                                         '_perform_firing_rate_trends_computation',
                                         # '_perform_pf_find_ratemap_peaks_computation',
                                         # '_perform_time_dependent_pf_sequential_surprise_computation'
@@ -400,7 +400,7 @@ batch_extended_programmatic_figures(curr_active_pipeline)
 # IDEA: Convert the computation configs into a context.
 
 
-# + [markdown] tags=["load", "single_session"] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=["load", "single_session"] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # ## Computing with custom computation config:
 
 # + jupyter={"outputs_hidden": false}
@@ -1113,7 +1113,7 @@ stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_matplotlib_buil
 from neuropy.utils.matplotlib_helpers import plot_overlapping_epoch_analysis_diagnoser
 
 fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj())
-        
+
 
 # + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # `_display_short_long_pf1D_comparison` and `_display_short_long_pf1D_scalar_overlap_comparison`
@@ -1491,12 +1491,6 @@ collection.set_transform(trans)  # the points to pixels transform
 # ax2.add_collection(col, autolim=True)
 # epoch_mid_t
 curr_ax.get_figure().canvas.draw()
-
-# +
-
-epoch_labels
-curr_ax.get_figure().canvas.draw()
-# -
 
 a_label = epoch_labels[0] # Text
 a_label.get_position()
@@ -2400,7 +2394,7 @@ active_2d_plot.sync_matplotlib_render_plot_widget()
 
 long_decoding_of_long_epochs_results
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # # Custom Decoder Plotting 2022-12-23:
 # -
 

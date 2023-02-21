@@ -36,7 +36,7 @@
 			"**/EXTERNAL/TESTING/OLD": true
 		},
 		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
-		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
+		"qtForPython.uic.path": "C:\\Users\\pho\\miniconda3\\envs\\PyQt6\\Scripts\\pyuic5.exe",
 		"qtForPython.qmllint.enabled": false,
 		"python.autoComplete.extraPaths": [],
 		"git.ignoreLimitWarning": true,
