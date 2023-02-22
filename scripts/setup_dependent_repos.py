@@ -49,5 +49,5 @@ for repo in dependent_repos_paths:
 
 os.chdir(root_dir) # change back to the root repo dir
 os.system("poetry lock")
-os.system("poetry install") # is this needed? I think it installs in that specific environment.
+os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
 print(f'done with all.')
