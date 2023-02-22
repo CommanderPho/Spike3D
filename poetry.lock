@@ -376,18 +376,18 @@ typing-extensions = ">=3.10.0"
 
 [[package]]
 name = "boto3"
-version = "1.26.75"
+version = "1.26.76"
 description = "The AWS SDK for Python"
 category = "dev"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.75-py3-none-any.whl", hash = "sha256:0bbc318e8c4a6006de0069b99810780962f53fed591830fee9ab670aa4ec56ef"},
-    {file = "boto3-1.26.75.tar.gz", hash = "sha256:702efaf333ddd9a1520283a22bd74b6c3a890ab38df5afcf4e821a2f3d707688"},
+    {file = "boto3-1.26.76-py3-none-any.whl", hash = "sha256:b4c2969b7677762914394b8273cc1905dfe5b71f250741c1a575487ae357e729"},
+    {file = "boto3-1.26.76.tar.gz", hash = "sha256:30c7d967ed1c6b5a05643e42cae9d4d36c3f1cb6782637ddc7007a104cfd9027"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.75,<1.30.0"
+botocore = ">=1.29.76,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -396,14 +396,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.75"
+version = "1.29.76"
 description = "Low-level, data-driven core of boto 3."
 category = "dev"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.75-py3-none-any.whl", hash = "sha256:b6e50fc7aacdcc7fa345cc2c55f53e61db8165bdca4d8ca57323e22cac2671c6"},
-    {file = "botocore-1.29.75.tar.gz", hash = "sha256:eef47ca90d02dbc92296208e24ac5e02bdf5cfa45f10d160fdc19612e141bce2"},
+    {file = "botocore-1.29.76-py3-none-any.whl", hash = "sha256:70735b00cd529f152992231ca6757e458e5ec25db43767b3526e9a35b2f143b7"},
+    {file = "botocore-1.29.76.tar.gz", hash = "sha256:c2f67b6b3f8acf2968eafca06526f07b9fb0d27bac4c68a635d51abb675134a7"},
 ]
 
 [package.dependencies]
@@ -945,6 +945,18 @@ files = [
 ]
 
 [[package]]
+name = "docutils"
+version = "0.19"
+description = "Docutils -- Python Documentation Utilities"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "docutils-0.19-py3-none-any.whl", hash = "sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc"},
+    {file = "docutils-0.19.tar.gz", hash = "sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6"},
+]
+
+[[package]]
 name = "elephant"
 version = "0.11.2"
 description = "Elephant is a package for analysis of electrophysiology data in Python"
@@ -1218,6 +1230,17 @@ files = [
 wcwidth = ">=0.2.5"
 
 [[package]]
+name = "future"
+version = "0.18.3"
+description = "Clean single-source support for Python 3 and 2"
+category = "dev"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "future-0.18.3.tar.gz", hash = "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"},
+]
+
+[[package]]
 name = "greenlet"
 version = "2.0.2"
 description = "Lightweight in-process concurrent programming"
@@ -1328,6 +1351,44 @@ files = [
 
 [package.dependencies]
 numpy = ">=1.14.5"
+
+[[package]]
+name = "haesleinhuepf-pyqode-core"
+version = "2.15.5"
+description = "PyQt/PySide Source Code Editor Widget"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "haesleinhuepf-pyqode.core-2.15.5.tar.gz", hash = "sha256:3b8ca2623244cccc5d7cf3ab02906375a597686d670bab772049e18177db16eb"},
+    {file = "haesleinhuepf_pyqode.core-2.15.5-py2.py3-none-any.whl", hash = "sha256:229b0ae4ba230408e1bc9ebef3b60a905dcb1fdb632d464a7037886fa4b55d4c"},
+]
+
+[package.dependencies]
+future = "*"
+pygments = "*"
+
+[[package]]
+name = "haesleinhuepf-pyqode.python"
+version = "2.15.2"
+description = "Adds python support to pyqode.core"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl", hash = "sha256:f309fec7bc03190b6d006a24bd0bb011b2291b2b12fc4c8f962d3e1f8e788f03"},
+]
+
+[package.dependencies]
+docutils = "*"
+"haesleinhuepf-pyqode.core" = "*"
+jedi = "*"
+pycodestyle = "*"
+pyflakes = "*"
+
+[package.source]
+type = "file"
+url = "../ExternalTesting/pyqode.python/dist/haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl"
 
 [[package]]
 name = "hdf5plugin"
@@ -2410,7 +2471,7 @@ version = "0.0.7"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<3.11"
+python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
 files = []
 develop = true
 
@@ -3233,6 +3294,18 @@ reference = "HEAD"
 resolved_reference = "1ba22ea6caa047676821f5c54ac548c022de67af"
 
 [[package]]
+name = "pycodestyle"
+version = "2.10.0"
+description = "Python style guide checker"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pycodestyle-2.10.0-py2.py3-none-any.whl", hash = "sha256:8a4eaf0d0495c7395bdab3589ac2db602797d76207242c17d470186815706610"},
+    {file = "pycodestyle-2.10.0.tar.gz", hash = "sha256:347187bdb476329d98f695c213d7295a846d1152ff4fe9bacb8a9590b8ee7053"},
+]
+
+[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -3264,6 +3337,18 @@ build = ["param (>=1.7.0)", "setuptools"]
 cmd = ["pyyaml", "requests"]
 doc = ["nbsite", "sphinx-ioam-theme"]
 tests = ["flake8", "pytest"]
+
+[[package]]
+name = "pyflakes"
+version = "3.0.1"
+description = "passive checker of Python programs"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pyflakes-3.0.1-py2.py3-none-any.whl", hash = "sha256:ec55bf7fe21fff7f1ad2f7da62363d749e2a470500eab1b555334b67aa1ef8cf"},
+    {file = "pyflakes-3.0.1.tar.gz", hash = "sha256:ec8b276a6b60bd80defed25add7e439881c19e64850afd9b346283d4165fd0fd"},
+]
 
 [[package]]
 name = "pygments"
@@ -3393,6 +3478,7 @@ develop = true
 dill = {git = "https://github.com/anivegesana/dill.git", rev = "enums"}
 elephant = "^0.11.2"
 findpeaks = "^2.4.4"
+haesleinhuepf-pyqode-python = {path = "C:/Users/pho/repos/ExternalTesting/pyqode.python/dist/haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl"}
 hdf5plugin = "^4.1.1"
 klepto = "^0.2.3"
 magicgui = "^0.6.1"
@@ -3401,6 +3487,7 @@ pandas-flavor = "^0.3.0"
 param = "^1.12.3"
 pip = "^23.0"
 pybursts = {git = "https://github.com/CommanderPho/pybursts.git"}
+pyqode-core = {path = "C:/Users/pho/repos/pyqode.core/dist/pyqode_core-3.0.0-py2.py3-none-any.whl"}
 qtmodern = "^0.2.0"
 setuptools = "^67.3.1"
 shapely = "^2.0.1"
@@ -3412,6 +3499,25 @@ wheel = "^0.38.4"
 [package.source]
 type = "directory"
 url = "../pyPhoPlaceCellAnalysis"
+
+[[package]]
+name = "pyqode-core"
+version = "3.0.0"
+description = "PyQt/PySide Source Code Editor Widget"
+category = "dev"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "pyqode_core-3.0.0-py2.py3-none-any.whl", hash = "sha256:817739926d60526e26cd363c175eddbbc313cc78ff64737775f3f7da4e3c0dab"},
+]
+
+[package.dependencies]
+future = "*"
+pygments = "*"
+
+[package.source]
+type = "file"
+url = "../pyqode.core/dist/pyqode_core-3.0.0-py2.py3-none-any.whl"
 
 [[package]]
 name = "pyqt-custom-titlebar-window"
@@ -4380,14 +4486,14 @@ stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
 
 [[package]]
 name = "setuptools"
-version = "67.3.3"
+version = "67.4.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.3.3-py3-none-any.whl", hash = "sha256:9d3de8591bd6f6522594406fa46a6418eabd0562dacb267f8556675762801514"},
-    {file = "setuptools-67.3.3.tar.gz", hash = "sha256:ed4e75fafe103c79b692f217158ba87edf38d31004b9dbc1913debb48793c828"},
+    {file = "setuptools-67.4.0-py3-none-any.whl", hash = "sha256:f106dee1b506dee5102cc3f3e9e68137bbad6d47b616be7991714b0c62204251"},
+    {file = "setuptools-67.4.0.tar.gz", hash = "sha256:e5fd0a713141a4a105412233c63dc4e17ba0090c8e8334594ac790ec97792330"},
 ]
 
 [package.extras]
