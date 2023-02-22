@@ -1,3 +1,5 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QTreeView
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
 
 class TreeItem:
@@ -115,3 +117,47 @@ class TreeModel(QAbstractItemModel):
         for name, visibility, color in data:
             itemData = [name, visibility, color]
             parent.appendChild(TreeItem(itemData, parent))
+
+
+
+
+# from tree_model import TreeModel
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    
+    # Test data
+    data = [('Item 1', 'visible', 'red'), ('Item 2', 'hidden', 'blue')]
+
+    # Create the model
+    model = TreeModel(data)
+
+    # Create the tree view and set the model
+    tree_view = QTreeView()
+    tree_view.setModel(model)
+
+    # # Check the data in the model
+    # assert model.data(model.index(0, 0, None)) == 'Item 1'
+    # assert model.data(model.index(0, 1, None)) == 'visible'
+    # assert model.data(model.index(0, 2, None)) == 'red'
+
+    # assert model.data(model.index(1, 0, None)) == 'Item 2'
+    # assert model.data(model.index(1, 1, None)) == 'hidden'
+    # assert model.data(model.index(1, 2, None)) == 'blue'
+
+    # # Check that the data can be modified
+    # model.setData(model.index(0, 1, None), 'hidden')
+    # assert model.data(model.index(0, 1, None)) == 'hidden'
+
+    # model.setData(model.index(1, 2, None), 'green')
+    # assert model.data(model.index(1, 2, None)) == 'green'
+
+    # # Check the structure of the model
+    # assert model.index(0, 0, None).isValid()
+    # assert model.index(0, 0, model.index(0, 0, None)).isValid()
+    # assert model.index(1, 0, model.index(0, 0, None)).isValid()
+
+    # Show the tree view and run the event loop
+    tree_view.show()
+    sys.exit(app.exec_())
+
