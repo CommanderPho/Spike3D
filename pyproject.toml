@@ -38,23 +38,24 @@ matplotlib = "^3.7.0"
 numexpr = "^2.8.4"
 scipy = "^1.10.1"
 python-picard = "^0.7"
-
+dill = {version="0.3.5.*", extras=["graph"]} #objgraph diagnostic tool
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
 ipython = "^8.9.0"
 viztracer = "^0.15.6"
+psgdemos = "^1.12.1"
 
 # [tool.poetry.group.remote.dependencies]
 # pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"}
 # neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"} # , rev = "main", extras = ["acceleration"]
 # pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", develop=true}
-psgdemos = "^1.12.1"
 
 [tool.poetry.group.local.dependencies]
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
+# dill = {path = "../ExternalTesting/dill", develop=true, extras=["graph"]} #objgraph diagnostic tool
 
 
 [tool.poetry.group.example.dependencies]

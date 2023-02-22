@@ -19,8 +19,8 @@
 # + tags=["imports"]
 # %config IPCompleter.use_jedi = False
 # %pdb off
-# %load_ext viztracer
-from viztracer import VizTracer
+# # %load_ext viztracer
+# from viztracer import VizTracer
 # %load_ext autoreload
 # %autoreload 2
 import sys
@@ -236,6 +236,7 @@ print(f'basedir: {str(basedir)}')
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=False) # temp no-save
     # SAVE AFTERWARDS!
 
+epoch_name_whitelist = ['maze']
 active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
                                         '_perform_position_decoding_computation', 
                                         '_perform_firing_rate_trends_computation',
@@ -245,7 +246,7 @@ active_computation_functions_name_whitelist=['_perform_baseline_placefield_compu
                                         # '_perform_recursive_latent_placefield_decoding'
                                     ]
 
-curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir,
+curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, epoch_name_whitelist=epoch_name_whitelist,
                                           computation_functions_name_whitelist=active_computation_functions_name_whitelist,
                                           saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
 
@@ -486,6 +487,9 @@ batch_extended_computations(curr_active_pipeline, include_global_functions=False
 # and 
 #
 # obsidian://open?vault=PhoGlobalObsidian2022&file=DailyObsidianLog%2F%F0%9F%94%9C%E2%9C%B3%EF%B8%8F%F0%9F%90%9E%F0%9F%94%9F%20NeuropyPipeline%20pickling%20issues%20-%202023-01-20
+#
+# Works with dill v 0.3.5.1 (`dill-0.3.5.1`)
+#
 
 
 # + tags=["load", "single_session"]
