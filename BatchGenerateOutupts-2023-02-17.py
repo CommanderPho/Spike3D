@@ -253,6 +253,9 @@ curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_d
 
     # Load custom-parameters pipeline ('loadedSessPickle_customParams_2023-01-18.pkl'):
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='loadedSessPickle_customParams_2023-01-18.pkl', skip_extended_batch_computations=False, fail_on_exception=False)
+# -
+
+
 
 # + tags=["load", "single_session"]
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=True)

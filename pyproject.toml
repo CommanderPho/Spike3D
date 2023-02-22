@@ -49,6 +49,7 @@ viztracer = "^0.15.6"
 # pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"}
 # neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"} # , rev = "main", extras = ["acceleration"]
 # pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", develop=true}
+psgdemos = "^1.12.1"
 
 [tool.poetry.group.local.dependencies]
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]

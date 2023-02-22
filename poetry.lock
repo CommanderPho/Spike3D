@@ -922,6 +922,9 @@ python-versions = ">=3.7"
 files = []
 develop = false
 
+[package.dependencies]
+objgraph = {version = ">=1.7.2", optional = true, markers = "extra == \"graph\""}
+
 [package.extras]
 graph = ["objgraph (>=1.7.2)"]
 readline = ["pyreadline (>=1.7.1)"]
@@ -1239,6 +1242,23 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
     {file = "future-0.18.3.tar.gz", hash = "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"},
 ]
+
+[[package]]
+name = "graphviz"
+version = "0.20.1"
+description = "Simple Python interface for Graphviz"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "graphviz-0.20.1-py3-none-any.whl", hash = "sha256:587c58a223b51611c0cf461132da386edd896a029524ca61a1462b880bf97977"},
+    {file = "graphviz-0.20.1.zip", hash = "sha256:8c58f14adaa3b947daf26c19bc1e98c4e0702cdc31cf99153e6f06904d492bf8"},
+]
+
+[package.extras]
+dev = ["flake8", "pep8-naming", "tox (>=3)", "twine", "wheel"]
+docs = ["sphinx (>=5)", "sphinx-autodoc-typehints", "sphinx-rtd-theme"]
+test = ["coverage", "mock (>=4)", "pytest (>=7)", "pytest-cov", "pytest-mock (>=3)"]
 
 [[package]]
 name = "greenlet"
@@ -2662,6 +2682,21 @@ files = [
 ]
 
 [[package]]
+name = "objgraph"
+version = "3.5.0"
+description = "Draws Python object reference graphs with graphviz"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "objgraph-3.5.0-py2.py3-none-any.whl", hash = "sha256:deb821bc51a88ff103893aeeee2a8965eb0f719af2a363f49d63d894938b50b6"},
+    {file = "objgraph-3.5.0.tar.gz", hash = "sha256:4752ca5bcc0e0512e41b8cc4d2780ac2fd3b3eabd03b7e950a5594c06203dfc4"},
+]
+
+[package.dependencies]
+graphviz = "*"
+
+[[package]]
 name = "objprint"
 version = "0.2.2"
 description = "A library that can print Python objects in human readable format"
@@ -2690,29 +2725,29 @@ dev = ["black", "bumpver", "coveralls", "isort", "pip-tools", "pytest", "pytest-
 
 [[package]]
 name = "opencv-python"
-version = "4.7.0.68"
+version = "4.7.0.72"
 description = "Wrapper package for OpenCV python bindings."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "opencv-python-4.7.0.68.tar.gz", hash = "sha256:9829e6efedde1d1b8419c5bd4d62d289ecbf44ae35b843c6da9e3cbcba1a9a8a"},
-    {file = "opencv_python-4.7.0.68-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:abc6adfa8694f71a4caffa922b279bd9d96954a37eee40b147f613c64310b411"},
-    {file = "opencv_python-4.7.0.68-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:86f4b60b9536948f16d2170ba3a9b22d3955a957dc61a9bc56e53692c6db2c7e"},
-    {file = "opencv_python-4.7.0.68-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6d1c993811f92ddd7919314ada7b9be1f23db1c73f1384915c834dee8549c0b9"},
-    {file = "opencv_python-4.7.0.68-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3a00e12546e5578f6bb7ed408c37fcfea533d74e9691cfaf40926f6b43295577"},
-    {file = "opencv_python-4.7.0.68-cp37-abi3-win32.whl", hash = "sha256:e770e9f653a0e5e72b973adb8213fae2df4642730ba1faf31e73a54287a4d5d4"},
-    {file = "opencv_python-4.7.0.68-cp37-abi3-win_amd64.whl", hash = "sha256:7a08f9d1f9dd52de63a7bb448ab7d6d4a1a85b767c2358501d968d1e4d95098d"},
+    {file = "opencv-python-4.7.0.72.tar.gz", hash = "sha256:3424794a711f33284581f3c1e4b071cfc827d02b99d6fd9a35391f517c453306"},
+    {file = "opencv_python-4.7.0.72-cp37-abi3-macosx_10_16_x86_64.whl", hash = "sha256:d4f8880440c433a0025d78804dda6901d1e8e541a561dda66892d90290aef881"},
+    {file = "opencv_python-4.7.0.72-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:7a297e7651e22eb17c265ddbbc80e2ba2a8ff4f4a1696a67c45e5f5798245842"},
+    {file = "opencv_python-4.7.0.72-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cd08343654c6b88c5a8c25bf425f8025aed2e3189b4d7306b5861d32affaf737"},
+    {file = "opencv_python-4.7.0.72-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ebfc0a3a2f57716e709028b992e4de7fd8752105d7a768531c4f434043c6f9ff"},
+    {file = "opencv_python-4.7.0.72-cp37-abi3-win32.whl", hash = "sha256:eda115797b114fc16ca6f182b91c5d984f0015c19bec3145e55d33d708e9bae1"},
+    {file = "opencv_python-4.7.0.72-cp37-abi3-win_amd64.whl", hash = "sha256:812af57553ec1c6709060c63f6b7e9ad07ddc0f592f3ccc6d00c71e0fe0e6376"},
 ]
 
 [package.dependencies]
 numpy = [
     {version = ">=1.21.0", markers = "python_version <= \"3.9\" and platform_system == \"Darwin\" and platform_machine == \"arm64\""},
-    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
-    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
     {version = ">=1.19.3", markers = "python_version >= \"3.6\" and platform_system == \"Linux\" and platform_machine == \"aarch64\" or python_version >= \"3.9\""},
     {version = ">=1.17.0", markers = "python_version >= \"3.7\""},
     {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
+    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
+    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
 ]
 
 [[package]]
@@ -3164,6 +3199,21 @@ files = [
 wcwidth = "*"
 
 [[package]]
+name = "psgdemos"
+version = "1.12.1"
+description = "Installs the full set of PySimpleGUI Demo Programs and the Demo Browser."
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "psgdemos-1.12.1-py3-none-any.whl", hash = "sha256:a035540dd0ff92f410aed9b7af8d5a641d9d5a9eac3e0072ef115adf06abb447"},
+    {file = "psgdemos-1.12.1.tar.gz", hash = "sha256:4108af795477531a9b1c8675b9aa9b6628c109e660f6954baf8ba2dc3b5806e9"},
+]
+
+[package.dependencies]
+PySimpleGUI = "*"
+
+[[package]]
 name = "psutil"
 version = "5.9.4"
 description = "Cross-platform lib for process and system monitoring in Python."
@@ -3475,7 +3525,7 @@ files = []
 develop = true
 
 [package.dependencies]
-dill = {git = "https://github.com/anivegesana/dill.git", rev = "enums"}
+dill = {git = "https://github.com/anivegesana/dill.git", rev = "enums", extras = ["graph"]}
 elephant = "^0.11.2"
 findpeaks = "^2.4.4"
 haesleinhuepf-pyqode-python = {path = "C:/Users/pho/repos/ExternalTesting/pyqode.python/dist/haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl"}
@@ -3488,6 +3538,7 @@ param = "^1.12.3"
 pip = "^23.0"
 pybursts = {git = "https://github.com/CommanderPho/pybursts.git"}
 pyqode-core = {path = "C:/Users/pho/repos/pyqode.core/dist/pyqode_core-3.0.0-py2.py3-none-any.whl"}
+pysimplegui = "^4.60.4"
 qtmodern = "^0.2.0"
 setuptools = "^67.3.1"
 shapely = "^2.0.1"
@@ -3825,6 +3876,18 @@ files = [
     {file = "pyrsistent-0.19.3-cp39-cp39-win_amd64.whl", hash = "sha256:878433581fc23e906d947a6814336eee031a00e6defba224234169ae3d3d6a98"},
     {file = "pyrsistent-0.19.3-py3-none-any.whl", hash = "sha256:ccf0d6bd208f8111179f0c26fdf84ed7c3891982f2edaeae7422575f47e66b64"},
     {file = "pyrsistent-0.19.3.tar.gz", hash = "sha256:1a2994773706bbb4995c31a97bc94f1418314923bd1048c6d964837040376440"},
+]
+
+[[package]]
+name = "pysimplegui"
+version = "4.60.4"
+description = "Python GUIs for Humans. Launched in 2018. It's 2022 & PySimpleGUI is an ACTIVE & supported project. Super-simple to create custom GUI's. 325+ Demo programs & Cookbook for rapid start. Extensive documentation. Main docs at www.PySimpleGUI.org. Fun & your success are the focus. Examples using Machine Learning (GUI, OpenCV Integration), Rainmeter Style Desktop Widgets, Matplotlib + Pyplot, PIL support, add GUI to command line scripts, PDF & Image Viewers. Great for beginners & advanced GUI programmers."
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "PySimpleGUI-4.60.4-py3-none-any.whl", hash = "sha256:e133fbd21779f0f125cebbc2a4e1f5a931a383738661013ff33ad525d5611eda"},
+    {file = "PySimpleGUI-4.60.4.tar.gz", hash = "sha256:f88c82c301a51aea35be605dc060bcceb0dcb6682e16280544884701ab4b23ba"},
 ]
 
 [[package]]
@@ -5726,4 +5789,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "750ee1a059f98929106455429566ad4a40f9b08caa79f458204ff1d1e8078628"
+content-hash = "eb21577730d2773023093b4add657593bb789ab8806ed30976b037c6dfc00450"
