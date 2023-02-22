@@ -20,4 +20,7 @@ def widget_demo(
     """Run some computation."""
     ...
 
-widget_demo.show()
+
+
+if __name__ == "__main__":
+	widget_demo.show(run=True)
