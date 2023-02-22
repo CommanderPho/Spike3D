@@ -1094,6 +1094,8 @@ from pyphoplacecellanalysis.GUI.PyVista.InteractivePlotter.Mixins.LapsVisualizat
 # from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_view, stacked_epoch_slices_view_viewbox # pyqtgraph versions (don't work)
 from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_slices_matplotlib_build_view, stacked_epoch_slices_matplotlib_build_insets_view
 
+# %matplotlib qt
+
 sess = curr_active_pipeline.sess
 curr_position_df, lap_specific_position_dfs = LapsVisualizationMixin._compute_laps_specific_position_dfs(sess)
 lap_specific_position_dfs = [curr_position_df.groupby('lap').get_group(i)[['t','x','y','lin_pos']] for i in sess.laps.lap_id] # dataframes split for each ID:
@@ -1108,6 +1110,9 @@ epoch_description_list = [f'lap {epoch_tuple.lap_id} (maze: {epoch_tuple.maze_id
 
 stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_matplotlib_build_view(epoch_slices, laps_position_times_list, laps_position_traces_list, epoch_description_list) # name='stacked_epoch_slices_view_laps'
 # params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
+# -
+
+stacked_epoch_slices_view_laps_containers
 
 # + tags=["ORPHAN"]
 from neuropy.utils.matplotlib_helpers import plot_overlapping_epoch_analysis_diagnoser

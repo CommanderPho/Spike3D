@@ -32,6 +32,13 @@ pybursts = {git = "https://github.com/CommanderPho/pybursts.git"}
 qdarkstyle = "^3.1"
 hdf5plugin = "^4.1.1"
 mplcursors = "^0.5.2"
+pyqt-custom-titlebar-window = "^0.0.50"
+pyqt5custom = "^1.0.1"
+matplotlib = "^3.7.0"
+numexpr = "^2.8.4"
+scipy = "^1.10.1"
+python-picard = "^0.7"
+
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
@@ -51,8 +58,7 @@ pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 
 [tool.poetry.group.example.dependencies]
 silx = "^1.1.2"
-pyqt-custom-titlebar-window = "^0.0.50"
-pyqt5custom = "^1.0.1"
+
 
 [build-system]
 requires = ["poetry-core"]
