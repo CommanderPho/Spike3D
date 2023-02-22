@@ -501,6 +501,8 @@ if bad_types:
     print("Problematic types found: ", bad_types)
 else:
     print("No problematic types found.")
+    
+# 2023-02-22 - AttributeError: 'dict' object has no attribute '_member_names'
 
 # + tags=["load", "single_session"]
 import dill

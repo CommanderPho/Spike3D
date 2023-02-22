@@ -931,9 +931,9 @@ readline = ["pyreadline (>=1.7.1)"]
 
 [package.source]
 type = "git"
-url = "https://github.com/anivegesana/dill.git"
-reference = "enums"
-resolved_reference = "9eded1f884b6c9d37901ff2aeb5ea2eab26396a0"
+url = "https://github.com/CommanderPho/dill.git"
+reference = "develop"
+resolved_reference = "7131b122ed4ce10e00433be4beec3629df0adc08"
 
 [[package]]
 name = "docstring-parser"
@@ -3525,7 +3525,7 @@ files = []
 develop = true
 
 [package.dependencies]
-dill = {git = "https://github.com/anivegesana/dill.git", rev = "enums", extras = ["graph"]}
+dill = {git = "https://github.com/CommanderPho/dill.git", rev = "develop", extras = ["graph"]}
 elephant = "^0.11.2"
 findpeaks = "^2.4.4"
 haesleinhuepf-pyqode-python = {path = "C:/Users/pho/repos/ExternalTesting/pyqode.python/dist/haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl"}
