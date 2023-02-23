@@ -11,6 +11,15 @@
 		},
 		{
 			"path": "../pyPhoPlaceCellAnalysis/src"
+		},
+		{
+			"path": "../pyqode.core"
+		},
+		{
+			"path": "../pyqode.python"
+		},
+		{
+			"path": "../pyPhoPlaceCellAnalysis"
 		}
 	],
 	"settings": {

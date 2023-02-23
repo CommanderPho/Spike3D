@@ -1368,44 +1368,6 @@ files = [
 numpy = ">=1.14.5"
 
 [[package]]
-name = "haesleinhuepf-pyqode-core"
-version = "2.15.5"
-description = "PyQt/PySide Source Code Editor Widget"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "haesleinhuepf-pyqode.core-2.15.5.tar.gz", hash = "sha256:3b8ca2623244cccc5d7cf3ab02906375a597686d670bab772049e18177db16eb"},
-    {file = "haesleinhuepf_pyqode.core-2.15.5-py2.py3-none-any.whl", hash = "sha256:229b0ae4ba230408e1bc9ebef3b60a905dcb1fdb632d464a7037886fa4b55d4c"},
-]
-
-[package.dependencies]
-future = "*"
-pygments = "*"
-
-[[package]]
-name = "haesleinhuepf-pyqode.python"
-version = "2.15.2"
-description = "Adds python support to pyqode.core"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl", hash = "sha256:f309fec7bc03190b6d006a24bd0bb011b2291b2b12fc4c8f962d3e1f8e788f03"},
-]
-
-[package.dependencies]
-docutils = "*"
-"haesleinhuepf-pyqode.core" = "*"
-jedi = "*"
-pycodestyle = "*"
-pyflakes = "*"
-
-[package.source]
-type = "file"
-url = "../ExternalTesting/pyqode.python/dist/haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl"
-
-[[package]]
 name = "hdf5plugin"
 version = "4.1.1"
 description = "HDF5 Plugins for Windows, MacOS, and Linux"
@@ -3238,38 +3200,38 @@ test = ["enum34", "ipaddress", "mock", "pywin32", "wmi"]
 
 [[package]]
 name = "psygnal"
-version = "0.7.2"
+version = "0.8.0"
 description = "Fast python callback/event system modeled after Qt Signals"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "psygnal-0.7.2-cp310-cp310-macosx_10_16_arm64.whl", hash = "sha256:4215bc816c65fe1dfdc35490f4721ea51f73c96d1ada36a32b7e9d68b61363fc"},
-    {file = "psygnal-0.7.2-cp310-cp310-macosx_10_16_x86_64.whl", hash = "sha256:622823519d710ebd70db79f427064766cddf17ce557a7bd1f070116a4ad28d20"},
-    {file = "psygnal-0.7.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2d0c00b966dbd2fa86e4963cab4dc1849aad3950e0c866a1537bae611a2bc79f"},
-    {file = "psygnal-0.7.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:de998d6375d875357b6e028faf2fd367ecd2ab06b4d8ff164cbe5b7f9faaabed"},
-    {file = "psygnal-0.7.2-cp310-cp310-win_amd64.whl", hash = "sha256:84a4726d66fb8c2029a78fd6fa2d65956afa84bdc8187d50d87d5f5b97ae6f8f"},
-    {file = "psygnal-0.7.2-cp311-cp311-macosx_10_16_arm64.whl", hash = "sha256:5508808583b29b6c42a2b12d1654aaa108ebbd4cbf608e6a2cf10ae8c3d215b9"},
-    {file = "psygnal-0.7.2-cp311-cp311-macosx_10_16_x86_64.whl", hash = "sha256:e04ed5da7951d3a39a78b7a6444701a4f2389f7e2434206eec306a2c0be563d7"},
-    {file = "psygnal-0.7.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7c3fd37e26e61af1b16750079399be44dc0065ba1b1ac89802065a19107343e6"},
-    {file = "psygnal-0.7.2-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:4064bf89adb30660e49579e7f1e384b1fd762c195035f7a4adc0e228a9567099"},
-    {file = "psygnal-0.7.2-cp311-cp311-win_amd64.whl", hash = "sha256:471cf76890e8f3ea3a0a661ba880774c8ce55c78d1d2b927a8514ecb88c148ff"},
-    {file = "psygnal-0.7.2-cp37-cp37m-macosx_10_16_x86_64.whl", hash = "sha256:866d649b63c528e12d3ee2c8a70621454ef82781015f12fed9aa2caca6a57924"},
-    {file = "psygnal-0.7.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b7e38352b90fac6f591650d762494ccc8e105df909b4f2cdef3c610803dbb6e0"},
-    {file = "psygnal-0.7.2-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:bad2fd47d2b1e85380b52125732812d66610d446de947ca6b90830cf5c871f0b"},
-    {file = "psygnal-0.7.2-cp37-cp37m-win_amd64.whl", hash = "sha256:26ab889220cacbcdb20dc4d08fbaeb59aea88b4faf65b37d1b0f3542943ca36c"},
-    {file = "psygnal-0.7.2-cp38-cp38-macosx_10_16_arm64.whl", hash = "sha256:889a15be4adb1b2893c6f6b76e93ff95e23d887ae4f795e76b74e0bb72b64c9c"},
-    {file = "psygnal-0.7.2-cp38-cp38-macosx_10_16_x86_64.whl", hash = "sha256:79c973885c1f1af1b5c6ab2eedd7771f01c9cb6edea793e69888859393b05d68"},
-    {file = "psygnal-0.7.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dc6af0eb775dbddce56f40900444279c9a2284575d3f48c79bdcfa67f0da4167"},
-    {file = "psygnal-0.7.2-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:0962b316a059f8b307fcb192c195330d93f7cd2365bcca2a229c61cd5208da59"},
-    {file = "psygnal-0.7.2-cp38-cp38-win_amd64.whl", hash = "sha256:b32bc63e9f8bcd2e5af2ce6c92359d2f95aae6417bb0e7936464299362d56c8c"},
-    {file = "psygnal-0.7.2-cp39-cp39-macosx_10_16_arm64.whl", hash = "sha256:6a8656ec0162f2cdf50e58ca94c48b5850aaa902e6b3bf172e8fc1da1957c1b2"},
-    {file = "psygnal-0.7.2-cp39-cp39-macosx_10_16_x86_64.whl", hash = "sha256:e3aa8f84303e7a1b8b6517a90de892e0f329301b62d4d451cc82b0155ad8aeed"},
-    {file = "psygnal-0.7.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9ff7b6a65219bc1af43c6bf6681d6f15951e0287df934a1929b743d5973885a9"},
-    {file = "psygnal-0.7.2-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:aea2b06960c6ece5524a496588b433ccbfa68135b7bfcef220ed33fbe9bab32a"},
-    {file = "psygnal-0.7.2-cp39-cp39-win_amd64.whl", hash = "sha256:e5289acab2d923bbdb9841bd35ae865e2e7e68d44557c9ebbe3bd29ac78eeab3"},
-    {file = "psygnal-0.7.2-py3-none-any.whl", hash = "sha256:622678a13d089de37429424a11635c93ba44f2f25486f166949d167307e64397"},
-    {file = "psygnal-0.7.2.tar.gz", hash = "sha256:a20b303c21f2fa9bb31ee83fb7b954105336570404e91ffef9160777b28687a9"},
+    {file = "psygnal-0.8.0-cp310-cp310-macosx_10_16_arm64.whl", hash = "sha256:a86070bbc3fea19636def5a6d57dad4fa70386ffa16152b1f1eb802c99a5b416"},
+    {file = "psygnal-0.8.0-cp310-cp310-macosx_10_16_x86_64.whl", hash = "sha256:8c981a1092b589238e68042f223b2b13a36c83b1de3716e029b49ad842adb1c8"},
+    {file = "psygnal-0.8.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fc4d3dbca6e248118f0f828c7cf013a559fedf490d0045866299b5e8c21180d6"},
+    {file = "psygnal-0.8.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:b4d95af8ee744a0bf8d2177c41b211198fd452b1cfc287e30fa1677b7dbd2f4c"},
+    {file = "psygnal-0.8.0-cp310-cp310-win_amd64.whl", hash = "sha256:dcc04c8f5b8ee8e867d2ec4a5c581fea608b8c2531a829dfe2c44cc2f345b656"},
+    {file = "psygnal-0.8.0-cp311-cp311-macosx_10_16_arm64.whl", hash = "sha256:e4f6948831783a93cc290419bd04bf252202a07003a7209c2a22d665110bbef2"},
+    {file = "psygnal-0.8.0-cp311-cp311-macosx_10_16_x86_64.whl", hash = "sha256:0610d092543f6bd8405c4720ae5bc1110137f9dd3ce36d19ad390b3738b78a7d"},
+    {file = "psygnal-0.8.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9765712e80dd1e075de1d02974f0e3f98682612120d31909ab6bcdaa2734b57d"},
+    {file = "psygnal-0.8.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:a7b1891e2f4426414b8ab4b313a01d5a0b5e4afde0dcda24433d57bdcb505877"},
+    {file = "psygnal-0.8.0-cp311-cp311-win_amd64.whl", hash = "sha256:815124ba4a2192d2d72705dd5ba0de7d0461c923e1cb150e32ee7a096a4faf38"},
+    {file = "psygnal-0.8.0-cp37-cp37m-macosx_10_16_x86_64.whl", hash = "sha256:cad05113a3d475659237f5af30a72be09b1fdbadfb91c44561c8d331d94ae06a"},
+    {file = "psygnal-0.8.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c5a1989d5a28940d0b418dcee5c640718b0cbe774c6aaca44290514b3f8e46ed"},
+    {file = "psygnal-0.8.0-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:d862761d6777d9719ed774b211803c16879a0d25b767f48411f460b89d1904be"},
+    {file = "psygnal-0.8.0-cp37-cp37m-win_amd64.whl", hash = "sha256:4b757073fc24bd29aeeea50967929c7e1f2c5c3d7ef92e01a9db1437c7560f91"},
+    {file = "psygnal-0.8.0-cp38-cp38-macosx_10_16_arm64.whl", hash = "sha256:44a957a9712fbfaae2f4cb4220f24b56aa16d885c20c34758149f93410ed7ca2"},
+    {file = "psygnal-0.8.0-cp38-cp38-macosx_10_16_x86_64.whl", hash = "sha256:b972b1297f0162cc58eeb16cc81b60d7194fef5c160401a84db439413eaadca5"},
+    {file = "psygnal-0.8.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8fb0d84946347fd16dbe29ed5292b605a7dd9d90658ff30fb3c6630f63443f6e"},
+    {file = "psygnal-0.8.0-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:50871580d1f074ecb069c98bd2a527d543bd6d365749f0595f816b0cbac71558"},
+    {file = "psygnal-0.8.0-cp38-cp38-win_amd64.whl", hash = "sha256:e1e025855dc8ad65b16a2e46392e3855d5507612345fa11ece84bdac52485b9c"},
+    {file = "psygnal-0.8.0-cp39-cp39-macosx_10_16_arm64.whl", hash = "sha256:72029d6a023b719820287aad8e22984d8eb32a3a9089d972c2a7cc64ca36f141"},
+    {file = "psygnal-0.8.0-cp39-cp39-macosx_10_16_x86_64.whl", hash = "sha256:5e838f2e9abd39bb18166dbf1aa844dc89e23ebcef1190cd362749384ae5a301"},
+    {file = "psygnal-0.8.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:deb7a6d8482ab8a5c431b410c00d8ef664127eacbd9c99a0d3dc27acbec40c5a"},
+    {file = "psygnal-0.8.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:4c666a73aed371853d6a959f83465fc9f2a1b92e37875ded8966cce81cee50e3"},
+    {file = "psygnal-0.8.0-cp39-cp39-win_amd64.whl", hash = "sha256:2d704e54d410f7d67e0fedf85e0721f62a29494150bf756fb474be3fc5183f9c"},
+    {file = "psygnal-0.8.0-py3-none-any.whl", hash = "sha256:3b4af4d3a4557eb506ab33c3737f58aeb955218a1d2003929180292954d3a625"},
+    {file = "psygnal-0.8.0.tar.gz", hash = "sha256:2974d79224b84bd92bc3c94591a2dc614b2abe56101a506551ae674f10d63a6f"},
 ]
 
 [package.dependencies]
@@ -3278,10 +3240,10 @@ typing-extensions = "*"
 
 [package.extras]
 dev = ["black", "cruft", "dask", "ipython", "mypy", "numpy", "pre-commit", "pydantic", "pyqt5", "pytest", "pytest-cov", "pytest-mypy-plugins", "pytest-qt", "qtpy", "rich", "ruff", "wrapt"]
-docs = ["griffe (==0.22.0)", "mkdocs (==1.3.0)", "mkdocs-material (>=8.3,<9.0)", "mkdocs-minify-plugin (==0.5.0)", "mkdocstrings-python (==0.7.0)", "mkdocstrings[python] (==0.19.0)"]
+docs = ["griffe (==0.25.5)", "mkdocs (==1.4.2)", "mkdocs-material (==8.5.10)", "mkdocs-minify-plugin", "mkdocs-spellcheck[all]", "mkdocstrings (==0.20.0)", "mkdocstrings-python (==0.8.3)"]
 proxy = ["wrapt"]
 pydantic = ["pydantic"]
-test = ["dask", "msgspec", "numpy", "pydantic", "pytest (>=6.0)", "pytest-cov", "pytest-mypy-plugins", "wrapt"]
+test = ["dask", "msgspec", "numpy", "pydantic", "pytest (>=6.0)", "pytest-codspeed", "pytest-cov", "wrapt"]
 testqt = ["pytest-qt", "qtpy"]
 
 [[package]]
@@ -3524,7 +3486,6 @@ develop = true
 dill = {version = "==0.3.5.1", extras = ["graph"]}
 elephant = "^0.11.2"
 findpeaks = "^2.4.4"
-haesleinhuepf-pyqode-python = {path = "C:/Users/pho/repos/ExternalTesting/pyqode.python/dist/haesleinhuepf_pyqode.python-2.15.2-py2.py3-none-any.whl"}
 hdf5plugin = "^4.1.1"
 klepto = "0.2.2"
 magicgui = "^0.6.1"
@@ -3533,7 +3494,8 @@ pandas-flavor = "^0.3.0"
 param = "^1.12.3"
 pip = "^23.0"
 pybursts = {git = "https://github.com/CommanderPho/pybursts.git"}
-pyqode-core = {path = "C:/Users/pho/repos/pyqode.core/dist/pyqode_core-3.0.0-py2.py3-none-any.whl"}
+pyqode-core = {path = "/home/halechr/repos/pyqode.core/dist/pyqode_core-3.0.0-py2.py3-none-any.whl"}
+pyqode-python = {path = "/home/halechr/repos/pyqode.python/dist/pyqode.python-2.12.1-py2.py3-none-any.whl"}
 pysimplegui = "^4.60.4"
 qtmodern = "^0.2.0"
 setuptools = "^67.3.1"
@@ -3555,7 +3517,7 @@ category = "dev"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pyqode_core-3.0.0-py2.py3-none-any.whl", hash = "sha256:817739926d60526e26cd363c175eddbbc313cc78ff64737775f3f7da4e3c0dab"},
+    {file = "pyqode_core-3.0.0-py2.py3-none-any.whl", hash = "sha256:46b5b2731ac64530bf62858c20192f4daf178fa70ac99ba9d30bba41c7ba3c5f"},
 ]
 
 [package.dependencies]
@@ -3565,6 +3527,28 @@ pygments = "*"
 [package.source]
 type = "file"
 url = "../pyqode.core/dist/pyqode_core-3.0.0-py2.py3-none-any.whl"
+
+[[package]]
+name = "pyqode.python"
+version = "2.12.1"
+description = "Adds python support to pyqode.core"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyqode.python-2.12.1-py2.py3-none-any.whl", hash = "sha256:91a56694a59d2fcd3f668a0bdf56f42326cb776a126ba46fafde5747ecfb01c8"},
+]
+
+[package.dependencies]
+docutils = "*"
+jedi = "*"
+pycodestyle = "*"
+pyflakes = "*"
+"pyqode.core" = "*"
+
+[package.source]
+type = "file"
+url = "../pyqode.python/dist/pyqode.python-2.12.1-py2.py3-none-any.whl"
 
 [[package]]
 name = "pyqt-custom-titlebar-window"
