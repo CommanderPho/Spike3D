@@ -249,7 +249,7 @@ active_computation_functions_name_whitelist=['_perform_baseline_placefield_compu
 
 curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, epoch_name_whitelist=epoch_name_whitelist,
                                           computation_functions_name_whitelist=active_computation_functions_name_whitelist,
-                                          saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=True, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
+                                          saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, skip_extended_batch_computations=True, debug_print=False, fail_on_exception=True)
 
     # curr_active_pipeline = batch_load_session(global_data_root_parent_path, active_data_mode_name, basedir, saving_mode=PipelineSavingScheme.SKIP_SAVING, force_reload=False, active_pickle_filename='20221214200324-loadedSessPickle.pkl', skip_extended_batch_computations=True)
 
@@ -580,7 +580,7 @@ curr_active_pipeline.save_pipeline()
 
 # + tags=["load", "single_session"]
 import dill
-dill.reload
+# dill.reload
 
 # + [markdown] jupyter={"outputs_hidden": false} jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## Test getting FULL context from pipeline
