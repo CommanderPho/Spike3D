@@ -55,7 +55,6 @@ psgdemos = "^1.12.1"
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-# dill = {path = "../ExternalTesting/dill", develop=true, extras=["graph"]} #objgraph diagnostic tool
 
 
 [tool.poetry.group.example.dependencies]
