@@ -50,8 +50,6 @@ import numpy as np
 import pandas as pd
 from benedict import benedict # https://github.com/fabiocaccamo/python-benedict#usage
 
-from klepto.archives import file_archive, sql_archive, dict_archive
-
 # Pho's Formatting Preferences
 # from pyphocorehelpers.preferences_helpers import set_pho_preferences, set_pho_preferences_concise, set_pho_preferences_verbose
 # set_pho_preferences_concise()
@@ -262,6 +260,9 @@ curr_active_pipeline.save_pipeline()
 # + tags=["load", "single_session"]
 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_global_functions=True, fail_on_exception=True, progress_print=True, debug_print=True)
 newly_computed_values
+
+# + tags=["load", "single_session"]
+'_perform_two_step_position_decoding_computation',
 
 # + tags=["load", "single_session"]
 # Plot long|short firing rate index:
@@ -635,100 +636,6 @@ curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OV
 # ###  Compute Required Global Computations Manually:
 
 # +
-from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SplitPartitionMembership # for batch_extended_computations
-# ==================================================================================================================== #
-# Perform missing global computations                                                                                  #
-# ==================================================================================================================== #
-
-## Get computed relative entropy measures:
-global_epoch_name = curr_active_pipeline.active_completed_computation_result_names[-1] # 'maze'
-global_results = curr_active_pipeline.computation_results[global_epoch_name]['computed_data']
-
-## Get existing `pf1D_dt`:
-active_pf_1D = global_results.pf1D
-active_pf_1D_dt = global_results.pf1D_dt
-
-## firing_rate_trends:
-try:
-    active_extended_stats = curr_active_pipeline.computation_results[global_epoch_name].computed_data['extended_stats']
-    time_binned_pos_df = active_extended_stats['time_binned_position_df']
-except (AttributeError, KeyError) as e:
-    print(f'encountered error: {e}. Recomputing...')
-    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_firing_rate_trends_computation'], enabled_filter_names=[global_epoch_name], fail_on_exception=True, debug_print=False) 
-    print(f'\t done.')
-    active_extended_stats = curr_active_pipeline.computation_results[global_epoch_name].computed_data['extended_stats']
-    time_binned_pos_df = active_extended_stats['time_binned_position_df']
-except Exception as e:
-    raise e
-
-## relative_entropy_analyses:
-try:
-    active_relative_entropy_results = active_extended_stats['relative_entropy_analyses']
-    post_update_times = active_relative_entropy_results['post_update_times'] # (4152,) = (n_post_update_times,)
-    snapshot_differences_result_dict = active_relative_entropy_results['snapshot_differences_result_dict']
-    time_intervals = active_relative_entropy_results['time_intervals']
-    long_short_rel_entr_curves_frames = active_relative_entropy_results['long_short_rel_entr_curves_frames'] # (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
-    short_long_rel_entr_curves_frames = active_relative_entropy_results['short_long_rel_entr_curves_frames'] # (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
-    flat_relative_entropy_results = active_relative_entropy_results['flat_relative_entropy_results'] # (149, 63) - (nSnapshots, nXbins)
-    flat_jensen_shannon_distance_results = active_relative_entropy_results['flat_jensen_shannon_distance_results'] # (149, 63) - (nSnapshots, nXbins)
-    flat_jensen_shannon_distance_across_all_positions = np.sum(flat_jensen_shannon_distance_results, axis=1) # sum across all position bins # (4152,) - (nSnapshots)
-    flat_surprise_across_all_positions = np.sum(flat_relative_entropy_results, axis=1) # sum across all position bins # (4152,) - (nSnapshots)
-except (AttributeError, KeyError) as e:
-    print(f'encountered error: {e}. Recomputing...')
-    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_time_dependent_pf_sequential_surprise_computation'], enabled_filter_names=[global_epoch_name], fail_on_exception=True, debug_print=False)
-    print(f'\t done.')
-    active_relative_entropy_results = active_extended_stats['relative_entropy_analyses']
-    post_update_times = active_relative_entropy_results['post_update_times'] # (4152,) = (n_post_update_times,)
-    snapshot_differences_result_dict = active_relative_entropy_results['snapshot_differences_result_dict']
-    time_intervals = active_relative_entropy_results['time_intervals']
-    long_short_rel_entr_curves_frames = active_relative_entropy_results['long_short_rel_entr_curves_frames'] # (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
-    short_long_rel_entr_curves_frames = active_relative_entropy_results['short_long_rel_entr_curves_frames'] # (4152, 108, 63) = (n_post_update_times, n_neurons, n_xbins)
-    flat_relative_entropy_results = active_relative_entropy_results['flat_relative_entropy_results'] # (149, 63) - (nSnapshots, nXbins)
-    flat_jensen_shannon_distance_results = active_relative_entropy_results['flat_jensen_shannon_distance_results'] # (149, 63) - (nSnapshots, nXbins)
-    flat_jensen_shannon_distance_across_all_positions = np.sum(np.abs(flat_jensen_shannon_distance_results), axis=1) # sum across all position bins # (4152,) - (nSnapshots)
-    flat_surprise_across_all_positions = np.sum(np.abs(flat_relative_entropy_results), axis=1) # sum across all position bins # (4152,) - (nSnapshots)
-except Exception as e:
-    raise e
-    
-    
-## jonathan_firing_rate_analysis:
-try:
-    ## Get global 'jonathan_firing_rate_analysis' results:
-    curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
-    neuron_replay_stats_df, rdf, aclu_to_idx, irdf = curr_jonathan_firing_rate_analysis['neuron_replay_stats_df'], curr_jonathan_firing_rate_analysis['rdf']['rdf'], curr_jonathan_firing_rate_analysis['rdf']['aclu_to_idx'], curr_jonathan_firing_rate_analysis['irdf']['irdf']
-except (AttributeError, KeyError) as e:
-    print(f'encountered error: {e}. Recomputing...')
-    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses'], fail_on_exception=False, debug_print=False) 
-    print(f'\t done.')
-    curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
-    neuron_replay_stats_df, rdf, aclu_to_idx, irdf = curr_jonathan_firing_rate_analysis['neuron_replay_stats_df'], curr_jonathan_firing_rate_analysis['rdf']['rdf'], curr_jonathan_firing_rate_analysis['rdf']['aclu_to_idx'], curr_jonathan_firing_rate_analysis['irdf']['irdf']
-except Exception as e:
-    raise e
-
-## short_long_pf_overlap_analyses:
-try:
-    ## Get global `short_long_pf_overlap_analyses` results:
-    short_long_pf_overlap_analyses = curr_active_pipeline.global_computation_results.computed_data.short_long_pf_overlap_analyses
-    conv_overlap_dict = short_long_pf_overlap_analyses['conv_overlap_dict']
-    conv_overlap_scalars_df = short_long_pf_overlap_analyses['conv_overlap_scalars_df']
-    prod_overlap_dict = short_long_pf_overlap_analyses['product_overlap_dict']
-    relative_entropy_overlap_dict = short_long_pf_overlap_analyses['relative_entropy_overlap_dict']
-    relative_entropy_overlap_scalars_df = short_long_pf_overlap_analyses['relative_entropy_overlap_scalars_df']
-
-except (AttributeError, KeyError) as e:
-    print(f'encountered error: {e}. Recomputing...')
-    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_short_long_pf_overlap_analyses'], fail_on_exception=False, debug_print=False)
-    print(f'\t done.')
-    short_long_pf_overlap_analyses = curr_active_pipeline.global_computation_results.computed_data.short_long_pf_overlap_analyses
-    conv_overlap_dict = short_long_pf_overlap_analyses['conv_overlap_dict']
-    conv_overlap_scalars_df = short_long_pf_overlap_analyses['conv_overlap_scalars_df']
-    prod_overlap_dict = short_long_pf_overlap_analyses['product_overlap_dict']
-    relative_entropy_overlap_dict = short_long_pf_overlap_analyses['relative_entropy_overlap_dict']
-    relative_entropy_overlap_scalars_df = short_long_pf_overlap_analyses['relative_entropy_overlap_scalars_df']
-except Exception as e:
-    raise e
-
-
 short_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.RIGHT_ONLY]
 short_only_aclus = short_only_df.index.values.tolist()
 long_only_df = neuron_replay_stats_df[neuron_replay_stats_df.track_membership == SplitPartitionMembership.LEFT_ONLY]
@@ -918,10 +825,50 @@ stacked_epoch_slices_view_laps_containers = stacked_epoch_slices_matplotlib_buil
 
 stacked_epoch_slices_view_laps_containers
 
+# +
+sess.position.compute_higher_order_derivatives()
+
+sess.position.compute_smoothed_position_info()
+
 # + tags=["ORPHAN"]
 from neuropy.utils.matplotlib_helpers import plot_overlapping_epoch_analysis_diagnoser
 
-fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj())
+fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj().get_non_overlapping())
+
+
+# + tags=["ORPHAN"]
+active_filter_epochs = curr_active_pipeline.sess.laps.as_epoch_obj().to_dataframe().epochs.get_non_overlapping_df(debug_print=True)
+active_filter_epochs
+
+
+# + tags=["ORPHAN"]
+from neuropy.utils.efficient_interval_search import get_non_overlapping_epochs, deduplicate_epochs # for EpochsAccessor's .get_non_overlapping_df()
+
+active_filter_epochs = curr_active_pipeline.sess.laps.as_epoch_obj().to_dataframe().epochs.get_valid_df()
+before_num_rows = np.shape(active_filter_epochs)[0]
+## De-duplicate epochs:
+active_filter_epochs = deduplicate_epochs(active_filter_epochs, agressive_deduplicate=False) ## TODO: rows are being removed here (by `deduplicate_epochs`), not in `get_non_overlapping_epochs` call
+# active_filter_epochs
+
+
+# + tags=["ORPHAN"]
+## HANDLE OVERLAPPING EPOCHS: Note that there is a problem that occurs here with overlapping epochs for laps. Below we remove any overlapping epochs and leave only the valid ones.
+is_non_overlapping = get_non_overlapping_epochs(active_filter_epochs[['start','stop']].to_numpy()) # returns a boolean array of the same length as the number of epochs 
+# Just drop the rows of the dataframe that are overlapping:
+filtered_epochs = active_filter_epochs.loc[is_non_overlapping]
+after_num_rows = np.shape(filtered_epochs)[0]
+changed_num_rows = after_num_rows - before_num_rows
+print(f'Dataframe Changed from {before_num_rows} -> {after_num_rows} ({changed_num_rows = })')
+
+
+# + tags=["ORPHAN"]
+fig, out_axes_list = plot_overlapping_epoch_analysis_diagnoser(sess.position, curr_active_pipeline.sess.laps.as_epoch_obj().boolean_indicies_slice(is_non_overlapping))
+
+
+# + tags=["ORPHAN"]
+non_degenerate_laps = curr_active_pipeline.sess.laps.as_epoch_obj().to_dataframe()
+# non_degenerate_laps.to_dataframe().epoch
+non_degenerate_laps.epochs.get_non_overlapping_df()
 
 
 # + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
@@ -2008,6 +1955,20 @@ long_one_step_decoder_2D.marginal.x.two_step_most_likely_positions_1D.shape # (3
 
 long_one_step_decoder_2D.most_likely_position_flat_indicies
 
+curr_active_pipeline.registered_computation_function_names
+
+curr_active_pipeline.registered_display_function_docs_dict
+
+_display_plot_decoded_epoch_slices
+_display_plot_marginal_1D_most_likely_position_comparisons
+_display_plot_most_likely_position_comparisons
+
+_display_context_nested_docks
+
+_display_short_long_firing_rate_index_comparison
+_display_short_long_pf1D_comparison
+
+
 # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[] jp-MarkdownHeadingCollapsed=true
 # # NEXT 2022-12-20:
 # - [X] TODO: Need to convert `_subfn_compute_decoded_epochs` to work with 1D. Currently hardcoded to use active_decoder = computation_result.computed_data['pf2D_Decoder']
@@ -2019,6 +1980,7 @@ long_one_step_decoder_2D.most_likely_position_flat_indicies
 # - [ ] TODO: get visual/interactive helper working (it's in the matplotlib_helpers):
 #         `plot_overlapping_epoch_analysis_diagnoser`
 # - [X] TODO: finish `KnownFilterEpochs`
+# - [ ] Look at the generality of `from neuropy.utils.matplotlib_helpers import draw_epoch_regions`
 # -
 
 # - [ ] TODO: debug why 1D outputs completely fail to match the actual animal's plotted position. Are they just inverted or something?
