@@ -718,6 +718,7 @@ from pyphocorehelpers.indexing_helpers import BinningInfo, compute_spanning_bins
 from pyphocorehelpers.indexing_helpers import build_spanning_grid_matrix
 # from pyphoplacecellanalysis.Pho2D.PyQtPlots.Extensions.pyqtgraph_helpers import stacked_epoch_basic_setup
 
+long_epoch_name = 'maze1'
 active_computation_config = curr_active_pipeline.active_configs[long_epoch_name].computation_config
 active_pf_1D = long_results.pf1D
 
@@ -1554,7 +1555,7 @@ _display_spike_rasters_pyqtplot_2D
 # ## 🎨 Exploring 'Plot' Helper class:
 # -
 
-curr_active_pipeline.plot._display_1d_placefields
+curr_active_pipeline.plot._display_1d_placefields 
 
 # + tags=["visualization"]
 active_2d_plot, spike_raster_plt_3d, spike_raster_window = curr_active_pipeline.plot._display_spike_rasters_pyqtplot_2D.values()
