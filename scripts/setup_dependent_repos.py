@@ -34,6 +34,9 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 dependent_repos_urls = ["https://github.com/CommanderPho/NeuroPy.git", "https://github.com/CommanderPho/pyPhoCoreHelpers.git", "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"]
 dependent_repos_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in dependent_repos]
 
+external_dependent_binary_repos = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git"]
+
+
 print(f'{dependent_repos_paths = }')
 for i, repo in enumerate(dependent_repos_paths):
     print(f'Updating {repo}...')
@@ -53,3 +56,6 @@ os.chdir(root_dir) # change back to the root repo dir
 os.system("poetry lock")
 os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
 print(f'done with all.')
+
+os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
+
