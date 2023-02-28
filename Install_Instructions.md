@@ -12,6 +12,12 @@ sudo yum install python39 python39-pip
 sudo alternatives --set python /usr/bin/python3.9
 
 
+#### Great-Lakes:
+module load python/3.9.12
+curl -sSL https://install.python-poetry.org | python3 -
+
+
+
 #### Windows:
 Use Chocolatey to install pyenv
 ```
@@ -21,6 +27,11 @@ pyenv install 3.9.13
 pyenv local 3.9.13 # this sets the new install to be the local Python version (in the directory where this command is ran)
 
 ```
+
+
+#### macOS:
+brew install python3
+curl -sSL https://install.python-poetry.org | python3 -
 
 
 

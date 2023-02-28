@@ -30,16 +30,18 @@ os.system("git pull") # pull changes first for main repo
 
 ## Pull for children repos:
 dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis"]
+
+dependent_repos_urls = ["https://github.com/CommanderPho/NeuroPy.git", "https://github.com/CommanderPho/pyPhoCoreHelpers.git", "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"]
 dependent_repos_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in dependent_repos]
 
 print(f'{dependent_repos_paths = }')
-for repo in dependent_repos_paths:
+for i, repo in enumerate(dependent_repos_paths):
     print(f'Updating {repo}...')
     if not repo.exists():
         # clone the repo
-        os.chdir(repo.parent()) # change directory to the parent of the repo to prepare for cloning
+        os.chdir(repo.parent) # change directory to the parent of the repo to prepare for cloning
         print(f'\t repo does not exist. Cloning {repo}...')
-        os.system(f'git clone {repo}')
+        os.system(f'git clone {dependent_repos_urls[i]}')
 
     os.chdir(repo)
     os.system("git pull")
