@@ -25,7 +25,7 @@ choco install pyenv-win
 refreshEnv
 pyenv install 3.9.13
 pyenv local 3.9.13 # this sets the new install to be the local Python version (in the directory where this command is ran)
-
+poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe
 ```
 
 
