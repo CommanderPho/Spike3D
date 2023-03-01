@@ -54,6 +54,8 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False):
 
     if is_binary_repo:
         ## For binary repos:
+        # os.system("pyenv local 3.9.13")
+        # os.system(r"poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe")
         os.system("python setup.py sdist bdist_wheel")
     else:
         # For poetry repos
@@ -62,25 +64,10 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False):
             os.system("poetry install") # is this needed? I think it installs in that specific environment.
 
 
-
 print(f'{dependent_repos_paths = }')
-# for i, repo_path in enumerate(dependent_repos_paths):
-
 for i, (repo_path, repo_url, is_binary_repo) in enumerate(poetry_repo_tuples + binary_repo_tuples):
     print(f'Updating {repo_path}...')
     setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo)
-
-    # if not repo.exists():
-    #     # clone the repo
-    #     os.chdir(repo.parent) # change directory to the parent of the repo to prepare for cloning
-    #     print(f'\t repo does not exist. Cloning {repo}...')
-    #     os.system(f'git clone {dependent_repos_urls[i]}')
-
-    # os.chdir(repo)
-    # os.system("git pull")
-    # os.system("poetry lock")
-    # if enable_install_for_child_repos:
-    #     os.system("poetry install") # is this needed? I think it installs in that specific environment.
 
 os.chdir(root_dir) # change back to the root repo dir
 os.system("poetry lock")
