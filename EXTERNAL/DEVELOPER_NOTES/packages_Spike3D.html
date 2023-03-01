@@ -1,0 +1,431 @@
+<html>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      <div class="mermaid">
+    
+        classDiagram
+          class neuropy {
+          }
+          class analyses {
+          }
+          class artifact {
+          }
+          class brainstates {
+          }
+          class decoders {
+          }
+          class laps {
+          }
+          class ms_connectivity {
+          }
+          class neurons_correlation {
+          }
+          class neurons_stability {
+          }
+          class oscillations {
+          }
+          class placefields {
+          }
+          class reactivation {
+          }
+          class spkepochs {
+          }
+          class time_dependent_placefields {
+          }
+          class trace_fc {
+          }
+          class core {
+          }
+          class animal {
+          }
+          class ca_neurons {
+          }
+          class datawriter {
+          }
+          class epoch {
+          }
+          class event {
+          }
+          class flattened_spiketrains {
+          }
+          class laps {
+          }
+          class neuron_identities {
+          }
+          class neurons {
+          }
+          class position {
+          }
+          class position_old {
+          }
+          class probe {
+          }
+          class ratemap {
+          }
+          class session {
+          }
+          class KnownDataSessionTypeProperties {
+          }
+          class SessionSelectionAndFiltering {
+          }
+          class dataSession {
+          }
+          class data_session_loader {
+          }
+          class signal {
+          }
+          class io {
+          }
+          class binarysignalio {
+          }
+          class dlcio {
+          }
+          class miniscopeio {
+          }
+          class movie {
+          }
+          class neuroscopeio {
+          }
+          class openephysio {
+          }
+          class optitrackio {
+          }
+          class phyio {
+          }
+          class spykingcircusio {
+          }
+          class plotting {
+          }
+          class ca_events {
+          }
+          class epochs {
+          }
+          class figure {
+          }
+          class mixins {
+          }
+          class placemap_mixins {
+          }
+          class ratemap_mixins {
+          }
+          class placemaps {
+          }
+          class position {
+          }
+          class probe {
+          }
+          class ratemaps {
+          }
+          class signals {
+          }
+          class spikes {
+          }
+          class utils {
+          }
+          class align_util {
+          }
+          class ccg {
+          }
+          class ccg_gpu {
+          }
+          class chunkingData {
+          }
+          class colors_util {
+          }
+          class debug_helpers {
+          }
+          class decoding {
+          }
+          class dynamic_container {
+          }
+          class efficient_interval_search {
+          }
+          class eventCorr {
+          }
+          class load_exported {
+          }
+          class mathutil {
+          }
+          class matplotlib_helpers {
+          }
+          class misc {
+          }
+          class mixins {
+          }
+          class binning_helpers {
+          }
+          class concatenatable {
+          }
+          class dataframe_representable {
+          }
+          class dict_representable {
+          }
+          class diffable {
+          }
+          class enum_helpers {
+          }
+          class file_representable {
+          }
+          class indexing_helpers {
+          }
+          class panel {
+          }
+          class print_helpers {
+          }
+          class time_slicing {
+          }
+          class unit_slicing {
+          }
+          class unwrap_placefield_computation_parameters {
+          }
+          class neurons_util {
+          }
+          class position_util {
+          }
+          class probe_util {
+          }
+          class result_context {
+          }
+          class signal_process {
+          }
+          class pyphocorehelpers {
+          }
+          class function_helpers {
+          }
+          class general_helpers {
+          }
+          class geometry_helpers {
+          }
+          class hashing_helpers {
+          }
+          class indexing_helpers {
+          }
+          class performance_timing_helpers {
+          }
+          class preferences_helpers {
+          }
+          class print_helpers {
+          }
+          class pyphoplacecellanalysis {
+          }
+          class Pho3D {
+          }
+          class points {
+          }
+          class spikes {
+          }
+          class PhoPositionalData {
+          }
+          class analysis {
+          }
+          class interactive_placeCell_config {
+          }
+          class neuronal_dimensionality_reduction {
+          }
+          class import_data {
+          }
+          class load_exported {
+          }
+          class plot_data {
+          }
+          class plotting {
+          }
+          class laps {
+          }
+          class placefield {
+          }
+          class saving {
+          }
+          class visualization_window {
+          }
+          class process_data {
+          }
+          class Resources {
+          }
+          class ActionIcons {
+          }
+          class GuiResources {
+          }
+          analyses --> artifact
+          analyses --> brainstates
+          analyses --> decoders
+          analyses --> reactivation
+          analyses --> spkepochs
+          artifact --> utils
+          brainstates --> utils
+          decoders --> placefields
+          decoders --> utils
+          decoders --> binning_helpers
+          laps --> laps
+          laps --> efficient_interval_search
+          laps --> indexing_helpers
+          laps --> laps
+          oscillations --> utils
+          placefields --> epoch
+          placefields --> neurons
+          placefields --> position
+          placefields --> ratemap
+          placefields --> figure
+          placefields --> placemap_mixins
+          placefields --> placemaps
+          placefields --> debug_helpers
+          placefields --> misc
+          placefields --> binning_helpers
+          placefields --> diffable
+          placefields --> print_helpers
+          reactivation --> mathutil
+          spkepochs --> utils
+          time_dependent_placefields --> placefields
+          time_dependent_placefields --> epoch
+          time_dependent_placefields --> position
+          time_dependent_placefields --> ratemap
+          time_dependent_placefields --> dynamic_container
+          time_dependent_placefields --> misc
+          time_dependent_placefields --> binning_helpers
+          core --> animal
+          core --> datawriter
+          core --> epoch
+          core --> flattened_spiketrains
+          core --> laps
+          core --> neurons
+          core --> position
+          core --> probe
+          core --> ratemap
+          core --> signal
+          ca_neurons --> datawriter
+          datawriter --> dict_representable
+          datawriter --> file_representable
+          datawriter --> print_helpers
+          epoch --> datawriter
+          epoch --> efficient_interval_search
+          epoch --> print_helpers
+          epoch --> time_slicing
+          event --> datawriter
+          flattened_spiketrains --> datawriter
+          flattened_spiketrains --> neuron_identities
+          flattened_spiketrains --> neurons
+          flattened_spiketrains --> misc
+          flattened_spiketrains --> binning_helpers
+          flattened_spiketrains --> concatenatable
+          flattened_spiketrains --> print_helpers
+          flattened_spiketrains --> time_slicing
+          flattened_spiketrains --> unit_slicing
+          laps --> datawriter
+          laps --> epoch
+          laps --> dataframe_representable
+          laps --> print_helpers
+          laps --> time_slicing
+          laps --> unit_slicing
+          neuron_identities --> colors_util
+          neuron_identities --> print_helpers
+          neurons --> datawriter
+          neurons --> concatenatable
+          neurons --> print_helpers
+          neurons --> time_slicing
+          neurons --> unit_slicing
+          position --> datawriter
+          position --> epoch
+          position --> concatenatable
+          position --> dataframe_representable
+          position --> time_slicing
+          position_old --> datawriter
+          position_old --> epoch
+          position_old --> signal
+          position_old --> utils
+          position_old --> load_exported
+          position_old --> concatenatable
+          position_old --> time_slicing
+          probe --> datawriter
+          ratemap --> neuron_identities
+          ratemap --> ratemap_mixins
+          ratemap --> utils
+          KnownDataSessionTypeProperties --> print_helpers
+          SessionSelectionAndFiltering --> neuropy
+          SessionSelectionAndFiltering --> flattened_spiketrains
+          SessionSelectionAndFiltering --> neurons
+          SessionSelectionAndFiltering --> position
+          SessionSelectionAndFiltering --> dataSession
+          dataSession --> neuropy
+          dataSession --> analyses
+          dataSession --> core
+          dataSession --> epoch
+          dataSession --> flattened_spiketrains
+          dataSession --> laps
+          dataSession --> position
+          dataSession --> utils
+          dataSession --> efficient_interval_search
+          dataSession --> concatenatable
+          dataSession --> panel
+          dataSession --> print_helpers
+          dataSession --> time_slicing
+          dataSession --> unit_slicing
+          dataSession --> result_context
+          io --> binarysignalio
+          io --> neuroscopeio
+          io --> optitrackio
+          io --> phyio
+          io --> spykingcircusio
+          dlcio --> movie
+          dlcio --> optitrackio
+          optitrackio --> utils
+          plotting --> epochs
+          plotting --> figure
+          plotting --> position
+          plotting --> probe
+          plotting --> ratemaps
+          plotting --> signals
+          plotting --> spikes
+          placemap_mixins --> neuron_identities
+          placemap_mixins --> placemaps
+          placemap_mixins --> ratemaps
+          placemap_mixins --> debug_helpers
+          placemaps --> dynamic_container
+          placemaps --> unwrap_placefield_computation_parameters
+          position --> figure
+          ratemaps --> neuron_identities
+          ratemaps --> ratemap
+          ratemaps --> figure
+          ratemaps --> utils
+          ratemaps --> colors_util
+          ratemaps --> debug_helpers
+          ratemaps --> matplotlib_helpers
+          ratemaps --> misc
+          spikes --> colors_util
+          debug_helpers --> dynamic_container
+          dynamic_container --> diffable
+          efficient_interval_search --> epoch
+          eventCorr --> ccg
+          load_exported --> print_helpers
+          mathutil --> ccg
+          matplotlib_helpers --> neuron_identities
+          matplotlib_helpers --> figure
+          matplotlib_helpers --> misc
+          mixins --> print_helpers
+          mixins --> time_slicing
+          mixins --> unit_slicing
+          print_helpers --> enum_helpers
+          time_slicing --> efficient_interval_search
+          unwrap_placefield_computation_parameters --> placefields
+          neurons_util --> ccg
+          position_util --> mathutil
+          position_util --> binning_helpers
+          result_context --> diffable
+          function_helpers --> print_helpers
+          general_helpers --> dynamic_container
+          general_helpers --> print_helpers
+          Pho3D --> points
+          Pho3D --> spikes
+          points --> indexing_helpers
+          neuronal_dimensionality_reduction --> neuropy
+          neuronal_dimensionality_reduction --> reactivation
+          import_data --> load_exported
+          import_data --> process_data
+          load_exported --> print_helpers
+          plot_data --> process_data
+          plotting --> visualization_window
+          laps --> matplotlib_helpers
+          placefield --> saving
+  
+       </div>
+  </body>
+</html>
