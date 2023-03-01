@@ -1,0 +1,1437 @@
+<html>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      <div class="mermaid">
+    
+        classDiagram
+          class ANSI_COLOR_STRINGS {
+            BLUE : str
+            BOLD : str
+            CYAN : str
+            ENDC : str
+            FAIL : str
+            GREEN : str
+            HEADER : str
+            LIGHTBLUE : str
+            LIGHTCYAN : str
+            LIGHTGREEN : str
+            LIGHTMAGENTA : str
+            LIGHTRED : str
+            LIGHTYELLOW : str
+            MAGENTA : str
+            OKBLUE : str
+            OKCYAN : str
+            OKGREEN : str
+            RED : str
+            UNDERLINE : str
+            WARNING : str
+            YELLOW : str
+          }
+          class ANSI_Coloring {
+            ansi_highlight_only_suffix(type_string, suffix_color)
+          }
+          class Animal {
+            alias : Optional[str]
+            brain_region : Optional[str]
+            day : Optional[str]
+            experiment : Optional[str]
+            experimenter : Optional[str]
+            metadata : Optional[dict]
+            name : Optional[str]
+            probe : Optional[str]
+            sex : Optional[str]
+            start
+            stop
+            tag : Optional[str]
+            track : Optional[str]
+            weight : Optional[float]
+            from_dict(d)
+            to_dataframe()
+            to_dict(recurrsively)
+            write_csv()*
+          }
+          class AutoNameEnum {
+            name
+          }
+          class BackgroundRenderingOptions {
+            name
+          }
+          class BinarysignalIO {
+            dtype : str
+            duration
+            n_channels : int
+            n_frames
+            sampling_rate : int
+            source_file
+            get_signal(channel_indx, t_start, t_stop)
+            write_time_slice(write_filename, t_start, t_stop)
+          }
+          class BinnedPositionsMixin {
+            xbin_centers
+            xbin_labels
+            ybin_centers
+            ybin_labels
+          }
+          class BinnedSpiketrain {
+            bin_size : float
+            duration
+            metadata : NoneType
+            n_bins
+            n_neurons
+            neuron_ids
+            peak_channels : NoneType
+            shank_ids : NoneType
+            spike_counts
+            spike_counts : ndarray
+            t_start : float
+            t_stop
+            time
+            add_metadata()*
+            from_dict(d)
+            from_neurons(neurons: Neurons, t_start, t_stop, bin_size)*
+            get_by_id(ids)
+            get_pairwise_corr(pairs_bool, return_pair_id)
+            to_dict(recurrsively)
+          }
+          class BinningContainer {
+            center_info
+            center_info
+            centers
+            centers : ndarray
+            edge_info
+            edge_info
+            edges : ndarray
+            edges : ndarray
+            build_center_binning_info(centers, variable_extents)
+            build_edge_binning_info(edges)
+            setup_from_edges(edges: np.ndarray, edge_info: Optional[BinningInfo])
+          }
+          class BinningContainer {
+            center_info
+            center_info
+            centers
+            centers : ndarray
+            edge_info
+            edge_info
+            edges : ndarray
+            edges : ndarray
+            build_center_binning_info(centers, variable_extents)
+            build_edge_binning_info(edges)
+            setup_from_edges(edges: np.ndarray, edge_info: Optional[BinningInfo])
+          }
+          class BinningInfo {
+            bin_indicies : ndarray
+            num_bins : int
+            step : float
+            variable_extents : tuple
+          }
+          class BinningInfo {
+            bin_indicies : ndarray
+            num_bins : int
+            step : float
+            variable_extents : tuple
+          }
+          class CapturedException {
+          }
+          class CodeConversion {
+            build_dummy_dictionary_from_defn_code(code_dict_defn: str, max_iterations_before_abort: int, missing_variable_values, debug_print)
+            convert_defn_lines_to_dictionary(code, multiline_dict_defn, multiline_members_indent)
+            convert_defn_lines_to_parameters_list(code)
+            convert_dictionary_to_class_defn(target_dict, class_name: str, class_definition_mode: GeneratedClassDefinitionType, copy_to_clipboard, output_variable_prefix, class_decorators, include_init_fcn, include_initializer_default_values, include_properties_defns, include_types, indent_character, pre_class_spacing, post_class_spacing)
+            convert_dictionary_to_defn_lines(target_dict, multiline_assignment_code, dictionary_name: str, include_comment: bool, copy_to_clipboard, output_variable_prefix)
+            extract_undefined_variable_names_from_code(code_dict_defn: str, max_iterations_before_abort: int, debug_print)
+            get_arguments_as_optional_dict()
+          }
+          class Colormap {
+            dynamic2()
+            dynamic3()
+            dynamicMap()
+          }
+          class Colors {
+            active_cmap
+            active_rgb_colors
+            active_rgba_colors
+            extended_tab20b_main_colors_hex()
+          }
+          class ColorsUtil {
+            colors
+            categorical_cmap(nc, nsc, cmap, continuous)
+            categorical_cmap_from_colors(nc, nsc, ccolors)
+            compute_needed_single_hue_variations(n_needed_colors, colors)
+            pho_categorical_colormap(n_needed_colors, colors: np.array, debug_print)
+          }
+          class ConcatenationInitializable {
+            concat(objList: Union[Sequence, np.array])*
+          }
+          class Csd {
+            chan_label
+            coords
+            csd_coords
+            csdmap : ndarray
+            fs : int
+            lfp
+            time
+            classic()
+            icsd(lfp, coords)*
+            plot(ax, smooth, plotLFP)
+          }
+          class CustomSessionFilter {
+            epoch_is_included : ndarray
+            epoch_labels : list
+            build(sess)
+            setup(sess)
+          }
+          class DLC {
+            SampleRate
+            animal_name
+            base_dir : Path
+            bodyparts
+            meta
+            movie
+            movie_file : Path
+            nframes
+            pix2cm : int
+            pos_data
+            pos_smooth
+            scorername
+            session
+            smooth_lcutoff : float
+            timestamps
+            tracking_file : Path
+            calculate_speed()
+            get_metadata()
+            get_on_maze(bodypart, likelihood_thresh)
+            get_timestamps()
+            plot1d(bodyparts, data_type, feature, lcutoff, plot_style, ax)
+            plot2d(data_type, bodyparts, plot_style, lcutoff, ax)
+            smooth_pos(bodyparts, lcutoff, std)
+            to_cm()
+          }
+          class DataFrameInitializable {
+            from_dataframe(df)*
+          }
+          class DataFrameRepresentable {
+            to_dataframe()*
+          }
+          class DataSession {
+            basepath
+            config
+            datfile : NoneType
+            duration
+            eegfile : NoneType
+            epochs
+            epochs
+            filePrefix : NoneType
+            flattened_spiketrains : NoneType
+            has_replays
+            is_loaded : bool
+            is_resolved
+            laps : NoneType
+            mua : NoneType
+            n_neurons
+            name
+            neuron_ids
+            neurons : NoneType
+            paradigm : NoneType
+            pbe : NoneType
+            position : NoneType
+            position_sampling_rate
+            probegroup : NoneType
+            recinfo : NoneType
+            replay
+            resolved_files
+            ripple : NoneType
+            session_name
+            spikes_df
+            t_start
+            t_stop
+            compute_PBEs_spikes_df(spk_df, pbe_epoch_df)
+            compute_laps_position_df(position_df, laps_df)
+            compute_linear_position(session, debug_print)
+            compute_linearized_position(session, epochLabelName, method)
+            compute_neurons_mua(session, save_on_compute)
+            compute_neurons_ripples(session, save_on_compute)
+            compute_pbe_epochs(session, save_on_compute)
+            compute_position_laps()
+            compute_spikes_PBEs()
+            concat(objList: Union[Sequence, np.array])
+            estimate_replay_epochs(min_epoch_included_duration, max_epoch_included_duration, maximum_speed_thresh, min_inclusion_fr_active_thresh, min_num_unique_aclu_inclusions, save_on_compute, debug_print)
+            filtered_by_epoch(epoch_specifier)
+            filtered_by_laps(lap_indices)
+            filtered_by_named_timerange(custom_named_timerange_obj: NamedTimerange)
+            filtered_by_neuron_type(query_neuron_type)
+            filtered_by_time_slice(t_start, t_stop)
+            from_dict(d: dict)
+            get_by_id(ids)
+            get_context()
+            get_description() str
+            get_named_epoch_timerange(epoch_name)
+            get_neuron_type(query_neuron_type)
+            panel_dataframes_overview(max_page_items)
+            perform_compute_estimated_replay_epochs(a_session, min_epoch_included_duration, max_epoch_included_duration, maximum_speed_thresh, min_inclusion_fr_active_thresh, min_num_unique_aclu_inclusions, save_on_compute, debug_print)
+            split_by_laps()
+            time_slice(t_start, t_stop, enable_debug)
+            to_dict(recurrsively)
+          }
+          class DataSessionLoader {
+            bapun_data_session(basedir)
+            kdiba_old_format_session(basedir)
+            rachel_format_session(basedir)
+          }
+          class DataSessionPanelMixin {
+            panel_session_dataframes_overview(sess, max_page_items)
+          }
+          class DataWriter {
+            filename
+            metadata
+            create_backup()*
+            delete_file()
+            from_dict(d)
+            from_file(f)
+            save(status_print)
+            to_dict(recurrsively)
+            to_file(data: dict, f, status_print)
+          }
+          class Decode1d {
+            decoded_position : NoneType, list
+            decodingtime : NoneType
+            epochs
+            n_jobs : int
+            nbins_epochs : ndarray
+            neurons
+            p_value
+            posterior : NoneType, list
+            ratemap
+            score : NoneType
+            shuffle_score : ndarray, NoneType
+            slideby : NoneType
+            spkcount : list
+            time_bin_centers : NoneType
+            time_bin_size : float
+            calculate_shuffle_score(n_iter, method)
+            plot_in_bokeh()*
+            plot_replay_epochs(pval, speed_thresh, cmap)
+            score_posterior(p)
+          }
+          class Decode2d {
+            actualbin : list, NoneType
+            actualpos : list, NoneType
+            decoded_position : ndarray, NoneType, list
+            decodingtime : NoneType
+            pf
+            posterior : NoneType, list
+            ratemap
+            time_bin_centers : NoneType
+            time_bin_size : float, NoneType
+            decode_events(binsize, slideby)
+            estimate_behavior(spikes_df, t_start_end, time_bin_size, smooth, plot)
+            plot()
+          }
+          class DictInitializable {
+            from_dict(d: dict)*
+          }
+          class DictRepresentable {
+            to_dict(recurrsively)*
+          }
+          class DiffableObject {
+            compute_diff(lhs_dict, rhs_dict)
+            diff(other_object)
+          }
+          class DocumentationFilePrinter {
+            ansi_string : str
+            doc_header_string
+            doc_name : str
+            doc_output_parent_folder : Path, str
+            doc_rich_header_string
+            enable_print : bool
+            html_string : str
+            md_string : str
+            output_html_file : Path
+            output_md_file : Path
+            output_temp_ansi_file : Path
+            reveal_output_files_in_system_file_manager()
+            save_documentation()
+            write_to_files()
+          }
+          class DynamicContainer {
+            all_attributes
+            debug_enabled : bool
+            dynamically_added_attributes
+            original_attributes
+            outcome_on_item_not_found : NoneType
+            diff(other_object)
+            init_from_dict(a_dict)
+            init_from_object(an_object)
+            override(other)
+            overriding_with()
+            to_dict()
+          }
+          class Epoch {
+            duration
+            durations
+            filename
+            labels
+            metadata
+            n_epochs
+            starts
+            stops
+            t_start
+            t_stop
+            as_array()
+            boolean_indicies_slice(boolean_indicies)
+            count(t_start, t_stop, binsize)
+            delete_in_between(t1, t2)
+            fill_blank(method)
+            filtered_by_duration(min_duration, max_duration)
+            from_PortionInterval(portion_interval, metadata)
+            from_dict(d: dict)
+            get_named_timerange(epoch_name)
+            get_non_overlapping(debug_print)
+            get_proportion_by_label(t_start, t_stop)
+            get_unique_labels()
+            label_slice(label)
+            time_slice(t_start, t_stop)
+            to_PortionInterval()
+            to_dataframe()
+            to_dict(recurrsively)
+            to_neuroscope(ext)
+          }
+          class EpochsAccessor {
+            duration
+            durations
+            is_valid
+            labels
+            n_epochs
+            starts
+            stops
+            t_start
+            t_stop
+            as_array()
+            filtered_by_duration(min_duration, max_duration)
+            from_PortionInterval(portion_interval)
+            get_epochs_longer_than(minimum_duration, debug_print)
+            get_non_overlapping_df(debug_print)
+            get_unique_labels()
+            get_valid_df()
+            label_slice(label)
+            time_slice(t_start, t_stop)
+            to_PortionInterval()
+          }
+          class Event {
+            labels : NoneType
+            times : NoneType
+            add_event()*
+            remove_event()*
+            to_dataframe()*
+          }
+          class ExplainedVariance {
+            bin_size : float
+            colors : dict
+            control
+            control_time : ndarray
+            ev : ndarray
+            ev_std
+            ignore_epochs
+            matching
+            matching_time : ndarray
+            n_pairs
+            neurons
+            pairs_bool : NoneType
+            partial_corr : ndarray
+            rev : ndarray
+            rev_partial_corr : ndarray
+            rev_std
+            slideby : int
+            template
+            window : int
+            plot(ax, t_start, legend)
+          }
+          class ExtendedEnum {
+            name
+            all_member_names() list
+            all_member_values() list
+            all_members() list
+            build_member_value_dict(values_list) dict
+            init(name, value, fallback_value)
+          }
+          class Fig {
+            fig
+            labelsize : int
+            add_subplot(subplot_spec)
+            draw(num, grid, size, style)
+            get_mpl_style(style: str)
+            panel_label(ax, label, fontsize)
+            pf_1D(ax)
+            remove_spines(ax, sides)
+            savefig(fname: Path, scriptname, fig)
+            set_spines_width(ax, lw, sides)
+            subplot2grid(subplot_spec, grid)
+          }
+          class FileInitializable {
+            from_file(f)
+          }
+          class FileProgressAction {
+            actionVerb
+            name
+            actionVerbsList()
+            init(name, value, fallback_value)
+          }
+          class FileRepresentable {
+            save()*
+            to_file(data: dict, f)*
+          }
+          class FlattenedSpiketrains {
+            flattened_sort_indicies
+            flattened_spike_identities
+            flattened_spike_times
+            metadata : NoneType
+            spikes_df
+            t_start : float
+            build_spike_dataframe(active_session, timestamp_scale_factor, spike_timestamp_column_name, progress_tracing)
+            concat(objList: Union[Sequence, np.array])
+            from_dict(d: dict)
+            get_by_id(ids)
+            get_neuron_type(query_neuron_type)
+            interpolate_spike_positions(spikes_df, position_sampled_times, position_x, position_y, position_linear_pos, position_speeds, spike_timestamp_column_name)
+            time_slice(t_start, t_stop)
+            to_dataframe()
+            to_dict(recurrsively)
+          }
+          class Gamma {
+            csd(period, refchan, chans, band, window)
+            get_peak_intervals(lfp, band, lowthresh, highthresh, minDistance, minDuration)
+          }
+          class GeneratedClassDefinitionType {
+            class_decorators
+            include_init_fcn
+            include_properties_defns
+            name
+            decoratorsList()
+            include_init_fcnList()
+            include_properties_defnsList()
+          }
+          class IdentifyingContext {
+            format_name : str
+            add_context(collision_prefix: str)
+            adding_context(collision_prefix: str)
+            as_tuple(subset_whitelist, subset_blacklist, drop_missing: bool)
+            check_keys(keys_list, debug_print)
+            get_description(subset_whitelist, separator: str, include_property_names: bool, replace_separator_in_property_names: str, prefix_items, suffix_items) str
+            has_keys(keys_list)
+            init_from_dict(a_dict)
+            keypaths(subset_whitelist, subset_blacklist)
+            keys(subset_whitelist, subset_blacklist)
+            to_dict(subset_whitelist, subset_blacklist)
+          }
+          class KnownDataSessionTypeProperties {
+            basedir : Path
+            basedir : Path
+            filter_functions : List[Callable]
+            filter_functions : list
+            load_function : Callable
+            load_function : Callable
+            post_compute_functions : List[Callable]
+            post_compute_functions : list
+            post_load_functions : List[Callable]
+            post_load_functions : list
+          }
+          class Laps {
+            df_all_fieldnames : list
+            lap_id
+            maze_id
+            n_laps
+            starts
+            stops
+            as_epoch_obj()
+            build_dataframe(mat_file_loaded_dict: dict, time_variable_name, absolute_start_timestamp)
+            filtered_by_lap_flat_index(lap_indicies)
+            filtered_by_lap_id(lap_ids)
+            from_dataframe(df)
+            from_dict(d: dict)
+            from_estimated_laps(pos_t_rel_seconds, desc_crossing_begining_idxs, desc_crossing_ending_idxs, asc_crossing_begining_idxs, asc_crossing_ending_idxs)
+            get_lap_flat_indicies(lap_id)
+            get_lap_times(lap_id)
+            time_slice(t_start, t_stop)
+            to_dataframe()
+            to_dict()
+          }
+          class LegacyDataLoadingMixin {
+            legacy_from_dict(dict_rep: dict)*
+          }
+          class MiniscopeIO {
+            basedir : Path
+            minian : dict
+            minian_folder : Path
+            rec_folders
+            times_all : NoneType
+            load_all_timestamps(format)
+            load_minian(minian_folder)
+          }
+          class Mua {
+            bin_size
+            bin_size : float
+            duration
+            firing_rate
+            metadata : NoneType
+            n_bins
+            spike_counts
+            spike_counts : ndarray
+            t_start : float
+            t_stop
+            time
+            from_dict(d)
+            get_smoothed(sigma, truncate)
+            to_dataframe()
+            to_dict(recurrsively)
+          }
+          class NamedTimerange {
+            duration
+            name
+            start_end_times
+            t_start
+            t_stop
+            to_Epoch()
+          }
+          class NeuronEnsembles {
+            activation
+            activation_bin_size : float
+            activation_time
+            bin_size : float
+            ensembles : NoneType
+            frate_thresh : int
+            ignore_epochs
+            n_ensembles
+            neuron_included_indx_thresh
+            neurons
+            t_start : NoneType
+            t_stop : NoneType
+            weights
+            calculate_activation(t_start, t_stop, bin_size)
+            get_firing_rate_filter(neurons, t_start, t_stop, frate_thresh)
+            get_firing_rate_filter_mask()
+            get_original_data()
+            plot_activation(nrows, ncols)
+            plot_ensembles(style, sort)
+          }
+          class NeuronIdentitiesDisplayerMixin {
+            neuron_cluster_ids
+            neuron_extended_ids
+            neuron_ids
+            neuron_shank_ids
+            get_extended_neuron_id_string(neuron_i, neuron_id)
+            other_neuron_id_string(neuron_i)*
+          }
+          class NeuronIdentity {
+            cell_uid
+            cluster_index
+            color : NoneType
+            extended_id_string
+            extended_identity_tuple
+            shank_index
+            init_from_NeuronExtendedIdentityTuple(a_tuple: NeuronExtendedIdentityTuple, a_color)
+          }
+          class NeuronIdentityAccessingMixin {
+            neuron_ids
+            find_cell_ids_from_neuron_IDXs(neuron_IDXs)
+            find_neuron_IDXs_from_cell_ids(cell_ids)
+            get_neuron_id_and_idx(neuron_i, neuron_id)
+          }
+          class NeuronType {
+            longClassName
+            name
+            shortClassName
+            bapunNpyFileStyleShortClassNames()
+            classCutoffValues()
+            describe()
+            from_any_string_series(neuron_types_strings)
+            from_bapun_npy_style_series(bapun_style_neuron_types)
+            from_bapun_npy_style_string(string_value)
+            from_long_string(string_value)
+            from_qclu_series(qclu_Series)
+            from_short_string(string_value)
+            from_string(string_value)
+            longClassNames()
+            shortClassNames()
+          }
+          class NeuronUnitSlicableObjectProtocol {
+            get_by_id(ids)*
+          }
+          class Neurons {
+          }
+          class Neurons {
+            firing_rate
+            n_neurons
+            n_spikes
+            n_total_spikes
+            neuron_ids
+            neuron_type
+            neuron_type : NoneType
+            peak_channels : NoneType
+            reverse_cellID_index_map
+            sampling_rate
+            shank_ids : NoneType
+            spiketrains : ndarray
+            t_start : float
+            t_stop
+            waveforms : NoneType
+            add_jitter()*
+            add_metadata()*
+            concat(objList: Union[Sequence, np.array])
+            from_dataframe(spikes_df, dat_sampling_rate, time_variable_name)
+            from_dict(d)
+            get_above_firing_rate(thresh: float)
+            get_all_spikes()
+            get_binned_spiketrains(bin_size)
+            get_by_id(ids)
+            get_isi(bin_size, n_bins)
+            get_mua(bin_size)
+            get_neuron_type(query_neuron_type)
+            get_waveform_similarity()
+            initialize_missing_spikes_df_columns(spikes_df, debug_print)
+            time_slice(t_start, t_stop)
+            to_dataframe()
+            to_dict(recurrsively)
+          }
+          class NeuroscopeIO {
+            channel_groups : ndarray, NoneType
+            dat_filename : Path
+            dat_sampling_rate : NoneType
+            discarded_channels : NoneType
+            eeg_filename : Path
+            eeg_sampling_rate : NoneType, int
+            good_channels : ndarray
+            n_channels : NoneType, int
+            sig_dtype : int
+            skipped_channels : ndarray, NoneType
+            source_file : Path
+            set_datetime(datetime_epoch)*
+            to_dict(recurrsively)
+            write_epochs(epochs: core.Epoch, ext)
+            write_neurons(neurons: core.Neurons)
+            write_position(position: core.Position)
+          }
+          class NonStringIterable {
+          }
+          class OptitrackIO {
+            datetime : NoneType
+            datetime_array : list, NoneType
+            datetime_nframes : list
+            datetime_starts : list
+            datetime_stops : list
+            dirname
+            sampling_rate : int
+            scale_factor : float
+            time : ndarray, NoneType
+            tracking_srate
+            x
+            y
+            z
+            get_position_at_datetimes(dt)
+            old_stuff()
+          }
+          class OrderedMeta {
+          }
+          class OrderedMeta {
+          }
+          class OverlappingIntervalsFallbackBehavior {
+            name
+          }
+          class PAC {
+            angle_bin : ndarray
+            binsz : int
+            famp : tuple
+            fphase : tuple
+            pac
+            phase_center
+            comodulo(lfp, method, njobs)
+            compute(lfp)
+            plot(ax)
+          }
+          class Pf1D {
+          }
+          class Pf2D {
+          }
+          class PfND {
+            bin_info : dict, NoneType
+            config
+            filtered_pos_df
+            filtered_spikes_df
+            frate_filter_fcn
+            frate_thresh
+            included_neuron_IDXs
+            included_neuron_IDs
+            nan_never_visited_occupancy
+            ndim
+            neuron_extended_ids
+            never_visited_occupancy_mask
+            occupancy
+            position_srate
+            ratemap : NoneType
+            ratemap_spiketrains : NoneType
+            ratemap_spiketrains_pos : NoneType
+            speed
+            speed_thresh
+            t
+            x
+            xbin : NoneType
+            xbin_centers
+            y
+            ybin : NoneType
+            ybin_centers
+            build_position_df_discretized_binned_positions(active_pos_df, active_computation_config, xbin_values, ybin_values, debug_print)
+            compute()
+            conform_to_position_bins(target_pf1D, force_recompute)
+            setup(position: Position, spikes_df, epochs: Epoch, debug_print)
+            str_for_display(prefix_string)
+            str_for_filename(prefix_string)
+            to_dict()
+          }
+          class PfND_TimeDependent {
+            all_time_filtered_pos_df
+            all_time_filtered_spikes_df
+            bin_info : NoneType
+            config
+            curr_normalized_occupancy : ndarray
+            curr_num_pos_samples_occupancy_map : ndarray
+            curr_num_pos_samples_smoothed_occupancy_map : ndarray, NoneType
+            curr_occupancy_weighted_tuning_maps_matrix : ndarray
+            curr_seconds_occupancy : ndarray
+            curr_smoothed_spikes_maps_matrix : ndarray, NoneType
+            curr_spikes_maps_matrix : ndarray
+            dims_coord_tuple
+            earliest_position_time
+            earliest_spike_time
+            earliest_valid_time
+            filtered_pos_df
+            filtered_spikes_df
+            fragile_linear_neuron_IDXs
+            historical_snapshots : OrderedDict
+            is_additive_mode : bool
+            last_t : float
+            n_fragile_linear_neuron_IDXs
+            ndim
+            position_srate
+            ratemap
+            ratemap_spiketrains
+            ratemap_spiketrains_pos
+            smooth
+            xbin : NoneType
+            ybin : NoneType
+            batch_snapshotting(combined_records_list, reset_at_start: bool, debug_print)
+            complete_time_range_computation(start_time, end_time, assign_results_to_member_variables, should_snapshot)
+            compute_occupancy_weighted_tuning_map(curr_seconds_occupancy_map, curr_spikes_maps_matrix, debug_print)
+            conform_to_position_bins(target_pf1D, force_recompute)
+            curr_ratemap_spiketrains(t)
+            curr_ratemap_spiketrains_pos(t)
+            perform_time_range_computation(spikes_df, pos_df, position_srate, xbin, ybin, start_time, end_time, included_neuron_IDs, active_computation_config, override_smooth)
+            reset()
+            restore_from_snapshot(snapshot_t)
+            snapshot()
+            step(num_seconds_to_advance, should_snapshot)
+            to_dict()
+            update(t, start_relative_t: bool, should_snapshot)
+            update_occupancy_map(last_t, last_occupancy_matrix, t, active_pos_df, debug_print)
+            update_spikes_map(last_t, last_spikes_maps_matrix, t, active_spike_df, debug_print)
+            validate_pf_dt_equivalent(active_pf_nD, active_pf_nD_dt)
+          }
+          class PfnConfigMixin {
+            str_for_filename(is_2D)
+          }
+          class PfnDMixin {
+            cell_ids
+            should_smooth_final_tuning_map : bool
+            should_smooth_spatial_occupancy_map : bool
+            should_smooth_speed : bool
+            should_smooth_spikes_map : bool
+            spk_pos
+            spk_t
+            plotRaw_v_time(cellind, speed_thresh, spikes_color, spikes_alpha, ax, position_plot_kwargs, spike_plot_kwargs, should_include_trajectory, should_include_spikes, should_include_labels)
+            plot_all(cellind, speed_thresh, spikes_color, spikes_alpha, fig)
+            plot_raw(subplots, fignum, alpha, label_cells, ax, clus_use)
+          }
+          class PfnDPlottingMixin {
+            plot_ratemaps_1D(ax, pad, normalize, sortby, cmap)
+            plot_ratemaps_2D()
+          }
+          class PfnD_PlotOccupancy_Mixin {
+            plot_occupancy(identifier_details_list, fig, ax)
+          }
+          class PhyIO {
+            amplitudes
+            cluster_info
+            include_groups : tuple
+            n_channels : int
+            n_features_per_channel : int
+            peak_channels : NoneType
+            peak_waveforms : NoneType
+            sampling_rate : NoneType, int
+            shank_ids
+            source_dir : Path
+            spiketrains : ndarray, NoneType
+            waveforms : ndarray, NoneType
+          }
+          class PlacefieldComputationParameters {
+            decimal_point_character : str
+            frate_thresh : int
+            grid_bin : int, tuple
+            grid_bin_1D
+            grid_bin_bounds : tuple, NoneType
+            grid_bin_bounds_1D
+            param_sep_char : str
+            smooth : tuple, int
+            smooth_1D
+            speed_thresh : int
+            variable_inline_names : list
+            variable_names : list
+            compute_grid_bin_bounds(x, y)
+            str_for_attributes_list_display(param_sep_char, key_val_sep_char)
+            str_for_display(is_2D)
+            str_for_filename(is_2D)
+            to_dict()
+          }
+          class PlacefieldSnapshot {
+            normalized_occupancy
+            num_position_samples_occupancy
+            num_position_samples_smoothed_occupancy
+            occupancy_weighted_tuning_maps_matrix
+            seconds_occupancy
+            smoothed_spikes_maps_matrix
+            spikes_maps_matrix
+            from_dict(d)
+            to_dict()
+          }
+          class PlotStringBrevityModeEnum {
+            extended_identity_labels
+            name
+            should_show_firing_rate_label
+            extended_identity_formatting_string(neuron_extended_id)
+          }
+          class Position {
+            df
+            sampling_rate
+            concat(objList: Union[Sequence, np.array])
+            from_dict(d)
+            from_separate_arrays(t, x, y, z, lin_pos, metadata)
+            init(traces: np.ndarray, computed_traces: np.ndarray, t_start, sampling_rate, metadata)
+            legacy_from_dict(dict_rep: dict)
+            print_debug_str()
+            speed_in_epochs(epochs: Epoch)
+            time_slice(t_start, t_stop)
+            time_slice_indicies(t_start, t_stop)
+            to_dataframe()
+            to_dict()
+          }
+          class PositionAccessor {
+            df
+          }
+          class PositionComputedDataMixin {
+            acceleration_x
+            acceleration_y
+            df
+            dim_computed_columns
+            dim_smoothed_columns
+            dt
+            has_linear_pos
+            linear_pos
+            linear_pos_obj
+            speed
+            velocity_x
+            velocity_y
+            compute_higher_order_derivatives()
+            compute_smoothed_position_info(N: int, non_smoothed_column_labels)
+          }
+          class PositionDimDataMixin {
+            df
+            dim_columns
+            duration
+            n_frames
+            ndim
+            t_start
+            t_stop
+            time
+            time_variable_name
+            traces
+            x
+            y
+            z
+          }
+          class PositionOld {
+            computed_traces : ndarray
+            duration
+            has_linear_pos
+            linear_pos
+            linear_pos_obj
+            metadata : NoneType
+            n_frames
+            ndim
+            sampling_rate
+            speed
+            t_start
+            t_stop
+            time
+            traces : ndarray
+            x
+            y
+            z
+            concat(objList: Union[Sequence, np.array])
+            from_dict(d)
+            from_separate_arrays(t, x, y)
+            from_vt_mat_file(position_mat_file_path)
+            print_debug_str()
+            speed_in_epochs(epochs: Epoch)
+            time_slice(t_start, t_stop)
+            to_dataframe()
+            to_dict(recurrsively)
+          }
+          class PrettyPrintable {
+            keys() List[Optional[str]]
+          }
+          class Probe {
+            channel_id
+            connected
+            n_contacts
+            n_shanks
+            shank_id
+            x
+            x_max
+            y
+            add_shanks(shanks: Shank, shank_pitch)
+            move(translation)
+            to_dataframe()
+            to_dict(recurrsively)
+          }
+          class ProbeGroup {
+            channel_id
+            get_disconnected
+            n_contacts
+            n_probes
+            n_shanks
+            probe_id
+            shank_id
+            x
+            x_max
+            x_min
+            y
+            y_max
+            y_min
+            add_probe(probe: Probe)
+            from_dict(d: dict)
+            get_channels(groupby)
+            get_connected_channels(groupby)
+            get_probe()*
+            get_shank_id_for_channels(channel_id)
+            remove_probes(probe_id)
+            to_dataframe()
+            to_dict(recurrsively)
+          }
+          class ProgressMessagePrinter {
+            action : str
+            contents_description : str
+            filepath
+            finished_message : str
+            print_line_ending : str
+            returned_string : NoneType, str
+            returns_string : bool
+          }
+          class Ratemap {
+            metadata : NoneType
+            minmax_normalized_tuning_curves
+            n_neurons
+            nan_never_visited_occupancy
+            ndim
+            neuron_extended_ids
+            neuron_extended_ids
+            neuron_ids
+            never_visited_occupancy_mask
+            normalized_tuning_curves
+            occupancy : NoneType
+            pdf_normalized_tuning_curves
+            spikes_maps
+            tuning_curve_peak_firing_rates
+            tuning_curve_unsmoothed_peak_firing_rates
+            tuning_curves
+            unit_max_tuning_curves
+            unsmoothed_tuning_maps : NoneType
+            xbin : NoneType
+            xbin_centers
+            ybin : NoneType
+            ybin_centers
+            NormalizeData(data)
+            build_never_visited_mask(occupancy)
+            get_sort_indicies(sortby)
+            nan_never_visited_locations(occupancy)
+            nan_ptp(a)
+            nanmin_nanmax_scaler(x, axis)
+            perform_AOC_normalization(active_tuning_curves, debug_print)
+          }
+          class RatemapPlottingMixin {
+            plot(computation_config, included_unit_indicies, subplots, figsize, fignum, enable_spike_overlay, spike_overlay_spikes, extended_overlay_points_datasource_dicts, drop_below_threshold: float, plot_variable: enumTuningMap2DPlotVariables, plot_mode: enumTuningMap2DPlotMode)
+          }
+          class SIZE_UNIT {
+            name
+          }
+          class Shank {
+            channel_id
+            connected
+            contact_id
+            n_contacts
+            x
+            x
+            y
+            y
+            auto_generate(columns, contacts_per_column, xpitch, ypitch, y_shift_per_column, channel_id)
+            from_dict()*
+            from_library(probe_name)*
+            move(translation)
+            set_contacts(positions, channel_ids)*
+            set_disconnected_channels(channel_ids)
+            to_dataframe()
+            to_dict(recurrsively)
+          }
+          class Signal {
+            channel_id
+            duration
+            n_channels
+            n_frames
+            sampling_rate
+            t_start : float
+            t_stop
+            time
+            traces
+            time_slice(channel_id, t_start, t_stop)
+          }
+          class SimplePrintable {
+          }
+          class SimplePrintable {
+          }
+          class SpectrogramBands {
+            delta
+            deltaplus
+            freq : ndarray, NoneType
+            gamma
+            ripple
+            smooth : NoneType
+            spindle
+            sxx : ndarray
+            theta
+            theta_delta_ratio
+            theta_deltaplus_ratio
+            time
+            get_band_power(f1, f2)
+            plotSpect(ax, freqRange)
+          }
+          class SpikesAccessor {
+            n_neurons
+            n_total_spikes
+            neuron_ids
+            neuron_probe_tuple_ids
+            time_variable_name
+            times
+            add_binned_time_column(time_window_edges, time_window_edges_binning_info: BinningInfo, debug_print: bool)
+            add_same_cell_ISI_column()
+            get_split_by_unit(included_neuron_ids)
+            get_unit_spiketrains(included_neuron_ids)
+            interpolate_spike_positions(position_sampled_times, position_x, position_y, position_linear_pos, position_speeds)
+            rebuild_fragile_linear_neuron_IDXs(debug_print)
+            set_time_variable_name(new_time_variable_name)
+            sliced_by_neuron_type(query_neuron_type)
+          }
+          class SpykingCircusIO {
+            rough_mua : File
+            load_rough_mua(mua_filename)
+            roughmua2neuroscope(chans, shankIDs)
+            write_epochs(file, epochs: Epoch)
+          }
+          class StackTraceFormatting {
+            restore_default()
+            shadow()
+            shadow_sitepackages()
+            spotlight()
+          }
+          class StartStopTimesMixin {
+            safe_start_stop_times(t_start, t_stop)
+          }
+          class ThetaParams {
+            amp : NoneType
+            angle : NoneType
+            asymmetry
+            fall_mid
+            fall_time
+            fs : int
+            lfp
+            lfp_filtered : NoneType
+            method : str
+            peak : NoneType
+            peak_width
+            peaktrough
+            rise_mid
+            rise_time
+            trough : NoneType
+            trough_width
+            break_by_phase(y, binsize, slideby)
+            sanityCheck()
+          }
+          class TimeSlicableIndiciesMixin {
+            time_slice_indicies(t_start, t_stop)
+          }
+          class TimeSlicableObjectProtocol {
+            time_slice(t_start, t_stop)*
+          }
+          class TimeSliceAccessor {
+            time_slice(t_start, t_stop)
+          }
+          class TimeSlicedMixin {
+            time_variable_name
+            time_sliced(t_start, t_stop)
+          }
+          class TypePrintMode {
+            name
+            convert(curr_str: str, new_type) str
+          }
+          class VisualizationWindow {
+            duration_num_frames : Optional[int]
+            duration_seconds : Optional[float]
+            sampling_rate : Optional[float]
+            build_sliding_windows(times)
+            compute_sliding_windows(times, num_window_frames)
+            compute_window_samples(window_duration_seconds, sampling_rate)
+          }
+          class WrappingMessagePrinter {
+            begin_line_ending : str
+            begin_string
+            enable_print : bool
+            finished_line_ending : str
+            finished_message : str
+            returned_string : NoneType, str
+            returns_string : bool
+            print_generic_progress_message(begin_string, begin_line_ending, returns_string, enable_print)
+          }
+          class WrappingPerformanceTimer {
+            begin_line_ending : str
+            begin_string
+            elapsed_time
+            enable_print : bool
+            exit_time
+            finished_line_ending : str
+            finished_message : str
+            returned_string : str, NoneType
+            returns_string : bool
+            start_time
+            print_generic_progress_message(begin_string, begin_line_ending, returns_string, enable_print)
+          }
+          class bicoherence {
+            bicoher
+            bispec
+            dof
+            fhigh : int
+            flow : int
+            freq
+            freq_ind
+            fs : int
+            overlap : int
+            significance
+            window : int
+            compute(signal: np.array)
+            plot(index, ax, smooth)
+          }
+          class context_extraction {
+          }
+          class enumTuningMap2DPlotMode {
+            name
+          }
+          class enumTuningMap2DPlotVariables {
+            name
+          }
+          class event_event {
+            psth
+            compute(ref, event, quantparam, binsize, window, fs, nQuantiles, period)
+            plot(ax)
+            plot_raster()*
+          }
+          class filter_sig {
+            bandpass(signal, hf, lf, fs, order, ax)
+            delta(signal, fs, order, ax)
+            fastgamma(signal, fs, order, ax)
+            highpass(signal, cutoff, fs, order, ax)
+            lowpass(signal, cutoff, fs, order, ax)
+            mediumgamma(signal, fs, order, ax)
+            ripple(signal, fs, order, ax)
+            slowgamma(signal, fs, order, ax)
+            spindle(signal, fs, order, ax)
+            theta(signal, fs, order, ax)
+          }
+          class iPythonKeyCompletingMixin {
+          }
+          class trace_animal {
+            animal_name
+            data : dict
+            session_names : list
+            titles : list
+            plot_all_sessions(sessions)
+            plot_trials(session_type, bodyparts, by_trial, trial_buffer_sec)
+          }
+          class trace_behavior {
+            animal_name
+            base_dir : Path
+            dlc
+            event_file
+            event_start
+            events : NoneType, TextFileReader
+            events_start_time
+            session
+            session_date
+            session_type
+            get_baseline_speed(baseline_time)
+            get_event_times(event_type: str)
+            get_freezing_epochs(bodyparts, speed_threshold, min_freeze_length, plot)
+            get_mean_speed(bodyparts, by_trial, trial_buffer_sec, paradigm, include_US)
+            load_events()
+            plot_trial_speed_traces(trial_buffer_sec, ax, plot_baseline, paradigm)
+          }
+          class trace_group {
+            animal : dict
+            animal_dirs : list
+            animal_names
+            paradigm
+            paradigm_path
+            get_mean_speed(bodyparts, by_trial, trial_buffer)
+            plot_all_animals(speed_threshold, save_to_pdf)
+            plot_mean_speed(session_type, bodyparts, plot_by_trial, trial_buffer)
+            plot_speed_summary(session_type, time_use, baseline_end, average_trials, ax)
+            plot_trial_speed_traces(session_type, trial_buffer_sec, plot_baseline)
+          }
+          class tracking_movie {
+            SampleRate
+            fps
+            movie_path
+            nframes
+            vidobj
+            get_current_frame()
+            get_frame_rate()
+            get_nframes()
+            get_sample_rate()
+            grab_frame(frame_num, frame_time)
+            initialize_movie(movie_path)
+            plot_frame(frame_num, frame_time, ax, plotter, animal_location, window_size)
+          }
+          class wavelet_decomp {
+            freqs
+            lfp
+            sampfreq : int
+            bergel2018()
+            cohen(ncycles)
+            colgin2009()
+            quyen2008()
+            torrenceCompo()*
+          }
+          Pf1D --|> PfnConfigMixin
+          Pf1D --|> PfnDMixin
+          Pf2D --|> PfnConfigMixin
+          Pf2D --|> PfnDMixin
+          PfND --|> PfnConfigMixin
+          PfND --|> PfnDMixin
+          PfND --|> PfnDPlottingMixin
+          PfND --|> BinnedPositionsMixin
+          PfnDMixin --|> SimplePrintable
+          PlacefieldComputationParameters --|> DiffableObject
+          PlacefieldComputationParameters --|> SimplePrintable
+          ExplainedVariance --|> DataWriter
+          NeuronEnsembles --|> DataWriter
+          PfND_TimeDependent --|> PfND
+          Animal --|> DataWriter
+          Neurons --|> DataWriter
+          DataWriter --|> LegacyDataLoadingMixin
+          DataWriter --|> DictRepresentable
+          DataWriter --|> FileRepresentable
+          DataWriter --|> SimplePrintable
+          Epoch --|> DataWriter
+          Epoch --|> StartStopTimesMixin
+          Epoch --|> TimeSlicableObjectProtocol
+          EpochsAccessor --|> StartStopTimesMixin
+          EpochsAccessor --|> TimeSlicableObjectProtocol
+          EpochsAccessor --|> TimeSlicedMixin
+          NamedTimerange --|> SimplePrintable
+          Event --|> DataWriter
+          FlattenedSpiketrains --|> DataWriter
+          FlattenedSpiketrains --|> ConcatenationInitializable
+          FlattenedSpiketrains --|> TimeSlicableObjectProtocol
+          FlattenedSpiketrains --|> NeuronUnitSlicableObjectProtocol
+          SpikesAccessor --|> TimeSlicedMixin
+          Laps --|> DataWriter
+          Laps --|> DataFrameRepresentable
+          NeuronIdentity --|> SimplePrintable
+          BinnedSpiketrain --|> DataWriter
+          BinnedSpiketrain --|> NeuronUnitSlicableObjectProtocol
+          Mua --|> DataWriter
+          Neurons --|> DataWriter
+          Neurons --|> ConcatenationInitializable
+          Neurons --|> StartStopTimesMixin
+          Neurons --|> TimeSlicableObjectProtocol
+          Neurons --|> NeuronUnitSlicableObjectProtocol
+          Position --|> DataWriter
+          Position --|> PositionComputedDataMixin
+          Position --|> PositionDimDataMixin
+          Position --|> ConcatenationInitializable
+          Position --|> DataFrameRepresentable
+          Position --|> StartStopTimesMixin
+          Position --|> TimeSlicableObjectProtocol
+          PositionAccessor --|> PositionComputedDataMixin
+          PositionAccessor --|> PositionDimDataMixin
+          PositionAccessor --|> TimeSlicedMixin
+          PositionOld --|> DataWriter
+          PositionOld --|> ConcatenationInitializable
+          PositionOld --|> TimeSlicableIndiciesMixin
+          PositionOld --|> TimeSlicableObjectProtocol
+          ProbeGroup --|> DataWriter
+          Ratemap --|> DataWriter
+          Ratemap --|> NeuronIdentitiesDisplayerMixin
+          Ratemap --|> RatemapPlottingMixin
+          KnownDataSessionTypeProperties --|> SimplePrintable
+          DataSession --|> ConcatenationInitializable
+          DataSession --|> DataSessionPanelMixin
+          DataSession --|> StartStopTimesMixin
+          DataSession --|> TimeSlicableObjectProtocol
+          DataSession --|> NeuronUnitSlicableObjectProtocol
+          PfnDPlottingMixin --|> PfnD_PlotOccupancy_Mixin
+          DynamicContainer --|> DiffableObject
+          enumTuningMap2DPlotMode --|> AutoNameEnum
+          enumTuningMap2DPlotVariables --|> AutoNameEnum
+          DataFrameRepresentable --|> DataFrameInitializable
+          DictRepresentable --|> DictInitializable
+          FileRepresentable --|> FileInitializable
+          FileProgressAction --|> ExtendedEnum
+          TimeSlicableIndiciesMixin --|> StartStopTimesMixin
+          TimeSliceAccessor --|> TimeSlicableObjectProtocol
+          IdentifyingContext --|> DiffableObject
+          PrettyPrintable --|> iPythonKeyCompletingMixin
+          PlacefieldComputationParameters --* PfND : config
+          PlacefieldComputationParameters --* PfND_TimeDependent : config
+          Ratemap --* PfND : ratemap
+          DLC --* trace_behavior : dlc
+          tracking_movie --* DLC : movie
+          tracking_movie --* DLC : movie
+          Colors --* ColorsUtil : colors
+          BinningInfo --* BinningContainer : edge_info
+          BinningInfo --* BinningContainer : edge_info
+          BinningInfo --* BinningContainer : center_info
+          BinningInfo --* BinningContainer : center_info
+          BinningInfo --* BinningContainer : edge_info
+          BinningInfo --* BinningContainer : center_info
+          BinningInfo --* BinningContainer : edge_info
+          BinningInfo --* BinningContainer : edge_info
+          BinningInfo --* BinningContainer : center_info
+          BinningInfo --* BinningContainer : center_info
+          BinningInfo --* BinningContainer : edge_info
+          BinningInfo --* BinningContainer : center_info
+          PfND --o Decode2d : pf
+          Epoch --o Decode1d : epochs
+          Epoch --o ExplainedVariance : ignore_epochs
+          Epoch --o NeuronEnsembles : ignore_epochs
+          Neurons --o Decode1d : neurons
+          Neurons --o ExplainedVariance : neurons
+          Ratemap --o Decode1d : ratemap
+          Signal --o ThetaParams : lfp_filtered
+  
+       </div>
+  </body>
+</html>
