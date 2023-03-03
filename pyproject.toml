@@ -40,6 +40,7 @@ pydot = "^1.4.2"
 pycallgraph2 = "^1.1.3"
 ipykernel = "^6.21.2"
 jupyterlab = "^3.6.1"
+dvc = {version = "^2.45.1", extras = ["gdrive"]}
 
 [tool.poetry.group.local.dependencies]
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
