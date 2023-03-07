@@ -30,6 +30,8 @@ python-picard = "^0.7"
 dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
 modin = {extras = ["all"], version = "^0.18.1"}
 pandarallel = "^1.6.4"
+qtconsole = "^5.4.0"
+ipython = "^8.11.0"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
