@@ -45,7 +45,8 @@ def _reset_local_changes(repo_path):
     os.chdir(repo_path)
     # os.system("git reset --hard HEAD")
     # os.system("git clean -f -d")
-    os.system("git stash; git stash drop")
+    os.system("git stash")
+    os.system("git stash drop")
 
 
 def setup_repo(repo_path, repo_url, is_binary_repo=False):
