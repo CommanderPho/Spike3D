@@ -5,7 +5,12 @@ import matplotlib
 import matplotlib.backends.backend_qt5
 import matplotlib.pyplot as plt
 
-import mpl_qtthread
+import mpl_qtthread # `poetry add mpl_qtthread`
+""" TODO 2023-03-08 06:00: - [ ] Broken on Windows even after install mpl_qtthread
+    raise RuntimeError("teleporter not inited")
+RuntimeError: teleporter not inited
+
+"""
 
 matplotlib.use("module://mpl_qtthread.backend_agg")
 
