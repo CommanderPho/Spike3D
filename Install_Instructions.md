@@ -1,8 +1,8 @@
 ## Updated 2023-02-06 Poetry Environment Install
 
-brew install poetry
 
 #### Linux (RHEL 8):
+```bash
 <!-- sudo dnf install wget yum-utils make gcc openssl-devel bzip2-devel libffi-devel zlib-devel
 wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz  -->
 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/assembly_installing-and-using-python_configuring-basic-system-settings
@@ -10,27 +10,46 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/co
 # To install Python 3.9.X and set it as the default system python:
 sudo yum install python39 python39-pip
 sudo alternatives --set python /usr/bin/python3.9
+```
 
 
 #### Great-Lakes:
+```bash
 module load python/3.9.12
 curl -sSL https://install.python-poetry.org | python3 -
+```
 
 
 
 #### Windows:
-Use Chocolatey to install pyenv
-```
-choco install pyenv-win
+##### Install Chocolatey:
+1. Open a CMD.exe Administrator Instance and paste the following:
+```bash
+@REM Install Chocolatey
+@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+
+@REM Use Chocolatey to install required system utilities
+choco install vscode git curl pyenv-win -y # installs vscode, git, and pyenv-win
+
+@REM Install Python 3.9.13
 refreshEnv
 pyenv install 3.9.13
-pyenv local 3.9.13 # this sets the new install to be the local Python version (in the directory where this command is ran)
+pyenv shell 3.9.13
+pyenv local 3.9.13 @REM this sets the new install to be the local Python version (in the directory where this command is ran)
+
+@REM Install Poetry
+curl -sSL https://install.python-poetry.org | python3 - @REM get poetry and install it
+
+@REM add Poetry to path for current shell only
+set PATH=%PATH%;%APPDATA%\Python\Scripts
 poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe
+poetry shell
+
 ```
 
 
 #### macOS:
-brew install python3
+brew install python3 poetry
 curl -sSL https://install.python-poetry.org | python3 -
 
 
