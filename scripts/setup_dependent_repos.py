@@ -72,6 +72,18 @@ class VersionType(Enum):
     """Docstring for VersionType."""
     RELEASE = "release"
     dev = "dev"
+    
+    @property
+    def pyproject_template_file(self):
+        """The pyproject_exclusive_text property."""
+        filename = {'release': "templating/pyproject_template_release.toml_fragment",
+        'dev': "templating/pyproject_template_dev.toml_fragment"}
+        if self.name == VersionType.RELEASE.name:
+            return filename['release']
+        elif self.name == VersionType.dev.name:
+            return filename['dev']
+        else:
+            raise ValueError(f"VersionType {self.name} not recognized.")
 
     @property
     def pyproject_exclusive_text(self):
@@ -99,14 +111,14 @@ class VersionType(Enum):
             return cls.dev
 
 
-def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_file_name = 'pyproject_template.toml_template', pyproject_final_file_name = 'pyproject.toml'):
+def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_file_name = 'templating/pyproject_template.toml_template', pyproject_final_file_name = 'pyproject.toml'):
     """ Builds the complete final pyproject.toml file from the pyproject_template.toml_template for the current version (release or dev) """
     os.chdir(repo_path)
     curr_version = VersionType.init_from_is_release(is_release)
 
     print(f'building pyproject.toml for {curr_version.name} version.')
-    insert_text(pyproject_template_file_name, curr_version.pyproject_exclusive_text, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
-    
+    # insert_text(pyproject_template_file_name, curr_version.pyproject_exclusive_text, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
+    insert_text_from_file(pyproject_template_file_name, curr_version.pyproject_template_file, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
     # if is_release:
     #     os.system(f"cp {pyproject_files['release']} {pyproject_final_file_name}")
     # else:

@@ -1,0 +1,4 @@
+[tool.poetry.group.local.dependencies]
+neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
+pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
+pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
