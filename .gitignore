@@ -96,3 +96,4 @@ viztracer_*.json
 df_store.h5
 desktop.ini
 FM-{E05797A1-0B8F-4A00-B50D-76B7EE01D766}.ico
+wingdbstub.py
