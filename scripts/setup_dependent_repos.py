@@ -20,6 +20,7 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 import os
 from pathlib import Path
 import argparse
+import re
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
@@ -27,6 +28,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--upgrade', help='resets child repos by forcefully pulling from remote', default=True)
 parser.add_argument('--skip_lock', help='whether to skip `poetry lock` for child repos', default=False)
 parser.add_argument('--skip_building_templates', help='whether to skip templating the pyproject.toml file', default=False)
+parser.add_argument('--skip_building_binary_repos', help='whether to skip building child binary repos', default=True)
 
 group_build_mode = parser.add_mutually_exclusive_group()
 group_build_mode.add_argument('--release', action='store_true', help='enable release mode', default=False)
@@ -38,6 +40,18 @@ script_dir = Path(os.path.dirname(os.path.abspath(__file__))) # /home/halechr/re
 print(f'script_dir: {script_dir}')
 root_dir = script_dir.parent # Spike3D root repo dir
 os.chdir(root_dir)
+
+
+
+def replace_text_in_file(file_path, regex_pattern, replacement_string):
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+        
+    updated_content = re.sub(regex_pattern, replacement_string, file_content)
+
+    with open(file_path, 'w') as file:
+        file.write(updated_content)
+
 
 def insert_text(source_file, insert_text_str:str, output_file, insertion_string:str='<INSERT_HERE>'):
     """Inserts the text from insert_text_str into the source_file at the insertion_string, and saves the result to output_file.
@@ -66,8 +80,8 @@ def insert_text_from_file(source_file, insert_file, output_file, insertion_strin
     """ Wraps insert_text, but loads the insert_text from a file instead of a string. """
     # Load the insert text
     with open(insert_file, 'r') as f:
-        insert_text = f.read()
-    insert_text(source_file, insert_text, output_file, insertion_string)
+        insert_text_str = f.read()
+    insert_text(source_file, insert_text_str, output_file, insertion_string)
 
 
 # ==================================================================================================================== #
@@ -123,13 +137,27 @@ class VersionType(Enum):
 
 
 def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_file_name = 'templating/pyproject_template.toml_template', pyproject_final_file_name = 'pyproject.toml'):
-    """ Builds the complete final pyproject.toml file from the pyproject_template.toml_template for the current version (release or dev) """
+    """ Builds the complete final pyproject.toml file from the pyproject_template.toml_template for the current version (release or dev)
+
+    from Spike3D.scripts.setup_dependent_repos import build_pyproject_toml_file
+    build_pyproject_toml_file("C:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis")
+
+    """
     os.chdir(repo_path)
     curr_version = VersionType.init_from_is_release(is_release)
-
-    print(f'building pyproject.toml for {curr_version.name} version.')
+    print(f'Templating: Building pyproject.toml for {curr_version.name} version in {repo_path}...')
     # insert_text(pyproject_template_file_name, curr_version.pyproject_exclusive_text, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
-    insert_text_from_file(pyproject_template_file_name, curr_version.pyproject_template_file, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
+    print(f"\tpyproject_template_file_name: {pyproject_template_file_name},\n\tcurr_version.pyproject_template_file: {curr_version.pyproject_template_file},\n\tpyproject_final_file_name: {pyproject_final_file_name},\n\tinsertion_string='<INSERT_HERE>'")
+    # insert_text_from_file(pyproject_template_file_name, curr_version.pyproject_template_file, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
+
+    remote_dependencies_regex = r"^\[tool\.poetry\.group\.remote\.dependencies\]\n((?:.+\n)+?)\n"
+
+    # Load the insert text
+    with open(curr_version.pyproject_template_file, 'r') as f:
+        insert_text_str = f.read()
+    replace_text_in_file(pyproject_final_file_name, remote_dependencies_regex, insert_text_str)
+
+
     # if is_release:
     #     os.system(f"cp {pyproject_files['release']} {pyproject_final_file_name}")
     # else:
@@ -181,9 +209,12 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enab
 
     if is_binary_repo:
         ## For binary repos:
-        # os.system("pyenv local 3.9.13")
-        # os.system(r"poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe")
-        os.system("python setup.py sdist bdist_wheel")
+        if not args.skip_building_binary_repos:
+            # os.system("pyenv local 3.9.13")
+            # os.system(r"poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe")
+            os.system("python setup.py sdist bdist_wheel")
+        else:
+            print(f'skipping building binary repos for {repo_path}')
     else:
         # For poetry repos
         process_poetry_repo(repo_path, is_release=is_release, enable_build_pyproject_toml=enable_build_pyproject_toml, skip_lock=skip_lock_for_child_repos, enable_install=enable_install_for_child_repos)
