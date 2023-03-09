@@ -20,25 +20,102 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 import os
 from pathlib import Path
 
+is_release = False
 enable_install_for_child_repos = False
 
 script_dir = Path(os.path.dirname(os.path.abspath(__file__))) # /home/halechr/repos/Spike3D/scripts
 print(f'script_dir: {script_dir}')
 root_dir = script_dir.parent # Spike3D root repo dir
 os.chdir(root_dir)
-os.system("git pull") # pull changes first for main repo
 
-## Pull for children repos:
-dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis"]
-dependent_repos_urls = ["https://github.com/CommanderPho/NeuroPy.git", "https://github.com/CommanderPho/pyPhoCoreHelpers.git", "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"]
-dependent_repos_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in dependent_repos]
-poetry_repo_tuples = list(zip(dependent_repos_paths, dependent_repos_urls, [False]*len(dependent_repos_paths)))
+def insert_text(source_file, insert_text_str:str, output_file, insertion_string:str='<INSERT_HERE>'):
+    """Inserts the text from insert_text_str into the source_file at the insertion_string, and saves the result to output_file.
+
+    Args:
+        source_file (_type_): _description_
+        insert_text_str (str): _description_
+        output_file (_type_): _description_
+        insertion_string (str, optional): _description_. Defaults to '<INSERT_HERE>'.
+    """
+    # Load the source text
+    with open(source_file, 'r') as f:
+        source_text = f.read()
+
+    # Find the insertion point in the source text
+    insert_index = source_text.find(insertion_string)
+
+    # Insert the text
+    updated_text = source_text[:insert_index] + insert_text_str + source_text[insert_index:]
+
+    # Save the updated text to the output file
+    with open(output_file, 'w') as f:
+        f.write(updated_text)
+
+def insert_text_from_file(source_file, insert_file, output_file, insertion_string:str='<INSERT_HERE>'):
+    """ Wraps insert_text, but loads the insert_text from a file instead of a string. """
+    # Load the insert text
+    with open(insert_file, 'r') as f:
+        insert_text = f.read()
+    insert_text(source_file, insert_text, output_file, insertion_string)
 
 
-external_dependent_repos = ["../pyqode.core", "../pyqode.python"]
-external_dependent_binary_repo_urls = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git"]
-external_dependent_repo_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in external_dependent_repos]
-binary_repo_tuples = list(zip(external_dependent_repo_paths, external_dependent_binary_repo_urls, [True]*len(external_dependent_repo_paths)))
+# ==================================================================================================================== #
+# Project versioning:                                                                                                  #
+# ==================================================================================================================== #
+
+# pyproject_files = {'release':'pyproject_release.toml', 'dev':'pyproject_dev.toml'}
+
+
+from enum import Enum
+
+class VersionType(Enum):
+    """Docstring for VersionType."""
+    RELEASE = "release"
+    dev = "dev"
+
+    @property
+    def pyproject_exclusive_text(self):
+        """The pyproject_exclusive_text property."""
+        _pyproject_exclusive_text_dict = {'release': """[tool.poetry.group.local.dependencies]
+        neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
+        pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
+        pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}""",
+        'dev': """[tool.poetry.group.local.dependencies]
+        neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
+        pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
+        pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}"""}
+        if self.name == VersionType.RELEASE.name:
+            return _pyproject_exclusive_text_dict['release']
+        elif self.name == VersionType.dev.name:
+            return _pyproject_exclusive_text_dict['dev']
+        else:
+            raise ValueError(f"VersionType {self.name} not recognized.")
+    
+    @classmethod
+    def init_from_is_release(cls, is_release: bool):
+        if is_release:
+            return cls.RELEASE
+        else:
+            return cls.dev
+
+
+def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_file_name = 'pyproject_template.toml_template', pyproject_final_file_name = 'pyproject.toml'):
+    """ Builds the complete final pyproject.toml file from the pyproject_template.toml_template for the current version (release or dev) """
+    os.chdir(repo_path)
+    curr_version = VersionType.init_from_is_release(is_release)
+
+    print(f'building pyproject.toml for {curr_version.name} version.')
+    insert_text(pyproject_template_file_name, curr_version.pyproject_exclusive_text, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
+    
+    # if is_release:
+    #     os.system(f"cp {pyproject_files['release']} {pyproject_final_file_name}")
+    # else:
+    #     os.system(f"cp {pyproject_files['dev']} {pyproject_final_file_name}")
+
+# # alternative method of commenting out
+# "RUN sed -i -n '/tool.poetry.dev-dependencies/q;p' pyproject.toml"
+
+
 
 def _reset_local_changes(repo_path):
     """ Resets local changes to the repo."""
@@ -49,7 +126,7 @@ def _reset_local_changes(repo_path):
     os.system("git stash drop")
 
 
-def setup_repo(repo_path, repo_url, is_binary_repo=False):
+def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False):
     """ Clones the repo if it doesn't exist, and updates it if it does."""
     if not repo_path.exists():
         # clone the repo
@@ -72,20 +149,41 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False):
         os.system("python setup.py sdist bdist_wheel")
     else:
         # For poetry repos
+        ## Build final pyproj.toml file
+        build_pyproject_toml_file(repo_path, is_release=is_release)
+
         os.system("poetry lock")
         if enable_install_for_child_repos:
             os.system("poetry install") # is this needed? I think it installs in that specific environment.
 
 
-print(f'{dependent_repos_paths = }')
-for i, (repo_path, repo_url, is_binary_repo) in enumerate(poetry_repo_tuples + binary_repo_tuples):
-    print(f'Updating {repo_path}...')
-    setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo)
+def main():
+    
+    ## Pull for children repos:
+    dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis"]
+    dependent_repos_urls = ["https://github.com/CommanderPho/NeuroPy.git", "https://github.com/CommanderPho/pyPhoCoreHelpers.git", "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"]
+    dependent_repos_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in dependent_repos]
+    poetry_repo_tuples = list(zip(dependent_repos_paths, dependent_repos_urls, [False]*len(dependent_repos_paths)))
 
-os.chdir(root_dir) # change back to the root repo dir
-os.system("poetry lock")
-os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
-print(f'done with all.')
 
-os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
+    external_dependent_repos = ["../pyqode.core", "../pyqode.python"]
+    external_dependent_binary_repo_urls = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git"]
+    external_dependent_repo_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in external_dependent_repos]
+    binary_repo_tuples = list(zip(external_dependent_repo_paths, external_dependent_binary_repo_urls, [True]*len(external_dependent_repo_paths)))
+
+    os.system("git pull") # pull changes first for main repo
+    print(f'{dependent_repos_paths = }')
+    for i, (repo_path, repo_url, is_binary_repo) in enumerate(poetry_repo_tuples + binary_repo_tuples):
+        print(f'Updating {repo_path}...')
+        setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo, is_release=is_release)
+
+    os.chdir(root_dir) # change back to the root repo dir
+    os.system("poetry lock")
+    os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
+    print(f'done with all.')
+
+    os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
+
+if __name__ == '__main__':
+    main()
 
