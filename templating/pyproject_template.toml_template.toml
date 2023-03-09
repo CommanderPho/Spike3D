@@ -33,7 +33,7 @@ pandarallel = "^1.6.4" # not fully used, didn't work
 qtconsole = "^5.4.0"
 ipython = "^8.11.0"
 deeptime = "^0.4.4"
-lead-lag = "^2.3"
+# lead-lag = "^2.3" # didn't work
 attrs = "^22.2.0"
 
 [tool.poetry.group.dev.dependencies]
