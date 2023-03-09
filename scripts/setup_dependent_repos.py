@@ -19,9 +19,20 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 """
 import os
 from pathlib import Path
+import argparse
 
-is_release = False
-enable_install_for_child_repos = False
+# Get command line input arguments:
+parser = argparse.ArgumentParser()
+# parser.add_argument('--name', help='the name to greet')
+parser.add_argument('--upgrade', help='resets child repos by forcefully pulling from remote', default=True)
+parser.add_argument('--skip_lock', help='whether to skip `poetry lock` for child repos', default=False)
+parser.add_argument('--skip_building_templates', help='whether to skip templating the pyproject.toml file', default=False)
+
+group_build_mode = parser.add_mutually_exclusive_group()
+group_build_mode.add_argument('--release', action='store_true', help='enable release mode', default=False)
+group_build_mode.add_argument('--dev', action='store_true', help='enable development mode', default=True)
+
+args = parser.parse_args()
 
 script_dir = Path(os.path.dirname(os.path.abspath(__file__))) # /home/halechr/repos/Spike3D/scripts
 print(f'script_dir: {script_dir}')
@@ -179,6 +190,27 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enab
 
 def main():
     
+
+    
+
+    if args.release:
+        print('Running in release mode')
+    elif args.dev:
+        print('Running in development mode')
+    else:
+        print('No mode selected')
+
+    # if args.name:
+    #     print(f'Hello, {args.name}!')
+    # else:
+    #     print('Hello, world!')
+
+    force_overwrite_child_repos_from_remote = args.upgrade
+    skip_lock_for_child_repos = args.skip_lock
+    is_release = (args.release == True)
+    enable_install_for_child_repos = False
+
+
     ## Pull for children repos:
     dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis"]
     dependent_repos_urls = ["https://github.com/CommanderPho/NeuroPy.git", "https://github.com/CommanderPho/pyPhoCoreHelpers.git", "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"]
@@ -195,12 +227,11 @@ def main():
     print(f'{dependent_repos_paths = }')
     for i, (repo_path, repo_url, is_binary_repo, is_pyproject_toml_templated) in enumerate(poetry_repo_tuples + binary_repo_tuples):
         print(f'Updating {repo_path}...')
-        setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo, is_release=is_release, enable_build_pyproject_toml=is_pyproject_toml_templated, skip_lock_for_child_repos=True)
+        setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo, is_release=is_release, enable_build_pyproject_toml=(is_pyproject_toml_templated and (not args.skip_building_templates)), skip_lock_for_child_repos=skip_lock_for_child_repos)
 
     os.chdir(root_dir) # change back to the root repo dir
-    os.system("poetry lock")
-    process_poetry_repo(root_dir, is_release=is_release, enable_build_pyproject_toml=True, skip_lock=True, enable_install=False)
-    os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
+    process_poetry_repo(root_dir, is_release=is_release, enable_build_pyproject_toml=True, skip_lock=skip_lock_for_child_repos, enable_install=False)
+    # os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
     print(f'done with all.')
 
     os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
