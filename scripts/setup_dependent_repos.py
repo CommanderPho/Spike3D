@@ -138,7 +138,21 @@ def _reset_local_changes(repo_path):
     os.system("git stash drop")
 
 
-def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False):
+def process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_toml=True, skip_lock=False, enable_install=False):
+    ## Build final pyproj.toml file
+    if enable_build_pyproject_toml:
+        build_pyproject_toml_file(repo_path, is_release=is_release)
+    else:
+        print(f'skipping build pyproject.toml for {repo_path}')
+    if not skip_lock:
+        os.system("poetry lock")
+    else:
+        print(f'skipping lock for {repo_path}')
+    if enable_install:
+        os.system("poetry install") # is this needed? I think it installs in that specific environment.
+
+
+def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enable_install_for_child_repos=False, enable_build_pyproject_toml=True, skip_lock_for_child_repos=False):
     """ Clones the repo if it doesn't exist, and updates it if it does."""
     if not repo_path.exists():
         # clone the repo
@@ -161,13 +175,7 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False):
         os.system("python setup.py sdist bdist_wheel")
     else:
         # For poetry repos
-        ## Build final pyproj.toml file
-        build_pyproject_toml_file(repo_path, is_release=is_release)
-
-        os.system("poetry lock")
-        if enable_install_for_child_repos:
-            os.system("poetry install") # is this needed? I think it installs in that specific environment.
-
+        process_poetry_repo(repo_path, is_release=is_release, enable_build_pyproject_toml=enable_build_pyproject_toml, skip_lock=skip_lock_for_child_repos, enable_install=enable_install_for_child_repos)
 
 def main():
     
@@ -175,22 +183,23 @@ def main():
     dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis"]
     dependent_repos_urls = ["https://github.com/CommanderPho/NeuroPy.git", "https://github.com/CommanderPho/pyPhoCoreHelpers.git", "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git"]
     dependent_repos_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in dependent_repos]
-    poetry_repo_tuples = list(zip(dependent_repos_paths, dependent_repos_urls, [False]*len(dependent_repos_paths)))
+    poetry_repo_tuples = list(zip(dependent_repos_paths, dependent_repos_urls, [False]*len(dependent_repos_paths), [False, True, True]))
 
 
     external_dependent_repos = ["../pyqode.core", "../pyqode.python"]
     external_dependent_binary_repo_urls = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git"]
     external_dependent_repo_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in external_dependent_repos]
-    binary_repo_tuples = list(zip(external_dependent_repo_paths, external_dependent_binary_repo_urls, [True]*len(external_dependent_repo_paths)))
+    binary_repo_tuples = list(zip(external_dependent_repo_paths, external_dependent_binary_repo_urls, [True]*len(external_dependent_repo_paths), [False]*len(external_dependent_repo_paths)))
 
     os.system("git pull") # pull changes first for main repo
     print(f'{dependent_repos_paths = }')
-    for i, (repo_path, repo_url, is_binary_repo) in enumerate(poetry_repo_tuples + binary_repo_tuples):
+    for i, (repo_path, repo_url, is_binary_repo, is_pyproject_toml_templated) in enumerate(poetry_repo_tuples + binary_repo_tuples):
         print(f'Updating {repo_path}...')
-        setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo, is_release=is_release)
+        setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo, is_release=is_release, enable_build_pyproject_toml=is_pyproject_toml_templated, skip_lock_for_child_repos=True)
 
     os.chdir(root_dir) # change back to the root repo dir
     os.system("poetry lock")
+    process_poetry_repo(root_dir, is_release=is_release, enable_build_pyproject_toml=True, skip_lock=True, enable_install=False)
     os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
     print(f'done with all.')
 
