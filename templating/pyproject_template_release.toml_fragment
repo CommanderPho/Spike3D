@@ -1,0 +1,4 @@
+[tool.poetry.group.remote.dependencies]
+pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"}
+neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"} # , rev = "main", extras = ["acceleration"]
+pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", develop=true}
