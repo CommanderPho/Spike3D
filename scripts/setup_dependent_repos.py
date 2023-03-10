@@ -41,14 +41,27 @@ print(f'script_dir: {script_dir}')
 root_dir = script_dir.parent # Spike3D root repo dir
 os.chdir(root_dir)
 
-
-
-def replace_text_in_file(file_path, regex_pattern, replacement_string):
+def replace_text_in_file(file_path, regex_pattern, replacement_string, debug_print=False):
     with open(file_path, 'r') as file:
         file_content = file.read()
-        
-    updated_content = re.sub(regex_pattern, replacement_string, file_content)
 
+    if debug_print:
+        print(f"====================== Read from file ({file_path}) ======================:\n{file_content}")
+    
+    # updated_content = re.sub(regex_pattern, replacement_string, file_content, flags=re.MULTILINE)
+    target_replace_strings = re.findall(regex_pattern, file_content, re.MULTILINE)
+    assert len(target_replace_strings) == 1
+    target_replace_string = target_replace_strings[0]
+    if debug_print:
+        print(f'Replacing:\n{target_replace_string}')
+        print(f"====================== replacing ======================:\n{target_replace_string}\n\n====================== with replacement string ====================== :\n{replacement_string}\n\n")
+    updated_content = file_content.replace(target_replace_string, replacement_string, 1)
+    if debug_print:
+        print(updated_content)
+
+    if debug_print:
+        print(f"======================  updated_content ====================== :\n{updated_content}\n\n")
+        print(f"====================== saving to {file_path}...")
     with open(file_path, 'w') as file:
         file.write(updated_content)
 
@@ -135,8 +148,7 @@ class VersionType(Enum):
         else:
             return cls.dev
 
-
-def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_file_name = 'templating/pyproject_template.toml_template', pyproject_final_file_name = 'pyproject.toml'):
+def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_file_name = 'templating/pyproject_template.toml_template', pyproject_final_file_name = 'pyproject.toml', debug_print=True):
     """ Builds the complete final pyproject.toml file from the pyproject_template.toml_template for the current version (release or dev)
 
     from Spike3D.scripts.setup_dependent_repos import build_pyproject_toml_file
@@ -145,29 +157,38 @@ def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_fi
     """
     os.chdir(repo_path)
     curr_version = VersionType.init_from_is_release(is_release)
-    print(f'Templating: Building pyproject.toml for {curr_version.name} version in {repo_path}...')
-    # insert_text(pyproject_template_file_name, curr_version.pyproject_exclusive_text, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
-    print(f"\tpyproject_template_file_name: {pyproject_template_file_name},\n\tcurr_version.pyproject_template_file: {curr_version.pyproject_template_file},\n\tpyproject_final_file_name: {pyproject_final_file_name},\n\tinsertion_string='<INSERT_HERE>'")
-    # insert_text_from_file(pyproject_template_file_name, curr_version.pyproject_template_file, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
+    if debug_print:
+        print(f'Templating: Building pyproject.toml for {curr_version.name} version in {repo_path}...')
+        # insert_text(pyproject_template_file_name, curr_version.pyproject_exclusive_text, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
+        print(f"\tpyproject_template_file_name: {pyproject_template_file_name},\n\tcurr_version.pyproject_template_file: {curr_version.pyproject_template_file},\n\tpyproject_final_file_name: {pyproject_final_file_name},\n\tinsertion_string='<INSERT_HERE>'")
+        # insert_text_from_file(pyproject_template_file_name, curr_version.pyproject_template_file, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
 
-    remote_dependencies_regex = r"^\[tool\.poetry\.group\.remote\.dependencies\]\n((?:.+\n)+?)\n"
-
+    # remote_dependencies_regex = r"^\[tool\.poetry\.group\.remote\.dependencies\]\n((?:.+\n)+?)\n"
+    # remote_dependencies_regex = r"^(\s*\[tool\.poetry\.group\.remote\.dependencies\]\n(?:.+\n)*\n)"
+    remote_dependencies_regex = r"^(\s*\[tool\.poetry\.group\.remote\.dependencies\]\n(?:.+\n)*)\n\[?"
     # Load the insert text
     with open(curr_version.pyproject_template_file, 'r') as f:
         insert_text_str = f.read()
+        
+    if not insert_text_str.startswith('\n'):
+        # Add a leading newline if the loaded text doesn't already have one
+        insert_text_str = '\n' + insert_text_str
+    if not insert_text_str.endswith('\n\n'):
+        # Add a trailing newline if the loaded text doesn't already have one
+        insert_text_str = insert_text_str + '\n'
+    
+    if debug_print:
+        print(insert_text_str)
+    
+    replace_text_in_file(pyproject_final_file_name, remote_dependencies_regex, insert_text_str, debug_print=debug_print)
+
+    
     replace_text_in_file(pyproject_final_file_name, remote_dependencies_regex, insert_text_str)
 
 
-    # if is_release:
-    #     os.system(f"cp {pyproject_files['release']} {pyproject_final_file_name}")
-    # else:
-    #     os.system(f"cp {pyproject_files['dev']} {pyproject_final_file_name}")
-
-# # alternative method of commenting out
-# "RUN sed -i -n '/tool.poetry.dev-dependencies/q;p' pyproject.toml"
-
-
-
+# ==================================================================================================================== #
+# Repo Processing                                                                                                      #
+# ==================================================================================================================== #
 def _reset_local_changes(repo_path):
     """ Resets local changes to the repo."""
     os.chdir(repo_path)
