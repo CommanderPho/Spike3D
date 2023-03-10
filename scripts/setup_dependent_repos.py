@@ -36,6 +36,11 @@ group_build_mode.add_argument('--dev', action='store_true', help='enable develop
 
 args = parser.parse_args()
 
+""" 
+
+--skip_lock True 
+"""
+
 script_dir = Path(os.path.dirname(os.path.abspath(__file__))) # /home/halechr/repos/Spike3D/scripts
 print(f'script_dir: {script_dir}')
 root_dir = script_dir.parent # Spike3D root repo dir
