@@ -23,6 +23,35 @@ _debug_print = False
 
 import sys
 
+
+# ==================================================================================================================== #
+# 2023-03-09 - Parameter Sweeping                                                                                      #
+# ==================================================================================================================== #
+
+from neuropy.analyses.placefields import PfND
+
+def _compute_parameter_sweep(spikes_df, active_pos, all_param_sweep_options: dict) -> dict:
+    """ Computes the PfNDs for all the swept parameters (combinations of grid_bin, smooth, etc)
+    
+    Usage:
+        from PendingNotebookCode import _compute_parameter_sweep
+
+        smooth_options = [(None, None), (0.5, 0.5), (1.0, 1.0), (2.0, 2.0), (5.0, 5.0)]
+        grid_bin_options = [(1,1),(5,5),(10,10)]
+        all_param_sweep_options = cartesian_product(smooth_options, grid_bin_options)
+        param_sweep_option_n_values = dict(smooth=len(smooth_options), grid_bin=len(grid_bin_options)) 
+        output_pfs = _compute_parameter_sweep(spikes_df, active_pos, all_param_sweep_options)
+
+    """
+    output_pfs = {} # empty dict
+
+    for a_sweep_dict in all_param_sweep_options:
+        a_sweep_tuple = frozenset(a_sweep_dict.items())
+        output_pfs[a_sweep_tuple] = PfND(deepcopy(spikes_df).spikes.sliced_by_neuron_type('pyramidal'), deepcopy(active_pos.linear_pos_obj), **a_sweep_dict) # grid_bin=, etc
+        
+    return output_pfs
+
+
 def is_reloaded_instance(obj, classinfo):
     """ determines if a class instance is a reloaded instance of a class"""
     return isinstance(obj, classinfo) and sys.getrefcount(classinfo) > 1
