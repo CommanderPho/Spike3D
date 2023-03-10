@@ -148,7 +148,7 @@ class VersionType(Enum):
         else:
             return cls.dev
 
-def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_file_name = 'templating/pyproject_template.toml_template', pyproject_final_file_name = 'pyproject.toml', debug_print=True):
+def build_pyproject_toml_file(repo_path, is_release=False, pyproject_final_file_name = 'pyproject.toml', debug_print=False):
     """ Builds the complete final pyproject.toml file from the pyproject_template.toml_template for the current version (release or dev)
 
     from Spike3D.scripts.setup_dependent_repos import build_pyproject_toml_file
@@ -157,14 +157,7 @@ def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_fi
     """
     os.chdir(repo_path)
     curr_version = VersionType.init_from_is_release(is_release)
-    if debug_print:
-        print(f'Templating: Building pyproject.toml for {curr_version.name} version in {repo_path}...')
-        # insert_text(pyproject_template_file_name, curr_version.pyproject_exclusive_text, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
-        print(f"\tpyproject_template_file_name: {pyproject_template_file_name},\n\tcurr_version.pyproject_template_file: {curr_version.pyproject_template_file},\n\tpyproject_final_file_name: {pyproject_final_file_name},\n\tinsertion_string='<INSERT_HERE>'")
-        # insert_text_from_file(pyproject_template_file_name, curr_version.pyproject_template_file, pyproject_final_file_name, insertion_string='<INSERT_HERE>')
-
-    # remote_dependencies_regex = r"^\[tool\.poetry\.group\.remote\.dependencies\]\n((?:.+\n)+?)\n"
-    # remote_dependencies_regex = r"^(\s*\[tool\.poetry\.group\.remote\.dependencies\]\n(?:.+\n)*\n)"
+    print(f'Templating: Building pyproject.toml for {curr_version.name} version in {repo_path}...')
     remote_dependencies_regex = r"^(\s*\[tool\.poetry\.group\.remote\.dependencies\]\n(?:.+\n)*)\n\[?"
     # Load the insert text
     with open(curr_version.pyproject_template_file, 'r') as f:
@@ -181,10 +174,6 @@ def build_pyproject_toml_file(repo_path, is_release=False, pyproject_template_fi
         print(insert_text_str)
     
     replace_text_in_file(pyproject_final_file_name, remote_dependencies_regex, insert_text_str, debug_print=debug_print)
-
-    
-    replace_text_in_file(pyproject_final_file_name, remote_dependencies_regex, insert_text_str)
-
 
 # ==================================================================================================================== #
 # Repo Processing                                                                                                      #

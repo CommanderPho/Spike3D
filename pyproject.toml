@@ -58,7 +58,6 @@ neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 
-
 # [tool.poetry.scripts]
 # setup_dependent_repos = 'scripts.console:run'
 
