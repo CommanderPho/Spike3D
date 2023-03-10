@@ -28,13 +28,13 @@ numexpr = "^2.8.4"
 scipy = "^1.10.1"
 python-picard = "^0.7"
 dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
-modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
-pandarallel = "^1.6.4" # not fully used, didn't work
 qtconsole = "^5.4.0"
 ipython = "^8.11.0"
 deeptime = "^0.4.4"
-# lead-lag = "^2.3" # didn't work
 attrs = "^22.2.0"
+# modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
+# pandarallel = "^1.6.4" # not fully used, didn't work
+# lead-lag = "^2.3" # didn't work
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
