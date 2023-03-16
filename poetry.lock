@@ -4201,7 +4201,7 @@ version = "0.0.7"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
+python-versions = ">=3.9,<3.11"
 files = []
 develop = true
 
@@ -4543,11 +4543,11 @@ files = [
 [package.dependencies]
 numpy = [
     {version = ">=1.21.0", markers = "python_version <= \"3.9\" and platform_system == \"Darwin\" and platform_machine == \"arm64\""},
+    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
+    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
     {version = ">=1.19.3", markers = "python_version >= \"3.6\" and platform_system == \"Linux\" and platform_machine == \"aarch64\" or python_version >= \"3.9\""},
     {version = ">=1.17.0", markers = "python_version >= \"3.7\""},
     {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
-    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
-    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
 ]
 
 [[package]]
@@ -5330,6 +5330,17 @@ build = ["param (>=1.7.0)", "setuptools"]
 cmd = ["pyyaml", "requests"]
 doc = ["nbsite", "sphinx-ioam-theme"]
 tests = ["flake8", "pytest"]
+
+[[package]]
+name = "pydict2class"
+version = "0.0.1"
+description = "Dynamically generate classes from JSON or Dicts"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pydict2class-0.0.1-py3-none-any.whl", hash = "sha256:6488ed8a63a707c62fd1c00aaffb381892a3421354a07aa462aa6da4da54dd8e"},
+]
 
 [[package]]
 name = "pydot"
@@ -8343,4 +8354,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "76e2f05f8908b127705fa1dbb9198238a796ceb32208d6dd08c61311f8f9ab94"
+content-hash = "116a117488ce9be62eb87e6d88f4e5af568866a1ae0ec986e9cfa3e0a170dfe5"
