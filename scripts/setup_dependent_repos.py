@@ -21,14 +21,18 @@ import os
 from pathlib import Path
 import argparse
 import re
+import hashlib # for hashing pyproject.toml files and seeing if they changed
+from enum import Enum
+import glob # for finding .whl file after building binary repo
+
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
 # parser.add_argument('--name', help='the name to greet')
-parser.add_argument('--upgrade', help='resets child repos by forcefully pulling from remote', default=True)
-parser.add_argument('--skip_lock', help='whether to skip `poetry lock` for child repos', default=False)
-parser.add_argument('--skip_building_templates', help='whether to skip templating the pyproject.toml file', default=False)
-parser.add_argument('--skip_building_binary_repos', help='whether to skip building child binary repos', default=True)
+parser.add_argument('--upgrade', action='store_const', help='resets child repos by forcefully pulling from remote', const=True, default=True)
+parser.add_argument('--skip_lock', action='store_const', help='whether to skip `poetry lock` for child repos', const=True, default=False)
+parser.add_argument('--skip_building_templates', action='store_const', help='whether to skip templating the pyproject.toml file', const=True, default=False)
+parser.add_argument('--skip_building_binary_repos', action='store_const', help='whether to skip building child binary repos', const=True, default=False)
 
 group_build_mode = parser.add_mutually_exclusive_group()
 group_build_mode.add_argument('--release', action='store_true', help='enable release mode', default=False)
@@ -38,7 +42,8 @@ args = parser.parse_args()
 
 """ 
 
---skip_lock True 
+--skip_lock 
+
 """
 
 script_dir = Path(os.path.dirname(os.path.abspath(__file__))) # /home/halechr/repos/Spike3D/scripts
@@ -69,7 +74,6 @@ def replace_text_in_file(file_path, regex_pattern, replacement_string, debug_pri
         print(f"====================== saving to {file_path}...")
     with open(file_path, 'w') as file:
         file.write(updated_content)
-
 
 def insert_text(source_file, insert_text_str:str, output_file, insertion_string:str='<INSERT_HERE>'):
     """Inserts the text from insert_text_str into the source_file at the insertion_string, and saves the result to output_file.
@@ -102,14 +106,50 @@ def insert_text_from_file(source_file, insert_file, output_file, insertion_strin
     insert_text(source_file, insert_text_str, output_file, insertion_string)
 
 
+def hash_text_in_file(file_path):
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+    return hashlib.sha256(file_content.encode('utf-8')).hexdigest()
+
+
+def did_file_hash_change(file_path):
+    """ Returns True if the file's hash value has changed since the last run by reading f'{file_path}.sha256'. Saves the new hash value to f'{file_path}.sha256'"""
+    # Define the path to the previous hash value file
+    hash_file_path = f'{file_path}.sha256'
+
+    # Calculate the new hash value
+    new_hash_value = hash_text_in_file(file_path)    
+
+    # Check if the hash value file exists
+    if os.path.exists(hash_file_path):
+        # Read the previous hash value from the file
+        with open(hash_file_path, 'r') as f:
+            old_hash_value = f.read().strip()
+
+        # Compare the new hash value with the previous hash value
+        if new_hash_value == old_hash_value:
+            print('The file has not changed since the last run')
+            did_file_change = False
+        else:
+            print('The file has changed since the last run')
+            did_file_change = True
+    else:
+        # No previous hash value file exists:
+        did_file_change = True
+
+    if did_file_change:
+        # Save the new hash value to the file
+        with open(hash_file_path, 'w') as f:
+            f.write(new_hash_value)
+
+    return did_file_change
+
 # ==================================================================================================================== #
 # Project versioning:                                                                                                  #
 # ==================================================================================================================== #
 
 # pyproject_files = {'release':'pyproject_release.toml', 'dev':'pyproject_dev.toml'}
 
-
-from enum import Enum
 
 class VersionType(Enum):
     """Docstring for VersionType."""
@@ -162,7 +202,7 @@ def build_pyproject_toml_file(repo_path, is_release=False, pyproject_final_file_
     """
     os.chdir(repo_path)
     curr_version = VersionType.init_from_is_release(is_release)
-    print(f'Templating: Building pyproject.toml for {curr_version.name} version in {repo_path}...')
+    print(f'\t Templating: Building pyproject.toml for {curr_version.name} version in {repo_path}...')
     remote_dependencies_regex = r"^(\s*\[tool\.poetry\.group\.remote\.dependencies\]\n(?:.+\n)*)\n\[?"
     # Load the insert text
     with open(curr_version.pyproject_template_file, 'r') as f:
@@ -179,6 +219,8 @@ def build_pyproject_toml_file(repo_path, is_release=False, pyproject_final_file_
         print(insert_text_str)
     
     replace_text_in_file(pyproject_final_file_name, remote_dependencies_regex, insert_text_str, debug_print=debug_print)
+    return pyproject_final_file_name
+
 
 # ==================================================================================================================== #
 # Repo Processing                                                                                                      #
@@ -192,22 +234,72 @@ def _reset_local_changes(repo_path):
     os.system("git stash drop")
 
 
-def process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_toml=True, skip_lock=False, enable_install=False):
+def _process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_toml=True, skip_lock=False, enable_install=False):
     ## Build final pyproj.toml file
     if enable_build_pyproject_toml:
-        build_pyproject_toml_file(repo_path, is_release=is_release)
+        final_pyproject_toml_path = build_pyproject_toml_file(repo_path, is_release=is_release, pyproject_final_file_name = 'pyproject.toml')
     else:
         print(f'skipping build pyproject.toml for {repo_path}')
+        final_pyproject_toml_path = 'pyproject.toml'
+
+    did_project_file_change = did_file_hash_change(final_pyproject_toml_path)
     if not skip_lock:
-        os.system("poetry lock")
+        if did_project_file_change:
+            os.system("poetry lock")
+        else:
+            print(f'\t skipping lock for {repo_path} because project file did not change.')
     else:
         print(f'skipping lock for {repo_path}')
+
     if enable_install:
         os.system("poetry install") # is this needed? I think it installs in that specific environment.
 
 
+def _process_binary_repo(repo_path, skip_building=False):
+    """ builds binary repos if needed """
+    if not skip_building:
+        # os.system("pyenv local 3.9.13")
+        # os.system(r"poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe")
+        os.system("python setup.py sdist bdist_wheel --dist-dir=./dist/")
+
+    else:
+        print(f'\t skipping building binary repos for {repo_path}')
+
+    # Use glob to find the first generated .whl file in the dist/ directory
+    found_whl_files = glob.glob('dist/*.whl')
+    found_whl_files = [a for a in found_whl_files if not a.endswith('current.whl')] # exclude the symlink from the search
+
+    if len(found_whl_files) > 0:
+        if len(found_whl_files) > 1:
+            print(f'\t WARNING: multiple whl files found in dist/ directory: {found_whl_files}. Using the last one.')
+
+        whl_file = found_whl_files[-1]
+        # Symlink the whl file to a generic version:
+        src_path = whl_file
+        dst_path = 'dist/current.whl'
+        # Create the symbolic link
+        try:
+            print(f'\t symlinking {src_path} to {dst_path}')
+            os.symlink(src_path, dst_path)
+        except FileExistsError as e:
+            print(f'\t WARNING: symlink {dst_path} already exists. Removing it.')
+            # Remove the symlink
+            os.unlink(dst_path)
+            # Create the symlink
+            os.symlink(src_path, dst_path)
+        except Exception as e:
+            raise e
+        
+
+    else:
+        print(f'\t WARNING: No whl files found in {repo_path}')
+        whl_file = None
+
+    return whl_file
+
 def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enable_install_for_child_repos=False, enable_build_pyproject_toml=True, skip_lock_for_child_repos=False):
     """ Clones the repo if it doesn't exist, and updates it if it does."""
+    print(f'=======> Processing Child Repo: `{repo_path}` ====]:')
     if not repo_path.exists():
         # clone the repo
         os.chdir(repo_path.parent) # change directory to the parent of the repo to prepare for cloning
@@ -224,20 +316,17 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enab
 
     if is_binary_repo:
         ## For binary repos:
-        if not args.skip_building_binary_repos:
-            # os.system("pyenv local 3.9.13")
-            # os.system(r"poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe")
-            os.system("python setup.py sdist bdist_wheel")
-        else:
-            print(f'skipping building binary repos for {repo_path}')
+        whl_file = _process_binary_repo(repo_path=repo_path, skip_building=args.skip_building_binary_repos)
+        # if whl_file is not None:
+        #     # update pyproject.toml file with the new version
+
     else:
         # For poetry repos
-        process_poetry_repo(repo_path, is_release=is_release, enable_build_pyproject_toml=enable_build_pyproject_toml, skip_lock=skip_lock_for_child_repos, enable_install=enable_install_for_child_repos)
+        _process_poetry_repo(repo_path, is_release=is_release, enable_build_pyproject_toml=enable_build_pyproject_toml, skip_lock=skip_lock_for_child_repos, enable_install=enable_install_for_child_repos)
+
+    print(f'----------------------------------------------------------------------------------- done.\n')
 
 def main():
-    
-
-    
 
     if args.release:
         print('Running in release mode')
@@ -276,7 +365,7 @@ def main():
         setup_repo(repo_path, repo_url, is_binary_repo=is_binary_repo, is_release=is_release, enable_build_pyproject_toml=(is_pyproject_toml_templated and (not args.skip_building_templates)), skip_lock_for_child_repos=skip_lock_for_child_repos)
 
     os.chdir(root_dir) # change back to the root repo dir
-    process_poetry_repo(root_dir, is_release=is_release, enable_build_pyproject_toml=True, skip_lock=skip_lock_for_child_repos, enable_install=False)
+    _process_poetry_repo(root_dir, is_release=is_release, enable_build_pyproject_toml=True, skip_lock=skip_lock_for_child_repos, enable_install=False)
     # os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
     print(f'done with all.')
 

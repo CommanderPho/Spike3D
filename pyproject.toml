@@ -35,6 +35,7 @@ attrs = "^22.2.0"
 # modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
+jupyterlab-lsp = "^4.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"

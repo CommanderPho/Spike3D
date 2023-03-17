@@ -16,7 +16,7 @@ files = [
 name = "aiofiles"
 version = "22.1.0"
 description = "File support for asyncio."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
@@ -167,7 +167,7 @@ frozenlist = ">=1.1.0"
 name = "aiosqlite"
 version = "0.18.0"
 description = "asyncio bridge to the standard sqlite3 module"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -225,7 +225,7 @@ files = [
 name = "anyio"
 version = "3.6.2"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.2"
 files = [
@@ -270,7 +270,7 @@ files = [
 name = "argon2-cffi"
 version = "21.3.0"
 description = "The secure Argon2 password hashing algorithm."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -290,7 +290,7 @@ tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pytest"]
 name = "argon2-cffi-bindings"
 version = "21.2.0"
 description = "Low-level CFFI bindings for Argon2"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -328,7 +328,7 @@ tests = ["pytest"]
 name = "arrow"
 version = "1.2.3"
 description = "Better dates & times for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -505,7 +505,7 @@ visualize = ["Twisted (>=16.1.1)", "graphviz (>0.5.1)"]
 name = "babel"
 version = "2.12.1"
 description = "Internationalization utilities"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -529,7 +529,7 @@ files = [
 name = "beautifulsoup4"
 version = "4.11.2"
 description = "Screen-scraping library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.0"
 files = [
@@ -575,7 +575,7 @@ chardet = ">=3.0.2"
 name = "bleach"
 version = "6.0.0"
 description = "An easy safelist-based HTML-sanitizing tool."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1378,7 +1378,7 @@ units = ["pint (>=0.20)"]
 name = "defusedxml"
 version = "0.7.1"
 description = "XML bomb protection for Python stdlib modules"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 files = [
@@ -1916,7 +1916,7 @@ files = [
 name = "fastjsonschema"
 version = "2.16.3"
 description = "Fastest Python implementation of JSON schema"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -2026,7 +2026,7 @@ woff = ["brotli (>=1.0.1)", "brotlicffi (>=0.8.0)", "zopfli (>=0.1.4)"]
 name = "fqdn"
 version = "1.5.1"
 description = "Validates fully-qualified domain names against RFC 1123, so that they are acceptable to modern bowsers"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0, !=3.1, !=3.2, !=3.3, !=3.4, <4"
 files = [
@@ -2830,7 +2830,7 @@ test = ["jsonschema", "pytest (>=3.6.0)", "pytest-cov", "pytz"]
 name = "isoduration"
 version = "20.11.0"
 description = "Operations with ISO 8601 durations"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2905,7 +2905,7 @@ testing = ["Django (<3.1)", "attrs", "colorama", "docopt", "pytest (<7.0.0)"]
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2963,7 +2963,7 @@ files = [
 name = "json5"
 version = "0.9.11"
 description = "A Python implementation of the JSON5 data format."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -2978,7 +2978,7 @@ dev = ["hypothesis"]
 name = "jsonpointer"
 version = "2.3"
 description = "Identify specific nodes in a JSON document (RFC 6901)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
@@ -2990,7 +2990,7 @@ files = [
 name = "jsonschema"
 version = "4.17.3"
 description = "An implementation of JSON Schema validation for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3063,7 +3063,7 @@ test = ["ipykernel", "pre-commit", "pytest", "pytest-cov", "pytest-timeout"]
 name = "jupyter-events"
 version = "0.6.3"
 description = "Jupyter Event System library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3085,10 +3085,26 @@ docs = ["jupyterlite-sphinx", "myst-parser", "pydata-sphinx-theme", "sphinxcontr
 test = ["click", "coverage", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (>=0.19.0)", "pytest-console-scripts", "pytest-cov", "rich"]
 
 [[package]]
+name = "jupyter-lsp"
+version = "2.0.0"
+description = "Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "jupyter-lsp-2.0.0.tar.gz", hash = "sha256:f3d9f599d48e093a4babfbdac194c30332e6248ce4a03d73fa712f88c779e519"},
+    {file = "jupyter_lsp-2.0.0-py3-none-any.whl", hash = "sha256:d9322a00211276aec9fb9ad6de17872771946e3fb745808f641d5ca53b38e54c"},
+]
+
+[package.dependencies]
+importlib-metadata = {version = ">=4.8.3", markers = "python_version < \"3.10\""}
+jupyter-server = ">=1.1.2"
+
+[[package]]
 name = "jupyter-server"
 version = "2.4.0"
 description = "The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -3124,7 +3140,7 @@ test = ["ipykernel", "pre-commit", "pytest (>=7.0)", "pytest-console-scripts", "
 name = "jupyter-server-fileid"
 version = "0.8.0"
 description = ""
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3144,7 +3160,7 @@ test = ["jupyter-server[test] (>=1.15,<3)", "pytest", "pytest-cov"]
 name = "jupyter-server-terminals"
 version = "0.4.4"
 description = "A Jupyter Server Extension Providing Terminals."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -3164,7 +3180,7 @@ test = ["coverage", "jupyter-server (>=2.0.0)", "pytest (>=7.0)", "pytest-cov", 
 name = "jupyter-server-ydoc"
 version = "0.6.1"
 description = "A Jupyter Server Extension Providing Y Documents."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3184,7 +3200,7 @@ test = ["coverage", "jupyter-server[test] (>=2.0.0a0)", "pytest (>=7.0)", "pytes
 name = "jupyter-ydoc"
 version = "0.2.3"
 description = "Document structures for collaborative editing using Ypy"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3204,7 +3220,7 @@ test = ["pre-commit", "pytest", "pytest-asyncio", "websockets (>=10.0)", "ypy-we
 name = "jupyterlab"
 version = "3.6.1"
 description = "JupyterLab computational environment"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3230,10 +3246,26 @@ tornado = ">=6.1.0"
 test = ["check-manifest", "coverage", "jupyterlab-server[test]", "pre-commit", "pytest (>=6.0)", "pytest-check-links (>=0.5)", "pytest-console-scripts", "pytest-cov", "pytest-jupyter (>=0.5.3)", "requests", "requests-cache", "virtualenv"]
 
 [[package]]
+name = "jupyterlab-lsp"
+version = "4.0.0"
+description = "Coding assistance for JupyterLab with Language Server Protocol"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "jupyterlab-lsp-4.0.0.tar.gz", hash = "sha256:461e6b5f8f07825206cbb420e25be63f76d554207789b5a77a708732e8b9a491"},
+    {file = "jupyterlab_lsp-4.0.0-py3-none-any.whl", hash = "sha256:4916cb0f4305b9db8b09d94947feb8cc56fbe9f2803530ac47c18543a19eafb4"},
+]
+
+[package.dependencies]
+jupyter-lsp = ">=2.0.0"
+jupyterlab = ">=3.6.0,<4.0.0a0"
+
+[[package]]
 name = "jupyterlab-pygments"
 version = "0.2.2"
 description = "Pygments theme using JupyterLab CSS variables"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3245,7 +3277,7 @@ files = [
 name = "jupyterlab-server"
 version = "2.20.0"
 description = "A set of server components for JupyterLab and JupyterLab like applications."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3628,7 +3660,7 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 name = "markupsafe"
 version = "2.1.2"
 description = "Safely add untrusted strings to HTML/XML markup."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3790,7 +3822,7 @@ files = [
 name = "mistune"
 version = "2.0.5"
 description = "A sane Markdown parser with useful plugins and renderers"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -4015,7 +4047,7 @@ files = [
 name = "nbclassic"
 version = "0.5.3"
 description = "Jupyter Notebook as a Jupyter Server extension."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -4051,7 +4083,7 @@ test = ["coverage", "nbval", "pytest", "pytest-cov", "pytest-jupyter", "pytest-p
 name = "nbclient"
 version = "0.7.2"
 description = "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
@@ -4074,7 +4106,7 @@ test = ["ipykernel", "ipython", "ipywidgets", "nbconvert (>=7.0.0)", "pytest (>=
 name = "nbconvert"
 version = "7.2.10"
 description = "Converting Jupyter Notebooks"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -4113,7 +4145,7 @@ webpdf = ["pyppeteer (>=1,<1.1)"]
 name = "nbformat"
 version = "5.7.3"
 description = "The Jupyter Notebook format"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -4240,7 +4272,7 @@ url = "../NeuroPy"
 name = "notebook"
 version = "6.5.3"
 description = "A web-based notebook environment for interactive computing"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -4275,7 +4307,7 @@ test = ["coverage", "nbval", "pytest", "pytest-cov", "requests", "requests-unixs
 name = "notebook-shim"
 version = "0.2.2"
 description = "A shim layer for notebook traits and config"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -4717,7 +4749,7 @@ xarray = "*"
 name = "pandocfilters"
 version = "1.5.0"
 description = "Utilities for writing pandoc filters in python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
@@ -5065,7 +5097,7 @@ files = [
 name = "prometheus-client"
 version = "0.16.0"
 description = "Python client for the Prometheus monitoring system."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -5911,7 +5943,7 @@ numpy = ">=1.20.0"
 name = "pyrsistent"
 version = "0.19.3"
 description = "Persistent/Functional/Immutable data structures"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -6014,7 +6046,7 @@ files = [
 name = "python-json-logger"
 version = "2.0.7"
 description = "A python library adding a json log formatter"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -6160,7 +6192,7 @@ files = [
 name = "pywinpty"
 version = "2.0.10"
 description = "Pseudo terminal support for Windows from Python."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -6176,7 +6208,7 @@ files = [
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -6452,7 +6484,7 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 name = "rfc3339-validator"
 version = "0.1.4"
 description = "A pure python RFC3339 validator"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 files = [
@@ -6467,7 +6499,7 @@ six = "*"
 name = "rfc3986-validator"
 version = "0.1.1"
 description = "Pure python rfc3986 validator"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 files = [
@@ -6760,7 +6792,7 @@ stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
 name = "send2trash"
 version = "1.8.0"
 description = "Send file to trash natively under Mac OS X, Windows and Linux."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -6965,7 +6997,7 @@ files = [
 name = "sniffio"
 version = "1.3.0"
 description = "Sniff out which async library your code is running under"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -6989,7 +7021,7 @@ files = [
 name = "soupsieve"
 version = "2.4"
 description = "A modern CSS selector implementation for Beautiful Soup."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -7434,7 +7466,7 @@ widechars = ["wcwidth"]
 name = "terminado"
 version = "0.17.1"
 description = "Tornado websocket backend for the Xterm.js Javascript terminal emulator library."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -7497,7 +7529,7 @@ all = ["defusedxml", "fsspec", "imagecodecs (>=2023.1.23)", "lxml", "matplotlib"
 name = "tinycss2"
 version = "1.2.1"
 description = "A tiny CSS parser"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -7528,7 +7560,7 @@ files = [
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -7700,7 +7732,7 @@ files = [
 name = "uri-template"
 version = "1.2.0"
 description = "RFC 6570 URI Template Processor"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -7885,7 +7917,7 @@ files = [
 name = "webcolors"
 version = "1.12"
 description = "A library for working with color names and color values formats defined by HTML and CSS."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -7897,7 +7929,7 @@ files = [
 name = "webencodings"
 version = "0.5.1"
 description = "Character encoding aliases for legacy web content"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -7909,7 +7941,7 @@ files = [
 name = "websocket-client"
 version = "1.5.1"
 description = "WebSocket client for Python with low level API options"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -8062,7 +8094,7 @@ files = [
 name = "y-py"
 version = "0.5.9"
 description = "Python bindings for the Y-CRDT built from yrs (Rust)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -8226,7 +8258,7 @@ multidict = ">=4.0"
 name = "ypy-websocket"
 version = "0.8.2"
 description = "WebSocket connector for Ypy"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -8354,4 +8386,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "116a117488ce9be62eb87e6d88f4e5af568866a1ae0ec986e9cfa3e0a170dfe5"
+content-hash = "d511e2541e9494f123f4122ad80bb838560a114b4a0285d5d400f25d6b534303"
