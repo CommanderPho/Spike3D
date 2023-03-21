@@ -55,6 +55,8 @@ cookiecutter = "^2.1.1"
 pretty-errors = "^1.2.25"
 jedi-language-server = "^0.40.0"
 python-lsp-server = "^1.7.1"
+sphinx = "^6.1.3"
+sphinx-autodoc-typehints = "^1.22"
 
 [tool.poetry.group.example.dependencies]
 silx = "^1.1.2"
