@@ -1,14 +1,20 @@
 # PyQtGraph_InteractiveRasterGenerator
 
+# import sys
+# import pyqtgraph as pg
+# import pyphoplacecellanalysis.External.pyqtgraph as pg
+# from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
+
 import sys
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QWidget
 # import pyqtgraph as pg
 import pyphoplacecellanalysis.External.pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 
-
-class RasterPlotWidget(QtWidgets.QWidget):
+class RasterPlotWidget(QWidget):
     def __init__(self, num_rows):
         super().__init__()
+
         self.num_rows = num_rows
         self.color_map = pg.ColorMap(
             [0, num_rows], pg.mkColor(0, 0, 0), pg.mkColor(255, 255, 255)
@@ -25,14 +31,14 @@ class RasterPlotWidget(QtWidgets.QWidget):
             p.setLabel('left', f'Row {row}')
             p.setXRange(0, 10)
             p.setYRange(-0.5, 0.5)
-            p.plot([], [], pen=None, symbol='o', symbolSize=10,
-                   symbolBrush=self.color_map.map(row, 'qcolor'))
-
+            # p.plot([], [], pen=None, symbol='o', symbolSize=10,
+            #        symbolBrush=self.color_map.map(row, 'qcolor'))
+            p.plot([], [], pen=None, symbol='o', symbolSize=10, symbolBrush=pg.mkBrush(self.color_map.map(row)))
             self.plots.append(p)
 
         self.plot_widget.scene().sigMouseClicked.connect(self.on_mouse_click)
 
-        layout = QtGui.QVBoxLayout()
+        layout = QVBoxLayout()
         layout.addWidget(self.plot_widget)
         self.setLayout(layout)
 
@@ -52,7 +58,7 @@ class RasterPlotWidget(QtWidgets.QWidget):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     window = RasterPlotWidget(5)
     window.show()
     sys.exit(app.exec_())
