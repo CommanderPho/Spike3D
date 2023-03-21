@@ -50,7 +50,9 @@ ipykernel = "^6.21.2"
 jupyterlab = "^3.6.1"
 dvc = {version = "^2.45.1", extras = ["gdrive"]}
 cookiecutter = "^2.1.1"
-pydict2class = "^0.0.1"
+pretty-errors = "^1.2.25"
+jedi-language-server = "^0.40.0"
+python-lsp-server = "^1.7.1"
 
 [tool.poetry.group.example.dependencies]
 silx = "^1.1.2"
