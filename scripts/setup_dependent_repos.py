@@ -106,9 +106,21 @@ def insert_text_from_file(source_file, insert_file, output_file, insertion_strin
     insert_text(source_file, insert_text_str, output_file, insertion_string)
 
 
-def hash_text_in_file(file_path):
+def hash_text_in_file(file_path, ignore_whitespace:bool=True, ignore_line_comments:bool=True, case_insensitive:bool=True):
     with open(file_path, 'r') as file:
         file_content = file.read()
+
+    # Remove all comments from the string by searching for the '#' character and removing everything from that character to the end of the line.
+    if ignore_line_comments:
+        file_content = '\n'.join(line.split('#')[0] for line in file_content.split('\n'))
+
+    # remove all whitespace characters (space, tab, newline, and so on)
+    if ignore_whitespace:
+        file_content = ''.join(file_content.split())
+
+    if case_insensitive:
+        file_content = file_content.lower()
+
     return hashlib.sha256(file_content.encode('utf-8')).hexdigest()
 
 
