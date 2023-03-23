@@ -4873,7 +4873,7 @@ files = [
 name = "pandas"
 version = "1.5.3"
 description = "Powerful data structures for data analysis, time series, and statistics"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -6468,7 +6468,7 @@ unidecode = ["Unidecode (>=1.1.1)"]
 name = "pytz"
 version = "2022.7.1"
 description = "World timezone definitions, modern and historical"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -7144,7 +7144,7 @@ cpu = ["mkl", "psutil"]
 name = "seaborn"
 version = "0.12.2"
 description = "Statistical data visualization"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -8883,4 +8883,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "02fc818744d9a89c3dcd5e389f1d9aaab9f9f91abdd210bad3ccff09c827c9c1"
+content-hash = "8ae089ac206e0777cce5b36f0c87813ffc9b8a6c124f5c6dcc4c5aeced00952a"
