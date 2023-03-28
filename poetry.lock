@@ -4380,7 +4380,7 @@ version = "0.0.7"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
+python-versions = ">=3.9,<3.11"
 files = []
 develop = true
 
@@ -8008,6 +8008,227 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["argcomplete (>=2.0)", "pre-commit", "pytest", "pytest-mock"]
 
 [[package]]
+name = "trame"
+version = "2.3.2"
+description = "Trame, a framework to build applications in plain Python"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-2.3.2-py3-none-any.whl", hash = "sha256:8bbaf2ecd352911e724452e9452dd2743fbfb30540038a5173e12917db3072e5"},
+    {file = "trame-2.3.2.tar.gz", hash = "sha256:1be75e0a611093e6870444b0a500cfb9a4bbe69eb7eadd8d0da25dc22c10135e"},
+]
+
+[package.dependencies]
+trame-client = ">=2.1.0"
+trame-components = "2.1.0"
+trame-deckgl = "2.0.1"
+trame-markdown = "2.0.2"
+trame-matplotlib = "2.0.1"
+trame-plotly = "2.1.0"
+trame-rca = "<3.0.0"
+trame-router = "2.0.1"
+trame-server = ">=2.9.0"
+trame-simput = "<3.0.0"
+trame-vega = "2.0.2"
+trame-vtk = "<3.0.0"
+trame-vuetify = "<3.0.0"
+
+[[package]]
+name = "trame-client"
+version = "2.7.5"
+description = "Internal client of trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-client-2.7.5.tar.gz", hash = "sha256:54457d9cc9216c92e2c2ad855efaf41b951bd1d4d8010ad19df00dc9f1a16238"},
+    {file = "trame_client-2.7.5-py3-none-any.whl", hash = "sha256:3743838c900ddc968f7b930bed269742371038a47e61d333156009c97d27a188"},
+]
+
+[[package]]
+name = "trame-components"
+version = "2.1.0"
+description = "Core components for trame widgets"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-components-2.1.0.tar.gz", hash = "sha256:b8d4ad2a8a60db00c713db3404fc45171646ef825cfe031e8d8336237ec724f5"},
+    {file = "trame_components-2.1.0-py3-none-any.whl", hash = "sha256:2b5318cb04ad56302c295e4dbf33b518775a6ce8a63cd10aaf2925188caed817"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-deckgl"
+version = "2.0.1"
+description = "Deck.gl widget for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-deckgl-2.0.1.tar.gz", hash = "sha256:f01b1c88350f324cbedc26af6e8ea3f55dd60389d39b726275461add1bf8d06a"},
+    {file = "trame_deckgl-2.0.1-py3-none-any.whl", hash = "sha256:18f700e66cbd98d6683c878968d3a91755f228f874ff7f6e256a4c617873e173"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-markdown"
+version = "2.0.2"
+description = "Markdown widget for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-markdown-2.0.2.tar.gz", hash = "sha256:7d4979acb0b2382c144aaa461825b76bde4dc4120869c1a7dda41543485cafc6"},
+    {file = "trame_markdown-2.0.2-py3-none-any.whl", hash = "sha256:bc529eb9084b2f6dcf9631b94a0cabdb83a2da379075aadd45071eef1a686d57"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-matplotlib"
+version = "2.0.1"
+description = "Markdown widget for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-matplotlib-2.0.1.tar.gz", hash = "sha256:91191277723f3c4077e55dc98c67326d599a9c449c5e753c4e674348ba0bd728"},
+    {file = "trame_matplotlib-2.0.1-py3-none-any.whl", hash = "sha256:fa7d7a8ce94e8a5f93d2001cea07692090d69e271d946f822d0313b30b87ffb4"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-plotly"
+version = "2.1.0"
+description = "Plotly figure widget for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-plotly-2.1.0.tar.gz", hash = "sha256:035c2983fa296149449553530021c3117f3efad65f6b5f0d63cdf6f79ed4d690"},
+    {file = "trame_plotly-2.1.0-py3-none-any.whl", hash = "sha256:2cd37651286e62cbf1457bb02fd8e3977bdf3a4ec708044dfa5cf79cb9aed11f"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-rca"
+version = "0.3.0"
+description = "Remote Controlled Area widget for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-rca-0.3.0.tar.gz", hash = "sha256:174fac99951e7107a06b39c475b964b41af6567de57879702f1bfabfea82414a"},
+    {file = "trame_rca-0.3.0-py3-none-any.whl", hash = "sha256:675c0ba5f6cd79463d546728867e0c6dc1908cb0e300bc8b4e8de0abb9bfd933"},
+]
+
+[package.dependencies]
+trame-client = "*"
+wslink = "*"
+
+[[package]]
+name = "trame-router"
+version = "2.0.1"
+description = "Vue Router widgets for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-router-2.0.1.tar.gz", hash = "sha256:3b9fb37c0cdd0014a619d85c7e5480b42242fb4bc52006cb3e63d93447444256"},
+    {file = "trame_router-2.0.1-py3-none-any.whl", hash = "sha256:6b3a1cec9210a6001ea5a93caab2651a73cdfed8fba18e13ed19944a9c9ea8b5"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-server"
+version = "2.10.0"
+description = "Internal server side implementation of trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-server-2.10.0.tar.gz", hash = "sha256:f75ca97511d17c8f061e50712ef4b1d358f0e716a5a09a94e34a6499811daf02"},
+    {file = "trame_server-2.10.0-py3-none-any.whl", hash = "sha256:c8b73d9cf5111c1018fbd5e58b9592bfc5bd118d904db8137e0027baaebb49ca"},
+]
+
+[package.dependencies]
+wslink = ">=1.9.0"
+
+[[package]]
+name = "trame-simput"
+version = "2.3.1"
+description = "Simput implementation for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-simput-2.3.1.tar.gz", hash = "sha256:14033c29540ba410052c5eaea14187dd4555cad99c69a3dec06ec1384393cbbf"},
+    {file = "trame_simput-2.3.1-py3-none-any.whl", hash = "sha256:844ef695bc5edeb4945614b7e3cd47f7e14801a7dd641ef3f67f59ddb66f5c25"},
+]
+
+[package.dependencies]
+pyyaml = "*"
+trame-client = "*"
+
+[[package]]
+name = "trame-vega"
+version = "2.0.2"
+description = "Vega widget for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-vega-2.0.2.tar.gz", hash = "sha256:734ac93b51950d49aa20cccf0b332232c74f14d26ef5f981dde56d41de1fa6b4"},
+    {file = "trame_vega-2.0.2-py3-none-any.whl", hash = "sha256:142e9a0b03e0bd761f6a89999a876f4a088e1c2b3ddcfbf84f368b4edc24af11"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-vtk"
+version = "2.4.1"
+description = "VTK widgets for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-vtk-2.4.1.tar.gz", hash = "sha256:463205cce00e784b39a5a9283afe3528a5dedd1d7be36feda6a0a036bc629aa5"},
+    {file = "trame_vtk-2.4.1-py3-none-any.whl", hash = "sha256:a5923d5c939456e597245416fb2ab592a777784cd9a74b3e72e1fdc887d011d3"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
+name = "trame-vuetify"
+version = "2.2.4"
+description = "Vuetify widgets for trame"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "trame-vuetify-2.2.4.tar.gz", hash = "sha256:41316c16cf6af2446e980a0bbc32a549209bb27cc5fd4d18b87945e607ccc69a"},
+    {file = "trame_vuetify-2.2.4-py3-none-any.whl", hash = "sha256:fede3b08db60f50e0f6ab36594c662c6cee010b7514376bfdfbece8a5c2ba9ee"},
+]
+
+[package.dependencies]
+trame-client = "*"
+
+[[package]]
 name = "twisted"
 version = "22.10.0"
 description = "An asynchronous networking framework written in Python"
@@ -8829,4 +9050,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "06140c9e996d38ba2f2eeb0b336a45e2f2c215f957e4aa47e518fbe308ee29c7"
+content-hash = "9b5f9f3717411fea8f7ed395648c4e553a8f36e329cc83361e0e888397f16e36"
