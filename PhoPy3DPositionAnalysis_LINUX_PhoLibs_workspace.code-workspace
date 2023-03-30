@@ -54,6 +54,7 @@
 			"-o",
 			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
 		],
+		"python.analysis.extraPaths": [],
 	},
 	"extensions": {
 		"recommendations": [
