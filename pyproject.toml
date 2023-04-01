@@ -40,6 +40,7 @@ seaborn = "^0.12.2"
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
 trame = "^2.3.2" # visualization, currently not used
+param = "^1.13.0"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.0"
