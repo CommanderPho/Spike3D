@@ -7,6 +7,7 @@
 		"phohale.pho-pyqt-class-generator",
 		"berublan.vscode-log-viewer",
 		"jasonlhy.hungry-delete",
-		"edgardmessias.clipboard-manager"
+		"edgardmessias.clipboard-manager",
+		"ms-python.gather"
 	]
 }

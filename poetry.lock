@@ -4946,7 +4946,7 @@ ui = ["playwright", "pytest-playwright"]
 name = "param"
 version = "1.13.0"
 description = "Make your Python code clearer and more reliable by declaring Parameters."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7"
 files = [
@@ -9050,4 +9050,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "9b5f9f3717411fea8f7ed395648c4e553a8f36e329cc83361e0e888397f16e36"
+content-hash = "d5159c983d8d9e2010952019a47f8da05abafefe62b50e13fa0eecbad29c1fa4"
