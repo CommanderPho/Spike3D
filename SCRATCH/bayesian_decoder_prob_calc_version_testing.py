@@ -249,7 +249,8 @@ def test_neuropy_bayesian_prob(tau, P_x, F, n):
 
 if __name__ == "__main__":
     # To load test parameters:
-    load_path = r"C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\test_parameters-neuropy_bayesian_prob.npz"
+    # load_path = r"C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\test_parameters-neuropy_bayesian_prob.npz"
+    load_path = "/home/halechr/repos/NeuroPy/tests/test_parameters-neuropy_bayesian_prob.npz"
     # load_path = 'test_parameters-neuropy_bayesian_prob.npz'
     with np.load(load_path) as npzfile:
             tau = npzfile['tau']
