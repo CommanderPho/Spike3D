@@ -213,8 +213,7 @@ def test_neuropy_bayesian_prob(tau, P_x, F, n):
     # ## Plot the outputs for visual comparison
     # import matplotlib.pyplot as plt
 
-    intermediate_term = [(np.exp(-tau * cell_ratemap)) for cell_ratemap in F.T]
-    intermediate_term = np.array(intermediate_term)
+    intermediate_term = np.array([(np.exp(-tau * cell_ratemap)) for cell_ratemap in F.T])
     print(f'{intermediate_term.shape = }')    
     # intermediate_term = np.sum(intermediate_term, axis=0)
     # intermediate_term = np.prod(intermediate_term, axis=0)
@@ -250,13 +249,14 @@ def test_neuropy_bayesian_prob(tau, P_x, F, n):
 if __name__ == "__main__":
     # To load test parameters:
     # load_path = r"C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\test_parameters-neuropy_bayesian_prob.npz"
-    load_path = 'data/test_parameters-neuropy_bayesian_prob.npz'
+    # load_path = 'data/test_parameters-neuropy_bayesian_prob.npz'
+    load_path = 'data/test_parameters-neuropy_bayesian_prob_2023-04-07.npz'
     # load_path = "/home/halechr/repos/NeuroPy/tests/test_parameters-neuropy_bayesian_prob.npz"
     # load_path = 'test_parameters-neuropy_bayesian_prob.npz'
     with np.load(load_path) as npzfile:
             tau = npzfile['tau']
             P_x = npzfile['P_x']
-            F = npzfile['F']
+            F = npzfile['F'].T
             n = npzfile['n']
 
     print(f'n: {n}')
