@@ -23,6 +23,195 @@ _debug_print = False
 
 import sys
 
+# ==================================================================================================================== #
+# 2023-04-10 - Long short expected surprise                                                                            #
+# ==================================================================================================================== #
+import pyphoplacecellanalysis.External.pyqtgraph as pg
+
+def _scramble_curve(pf: np.ndarray, roll_num_bins:int = 10, method='circ'):
+    """ Circularly rotates the 1D placefield """
+    return np.roll(pf, roll_num_bins)
+
+def plot_long_short_expected_vs_observed_firing_rates(long_results_obj, short_results_obj, limit_aclus=None):
+    """ 2023-03-28 4:30pm - Expected vs. Observed Firing Rates for each cell and each epoch 
+    
+    Usage:
+        win, plots_tuple, legend = plot_long_short_expected_vs_observed_firing_rates(long_results_obj, short_results_obj, limit_aclus=[20])
+
+    """
+    num_cells = long_results_obj.original_1D_decoder.num_neurons
+    num_epochs = long_results_obj.active_filter_epochs.n_epochs
+    # make a separate symbol_brush color for each cell:
+    cell_color_symbol_brush = [pg.intColor(i,hues=9, values=3, alpha=180) for i, aclu in enumerate(long_results_obj.original_1D_decoder.neuron_IDs)] # maxValue=128
+    # All properties in common:
+    win = pg.plot()
+     # win.setWindowTitle('Short v. Long - Leave-one-out Expected vs. Observed Firing Rates')
+    win.setWindowTitle('Short v. Long - Leave-one-out Expected vs. Observed Num Spikes')
+    # legend_size = (80,60) # fixed size legend
+    legend_size = None # auto-sizing legend to contents
+    legend = pg.LegendItem(legend_size, offset=(-1,0)) # do this instead of # .addLegend
+    legend.setParentItem(win.graphicsItem())
+    # restrict the aclus to display to limit_aclus
+    if limit_aclus is None:
+        limit_aclus = long_results_obj.original_1D_decoder.neuron_IDs
+    # check whether the neuron_ID is included:
+    is_neuron_ID_active = np.isin(long_results_obj.original_1D_decoder.neuron_IDs, limit_aclus)    
+    # restrict to the limit indicies
+    active_neuron_IDs = np.array(long_results_obj.original_1D_decoder.neuron_IDs)[is_neuron_ID_active]
+    active_neuron_IDXs =  np.array(long_results_obj.original_1D_decoder.neuron_IDXs)[is_neuron_ID_active]
+
+    plots_tuple = tuple([{}, {}])
+    label_prefix_list = ['long', 'short']
+    long_short_symbol_list = ['t', 't1'] # note: 's' is a square. 'o', 't1': triangle pointing upwards
+    
+    for long_or_short_idx, a_results_obj in enumerate((long_results_obj, short_results_obj)):
+        label_prefix = label_prefix_list[long_or_short_idx]
+        # print(F'long_or_short_idx: {long_or_short_idx = }, label_prefix: {label_prefix =}')
+        plots = plots_tuple[long_or_short_idx]
+        curr_symbol = long_short_symbol_list[long_or_short_idx]
+        
+        ## add scatter plots on top
+        for unit_IDX, aclu in zip(active_neuron_IDXs, active_neuron_IDs):
+            # find only the time bins when the cell fires:
+            curr_epoch_is_cell_active = np.logical_not(a_results_obj.is_non_firing_time_bin)[unit_IDX, :]
+            # Use mean time_bin and surprise for each epoch
+            curr_epoch_time_bins = a_results_obj.flat_all_epochs_decoded_epoch_time_bins[unit_IDX, curr_epoch_is_cell_active]
+            # curr_epoch_data = a_results_obj.flat_all_epochs_measured_cell_firing_rates[unit_IDX, curr_epoch_is_cell_active] # measured firing rates (Hz) 
+            # curr_epoch_data = a_results_obj.flat_all_epochs_measured_cell_spike_counts[unit_IDX, curr_epoch_is_cell_active] # num measured spikes 
+            curr_epoch_data = a_results_obj.flat_all_epochs_difference_from_expected_cell_spike_counts[unit_IDX, curr_epoch_is_cell_active] # num spikes diff
+            # curr_epoch_data = a_results_obj.flat_all_epochs_difference_from_expected_cell_firing_rates[unit_IDX, :] # firing rate diff
+            plots[aclu] = win.plot(x=curr_epoch_time_bins, y=curr_epoch_data, pen=None, symbol=curr_symbol, symbolBrush=cell_color_symbol_brush[unit_IDX], name=f'{label_prefix}[{aclu}]', alpha=0.5) #  symbolBrush=pg.intColor(i,6,maxValue=128)
+            legend.addItem(plots[aclu], f'{label_prefix}[{aclu}]')
+
+    win.graphicsItem().setLabel(axis='left', text='Short v. Long - Expected vs. Observed # Spikes')
+    win.graphicsItem().setLabel(axis='bottom', text='time')
+    return win, plots_tuple, legend
+
+def plot_long_short_any_values(long_results_obj, short_results_obj, x, y, limit_aclus=None):
+    """ 2023-03-28 4:31pm - Any values, specified by a lambda function for each cell and each epoch 
+
+        x_fn = lambda a_results_obj: a_results_obj.all_epochs_decoded_epoch_time_bins_mean[:,0]
+        # y_fn = lambda a_results_obj: a_results_obj.all_epochs_all_cells_one_left_out_posterior_to_scrambled_pf_surprises_mean
+        # y_fn = lambda a_results_obj: a_results_obj.all_epochs_all_cells_one_left_out_posterior_to_pf_surprises_mean
+        y_fn = lambda a_results_obj: a_results_obj.all_epochs_computed_one_left_out_posterior_to_pf_surprises
+
+        # (time_bins, neurons), (epochs, neurons), (epochs)
+        # all_epochs_computed_one_left_out_posterior_to_pf_surprises, all_epochs_computed_cell_one_left_out_posterior_to_pf_surprises_mean, all_epochs_all_cells_one_left_out_posterior_to_pf_surprises_mean
+        win, plots_tuple, legend = plot_long_short_any_values(long_results_obj, short_results_obj, x=x_fn, y=y_fn, limit_aclus=[20])
+
+    """
+    num_cells = long_results_obj.original_1D_decoder.num_neurons
+    num_epochs = long_results_obj.active_filter_epochs.n_epochs
+    # make a separate symbol_brush color for each cell:
+    cell_color_symbol_brush = [pg.intColor(i,hues=9, values=3, alpha=180) for i, aclu in enumerate(long_results_obj.original_1D_decoder.neuron_IDs)] # maxValue=128
+    # All properties in common:
+    win = pg.plot()
+    win.setWindowTitle('Short v. Long - Leave-one-out Custom Surprise Plot')
+    # legend_size = (80,60) # fixed size legend
+    legend_size = None # auto-sizing legend to contents
+    legend = pg.LegendItem(legend_size, offset=(-1,0)) # do this instead of # .addLegend
+    legend.setParentItem(win.graphicsItem())
+    # restrict the aclus to display to limit_aclus
+    if limit_aclus is None:
+        limit_aclus = long_results_obj.original_1D_decoder.neuron_IDs
+    # check whether the neuron_ID is included:
+    is_neuron_ID_active = np.isin(long_results_obj.original_1D_decoder.neuron_IDs, limit_aclus)    
+    # restrict to the limit indicies
+    active_neuron_IDs = np.array(long_results_obj.original_1D_decoder.neuron_IDs)[is_neuron_ID_active]
+    active_neuron_IDXs =  np.array(long_results_obj.original_1D_decoder.neuron_IDXs)[is_neuron_ID_active]
+
+    plots_tuple = tuple([{}, {}])
+    label_prefix_list = ['long', 'short']
+    long_short_symbol_list = ['t', 'o'] # note: 's' is a square. 'o', 't1': triangle pointing upwards
+    
+    for long_or_short_idx, a_results_obj in enumerate((long_results_obj, short_results_obj)):
+        label_prefix = label_prefix_list[long_or_short_idx]
+        # print(F'long_or_short_idx: {long_or_short_idx = }, label_prefix: {label_prefix =}')
+        plots = plots_tuple[long_or_short_idx]
+        curr_symbol = long_short_symbol_list[long_or_short_idx]
+        
+        ## add scatter plots on top
+        for unit_IDX, aclu in zip(active_neuron_IDXs, active_neuron_IDs):
+            # find only the time bins when the cell fires:
+            curr_epoch_is_cell_active = np.logical_not(a_results_obj.is_non_firing_time_bin)[unit_IDX, :]
+            # Use mean time_bin and surprise for each epoch
+            curr_epoch_time_bins = a_results_obj.flat_all_epochs_decoded_epoch_time_bins[unit_IDX, curr_epoch_is_cell_active]
+            # curr_epoch_data = a_results_obj.flat_all_epochs_measured_cell_firing_rates[unit_IDX, curr_epoch_is_cell_active] # measured firing rates (Hz) 
+            # curr_epoch_data = a_results_obj.flat_all_epochs_measured_cell_spike_counts[unit_IDX, curr_epoch_is_cell_active] # num measured spikes 
+            # curr_epoch_data = a_results_obj.flat_all_epochs_difference_from_expected_cell_spike_counts[unit_IDX, curr_epoch_is_cell_active] # num spikes diff
+            # curr_epoch_data = a_results_obj.flat_all_epochs_difference_from_expected_cell_firing_rates[unit_IDX, :] # firing rate diff
+            print(f'curr_epoch_time_bins.shape: {np.shape(curr_epoch_time_bins)}')
+            curr_epoch_data = y(a_results_obj) # [unit_IDX, curr_epoch_is_cell_active]
+            print(f'np.shape(curr_epoch_data): {np.shape(curr_epoch_data)}')
+            curr_epoch_data = curr_epoch_data[unit_IDX, curr_epoch_is_cell_active]
+            plots[aclu] = win.plot(x=curr_epoch_time_bins, y=curr_epoch_data, pen=None, symbol=curr_symbol, symbolBrush=cell_color_symbol_brush[unit_IDX], name=f'{label_prefix}[{aclu}]', alpha=0.5) #  symbolBrush=pg.intColor(i,6,maxValue=128)
+            legend.addItem(plots[aclu], f'{label_prefix}[{aclu}]')
+
+    win.graphicsItem().setLabel(axis='left', text='Short v. Long - Surprise (Custom)')
+    win.graphicsItem().setLabel(axis='bottom', text='time')
+    return win, plots_tuple, legend
+
+def plot_long_short(long_results_obj, short_results_obj):
+    win = pg.plot()
+    win.setWindowTitle('Short v. Long - Leave-one-out All Cell Average Surprise Outputs')
+    # legend_size = (80,60) # fixed size legend
+    legend_size = None # auto-sizing legend to contents
+    legend = pg.LegendItem(legend_size, offset=(-1,0)) # do this instead of # .addLegend
+    legend.setParentItem(win.graphicsItem())
+
+    ax_long = win.plot(x=long_results_obj.all_epochs_decoded_epoch_time_bins_mean[:,0], y=long_results_obj.all_epochs_all_cells_computed_surprises_mean, pen=None, symbol='o', symbolBrush=pg.intColor(0,6,maxValue=128), name=f'long') #  symbolBrush=pg.intColor(i,6,maxValue=128)
+    legend.addItem(ax_long, f'long')
+    ax_short = win.plot(x=short_results_obj.all_epochs_decoded_epoch_time_bins_mean[:,0], y=short_results_obj.all_epochs_all_cells_computed_surprises_mean, pen=None, symbol='o', symbolBrush=pg.intColor(1,6,maxValue=128), name=f'short') #  symbolBrush=pg.intColor(i,6,maxValue=128)
+    legend.addItem(ax_short, f'short')
+
+    win.graphicsItem().setLabel(axis='left', text='Short v. Long - Leave-one-out All Cell Average Surprise')
+    win.graphicsItem().setLabel(axis='bottom', text='time')
+    return win, (ax_long, ax_short), legend
+
+def get_regular_attrs(obj, include_parent=True):
+    """ Intended to get all of the stored attributes of an object, including those inherited from parent classes, while ignoring @properties and other computed variables
+    Example:
+        class ParentClass:
+            def __init__(self, z):
+                self.z = z
+
+        class MyClass(ParentClass):
+            def __init__(self, x):
+                super().__init__(x+1)
+                self.x = x
+                self.y = x + 1
+
+            @property
+            def computed_prop(self):
+                return self.x + self.y
+
+        obj = MyClass(5)
+        regular_attrs = get_regular_attrs(obj)
+        print(regular_attrs)  # Output: ['z', 'x', 'y']
+    
+
+    ISSUE: returns propery when defined this way
+
+    @property
+    def pdf_normalized_tuning_curves(self):
+        return Ratemap.perform_AOC_normalization(self.tuning_curves)
+
+
+    Usage:
+        get_regular_attrs(ratemap_2D, include_parent=False)
+
+    """
+    regular_attrs = []
+    cls = type(obj)
+    while cls:
+        for attr in cls.__dict__:
+            if not callable(getattr(obj, attr)) and not attr.startswith('__'):
+                regular_attrs.append(attr)
+        if not include_parent:
+            break
+        cls = cls.__base__
+    return list(set(regular_attrs))
+
 
 # ==================================================================================================================== #
 # 2023-03-09 - Parameter Sweeping                                                                                      #
