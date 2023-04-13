@@ -168,6 +168,9 @@ def plot_long_short(long_results_obj, short_results_obj):
     win.graphicsItem().setLabel(axis='bottom', text='time')
     return win, (ax_long, ax_short), legend
 
+
+
+
 def get_regular_attrs(obj, include_parent=True):
     """ Intended to get all of the stored attributes of an object, including those inherited from parent classes, while ignoring @properties and other computed variables
     Example:
