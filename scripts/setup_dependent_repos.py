@@ -105,7 +105,6 @@ def insert_text_from_file(source_file, insert_file, output_file, insertion_strin
         insert_text_str = f.read()
     insert_text(source_file, insert_text_str, output_file, insertion_string)
 
-
 def hash_text_in_file(file_path, ignore_whitespace:bool=True, ignore_line_comments:bool=True, case_insensitive:bool=True):
     with open(file_path, 'r') as file:
         file_content = file.read()
@@ -122,7 +121,6 @@ def hash_text_in_file(file_path, ignore_whitespace:bool=True, ignore_line_commen
         file_content = file_content.lower()
 
     return hashlib.sha256(file_content.encode('utf-8')).hexdigest()
-
 
 def did_file_hash_change(file_path):
     """ Returns True if the file's hash value has changed since the last run by reading f'{file_path}.sha256'. Saves the new hash value to f'{file_path}.sha256'"""
