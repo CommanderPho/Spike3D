@@ -31,50 +31,62 @@ import sys
 
 from attrs import define
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import LeaveOneOutDecodingResult
+from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
+
+# Distance metrics used by `_new_compute_surprise`
 from scipy.spatial import distance # for Jensen-Shannon distance in `_subfn_compute_leave_one_out_analysis`
 import random # for random.choice(mylist)
-from PendingNotebookCode import _scramble_curve
+# from PendingNotebookCode import _scramble_curve
 from scipy.stats import wasserstein_distance
 from scipy.stats import pearsonr
+
 
 ## 0. Precompute the active neurons in each timebin, and the epoch-timebin-flattened decoded posteriors makes it easier to compute for a given time bin:
 @define(slots=False, repr=False)
 class TimebinnedNeuronActivity:
-	""" keeps track of which neurons are active and inactive in each decoded timebin """
-	n_timebins: int
-	active_IDXs: np.ndarray
-	active_aclus: np.ndarray
-	inactive_IDXs: np.ndarray
-	inactive_aclus: np.ndarray
+    """ keeps track of which neurons are active and inactive in each decoded timebin """
+    n_timebins: int
+    active_IDXs: np.ndarray
+    active_aclus: np.ndarray
+    inactive_IDXs: np.ndarray
+    inactive_aclus: np.ndarray
 
-	@classmethod
-	def init_from_results_obj(cls, results_obj: SurpriseAnalysisResult):
-		n_timebins = np.sum(results_obj.all_included_filter_epochs_decoder_result.nbins)
-		# a list of lists where each list contains the aclus that are active during that timebin:
-		timebins_active_neuron_IDXs = [np.array(results_obj.original_1D_decoder.neuron_IDXs)[a_timebin_is_cell_firing] for a_timebin_is_cell_firing in np.logical_not(results_obj.is_non_firing_time_bin).T]
-		timebins_active_aclus = [np.array(results_obj.original_1D_decoder.neuron_IDs)[an_IDX] for an_IDX in timebins_active_neuron_IDXs]
+    @classmethod
+    def init_from_results_obj(cls, results_obj: SurpriseAnalysisResult):
+        n_timebins = np.sum(results_obj.all_included_filter_epochs_decoder_result.nbins)
+        # a list of lists where each list contains the aclus that are active during that timebin:
+        timebins_active_neuron_IDXs = [np.array(results_obj.original_1D_decoder.neuron_IDXs)[a_timebin_is_cell_firing] for a_timebin_is_cell_firing in np.logical_not(results_obj.is_non_firing_time_bin).T]
+        timebins_active_aclus = [np.array(results_obj.original_1D_decoder.neuron_IDs)[an_IDX] for an_IDX in timebins_active_neuron_IDXs]
 
-		timebins_inactive_neuron_IDXs = [np.array(results_obj.original_1D_decoder.neuron_IDXs)[a_timebin_is_cell_firing] for a_timebin_is_cell_firing in results_obj.is_non_firing_time_bin.T]
-		timebins_inactive_aclus = [np.array(results_obj.original_1D_decoder.neuron_IDs)[an_IDX] for an_IDX in timebins_inactive_neuron_IDXs]
-		# timebins_p_x_given_n = np.hstack(results_obj.all_included_filter_epochs_decoder_result.p_x_given_n_list) # # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)  --TO-->  .shape: (63, 4146) - (n_x_bins, n_flattened_all_epoch_time_bins)
-		return cls(n_timebins=n_timebins, active_IDXs=timebins_active_neuron_IDXs, active_aclus=timebins_active_aclus, inactive_IDXs=timebins_inactive_neuron_IDXs, inactive_aclus=timebins_inactive_aclus)
-
-
+        timebins_inactive_neuron_IDXs = [np.array(results_obj.original_1D_decoder.neuron_IDXs)[a_timebin_is_cell_firing] for a_timebin_is_cell_firing in results_obj.is_non_firing_time_bin.T]
+        timebins_inactive_aclus = [np.array(results_obj.original_1D_decoder.neuron_IDs)[an_IDX] for an_IDX in timebins_inactive_neuron_IDXs]
+        # timebins_p_x_given_n = np.hstack(results_obj.all_included_filter_epochs_decoder_result.p_x_given_n_list) # # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)  --TO-->  .shape: (63, 4146) - (n_x_bins, n_flattened_all_epoch_time_bins)
+        return cls(n_timebins=n_timebins, active_IDXs=timebins_active_neuron_IDXs, active_aclus=timebins_active_aclus, inactive_IDXs=timebins_inactive_neuron_IDXs, inactive_aclus=timebins_inactive_aclus)
 
 
-def _new_compute_surprise(results_obj):
+def _new_compute_surprise(results_obj, active_surprise_metric_fn):
     """ 2023-04-14 - To Finish factoring out
         long_results_obj.timebinned_neuron_info = TimebinnedNeuronActivity.init_from_results_obj(long_results_obj)
         short_results_obj.timebinned_neuron_info = TimebinnedNeuronActivity.init_from_results_obj(short_results_obj)
         assert long_results_obj.timebinned_neuron_info.n_timebins == short_results_obj.timebinned_neuron_info.n_timebins
+
+
+    Usage:
+
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.jensenshannon(pf, p_x_given_n)
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.correlation(pf, p_x_given_n)
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.sqeuclidean(pf, p_x_given_n)
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: wasserstein_distance(pf, p_x_given_n) # Figure out the correct function for this, it's in my old notebooks
+        active_surprise_metric_fn = lambda pf, p_x_given_n: pearsonr(pf, p_x_given_n)[0] # this returns just the correlation coefficient (R), not the p-value due to the [0]
+
+
     """
     # Extract important things from the decoded data, like the time bins which are the same for all:
     n_epochs = results_obj.all_included_filter_epochs_decoder_result.num_filter_epochs
     n_timebins = np.sum(results_obj.all_included_filter_epochs_decoder_result.nbins)
     shared_timebin_containers = results_obj.all_included_filter_epochs_decoder_result.time_bin_containers
-    # shared_timebin_
 
-
+    results_obj.timebinned_neuron_info = TimebinnedNeuronActivity.init_from_results_obj(results_obj)
 
     # @define(slots=False, repr=False)
     # class PlacefieldPosteriorComputationHelper:
@@ -84,23 +96,23 @@ def _new_compute_surprise(results_obj):
     # 		result.one_left_out_posterior_to_pf_correlations[timebin_IDX].append(distance.correlation(curr_cell_pf_curve, curr_timebin_p_x_given_n))
 
 
-    # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.jensenshannon(pf, p_x_given_n)
-    # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.correlation(pf, p_x_given_n)
-    # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.sqeuclidean(pf, p_x_given_n)
-    # active_surprise_metric_fn = lambda pf, p_x_given_n: wasserstein_distance(pf, p_x_given_n) # Figure out the correct function for this, it's in my old notebooks
-    active_surprise_metric_fn = lambda pf, p_x_given_n: pearsonr(pf, p_x_given_n)[0] # this returns just the correlation coefficient (R), not the p-value due to the [0]
+    if active_surprise_metric_fn is None:
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.jensenshannon(pf, p_x_given_n)
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.correlation(pf, p_x_given_n)
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: distance.sqeuclidean(pf, p_x_given_n)
+        # active_surprise_metric_fn = lambda pf, p_x_given_n: wasserstein_distance(pf, p_x_given_n) # Figure out the correct function for this, it's in my old notebooks
+        active_surprise_metric_fn = lambda pf, p_x_given_n: pearsonr(pf, p_x_given_n)[0] # this returns just the correlation coefficient (R), not the p-value due to the [0]
 
 
-    #p_x_given_n_list
-    #DecodedFilterEpochsResult
-    timebinned_neuron_info = long_results_obj.timebinned_neuron_info
+    timebinned_neuron_info = results_obj.timebinned_neuron_info
     result = LeaveOneOutDecodingResult(shuffle_IDXs=None)
 
-    pf_shape = (len(long_results_obj.original_1D_decoder.pf.ratemap.xbin_centers),) # (59, )
+    pf_shape = (len(results_obj.original_1D_decoder.pf.ratemap.xbin_centers),) # (59, )
     result.random_noise_curves = {}
     # result.random_noise_curves = np.random.uniform(low=0, high=1, size=(timebinned_neuron_info.n_timebins, *pf_shape))
     # result.random_noise_curves = (result.random_noise_curves.T / np.sum(result.random_noise_curves, axis=1)).T # normalize
     # result.random_noise_curves = (result.random_noise_curves.T / np.max(result.random_noise_curves, axis=1)).T # unit max normalization
+    result.decoded_timebins_p_x_given_n = {}
 
     for index in np.arange(timebinned_neuron_info.n_timebins):
         # iterate through timebins
@@ -118,14 +130,15 @@ def _new_compute_surprise(results_obj):
         # curr_random_not_firing_cell_pf_curve = result.random_noise_curves[index]
 
         result.random_noise_curves[index] = [] # list
+        result.decoded_timebins_p_x_given_n[index] = []
 
         for neuron_IDX, aclu in zip(timebinned_neuron_info.active_IDXs[index], timebinned_neuron_info.active_aclus[index]):
             # iterate through only the active cells
             # 1. Get set of cells active in a given time bin, for each compute the surprise of its placefield with the leave-one-out decoded posterior.
-            left_out_decoder_result = long_results_obj.one_left_out_filter_epochs_decoder_result_dict[aclu]
-            # curr_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.tuning_curves[neuron_IDX] # normalized pdf tuning curve
+            left_out_decoder_result = results_obj.one_left_out_filter_epochs_decoder_result_dict[aclu]
+            # curr_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.tuning_curves[neuron_IDX] # normalized pdf tuning curve
             # curr_cell_spike_curve = original_1D_decoder.pf.ratemap.spikes_maps[unit_IDX] ## not occupancy weighted... is this the right one to use for computing the expected spike rate? NO... doesn't seem like it
-            curr_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[neuron_IDX] # Unit max tuning curve
+            curr_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[neuron_IDX] # Unit max tuning curve
 
             _, _, curr_timebins_p_x_given_n = left_out_decoder_result.flatten()
             curr_timebin_p_x_given_n = curr_timebins_p_x_given_n[:, index] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
@@ -141,13 +154,13 @@ def _new_compute_surprise(results_obj):
             
 
             # 2. From the remainder of cells (those not active), randomly choose one to grab the placefield of and compute the surprise with that and the same posterior.
-            # shuffled_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.tuning_curves[shuffle_IDXs[i]]
+            # shuffled_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.tuning_curves[shuffle_IDXs[i]]
 
             # a) Use a random non-firing cell's placefield:
             random_not_firing_neuron_IDX = random.choice(timebinned_neuron_info.inactive_IDXs[index])
             # random_not_firing_aclu = random.choice(timebinned_neuron_info.inactive_aclus[i])
-            # curr_random_not_firing_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.tuning_curves[random_not_firing_neuron_IDX] # normalized pdf tuning curve
-            curr_random_not_firing_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[random_not_firing_neuron_IDX] # Unit max tuning curve
+            # curr_random_not_firing_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.tuning_curves[random_not_firing_neuron_IDX] # normalized pdf tuning curve
+            curr_random_not_firing_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[random_not_firing_neuron_IDX] # Unit max tuning curve
 
             # b) Use a scrambled version of the real curve:
             # curr_random_not_firing_cell_pf_curve = _scramble_curve(curr_cell_pf_curve)
@@ -155,6 +168,9 @@ def _new_compute_surprise(results_obj):
 
             ## Save the curve for this neuron
             result.random_noise_curves[index].append(curr_random_not_firing_cell_pf_curve)
+
+            # Save the posteriors for this neuron:
+            result.decoded_timebins_p_x_given_n[index].append(curr_timebin_p_x_given_n)
 
             # if aclu not in result.one_left_out_posterior_to_scrambled_pf_surprises:
             # 	result.one_left_out_posterior_to_scrambled_pf_surprises[aclu] = []
@@ -174,7 +190,10 @@ def _new_compute_surprise(results_obj):
         else:
             result.random_noise_curves[index] = np.array(result.random_noise_curves[index]) 
 
-
+        if len(result.decoded_timebins_p_x_given_n[index])>0:
+            result.decoded_timebins_p_x_given_n[index] = np.vstack(result.decoded_timebins_p_x_given_n[index]) # without this check np.vstack throws `ValueError: need at least one array to concatenate` for empty lists
+        else:
+            result.decoded_timebins_p_x_given_n[index] = np.array(result.decoded_timebins_p_x_given_n[index]) 
 
     # End Timebin Loop
     ## Post timebin loops compute mean variables:
@@ -187,22 +206,56 @@ def _new_compute_surprise(results_obj):
     one_left_out_posterior_to_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_pf_surprises_mean.values()))
     one_left_out_posterior_to_scrambled_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_scrambled_pf_surprises_mean.values()))
 
-    # long_results_obj.all_epochs_reverse_flat_epoch_indicies_array
+    # results_obj.all_epochs_reverse_flat_epoch_indicies_array
 
     # one_left_out_posterior_to_scrambled_pf_surprises_mean
 
-    result_df = pd.DataFrame({'time_bin_indices': valid_time_bin_indicies, 'epoch_IDX': long_results_obj.all_epochs_reverse_flat_epoch_indicies_array[valid_time_bin_indicies], 'posterior_to_pf_mean_surprise': one_left_out_posterior_to_pf_surprises_mean, 'posterior_to_scrambled_pf_mean_surprise': one_left_out_posterior_to_scrambled_pf_surprises_mean})
+    result_df = pd.DataFrame({'time_bin_indices': valid_time_bin_indicies, 'epoch_IDX': results_obj.all_epochs_reverse_flat_epoch_indicies_array[valid_time_bin_indicies], 'posterior_to_pf_mean_surprise': one_left_out_posterior_to_pf_surprises_mean, 'posterior_to_scrambled_pf_mean_surprise': one_left_out_posterior_to_scrambled_pf_surprises_mean})
     result_df['surprise_diff'] = result_df['posterior_to_scrambled_pf_mean_surprise'] - result_df['posterior_to_pf_mean_surprise']
-    result_df
-
     # 24.9 seconds to compute
 
     ## Compute Aggregate Dataframe for Epoch means:
     # Group by 'epoch_IDX' and compute means of all columns
     result_df_grouped = result_df.groupby('epoch_IDX').mean()
-    return result_df, result_df_grouped
+    return result, result_df, result_df_grouped
 
 
+
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder, BayesianPlacemapPositionDecoder
+from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import perform_full_session_leave_one_out_decoding_analysis
+from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import build_neurons_color_map # for plot_short_v_long_pf1D_comparison
+
+
+def _long_short_decoding_analysis_from_decoders(long_one_step_decoder_1D, short_one_step_decoder_1D, long_session, short_session, global_session, decoding_time_bin_size = 0.025, perform_cache_load=True):
+    # Get existing long/short decoders from the cell under "# 2023-02-24 Decoders"
+    long_decoder, short_decoder = deepcopy(long_one_step_decoder_1D), deepcopy(short_one_step_decoder_1D)
+    assert np.all(long_decoder.xbin == short_decoder.xbin)
+
+    ## backup existing replay objects
+    # long_session.replay_backup, short_session.replay_backup, global_session.replay_backup = [deepcopy(a_session.replay) for a_session in [long_session, short_session, global_session]]
+    # null-out the replay objects
+    # long_session.replay, short_session.replay, global_session.replay = [None, None, None]
+
+    # Compute/estimate replays if missing from session:
+    if not global_session.has_replays:
+        print(f'Replays missing from sessions. Computing replays...')
+        long_session.replay, short_session.replay, global_session.replay = [a_session.estimate_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=None, maximum_speed_thresh=None, min_inclusion_fr_active_thresh=0.01, min_num_unique_aclu_inclusions=3).to_dataframe() for a_session in [long_session, short_session, global_session]]
+
+    # Prune to the shared aclus in both epochs (short/long):
+    long_shared_aclus_only_decoder, short_shared_aclus_only_decoder = [BasePositionDecoder.init_from_stateful_decoder(a_decoder) for a_decoder in (long_decoder, short_decoder)]
+    shared_aclus, (long_shared_aclus_only_decoder, short_shared_aclus_only_decoder), long_short_pf_neurons_diff = BasePositionDecoder.prune_to_shared_aclus_only(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder)
+
+    # n_neurons = len(shared_aclus)
+    # # for plotting purposes, build colors only for the common (present in both, the intersection) neurons:
+    # neurons_colors_array = build_neurons_color_map(n_neurons, sortby=None, cmap=None)
+    # print(f'{n_neurons = }, {neurons_colors_array.shape =}')
+
+    # with VizTracer(output_file=f"viztracer_{get_now_time_str()}-full_session_LOO_decoding_analysis.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
+    long_results_obj = perform_full_session_leave_one_out_decoding_analysis(global_session, original_1D_decoder=long_shared_aclus_only_decoder, decoding_time_bin_size=decoding_time_bin_size, cache_suffix = '_long', perform_cache_load=perform_cache_load) # , perform_cache_load=False
+    short_results_obj = perform_full_session_leave_one_out_decoding_analysis(global_session, original_1D_decoder=short_shared_aclus_only_decoder, decoding_time_bin_size=decoding_time_bin_size, cache_suffix = '_short', perform_cache_load=perform_cache_load) # , perform_cache_load=False
+
+    return long_results_obj, short_results_obj
 
 # ==================================================================================================================== #
 # 2023-04-10 - Long short expected surprise                                                                            #
@@ -395,6 +448,132 @@ def get_regular_attrs(obj, include_parent=True):
             break
         cls = cls.__base__
     return list(set(regular_attrs))
+
+
+
+# ==================================================================================================================== #
+# 2023-04-07 - `constrain_to_laps`                                                                                     #
+#   Builds the laps using estimation_session_laps(...) if needed for each epoch, and then sets the decoder's .epochs property to the laps object so the occupancy is correct.
+# ==================================================================================================================== #
+## 2023-04-07 - Builds the laps using estimation_session_laps(...) if needed for each epoch, and then sets the decoder's .epochs property to the laps object so the occupancy is correct.
+
+from neuropy.analyses.placefields import PfND
+from neuropy.analyses.laps import estimate_session_laps # used for `constrain_to_laps`
+
+def constrain_to_laps(curr_active_pipeline):
+    """ 2023-04-07 - Constrains the placefields to just the laps, computing the laps if needed.
+    Other laps-related things?
+        # ??? pos_df = sess.compute_position_laps() # ensures the laps are computed if they need to be:
+        # DataSession.compute_position_laps(self)
+        # DataSession.compute_laps_position_df(position_df, laps_df)
+
+    Usage:
+        from PendingNotebookCode import constrain_to_laps
+        curr_active_pipeline = constrain_to_laps(curr_active_pipeline)
+
+    """
+    long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+    long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+
+    for a_name, a_sess, a_result in zip((long_epoch_name, short_epoch_name, global_epoch_name), (long_session, short_session, global_session), (long_results, short_results, global_results)):
+        a_sess = estimate_session_laps(a_sess, should_plot_laps_2d=False)
+        curr_laps_obj = a_sess.laps.as_epoch_obj() # set this to the laps object
+        curr_laps_obj = curr_laps_obj.get_non_overlapping()
+        curr_laps_obj = curr_laps_obj.filtered_by_duration(1.0, 10.0) # the lap must be at least 1 second long and at most 10 seconds long
+        # curr_laps_obj = a_sess.estimate_laps().as_epoch_obj()
+
+        ## Check if already the same:
+        if curr_active_pipeline.active_configs[a_name].computation_config.pf_params.computation_epochs == curr_laps_obj:
+            print(f'WARNING: constrain_to_laps(...): already had the computations ran with this laps object, so no recomputations are needed.')
+            pass
+        else:
+            # Must recompute since the computation_epochs changed
+            curr_active_pipeline.active_configs[a_name].computation_config.pf_params.computation_epochs = curr_laps_obj
+            curr_pf1D, curr_pf2D = a_result.pf1D, a_result.pf2D
+
+            lap_filtered_curr_pf1D = deepcopy(curr_pf1D)
+            lap_filtered_curr_pf1D = PfND(spikes_df=lap_filtered_curr_pf1D.spikes_df, position=lap_filtered_curr_pf1D.position, epochs=deepcopy(curr_laps_obj), config=lap_filtered_curr_pf1D.config, compute_on_init=True)
+            lap_filtered_curr_pf2D = deepcopy(curr_pf2D)
+            lap_filtered_curr_pf2D = PfND(spikes_df=lap_filtered_curr_pf2D.spikes_df, position=lap_filtered_curr_pf2D.position, epochs=deepcopy(curr_laps_obj), config=lap_filtered_curr_pf2D.config, compute_on_init=True)
+            a_result.pf1D = lap_filtered_curr_pf1D
+            a_result.pf2D = lap_filtered_curr_pf2D
+
+        return curr_active_pipeline
+
+def compute_short_long_constrained_decoders(curr_active_pipeline, enable_two_step_decoders:bool = False, recalculate_anyway:bool=True):
+    """ 2023-04-14 - Computes both 1D & 2D Decoders constrained to each other's position bins 
+    Usage:
+
+        (long_one_step_decoder_1D, short_one_step_decoder_1D), (long_one_step_decoder_2D, short_one_step_decoder_2D) = compute_short_long_constrained_decoders(curr_active_pipeline)
+
+        With Two-step Decoders:
+        (long_one_step_decoder_1D, short_one_step_decoder_1D, long_two_step_decoder_1D, short_two_step_decoder_1D), (long_one_step_decoder_2D, short_one_step_decoder_2D, long_two_step_decoder_2D, short_two_step_decoder_2D) = compute_short_long_constrained_decoders(curr_active_pipeline, enable_two_step_decoders=True)
+
+    """
+    long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+
+    # 1D Decoders constrained to each other
+    def compute_short_long_constrained_decoders_1D(curr_active_pipeline, enable_two_step_decoders:bool = False):
+        """ 2023-04-14 - 1D Decoders constrained to each other, captures: recalculate_anyway, long_epoch_name, short_epoch_name """
+        curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_position_decoding_computation'], computation_kwargs_list=[dict(ndim=1)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
+        long_results, short_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name]]
+
+        # long_one_step_decoder_1D, short_one_step_decoder_1D  = [results_data.get('pf1D_Decoder', None) for results_data in (long_results, short_results)]
+        long_one_step_decoder_1D, short_one_step_decoder_1D  = [deepcopy(results_data.get('pf1D_Decoder', None)) for results_data in (long_results, short_results)]
+        # ds and Decoders conform between the long and the short epochs:
+        short_one_step_decoder_1D, did_recompute = short_one_step_decoder_1D.conform_to_position_bins(long_one_step_decoder_1D, force_recompute=True)
+
+        # ## Build or get the two-step decoders for both the long and short:
+        if enable_two_step_decoders:
+            long_two_step_decoder_1D, short_two_step_decoder_1D  = [results_data.get('pf1D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
+            if recalculate_anyway or did_recompute or (long_two_step_decoder_1D is None) or (short_two_step_decoder_1D is None):
+                curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], computation_kwargs_list=[dict(ndim=1)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
+                long_two_step_decoder_1D, short_two_step_decoder_1D  = [results_data.get('pf1D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
+                assert (long_two_step_decoder_1D is not None and short_two_step_decoder_1D is not None)
+        else:
+            long_two_step_decoder_1D, short_two_step_decoder_1D = None, None
+
+        return long_one_step_decoder_1D, short_one_step_decoder_1D, long_two_step_decoder_1D, short_two_step_decoder_1D
+
+    def compute_short_long_constrained_decoders_2D(curr_active_pipeline, enable_two_step_decoders:bool = False):
+        """ 2023-04-14 - 2D Decoders constrained to each other, captures: recalculate_anyway, long_epoch_name, short_epoch_name """
+        curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_position_decoding_computation'], computation_kwargs_list=[dict(ndim=2)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
+        long_results, short_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name]]
+        # Make the 2D Placefields and Decoders conform between the long and the short epochs:
+        long_one_step_decoder_2D, short_one_step_decoder_2D  = [results_data.get('pf2D_Decoder', None) for results_data in (long_results, short_results)]
+        short_one_step_decoder_2D, did_recompute = short_one_step_decoder_2D.conform_to_position_bins(long_one_step_decoder_2D)
+
+        ## Build or get the two-step decoders for both the long and short:
+        if enable_two_step_decoders:
+            long_two_step_decoder_2D, short_two_step_decoder_2D  = [results_data.get('pf2D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
+            if recalculate_anyway or did_recompute or (long_two_step_decoder_2D is None) or (short_two_step_decoder_2D is None):
+                curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_two_step_position_decoding_computation'], computation_kwargs_list=[dict(ndim=2)], enabled_filter_names=[long_epoch_name, short_epoch_name], fail_on_exception=True, debug_print=True)
+                long_two_step_decoder_2D, short_two_step_decoder_2D  = [results_data.get('pf2D_TwoStepDecoder', None) for results_data in (long_results, short_results)]
+                assert (long_two_step_decoder_2D is not None and short_two_step_decoder_2D is not None)
+        else:
+            long_two_step_decoder_2D, short_two_step_decoder_2D = None, None
+        # Sums are similar:
+        # print(f'{np.sum(long_one_step_decoder_2D.marginal.x.p_x_given_n) =},\t {np.sum(long_one_step_decoder_1D.p_x_given_n) = }') # 31181.999999999996 vs 31181.99999999999
+
+        ## Validate:
+        assert long_one_step_decoder_2D.marginal.x.p_x_given_n.shape == long_one_step_decoder_1D.p_x_given_n.shape, f"Must equal but: {long_one_step_decoder_2D.marginal.x.p_x_given_n.shape =} and {long_one_step_decoder_1D.p_x_given_n.shape =}"
+        assert long_one_step_decoder_2D.marginal.x.most_likely_positions_1D.shape == long_one_step_decoder_1D.most_likely_positions.shape, f"Must equal but: {long_one_step_decoder_2D.marginal.x.most_likely_positions_1D.shape =} and {long_one_step_decoder_1D.most_likely_positions.shape =}"
+
+        ## validate values:
+        # assert np.allclose(long_one_step_decoder_2D.marginal.x.p_x_given_n, long_one_step_decoder_1D.p_x_given_n), f"1D Decoder should have an x-posterior equal to its own posterior"
+        # assert np.allclose(curr_epoch_result['marginal_x']['most_likely_positions_1D'], curr_epoch_result['most_likely_positions']), f"1D Decoder should have an x-posterior with most_likely_positions_1D equal to its own most_likely_positions"
+        return long_one_step_decoder_2D, short_one_step_decoder_2D, long_two_step_decoder_2D, short_two_step_decoder_2D
+
+    ## BEGIN MAIN FUNCTION BODY:
+    long_one_step_decoder_1D, short_one_step_decoder_1D, long_two_step_decoder_1D, short_two_step_decoder_1D = compute_short_long_constrained_decoders_1D(curr_active_pipeline, enable_two_step_decoders=enable_two_step_decoders)
+    long_one_step_decoder_2D, short_one_step_decoder_2D, long_two_step_decoder_2D, short_two_step_decoder_2D = compute_short_long_constrained_decoders_2D(curr_active_pipeline, enable_two_step_decoders=enable_two_step_decoders)
+
+    if enable_two_step_decoders:
+        return (long_one_step_decoder_1D, short_one_step_decoder_1D, long_two_step_decoder_1D, short_two_step_decoder_1D), (long_one_step_decoder_2D, short_one_step_decoder_2D, long_two_step_decoder_2D, short_two_step_decoder_2D)
+    else:
+        # Only return the one_step decoders
+        return (long_one_step_decoder_1D, short_one_step_decoder_1D), (long_one_step_decoder_2D, short_one_step_decoder_2D)
 
 
 # ==================================================================================================================== #
