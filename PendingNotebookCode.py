@@ -23,6 +23,142 @@ _debug_print = False
 
 import sys
 
+# ==================================================================================================================== #
+# 2023-04-17 - Factor out interactive diagnostic figure code                                                           #
+# ==================================================================================================================== #
+## Create a diagnostic plot that plots a stack of the three curves used for computations in the given epoch:
+import pyphoplacecellanalysis.External.pyqtgraph as pg
+
+def _build_interactive_diagnostic_distance_metric_figure(results_obj, timebinned_neuron_info, result, debug_print = False):
+	""" 2023-04-14 - Metric Figure - Plots a vertical stack of 3 subplots with synchronized x-axes. 
+    TOP: At the top is the placefield of the first firing cell in the current timebin.
+    MID: The middle shows a placefield of a randomly chosen cell from the set that wasn't firing in this timebin.
+    BOTTOM: The bottom shows the current timebin's decoded posterior (p_x_given_n)
+
+
+	Usage: (for use in Jupyter Notebook)
+		```python
+		import ipywidgets as widgets
+		from IPython.display import display
+
+		def integer_slider(update_func):
+			slider = widgets.IntSlider(description='Slider:', min=0, max=100, value=0)
+			def on_slider_change(change):
+				if change['type'] == 'change' and change['name'] == 'value':
+					# Call the user-provided update function with the current slider index
+					update_func(change['new'])
+			slider.observe(on_slider_change)
+			display(slider)
+
+
+		timebinned_neuron_info = long_results_obj.timebinned_neuron_info
+		win, plot_dict, plot_data, update_function = _build_interactive_diagnostic_distance_metric_figure(timebinned_neuron_info, result)
+		# Call the integer_slider function with the update function
+		integer_slider(update_function)
+		```
+	"""
+	def _get_updated_plot_data(index):
+		hardcoded_sub_epoch_item_idx = 0
+		curr_random_not_firing_cell_pf_curve = result.random_noise_curves[index]
+		curr_decoded_timebins_p_x_given_n = result.decoded_timebins_p_x_given_n[index]
+		neuron_IDX, aclu = timebinned_neuron_info.active_IDXs[index], timebinned_neuron_info.active_aclus[index]
+		if len(neuron_IDX) > 0:
+			# Get first index
+			is_valid = True
+			neuron_IDX = neuron_IDX[hardcoded_sub_epoch_item_idx]
+			aclu = aclu[hardcoded_sub_epoch_item_idx]
+			# curr_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.tuning_curves[neuron_IDX]
+			curr_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[neuron_IDX]
+
+			if curr_random_not_firing_cell_pf_curve.ndim > 1:
+				curr_random_not_firing_cell_pf_curve = curr_random_not_firing_cell_pf_curve[hardcoded_sub_epoch_item_idx]
+
+			if curr_decoded_timebins_p_x_given_n.ndim > 1:
+				curr_decoded_timebins_p_x_given_n = curr_decoded_timebins_p_x_given_n[hardcoded_sub_epoch_item_idx]
+
+			# curr_timebin_p_x_given_n = curr_timebins_p_x_given_n[:, index]
+			curr_timebin_p_x_given_n = curr_decoded_timebins_p_x_given_n
+			normal_surprise, random_surprise = result.one_left_out_posterior_to_pf_surprises[index][hardcoded_sub_epoch_item_idx], result.one_left_out_posterior_to_scrambled_pf_surprises[index][hardcoded_sub_epoch_item_idx]
+			updated_plot_data = {'curr_cell_pf_curve': curr_cell_pf_curve, 'curr_random_not_firing_cell_pf_curve': curr_random_not_firing_cell_pf_curve, 'curr_timebin_p_x_given_n': curr_timebin_p_x_given_n}
+			
+		else:
+			# Invalid period
+			is_valid = False
+			normal_surprise, random_surprise = None, None
+			updated_plot_data = {'curr_cell_pf_curve': None, 'curr_random_not_firing_cell_pf_curve': None, 'curr_timebin_p_x_given_n': None}
+
+		return updated_plot_data, is_valid, (normal_surprise, random_surprise)
+
+
+	def _add_plot(win: pg.GraphicsLayoutWidget, data, name:str):
+		plot = win.addPlot() # PlotItem has to be built first?
+		curve = plot.plot(data, name=name, label=name)
+		plot.setLabel('top', name)
+		return plot, curve
+
+	win = pg.GraphicsLayoutWidget(show=True, title='diagnostic_plot')
+	# plot_data = {'curr_cell_pf_curve': curr_cell_pf_curve, 'curr_random_not_firing_cell_pf_curve': curr_random_not_firing_cell_pf_curve, 'curr_timebin_p_x_given_n': curr_timebin_p_x_given_n}
+	# plot_data = {'curr_cell_pf_curve': None, 'curr_random_not_firing_cell_pf_curve': None, 'curr_timebin_p_x_given_n': None}
+
+	is_valid = False
+
+	for index in np.arange(timebinned_neuron_info.n_timebins):
+		# find the first valid index
+		if not is_valid:
+			plot_data, is_valid, (normal_surprise, random_surprise) = _get_updated_plot_data(index)
+			print(f'first valid index: {index}')
+
+
+	plot_dict = {}
+
+	## Many capture `plot_dict`
+	def _initialize_plots(plot_data):
+		for i, (name, data) in enumerate(plot_data.items()):
+			plot_item, curve = _add_plot(win, data=data, name=name)
+			plot_dict[name] = {'plot_item':plot_item,'curve':curve}
+			if i == 0:
+				first_curve_name = name
+			else:
+				plot_dict[name]['plot_item'].setYLink(first_curve_name)  ## test linking by name
+			win.nextRow()
+		return plot_dict
+
+
+	def _update_plots(plot_dict, updated_plot_data):
+		""" updates the plots created with `_initialize_plots`"""
+		for i, (name, data) in enumerate(updated_plot_data.items()):
+			curr_plot = plot_dict[name]['plot_item']
+			curr_curve = plot_dict[name]['curve']
+			if data is not None:
+				curr_curve.setData(data)
+			else:
+				# curr_plot.clear() # will this mess up the plot by perminantly removing the curve? 
+				# curr_curve.clear()
+				curr_curve.setData([])
+
+	def update_function(index):
+		""" Define an update function that will be called with the current slider index 
+		Captures plot_dict, and all data variables
+		"""
+		# print(f'Slider index: {index}')
+		hardcoded_sub_epoch_item_idx = 0
+		updated_plot_data, is_valid, (normal_surprise, random_surprise) = _get_updated_plot_data(index)
+		if is_valid:
+			_update_plots(plot_dict, updated_plot_data)
+			plot_dict['curr_cell_pf_curve']['plot_item'].setLabel('bottom', f"{normal_surprise}")
+			plot_dict['curr_random_not_firing_cell_pf_curve']['plot_item'].setLabel('bottom', f"{random_surprise}")
+		else:
+			# Invalid period
+			plot_dict['curr_cell_pf_curve']['plot_item'].setLabel('bottom', f"NO ACTIVITY")
+			plot_dict['curr_random_not_firing_cell_pf_curve']['plot_item'].setLabel('bottom', f"NO ACTIVITY")
+			_update_plots(plot_dict, updated_plot_data)
+
+	plot_dict = _initialize_plots(plot_data=plot_data)
+
+	return win, plot_dict, plot_data, update_function
+
+
+
 
 
 # ==================================================================================================================== #
@@ -151,8 +287,6 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
             result.one_left_out_posterior_to_pf_surprises[index].append(active_surprise_metric_fn(curr_cell_pf_curve, curr_timebin_p_x_given_n))
             # result.one_left_out_posterior_to_pf_correlations[timebin_IDX].append(distance.correlation(curr_cell_pf_curve, curr_timebin_p_x_given_n))
 
-            
-
             # 2. From the remainder of cells (those not active), randomly choose one to grab the placefield of and compute the surprise with that and the same posterior.
             # shuffled_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.tuning_curves[shuffle_IDXs[i]]
 
@@ -206,10 +340,6 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
     one_left_out_posterior_to_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_pf_surprises_mean.values()))
     one_left_out_posterior_to_scrambled_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_scrambled_pf_surprises_mean.values()))
 
-    # results_obj.all_epochs_reverse_flat_epoch_indicies_array
-
-    # one_left_out_posterior_to_scrambled_pf_surprises_mean
-
     result_df = pd.DataFrame({'time_bin_indices': valid_time_bin_indicies, 'epoch_IDX': results_obj.all_epochs_reverse_flat_epoch_indicies_array[valid_time_bin_indicies], 'posterior_to_pf_mean_surprise': one_left_out_posterior_to_pf_surprises_mean, 'posterior_to_scrambled_pf_mean_surprise': one_left_out_posterior_to_scrambled_pf_surprises_mean})
     result_df['surprise_diff'] = result_df['posterior_to_scrambled_pf_mean_surprise'] - result_df['posterior_to_pf_mean_surprise']
     # 24.9 seconds to compute
@@ -228,6 +358,7 @@ from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers imp
 
 
 def _long_short_decoding_analysis_from_decoders(long_one_step_decoder_1D, short_one_step_decoder_1D, long_session, short_session, global_session, decoding_time_bin_size = 0.025, perform_cache_load=True):
+    """ Uses existing decoders and other long/short variables to run `perform_full_session_leave_one_out_decoding_analysis` on each. """
     # Get existing long/short decoders from the cell under "# 2023-02-24 Decoders"
     long_decoder, short_decoder = deepcopy(long_one_step_decoder_1D), deepcopy(short_one_step_decoder_1D)
     assert np.all(long_decoder.xbin == short_decoder.xbin)
