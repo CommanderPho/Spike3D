@@ -743,51 +743,6 @@ def plot_long_short(long_results_obj, short_results_obj):
 
 
 
-def get_regular_attrs(obj, include_parent=True):
-    """ Intended to get all of the stored attributes of an object, including those inherited from parent classes, while ignoring @properties and other computed variables
-    Example:
-        class ParentClass:
-            def __init__(self, z):
-                self.z = z
-
-        class MyClass(ParentClass):
-            def __init__(self, x):
-                super().__init__(x+1)
-                self.x = x
-                self.y = x + 1
-
-            @property
-            def computed_prop(self):
-                return self.x + self.y
-
-        obj = MyClass(5)
-        regular_attrs = get_regular_attrs(obj)
-        print(regular_attrs)  # Output: ['z', 'x', 'y']
-    
-
-    ISSUE: returns propery when defined this way
-
-    @property
-    def pdf_normalized_tuning_curves(self):
-        return Ratemap.perform_AOC_normalization(self.tuning_curves)
-
-
-    Usage:
-        get_regular_attrs(ratemap_2D, include_parent=False)
-
-    """
-    regular_attrs = []
-    cls = type(obj)
-    while cls:
-        for attr in cls.__dict__:
-            if not callable(getattr(obj, attr)) and not attr.startswith('__'):
-                regular_attrs.append(attr)
-        if not include_parent:
-            break
-        cls = cls.__base__
-    return list(set(regular_attrs))
-
-
 
 # ==================================================================================================================== #
 # 2023-04-07 - `constrain_to_laps`                                                                                     #
@@ -815,7 +770,7 @@ def constrain_to_laps(curr_active_pipeline):
     long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
 
     for a_name, a_sess, a_result in zip((long_epoch_name, short_epoch_name, global_epoch_name), (long_session, short_session, global_session), (long_results, short_results, global_results)):
-        a_sess = estimate_session_laps(a_sess, should_plot_laps_2d=False)
+        a_sess = estimate_session_laps(a_sess, should_plot_laps_2d=True)
         curr_laps_obj = a_sess.laps.as_epoch_obj() # set this to the laps object
         curr_laps_obj = curr_laps_obj.get_non_overlapping()
         curr_laps_obj = curr_laps_obj.filtered_by_duration(1.0, 10.0) # the lap must be at least 1 second long and at most 10 seconds long
@@ -942,9 +897,6 @@ def _compute_parameter_sweep(spikes_df, active_pos, all_param_sweep_options: dic
     return output_pfs
 
 
-def is_reloaded_instance(obj, classinfo):
-    """ determines if a class instance is a reloaded instance of a class"""
-    return isinstance(obj, classinfo) and sys.getrefcount(classinfo) > 1
 
 
 # ==================================================================================================================== #
