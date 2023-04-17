@@ -44,8 +44,8 @@ class TimebinnedNeuronActivity:
     inactive_aclus: np.ndarray
 
     # derived
-    num_timebin_active_aclus: np.ndarray # int ndarray, the number of active aclus in each timebin
-    is_timebin_valid: np.ndarray # bool ndarray, whether there is at least one aclu active in each timebin
+    num_timebin_active_aclus: np.ndarray = None # int ndarray, the number of active aclus in each timebin
+    is_timebin_valid: np.ndarray = None # bool ndarray, whether there is at least one aclu active in each timebin
 
     def __attrs_post_init__(self):
         """ called after initializer built by `attrs` library. """
@@ -455,12 +455,13 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
 
     for index in np.arange(timebinned_neuron_info.n_timebins):
         # iterate through timebins
+        
+
+        ## Pre loop: add empty array for accumulation
         if index not in result.one_left_out_posterior_to_pf_surprises:
             result.one_left_out_posterior_to_pf_surprises[index] = []
         if index not in result.one_left_out_posterior_to_scrambled_pf_surprises:
             result.one_left_out_posterior_to_scrambled_pf_surprises[index] = []
-
-        ## Pre loop: add empty array for accumulation
 
         # curr_random_not_firing_cell_pf_curve = np.random.uniform(low=0, high=1, size=curr_cell_pf_curve.shape) # generate one at a time
         # curr_random_not_firing_cell_pf_curve = curr_random_not_firing_cell_pf_curve / np.sum(curr_random_not_firing_cell_pf_curve) # normalize
@@ -495,6 +496,8 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
 
             # a) Use a random non-firing cell's placefield:
             random_not_firing_neuron_IDX = random.choice(timebinned_neuron_info.inactive_IDXs[index])
+            # random_not_firing_neuron_IDX = random.choices(timebinned_neuron_info.inactive_IDXs[index], k=)
+
             # random_not_firing_aclu = random.choice(timebinned_neuron_info.inactive_aclus[i])
             # curr_random_not_firing_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.tuning_curves[random_not_firing_neuron_IDX] # normalized pdf tuning curve
             curr_random_not_firing_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[random_not_firing_neuron_IDX] # Unit max tuning curve
@@ -543,7 +546,8 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
     one_left_out_posterior_to_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_pf_surprises_mean.values()))
     one_left_out_posterior_to_scrambled_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_scrambled_pf_surprises_mean.values()))
 
-    result_df = pd.DataFrame({'time_bin_indices': valid_time_bin_indicies, 'epoch_IDX': results_obj.all_epochs_reverse_flat_epoch_indicies_array[valid_time_bin_indicies], 'posterior_to_pf_mean_surprise': one_left_out_posterior_to_pf_surprises_mean, 'posterior_to_scrambled_pf_mean_surprise': one_left_out_posterior_to_scrambled_pf_surprises_mean})
+    result_df = pd.DataFrame({'time_bin_indices': valid_time_bin_indicies, 'epoch_IDX': results_obj.all_epochs_reverse_flat_epoch_indicies_array[valid_time_bin_indicies],
+        'posterior_to_pf_mean_surprise': one_left_out_posterior_to_pf_surprises_mean, 'posterior_to_scrambled_pf_mean_surprise': one_left_out_posterior_to_scrambled_pf_surprises_mean})
     result_df['surprise_diff'] = result_df['posterior_to_scrambled_pf_mean_surprise'] - result_df['posterior_to_pf_mean_surprise']
     # 24.9 seconds to compute
 
