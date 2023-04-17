@@ -43,6 +43,15 @@ class TimebinnedNeuronActivity:
     inactive_IDXs: np.ndarray
     inactive_aclus: np.ndarray
 
+    # derived
+    num_timebin_active_aclus: np.ndarray # int ndarray, the number of active aclus in each timebin
+    is_timebin_valid: np.ndarray # bool ndarray, whether there is at least one aclu active in each timebin
+
+    def __attrs_post_init__(self):
+        """ called after initializer built by `attrs` library. """
+        self.num_timebin_active_aclus = np.array([len(timebin_aclus) for timebin_aclus in self.active_aclus]) # .shape # (2917,)
+        self.is_valid_timebin = (self.num_timebin_active_aclus > 0) # NEVERMIND: already is the leave-one-out result, so don't do TWO or more aclus in each timebin constraint due to leave-one-out-requirements
+
     @classmethod
     def init_from_results_obj(cls, results_obj: SurpriseAnalysisResult):
         n_timebins = np.sum(results_obj.all_included_filter_epochs_decoder_result.nbins)
@@ -52,7 +61,7 @@ class TimebinnedNeuronActivity:
 
         timebins_inactive_neuron_IDXs = [np.array(results_obj.original_1D_decoder.neuron_IDXs)[a_timebin_is_cell_firing] for a_timebin_is_cell_firing in results_obj.is_non_firing_time_bin.T]
         timebins_inactive_aclus = [np.array(results_obj.original_1D_decoder.neuron_IDs)[an_IDX] for an_IDX in timebins_inactive_neuron_IDXs]
-        # timebins_p_x_given_n = np.hstack(results_obj.all_included_filter_epochs_decoder_result.p_x_given_n_list) # # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)  --TO-->  .shape: (63, 4146) - (n_x_bins, n_flattened_all_epoch_time_bins)
+        # timebins_p_x_given_n = np.hstack(results_obj.all_included_filter_epochs_decoder_result.p_x_given_n_list) # # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)  --TO-->  .shape: (63, 4146) - (n_x_bins, n_flattened_all_epoch_time_bins)        
         return cls(n_timebins=n_timebins, active_IDXs=timebins_active_neuron_IDXs, active_aclus=timebins_active_aclus, inactive_IDXs=timebins_inactive_neuron_IDXs, inactive_aclus=timebins_inactive_aclus)
 
 
@@ -93,6 +102,8 @@ class DiagnosticDistanceMetricFigure:
     results_obj: SurpriseAnalysisResult
     timebinned_neuron_info: TimebinnedNeuronActivity
     result: LeaveOneOutDecodingResult
+    hardcoded_sub_epoch_item_idx: int = 0
+
     ## derived
     plot_dict: dict = Factory(dict) # holds the pyqtgraph plot objects
     plot_data: dict = Factory(dict)
@@ -100,34 +111,12 @@ class DiagnosticDistanceMetricFigure:
     ## Graphics
     win: pg.GraphicsLayoutWidget = None
 
-    # def build_interactive_diagnostic_distance_metric_figure(results_obj, timebinned_neuron_info, result, debug_print = False):
-    """ 2023-04-14 - Metric Figure - Plots a vertical stack of 3 subplots with synchronized x-axes. 
-    TOP: At the top is the placefield of the first firing cell in the current timebin.
-    MID: The middle shows a placefield of a randomly chosen cell from the set that wasn't firing in this timebin.
-    BOTTOM: The bottom shows the current timebin's decoded posterior (p_x_given_n)
+    @property
+    def n_timebins(self):
+        """The total number of timebins."""
+        return np.sum(self.results_obj.all_epochs_num_epoch_time_bins)
 
 
-    Usage: (for use in Jupyter Notebook)
-        ```python
-        import ipywidgets as widgets
-        from IPython.display import display
-
-        def integer_slider(update_func):
-            slider = widgets.IntSlider(description='Slider:', min=0, max=100, value=0)
-            def on_slider_change(change):
-                if change['type'] == 'change' and change['name'] == 'value':
-                    # Call the user-provided update function with the current slider index
-                    update_func(change['new'])
-            slider.observe(on_slider_change)
-            display(slider)
-
-
-        timebinned_neuron_info = long_results_obj.timebinned_neuron_info
-        win, plot_dict, plot_data, update_function = _build_interactive_diagnostic_distance_metric_figure(timebinned_neuron_info, result)
-        # Call the integer_slider function with the update function
-        integer_slider(update_function)
-        ```
-    """
     # ==================================================================================================================== #
     # Initializer                                                                                                          #
     # ==================================================================================================================== #
@@ -152,27 +141,26 @@ class DiagnosticDistanceMetricFigure:
     # Private Methods ____________________________________________________________________________________________________ #
     def _get_updated_plot_data(self, index):
         """ called to actually get the plot data for any given timebin index """
-        hardcoded_sub_epoch_item_idx = 0
         curr_random_not_firing_cell_pf_curve = self.result.random_noise_curves[index]
         curr_decoded_timebins_p_x_given_n = self.result.decoded_timebins_p_x_given_n[index]
         neuron_IDX, aclu = self.timebinned_neuron_info.active_IDXs[index], self.timebinned_neuron_info.active_aclus[index]
         if len(neuron_IDX) > 0:
             # Get first index
             is_valid = True
-            neuron_IDX = neuron_IDX[hardcoded_sub_epoch_item_idx]
-            aclu = aclu[hardcoded_sub_epoch_item_idx]
+            neuron_IDX = neuron_IDX[self.hardcoded_sub_epoch_item_idx]
+            aclu = aclu[self.hardcoded_sub_epoch_item_idx]
             # curr_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.tuning_curves[neuron_IDX]
             curr_cell_pf_curve = self.results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[neuron_IDX]
 
             if curr_random_not_firing_cell_pf_curve.ndim > 1:
-                curr_random_not_firing_cell_pf_curve = curr_random_not_firing_cell_pf_curve[hardcoded_sub_epoch_item_idx]
+                curr_random_not_firing_cell_pf_curve = curr_random_not_firing_cell_pf_curve[self.hardcoded_sub_epoch_item_idx]
 
             if curr_decoded_timebins_p_x_given_n.ndim > 1:
-                curr_decoded_timebins_p_x_given_n = curr_decoded_timebins_p_x_given_n[hardcoded_sub_epoch_item_idx]
+                curr_decoded_timebins_p_x_given_n = curr_decoded_timebins_p_x_given_n[self.hardcoded_sub_epoch_item_idx]
 
             # curr_timebin_p_x_given_n = curr_timebins_p_x_given_n[:, index]
             curr_timebin_p_x_given_n = curr_decoded_timebins_p_x_given_n
-            normal_surprise, random_surprise = self.result.one_left_out_posterior_to_pf_surprises[index][hardcoded_sub_epoch_item_idx], self.result.one_left_out_posterior_to_scrambled_pf_surprises[index][hardcoded_sub_epoch_item_idx]
+            normal_surprise, random_surprise = self.result.one_left_out_posterior_to_pf_surprises[index][self.hardcoded_sub_epoch_item_idx], self.result.one_left_out_posterior_to_scrambled_pf_surprises[index][self.hardcoded_sub_epoch_item_idx]
             updated_plot_data = {'curr_cell_pf_curve': curr_cell_pf_curve, 'curr_random_not_firing_cell_pf_curve': curr_random_not_firing_cell_pf_curve, 'curr_timebin_p_x_given_n': curr_timebin_p_x_given_n}
             
         else:
