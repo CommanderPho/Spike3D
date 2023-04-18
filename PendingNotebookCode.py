@@ -406,7 +406,7 @@ import random # for random.choice(mylist)
 # from PendingNotebookCode import _scramble_curve
 from scipy.stats import wasserstein_distance
 from scipy.stats import pearsonr
-
+from pyphocorehelpers.indexing_helpers import safe_np_vstack # for `_new_compute_surprise`
 
 ## 0. Precompute the active neurons in each timebin, and the epoch-timebin-flattened decoded posteriors makes it easier to compute for a given time bin:
 
@@ -533,15 +533,8 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
         ## Post neuron loops: convert lists to np.arrays
         result.one_left_out_posterior_to_pf_surprises[index] = np.array(result.one_left_out_posterior_to_pf_surprises[index])
         result.one_left_out_posterior_to_scrambled_pf_surprises[index] = np.array(result.one_left_out_posterior_to_scrambled_pf_surprises[index])
-        if len(result.random_noise_curves[index])>0:
-            result.random_noise_curves[index] = np.vstack(result.random_noise_curves[index]) # without this check np.vstack throws `ValueError: need at least one array to concatenate` for empty lists
-        else:
-            result.random_noise_curves[index] = np.array(result.random_noise_curves[index]) 
-
-        if len(result.decoded_timebins_p_x_given_n[index])>0:
-            result.decoded_timebins_p_x_given_n[index] = np.vstack(result.decoded_timebins_p_x_given_n[index]) # without this check np.vstack throws `ValueError: need at least one array to concatenate` for empty lists
-        else:
-            result.decoded_timebins_p_x_given_n[index] = np.array(result.decoded_timebins_p_x_given_n[index]) 
+        result.random_noise_curves[index] = safe_np_vstack(result.random_noise_curves[index]) # without this check np.vstack throws `ValueError: need at least one array to concatenate` for empty lists
+        result.decoded_timebins_p_x_given_n[index] = safe_np_vstack(result.decoded_timebins_p_x_given_n[index]) # without this check np.vstack throws `ValueError: need at least one array to concatenate` for empty lists
 
     # End Timebin Loop
     ## Post timebin loops compute mean variables:
