@@ -215,7 +215,7 @@ class DiagnosticDistanceMetricFigure:
 
 
 
-def _build_interactive_diagnostic_distance_metric_figure(results_obj, timebinned_neuron_info, result, debug_print = False):
+def _build_interactive_diagnostic_distance_metric_figure(surprise_results_obj, timebinned_neuron_info, result, debug_print = False):
     """ 2023-04-14 - Metric Figure - Plots a vertical stack of 3 subplots with synchronized x-axes. 
     TOP: At the top is the placefield of the first firing cell in the current timebin.
     MID: The middle shows a placefield of a randomly chosen cell from the set that wasn't firing in this timebin.
@@ -255,7 +255,7 @@ def _build_interactive_diagnostic_distance_metric_figure(results_obj, timebinned
             neuron_IDX = neuron_IDX[hardcoded_sub_epoch_item_idx]
             aclu = aclu[hardcoded_sub_epoch_item_idx]
             # curr_cell_pf_curve = long_results_obj.original_1D_decoder.pf.ratemap.tuning_curves[neuron_IDX]
-            curr_cell_pf_curve = results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[neuron_IDX]
+            curr_cell_pf_curve = surprise_results_obj.original_1D_decoder.pf.ratemap.unit_max_tuning_curves[neuron_IDX]
 
             if curr_random_not_firing_cell_pf_curve.ndim > 1:
                 curr_random_not_firing_cell_pf_curve = curr_random_not_firing_cell_pf_curve[hardcoded_sub_epoch_item_idx]
