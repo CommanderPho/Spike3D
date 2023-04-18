@@ -8,6 +8,7 @@ import pandas as pd
 import pyvista as pv
 import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 
+from pyphocorehelpers.function_helpers import function_attributes
 from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 from neuropy.core.neuron_identities import PlotStringBrevityModeEnum # for display_all_pf_2D_pyqtgraph_binned_image_rendering
@@ -409,7 +410,7 @@ from scipy.stats import pearsonr
 
 ## 0. Precompute the active neurons in each timebin, and the epoch-timebin-flattened decoded posteriors makes it easier to compute for a given time bin:
 
-
+@function_attributes(short_name='_new_compute_surprise', tags=[], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-04-14 00:00')
 def _new_compute_surprise(results_obj, active_surprise_metric_fn):
     """ 2023-04-14 - To Finish factoring out
         long_results_obj.timebinned_neuron_info = TimebinnedNeuronActivity.init_from_results_obj(long_results_obj)
