@@ -42,6 +42,8 @@ class TimebinnedNeuronActivity:
     active_aclus: np.ndarray
     inactive_IDXs: np.ndarray
     inactive_aclus: np.ndarray
+    
+    time_bin_centers: np.ndarray # the timebin center times that each time bin corresponds to
 
     # derived
     num_timebin_active_aclus: np.ndarray = None # int ndarray, the number of active aclus in each timebin
@@ -50,7 +52,7 @@ class TimebinnedNeuronActivity:
     def __attrs_post_init__(self):
         """ called after initializer built by `attrs` library. """
         self.num_timebin_active_aclus = np.array([len(timebin_aclus) for timebin_aclus in self.active_aclus]) # .shape # (2917,)
-        self.is_valid_timebin = (self.num_timebin_active_aclus > 0) # NEVERMIND: already is the leave-one-out result, so don't do TWO or more aclus in each timebin constraint due to leave-one-out-requirements
+        self.is_timebin_valid = (self.num_timebin_active_aclus > 0) # NEVERMIND: already is the leave-one-out result, so don't do TWO or more aclus in each timebin constraint due to leave-one-out-requirements
 
     @classmethod
     def init_from_results_obj(cls, results_obj: SurpriseAnalysisResult):
@@ -62,7 +64,12 @@ class TimebinnedNeuronActivity:
         timebins_inactive_neuron_IDXs = [np.array(results_obj.original_1D_decoder.neuron_IDXs)[a_timebin_is_cell_firing] for a_timebin_is_cell_firing in results_obj.is_non_firing_time_bin.T]
         timebins_inactive_aclus = [np.array(results_obj.original_1D_decoder.neuron_IDs)[an_IDX] for an_IDX in timebins_inactive_neuron_IDXs]
         # timebins_p_x_given_n = np.hstack(results_obj.all_included_filter_epochs_decoder_result.p_x_given_n_list) # # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)  --TO-->  .shape: (63, 4146) - (n_x_bins, n_flattened_all_epoch_time_bins)        
-        return cls(n_timebins=n_timebins, active_IDXs=timebins_active_neuron_IDXs, active_aclus=timebins_active_aclus, inactive_IDXs=timebins_inactive_neuron_IDXs, inactive_aclus=timebins_inactive_aclus)
+
+        assert np.shape(results_obj.flat_all_epochs_decoded_epoch_time_bins)[1] == n_timebins, f"the last dimension of long_results_obj.flat_all_epochs_decoded_epoch_time_bins should be equal to n_timebins but instead np.shape(results_obj.flat_all_epochs_decoded_epoch_time_bins): {np.shape(results_obj.flat_all_epochs_decoded_epoch_time_bins)} " 
+        # long_results_obj.flat_all_epochs_decoded_epoch_time_bins[0].shape
+        time_bin_centers = results_obj.flat_all_epochs_decoded_epoch_time_bins[0].copy()
+        return cls(n_timebins=n_timebins, active_IDXs=timebins_active_neuron_IDXs, active_aclus=timebins_active_aclus, inactive_IDXs=timebins_inactive_neuron_IDXs, inactive_aclus=timebins_inactive_aclus,
+                    time_bin_centers=time_bin_centers)
 
 
 @define(slots=False, repr=False)
@@ -546,7 +553,9 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
     one_left_out_posterior_to_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_pf_surprises_mean.values()))
     one_left_out_posterior_to_scrambled_pf_surprises_mean = np.array(list(result.one_left_out_posterior_to_scrambled_pf_surprises_mean.values()))
 
-    result_df = pd.DataFrame({'time_bin_indices': valid_time_bin_indicies, 'epoch_IDX': results_obj.all_epochs_reverse_flat_epoch_indicies_array[valid_time_bin_indicies],
+    
+    # Build Output Dataframes:
+    result_df = pd.DataFrame({'time_bin_indices': valid_time_bin_indicies, 'time_bin_centers': timebinned_neuron_info.time_bin_centers[timebinned_neuron_info.is_timebin_valid], 'epoch_IDX': results_obj.all_epochs_reverse_flat_epoch_indicies_array[valid_time_bin_indicies],
         'posterior_to_pf_mean_surprise': one_left_out_posterior_to_pf_surprises_mean, 'posterior_to_scrambled_pf_mean_surprise': one_left_out_posterior_to_scrambled_pf_surprises_mean})
     result_df['surprise_diff'] = result_df['posterior_to_scrambled_pf_mean_surprise'] - result_df['posterior_to_pf_mean_surprise']
     # 24.9 seconds to compute
@@ -554,7 +563,7 @@ def _new_compute_surprise(results_obj, active_surprise_metric_fn):
     ## Compute Aggregate Dataframe for Epoch means:
     # Group by 'epoch_IDX' and compute means of all columns
     result_df_grouped = result_df.groupby('epoch_IDX').mean()
-    return result, result_df, result_df_grouped
+    return results_obj, result, result_df, result_df_grouped
 
 
 
