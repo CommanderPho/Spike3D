@@ -88,6 +88,18 @@ statsmodels = {git = "https://github.com/statsmodels/statsmodels"}
 # [tool.poetry.scripts]
 # setup_dependent_repos = 'scripts.console:run'
 
+[tool.vulture]
+exclude = [] # "*file*.py", "dir/"
+ignore_decorators = [] # "@app.route", "@require_*"
+ignore_names = [] # "visit_*", "do_*"
+make_whitelist = true
+min_confidence = 80
+paths = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis", "../Spike3D"]
+sort_by_size = true
+verbose = true
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
