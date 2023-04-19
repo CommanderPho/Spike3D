@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.1.1"
+version = "0.1.3"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"
@@ -36,14 +36,15 @@ jupyterlab-lsp = "^4.0.0"
 jupyter-rfb = "^0.3.3"
 pillow = "^9.4.0"
 seaborn = "^0.12.2"
+param = "^1.13.0"
+# trame = "^2.3.2" # visualization, currently not used
 # modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
-trame = "^2.3.2" # visualization, currently not used
-param = "^1.13.0"
+
 
 [tool.poetry.group.dev.dependencies]
-pip = "^23.0"
+pip = "^23.1"
 ipython = "^8.9.0"
 viztracer = "^0.15.6"
 psgdemos = "^1.12.1"
@@ -60,6 +61,10 @@ jedi-language-server = "^0.40.0"
 python-lsp-server = "^1.7.1"
 sphinx = "^6.1.3"
 sphinx-autodoc-typehints = "^1.22"
+vulture = "^2.7" # Unused Code Cleanup - Independent from Codebase
+coverage = "^7.2.3" # Unused Code Cleanup - Independent from Codebase
+pyflakes = "^3.0.1" # Unused Code Cleanup - Independent from Codebase
+uncalled = "^0.1.6" # Unused Code Cleanup - Independent from Codebase
 # ipympl = "^0.9.3"
 # panel = "^0.14.4"
 
