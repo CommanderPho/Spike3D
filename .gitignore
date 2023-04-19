@@ -100,3 +100,4 @@ wingdbstub.py
 *.sha256
 .virtual_documents
 new-workspace.jupyterlab-workspace
+fileName.png
