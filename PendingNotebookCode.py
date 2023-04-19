@@ -281,6 +281,7 @@ def constrain_to_laps(curr_active_pipeline):
             pass
         else:
             # Must recompute since the computation_epochs changed
+            print(f'setting new computation epochs because laps changed.')
             curr_active_pipeline.active_configs[a_name].computation_config.pf_params.computation_epochs = curr_laps_obj
             curr_pf1D, curr_pf2D = a_result.pf1D, a_result.pf2D
 
