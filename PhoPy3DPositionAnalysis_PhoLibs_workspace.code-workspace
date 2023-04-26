@@ -52,6 +52,7 @@
 			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
 		],
 		"favorites.sortDirection": "DESC",
+		"python.analysis.extraPaths": [],
 	},
 	"extensions": {
 		"recommendations": [
