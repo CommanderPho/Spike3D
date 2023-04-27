@@ -1,0 +1,60 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../NeuroPy"
+		},
+		{
+			"path": "../pyPhoCoreHelpers"
+		},
+		{
+			"path": "../pyPhoPlaceCellAnalysis"
+		}
+	],
+	"settings": {
+		"jupyter.jupyterServerType": "local",
+		"files.exclude": {
+			"**/.classpath": true,
+			"**/.dvc": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.qt_for_python": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true
+		},
+		"python.analysis.logLevel": "Error",
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#1073cf2d",
+			"editor.lineHighlightBorder": "#9fced11f",
+			"activityBar.background": "#3D234B",
+			"titleBar.activeBackground": "#b68c51", // "#56306A",
+			"titleBar.activeForeground": "#FCFBFD"
+		},
+		"search.exclude": {
+			"**/.ipynb_checkpoints": true,
+			"**/EXTERNAL/TESTING/OLD": true
+		},
+		"qtForPython.qmllint.enabled": false,
+		"python.autoComplete.extraPaths": [],
+		"git.ignoreLimitWarning": true,
+		"qtForPython.uic.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
+			"--import-from",
+			"pyphoplacecellanalysis.Resources",
+			"--resource-suffix=\"\""
+		],
+		"qtForPython.rcc.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
+		],
+		"python.analysis.extraPaths": [],
+	},
+	}
+}
