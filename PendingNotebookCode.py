@@ -32,6 +32,71 @@ import sys
 import matplotlib
 from attrs import define, Factory
 
+
+# PyQtGraph Properties:
+# win.setBackground
+# win.setWindowTitle
+# win.setBackgroundBrush
+# win.setXRange
+# win.setYRange
+
+# "Show X Grid"
+# "Show Y Grid"
+
+
+# visual_config = dict(pen=pg.mkPen('#fff'), brush=pg.mkBrush('#f004'), hoverBrush=pg.mkBrush('#fff4'), hoverPen=pg.mkPen('#f00'))
+
+
+def _helper_make_scatterplot_clickable(main_scatter_plot, enable_hover:bool=False):
+	""" pyqtgraph 
+	
+	Usage:
+	
+	lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection) = _helper_make_scatterplot_clickable(a_plot)
+	
+	"""
+	# Highlights the hovered spikes white:
+	# main_scatter_plot.addPoints(hoverable=True,
+	# 	# hoverSymbol=vtick, # hoverSymbol='s',
+	# 	hoverSize=7, # default is 5
+	# 	)
+
+
+	## Clickable/Selectable Spikes:
+	# Will make all plots clickable
+	clickedPen = pg.mkPen('#DDD', width=2)
+	lastClicked = []
+	def _test_scatter_plot_clicked(plot, points):
+		global lastClicked
+		for p in lastClicked:
+			p.resetPen()
+		print("clicked points", points)
+		for p in points:
+			p.setPen(clickedPen)
+		lastClicked = points
+
+	main_scatter_clicked_connection = main_scatter_plot.sigClicked.connect(_test_scatter_plot_clicked)
+
+	## Hoverable Spikes:
+	if enable_hover:
+		def _test_scatter_plot_hovered(plt, points, ev):
+			# sigHovered(self, points, ev)
+			print(f'_test_scatter_plot_hovered(plt: {plt}, points: {points}, ev: {ev})')
+			if (len(points) > 0):
+				curr_point = points[0]
+				# self.
+				# curr_point.index
+		main_scatter_hovered_connection = main_scatter_plot.sigHovered.connect(_test_scatter_plot_hovered)
+	else:
+		main_scatter_hovered_connection = None
+
+	return lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection)
+
+
+
+
+
+
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class SelectionManager:
 	""" Takes a list of matplotlib Axes that can have their selection toggled/un-toggled for inclusion/exclusion. 
@@ -253,7 +318,8 @@ def constrain_to_laps(curr_active_pipeline):
     long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
 
     for a_name, a_sess, a_result in zip((long_epoch_name, short_epoch_name, global_epoch_name), (long_session, short_session, global_session), (long_results, short_results, global_results)):
-        a_sess = estimate_session_laps(a_sess, should_plot_laps_2d=True)
+        # a_sess = estimate_session_laps(a_sess, should_plot_laps_2d=True)
+        a_sess = a_sess.replace_session_laps_with_estimates(should_plot_laps_2d=False)
         curr_laps_obj = a_sess.laps.as_epoch_obj() # set this to the laps object
         curr_laps_obj = curr_laps_obj.get_non_overlapping()
         curr_laps_obj = curr_laps_obj.filtered_by_duration(1.0, 10.0) # the lap must be at least 1 second long and at most 10 seconds long
