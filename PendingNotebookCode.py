@@ -24,6 +24,127 @@ _debug_print = False
 
 import sys
 
+
+
+# ==================================================================================================================== #
+# 2023-05-02 - Factor out interactive matplotlib/pyqtgraph helper code (untested)                                      #
+# ==================================================================================================================== #
+import matplotlib
+from attrs import define, Factory
+
+@define(slots=True, eq=False) #eq=False enables hashing by object identity
+class SelectionManager:
+	""" Takes a list of matplotlib Axes that can have their selection toggled/un-toggled for inclusion/exclusion. 
+		Adds the ability to toggle selections for each axis  by clicking, and a grey background for selected objects vs. white for unselected.
+	Usage:
+		from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
+
+		laps_plot_tuple = plot_decoded_epoch_slices(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, global_pos_df=global_session.position.df, variable_name='lin_pos', xbin=long_results_obj.original_1D_decoder.xbin,
+																name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=32)
+		curr_viz_params, _curr_plot_data, _curr_plots, _curr_ui_container = laps_plot_tuple
+
+		# Create a SelectionManager instance
+		sm = SelectionManager(_curr_plots.axs)
+
+	"""
+	axes: list
+	is_selected: dict = Factory(dict)
+	fig: matplotlib.figure.Figure = None # Matplotlib.Figure
+	cid: int = None # Matplotlib.Figure
+
+	def __attrs_post_init__(self):
+		# Get figure from first axes:
+		assert len(self.axes) > 0
+		first_ax = self.axes[0]
+		self.fig = first_ax.get_figure()		
+		self.cid = self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+		# Set initial selection to False
+		for ax in self.axes:
+			self.is_selected[ax] = False
+
+	def on_click(self, event):
+		# Get the clicked Axes object
+		ax = event.inaxes		
+		# Toggle the selection status of the clicked Axes
+		self.is_selected[ax] = not self.is_selected[ax]
+		# Set the face color of the clicked Axes based on its selection status
+		if self.is_selected[ax]:
+			ax.patch.set_facecolor('gray')
+		else:
+			ax.patch.set_facecolor('white')
+		# Redraw the figure to show the updated selection
+		event.canvas.draw()
+
+
+
+
+
+import matplotlib as mpl
+
+def extract_figure_properties(fig):
+    """ UNTESTED, UNFINISHED
+    Extracts styles, formatting, and set options from a matplotlib Figure object.
+    Returns a dictionary with the following keys:
+        - 'title': the Figure title (if any)
+        - 'xlabel': the label for the x-axis (if any)
+        - 'ylabel': the label for the y-axis (if any)
+        - 'xlim': the limits for the x-axis (if any)
+        - 'ylim': the limits for the y-axis (if any)
+        - 'xscale': the scale for the x-axis (if any)
+        - 'yscale': the scale for the y-axis (if any)
+        - 'legend': the properties of the legend (if any)
+        - 'grid': the properties of the grid (if any)
+        
+        
+        Usage:        
+            curr_fig = plt.gcf()
+            curr_fig = out.figures[0]
+            curr_fig_properties = extract_figure_properties(curr_fig)
+            curr_fig_properties
+
+    """
+    properties = {}
+    
+    # Extract title
+    properties['title'] = fig._suptitle.get_text() if fig._suptitle else None
+    
+    # Extract axis labels and limits
+    for ax in fig.get_axes():
+        if ax.get_label() == 'x':
+            properties['xlabel'] = ax.get_xlabel()
+            properties['xlim'] = ax.get_xlim()
+            properties['xscale'] = ax.get_xscale()
+        elif ax.get_label() == 'y':
+            properties['ylabel'] = ax.get_ylabel()
+            properties['ylim'] = ax.get_ylim()
+            properties['yscale'] = ax.get_yscale()
+    
+    # Extract legend properties
+    if hasattr(fig, 'legend_'):
+        legend = fig.legend_
+        if legend:
+            properties['legend'] = {
+                'title': legend.get_title().get_text(),
+                'labels': [t.get_text() for t in legend.get_texts()],
+                'loc': legend._loc,
+                'frameon': legend.get_frame_on(),
+            }
+    
+    # Extract grid properties
+    first_ax = fig.axes[0]
+    grid = first_ax.get_gridlines()[0] if first_ax.get_gridlines() else None
+    if grid:
+        properties['grid'] = {
+            'color': grid.get_color(),
+            'linestyle': grid.get_linestyle(),
+            'linewidth': grid.get_linewidth(),
+        }
+    
+    return properties
+
+
+
+
 # ==================================================================================================================== #
 # 2023-04-17 - Factor out interactive diagnostic figure code                                                           #
 # ==================================================================================================================== #
