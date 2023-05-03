@@ -275,7 +275,6 @@ def _process_binary_repo(repo_path, skip_building=False):
     else:
         print(f'\t skipping building binary repos for {repo_path}')
 
-    # backup_pwd = os.cwd()
     os.chdir('dist/')
     
     # Use glob to find the first generated .whl file in the dist/ directory
