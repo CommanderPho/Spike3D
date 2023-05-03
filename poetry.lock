@@ -1644,6 +1644,18 @@ files = [
 ]
 
 [[package]]
+name = "dodgy"
+version = "0.2.1"
+description = "Dodgy: Searches for dodgy looking lines in Python code"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "dodgy-0.2.1-py3-none-any.whl", hash = "sha256:51f54c0fd886fa3854387f354b19f429d38c04f984f38bc572558b703c0542a6"},
+    {file = "dodgy-0.2.1.tar.gz", hash = "sha256:28323cbfc9352139fdd3d316fa17f325cc0e9ac74438cbba51d70f9b48f86c3a"},
+]
+
+[[package]]
 name = "dpath"
 version = "2.1.5"
 description = "Filesystem-like pathing and searching for dictionaries"
@@ -2187,6 +2199,38 @@ peakdetect = "1.1"
 requests = "*"
 scipy = "*"
 tqdm = "*"
+
+[[package]]
+name = "flake8"
+version = "2.3.0"
+description = "the modular source code checker: pep8, pyflakes and co"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "flake8-2.3.0-py2.py3-none-any.whl", hash = "sha256:c99cc9716d6655d9c8bcb1e77632b8615bf0abd282d7abd9f5c2148cad7fc669"},
+    {file = "flake8-2.3.0.tar.gz", hash = "sha256:5ee1a43ccd0716d6061521eec6937c983efa027793013e572712c4da55c7c83e"},
+]
+
+[package.dependencies]
+mccabe = ">=0.2.1"
+pep8 = ">=1.5.7"
+pyflakes = ">=0.8.1"
+
+[[package]]
+name = "flake8-polyfill"
+version = "1.0.2"
+description = "Polyfill package for Flake8 plugins"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "flake8-polyfill-1.0.2.tar.gz", hash = "sha256:e44b087597f6da52ec6393a709e7108b2905317d0c0b744cdca6208e670d8eda"},
+    {file = "flake8_polyfill-1.0.2-py2.py3-none-any.whl", hash = "sha256:12be6a34ee3ab795b19ca73505e7b55826d5f6ad7230d31b18e106400169b9e9"},
+]
+
+[package.dependencies]
+flake8 = "*"
 
 [[package]]
 name = "flatten-dict"
@@ -4618,7 +4662,7 @@ version = "0.0.7"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
+python-versions = ">=3.9,<3.11"
 files = []
 develop = true
 
@@ -4989,11 +5033,11 @@ files = [
 [package.dependencies]
 numpy = [
     {version = ">=1.21.0", markers = "python_version <= \"3.9\" and platform_system == \"Darwin\" and platform_machine == \"arm64\""},
+    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
+    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
     {version = ">=1.19.3", markers = "python_version >= \"3.6\" and platform_system == \"Linux\" and platform_machine == \"aarch64\" or python_version >= \"3.9\""},
     {version = ">=1.17.0", markers = "python_version >= \"3.7\""},
     {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
-    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
-    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
 ]
 
 [[package]]
@@ -5290,6 +5334,33 @@ files = [
 [package.dependencies]
 numpy = "*"
 scipy = "*"
+
+[[package]]
+name = "pep8"
+version = "1.7.1"
+description = "Python style guide checker"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pep8-1.7.1-py2.py3-none-any.whl", hash = "sha256:b22cfae5db09833bb9bd7c8463b53e1a9c9b39f12e304a8d0bba729c501827ee"},
+    {file = "pep8-1.7.1.tar.gz", hash = "sha256:fe249b52e20498e59e0b5c5256aa52ee99fc295b26ec9eaa85776ffdb9fe6374"},
+]
+
+[[package]]
+name = "pep8-naming"
+version = "0.10.0"
+description = "Check PEP-8 naming conventions, plugin for flake8"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pep8-naming-0.10.0.tar.gz", hash = "sha256:f3b4a5f9dd72b991bf7d8e2a341d2e1aa3a884a769b5aaac4f56825c1763bf3a"},
+    {file = "pep8_naming-0.10.0-py2.py3-none-any.whl", hash = "sha256:5d9f1056cb9427ce344e98d1a7f5665710e2f20f748438e308995852cfa24164"},
+]
+
+[package.dependencies]
+flake8-polyfill = ">=1.0.2,<2"
 
 [[package]]
 name = "pexpect"
@@ -5600,6 +5671,45 @@ files = [
 wcwidth = "*"
 
 [[package]]
+name = "prospector"
+version = "1.9.0"
+description = "Prospector is a tool to analyse Python code by aggregating the result of other tools."
+category = "dev"
+optional = false
+python-versions = ">=3.7.2,<4.0"
+files = [
+    {file = "prospector-1.9.0-py3-none-any.whl", hash = "sha256:c24011019e48b54745dc0f5d3d25e9d6b19750129996c134253c2f1eed9d45ac"},
+    {file = "prospector-1.9.0.tar.gz", hash = "sha256:599f31516f857d785058773875e9358702ad653e65461e8cad44134d8ee17b1f"},
+]
+
+[package.dependencies]
+dodgy = ">=0.2.1,<0.3.0"
+flake8 = "<6.0.0"
+GitPython = ">=3.1.27,<4.0.0"
+mccabe = ">=0.7.0,<0.8.0"
+packaging = "*"
+pep8-naming = ">=0.3.3,<=0.10.0"
+pycodestyle = ">=2.9.0"
+pydocstyle = ">=2.0.0"
+pyflakes = ">=2.2.0,<3"
+pylint = ">=2.8.3"
+pylint-celery = "0.3"
+pylint-django = ">=2.5,<2.6"
+pylint-flask = "0.6"
+pylint-plugin-utils = ">=0.7,<0.8"
+PyYAML = "*"
+requirements-detector = ">=1.0.3"
+setoptconf-tmp = ">=0.3.1,<0.4.0"
+toml = ">=0.10.2,<0.11.0"
+
+[package.extras]
+with-bandit = ["bandit (>=1.5.1)"]
+with-everything = ["bandit (>=1.5.1)", "mypy (>=0.600)", "pyroma (>=2.4)", "vulture (>=1.5)"]
+with-mypy = ["mypy (>=0.600)"]
+with-pyroma = ["pyroma (>=2.4)"]
+with-vulture = ["vulture (>=1.5)"]
+
+[[package]]
 name = "protobuf"
 version = "4.22.3"
 description = ""
@@ -5820,6 +5930,18 @@ files = [
 ]
 
 [[package]]
+name = "pycodestyle"
+version = "2.10.0"
+description = "Python style guide checker"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pycodestyle-2.10.0-py2.py3-none-any.whl", hash = "sha256:8a4eaf0d0495c7395bdab3589ac2db602797d76207242c17d470186815706610"},
+    {file = "pycodestyle-2.10.0.tar.gz", hash = "sha256:347187bdb476329d98f695c213d7295a846d1152ff4fe9bacb8a9590b8ee7053"},
+]
+
+[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -5906,6 +6028,24 @@ dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
 
 [[package]]
+name = "pydocstyle"
+version = "6.3.0"
+description = "Python docstring style checker"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pydocstyle-6.3.0-py3-none-any.whl", hash = "sha256:118762d452a49d6b05e194ef344a55822987a462831ade91ec5c06fd2169d019"},
+    {file = "pydocstyle-6.3.0.tar.gz", hash = "sha256:7ce43f0c0ac87b07494eb9c0b462c0b73e6ff276807f204d6b53edc72b7e44e1"},
+]
+
+[package.dependencies]
+snowballstemmer = ">=2.2.0"
+
+[package.extras]
+toml = ["tomli (>=1.2.3)"]
+
+[[package]]
 name = "pydot"
 version = "1.4.2"
 description = "Python interface to Graphviz's Dot"
@@ -5948,14 +6088,14 @@ tests = ["black (==23.3.0)", "flake8", "flake8-docstrings", "funcy (>=1.14)", "i
 
 [[package]]
 name = "pyflakes"
-version = "3.0.1"
+version = "2.5.0"
 description = "passive checker of Python programs"
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pyflakes-3.0.1-py2.py3-none-any.whl", hash = "sha256:ec55bf7fe21fff7f1ad2f7da62363d749e2a470500eab1b555334b67aa1ef8cf"},
-    {file = "pyflakes-3.0.1.tar.gz", hash = "sha256:ec8b276a6b60bd80defed25add7e439881c19e64850afd9b346283d4165fd0fd"},
+    {file = "pyflakes-2.5.0-py2.py3-none-any.whl", hash = "sha256:4579f67d887f804e67edb544428f264b7b24f435b263c4614f384135cea553d2"},
+    {file = "pyflakes-2.5.0.tar.gz", hash = "sha256:491feb020dca48ccc562a8c0cbe8df07ee13078df59813b83959cbdada312ea3"},
 ]
 
 [[package]]
@@ -6101,6 +6241,71 @@ typing-extensions = {version = ">=3.10.0", markers = "python_version < \"3.10\""
 [package.extras]
 spelling = ["pyenchant (>=3.2,<4.0)"]
 testutils = ["gitpython (>3)"]
+
+[[package]]
+name = "pylint-celery"
+version = "0.3"
+description = "pylint-celery is a Pylint plugin to aid Pylint in recognising and understandingerrors caused when using the Celery library"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pylint-celery-0.3.tar.gz", hash = "sha256:41e32094e7408d15c044178ea828dd524beedbdbe6f83f712c5e35bde1de4beb"},
+]
+
+[package.dependencies]
+astroid = ">=1.0"
+pylint = ">=1.0"
+pylint-plugin-utils = ">=0.2.1"
+
+[[package]]
+name = "pylint-django"
+version = "2.5.3"
+description = "A Pylint plugin to help Pylint understand the Django web framework"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pylint-django-2.5.3.tar.gz", hash = "sha256:0ac090d106c62fe33782a1d01bda1610b761bb1c9bf5035ced9d5f23a13d8591"},
+    {file = "pylint_django-2.5.3-py3-none-any.whl", hash = "sha256:56b12b6adf56d548412445bd35483034394a1a94901c3f8571980a13882299d5"},
+]
+
+[package.dependencies]
+pylint = ">=2.0,<3"
+pylint-plugin-utils = ">=0.7"
+
+[package.extras]
+for-tests = ["coverage", "django-tables2", "django-tastypie", "factory-boy", "pylint (>=2.13)", "pytest", "wheel"]
+with-django = ["Django"]
+
+[[package]]
+name = "pylint-flask"
+version = "0.6"
+description = "pylint-flask is a Pylint plugin to aid Pylint in recognizing and understanding errors caused when using Flask"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pylint-flask-0.6.tar.gz", hash = "sha256:f4d97de2216bf7bfce07c9c08b166e978fe9f2725de2a50a9845a97de7e31517"},
+]
+
+[package.dependencies]
+pylint-plugin-utils = ">=0.2.1"
+
+[[package]]
+name = "pylint-plugin-utils"
+version = "0.7"
+description = "Utilities and helpers for writing Pylint plugins"
+category = "dev"
+optional = false
+python-versions = ">=3.6.2"
+files = [
+    {file = "pylint-plugin-utils-0.7.tar.gz", hash = "sha256:ce48bc0516ae9415dd5c752c940dfe601b18fe0f48aa249f2386adfa95a004dd"},
+    {file = "pylint_plugin_utils-0.7-py3-none-any.whl", hash = "sha256:b3d43e85ab74c4f48bb46ae4ce771e39c3a20f8b3d56982ab17aa73b4f98d535"},
+]
+
+[package.dependencies]
+pylint = ">=1.7"
 
 [[package]]
 name = "pynapple"
@@ -7272,6 +7477,24 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "requirements-detector"
+version = "1.2.1"
+description = "Python tool to find and list requirements of a Python project"
+category = "dev"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "requirements_detector-1.2.1-py3-none-any.whl", hash = "sha256:ae4aa170106e8940482fd450e0fafbae1e3627b0ea15b852a191c509e6f8c4db"},
+    {file = "requirements_detector-1.2.1.tar.gz", hash = "sha256:3c3f2eaf40f86337b07826be65ee2a413a6337da2484a887523c816a921f04b6"},
+]
+
+[package.dependencies]
+astroid = ">=2.0,<3.0"
+packaging = ">=21.3"
+semver = ">=3.0.0,<4.0.0"
+toml = ">=0.10.2,<0.11.0"
+
+[[package]]
 name = "rfc3339-validator"
 version = "0.1.4"
 description = "A pure python RFC3339 validator"
@@ -7580,6 +7803,18 @@ docs = ["ipykernel", "nbconvert", "numpydoc", "pydata_sphinx_theme (==0.10.0rc2)
 stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
 
 [[package]]
+name = "semver"
+version = "3.0.0"
+description = "Python helper for Semantic Versioning (https://semver.org)"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "semver-3.0.0-py3-none-any.whl", hash = "sha256:ab4f69fb1d1ecfb5d81f96411403d7a611fa788c45d252cf5b408025df3ab6ce"},
+    {file = "semver-3.0.0.tar.gz", hash = "sha256:94df43924c4521ec7d307fc86da1531db6c2c33d9d5cdc3e64cca0eb68569269"},
+]
+
+[[package]]
 name = "send2trash"
 version = "1.8.2"
 description = "Send file to trash natively under Mac OS X, Windows and Linux"
@@ -7595,6 +7830,21 @@ files = [
 nativelib = ["pyobjc-framework-Cocoa", "pywin32"]
 objc = ["pyobjc-framework-Cocoa"]
 win32 = ["pywin32"]
+
+[[package]]
+name = "setoptconf-tmp"
+version = "0.3.1"
+description = "A module for retrieving program settings from various sources in a consistant method."
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "setoptconf-tmp-0.3.1.tar.gz", hash = "sha256:e0480addd11347ba52f762f3c4d8afa3e10ad0affbc53e3ffddc0ca5f27d5778"},
+    {file = "setoptconf_tmp-0.3.1-py3-none-any.whl", hash = "sha256:76035d5cd1593d38b9056ae12d460eca3aaa34ad05c315b69145e138ba80a745"},
+]
+
+[package.extras]
+yaml = ["pyyaml"]
 
 [[package]]
 name = "setuptools"
@@ -9756,4 +10006,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.11"
-content-hash = "4ada4c83c6f0a4a415b08124d2e9c35c49c291290a6d27c181d733b74a812a88"
+content-hash = "f0e71969e24a54cee6afaef26bfbb500e0beea662b821b01d0d322147dd199a3"

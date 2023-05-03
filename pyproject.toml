@@ -63,7 +63,7 @@ sphinx = "^6.1.3"
 sphinx-autodoc-typehints = "^1.22"
 vulture = "^2.7" # Unused Code Cleanup - Independent from Codebase
 coverage = "^7.2.3" # Unused Code Cleanup - Independent from Codebase
-pyflakes = "^3.0.1" # Unused Code Cleanup - Independent from Codebase
+# pyflakes = "^3.0.1" # Unused Code Cleanup - Independent from Codebase
 uncalled = "^0.1.6" # Unused Code Cleanup - Independent from Codebase
 # ipympl = "^0.9.3"
 # panel = "^0.14.4"
@@ -89,6 +89,7 @@ streamsync = {extras = ["ds"], version = "^0.1.6"}
 
 # [tool.poetry.scripts]
 # setup_dependent_repos = 'scripts.console:run'
+prospector = "^1.9.0"
 
 [tool.vulture]
 exclude = [] # "*file*.py", "dir/"
