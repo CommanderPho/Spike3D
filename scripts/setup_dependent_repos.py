@@ -275,8 +275,11 @@ def _process_binary_repo(repo_path, skip_building=False):
     else:
         print(f'\t skipping building binary repos for {repo_path}')
 
+    # backup_pwd = os.cwd()
+    os.chdir('dist/')
+    
     # Use glob to find the first generated .whl file in the dist/ directory
-    found_whl_files = glob.glob('dist/*.whl')
+    found_whl_files = glob.glob('*.whl')
     found_whl_files = [a for a in found_whl_files if not a.endswith('current.whl')] # exclude the symlink from the search
 
     if len(found_whl_files) > 0:
@@ -286,7 +289,7 @@ def _process_binary_repo(repo_path, skip_building=False):
         whl_file = found_whl_files[-1]
         # Symlink the whl file to a generic version:
         src_path = whl_file
-        dst_path = 'dist/current.whl'
+        dst_path = 'current.whl'
         # Create the symbolic link
         try:
             print(f'\t symlinking {src_path} to {dst_path}')
@@ -299,12 +302,13 @@ def _process_binary_repo(repo_path, skip_building=False):
             os.symlink(src_path, dst_path)
         except Exception as e:
             raise e
-        
-
     else:
         print(f'\t WARNING: No whl files found in {repo_path}')
         whl_file = None
 
+    ## Restore initial directory by moving up a directory
+    os.chdir('../')
+    
     return whl_file
 
 def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enable_install_for_child_repos=False, enable_build_pyproject_toml=True, skip_lock_for_child_repos=False):
