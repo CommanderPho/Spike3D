@@ -27,6 +27,70 @@ import sys
 
 
 # ==================================================================================================================== #
+# 2023-05-02 - Factor out Paginator and plotting stuff                                                                 #
+# ==================================================================================================================== #
+
+from pyphocorehelpers.indexing_helpers import compute_paginated_grid_config
+from neuropy.utils.misc import RowColTuple, PaginatedGridIndexSpecifierTuple, RequiredSubplotsTuple
+
+@define(slots=False)
+class Paginator:
+	""" helper that allows easily creating paginated data either for batch or realtime usage. 
+
+	TODO 2023-05-02 - See also:
+	## paginated outputs for shared cells
+	included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
+
+	# Can build a list of keyword arguments that will be provided to the function of interest ahead of time
+	paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
+		active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='shared', page=f'{page_idx+1}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
+		fignum=f'shared_{page_idx}', fig_idx=page_idx, n_max_page_rows=n_max_page_rows) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
+
+	"""
+	sequencesToShow: tuple
+	subplot_no_pagination_configuration: RequiredSubplotsTuple
+	included_combined_indicies_pages: list[list[PaginatedGridIndexSpecifierTuple]]
+	page_grid_sizes: list[RowColTuple]
+
+	nItemsToShow: int = field()
+	num_pages: int = field()
+
+	@classmethod
+	def init_from_data(cls, sequencesToShow, max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False):
+		""" creates a Paginator object from a tuple of equal length sequences using `compute_paginated_grid_config`"""
+		nItemsToShow  = len(sequencesToShow[0])
+		subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nItemsToShow, max_num_columns=max_num_columns, max_subplots_per_page=max_subplots_per_page, data_indicies=data_indicies, last_figure_subplots_same_layout=last_figure_subplots_same_layout)
+		num_pages = len(included_combined_indicies_pages)
+		return cls(sequencesToShow=sequencesToShow, subplot_no_pagination_configuration=subplot_no_pagination_configuration, included_combined_indicies_pages=included_combined_indicies_pages, page_grid_sizes=page_grid_sizes, nItemsToShow=nItemsToShow, num_pages=num_pages)
+
+
+	def get_page_data(self, page_idx: int):
+		""" 
+		Usage:
+			# If a paginator was constructed with `sequencesToShow = (rr_aclus, rr_laps, rr_replays)`, then:
+			included_page_data_indicies, included_page_data_items = a_paginator.get_page_data(page_idx=0)
+			curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays = included_page_data_items
+
+		"""
+		## paginated outputs for shared cells
+		included_page_data_indicies = np.array([curr_included_data_index for (a_linear_index, curr_row, curr_col, curr_included_data_index) in self.included_combined_indicies_pages[page_idx]]) # a list of the data indicies on this page
+		included_page_data_items = tuple([a_seq[included_page_data_indicies] for a_seq in sequencesToShow])
+		# included_data_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(self.included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
+		return included_page_data_indicies, included_page_data_items
+
+	# def on_page_change(self, page_idx: int, page_contents_items):
+	# 	""" called when the page changes. Iterates through page_contents_items to get all the appropriate contents for that page. """
+	# 	sequences_subset = []
+
+	# 	for (a_linear_index, curr_row, curr_col, curr_included_data_index) in page_contents_items:
+	# 		for a_seq in sequencesToShow
+	# 			a_seq[curr_included_data_index]
+
+
+
+
+
+# ==================================================================================================================== #
 # 2023-05-02 - Factor out interactive matplotlib/pyqtgraph helper code (untested)                                      #
 # ==================================================================================================================== #
 import matplotlib
