@@ -24,6 +24,7 @@ _debug_print = False
 
 import sys
 
+from attrs import define, field, Factory
 
 
 # ==================================================================================================================== #
@@ -74,7 +75,7 @@ class Paginator:
 		"""
 		## paginated outputs for shared cells
 		included_page_data_indicies = np.array([curr_included_data_index for (a_linear_index, curr_row, curr_col, curr_included_data_index) in self.included_combined_indicies_pages[page_idx]]) # a list of the data indicies on this page
-		included_page_data_items = tuple([a_seq[included_page_data_indicies] for a_seq in sequencesToShow])
+		included_page_data_items = tuple([a_seq[included_page_data_indicies] for a_seq in self.sequencesToShow])
 		# included_data_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(self.included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
 		return included_page_data_indicies, included_page_data_items
 
@@ -87,6 +88,45 @@ class Paginator:
 	# 			a_seq[curr_included_data_index]
 
 
+
+from pyphoplacecellanalysis.External.pyqtgraph import QtCore
+from pyphocorehelpers.plotting.figure_management import PhoActiveFigureManager2D
+import matplotlib.pyplot as plt
+
+class PaginationController(QtCore.QObject):
+    """2023-05-08 - Holds the current state for real-time pagination 
+    
+    Potential existing similar implementations
+        - that Spike3DWindow event jump utility used to jump to next/prev/specific event (like replays, etc)
+        - create_new_figure_if_needed(a_name) or something similar
+        - that tabbed matplotlib figure implementation
+        - docking widgets in figures
+        - from pyphoplacecellanalysis.GUI.Qt.PlaybackControls.Spike3DRasterBottomPlaybackControlBarWidget import Spike3DRasterBottomPlaybackControlBar, on_jump_left
+        
+        
+    """
+    def __init__(self, arg):
+        super(PaginationController, self).__init__()
+      
+
+    def configure(self, **kwargs):
+        """ assigns and computes needed variables for rendering. """
+        pass
+
+    def initialize(self, **kwargs):
+        """ sets up Figures """
+        self.fig, self.axs = plt.subplots(nrows=len(rr_replays))
+        
+        pass
+
+    def update(self, **kwargs):
+        """ called to specifically render data on the figure. """
+        pass
+
+
+    def on_close(self):
+        """ called when the figure is closed. """
+        pass
 
 
 
