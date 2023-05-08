@@ -36,56 +36,89 @@ from neuropy.utils.misc import RowColTuple, PaginatedGridIndexSpecifierTuple, Re
 
 @define(slots=False)
 class Paginator:
-	""" helper that allows easily creating paginated data either for batch or realtime usage. 
+    """ helper that allows easily creating paginated data either for batch or realtime usage. 
 
-	TODO 2023-05-02 - See also:
-	## paginated outputs for shared cells
-	included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
+    TODO 2023-05-02 - See also:
+    ## paginated outputs for shared cells
+    included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
 
-	# Can build a list of keyword arguments that will be provided to the function of interest ahead of time
-	paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
-		active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='shared', page=f'{page_idx+1}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
-		fignum=f'shared_{page_idx}', fig_idx=page_idx, n_max_page_rows=n_max_page_rows) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
-
-	"""
-	sequencesToShow: tuple
-	subplot_no_pagination_configuration: RequiredSubplotsTuple
-	included_combined_indicies_pages: list[list[PaginatedGridIndexSpecifierTuple]]
-	page_grid_sizes: list[RowColTuple]
-
-	nItemsToShow: int = field()
-	num_pages: int = field()
-
-	@classmethod
-	def init_from_data(cls, sequencesToShow, max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False):
-		""" creates a Paginator object from a tuple of equal length sequences using `compute_paginated_grid_config`"""
-		nItemsToShow  = len(sequencesToShow[0])
-		subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nItemsToShow, max_num_columns=max_num_columns, max_subplots_per_page=max_subplots_per_page, data_indicies=data_indicies, last_figure_subplots_same_layout=last_figure_subplots_same_layout)
-		num_pages = len(included_combined_indicies_pages)
-		return cls(sequencesToShow=sequencesToShow, subplot_no_pagination_configuration=subplot_no_pagination_configuration, included_combined_indicies_pages=included_combined_indicies_pages, page_grid_sizes=page_grid_sizes, nItemsToShow=nItemsToShow, num_pages=num_pages)
+    # Can build a list of keyword arguments that will be provided to the function of interest ahead of time
+    paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
+        active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='shared', page=f'{page_idx+1}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
+        fignum=f'shared_{page_idx}', fig_idx=page_idx, n_max_page_rows=n_max_page_rows) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
 
 
-	def get_page_data(self, page_idx: int):
-		""" 
-		Usage:
-			# If a paginator was constructed with `sequencesToShow = (rr_aclus, rr_laps, rr_replays)`, then:
-			included_page_data_indicies, included_page_data_items = a_paginator.get_page_data(page_idx=0)
-			curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays = included_page_data_items
 
-		"""
-		## paginated outputs for shared cells
-		included_page_data_indicies = np.array([curr_included_data_index for (a_linear_index, curr_row, curr_col, curr_included_data_index) in self.included_combined_indicies_pages[page_idx]]) # a list of the data indicies on this page
-		included_page_data_items = tuple([a_seq[included_page_data_indicies] for a_seq in self.sequencesToShow])
-		# included_data_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(self.included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
-		return included_page_data_indicies, included_page_data_items
+    Example:
+        ## Provide a tuple or list containing equally sized sequences of items:
+        sequencesToShow = (rr_aclus, rr_laps, rr_replays)
+        a_paginator = Paginator.init_from_data(sequencesToShow, max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False)
+        # If a paginator was constructed with `sequencesToShow = (rr_aclus, rr_laps, rr_replays)`, then:
+        included_page_data_indicies, included_page_data_items = a_paginator.get_page_data(page_idx=1)
+        curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays = included_page_data_items
 
-	# def on_page_change(self, page_idx: int, page_contents_items):
-	# 	""" called when the page changes. Iterates through page_contents_items to get all the appropriate contents for that page. """
-	# 	sequences_subset = []
 
-	# 	for (a_linear_index, curr_row, curr_col, curr_included_data_index) in page_contents_items:
-	# 		for a_seq in sequencesToShow
-	# 			a_seq[curr_included_data_index]
+
+    Extended Example:
+        from pyphoplacecellanalysis.GUI.Qt.Widgets.PaginationCtrl.PaginationControlWidget import PaginationControlWidget
+        a_paginator_controller_widget = PaginationControlWidget(n_pages=a_paginator.num_pages)
+
+
+
+    """
+    sequencesToShow: tuple
+    subplot_no_pagination_configuration: RequiredSubplotsTuple
+    included_combined_indicies_pages: list[list[PaginatedGridIndexSpecifierTuple]]
+    page_grid_sizes: list[RowColTuple]
+
+    nItemsToShow: int = field()
+    num_pages: int = field()
+
+    ## Computed properties:
+    @property
+    def num_items_per_page(self):
+        """The number of items displayed on each page (one number per page).
+        e.g. array([20, 20, 20, 20, 20,  8])
+        """
+        return np.array([(num_rows * num_columns) for (num_rows, num_columns) in self.page_grid_sizes])
+
+    @property
+    def max_num_items_per_page(self):
+        """The number of items on the page with the maximum number of items.
+        e.g. 20
+        """
+        return np.max(self.num_items_per_page)
+
+    @classmethod
+    def init_from_data(cls, sequencesToShow, max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False):
+        """ creates a Paginator object from a tuple of equal length sequences using `compute_paginated_grid_config`"""
+        nItemsToShow  = len(sequencesToShow[0])
+        subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nItemsToShow, max_num_columns=max_num_columns, max_subplots_per_page=max_subplots_per_page, data_indicies=data_indicies, last_figure_subplots_same_layout=last_figure_subplots_same_layout)
+        num_pages = len(included_combined_indicies_pages)
+        return cls(sequencesToShow=sequencesToShow, subplot_no_pagination_configuration=subplot_no_pagination_configuration, included_combined_indicies_pages=included_combined_indicies_pages, page_grid_sizes=page_grid_sizes, nItemsToShow=nItemsToShow, num_pages=num_pages)
+
+
+    def get_page_data(self, page_idx: int):
+        """ 
+        Usage:
+            # If a paginator was constructed with `sequencesToShow = (rr_aclus, rr_laps, rr_replays)`, then:
+            included_page_data_indicies, included_page_data_items = a_paginator.get_page_data(page_idx=0)
+            curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays = included_page_data_items
+
+        """
+        ## paginated outputs for shared cells
+        included_page_data_indicies = np.array([curr_included_data_index for (a_linear_index, curr_row, curr_col, curr_included_data_index) in self.included_combined_indicies_pages[page_idx]]) # a list of the data indicies on this page
+        included_page_data_items = tuple([a_seq[included_page_data_indicies] for a_seq in self.sequencesToShow])
+        # included_data_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(self.included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
+        return included_page_data_indicies, included_page_data_items
+
+    # def on_page_change(self, page_idx: int, page_contents_items):
+    # 	""" called when the page changes. Iterates through page_contents_items to get all the appropriate contents for that page. """
+    # 	sequences_subset = []
+
+    # 	for (a_linear_index, curr_row, curr_col, curr_included_data_index) in page_contents_items:
+    # 		for a_seq in sequencesToShow
+    # 			a_seq[curr_included_data_index]
 
 
 
@@ -129,155 +162,6 @@ class PaginationController(QtCore.QObject):
 
 
 
-
-
-
-
-@function_attributes(short_name=None, tags=['matplotlib', 'long_short_fr_indicies_analysis', 'rate_remapping'], input_requires=['long_short_fr_indicies_analysis'], output_provides=[], uses=[], used_by=[], creation_date='2023-05-03 23:12')
-def plot_rr_aclu(aclu: list, rr_laps: np.ndarray, rr_replays: np.ndarray, sort=None, fig=None, axs=None):
-    """ DUPLICATE of other code for pagination testing.
-    
-    Plots rate remapping (rr) values computed from `long_short_fr_indicies_analysis`
-    Renders a vertical stack (one for each aclu) of 1D number lines ranging from -1 ("Long Only") to 1 ("Short Only"), where 0 means equal rates on both long and short.
-        It plots two points for each of these, a triangle corresponding to that cell's rr_laps and a open circle for the rr_replays.
-    
-    Usage:
-        from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.MultiContextComparingDisplayFunctions import plot_rr_aclu
-
-        rr_aclus = np.array(list(curr_active_pipeline.global_computation_results.computed_data.long_short_fr_indicies_analysis.y_frs_index.keys()))
-        rr_neuron_type = [global_session.neurons.aclu_to_neuron_type_map[aclu] for aclu in rr_aclus]
-        rr_laps = np.array(list(curr_active_pipeline.global_computation_results.computed_data.long_short_fr_indicies_analysis.y_frs_index.values()))
-        rr_replays = np.array(list(curr_active_pipeline.global_computation_results.computed_data.long_short_fr_indicies_analysis.x_frs_index.values()))
-        rr_skew = rr_laps / rr_replays
-
-        n_debug_limit = 100
-        fig, ax = plot_rr_aclu([str(aclu) for aclu in rr_aclus[:n_debug_limit]], rr_laps=rr_laps[:n_debug_limit], rr_replays=rr_replays[:n_debug_limit])
-
-    """
-    def _subfn_remove_all_ax_features(ax):
-        """ removes the outer box (spines), the x- and y-axes from the ax"""
-        # Set axis limits and ticks
-        ax.set_xlim(-1, 1)
-        # ax.set_xticks([-1, 0, 1])
-
-        # Remove y-axis and spines
-        ax.yaxis.set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['top'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-
-        ax.xaxis.set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-
-
-    def _subfn_draw_tick_and_label(ax, x, y, label, sub_label, tick_half_height=0.5, supress_labels=False):
-        # Add sub-label for "Long Only"
-        ax.plot([x, x], [y-tick_half_height, y+tick_half_height], color='black', linewidth=1.5) # draw tick mark
-        label_start_y = y-(tick_half_height + 0.05)
-        
-        if (not supress_labels) and label is not None:
-            ax.text(x, label_start_y, label, fontsize=12, ha='center')
-        if (not supress_labels) and sub_label is not None:
-            ax.text(x, label_start_y-0.1, sub_label, fontsize=8, ha='center')
-        
-
-    def _subfn_draw_single_aclu_num_line(ax, aclu, aclu_y: float, rr_laps: float, rr_replays: float, supress_labels=False):
-        """ plots a single aclu's plot centered vertically at `aclu_y` """
-        # Add thick black baseline line segment along y=0 between -1 and 1
-        ax.plot([-1, 1], [aclu_y, aclu_y], color='black', linewidth=2)
-
-        # Add tick labels and sub-labels
-        _subfn_draw_tick_and_label(ax, x=-1, y=aclu_y, label='Long Only', sub_label='(short fr = 0)', tick_half_height=0.2, supress_labels=supress_labels)
-        _subfn_draw_tick_and_label(ax, x=0, y=aclu_y, label=None, sub_label=None, tick_half_height=0.1, supress_labels=supress_labels) # 'Equal'
-        _subfn_draw_tick_and_label(ax, x=1, y=aclu_y, label='Short Only', sub_label='(long fr = 0)', tick_half_height=0.2, supress_labels=supress_labels)
-
-        # Add markers for rr_laps and rr_replays
-        ax.plot(rr_laps, aclu_y, marker='^', markersize=10, color='black', label='rr_laps')
-        ax.plot(rr_replays, aclu_y, marker='o', markersize=10, fillstyle='none', color='black', label='rr_replays')
-
-        # Add text for aclu to the left of the plot
-        ax.text(-1.2, 0.5, aclu, fontsize=20, va='center')
-        
-        _subfn_remove_all_ax_features(ax)
-        ax.set_ylim(-0.5, 0.5)
-
-    if not isinstance(aclu, np.ndarray):
-        aclu = np.array(aclu) # convert to ndarray
-    n_aclus = len(aclu)
-    aclu_indicies = np.arange(n_aclus)
-    
-
-    if (fig is None) or (axs is None):
-        ## Create a new figure and set of subplots
-        fig, axs = plt.subplots(nrows=len(rr_replays))
-    else:
-        assert len(axs) >= n_aclus, f"make sure that there are enough axes to display each aclu provided."
-        # Clear existing axes:
-        for ax in axs:
-            ax.clear()
-
-
-    ## Sort process (local sort):
-    sort_indicies = np.arange(n_aclus) # default sort is the one passed in unless otherwise specified.    
-    if sort is not None:
-        if isinstance(sort, str):
-            if sort == 'rr_replays':                
-                ## Sort on 'rr_replays'
-                sort_indicies = np.argsort(rr_replays)
-            else:
-                raise NotImplementedError # only 'rr_replays' sort is implemented.
-        elif isinstance(sort, np.ndarray):
-            # a set of sort indicies
-            sort_indicies = sort
-        else:
-            # Unknown or no sort
-            pass
-    else:
-        # No sort
-        pass
-
-    ## Sort all the variables:
-    aclu = aclu[sort_indicies]
-    rr_replays = rr_replays[sort_indicies]
-    rr_laps = rr_laps[sort_indicies]
-
-    ## Main Loop:
-    for ax, an_aclu_index, an_aclu, an_rr_laps, an_rr_replays in zip(axs, aclu_indicies, aclu, rr_laps, rr_replays):
-        is_last_iteration = (an_aclu_index == aclu_indicies[-1]) # labels will be surpressed on all but the last iteration
-        _subfn_draw_single_aclu_num_line(ax, an_aclu, aclu_y=0.0, rr_laps=an_rr_laps, rr_replays=an_rr_replays, supress_labels=(not is_last_iteration)) # (float(an_aclu_index)*0.5)
-
-    # Add title to the plot
-    # ax.set_title('Long-Short Equity')
-
-    # Show plot
-    plt.show()
-
-    return fig, axs, sort_indicies
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ==================================================================================================================== #
 # 2023-05-02 - Factor out interactive matplotlib/pyqtgraph helper code (untested)                                      #
 # ==================================================================================================================== #
@@ -300,49 +184,49 @@ from attrs import define, Factory
 
 
 def _helper_make_scatterplot_clickable(main_scatter_plot, enable_hover:bool=False):
-	""" pyqtgraph 
-	
-	Usage:
-	
-	lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection) = _helper_make_scatterplot_clickable(a_plot)
-	
-	"""
-	# Highlights the hovered spikes white:
-	# main_scatter_plot.addPoints(hoverable=True,
-	# 	# hoverSymbol=vtick, # hoverSymbol='s',
-	# 	hoverSize=7, # default is 5
-	# 	)
+    """ pyqtgraph 
+    
+    Usage:
+    
+    lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection) = _helper_make_scatterplot_clickable(a_plot)
+    
+    """
+    # Highlights the hovered spikes white:
+    # main_scatter_plot.addPoints(hoverable=True,
+    # 	# hoverSymbol=vtick, # hoverSymbol='s',
+    # 	hoverSize=7, # default is 5
+    # 	)
 
 
-	## Clickable/Selectable Spikes:
-	# Will make all plots clickable
-	clickedPen = pg.mkPen('#DDD', width=2)
-	lastClicked = []
-	def _test_scatter_plot_clicked(plot, points):
-		global lastClicked
-		for p in lastClicked:
-			p.resetPen()
-		print("clicked points", points)
-		for p in points:
-			p.setPen(clickedPen)
-		lastClicked = points
+    ## Clickable/Selectable Spikes:
+    # Will make all plots clickable
+    clickedPen = pg.mkPen('#DDD', width=2)
+    lastClicked = []
+    def _test_scatter_plot_clicked(plot, points):
+        global lastClicked
+        for p in lastClicked:
+            p.resetPen()
+        print("clicked points", points)
+        for p in points:
+            p.setPen(clickedPen)
+        lastClicked = points
 
-	main_scatter_clicked_connection = main_scatter_plot.sigClicked.connect(_test_scatter_plot_clicked)
+    main_scatter_clicked_connection = main_scatter_plot.sigClicked.connect(_test_scatter_plot_clicked)
 
-	## Hoverable Spikes:
-	if enable_hover:
-		def _test_scatter_plot_hovered(plt, points, ev):
-			# sigHovered(self, points, ev)
-			print(f'_test_scatter_plot_hovered(plt: {plt}, points: {points}, ev: {ev})')
-			if (len(points) > 0):
-				curr_point = points[0]
-				# self.
-				# curr_point.index
-		main_scatter_hovered_connection = main_scatter_plot.sigHovered.connect(_test_scatter_plot_hovered)
-	else:
-		main_scatter_hovered_connection = None
+    ## Hoverable Spikes:
+    if enable_hover:
+        def _test_scatter_plot_hovered(plt, points, ev):
+            # sigHovered(self, points, ev)
+            print(f'_test_scatter_plot_hovered(plt: {plt}, points: {points}, ev: {ev})')
+            if (len(points) > 0):
+                curr_point = points[0]
+                # self.
+                # curr_point.index
+        main_scatter_hovered_connection = main_scatter_plot.sigHovered.connect(_test_scatter_plot_hovered)
+    else:
+        main_scatter_hovered_connection = None
 
-	return lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection)
+    return lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection)
 
 
 
@@ -351,46 +235,46 @@ def _helper_make_scatterplot_clickable(main_scatter_plot, enable_hover:bool=Fals
 
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class SelectionManager:
-	""" Takes a list of matplotlib Axes that can have their selection toggled/un-toggled for inclusion/exclusion. 
-		Adds the ability to toggle selections for each axis  by clicking, and a grey background for selected objects vs. white for unselected.
-	Usage:
-		from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
+    """ Takes a list of matplotlib Axes that can have their selection toggled/un-toggled for inclusion/exclusion. 
+        Adds the ability to toggle selections for each axis  by clicking, and a grey background for selected objects vs. white for unselected.
+    Usage:
+        from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
 
-		laps_plot_tuple = plot_decoded_epoch_slices(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, global_pos_df=global_session.position.df, variable_name='lin_pos', xbin=long_results_obj.original_1D_decoder.xbin,
-																name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=32)
-		curr_viz_params, _curr_plot_data, _curr_plots, _curr_ui_container = laps_plot_tuple
+        laps_plot_tuple = plot_decoded_epoch_slices(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, global_pos_df=global_session.position.df, variable_name='lin_pos', xbin=long_results_obj.original_1D_decoder.xbin,
+                                                                name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=32)
+        curr_viz_params, _curr_plot_data, _curr_plots, _curr_ui_container = laps_plot_tuple
 
-		# Create a SelectionManager instance
-		sm = SelectionManager(_curr_plots.axs)
+        # Create a SelectionManager instance
+        sm = SelectionManager(_curr_plots.axs)
 
-	"""
-	axes: list
-	is_selected: dict = Factory(dict)
-	fig: matplotlib.figure.Figure = None # Matplotlib.Figure
-	cid: int = None # Matplotlib.Figure
+    """
+    axes: list
+    is_selected: dict = Factory(dict)
+    fig: matplotlib.figure.Figure = None # Matplotlib.Figure
+    cid: int = None # Matplotlib.Figure
 
-	def __attrs_post_init__(self):
-		# Get figure from first axes:
-		assert len(self.axes) > 0
-		first_ax = self.axes[0]
-		self.fig = first_ax.get_figure()		
-		self.cid = self.fig.canvas.mpl_connect('button_press_event', self.on_click)
-		# Set initial selection to False
-		for ax in self.axes:
-			self.is_selected[ax] = False
+    def __attrs_post_init__(self):
+        # Get figure from first axes:
+        assert len(self.axes) > 0
+        first_ax = self.axes[0]
+        self.fig = first_ax.get_figure()		
+        self.cid = self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+        # Set initial selection to False
+        for ax in self.axes:
+            self.is_selected[ax] = False
 
-	def on_click(self, event):
-		# Get the clicked Axes object
-		ax = event.inaxes		
-		# Toggle the selection status of the clicked Axes
-		self.is_selected[ax] = not self.is_selected[ax]
-		# Set the face color of the clicked Axes based on its selection status
-		if self.is_selected[ax]:
-			ax.patch.set_facecolor('gray')
-		else:
-			ax.patch.set_facecolor('white')
-		# Redraw the figure to show the updated selection
-		event.canvas.draw()
+    def on_click(self, event):
+        # Get the clicked Axes object
+        ax = event.inaxes		
+        # Toggle the selection status of the clicked Axes
+        self.is_selected[ax] = not self.is_selected[ax]
+        # Set the face color of the clicked Axes based on its selection status
+        if self.is_selected[ax]:
+            ax.patch.set_facecolor('gray')
+        else:
+            ax.patch.set_facecolor('white')
+        # Redraw the figure to show the updated selection
+        event.canvas.draw()
 
 
 
