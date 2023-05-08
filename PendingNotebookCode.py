@@ -93,6 +93,7 @@ from pyphoplacecellanalysis.External.pyqtgraph import QtCore
 from pyphocorehelpers.plotting.figure_management import PhoActiveFigureManager2D
 import matplotlib.pyplot as plt
 
+
 class PaginationController(QtCore.QObject):
     """2023-05-08 - Holds the current state for real-time pagination 
     
@@ -115,18 +116,165 @@ class PaginationController(QtCore.QObject):
 
     def initialize(self, **kwargs):
         """ sets up Figures """
-        self.fig, self.axs = plt.subplots(nrows=len(rr_replays))
-        
+        # self.fig, self.axs = plt.subplots(nrows=len(rr_replays))
         pass
 
     def update(self, **kwargs):
         """ called to specifically render data on the figure. """
         pass
 
-
     def on_close(self):
         """ called when the figure is closed. """
         pass
+
+
+
+
+
+
+
+@function_attributes(short_name=None, tags=['matplotlib', 'long_short_fr_indicies_analysis', 'rate_remapping'], input_requires=['long_short_fr_indicies_analysis'], output_provides=[], uses=[], used_by=[], creation_date='2023-05-03 23:12')
+def plot_rr_aclu(aclu: list, rr_laps: np.ndarray, rr_replays: np.ndarray, sort=None, fig=None, axs=None):
+    """ DUPLICATE of other code for pagination testing.
+    
+    Plots rate remapping (rr) values computed from `long_short_fr_indicies_analysis`
+    Renders a vertical stack (one for each aclu) of 1D number lines ranging from -1 ("Long Only") to 1 ("Short Only"), where 0 means equal rates on both long and short.
+        It plots two points for each of these, a triangle corresponding to that cell's rr_laps and a open circle for the rr_replays.
+    
+    Usage:
+        from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.MultiContextComparingDisplayFunctions import plot_rr_aclu
+
+        rr_aclus = np.array(list(curr_active_pipeline.global_computation_results.computed_data.long_short_fr_indicies_analysis.y_frs_index.keys()))
+        rr_neuron_type = [global_session.neurons.aclu_to_neuron_type_map[aclu] for aclu in rr_aclus]
+        rr_laps = np.array(list(curr_active_pipeline.global_computation_results.computed_data.long_short_fr_indicies_analysis.y_frs_index.values()))
+        rr_replays = np.array(list(curr_active_pipeline.global_computation_results.computed_data.long_short_fr_indicies_analysis.x_frs_index.values()))
+        rr_skew = rr_laps / rr_replays
+
+        n_debug_limit = 100
+        fig, ax = plot_rr_aclu([str(aclu) for aclu in rr_aclus[:n_debug_limit]], rr_laps=rr_laps[:n_debug_limit], rr_replays=rr_replays[:n_debug_limit])
+
+    """
+    def _subfn_remove_all_ax_features(ax):
+        """ removes the outer box (spines), the x- and y-axes from the ax"""
+        # Set axis limits and ticks
+        ax.set_xlim(-1, 1)
+        # ax.set_xticks([-1, 0, 1])
+
+        # Remove y-axis and spines
+        ax.yaxis.set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+
+        ax.xaxis.set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+
+
+    def _subfn_draw_tick_and_label(ax, x, y, label, sub_label, tick_half_height=0.5, supress_labels=False):
+        # Add sub-label for "Long Only"
+        ax.plot([x, x], [y-tick_half_height, y+tick_half_height], color='black', linewidth=1.5) # draw tick mark
+        label_start_y = y-(tick_half_height + 0.05)
+        
+        if (not supress_labels) and label is not None:
+            ax.text(x, label_start_y, label, fontsize=12, ha='center')
+        if (not supress_labels) and sub_label is not None:
+            ax.text(x, label_start_y-0.1, sub_label, fontsize=8, ha='center')
+        
+
+    def _subfn_draw_single_aclu_num_line(ax, aclu, aclu_y: float, rr_laps: float, rr_replays: float, supress_labels=False):
+        """ plots a single aclu's plot centered vertically at `aclu_y` """
+        # Add thick black baseline line segment along y=0 between -1 and 1
+        ax.plot([-1, 1], [aclu_y, aclu_y], color='black', linewidth=2)
+
+        # Add tick labels and sub-labels
+        _subfn_draw_tick_and_label(ax, x=-1, y=aclu_y, label='Long Only', sub_label='(short fr = 0)', tick_half_height=0.2, supress_labels=supress_labels)
+        _subfn_draw_tick_and_label(ax, x=0, y=aclu_y, label=None, sub_label=None, tick_half_height=0.1, supress_labels=supress_labels) # 'Equal'
+        _subfn_draw_tick_and_label(ax, x=1, y=aclu_y, label='Short Only', sub_label='(long fr = 0)', tick_half_height=0.2, supress_labels=supress_labels)
+
+        # Add markers for rr_laps and rr_replays
+        ax.plot(rr_laps, aclu_y, marker='^', markersize=10, color='black', label='rr_laps')
+        ax.plot(rr_replays, aclu_y, marker='o', markersize=10, fillstyle='none', color='black', label='rr_replays')
+
+        # Add text for aclu to the left of the plot
+        ax.text(-1.2, 0.5, aclu, fontsize=20, va='center')
+        
+        _subfn_remove_all_ax_features(ax)
+        ax.set_ylim(-0.5, 0.5)
+
+    if not isinstance(aclu, np.ndarray):
+        aclu = np.array(aclu) # convert to ndarray
+    n_aclus = len(aclu)
+    aclu_indicies = np.arange(n_aclus)
+    
+
+    if (fig is None) or (axs is None):
+        ## Create a new figure and set of subplots
+        fig, axs = plt.subplots(nrows=len(rr_replays))
+    else:
+        assert len(axs) >= n_aclus, f"make sure that there are enough axes to display each aclu provided."
+        # Clear existing axes:
+        for ax in axs:
+            ax.clear()
+
+
+    ## Sort process (local sort):
+    sort_indicies = np.arange(n_aclus) # default sort is the one passed in unless otherwise specified.    
+    if sort is not None:
+        if isinstance(sort, str):
+            if sort == 'rr_replays':                
+                ## Sort on 'rr_replays'
+                sort_indicies = np.argsort(rr_replays)
+            else:
+                raise NotImplementedError # only 'rr_replays' sort is implemented.
+        elif isinstance(sort, np.ndarray):
+            # a set of sort indicies
+            sort_indicies = sort
+        else:
+            # Unknown or no sort
+            pass
+    else:
+        # No sort
+        pass
+
+    ## Sort all the variables:
+    aclu = aclu[sort_indicies]
+    rr_replays = rr_replays[sort_indicies]
+    rr_laps = rr_laps[sort_indicies]
+
+    ## Main Loop:
+    for ax, an_aclu_index, an_aclu, an_rr_laps, an_rr_replays in zip(axs, aclu_indicies, aclu, rr_laps, rr_replays):
+        is_last_iteration = (an_aclu_index == aclu_indicies[-1]) # labels will be surpressed on all but the last iteration
+        _subfn_draw_single_aclu_num_line(ax, an_aclu, aclu_y=0.0, rr_laps=an_rr_laps, rr_replays=an_rr_replays, supress_labels=(not is_last_iteration)) # (float(an_aclu_index)*0.5)
+
+    # Add title to the plot
+    # ax.set_title('Long-Short Equity')
+
+    # Show plot
+    plt.show()
+
+    return fig, axs, sort_indicies
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
