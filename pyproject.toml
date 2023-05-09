@@ -43,6 +43,7 @@ patchworklib = "^0.5.2"
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
 mplfig = "^1.0.1"
+textual = {extras = ["dev"], version = "^0.24.1"}
 
 
 [tool.poetry.group.dev.dependencies]
