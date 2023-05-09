@@ -61,7 +61,14 @@
 			"kawamataryo.copy-python-dotted-path",
 			"kdcro101.favorites",
 			"phohale.pho-pyqt-class-generator",
-			"berublan.vscode-log-viewer"
+			"berublan.vscode-log-viewer",
+			"vscode-nested-tags.vscode-nested-tags",
+			"exodiusstudios.comment-anchors",
+			"cg-cnu.vscode-codetags",
+			"spremi.clique-header",
+			"alefragnani.separators",
+			"antimach.symdexer",
+			"herdingbits.file-focus"
 		]
 	},
 	"launch": {
