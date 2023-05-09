@@ -26,21 +26,21 @@ import sys
 
 from attrs import define, field, Factory
 from pyphocorehelpers.indexing_helpers import safe_numpy_index
-
+from pyphocorehelpers.indexing_helpers import Paginator
 
 # ==================================================================================================================== #
 # 2023-05-08 - Paginated Plots                                                                                         #
 # ==================================================================================================================== #
 
 def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20, debug_print=False):
-    from PendingNotebookCode import Paginator
+    """ 2023-05-08 - plots a paginated decoded_epoch_slices figure """
+    from pyphocorehelpers.indexing_helpers import Paginator
     from neuropy.core.epoch import Epoch
-    from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices, _helper_update_decoded_single_epoch_slice_plot #, _subfn_update_decoded_epoch_slices
-    from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_basic_setup, stacked_epoch_slices_matplotlib_build_view
+    from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices #, _helper_update_decoded_single_epoch_slice_plot #, _subfn_update_decoded_epoch_slices
+    # from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_basic_setup, stacked_epoch_slices_matplotlib_build_view
     from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import _pagination_helper_plot_single_epoch_slice
     from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_1D_most_likely_position_comparsions # used in `plot_decoded_epoch_slices`
     from pyphoplacecellanalysis.GUI.Qt.Widgets.PaginationCtrl.PaginationControlWidget import PaginationControlWidget
-    
 
     def _subfn_helper_add_pagination_control_widget(a_paginator, mw, defer_render=True):
         """ Add the PaginationControlWidget to the bottom of the figure """
@@ -52,36 +52,43 @@ def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_deco
             mw.draw()
             mw.show()
 
+    def _subfn_helper_build_paginator(active_filter_epochs, filter_epochs_decoder_result, max_subplots_per_page, debug_print) -> Paginator:
+        epoch_labels = filter_epochs_decoder_result.epoch_description_list.copy()
+        if epoch_labels is None or len(epoch_labels) < active_filter_epochs.n_epochs:
+            if 'label' not in active_filter_epochs._df.columns:
+                active_filter_epochs._df['label'] = active_filter_epochs._df.index.to_numpy() # integer ripple indexing
+            # active_filter_epochs.labels ?
+            active_labels = active_filter_epochs._df['label'].to_numpy()
+            # active_labels = np.arange(active_filter_epochs.n_epochs)
+            epoch_labels = np.array([f"Epoch[{epoch_idx}]" for epoch_idx in active_labels])
+            if debug_print:
+                print(f'epoch_labels: {epoch_labels}')
+            filter_epochs_decoder_result.epoch_description_list = epoch_labels.copy() # assign the new labels
+
+        time_bin_containers = np.array(filter_epochs_decoder_result.time_bin_containers.copy())
+        posterior_containers = filter_epochs_decoder_result.marginal_x_list
+
+        # Provide a tuple or list containing equally sized sequences of items:
+        ## Build Epochs:
+        if isinstance(active_filter_epochs, pd.DataFrame):
+            epochs_df = active_filter_epochs
+        elif isinstance(active_filter_epochs, Epoch):
+            epochs_df = active_filter_epochs.to_dataframe()
+        else:
+            raise NotImplementedError
+
+        epoch_slices = epochs_df[['start', 'stop']].to_numpy()
+        
+        epoch_slices_paginator = Paginator.init_from_data((epoch_slices, epoch_labels, time_bin_containers, posterior_containers), max_num_columns=1, max_subplots_per_page=max_subplots_per_page, data_indicies=None, last_figure_subplots_same_layout=False)
+        return epoch_slices_paginator
+
+
+
     active_filter_epochs = deepcopy(active_filter_epochs)
     filter_epochs_decoder_result = deepcopy(filter_epochs_decoder_result) # DecodedFilterEpochsResult
 
-    epoch_labels = filter_epochs_decoder_result.epoch_description_list.copy()
-    if epoch_labels is None or len(epoch_labels) < active_filter_epochs.n_epochs:
-        if 'label' not in active_filter_epochs._df.columns:
-            active_filter_epochs._df['label'] = active_filter_epochs._df.index.to_numpy() # integer ripple indexing
-        # active_filter_epochs.labels ?
-        active_labels = active_filter_epochs._df['label'].to_numpy()
-        # active_labels = np.arange(active_filter_epochs.n_epochs)
-        epoch_labels = np.array([f"Epoch[{epoch_idx}]" for epoch_idx in active_labels])
-        if debug_print:
-            print(f'epoch_labels: {epoch_labels}')
-        filter_epochs_decoder_result.epoch_description_list = epoch_labels.copy() # assign the new labels
-
-    time_bin_containers = np.array(filter_epochs_decoder_result.time_bin_containers.copy())
-    posterior_containers = filter_epochs_decoder_result.marginal_x_list
-
-    # Provide a tuple or list containing equally sized sequences of items:
-    ## Build Epochs:
-    if isinstance(active_filter_epochs, pd.DataFrame):
-        epochs_df = active_filter_epochs
-    elif isinstance(active_filter_epochs, Epoch):
-        epochs_df = active_filter_epochs.to_dataframe()
-    else:
-        raise NotImplementedError
-
-    epoch_slices = epochs_df[['start', 'stop']].to_numpy()
+    epoch_slices_paginator = _subfn_helper_build_paginator(active_filter_epochs, filter_epochs_decoder_result, max_subplots_per_page, debug_print)
     
-    epoch_slices_paginator = Paginator.init_from_data((epoch_slices, epoch_labels, time_bin_containers, posterior_containers), max_num_columns=1, max_subplots_per_page=max_subplots_per_page, data_indicies=None, last_figure_subplots_same_layout=False)
     params, plots_data, plots, ui = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=global_pos_df, variable_name='lin_pos', xbin=xbin,
                                                             name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=max_subplots_per_page)
     plots_data.paginator = epoch_slices_paginator # assign the paginator
@@ -136,100 +143,11 @@ def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_deco
 
 
 
+
+
 # ==================================================================================================================== #
 # 2023-05-02 - Factor out Paginator and plotting stuff                                                                 #
 # ==================================================================================================================== #
-
-from pyphocorehelpers.indexing_helpers import compute_paginated_grid_config
-from neuropy.utils.misc import RowColTuple, PaginatedGridIndexSpecifierTuple, RequiredSubplotsTuple
-
-@define(slots=False)
-class Paginator:
-    """ helper that allows easily creating paginated data either for batch or realtime usage. 
-
-    TODO 2023-05-02 - See also:
-    ## paginated outputs for shared cells
-    included_unit_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
-
-    # Can build a list of keyword arguments that will be provided to the function of interest ahead of time
-    paginated_shared_cells_kwarg_list = [dict(included_unit_neuron_IDs=curr_included_unit_indicies,
-        active_identifying_ctx=active_identifying_session_ctx.adding_context(collision_prefix='_batch_plot_test', display_fn_name='batch_plot_test', plot_result_set='shared', page=f'{page_idx+1}of{num_pages}', aclus=f"{curr_included_unit_indicies}"),
-        fignum=f'shared_{page_idx}', fig_idx=page_idx, n_max_page_rows=n_max_page_rows) for page_idx, curr_included_unit_indicies in enumerate(included_unit_indicies_pages)]
-
-
-
-    Example:
-        ## Provide a tuple or list containing equally sized sequences of items:
-        sequencesToShow = (rr_aclus, rr_laps, rr_replays)
-        a_paginator = Paginator.init_from_data(sequencesToShow, max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False)
-        # If a paginator was constructed with `sequencesToShow = (rr_aclus, rr_laps, rr_replays)`, then:
-        included_page_data_indicies, included_page_data_items = a_paginator.get_page_data(page_idx=1)
-        curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays = included_page_data_items
-
-
-
-    Extended Example:
-        from pyphoplacecellanalysis.GUI.Qt.Widgets.PaginationCtrl.PaginationControlWidget import PaginationControlWidget
-        a_paginator_controller_widget = PaginationControlWidget(n_pages=a_paginator.num_pages)
-
-
-
-    """
-    sequencesToShow: tuple
-    subplot_no_pagination_configuration: RequiredSubplotsTuple
-    included_combined_indicies_pages: list[list[PaginatedGridIndexSpecifierTuple]]
-    page_grid_sizes: list[RowColTuple]
-
-    nItemsToShow: int = field()
-    num_pages: int = field()
-
-    ## Computed properties:
-    @property
-    def num_items_per_page(self):
-        """The number of items displayed on each page (one number per page).
-        e.g. array([20, 20, 20, 20, 20,  8])
-        """
-        return np.array([(num_rows * num_columns) for (num_rows, num_columns) in self.page_grid_sizes])
-
-    @property
-    def max_num_items_per_page(self):
-        """The number of items on the page with the maximum number of items.
-        e.g. 20
-        """
-        return np.max(self.num_items_per_page)
-
-    @classmethod
-    def init_from_data(cls, sequencesToShow, max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False):
-        """ creates a Paginator object from a tuple of equal length sequences using `compute_paginated_grid_config`"""
-        nItemsToShow  = len(sequencesToShow[0])
-        subplot_no_pagination_configuration, included_combined_indicies_pages, page_grid_sizes = compute_paginated_grid_config(nItemsToShow, max_num_columns=max_num_columns, max_subplots_per_page=max_subplots_per_page, data_indicies=data_indicies, last_figure_subplots_same_layout=last_figure_subplots_same_layout)
-        num_pages = len(included_combined_indicies_pages)
-        return cls(sequencesToShow=sequencesToShow, subplot_no_pagination_configuration=subplot_no_pagination_configuration, included_combined_indicies_pages=included_combined_indicies_pages, page_grid_sizes=page_grid_sizes, nItemsToShow=nItemsToShow, num_pages=num_pages)
-
-
-    def get_page_data(self, page_idx: int):
-        """ 
-        Usage:
-            # If a paginator was constructed with `sequencesToShow = (rr_aclus, rr_laps, rr_replays)`, then:
-            included_page_data_indicies, included_page_data_items = a_paginator.get_page_data(page_idx=0)
-            curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays = included_page_data_items
-
-        """
-        ## paginated outputs for shared cells
-        included_page_data_indicies = np.array([curr_included_data_index for (a_linear_index, curr_row, curr_col, curr_included_data_index) in self.included_combined_indicies_pages[page_idx]]) # a list of the data indicies on this page
-        included_page_data_items = tuple([safe_numpy_index(a_seq, included_page_data_indicies) for a_seq in self.sequencesToShow])
-        # included_data_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(self.included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
-        return included_page_data_indicies, included_page_data_items
-
-    # def on_page_change(self, page_idx: int, page_contents_items):
-    # 	""" called when the page changes. Iterates through page_contents_items to get all the appropriate contents for that page. """
-    # 	sequences_subset = []
-
-    # 	for (a_linear_index, curr_row, curr_col, curr_included_data_index) in page_contents_items:
-    # 		for a_seq in sequencesToShow
-    # 			a_seq[curr_included_data_index]
-
-
 
 from pyphoplacecellanalysis.External.pyqtgraph import QtCore
 from pyphocorehelpers.plotting.figure_management import PhoActiveFigureManager2D
