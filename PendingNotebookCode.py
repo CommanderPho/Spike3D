@@ -52,6 +52,11 @@ class RateRemappingPaginatedFigureController(PaginatedFigureController):
     """2023-05-09 - Aims to refactor `build_figure_and_control_widget_from_paginator`, a series of nested functions, into a stateful class
 
     Usage:
+        import matplotlib.pyplot as plt
+        %matplotlib qt
+        from pyphocorehelpers.indexing_helpers import Paginator
+        from PendingNotebookCode import RateRemappingPaginatedFigureController
+
         a_paginator = Paginator.init_from_data((rr_aclus, rr_laps, rr_replays), max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False)
         _out_rr_pagination_controller = RateRemappingPaginatedFigureController.init_from_paginator(a_paginator, a_name='TestRateRemappingPaginatedFigureController')
         _out_rr_pagination_controller
