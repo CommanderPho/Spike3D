@@ -4293,6 +4293,21 @@ matplotlib = ">=3.1"
 docs = ["pandas", "pydata_sphinx_theme (!=0.10.1)", "sphinx", "sphinx-gallery"]
 
 [[package]]
+name = "mplfig"
+version = "1.0.1"
+description = "Save and load matplotlib figures like MATLAB's .fig files!"
+category = "main"
+optional = false
+python-versions = ">=3.4"
+files = [
+    {file = "mplfig-1.0.1-py3-none-any.whl", hash = "sha256:222af51055337f327c06d7e8bc975f1ec230c7ffe0cc62b7a38b45f06ce3318f"},
+    {file = "mplfig-1.0.1.tar.gz", hash = "sha256:6046cf66da2d6064b7ad0567ac0ed4925d310a232bb7d86e11125fded26e86ad"},
+]
+
+[package.dependencies]
+dill = "*"
+
+[[package]]
 name = "msgpack"
 version = "1.0.5"
 description = "MessagePack serializer"
@@ -4662,7 +4677,7 @@ version = "0.0.7"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
+python-versions = ">=3.9,<3.11"
 files = []
 develop = true
 
@@ -5033,11 +5048,11 @@ files = [
 [package.dependencies]
 numpy = [
     {version = ">=1.21.0", markers = "python_version <= \"3.9\" and platform_system == \"Darwin\" and platform_machine == \"arm64\""},
+    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
+    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
     {version = ">=1.19.3", markers = "python_version >= \"3.6\" and platform_system == \"Linux\" and platform_machine == \"aarch64\" or python_version >= \"3.9\""},
     {version = ">=1.17.0", markers = "python_version >= \"3.7\""},
     {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
-    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
-    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
 ]
 
 [[package]]
@@ -9876,4 +9891,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.11"
-content-hash = "85ddf2e71c9c27c9adbd306fe22e9272a5d91eee3b303b03e8e8cb8a477b19b5"
+content-hash = "070dada0ba0bd30e656f3a648c4239debeef2600b13051efb80a1cfea761e3bf"

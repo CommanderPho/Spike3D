@@ -42,6 +42,7 @@ patchworklib = "^0.5.2"
 # modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
+mplfig = "^1.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
