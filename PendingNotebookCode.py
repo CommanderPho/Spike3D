@@ -354,6 +354,10 @@ def build_figure_and_control_widget_from_paginator(a_paginator):
     """ Builds a matplotlib Figure in a CustomMatplotlibWidget that displays paginated axes using a Paginator by creating a `PaginationControlWidget`
         Specifically uses `plot_rr_aclu`, not general
         
+        
+    2023-05-09 - Refactored into `RateRemappingPaginatedFigureController`, therefore will be depricated
+    
+    
     ## [X]: would have to add reuse of figure and ax to `plot_rr_aclu` as a minimum - 5 minutes
     ## [X] 2023-05-02 - would have to add the concept of the current page index, the next/previous/jump operations (that could be triggered by arrows in the GUI for example) - 30 minutes
     ## TODO 2023-05-02 - then would have to add something to hold the resultant fig, ax objects, the initial plot function, and then the plot update function. - 30 minutes
