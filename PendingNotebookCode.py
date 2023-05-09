@@ -321,7 +321,7 @@ def _helper_make_scatterplot_clickable(main_scatter_plot, enable_hover:bool=Fals
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class SelectionManager:
     """ Takes a list of matplotlib Axes that can have their selection toggled/un-toggled for inclusion/exclusion. 
-        Adds the ability to toggle selections for each axis  by clicking, and a grey background for selected objects vs. white for unselected.
+        Adds the ability to toggle selections for each axis by clicking, and a grey background for selected objects vs. white for unselected.
     Usage:
         from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
 
