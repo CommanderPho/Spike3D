@@ -25,6 +25,7 @@ _debug_print = False
 import sys
 
 from attrs import define, field, Factory
+from pyphocorehelpers.indexing_helpers import safe_numpy_index
 
 
 # ==================================================================================================================== #
@@ -108,7 +109,7 @@ class Paginator:
         """
         ## paginated outputs for shared cells
         included_page_data_indicies = np.array([curr_included_data_index for (a_linear_index, curr_row, curr_col, curr_included_data_index) in self.included_combined_indicies_pages[page_idx]]) # a list of the data indicies on this page
-        included_page_data_items = tuple([a_seq[included_page_data_indicies] for a_seq in self.sequencesToShow])
+        included_page_data_items = tuple([safe_numpy_index(a_seq, included_page_data_indicies) for a_seq in self.sequencesToShow])
         # included_data_indicies_pages = [[curr_included_unit_index for (a_linear_index, curr_row, curr_col, curr_included_unit_index) in v] for page_idx, v in enumerate(self.included_combined_indicies_pages)] # a list of length `num_pages` containing up to 10 items
         return included_page_data_indicies, included_page_data_items
 
@@ -160,6 +161,64 @@ class PaginationController(QtCore.QObject):
         """ called when the figure is closed. """
         pass
 
+
+from pyphoplacecellanalysis.Pho2D.matplotlib.CustomMatplotlibWidget import CustomMatplotlibWidget
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.MultiContextComparingDisplayFunctions import plot_rr_aclu
+from pyphoplacecellanalysis.GUI.Qt.Widgets.PaginationCtrl.PaginationControlWidget import PaginationControlWidget
+
+## Build the controller and figure from the paginator
+def build_figure_and_control_widget_from_paginator(a_paginator):
+	""" Builds a matplotlib Figure in a CustomMatplotlibWidget that displays paginated axes using a Paginator by creating a `PaginationControlWidget`
+        Specifically uses `plot_rr_aclu`, not general
+        
+	## [X]: would have to add reuse of figure and ax to `plot_rr_aclu` as a minimum - 5 minutes
+	## [X] 2023-05-02 - would have to add the concept of the current page index, the next/previous/jump operations (that could be triggered by arrows in the GUI for example) - 30 minutes
+	## TODO 2023-05-02 - then would have to add something to hold the resultant fig, ax objects, the initial plot function, and then the plot update function. - 30 minutes
+	## [X] 2023-05-03 - sorting is currently done locally (by page) which isn't good, need to move out and make copies of all the variables.
+
+
+	Usage:
+		from PendingNotebookCode import Paginator
+		## Paginated multi-plot
+		# Provide a tuple or list containing equally sized sequences of items:
+		a_paginator = Paginator.init_from_data((rr_aclus, rr_laps, rr_replays), max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False)
+		## Build GUI components:
+		mw, on_paginator_control_widget_jump_to_page, _a_connection = build_figure_and_control_widget_from_paginator(a_paginator)
+	
+	"""
+	## Build Widget to hold the matplotlib plot:
+	mw = CustomMatplotlibWidget(size=(15,15), dpi=72, constrained_layout=True, scrollable_figure=False)
+	# LIMITATION: only works on non-scrollable figures:
+	mw.ui.paginator_controller_widget = PaginationControlWidget(n_pages=a_paginator.num_pages)
+	mw.ui.root_vbox.addWidget(mw.ui.paginator_controller_widget) # add the pagination control widget
+	mw.ui.paginator_controller_widget.setMinimumHeight(38.0) # Set minimum height so it doesn't disappear
+
+	## Setup figure by building axes:
+	fig = mw.getFigure()
+
+	## LIMITATION: Only works for 1D subplot configurations:
+	# NOTE: fig.add_subplot(nrows, ncols, index) 
+	axs = [fig.add_subplot(a_paginator.max_num_items_per_page, 1, i+1) for i in np.arange(a_paginator.max_num_items_per_page)] # here we're aiming to approximate the `plt.subplots(nrows=len(included_page_data_indicies)) # one row for each page` setup
+
+	mw.draw()
+	mw.show()
+
+
+	## 2. Update:
+	def on_paginator_control_widget_jump_to_page(page_idx: int):
+		""" captures `a_paginator`, 'mw' """
+		# print(f'on_paginator_control_widget_jump_to_page(page_idx: {page_idx})')
+		included_page_data_indicies, (curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays) = a_paginator.get_page_data(page_idx=page_idx)
+		# print(f'\tincluded_page_data_indicies: {included_page_data_indicies}')
+		fig = mw.getFigure()
+		axs = mw.axes
+		# print(f'axs: {axs}')
+		fig, axs, sort_indicies = plot_rr_aclu([str(aclu) for aclu in curr_page_rr_aclus], rr_laps=curr_page_rr_laps, rr_replays=curr_page_rr_replays, fig=fig, axs=axs)
+		# print(f'\t done.')
+		mw.draw()
+
+	_a_connection = mw.ui.paginator_controller_widget.jump_to_page.connect(on_paginator_control_widget_jump_to_page)
+	return mw, on_paginator_control_widget_jump_to_page, _a_connection
 
 
 # ==================================================================================================================== #
