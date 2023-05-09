@@ -53,6 +53,7 @@
 		],
 		"favorites.sortDirection": "DESC",
 		"python.analysis.extraPaths": [],
+		"python.pylanceLspNotebooksEnabled": true,
 	},
 	"extensions": {
 		"recommendations": [

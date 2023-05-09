@@ -108,7 +108,6 @@ class DecodedEpochSlicesPaginationController(PaginationController):
 
 	@classmethod
 	def init_from_decoder_data(cls, active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, a_name:str = 'DecodedEpochSlicesPaginationController', max_subplots_per_page=20, parent=None):
-		# self.params, self.plots_data, self.plots, self.ui = VisualizationParameters(name=a_name), RenderPlotsData(name=a_name), plots=RenderPlots(name=a_name), ui=PhoUIContainer(name=a_name)
 		new_obj = cls(params=VisualizationParameters(name=a_name), plots_data=RenderPlotsData(name=a_name), plots=RenderPlots(name=a_name), ui=PhoUIContainer(name=a_name), parent=parent)
 		## Real setup:
 		new_obj.plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20)
@@ -236,7 +235,13 @@ class DecodedEpochSlicesPaginationController(PaginationController):
 
 
 def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20, debug_print=False):
-    """ 2023-05-08 - plots a paginated decoded_epoch_slices figure """
+    """ 2023-05-08 - plots a paginated decoded_epoch_slices figure 
+    2023-05-09 - Depricated in favor of `DecodedEpochSlicesPaginationController`
+    
+    Usage:    
+        from PendingNotebookCode import plot_paginated_decoded_epoch_slices
+        self.params, plots_data, self.plots, ui = plot_paginated_decoded_epoch_slices(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, xbin=long_results_obj.original_1D_decoder.xbin, global_pos_df=global_session.position.df)
+    """
     from pyphocorehelpers.indexing_helpers import Paginator
     from neuropy.core.epoch import Epoch
     from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices #, _helper_update_decoded_single_epoch_slice_plot #, _subfn_update_decoded_epoch_slices
