@@ -50,7 +50,7 @@ from pyphoplacecellanalysis.External.pyqtgraph import QtCore
 from pyphocorehelpers.DataStructure.general_parameter_containers import VisualizationParameters, RenderPlotsData, RenderPlots
 from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
 
-class PaginationController(QtCore.QObject):
+class PaginatedFigureController(QtCore.QObject):
     """2023-05-08 - Holds the current state for real-time pagination 
     
     Potential existing similar implementations
@@ -68,9 +68,8 @@ class PaginationController(QtCore.QObject):
     ui: PhoUIContainer
     
     def __init__(self, params, plots_data, plots, ui, parent=None):
-        super(PaginationController, self).__init__(parent=parent)
+        super(PaginatedFigureController, self).__init__(parent=parent)
         self.params, self.plots_data, self.plots, self.ui = params, plots_data, plots, ui
-
 
     def configure(self, **kwargs):
         """ assigns and computes needed variables for rendering. """
@@ -89,167 +88,7 @@ class PaginationController(QtCore.QObject):
         """ called when the figure is closed. """
         pass
     
-
-class DecodedEpochSlicesPaginationController(PaginationController):
-	"""2023-05-09 - Aims to refactor `plot_paginated_decoded_epoch_slices`, a series of nested functions, into a stateful class
-
-    Usage:
-    
-        _out_pagination_controller = DecodedEpochSlicesPaginationController.init_from_decoder_data(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, xbin=long_results_obj.original_1D_decoder.xbin, global_pos_df=global_session.position.df, a_name='TestDecodedEpochSlicesPaginationController', max_subplots_per_page=20)
-        _out_pagination_controller
-	"""
-	params: VisualizationParameters
-	plots_data: RenderPlotsData
-	plots: RenderPlots
-	ui: PhoUIContainer
-
-	def __init__(self, params, plots_data, plots, ui, parent=None):
-		super(DecodedEpochSlicesPaginationController, self).__init__(params, plots_data, plots, ui, parent=parent)
-
-	@classmethod
-	def init_from_decoder_data(cls, active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, a_name:str = 'DecodedEpochSlicesPaginationController', max_subplots_per_page=20, parent=None):
-		new_obj = cls(params=VisualizationParameters(name=a_name), plots_data=RenderPlotsData(name=a_name), plots=RenderPlots(name=a_name), ui=PhoUIContainer(name=a_name), parent=parent)
-		## Real setup:
-		new_obj.plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20)
-		return new_obj
-	
-	def configure(self, **kwargs):
-		""" assigns and computes needed variables for rendering. """
-		pass
-
-	def initialize(self, **kwargs):
-		""" sets up Figures """
-		# self.fig, self.axs = plt.subplots(nrows=len(rr_replays))
-		pass
-
-	def update(self, **kwargs):
-		""" called to specifically render data on the figure. """
-		pass
-
-	def on_close(self):
-		""" called when the figure is closed. """
-		pass
-
-
-	@staticmethod
-	def _subfn_helper_add_pagination_control_widget(a_paginator, mw, defer_render=True):
-		""" Add the PaginationControlWidget to the bottom of the figure """
-		# LIMITATION: only works on non-scrollable figures:
-		mw.ui.paginator_controller_widget = PaginationControlWidget(n_pages=a_paginator.num_pages)
-		mw.ui.root_vbox.addWidget(mw.ui.paginator_controller_widget) # add the pagination control widget
-		mw.ui.paginator_controller_widget.setMinimumHeight(38) # Set minimum height so it doesn't disappear
-		if not defer_render:
-			mw.draw()
-			mw.show()
-
-	@staticmethod
-	def _subfn_helper_build_paginator(active_filter_epochs, filter_epochs_decoder_result, max_subplots_per_page, debug_print) -> Paginator:
-		epoch_labels = filter_epochs_decoder_result.epoch_description_list.copy()
-		if epoch_labels is None or len(epoch_labels) < active_filter_epochs.n_epochs:
-			if 'label' not in active_filter_epochs._df.columns:
-				active_filter_epochs._df['label'] = active_filter_epochs._df.index.to_numpy() # integer ripple indexing
-			# active_filter_epochs.labels ?
-			active_labels = active_filter_epochs._df['label'].to_numpy()
-			# active_labels = np.arange(active_filter_epochs.n_epochs)
-			epoch_labels = np.array([f"Epoch[{epoch_idx}]" for epoch_idx in active_labels])
-			if debug_print:
-				print(f'epoch_labels: {epoch_labels}')
-			filter_epochs_decoder_result.epoch_description_list = epoch_labels.copy() # assign the new labels
-
-		time_bin_containers = np.array(filter_epochs_decoder_result.time_bin_containers.copy())
-		posterior_containers = filter_epochs_decoder_result.marginal_x_list
-
-		# Provide a tuple or list containing equally sized sequences of items:
-		## Build Epochs:
-		if isinstance(active_filter_epochs, pd.DataFrame):
-			epochs_df = active_filter_epochs
-		elif isinstance(active_filter_epochs, Epoch):
-			epochs_df = active_filter_epochs.to_dataframe()
-		else:
-			raise NotImplementedError
-
-		epoch_slices = epochs_df[['start', 'stop']].to_numpy()
-		
-		epoch_slices_paginator = Paginator.init_from_data((epoch_slices, epoch_labels, time_bin_containers, posterior_containers), max_num_columns=1, max_subplots_per_page=max_subplots_per_page, data_indicies=None, last_figure_subplots_same_layout=False)
-		return epoch_slices_paginator
-
-	@QtCore.pyqtSlot(int)
-	def on_paginator_control_widget_jump_to_page(self, page_idx: int):
-		""" Update: made to depend on self """
-		# print(f'on_paginator_control_widget_jump_to_page(page_idx: {page_idx})')
-		included_page_data_indicies, (curr_page_active_filter_epochs, curr_page_epoch_labels, curr_page_time_bin_containers, curr_page_posterior_containers) = self.plots_data.paginator.get_page_data(page_idx=page_idx)
-		# print(f'\tincluded_page_data_indicies: {included_page_data_indicies}')
-		# params, plots_data, plots, ui = stacked_epoch_slices_matplotlib_build_view(epoch_slices, epoch_labels=epoch_labels, name=name, plot_function_name=plot_function_name, debug_test_max_num_slices=debug_test_max_num_slices, debug_print=debug_print)
-
-		for i, curr_ax in enumerate(self.plots.axs):
-			curr_slice_idxs = included_page_data_indicies[i]
-			curr_epoch_slice = curr_page_active_filter_epochs[i]
-			curr_time_bin_container = curr_page_time_bin_containers[i]
-			curr_posterior_container = curr_page_posterior_containers[i]
-			curr_time_bins = curr_time_bin_container.centers
-			curr_posterior = curr_posterior_container.p_x_given_n
-			curr_most_likely_positions = curr_posterior_container.most_likely_positions_1D
-			
-			if self.params.debug_print:
-				print(f'i : {i}, curr_posterior.shape: {curr_posterior.shape}')
-
-			# Update the axes appropriately:
-			_pagination_helper_plot_single_epoch_slice(curr_ax, self.params, self.plots_data, self.plots, self.ui, a_slice_idx=curr_slice_idxs, is_first_setup=False, debug_print=self.params.debug_print)
-
-			_temp_fig, curr_ax = plot_1D_most_likely_position_comparsions(self.plots_data.global_pos_df, ax=curr_ax, time_window_centers=curr_time_bins, variable_name=self.params.variable_name, xbin=self.params.xbin,
-															posterior=curr_posterior,
-															active_most_likely_positions_1D=curr_most_likely_positions,
-															enable_flat_line_drawing=self.params.enable_flat_line_drawing, debug_print=self.params.debug_print)
-			if _temp_fig is not None:
-				self.plots.fig = _temp_fig
-			
-			curr_ax.set_xlim(*curr_epoch_slice)
-			curr_ax.set_title(f'') # needs to be set to empty string '' because this is the title that appears above each subplot/slice
-
-		self.ui.mw.draw()
-
-	def plot_paginated_decoded_epoch_slices(self, active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20, debug_print=False):
-		""" 2023-05-08 - plots a paginated decoded_epoch_slices figure """
-
-		active_filter_epochs = deepcopy(active_filter_epochs)
-		filter_epochs_decoder_result = deepcopy(filter_epochs_decoder_result) # DecodedFilterEpochsResult
-		
-		self.params, self.plots_data, self.plots, self.ui = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=global_pos_df, variable_name='lin_pos', xbin=xbin,
-																name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=max_subplots_per_page)
-		
-		self.params.debug_print = debug_print
-		self.plots_data.paginator = self._subfn_helper_build_paginator(active_filter_epochs, filter_epochs_decoder_result, max_subplots_per_page, self.params.debug_print)  # assign the paginator
-
-		## Add the PaginationControlWidget
-		self._subfn_helper_add_pagination_control_widget(self.plots_data.paginator, self.ui.mw, defer_render=False)
-
-		## 2. Update:
-		self.on_paginator_control_widget_jump_to_page(page_idx=0)
-
-		# ui.on_paginator_control_widget_jump_to_page = on_paginator_control_widget_jump_to_page
-		_a_connection = self.ui.mw.ui.paginator_controller_widget.jump_to_page.connect(self.on_paginator_control_widget_jump_to_page) # bind connection
-		self.ui.connections['paginator_controller_widget_jump_to_page'] = _a_connection
-
-
-
-
-
-def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20, debug_print=False):
-    """ 2023-05-08 - plots a paginated decoded_epoch_slices figure 
-    2023-05-09 - Depricated in favor of `DecodedEpochSlicesPaginationController`
-    
-    Usage:    
-        from PendingNotebookCode import plot_paginated_decoded_epoch_slices
-        self.params, plots_data, self.plots, ui = plot_paginated_decoded_epoch_slices(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, xbin=long_results_obj.original_1D_decoder.xbin, global_pos_df=global_session.position.df)
-    """
-    from pyphocorehelpers.indexing_helpers import Paginator
-    from neuropy.core.epoch import Epoch
-    from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices #, _helper_update_decoded_single_epoch_slice_plot #, _subfn_update_decoded_epoch_slices
-    # from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import stacked_epoch_basic_setup, stacked_epoch_slices_matplotlib_build_view
-    from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import _pagination_helper_plot_single_epoch_slice
-    from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_1D_most_likely_position_comparsions # used in `plot_decoded_epoch_slices`
-    from pyphoplacecellanalysis.GUI.Qt.Widgets.PaginationCtrl.PaginationControlWidget import PaginationControlWidget
-
+    @staticmethod
     def _subfn_helper_add_pagination_control_widget(a_paginator, mw, defer_render=True):
         """ Add the PaginationControlWidget to the bottom of the figure """
         # LIMITATION: only works on non-scrollable figures:
@@ -259,7 +98,50 @@ def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_deco
         if not defer_render:
             mw.draw()
             mw.show()
+            
+    
 
+class DecodedEpochSlicesPaginatedFigureController(PaginatedFigureController):
+    """2023-05-09 - Aims to refactor `plot_paginated_decoded_epoch_slices`, a series of nested functions, into a stateful class
+
+    Usage:
+    
+        _out_pagination_controller = DecodedEpochSlicesPaginationController.init_from_decoder_data(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, xbin=long_results_obj.original_1D_decoder.xbin, global_pos_df=global_session.position.df, a_name='TestDecodedEpochSlicesPaginationController', max_subplots_per_page=20)
+        _out_pagination_controller
+    """
+    params: VisualizationParameters
+    plots_data: RenderPlotsData
+    plots: RenderPlots
+    ui: PhoUIContainer
+
+    def __init__(self, params, plots_data, plots, ui, parent=None):
+        super(DecodedEpochSlicesPaginatedFigureController, self).__init__(params, plots_data, plots, ui, parent=parent)
+
+    @classmethod
+    def init_from_decoder_data(cls, active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, a_name:str = 'DecodedEpochSlicesPaginationController', max_subplots_per_page=20, parent=None):
+        new_obj = cls(params=VisualizationParameters(name=a_name), plots_data=RenderPlotsData(name=a_name), plots=RenderPlots(name=a_name), ui=PhoUIContainer(name=a_name), parent=parent)
+        ## Real setup:
+        new_obj.plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20)
+        return new_obj
+    
+    def configure(self, **kwargs):
+        """ assigns and computes needed variables for rendering. """
+        pass
+
+    def initialize(self, **kwargs):
+        """ sets up Figures """
+        # self.fig, self.axs = plt.subplots(nrows=len(rr_replays))
+        pass
+
+    def update(self, **kwargs):
+        """ called to specifically render data on the figure. """
+        pass
+
+    def on_close(self):
+        """ called when the figure is closed. """
+        pass
+
+    @staticmethod
     def _subfn_helper_build_paginator(active_filter_epochs, filter_epochs_decoder_result, max_subplots_per_page, debug_print) -> Paginator:
         epoch_labels = filter_epochs_decoder_result.epoch_description_list.copy()
         if epoch_labels is None or len(epoch_labels) < active_filter_epochs.n_epochs:
@@ -290,27 +172,15 @@ def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_deco
         epoch_slices_paginator = Paginator.init_from_data((epoch_slices, epoch_labels, time_bin_containers, posterior_containers), max_num_columns=1, max_subplots_per_page=max_subplots_per_page, data_indicies=None, last_figure_subplots_same_layout=False)
         return epoch_slices_paginator
 
-    active_filter_epochs = deepcopy(active_filter_epochs)
-    filter_epochs_decoder_result = deepcopy(filter_epochs_decoder_result) # DecodedFilterEpochsResult
-
-    epoch_slices_paginator = _subfn_helper_build_paginator(active_filter_epochs, filter_epochs_decoder_result, max_subplots_per_page, debug_print)
-    
-    params, plots_data, plots, ui = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=global_pos_df, variable_name='lin_pos', xbin=xbin,
-                                                            name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=max_subplots_per_page)
-    plots_data.paginator = epoch_slices_paginator # assign the paginator
-
-    ## Add the PaginationControlWidget
-    _subfn_helper_add_pagination_control_widget(plots_data.paginator, ui.mw, defer_render=False)
-
-    ## 2. Update:
-    def on_paginator_control_widget_jump_to_page(page_idx: int):
-        """ captures: `plots.axs`, `plots_data.paginator`, `plots_data.global_pos_df`, `params.variable_name`, `params.xbin`, `params.enable_flat_line_drawing`, 'ui.mw' """
+    @QtCore.pyqtSlot(int)
+    def on_paginator_control_widget_jump_to_page(self, page_idx: int):
+        """ Update: made to depend on self """
         # print(f'on_paginator_control_widget_jump_to_page(page_idx: {page_idx})')
-        included_page_data_indicies, (curr_page_active_filter_epochs, curr_page_epoch_labels, curr_page_time_bin_containers, curr_page_posterior_containers) = plots_data.paginator.get_page_data(page_idx=page_idx)
+        included_page_data_indicies, (curr_page_active_filter_epochs, curr_page_epoch_labels, curr_page_time_bin_containers, curr_page_posterior_containers) = self.plots_data.paginator.get_page_data(page_idx=page_idx)
         # print(f'\tincluded_page_data_indicies: {included_page_data_indicies}')
         # params, plots_data, plots, ui = stacked_epoch_slices_matplotlib_build_view(epoch_slices, epoch_labels=epoch_labels, name=name, plot_function_name=plot_function_name, debug_test_max_num_slices=debug_test_max_num_slices, debug_print=debug_print)
 
-        for i, curr_ax in enumerate(plots.axs):
+        for i, curr_ax in enumerate(self.plots.axs):
             curr_slice_idxs = included_page_data_indicies[i]
             curr_epoch_slice = curr_page_active_filter_epochs[i]
             curr_time_bin_container = curr_page_time_bin_containers[i]
@@ -319,36 +189,152 @@ def plot_paginated_decoded_epoch_slices(active_filter_epochs, filter_epochs_deco
             curr_posterior = curr_posterior_container.p_x_given_n
             curr_most_likely_positions = curr_posterior_container.most_likely_positions_1D
             
-            if debug_print:
+            if self.params.debug_print:
                 print(f'i : {i}, curr_posterior.shape: {curr_posterior.shape}')
 
             # Update the axes appropriately:
-            _pagination_helper_plot_single_epoch_slice(curr_ax, params, plots_data, plots, ui, a_slice_idx=curr_slice_idxs, is_first_setup=False, debug_print=debug_print)
+            _pagination_helper_plot_single_epoch_slice(curr_ax, self.params, self.plots_data, self.plots, self.ui, a_slice_idx=curr_slice_idxs, is_first_setup=False, debug_print=self.params.debug_print)
 
-            _temp_fig, curr_ax = plot_1D_most_likely_position_comparsions(plots_data.global_pos_df, ax=curr_ax, time_window_centers=curr_time_bins, variable_name=params.variable_name, xbin=params.xbin,
+            _temp_fig, curr_ax = plot_1D_most_likely_position_comparsions(self.plots_data.global_pos_df, ax=curr_ax, time_window_centers=curr_time_bins, variable_name=self.params.variable_name, xbin=self.params.xbin,
                                                             posterior=curr_posterior,
                                                             active_most_likely_positions_1D=curr_most_likely_positions,
-                                                            enable_flat_line_drawing=params.enable_flat_line_drawing, debug_print=debug_print)
+                                                            enable_flat_line_drawing=self.params.enable_flat_line_drawing, debug_print=self.params.debug_print)
             if _temp_fig is not None:
-                plots.fig = _temp_fig
+                self.plots.fig = _temp_fig
             
             curr_ax.set_xlim(*curr_epoch_slice)
             curr_ax.set_title(f'') # needs to be set to empty string '' because this is the title that appears above each subplot/slice
 
-        ui.mw.draw()
+        self.ui.mw.draw()
 
-    on_paginator_control_widget_jump_to_page(page_idx=0)
+    def plot_paginated_decoded_epoch_slices(self, active_filter_epochs, filter_epochs_decoder_result, xbin, global_pos_df, max_subplots_per_page=20, debug_print=False):
+        """ 2023-05-08 - plots a paginated decoded_epoch_slices figure """
 
-    # ui.on_paginator_control_widget_jump_to_page = on_paginator_control_widget_jump_to_page
-    _a_connection = ui.mw.ui.paginator_controller_widget.jump_to_page.connect(on_paginator_control_widget_jump_to_page) # bind connection
-    # print(f'setting connection')
-    ui.connections['paginator_controller_widget_jump_to_page'] = _a_connection
-    # print(f'assigning connection.')
-    return params, plots_data, plots, ui
+        active_filter_epochs = deepcopy(active_filter_epochs)
+        filter_epochs_decoder_result = deepcopy(filter_epochs_decoder_result) # DecodedFilterEpochsResult
+        
+        self.params, self.plots_data, self.plots, self.ui = plot_decoded_epoch_slices(active_filter_epochs, filter_epochs_decoder_result, global_pos_df=global_pos_df, variable_name='lin_pos', xbin=xbin,
+                                                                name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=max_subplots_per_page)
+        
+        self.params.debug_print = debug_print
+        self.plots_data.paginator = self._subfn_helper_build_paginator(active_filter_epochs, filter_epochs_decoder_result, max_subplots_per_page, self.params.debug_print)  # assign the paginator
+
+        ## Add the PaginationControlWidget
+        self._subfn_helper_add_pagination_control_widget(self.plots_data.paginator, self.ui.mw, defer_render=False)
+
+        ## 2. Update:
+        self.on_paginator_control_widget_jump_to_page(page_idx=0)
+
+        # ui.on_paginator_control_widget_jump_to_page = on_paginator_control_widget_jump_to_page
+        _a_connection = self.ui.mw.ui.paginator_controller_widget.jump_to_page.connect(self.on_paginator_control_widget_jump_to_page) # bind connection
+        self.ui.connections['paginator_controller_widget_jump_to_page'] = _a_connection
 
 
 
 
+class RateRemappingPaginatedFigureController(PaginatedFigureController):
+    """2023-05-09 - Aims to refactor `build_figure_and_control_widget_from_paginator`, a series of nested functions, into a stateful class
+
+    Usage:
+        a_paginator = Paginator.init_from_data((rr_aclus, rr_laps, rr_replays), max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False)
+        _out_rr_pagination_controller = RateRemappingPaginatedFigureController.init_from_paginator(a_paginator, a_name='TestRateRemappingPaginatedFigureController')
+        _out_rr_pagination_controller
+    """
+    params: VisualizationParameters
+    plots_data: RenderPlotsData
+    plots: RenderPlots
+    ui: PhoUIContainer
+
+    @property
+    def paginator(self):
+        """The paginator property."""
+        return self.plots_data.paginator
+
+    def __init__(self, params, plots_data, plots, ui, parent=None):
+        super(RateRemappingPaginatedFigureController, self).__init__(params, plots_data, plots, ui, parent=parent)
+
+    @classmethod
+    def init_from_paginator(cls, a_paginator, a_name:str = 'RateRemappingPaginatedFigureController', plot_function_name='plot_rr_aclu', parent=None):
+        new_obj = cls(params=VisualizationParameters(name=a_name), plots_data=RenderPlotsData(name=a_name, paginator=a_paginator), plots=RenderPlots(name=a_name), ui=PhoUIContainer(name=a_name, connections=PhoUIContainer(name=a_name)), parent=parent)
+        # new_obj.ui.connections = PhoUIContainer(name=name)
+        num_slices = a_paginator.max_num_items_per_page
+        # Setup equivalent to that performed in `pyphoplacecellanalysis.Pho2D.stacked_epoch_slices.stacked_epoch_basic_setup`
+        new_obj.params.name = a_name
+        new_obj.params.window_title = plot_function_name
+        new_obj.params.num_slices = num_slices # not sure if needed
+        
+        # new_obj.params._debug_test_max_num_slices = debug_test_max_num_slices
+        # new_obj.params.active_num_slices = min(num_slices, new_obj.params._debug_test_max_num_slices)
+        
+        # new_obj.params.single_plot_fixed_height = single_plot_fixed_height
+        # new_obj.params.all_plots_height = float(new_obj.params.active_num_slices) * float(new_obj.params.single_plot_fixed_height)
+
+
+        ## Real setup:
+        new_obj.perform_plot()
+        return new_obj
+    
+
+    def configure(self, **kwargs):
+        """ assigns and computes needed variables for rendering. """
+        pass
+
+    def initialize(self, **kwargs):
+        """ sets up Figures """
+        # self.fig, self.axs = plt.subplots(nrows=len(rr_replays))
+        pass
+
+    def update(self, **kwargs):
+        """ called to specifically render data on the figure. """
+        pass
+
+    def on_close(self):
+        """ called when the figure is closed. """
+        pass
+    
+
+    def _build_figure_widget_from_paginator(self):
+        ## Build Widget to hold the matplotlib plot:
+        self.ui.mw = CustomMatplotlibWidget(size=(15,15), dpi=72, constrained_layout=True, scrollable_figure=False)
+
+        ## Add the PaginationControlWidget
+        self._subfn_helper_add_pagination_control_widget(self.plots_data.paginator, self.ui.mw, defer_render=False)
+
+        ## Setup figure by building axes:
+        fig = self.ui.mw.getFigure()
+
+        ## LIMITATION: Only works for 1D subplot configurations:
+        # NOTE: fig.add_subplot(nrows, ncols, index) 
+        axs = [fig.add_subplot(self.plots_data.paginator.max_num_items_per_page, 1, i+1) for i in np.arange(self.plots_data.paginator.max_num_items_per_page)] # here we're aiming to approximate the `plt.subplots(nrows=len(included_page_data_indicies)) # one row for each page` setup
+
+        self.ui.mw.draw()
+        self.ui.mw.show()
+            
+
+    @QtCore.pyqtSlot(int)
+    def on_paginator_control_widget_jump_to_page(self, page_idx: int):
+        """ Update captures `a_paginator`, 'mw' """
+        # print(f'on_paginator_control_widget_jump_to_page(page_idx: {page_idx})')
+        included_page_data_indicies, (curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays) = self.paginator.get_page_data(page_idx=page_idx)
+        # print(f'\tincluded_page_data_indicies: {included_page_data_indicies}')
+        fig = self.ui.mw.getFigure()
+        axs = self.ui.mw.axes
+        # print(f'axs: {axs}')
+        fig, axs, sort_indicies = plot_rr_aclu([str(aclu) for aclu in curr_page_rr_aclus], rr_laps=curr_page_rr_laps, rr_replays=curr_page_rr_replays, fig=fig, axs=axs)
+        # print(f'\t done.')
+        self.ui.mw.draw()
+
+    def perform_plot(self, debug_print=False):
+        self.params.debug_print = debug_print
+        self._build_figure_widget_from_paginator()
+        
+        ## 2. Update:
+        self.on_paginator_control_widget_jump_to_page(page_idx=0)
+        
+        # ui.on_paginator_control_widget_jump_to_page = on_paginator_control_widget_jump_to_page
+        _a_connection = self.ui.mw.ui.paginator_controller_widget.jump_to_page.connect(self.on_paginator_control_widget_jump_to_page) # bind connection
+        self.ui.connections['paginator_controller_widget_jump_to_page'] = _a_connection
+        
 
 
 # ==================================================================================================================== #
@@ -365,57 +351,58 @@ from pyphoplacecellanalysis.GUI.Qt.Widgets.PaginationCtrl.PaginationControlWidge
 
 ## Build the controller and figure from the paginator
 def build_figure_and_control_widget_from_paginator(a_paginator):
-	""" Builds a matplotlib Figure in a CustomMatplotlibWidget that displays paginated axes using a Paginator by creating a `PaginationControlWidget`
+    """ Builds a matplotlib Figure in a CustomMatplotlibWidget that displays paginated axes using a Paginator by creating a `PaginationControlWidget`
         Specifically uses `plot_rr_aclu`, not general
         
-	## [X]: would have to add reuse of figure and ax to `plot_rr_aclu` as a minimum - 5 minutes
-	## [X] 2023-05-02 - would have to add the concept of the current page index, the next/previous/jump operations (that could be triggered by arrows in the GUI for example) - 30 minutes
-	## TODO 2023-05-02 - then would have to add something to hold the resultant fig, ax objects, the initial plot function, and then the plot update function. - 30 minutes
-	## [X] 2023-05-03 - sorting is currently done locally (by page) which isn't good, need to move out and make copies of all the variables.
+    ## [X]: would have to add reuse of figure and ax to `plot_rr_aclu` as a minimum - 5 minutes
+    ## [X] 2023-05-02 - would have to add the concept of the current page index, the next/previous/jump operations (that could be triggered by arrows in the GUI for example) - 30 minutes
+    ## TODO 2023-05-02 - then would have to add something to hold the resultant fig, ax objects, the initial plot function, and then the plot update function. - 30 minutes
+    ## [X] 2023-05-03 - sorting is currently done locally (by page) which isn't good, need to move out and make copies of all the variables.
 
 
-	Usage:
-		from PendingNotebookCode import Paginator
-		## Paginated multi-plot
-		# Provide a tuple or list containing equally sized sequences of items:
-		a_paginator = Paginator.init_from_data((rr_aclus, rr_laps, rr_replays), max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False)
-		## Build GUI components:
-		mw, on_paginator_control_widget_jump_to_page, _a_connection = build_figure_and_control_widget_from_paginator(a_paginator)
-	
-	"""
-	## Build Widget to hold the matplotlib plot:
-	mw = CustomMatplotlibWidget(size=(15,15), dpi=72, constrained_layout=True, scrollable_figure=False)
-	# LIMITATION: only works on non-scrollable figures:
-	mw.ui.paginator_controller_widget = PaginationControlWidget(n_pages=a_paginator.num_pages)
-	mw.ui.root_vbox.addWidget(mw.ui.paginator_controller_widget) # add the pagination control widget
-	mw.ui.paginator_controller_widget.setMinimumHeight(38.0) # Set minimum height so it doesn't disappear
+    Usage:
+        from PendingNotebookCode import Paginator
+        ## Paginated multi-plot
+        # Provide a tuple or list containing equally sized sequences of items:
+        a_paginator = Paginator.init_from_data((rr_aclus, rr_laps, rr_replays), max_num_columns=1, max_subplots_per_page=20, data_indicies=None, last_figure_subplots_same_layout=False)
+        ## Build GUI components:
+        mw, on_paginator_control_widget_jump_to_page, _a_connection = build_figure_and_control_widget_from_paginator(a_paginator)
+    
+    """
+    ## Build Widget to hold the matplotlib plot:
+    mw = CustomMatplotlibWidget(size=(15,15), dpi=72, constrained_layout=True, scrollable_figure=False)
 
-	## Setup figure by building axes:
-	fig = mw.getFigure()
+    # LIMITATION: only works on non-scrollable figures:
+    mw.ui.paginator_controller_widget = PaginationControlWidget(n_pages=a_paginator.num_pages)
+    mw.ui.root_vbox.addWidget(mw.ui.paginator_controller_widget) # add the pagination control widget
+    mw.ui.paginator_controller_widget.setMinimumHeight(38.0) # Set minimum height so it doesn't disappear
 
-	## LIMITATION: Only works for 1D subplot configurations:
-	# NOTE: fig.add_subplot(nrows, ncols, index) 
-	axs = [fig.add_subplot(a_paginator.max_num_items_per_page, 1, i+1) for i in np.arange(a_paginator.max_num_items_per_page)] # here we're aiming to approximate the `plt.subplots(nrows=len(included_page_data_indicies)) # one row for each page` setup
+    ## Setup figure by building axes:
+    fig = mw.getFigure()
 
-	mw.draw()
-	mw.show()
+    ## LIMITATION: Only works for 1D subplot configurations:
+    # NOTE: fig.add_subplot(nrows, ncols, index) 
+    axs = [fig.add_subplot(a_paginator.max_num_items_per_page, 1, i+1) for i in np.arange(a_paginator.max_num_items_per_page)] # here we're aiming to approximate the `plt.subplots(nrows=len(included_page_data_indicies)) # one row for each page` setup
+
+    mw.draw()
+    mw.show()
 
 
-	## 2. Update:
-	def on_paginator_control_widget_jump_to_page(page_idx: int):
-		""" captures `a_paginator`, 'mw' """
-		# print(f'on_paginator_control_widget_jump_to_page(page_idx: {page_idx})')
-		included_page_data_indicies, (curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays) = a_paginator.get_page_data(page_idx=page_idx)
-		# print(f'\tincluded_page_data_indicies: {included_page_data_indicies}')
-		fig = mw.getFigure()
-		axs = mw.axes
-		# print(f'axs: {axs}')
-		fig, axs, sort_indicies = plot_rr_aclu([str(aclu) for aclu in curr_page_rr_aclus], rr_laps=curr_page_rr_laps, rr_replays=curr_page_rr_replays, fig=fig, axs=axs)
-		# print(f'\t done.')
-		mw.draw()
+    ## 2. Update:
+    def on_paginator_control_widget_jump_to_page(page_idx: int):
+        """ Update captures `a_paginator`, 'mw' """
+        # print(f'on_paginator_control_widget_jump_to_page(page_idx: {page_idx})')
+        included_page_data_indicies, (curr_page_rr_aclus, curr_page_rr_laps, curr_page_rr_replays) = a_paginator.get_page_data(page_idx=page_idx)
+        # print(f'\tincluded_page_data_indicies: {included_page_data_indicies}')
+        fig = mw.getFigure()
+        axs = mw.axes
+        # print(f'axs: {axs}')
+        fig, axs, sort_indicies = plot_rr_aclu([str(aclu) for aclu in curr_page_rr_aclus], rr_laps=curr_page_rr_laps, rr_replays=curr_page_rr_replays, fig=fig, axs=axs)
+        # print(f'\t done.')
+        mw.draw()
 
-	_a_connection = mw.ui.paginator_controller_widget.jump_to_page.connect(on_paginator_control_widget_jump_to_page)
-	return mw, on_paginator_control_widget_jump_to_page, _a_connection
+    _a_connection = mw.ui.paginator_controller_widget.jump_to_page.connect(on_paginator_control_widget_jump_to_page)
+    return mw, on_paginator_control_widget_jump_to_page, _a_connection
 
 
 # ==================================================================================================================== #
@@ -531,6 +518,86 @@ class SelectionManager:
             ax.patch.set_facecolor('white')
         # Redraw the figure to show the updated selection
         event.canvas.draw()
+
+
+from attrs import Factory
+
+@define(slots=True, eq=False) #eq=False enables hashing by object identity
+class PaginatedSelectionManager:
+    """ Takes a list of matplotlib Axes that can have their selection toggled/un-toggled for inclusion/exclusion. 
+        Adds the ability to toggle selections for each axis by clicking, and a grey background for selected objects vs. white for unselected.
+    Usage:
+        from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.DecoderPredictionError import plot_decoded_epoch_slices
+
+        laps_plot_tuple = plot_decoded_epoch_slices(long_results_obj.active_filter_epochs, long_results_obj.all_included_filter_epochs_decoder_result, global_pos_df=global_session.position.df, variable_name='lin_pos', xbin=long_results_obj.original_1D_decoder.xbin,
+                                                                name='stacked_epoch_slices_long_results_obj', debug_print=False, debug_test_max_num_slices=32)
+        curr_viz_params, _curr_plot_data, _curr_plots, _curr_ui_container = laps_plot_tuple
+
+        # Create a SelectionManager instance
+        sel_man = PaginatedSelectionManager(axes=self.plots.axs, fig=self.plots.fig)
+
+        def on_page_change(updated_page_idx):
+            # print(f'on_page_change(updated_page_idx: {updated_page_idx})')
+            # Update on page change:
+            sel_man.perform_update()
+
+        ui.mw.ui.paginator_controller_widget.jump_to_page.connect(on_page_change)
+
+    """
+    axes: list
+    is_selected: dict = Factory(dict)
+    fig: matplotlib.figure.Figure = None # Matplotlib.Figure
+    callback_id: int = None # Matplotlib.Figure
+
+    def __attrs_post_init__(self):
+        # Get figure from first axes:
+        assert len(self.axes) > 0
+        first_ax = self.axes[0]
+        self.fig = first_ax.get_figure()		
+        self.callback_id = self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+        # Set initial selection to False
+        # for ax in self.axes:
+        #     self.is_selected[ax] = False
+
+    def perform_update(self):
+        """ called to update the selection when the page is changed or something else happens. """        
+        current_page_idx, curr_page_data_indicies = _get_current_page_data_indicies()
+        assert len(self.plots.axs) == len(curr_page_data_indicies), f"len(plots.axs): {len(self.plots.axs)}, len(curr_page_data_indicies): {len(curr_page_data_indicies)}"
+        for ax, found_data_idx in zip(self.plots.axs, list(curr_page_data_indicies)): # TODO: might fail for the last page?
+            # print(f'found_data_idx: {found_data_idx}')
+            # found_data_index = curr_page_data_indicies[found_index]
+            # print(f'{current_page_idx = }, {found_data_index =}')
+            is_selected = self.is_selected.get(found_data_idx, False)
+            if is_selected:
+                ax.patch.set_facecolor('gray')
+            else:
+                ax.patch.set_facecolor('white')
+                
+        # Redraw the figure to show the updated selection
+        self.fig.canvas.draw()
+
+    def on_click(self, event):
+        # Get the clicked Axes object
+        ax = event.inaxes
+        # Find the axes
+        found_index = safe_find_index_in_list(self.plots.axs, ax)
+        # print(f'{found_index = }')
+        current_page_idx, curr_page_data_indicies = _get_current_page_data_indicies()
+        found_data_index = curr_page_data_indicies[found_index]
+        # print(f'{current_page_idx = }, {found_data_index =}')
+        # Toggle the selection status of the clicked Axes
+        self.is_selected[found_data_index] = not self.is_selected.get(found_data_index, False) # if never set before, assume that it's not selected
+
+        # self.is_selected[ax] = not self.is_selected[ax]
+        # Set the face color of the clicked Axes based on its selection status
+        # if self.is_selected[ax]:
+        if self.is_selected[found_data_index]:
+            ax.patch.set_facecolor('gray')
+        else:
+            ax.patch.set_facecolor('white')
+        # Redraw the figure to show the updated selection
+        event.canvas.draw()
+        
 
 
 
