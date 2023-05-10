@@ -206,7 +206,35 @@ from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnaly
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import build_neurons_color_map # for plot_short_v_long_pf1D_comparison
 
 
-def _long_short_decoding_analysis_from_decoders(long_one_step_decoder_1D, short_one_step_decoder_1D, long_session, short_session, global_session, decoding_time_bin_size = 0.025, perform_cache_load=True):
+from attrs import define, field
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BayesianPlacemapPositionDecoder
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder
+from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SetPartition
+from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
+
+@define(slots=False, repr=False)
+class LeaveOneOutDecodingAnalysis:
+    """ 2023-05-10 - holds the results of a leave-one-out decoding analysis of the long and short track 
+    Usage:
+        leave_one_out_decoding_analysis_obj = LeaveOneOutDecodingAnalysis(long_decoder, short_decoder, long_replays, short_replays, global_replays, long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, shared_aclus, long_short_pf_neurons_diff, n_neurons, long_results_obj, short_results_obj)
+    """
+    long_decoder: BayesianPlacemapPositionDecoder
+    short_decoder: BayesianPlacemapPositionDecoder
+    long_replays: pd.DataFrame
+    short_replays: pd.DataFrame
+    global_replays: pd.DataFrame
+    long_shared_aclus_only_decoder: BasePositionDecoder
+    short_shared_aclus_only_decoder: BasePositionDecoder
+    shared_aclus: np.ndarray
+    long_short_pf_neurons_diff: SetPartition
+    n_neurons: int
+    long_results_obj: SurpriseAnalysisResult
+    short_results_obj: SurpriseAnalysisResult
+
+
+
+
+def _long_short_decoding_analysis_from_decoders(long_one_step_decoder_1D, short_one_step_decoder_1D, long_session, short_session, global_session, decoding_time_bin_size = 0.025, perform_cache_load=True, always_recompute_replays=False):
     """ Uses existing decoders and other long/short variables to run `perform_full_session_leave_one_out_decoding_analysis` on each. """
     # Get existing long/short decoders from the cell under "# 2023-02-24 Decoders"
     long_decoder, short_decoder = deepcopy(long_one_step_decoder_1D), deepcopy(short_one_step_decoder_1D)
@@ -218,15 +246,21 @@ def _long_short_decoding_analysis_from_decoders(long_one_step_decoder_1D, short_
     # long_session.replay, short_session.replay, global_session.replay = [None, None, None]
 
     # Compute/estimate replays if missing from session:
-    if not global_session.has_replays:
-        print(f'Replays missing from sessions. Computing replays...')
+    if not global_session.has_replays or always_recompute_replays:
+        if not global_session.has_replays:
+            print(f'Replays missing from sessions. Computing replays...')
+        else:
+            print(f'Replays exist but `always_recompute_replays` is True, so estimate_replay_epochs will be performed and the old ones will be overwritten.')
         long_session.replay, short_session.replay, global_session.replay = [a_session.estimate_replay_epochs(min_epoch_included_duration=0.06, max_epoch_included_duration=None, maximum_speed_thresh=None, min_inclusion_fr_active_thresh=0.01, min_num_unique_aclu_inclusions=3).to_dataframe() for a_session in [long_session, short_session, global_session]]
+
+    # Extract replays either way:
+    long_replays, short_replays, global_replays = [a_session.replay for a_session in [long_session, short_session, global_session]]
 
     # Prune to the shared aclus in both epochs (short/long):
     long_shared_aclus_only_decoder, short_shared_aclus_only_decoder = [BasePositionDecoder.init_from_stateful_decoder(a_decoder) for a_decoder in (long_decoder, short_decoder)]
     shared_aclus, (long_shared_aclus_only_decoder, short_shared_aclus_only_decoder), long_short_pf_neurons_diff = BasePositionDecoder.prune_to_shared_aclus_only(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder)
 
-    # n_neurons = len(shared_aclus)
+    n_neurons = len(shared_aclus)
     # # for plotting purposes, build colors only for the common (present in both, the intersection) neurons:
     # neurons_colors_array = build_neurons_color_map(n_neurons, sortby=None, cmap=None)
     # print(f'{n_neurons = }, {neurons_colors_array.shape =}')
@@ -234,6 +268,21 @@ def _long_short_decoding_analysis_from_decoders(long_one_step_decoder_1D, short_
     # with VizTracer(output_file=f"viztracer_{get_now_time_str()}-full_session_LOO_decoding_analysis.json", min_duration=200, tracer_entries=3000000, ignore_frozen=True) as tracer:
     long_results_obj = perform_full_session_leave_one_out_decoding_analysis(global_session, original_1D_decoder=long_shared_aclus_only_decoder, decoding_time_bin_size=decoding_time_bin_size, cache_suffix = '_long', perform_cache_load=perform_cache_load) # , perform_cache_load=False
     short_results_obj = perform_full_session_leave_one_out_decoding_analysis(global_session, original_1D_decoder=short_shared_aclus_only_decoder, decoding_time_bin_size=decoding_time_bin_size, cache_suffix = '_short', perform_cache_load=perform_cache_load) # , perform_cache_load=False
+
+    leave_one_out_decoding_analysis_obj = LeaveOneOutDecodingAnalysis(long_decoder, short_decoder, long_replays, short_replays, global_replays, long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, shared_aclus, long_short_pf_neurons_diff, n_neurons, long_results_obj, short_results_obj)
+
+    ## Dict mode for result    
+    # curr_active_pipeline.global_computation_results.computed_data.long_short = {
+    #     'leave_one_out_decoding_analysis': {
+    #             'long_decoder': long_decoder,  'short_decoder': short_decoder, 
+    #             'long_replays': long_replays,  'short_replays': short_replays,  'global_replays': global_replays,
+    #             'long_shared_aclus_only_decoder': long_shared_aclus_only_decoder,  'short_shared_aclus_only_decoder': short_shared_aclus_only_decoder, 
+    #             'shared_aclus': shared_aclus,  'long_shared_aclus_only_decoder': long_shared_aclus_only_decoder,  'short_shared_aclus_only_decoder': short_shared_aclus_only_decoder,  'long_short_pf_neurons_diff': long_short_pf_neurons_diff, 
+    #             'n_neurons': n_neurons,
+    #             'long_results_obj': long_results_obj,  'short_results_obj': short_results_obj
+    #     }
+    # } # end long_short
+
 
     return long_results_obj, short_results_obj
 
