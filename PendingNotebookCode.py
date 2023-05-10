@@ -39,92 +39,17 @@ from pyphocorehelpers.indexing_helpers import Paginator
 
 # From plot_paginated_decoded_epoch_slices
 
-
-
-
-
-
 # ==================================================================================================================== #
 # 2023-05-02 - Factor out Paginator and plotting stuff                                                                 #
 # ==================================================================================================================== #
 
 # from pyphocorehelpers.plotting.figure_management import PhoActiveFigureManager2D
 
-
-
-
-
-
 # ==================================================================================================================== #
 # 2023-05-02 - Factor out interactive matplotlib/pyqtgraph helper code (untested)                                      #
 # ==================================================================================================================== #
 import matplotlib
 from attrs import define, Factory
-
-
-# PyQtGraph Properties:
-# win.setBackground
-# win.setWindowTitle
-# win.setBackgroundBrush
-# win.setXRange
-# win.setYRange
-
-# "Show X Grid"
-# "Show Y Grid"
-
-
-# visual_config = dict(pen=pg.mkPen('#fff'), brush=pg.mkBrush('#f004'), hoverBrush=pg.mkBrush('#fff4'), hoverPen=pg.mkPen('#f00'))
-
-
-def _helper_make_scatterplot_clickable(main_scatter_plot, enable_hover:bool=False):
-    """ pyqtgraph 
-    
-    Usage:
-    
-    lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection) = _helper_make_scatterplot_clickable(a_plot)
-    
-    """
-    # Highlights the hovered spikes white:
-    # main_scatter_plot.addPoints(hoverable=True,
-    # 	# hoverSymbol=vtick, # hoverSymbol='s',
-    # 	hoverSize=7, # default is 5
-    # 	)
-
-
-    ## Clickable/Selectable Spikes:
-    # Will make all plots clickable
-    clickedPen = pg.mkPen('#DDD', width=2)
-    lastClicked = []
-    def _test_scatter_plot_clicked(plot, points):
-        global lastClicked
-        for p in lastClicked:
-            p.resetPen()
-        print("clicked points", points)
-        for p in points:
-            p.setPen(clickedPen)
-        lastClicked = points
-
-    main_scatter_clicked_connection = main_scatter_plot.sigClicked.connect(_test_scatter_plot_clicked)
-
-    ## Hoverable Spikes:
-    if enable_hover:
-        def _test_scatter_plot_hovered(plt, points, ev):
-            # sigHovered(self, points, ev)
-            print(f'_test_scatter_plot_hovered(plt: {plt}, points: {points}, ev: {ev})')
-            if (len(points) > 0):
-                curr_point = points[0]
-                # self.
-                # curr_point.index
-        main_scatter_hovered_connection = main_scatter_plot.sigHovered.connect(_test_scatter_plot_hovered)
-    else:
-        main_scatter_hovered_connection = None
-
-    return lastClicked, clickedPen, (main_scatter_hovered_connection, main_scatter_clicked_connection)
-
-
-
-
-
 
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class SelectionManager:
@@ -249,76 +174,6 @@ class PaginatedSelectionManager:
         event.canvas.draw()
         
 
-
-
-
-
-import matplotlib as mpl
-
-def extract_figure_properties(fig):
-    """ UNTESTED, UNFINISHED
-    Extracts styles, formatting, and set options from a matplotlib Figure object.
-    Returns a dictionary with the following keys:
-        - 'title': the Figure title (if any)
-        - 'xlabel': the label for the x-axis (if any)
-        - 'ylabel': the label for the y-axis (if any)
-        - 'xlim': the limits for the x-axis (if any)
-        - 'ylim': the limits for the y-axis (if any)
-        - 'xscale': the scale for the x-axis (if any)
-        - 'yscale': the scale for the y-axis (if any)
-        - 'legend': the properties of the legend (if any)
-        - 'grid': the properties of the grid (if any)
-        
-        
-        Usage:        
-            curr_fig = plt.gcf()
-            curr_fig = out.figures[0]
-            curr_fig_properties = extract_figure_properties(curr_fig)
-            curr_fig_properties
-
-    """
-    properties = {}
-    
-    # Extract title
-    properties['title'] = fig._suptitle.get_text() if fig._suptitle else None
-    
-    # Extract axis labels and limits
-    for ax in fig.get_axes():
-        if ax.get_label() == 'x':
-            properties['xlabel'] = ax.get_xlabel()
-            properties['xlim'] = ax.get_xlim()
-            properties['xscale'] = ax.get_xscale()
-        elif ax.get_label() == 'y':
-            properties['ylabel'] = ax.get_ylabel()
-            properties['ylim'] = ax.get_ylim()
-            properties['yscale'] = ax.get_yscale()
-    
-    # Extract legend properties
-    if hasattr(fig, 'legend_'):
-        legend = fig.legend_
-        if legend:
-            properties['legend'] = {
-                'title': legend.get_title().get_text(),
-                'labels': [t.get_text() for t in legend.get_texts()],
-                'loc': legend._loc,
-                'frameon': legend.get_frame_on(),
-            }
-    
-    # Extract grid properties
-    first_ax = fig.axes[0]
-    grid = first_ax.get_gridlines()[0] if first_ax.get_gridlines() else None
-    if grid:
-        properties['grid'] = {
-            'color': grid.get_color(),
-            'linestyle': grid.get_linestyle(),
-            'linewidth': grid.get_linewidth(),
-        }
-    
-    return properties
-
-
-
-
 # ==================================================================================================================== #
 # 2023-04-17 - Factor out interactive diagnostic figure code                                                           #
 # ==================================================================================================================== #
@@ -335,9 +190,6 @@ from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import TimebinnedNeu
 # 2023-04-14 - New Surprise Implementation                                                                             #
 # ==================================================================================================================== #
 
-
-
-
 # Distance metrics used by `_new_compute_surprise`
 from scipy.spatial import distance # for Jensen-Shannon distance in `_subfn_compute_leave_one_out_analysis`
 import random # for random.choice(mylist)
@@ -347,10 +199,6 @@ from scipy.stats import pearsonr
 from pyphocorehelpers.indexing_helpers import safe_np_vstack # for `_new_compute_surprise`
 
 ## 0. Precompute the active neurons in each timebin, and the epoch-timebin-flattened decoded posteriors makes it easier to compute for a given time bin:
-
-
-
-
 
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder, BayesianPlacemapPositionDecoder
 from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import perform_full_session_leave_one_out_decoding_analysis
