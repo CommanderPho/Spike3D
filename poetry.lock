@@ -1115,6 +1115,18 @@ files = [
 cffi = ">=1.13"
 
 [[package]]
+name = "codequery"
+version = "0.1.4"
+description = "Queries and code facts checking support for python source code"
+category = "main"
+optional = false
+python-versions = ">3.6"
+files = [
+    {file = "codequery-0.1.4-py3-none-any.whl", hash = "sha256:42a14849360e4d3370f9d76e4276f04165221826d295cf12d35bd6983def4a0c"},
+    {file = "codequery-0.1.4.tar.gz", hash = "sha256:81d409cad1f216bca8a9cd10e5c6dec7c666dcfaf1afce6dd7088e98d54799a2"},
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -4736,7 +4748,7 @@ version = "0.0.7"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
+python-versions = ">=3.9,<3.11"
 files = []
 develop = true
 
@@ -10016,4 +10028,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.11"
-content-hash = "fd7f1168f170bf7382de283432271b4cbc9fa6a0618598deeffebeb4c100151d"
+content-hash = "aa7816aeda67d57fed429f26664b012241f22b0905eb6dc93b208305f2f41a4e"
