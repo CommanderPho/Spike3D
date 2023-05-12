@@ -44,7 +44,8 @@ patchworklib = "^0.5.2"
 # lead-lag = "^2.3" # didn't work
 mplfig = "^1.0.1"
 textual = {extras = ["dev"], version = "^0.24.1"}
-
+symdexer = "^0.2.10"
+pycscope = {path = "../../ExternalTesting/pycscope/dist/current.whl", develop=true} # pycscope = "^1.2.1"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
