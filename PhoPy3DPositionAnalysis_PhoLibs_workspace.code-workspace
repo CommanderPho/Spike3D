@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../NeuroPy/neuropy"
+		},
+		{
+			"path": "../SCRIPTS"
 		}
 	],
 	"settings": {
@@ -68,7 +71,10 @@
 			"spremi.clique-header",
 			"alefragnani.separators",
 			"antimach.symdexer",
-			"herdingbits.file-focus"
+			"herdingbits.file-focus",
+			"dock51.vs-symbol-seeker",
+			"valderman.ctagsymbols",
+			"ruben2020.codequery4vscode"
 		]
 	},
 	"launch": {
