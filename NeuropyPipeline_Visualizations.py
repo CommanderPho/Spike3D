@@ -6510,9 +6510,7 @@ params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
 
 # +
 # %matplotlib qt
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.MultiContextComputationFunctions import _final_compute_jonathan_replay_fr_analyses
-from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.MultiContextComparingDisplayFunctions import _make_jonathan_interactive_plot
-
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import _make_jonathan_interactive_plot, _final_compute_jonathan_replay_fr_analyses
 owning_pipeline_reference = curr_active_pipeline
 include_whitelist = None
 computation_results = curr_active_pipeline.computation_results

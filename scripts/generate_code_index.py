@@ -1,6 +1,23 @@
 import subprocess
 import pathlib
 
+def find_py_files(project_path, exclude_dirs=[]):
+    # Find all .py files in the project directory and its subdirectories
+    if not isinstance(project_path, pathlib.Path):
+        project_path = pathlib.Path(project_path)
+    py_files = project_path.glob("**/*.py")
+    py_files = [file_path for file_path in py_files] # to list
+
+    excluded_py_files = []
+    if exclude_dirs is not None:
+        # Find all .py files in the project directory and its subdirectories, excluding the 'my_exclude_dir' directory
+        exclude_paths = [project_path.joinpath(a_dir) for a_dir in exclude_dirs]
+        for an_exclude_path in exclude_paths:
+            excluded_py_files.extend([file_path for file_path in an_exclude_path.glob("**/*.py")])
+
+    included_py_files = [x for x in py_files if x not in excluded_py_files]
+    return included_py_files
+
 
 
 def build_code_index(project_path, exclude_dirs=[]):
@@ -31,10 +48,13 @@ def build_code_index(project_path, exclude_dirs=[]):
         ctags --fields=+i -n -L cscope.files
         cqmakedb -s .\myproject.db -c cscope.out -t tags -p
 
-
+        
         # This does not work: the idea of adding them all to a shared database
         cqmakedb -s ..\..\full_project.db -c cscope.out -t tags -p
 
+        
+        
+        
     
     Example:
         project_path = "C:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src"
@@ -48,17 +68,7 @@ def build_code_index(project_path, exclude_dirs=[]):
     db_path = project_path / "myproject.db"
 
     # Find all .py files in the project directory and its subdirectories
-    py_files = project_path.glob("**/*.py")
-    py_files = [file_path for file_path in py_files] # to list
-
-    excluded_py_files = []
-    if exclude_dirs is not None:
-        # Find all .py files in the project directory and its subdirectories, excluding the 'my_exclude_dir' directory
-        exclude_paths = [project_path.joinpath(a_dir) for a_dir in exclude_dirs]
-        for an_exclude_path in exclude_paths:
-            excluded_py_files.extend([file_path for file_path in an_exclude_path.glob("**/*.py")])
-
-    included_py_files = [x for x in py_files if x not in excluded_py_files]
+    included_py_files = find_py_files(project_path, exclude_dirs=exclude_dirs)
 
     # Write the file paths to cscope.files
     with open(project_path / "cscope.files", "w") as f:
@@ -75,9 +85,13 @@ def build_code_index(project_path, exclude_dirs=[]):
     subprocess.run(["cqmakedb", "-s", str(db_path), "-c", str(cscope_out), "-t", str(tags), "-p"], cwd=str(project_path), check=True)
 
 
+if __name__ == "__main__":
+    build_code_index("C:/Users/pho/repos/Spike3DWorkEnv/NeuroPy/neuropy")
+    build_code_index("C:/Users/pho/repos/Spike3DWorkEnv/pyPhoCoreHelpers/src")
+    build_code_index("C:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src", exclude_dirs = ["pyphoplacecellanalysis/External"])
 
-build_code_index("C:/Users/pho/repos/Spike3DWorkEnv/NeuroPy/neuropy")
-build_code_index("C:/Users/pho/repos/Spike3DWorkEnv/pyPhoCoreHelpers/src")
-build_code_index("C:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src", exclude_dirs = ["pyphoplacecellanalysis/External"])
 
 
+
+
+# "C:\Program Files\Microsoft VS Code\Code.exe" --goto "%f:%n"
