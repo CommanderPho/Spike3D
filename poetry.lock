@@ -4736,7 +4736,7 @@ version = "0.0.7"
 description = "package is primarily developed for hippocampal recordings, but can also be used for general ephys data."
 category = "dev"
 optional = false
-python-versions = ">=3.9,<3.11"
+python-versions = ">=3.9,<3.11" # Note: 3.11 is excluded by mamba. Otherwise it works fine.
 files = []
 develop = true
 
@@ -6042,14 +6042,18 @@ files = [
 
 [[package]]
 name = "pycscope"
-version = "1.2.1"
+version = "1.2.3"
 description = "Generates a cscope index of Python source trees"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pycscope-1.2.1.tar.gz", hash = "sha256:3c6a08263be7a49e71bc8dc0b6c70b3667f6760f9220005a9d452dee8c524950"},
+    {file = "pycscope-1.2.3-py3-none-any.whl", hash = "sha256:c1673a7fc9a9a2ab3aef2810e132386a19e893da554983eb9b990fe8ed6cc9ce"},
 ]
+
+[package.source]
+type = "file"
+url = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl"
 
 [[package]]
 name = "pyct"
@@ -10012,4 +10016,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.11"
-content-hash = "60076a01475aa64cb0085cb763733b92ef0113ebd133912f99184fe4a13f1caa"
+content-hash = "fd7f1168f170bf7382de283432271b4cbc9fa6a0618598deeffebeb4c100151d"
