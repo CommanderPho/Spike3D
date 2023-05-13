@@ -74,7 +74,13 @@
 			"herdingbits.file-focus",
 			"dock51.vs-symbol-seeker",
 			"valderman.ctagsymbols",
-			"ruben2020.codequery4vscode"
+			"ruben2020.codequery4vscode",
+			"abhijoybasak.shortcut-panel",
+			"haberdashpi.vscode-modal-keys",
+			"ahgood.shift-shift",
+			"gizak.shortcuts",
+			"joshspicer.touchbarcommandshortcuts",
+			"jakubniewczas.keybinding-mode"
 		]
 	},
 	"launch": {
