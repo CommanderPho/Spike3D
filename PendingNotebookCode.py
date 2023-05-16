@@ -30,6 +30,79 @@ from pyphocorehelpers.indexing_helpers import Paginator
 
 
 # ==================================================================================================================== #
+# 2023-05-16 - Manual Post-hoc Conformance for Laps and Long/Short Bins                                                #
+# ==================================================================================================================== #
+
+def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipeline, enable_interactive_bounds_selection:bool = False):
+    """ 2023-05-16 - A post-hoc version of updating the computation configs and recomputing with the laps as the computation_epochs and the shared bins as the grid_bin_bounds.
+            In the future shouldn't need this, as I updated the KDiba default active computation configs to determine these properties prior to computation by default.
+    """
+    from neuropy.analyses.placefields import PlacefieldComputationParameters
+    # curr_active_pipeline.computation_results['maze1'].computation_config.pf_params.grid_bin = refined_grid_bin_bounds
+
+    long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+    long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+    long_results, short_results, global_results = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
+
+
+    active_computation_configs_dict = {'default': curr_active_pipeline.computation_results[global_epoch_name].computation_config} # get the old pf_params from global
+
+    ## Duplicate the default computation config to modify it:
+    temp_comp_params = deepcopy(active_computation_configs_dict['default'])
+
+    # Determine the grid_bin_bounds from the long session:
+    grid_bin_bounding_session = long_session
+    grid_bin_bounds = PlacefieldComputationParameters.compute_grid_bin_bounds(grid_bin_bounding_session.position.x, grid_bin_bounding_session.position.y)
+    grid_bin_bounds # ((22.736279243974774, 261.696733348342), (125.5644705153173, 151.21507349463707))
+
+    if enable_interactive_bounds_selection:
+        # Interactive grid_bin_bounds selector (optional):
+        import matplotlib.pyplot as plt
+        from neuropy.utils.matplotlib_helpers import add_rectangular_selector
+        # Show an interactive rectangular selection for the occupancy:
+        fig, ax = curr_active_pipeline.computation_results['maze'].computed_data.pf2D.plot_occupancy()
+        rect_selector, set_extents = add_rectangular_selector(fig, ax, initial_selection=grid_bin_bounds) # (24.82, 257.88), (125.52, 149.19)
+        # TODO: allow the user to customize selection (block) before continuing
+        # refined_grid_bin_bounds
+        # final_grid_bin_bounds = refined_grid_bin_bounds # TODO 2023-05-16 - implement
+    else:
+        # no interactive selection/refinement:
+        final_grid_bin_bounds = grid_bin_bounds
+
+    # refined_grid_bin_bounds = ((24.12, 259.80), (130.00, 150.09))
+    # temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
+    # temp_comp_params.pf_params.speed_thresh = 10 # 4.0 cm/sec
+    temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
+    temp_comp_params.pf_params.grid_bin_bounds = final_grid_bin_bounds # same bounds for all
+    # temp_comp_params.pf_params.smooth = (0.0, 0.0) # No smoothing
+    # temp_comp_params.pf_params.frate_thresh = 1 # Minimum for non-smoothed peak is 1Hz
+    temp_comp_params.pf_params.computation_epochs = global_session.laps.as_epoch_obj().get_non_overlapping().filtered_by_duration(1.0, 30.0) # laps specifically for use in the placefields with non-overlapping, duration, constraints: the lap must be at least 1 second long and at most 30 seconds long
+
+    # Add it to the array of computation configs:
+    # active_session_computation_configs.append(temp_comp_params)
+    active_computation_configs_dict['custom'] = temp_comp_params
+    # active_computation_configs_dict
+
+
+    # Compute with the new computation config:
+    computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+                                        '_perform_position_decoding_computation', 
+                                        '_perform_firing_rate_trends_computation',
+                                        '_perform_pf_find_ratemap_peaks_computation',
+                                        '_perform_time_dependent_pf_sequential_surprise_computation'
+                                        '_perform_two_step_position_decoding_computation',
+                                        # '_perform_recursive_latent_placefield_decoding'
+                                    ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
+
+    # computation_functions_name_whitelist=['_perform_baseline_placefield_computation']
+    curr_active_pipeline.perform_computations(computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=None, fail_on_exception=True, debug_print=False, overwrite_extant_results=True) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+    return curr_active_pipeline
+
+
+
+
+
+# ==================================================================================================================== #
 # 2023-05-08 - Paginated Plots                                                                                         #
 # ==================================================================================================================== #
 
