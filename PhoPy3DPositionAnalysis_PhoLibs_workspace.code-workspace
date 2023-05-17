@@ -80,7 +80,8 @@
 			"ahgood.shift-shift",
 			"gizak.shortcuts",
 			"joshspicer.touchbarcommandshortcuts",
-			"jakubniewczas.keybinding-mode"
+			"jakubniewczas.keybinding-mode",
+			"donjayamanne.python-environment-manager"
 		]
 	},
 	"launch": {
