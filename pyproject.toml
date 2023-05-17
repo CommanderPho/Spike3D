@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.1.3"
+version = "0.1.5"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9.2,<3.11"
+python = ">=3.9.2,<3.12"
 numba = "^0.56.4"
 pyvista = "^0.36.1"
 pyvistaqt = "^0.9.0"
@@ -37,16 +37,14 @@ jupyter-rfb = "^0.3.3"
 pillow = "^9.4.0"
 seaborn = "^0.12.2"
 param = "^1.13.0"
-patchworklib = "^0.5.2"
+patchworklib = "^0.5.2" # matplotlib figure layout/organization
 # trame = "^2.3.2" # visualization, currently not used
 # modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
-mplfig = "^1.0.1"
-textual = {extras = ["dev"], version = "^0.24.1"}
-symdexer = "^0.2.10"
-pycscope = {path = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl", develop=true} # pycscope = "^1.2.1"
-codequery = "^0.1.4"
+# mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
+
+
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
@@ -66,10 +64,10 @@ jedi-language-server = "^0.40.0"
 python-lsp-server = "^1.7.1"
 sphinx = "^6.1.3"
 sphinx-autodoc-typehints = "^1.22"
-vulture = "^2.7" # Unused Code Cleanup - Independent from Codebase
-coverage = "^7.2.3" # Unused Code Cleanup - Independent from Codebase
-uncalled = "^0.1.6" # Unused Code Cleanup - Independent from Codebase
-prospector = "^1.9.0"
+# vulture = "^2.7" # Unused Code Cleanup - Independent from Codebase
+# coverage = "^7.2.3" # Unused Code Cleanup - Independent from Codebase
+# uncalled = "^0.1.6" # Unused Code Cleanup - Independent from Codebase
+# prospector = "^1.9.0"
 # pyflakes = "^3.0.1" # Unused Code Cleanup - Independent from Codebase
 # ipympl = "^0.9.3"
 # panel = "^0.14.4"
@@ -81,14 +79,18 @@ pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 
 [tool.poetry.group.testing.dependencies]
 silx = "^1.1.2"
-jupyterlab-visualpython = "^2.3.4"
 pygwalker = "^0.1.6.1"
 altair = "5.0.0rc1" #"^4.2.2"
 plotly = "5.13.1"
 ipywidgets = "^8.0.5"
 nicegui = "^1.2.11"
 streamsync = {extras = ["ds"], version = "^0.1.6"}
-imagemetatag = {git = "https://github.com/CommanderPho/image-meta-tag"}
+textual = {extras = ["dev"], version = "^0.24.1"} # gui tool
+# symdexer = "^0.2.10" # Code Searching Cleanup - Independent from Codebase
+# pycscope = {path = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl", develop=true} # pycscope = "^1.2.1" # Code Searching Cleanup - Independent from Codebase
+# codequery = "^0.1.4" # Code Searching Cleanup - Independent from Codebase
+# imagemetatag = {git = "https://github.com/CommanderPho/image-meta-tag"}
+# jupyterlab-visualpython = "^2.3.4"
 
 # [tool.poetry.group.analysis.dependencies]
 # statsmodels = {git = "https://github.com/statsmodels/statsmodels"}
@@ -98,15 +100,15 @@ imagemetatag = {git = "https://github.com/CommanderPho/image-meta-tag"}
 # setup_dependent_repos = 'scripts.console:run'
 
 
-[tool.vulture]
-exclude = [] # "*file*.py", "dir/"
-ignore_decorators = [] # "@app.route", "@require_*"
-ignore_names = [] # "visit_*", "do_*"
-make_whitelist = true
-min_confidence = 80
-paths = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis", "../Spike3D"]
-sort_by_size = true
-verbose = true
+# [tool.vulture]
+# exclude = [] # "*file*.py", "dir/"
+# ignore_decorators = [] # "@app.route", "@require_*"
+# ignore_names = [] # "visit_*", "do_*"
+# make_whitelist = true
+# min_confidence = 80
+# paths = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis", "../Spike3D"]
+# sort_by_size = true
+# verbose = true
 
 
 [build-system]
