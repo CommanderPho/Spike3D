@@ -5863,6 +5863,18 @@ fsspec = ["appdirs (>=1.4.3)", "fsspec (>=2021.07.0)", "funcy (>=1.14)", "tqdm (
 tests = ["black (==23.3.0)", "flake8", "flake8-docstrings", "funcy (>=1.14)", "importlib-resources", "pyinstaller", "pytest (>=4.6.0)", "pytest-mock", "timeout-decorator"]
 
 [[package]]
+name = "pyflakes"
+version = "3.0.1"
+description = "passive checker of Python programs"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pyflakes-3.0.1-py2.py3-none-any.whl", hash = "sha256:ec55bf7fe21fff7f1ad2f7da62363d749e2a470500eab1b555334b67aa1ef8cf"},
+    {file = "pyflakes-3.0.1.tar.gz", hash = "sha256:ec8b276a6b60bd80defed25add7e439881c19e64850afd9b346283d4165fd0fd"},
+]
+
+[[package]]
 name = "pygit2"
 version = "1.12.1"
 description = "Python bindings for libgit2."
@@ -9520,4 +9532,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.12"
-content-hash = "e792d88124e106100c59524624a80cdca60d2bbf940de012c2258adffab90e3c"
+content-hash = "46cbc1634026864e1f284ec42347ac8db29641a0409a79408fcedb1cf3bc4acb"
