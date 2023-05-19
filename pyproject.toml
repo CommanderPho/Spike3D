@@ -45,6 +45,8 @@ patchworklib = "^0.5.2" # matplotlib figure layout/organization
 # mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
 caerus = "^0.1.9"
 pyflakes = "^3.0.1" # required for code editor
+dvc = "^2.57.2"
+dvclive = "^2.9.0"
 
 
 
