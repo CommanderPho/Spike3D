@@ -44,7 +44,7 @@ patchworklib = "^0.5.2" # matplotlib figure layout/organization
 # lead-lag = "^2.3" # didn't work
 # mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
 caerus = "^0.1.9"
-pyflakes = "^3.0.1"
+pyflakes = "^3.0.1" # required for code editor
 
 
 
