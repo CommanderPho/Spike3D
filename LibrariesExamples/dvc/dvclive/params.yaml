@@ -1,0 +1,6 @@
+epochs: 5
+num_classes: 10
+metrics:
+- accuracy
+- mae
+optimizer: adam

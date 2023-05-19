@@ -57,6 +57,7 @@
 		"favorites.sortDirection": "DESC",
 		"python.analysis.extraPaths": [],
 		"python.pylanceLspNotebooksEnabled": true,
+		"dvc.studio.shareExperimentsLive": false,
 	},
 	"extensions": {
 		"recommendations": [
