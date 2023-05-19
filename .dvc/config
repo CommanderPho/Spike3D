@@ -1,2 +1,5 @@
 [core]
     autostage = true
+    remote = phoumichgdrive
+['remote "phoumichgdrive"']
+    url = gdrive://12HkM5dUehnfkxKEmG_-iYGghObSaEL0H
