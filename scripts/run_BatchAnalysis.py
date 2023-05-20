@@ -31,17 +31,11 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loa
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun
 from pyphoplacecellanalysis.General.Batch.runBatch import run_diba_batch
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import LongShortPipelineTests
-from dvclive import Live
+# from dvclive import Live
 
-with Live(save_dvc_exp=True) as live:
-# with Live(save_dvc_exp=True) as live:
-
-	live.log_param("epochs", 5)
-        
-    def post_compute_validate(curr_active_pipeline):
-        """ 2023-05-16 - Ensures that the laps are used for the placefield computation epochs, the number of bins are the same between the long and short tracks. """
-        LongShortPipelineTests(curr_active_pipeline=curr_active_pipeline).validate()
-
+def post_compute_validate(curr_active_pipeline):
+    """ 2023-05-16 - Ensures that the laps are used for the placefield computation epochs, the number of bins are the same between the long and short tracks. """
+    LongShortPipelineTests(curr_active_pipeline=curr_active_pipeline).validate()
 
 
 def main(active_global_batch_result_filename='global_batch_result.pkl', debug_print=True):
@@ -52,12 +46,10 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
     global_data_root_parent_path = find_first_extant_path([Path(r'W:\Data'), Path(r'/media/MAX/Data'), Path(r'/Volumes/MoverNew/data'), Path(r'/home/halechr/turbo/Data')])
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 
-
     # Build `global_batch_run` pre-loading results (before execution)
     # global_batch_run = run_diba_batch(global_data_root_parent_path, execute_all=False, extant_batch_run=global_batch_run, debug_print=False)
     global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, on_needs_create_callback_fn=run_diba_batch,
                                                     debug_print=debug_print)
-
 
     # Run Batch Executions/Computations
 
@@ -72,7 +64,6 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
                                             # '_perform_two_step_position_decoding_computation',
                                             # '_perform_recursive_latent_placefield_decoding'
                                         ]
-    
 
     # All Sessions:
     global_batch_run.execute_all(force_reload=False, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
@@ -88,43 +79,10 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
     #                                               computation_functions_name_whitelist=active_computation_functions_name_whitelist, active_session_computation_configs=None) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
     
 
-
     # Save `global_batch_run` to file:
     saveData(finalized_loaded_global_batch_result_pickle_path, global_batch_run) # Update the global batch run dictionary
-    
-    # for epoch in range(NUM_EPOCHS):
-    #     train_model(...)
-    #     metrics = evaluate_model(...)
-
-    #     for metric_name, value in metrics.items():
-    #         live.log_metric(metric_name, value)
-
-    #     live.next_step()
-
-    # params = {
-    #     "num_classes": 10,
-    #     "metrics": ["accuracy", "mae"],
-    #     "optimizer": "adam"
-    # }
-    # live.log_params(params)
-        
-        # for epoch in range(NUM_EPOCHS):
-        #     train_model(...)
-        #     metrics = evaluate_model(...)
-
-        #     for metric_name, value in metrics.items():
-        #         live.log_metric(metric_name, value)
-
-        #     live.next_step()
-
-        params = {
-            "num_classes": 10,
-            "metrics": ["accuracy", "mae"],
-            "optimizer": "adam"
-        }
-        live.log_params(params)
             
-        return global_batch_run, finalized_loaded_global_batch_result_pickle_path
+    return global_batch_run, finalized_loaded_global_batch_result_pickle_path
 
         
 
@@ -137,3 +95,4 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
 if __name__ == "__main__":
     """ run main function to perform batch processing. """
     global_batch_run, finalized_loaded_global_batch_result_pickle_path = main(active_global_batch_result_filename='global_batch_result_new.pkl', debug_print=True)
+    
