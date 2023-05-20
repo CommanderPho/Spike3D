@@ -91,8 +91,7 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 
     # Build `global_batch_run` pre-loading results (before execution)
-    global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, on_needs_create_callback_fn=run_diba_batch,
-                                                    debug_print=debug_print)
+    global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, debug_print=debug_print) # on_needs_create_callback_fn=run_diba_batch
 
     # Run Batch Executions/Computations
 
