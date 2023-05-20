@@ -54,13 +54,12 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
 
 
     # Build `global_batch_run` pre-loading results (before execution)
-    global_batch_run = run_diba_batch(global_data_root_parent_path, execute_all=False, extant_batch_run=global_batch_run, debug_print=False)
-    
-    global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, debug_print=debug_print)
+    # global_batch_run = run_diba_batch(global_data_root_parent_path, execute_all=False, extant_batch_run=global_batch_run, debug_print=False)
+    global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, on_needs_create_callback_fn=run_diba_batch,
+                                                    debug_print=debug_print)
 
 
     # Run Batch Executions/Computations
-    
 
     ## Execute the non-global functions with the custom arguments.
     active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation',
@@ -82,17 +81,12 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
     # 4m 39.8s
 
 
-    ## Single Session:
-    curr_sess_context = IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15')
-    global_batch_run.reset_session(curr_sess_context) ## reset the context so it can be ran fresh.
+    # ## Single Session:
+    # curr_sess_context = IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15')
+    # global_batch_run.reset_session(curr_sess_context) ## reset the context so it can be ran fresh.
+    # global_batch_run.execute_session(session_context=curr_sess_context, force_reload=True, skip_extended_batch_computations=True,
+    #                                               computation_functions_name_whitelist=active_computation_functions_name_whitelist, active_session_computation_configs=None) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
     
-
-    global_batch_run.execute_session(session_context=curr_sess_context, force_reload=True, skip_extended_batch_computations=True,
-                                                  computation_functions_name_whitelist=active_computation_functions_name_whitelist, active_session_computation_configs=None) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
-    
-    # global_batch_run.execute_session(session_context=curr_sess_context, force_reload=True, skip_extended_batch_computations=True, **{'computation_functions_name_whitelist': ['_perform_baseline_placefield_computation'], 'active_session_computation_configs': None}) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
-
-
 
 
     # Save `global_batch_run` to file:
