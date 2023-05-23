@@ -6,6 +6,7 @@ from pathlib import Path
 import pathlib
 import numpy as np
 import pandas as pd
+import neptune # for logging progress and results
 
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
@@ -82,7 +83,7 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
 # ==================================================================================================================== #
 # MAIN FUNCTION                                                                                                        #
 # ==================================================================================================================== #
-def main(active_global_batch_result_filename='global_batch_result.pkl', debug_print=True):
+def main(active_global_batch_result_filename='global_batch_result.pkl', perform_execute=False, debug_print=True):
     """ Main Run Function
     from pyphoplacecellanalysis.General.Batch.runBatch import main, BatchRun, run_diba_batch, run_specific_batch
 
@@ -90,39 +91,56 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', debug_pr
     global_data_root_parent_path = find_first_extant_path([Path(r'W:\Data'), Path(r'/media/MAX/Data'), Path(r'/Volumes/MoverNew/data'), Path(r'/home/halechr/turbo/Data')])
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 
-    # Build `global_batch_run` pre-loading results (before execution)
-    global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, debug_print=debug_print) # on_needs_create_callback_fn=run_diba_batch
+    project = neptune.init_project()
+    project["general/global_batch_result_filename"] = active_global_batch_result_filename
+    project["general/global_data_root_parent_path"] = global_data_root_parent_path.as_posix()
 
-    # Run Batch Executions/Computations
+    with neptune.init_run() as run:
+        run['parameters/perform_execute'] = perform_execute
 
-    ## Execute the non-global functions with the custom arguments.
-    active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation',
-                                            # '_perform_time_dependent_placefield_computation',
-                                            '_perform_extended_statistics_computation',
-                                            '_perform_position_decoding_computation', 
-                                            '_perform_firing_rate_trends_computation',
-                                            '_perform_pf_find_ratemap_peaks_computation',
-                                            # '_perform_time_dependent_pf_sequential_surprise_computation'
-                                            # '_perform_two_step_position_decoding_computation',
-                                            # '_perform_recursive_latent_placefield_decoding'
-                                        ]
+        global_batch_result_file_path = global_data_root_parent_path.joinpath(active_global_batch_result_filename).resolve()
+        run['parameters/global_batch_result_file_path'] = global_batch_result_file_path.as_posix()
+        # project["general/data_analysis"].upload("data_analysis.ipynb")
+        run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images"
 
-    # All Sessions:
-    global_batch_run.execute_all(force_reload=False, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
-                        **{'computation_functions_name_whitelist': active_computation_functions_name_whitelist,
-                        'active_session_computation_configs': None}) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
-    # 4m 39.8s
+        # Build `global_batch_run` pre-loading results (before execution)
+        global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, debug_print=debug_print) # on_needs_create_callback_fn=run_diba_batch
+
+        # Run Batch Executions/Computations
+        if perform_execute:
+            ## Execute the non-global functions with the custom arguments.
+            active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation',
+                                                    # '_perform_time_dependent_placefield_computation',
+                                                    '_perform_extended_statistics_computation',
+                                                    '_perform_position_decoding_computation', 
+                                                    '_perform_firing_rate_trends_computation',
+                                                    '_perform_pf_find_ratemap_peaks_computation',
+                                                    # '_perform_time_dependent_pf_sequential_surprise_computation'
+                                                    # '_perform_two_step_position_decoding_computation',
+                                                    # '_perform_recursive_latent_placefield_decoding'
+                                                ]
+
+            # All Sessions:
+            global_batch_run.execute_all(force_reload=False, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
+                                **{'computation_functions_name_whitelist': active_computation_functions_name_whitelist,
+                                'active_session_computation_configs': None}) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
+            # 4m 39.8s
 
 
-    # ## Single Session:
-    # curr_sess_context = IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15')
-    # global_batch_run.reset_session(curr_sess_context) ## reset the context so it can be ran fresh.
-    # global_batch_run.execute_session(session_context=curr_sess_context, force_reload=True, skip_extended_batch_computations=True,
-    #                                               computation_functions_name_whitelist=active_computation_functions_name_whitelist, active_session_computation_configs=None) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
+        # ## Single Session:
+        # curr_sess_context = IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15')
+        # global_batch_run.reset_session(curr_sess_context) ## reset the context so it can be ran fresh.
+        # global_batch_run.execute_session(session_context=curr_sess_context, force_reload=True, skip_extended_batch_computations=True,
+        #                                               computation_functions_name_whitelist=active_computation_functions_name_whitelist, active_session_computation_configs=None) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
 
-    # Save `global_batch_run` to file:
-    saveData(finalized_loaded_global_batch_result_pickle_path, global_batch_run) # Update the global batch run dictionary
-            
+        # Save `global_batch_run` to file:
+        saveData(global_batch_result_file_path, global_batch_run) # Update the global batch run dictionary
+
+
+    run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images" # update file progress post-load
+    run.stop()
+    project.stop()
+    
     return global_batch_run, finalized_loaded_global_batch_result_pickle_path
 
         
