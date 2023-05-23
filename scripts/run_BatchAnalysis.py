@@ -7,6 +7,8 @@ import pathlib
 import numpy as np
 import pandas as pd
 import neptune # for logging progress and results
+from neptune.types import File
+
 
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
@@ -106,6 +108,9 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
         # Build `global_batch_run` pre-loading results (before execution)
         global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, debug_print=debug_print) # on_needs_create_callback_fn=run_diba_batch
 
+        # Pre-execution dataframe view:
+        run["dataset/global_batch_run_progress_df"].upload(File.as_html(global_batch_run.to_dataframe(expand_context=True, good_only=False))) # "path/to/test_preds.csv"
+
         # Run Batch Executions/Computations
         if perform_execute:
             ## Execute the non-global functions with the custom arguments.
@@ -135,13 +140,16 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
 
         # Save `global_batch_run` to file:
         saveData(global_batch_result_file_path, global_batch_run) # Update the global batch run dictionary
+        run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images" # update file progress post-load
+        # Post-execution dataframe view:
+        run["dataset/global_batch_run_progress_df"].upload(File.as_html(global_batch_run.to_dataframe(expand_context=True, good_only=False))) # "path/to/test_preds.csv"
+        
 
+        # run.stop() # don't call run.stop() inside the run.
 
-    run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images" # update file progress post-load
-    run.stop()
+    ## POST Run
     project.stop()
-    
-    return global_batch_run, finalized_loaded_global_batch_result_pickle_path
+    return global_batch_run, global_batch_result_file_path
 
         
 
