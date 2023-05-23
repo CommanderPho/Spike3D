@@ -64,21 +64,39 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
     print(f'short_laps.n_epochs: {short_laps.n_epochs}, long_laps.n_epochs: {long_laps.n_epochs}')
     print(f'short_replays.n_epochs: {short_replays.n_epochs}, long_replays.n_epochs: {long_replays.n_epochs}')
 
-    ## Post Compute Validate 2023-05-16:
-    post_compute_validate(curr_active_pipeline)
+    # ## Post Compute Validate 2023-05-16:
+    # post_compute_validate(curr_active_pipeline)
+    
+    ## Save the pipeline since that's disabled by default now:
+    try:
+        curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE) # AttributeError: 'PfND_TimeDependent' object has no attribute '_included_thresh_neurons_indx'
+    except Exception as e:
+        ## TODO: catch/log saving error and indicate that it isn't saved.
+        print(f'ERROR SAVING PIPELINE for curr_session_context: {curr_session_context}. error: {e}')
 
-    # # 2023-01-* - Call extended computations to build `_display_short_long_firing_rate_index_comparison` figures:
-    # extended_computations_include_whitelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_decoding_analyses'] # do only specifiedl
-    # # extended_computations_include_whitelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis'] # do only specifiedl
-    # newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, force_recompute=True, debug_print=False)
-    # curr_active_pipeline.save_global_computation_results()
+    ## GLOBAL FUNCTION:
+    try:
+        # # 2023-01-* - Call extended computations to build `_display_short_long_firing_rate_index_comparison` figures:
+        extended_computations_include_whitelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_decoding_analyses'] # do only specifiedl
+        newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, force_recompute=True, debug_print=False)
+        print(f'newly_computed_values: {newly_computed_values}')        
+        # Try to write out the global computation function results:
+        curr_active_pipeline.save_global_computation_results() # PicklingError: Can't pickle .set_closure_cell at 0x000002BF248F50D0>: it's not found as attr._compat.make_set_closure_cell..set_closure_cell
+        
+    except Exception as e:
+        ## TODO: catch/log saving error and indicate that it isn't saved.
+        print(f'ERROR SAVING GLOBAL COMPUTATION RESULTS for pipeline of curr_session_context: {curr_session_context}. error: {e}')
+        
 
     # ### Programmatic Figure Outputs:
     # # Other Programmatic Figures
     # batch_extended_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
     # batch_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
 
-    return {long_epoch_name:(long_laps, long_replays), short_epoch_name:(short_laps, short_replays)}
+    return {long_epoch_name:(long_laps, long_replays), short_epoch_name:(short_laps, short_replays),
+            'outputs': {'local': curr_active_pipeline.pickle_path,
+                        'global': curr_active_pipeline.global_computation_results_pickle_path}
+        }
     
 
 
@@ -121,12 +139,12 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
                                                     '_perform_firing_rate_trends_computation',
                                                     '_perform_pf_find_ratemap_peaks_computation',
                                                     # '_perform_time_dependent_pf_sequential_surprise_computation'
-                                                    # '_perform_two_step_position_decoding_computation',
+                                                    '_perform_two_step_position_decoding_computation',
                                                     # '_perform_recursive_latent_placefield_decoding'
                                                 ]
 
             # All Sessions:
-            global_batch_run.execute_all(force_reload=False, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
+            global_batch_run.execute_all(force_reload=True, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
                                 **{'computation_functions_name_whitelist': active_computation_functions_name_whitelist,
                                 'active_session_computation_configs': None}) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
             # 4m 39.8s
@@ -161,4 +179,4 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
 
 if __name__ == "__main__":
     """ run main function to perform batch processing. """
-    global_batch_run, finalized_loaded_global_batch_result_pickle_path = main(active_global_batch_result_filename='global_batch_result_new.pkl', debug_print=True)
+    global_batch_run, finalized_loaded_global_batch_result_pickle_path = main(active_global_batch_result_filename='global_batch_result_new.pkl', perform_execute=True, debug_print=True)
