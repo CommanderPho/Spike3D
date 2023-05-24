@@ -65,11 +65,11 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
     print(f'short_replays.n_epochs: {short_replays.n_epochs}, long_replays.n_epochs: {long_replays.n_epochs}')
 
     # ## Post Compute Validate 2023-05-16:
-    # post_compute_validate(curr_active_pipeline)
+    post_compute_validate(curr_active_pipeline)
     
     ## Save the pipeline since that's disabled by default now:
     try:
-        curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE) # AttributeError: 'PfND_TimeDependent' object has no attribute '_included_thresh_neurons_indx'
+        curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE) # AttributeError: 'PfND_TimeDependent' object has no attribute '_included_thresh_neurons_indx'
     except Exception as e:
         ## TODO: catch/log saving error and indicate that it isn't saved.
         print(f'ERROR SAVING PIPELINE for curr_session_context: {curr_session_context}. error: {e}')
