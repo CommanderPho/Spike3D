@@ -65,7 +65,8 @@
 			"kdcro101.favorites",
 			"iterativecloud.notebook-chatcompletion",
 			"vikasdubey0551.jupyterlab-browser",
-			"sourcery.sourcery"
+			"sourcery.sourcery",
+			"felicio.vscode-fold"
 		]
 	}
 }
