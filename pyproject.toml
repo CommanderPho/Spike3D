@@ -48,6 +48,7 @@ neptune = "^1.2.0"
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
 # mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
+neptune-notebooks = "^0.9.3"
 
 
 [tool.poetry.group.dev.dependencies]
