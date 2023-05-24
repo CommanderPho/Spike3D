@@ -39,15 +39,14 @@ seaborn = "^0.12.2"
 param = "^1.13.0"
 patchworklib = "^0.5.2" # matplotlib figure layout/organization
 pyflakes = "^3.0.1" # required for code editor
-neptune = "^1.2.0"
 # dvc = "^2.57.2"
-# neptune = "^1.2.0"
 # dvclive = "^2.9.0"
 # trame = "^2.3.2" # visualization, currently not used
 # modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
 # mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
+neptune = "^1.2.0"
 
 
 [tool.poetry.group.dev.dependencies]

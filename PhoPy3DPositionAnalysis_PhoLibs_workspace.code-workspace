@@ -17,7 +17,6 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
 		"**/*.7z": true,
