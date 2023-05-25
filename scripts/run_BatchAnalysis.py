@@ -103,7 +103,7 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
 # ==================================================================================================================== #
 # MAIN FUNCTION                                                                                                        #
 # ==================================================================================================================== #
-def main(active_global_batch_result_filename='global_batch_result.pkl', perform_execute=False, debug_print=True):
+def main(active_global_batch_result_filename='global_batch_result.pkl', perform_execute=False, force_reload=True, debug_print=True):
     """ Main Run Function
     from pyphoplacecellanalysis.General.Batch.runBatch import main, BatchRun, run_diba_batch, run_specific_batch
 
@@ -144,7 +144,7 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
                                                 ]
 
             # All Sessions:
-            global_batch_run.execute_all(force_reload=True, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
+            global_batch_run.execute_all(force_reload=force_reload, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
                                 **{'computation_functions_name_whitelist': active_computation_functions_name_whitelist,
                                 'active_session_computation_configs': None}) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
             # 4m 39.8s
@@ -176,6 +176,14 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
         # batch_progress_df = global_batch_run.to_dataframe(expand_context=True) # all
         # good_only_batch_progress_df = global_batch_run.to_dataframe(expand_context=True, good_only=True)
         # good_only_batch_progress_df
+
+
+
+def _perform_plots(curr_active_pipeline):
+    active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
+    batch_extended_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
+    
+
 
 if __name__ == "__main__":
     """ run main function to perform batch processing. """

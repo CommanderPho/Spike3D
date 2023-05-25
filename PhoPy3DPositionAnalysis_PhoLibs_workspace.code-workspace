@@ -86,7 +86,8 @@
 			"gizak.shortcuts",
 			"joshspicer.touchbarcommandshortcuts",
 			"jakubniewczas.keybinding-mode",
-			"donjayamanne.python-environment-manager"
+			"donjayamanne.python-environment-manager",
+			"felicio.vscode-fold"
 		]
 	},
 	"launch": {
