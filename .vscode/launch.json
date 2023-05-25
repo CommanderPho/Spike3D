@@ -13,7 +13,7 @@
 			"justMyCode": true,
 			"python": "${command:python.interpreterPath}",
 			"envFile": "${workspaceFolder}/.env",
-            "env": {"PYDEVD_WARN_SLOW_RESOLVE_TIMEOUT": "2",
+            "env": {"PYDEVD_WARN_SLOW_RESOLVE_TIMEOUT": "3",
 				
 			}
 		}
