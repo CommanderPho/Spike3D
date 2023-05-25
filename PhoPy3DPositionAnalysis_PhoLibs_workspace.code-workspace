@@ -17,6 +17,11 @@
 		}
 	],
 	"settings": {
+		"python.analysis.gotoDefinitionInStringLiteral": true,
+		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+		"python.linting.enabled": false,
+		"jupyter.askForKernelRestart": true,
+		"jupyter.debugJustMyCode": true,
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
 		"**/*.7z": true,

@@ -11,7 +11,11 @@
 			"program": "${file}",
 			"console": "integratedTerminal",
 			"justMyCode": true,
-            "env": {"PYDEVD_WARN_SLOW_RESOLVE_TIMEOUT": "2"}
+			"python": "${command:python.interpreterPath}",
+			"envFile": "${workspaceFolder}/.env",
+            "env": {"PYDEVD_WARN_SLOW_RESOLVE_TIMEOUT": "2",
+				
+			}
 		}
 	]
 }
