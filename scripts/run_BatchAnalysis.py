@@ -36,7 +36,8 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import neptune_output_figures
 
 ## Post Compute Validate 2023-05-16:
-from PendingNotebookCode import _update_pipeline_missing_preprocessing_parameters
+from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import _update_pipeline_missing_preprocessing_parameters
+
 def post_compute_validate(curr_active_pipeline):
     """ 2023-05-16 - Ensures that the laps are used for the placefield computation epochs, the number of bins are the same between the long and short tracks. """
     LongShortPipelineTests(curr_active_pipeline=curr_active_pipeline).validate()
