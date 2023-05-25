@@ -146,43 +146,6 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
     return curr_active_pipeline
 
 
-@function_attributes(short_name=None, tags=['neptune', 'figures', 'output'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-05-25 04:34', related_items=[])
-def neptune_output_figures(curr_active_pipeline):
-    """ Uploads the completed figures to neptune.ai from the pipeline's `.registered_output_files` items. 
-    
-    Usage:
-        from PendingNotebookCode import neptune_output_figures
-        neptune_output_figures(curr_active_pipeline)
-    """
-    import neptune # for logging progress and results
-    neptune_kwargs = {'project':"commander.pho/PhoDibaLongShort2023",
-    'api_token':"eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiIxOGIxODU2My1lZTNhLTQ2ZWMtOTkzNS02ZTRmNzM5YmNjNjIifQ=="}
-
-    # kdiba_gor01_one_2006-6-09_1-22-43_sess
-    active_session_context_string = str(curr_active_pipeline.active_sess_config)
-
-    with neptune.init_run(**neptune_kwargs) as run:
-        for a_fig_path, fig_metadata in curr_active_pipeline.registered_output_files.items():
-            ## Get list of figures output and register them to neptune:
-            a_fig_context = fig_metadata['context']
-            a_full_figure_path_key = f"session/{active_session_context_string}/figures/{str(a_fig_context)}"
-            print(f'a_fig_path: {a_fig_path}, a_fig_context: {a_fig_context}\n\t{a_full_figure_path_key}')
-            # fig_objects = fig_metadata.get('fig', None)
-            # if fig_objects is not None:
-            # 	# upload the actual figure objects
-            # 	if not isinstance(fig_objects, (tuple, list)):
-            # 		fig_objects = (fig_objects,) # wrap in a tuple or convert list to tuple
-            # 	# now fig_objects better be a tuple
-            # 	assert isinstance(fig_objects, tuple), f"{fig_objects} should be a tuple!"
-            # 	# run[a_full_figure_path_key].upload(fig_metadata['fig'])
-            # 	for a_fig_obj in fig_objects:
-            # 		run[a_full_figure_path_key].append(a_fig_obj) # append the whole series of related figures
-            # else:
-            # upload as file
-            run[a_full_figure_path_key].upload(str(a_fig_path))
-                        
-
-
 
 # ==================================================================================================================== #
 # 2023-05-08 - Paginated Plots                                                                                         #

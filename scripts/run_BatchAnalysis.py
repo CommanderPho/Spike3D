@@ -9,7 +9,6 @@ import pandas as pd
 import neptune # for logging progress and results
 from neptune.types import File
 
-
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
 from pyphocorehelpers.function_helpers import function_attributes
@@ -34,7 +33,8 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loa
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun
 from pyphoplacecellanalysis.General.Batch.runBatch import run_diba_batch
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import LongShortPipelineTests
-# from dvclive import Live
+from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import neptune_output_figures
+
 
 def post_compute_validate(curr_active_pipeline):
     """ 2023-05-16 - Ensures that the laps are used for the placefield computation epochs, the number of bins are the same between the long and short tracks. """
@@ -180,9 +180,13 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
 
 
 def _perform_plots(curr_active_pipeline):
+    """ 2023-05-25 - Performs all the batch plotting commands. """
+    from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import neptune_output_figures
+    
+    curr_active_pipeline.reload_default_display_functions()
     active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
     batch_extended_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
-    
+    neptune_output_figures(curr_active_pipeline)
 
 
 if __name__ == "__main__":
