@@ -35,11 +35,44 @@ from pyphoplacecellanalysis.General.Batch.runBatch import run_diba_batch
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import LongShortPipelineTests
 from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import neptune_output_figures
 
-
+## Post Compute Validate 2023-05-16:
+from PendingNotebookCode import _update_pipeline_missing_preprocessing_parameters
 def post_compute_validate(curr_active_pipeline):
     """ 2023-05-16 - Ensures that the laps are used for the placefield computation epochs, the number of bins are the same between the long and short tracks. """
     LongShortPipelineTests(curr_active_pipeline=curr_active_pipeline).validate()
+    # 2023-05-24 - Adds the previously missing `sess.config.preprocessing_parameters` to each session (filtered and base) in the pipeline.
+    was_updated = _update_pipeline_missing_preprocessing_parameters(curr_active_pipeline)
+    print(f'were pipeline preprocessing parameters missing and updated?: {was_updated}')
 
+    ## BUG 2023-05-25 - Found ERROR for a loaded pipeline where for some reason the filtered_contexts[long_epoch_name]'s actual context was the same as the short maze ('...maze2'). Unsure how this happened.
+    long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+    long_epoch_context, short_epoch_context, global_epoch_context = [curr_active_pipeline.filtered_contexts[a_name] for a_name in (long_epoch_name, short_epoch_name, global_epoch_name)]
+    # assert long_epoch_context.filter_name == long_epoch_name, f"long_epoch_context.filter_name: {long_epoch_context.filter_name} != long_epoch_name: {long_epoch_name}"
+    # fix it if broken
+    long_epoch_context.filter_name = long_epoch_name
+
+
+
+def _perform_plots(curr_active_pipeline):
+    """ 2023-05-25 - Performs all the batch plotting commands. """
+    from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import neptune_output_figures
+    
+    curr_active_pipeline.reload_default_display_functions()
+    try:
+        active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
+    except Exception as e:
+        print(f'in `_perform_plots(...)`: batch_programmatic_figures(...) failed with exception: {e}. Continuing.')
+    
+    try:
+        batch_extended_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
+    except Exception as e:
+        print(f'in `_perform_plots(...)`: batch_extended_programmatic_figures(...) failed with exception: {e}. Continuing.')
+    
+    try:
+        neptune_output_figures(curr_active_pipeline)
+    except Exception as e:
+        print(f'in `_perform_plots(...)`: neptune_output_figures(...) failed with exception: {e}. Continuing.')
+    
 
 def _on_complete_success_execution_session(curr_session_context, curr_session_basedir, curr_active_pipeline):
     """ called when the execute_session completes like:
@@ -69,7 +102,7 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
     
     ## Save the pipeline since that's disabled by default now:
     try:
-        curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.OVERWRITE_IN_PLACE) # AttributeError: 'PfND_TimeDependent' object has no attribute '_included_thresh_neurons_indx'
+        curr_active_pipeline.save_pipeline(saving_mode=PipelineSavingScheme.TEMP_THEN_OVERWRITE) # AttributeError: 'PfND_TimeDependent' object has no attribute '_included_thresh_neurons_indx'
     except Exception as e:
         ## TODO: catch/log saving error and indicate that it isn't saved.
         print(f'ERROR SAVING PIPELINE for curr_session_context: {curr_session_context}. error: {e}')
@@ -89,9 +122,16 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
         
 
     # ### Programmatic Figure Outputs:
+    try:
+        _perform_plots(curr_active_pipeline)
+    except Exception as e:
+        raise e
+    
     # # Other Programmatic Figures
     # batch_extended_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
     # batch_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
+
+
 
     return {long_epoch_name:(long_laps, long_replays), short_epoch_name:(short_laps, short_replays),
             'outputs': {'local': curr_active_pipeline.pickle_path,
@@ -170,23 +210,11 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
     return global_batch_run, global_batch_result_file_path
 
         
-
-
         # ### Get Outputs
         # batch_progress_df = global_batch_run.to_dataframe(expand_context=True) # all
         # good_only_batch_progress_df = global_batch_run.to_dataframe(expand_context=True, good_only=True)
         # good_only_batch_progress_df
 
-
-
-def _perform_plots(curr_active_pipeline):
-    """ 2023-05-25 - Performs all the batch plotting commands. """
-    from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import neptune_output_figures
-    
-    curr_active_pipeline.reload_default_display_functions()
-    active_identifying_session_ctx, active_session_figures_out_path, active_out_figures_list = batch_programmatic_figures(curr_active_pipeline)
-    batch_extended_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
-    neptune_output_figures(curr_active_pipeline)
 
 
 if __name__ == "__main__":
