@@ -254,8 +254,7 @@ class PaginatedSelectionManager:
 ## Create a diagnostic plot that plots a stack of the three curves used for computations in the given epoch:
 
 from attrs import define, Factory
-import pyphoplacecellanalysis.External.pyqtgraph as pg
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import LeaveOneOutDecodingResult
+import pyphoplacecellanalysis.External.pyqtgraph as pg\
 from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
 from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import TimebinnedNeuronActivity
 
@@ -284,7 +283,6 @@ from attrs import define, field
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BayesianPlacemapPositionDecoder
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SetPartition
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
 
 
 # ==================================================================================================================== #
