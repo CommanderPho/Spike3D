@@ -114,9 +114,16 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
         extended_computations_include_whitelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_decoding_analyses'] # do only specifiedl
         newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, force_recompute=True, debug_print=False)
         print(f'newly_computed_values: {newly_computed_values}')        
-        # Try to write out the global computation function results:
-        curr_active_pipeline.save_global_computation_results() # PicklingError: Can't pickle .set_closure_cell at 0x000002BF248F50D0>: it's not found as attr._compat.make_set_closure_cell..set_closure_cell
-        
+        if len(newly_computed_values) > 0:
+            print(f'newly_computed_values: {newly_computed_values}. Saving global results...')
+            try:
+                # Try to write out the global computation function results:
+                curr_active_pipeline.save_global_computation_results()
+            except Exception as e:
+                print(f'!!WARNING!!: saving the global results threw the exception: {e}')
+                print(f'\tthe global results are currently unsaved! proceed with caution and save as soon as you can!')
+        else:
+            print(f'no changes in global results.')
     except Exception as e:
         ## TODO: catch/log saving error and indicate that it isn't saved.
         print(f'ERROR SAVING GLOBAL COMPUTATION RESULTS for pipeline of curr_session_context: {curr_session_context}. error: {e}')
@@ -126,13 +133,8 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
     try:
         _perform_plots(curr_active_pipeline)
     except Exception as e:
-        raise e
-    
-    # # Other Programmatic Figures
-    # batch_extended_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
-    # batch_programmatic_figures(curr_active_pipeline=curr_active_pipeline)
-
-
+        print(f'_perform_plots failed with exception: {e}')
+        # raise e
 
     return {long_epoch_name:(long_laps, long_replays), short_epoch_name:(short_laps, short_replays),
             'outputs': {'local': curr_active_pipeline.pickle_path,
