@@ -47,6 +47,7 @@ pyflakes = "^3.0.1" # required for code editor
 # lead-lag = "^2.3" # didn't work
 # mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
 neptune = "^1.2.0"
+treelib = "^1.6.4"
 
 
 [tool.poetry.group.dev.dependencies]
