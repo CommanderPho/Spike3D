@@ -24,15 +24,16 @@
 		"jupyter.debugJustMyCode": true,
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
-		"**/*.7z": true,
-		"**/.classpath": true,
-		"**/.factorypath": true,
-		"**/.ipynb_checkpoints": true,
-		"**/.project": true,
-		"**/.settings": true,
-		"**/.spyproject": true,
-		"**/.virtual_documents": true,
-		"**/.vscode": true
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true,
+			"**/Spike3D/.venv/*": true
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
