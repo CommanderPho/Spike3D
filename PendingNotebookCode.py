@@ -255,7 +255,7 @@ class PaginatedSelectionManager:
 
 from attrs import define, Factory
 import pyphoplacecellanalysis.External.pyqtgraph as pg\
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
+from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import LeaveOneOutDecodingAnalysisResult
 from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import TimebinnedNeuronActivity
 
 
@@ -275,7 +275,7 @@ from pyphocorehelpers.indexing_helpers import safe_np_vstack # for `_new_compute
 
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder, BayesianPlacemapPositionDecoder
 from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import perform_full_session_leave_one_out_decoding_analysis
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
+from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import LeaveOneOutDecodingAnalysisResult
 from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import build_neurons_color_map # for plot_short_v_long_pf1D_comparison
 
 
