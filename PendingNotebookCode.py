@@ -254,35 +254,8 @@ class PaginatedSelectionManager:
 ## Create a diagnostic plot that plots a stack of the three curves used for computations in the given epoch:
 
 from attrs import define, Factory
-import pyphoplacecellanalysis.External.pyqtgraph as pg\
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import LeaveOneOutDecodingAnalysisResult
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import TimebinnedNeuronActivity
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 
-
-# ==================================================================================================================== #
-# 2023-04-14 - New Surprise Implementation                                                                             #
-# ==================================================================================================================== #
-
-# Distance metrics used by `_new_compute_surprise`
-from scipy.spatial import distance # for Jensen-Shannon distance in `_subfn_compute_leave_one_out_analysis`
-import random # for random.choice(mylist)
-# from PendingNotebookCode import _scramble_curve
-from scipy.stats import wasserstein_distance
-from scipy.stats import pearsonr
-from pyphocorehelpers.indexing_helpers import safe_np_vstack # for `_new_compute_surprise`
-
-## 0. Precompute the active neurons in each timebin, and the epoch-timebin-flattened decoded posteriors makes it easier to compute for a given time bin:
-
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder, BayesianPlacemapPositionDecoder
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import perform_full_session_leave_one_out_decoding_analysis
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import LeaveOneOutDecodingAnalysisResult
-from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import build_neurons_color_map # for plot_short_v_long_pf1D_comparison
-
-
-from attrs import define, field
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BayesianPlacemapPositionDecoder
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder
-from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SetPartition
 
 
 # ==================================================================================================================== #
