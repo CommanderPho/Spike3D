@@ -113,6 +113,8 @@ textual = {extras = ["dev"], version = "^0.24.1"} # gui tool
 # paths = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis", "../Spike3D"]
 # sort_by_size = true
 # verbose = true
+cython = "^0.29.35"
+pydantic = "^1.10.8"
 
 
 [build-system]
