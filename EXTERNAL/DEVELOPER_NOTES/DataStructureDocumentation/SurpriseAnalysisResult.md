@@ -1,0 +1,5370 @@
+SurpriseAnalysisResult - printed by print_keys_if_possible on 2023-05-26
+===================================================================================================
+
+
+- SurpriseAnalysisResult: pyphoplacecellanalysis.Analysis.Decoder.decoder_result.SurpriseAnalysisResult
+	- active_filter_epochs: neuropy.core.epoch.Epoch
+		- _filename: NoneType
+		- _metadata: NoneType
+		- _df: pandas.core.frame.DataFrame (children omitted) - (65, 4)
+	- original_1D_decoder: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+		- pf: neuropy.analyses.placefields.PfND
+			- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+			- position: neuropy.core.position.Position
+				- _filename: NoneType
+				- _metadata: NoneType
+				- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+			- epochs: neuropy.core.epoch.Epoch
+				- _filename: NoneType
+				- _metadata: NoneType
+				- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+			- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+				- speed_thresh: float
+				- grid_bin: tuple - (2,)
+				- grid_bin_bounds: tuple - (2, 2)
+				- smooth: tuple - (2,)
+				- frate_thresh: float
+			- position_srate: numpy.float64
+			- setup_on_init: bool
+			- compute_on_init: bool
+			- _save_intermediate_spikes_maps: bool
+			- _ratemap: neuropy.core.ratemap.Ratemap
+				- _filename: NoneType
+				- _metadata: NoneType
+				- spikes_maps: numpy.ndarray - (42, 120)
+				- tuning_curves: numpy.ndarray - (42, 120)
+				- unsmoothed_tuning_maps: numpy.ndarray - (42, 120)
+				- _neuron_ids: list - (42,)
+				- _neuron_extended_ids: list - (42, 3)
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- occupancy: numpy.ndarray - (120,)
+			- _ratemap_spiketrains: list - (42,)
+			- _ratemap_spiketrains_pos: list - (42, 1)
+			- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+			- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18411, 22)
+			- ndim: numpy.int32
+			- xbin: numpy.ndarray - (121,)
+			- ybin: NoneType
+			- bin_info: dict
+				- mode: str
+				- xstep: int
+				- xnum_bins: int
+			- _included_thresh_neurons_indx: NoneType
+			- _peak_frate_filter_function: NoneType
+		- neuron_IDXs: numpy.ndarray - (42,)
+		- neuron_IDs: numpy.ndarray - (42,)
+		- F: numpy.ndarray - (120, 42)
+		- P_x: numpy.ndarray - (120, 1)
+		- setup_on_init: bool
+		- post_load_on_init: bool
+		- debug_print: bool
+	- all_included_filter_epochs_decoder_result: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+		- most_likely_positions_list: list - (65,)
+		- p_x_given_n_list: list - 65
+		- marginal_x_list: list - (65, 2)
+		- marginal_y_list: list - (65,)
+		- most_likely_position_indicies_list: list - 65
+		- spkcount: list - 65
+		- nbins: numpy.ndarray - (65,)
+		- time_bin_containers: list - (65,)
+		- decoding_time_bin_size: float
+		- num_filter_epochs: int
+		- time_bin_edges: list - (65,)
+		- epoch_description_list: list - (0,)
+	- flat_all_epochs_measured_cell_spike_counts: numpy.ndarray - (42, 412)
+	- flat_all_epochs_measured_cell_firing_rates: numpy.ndarray - (42, 412)
+	- flat_all_epochs_decoded_epoch_time_bins: numpy.ndarray - (42, 412)
+	- flat_all_epochs_computed_surprises: numpy.ndarray - (42, 412)
+	- flat_all_epochs_computed_expected_cell_firing_rates: numpy.ndarray - (42, 412)
+	- flat_all_epochs_difference_from_expected_cell_spike_counts: numpy.ndarray - (42, 412)
+	- flat_all_epochs_difference_from_expected_cell_firing_rates: numpy.ndarray - (42, 412)
+	- all_epochs_decoded_epoch_time_bins_mean: numpy.ndarray - (65, 42)
+	- all_epochs_computed_cell_surprises_mean: numpy.ndarray - (65, 42)
+	- all_epochs_all_cells_computed_surprises_mean: numpy.ndarray - (65,)
+	- flat_all_epochs_computed_one_left_out_to_global_surprises: numpy.ndarray - (42, 412)
+	- all_epochs_computed_cell_one_left_out_to_global_surprises_mean: numpy.ndarray - (65, 42)
+	- all_epochs_all_cells_computed_one_left_out_to_global_surprises_mean: numpy.ndarray - (65,)
+	- one_left_out_omitted_aclu_distance_df: pandas.core.frame.DataFrame (children omitted) - (42, 3)
+	- most_contributing_aclus: numpy.ndarray - (42,)
+	- result: pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions.LeaveOneOutDecodingResult
+		- one_left_out_to_global_surprises: dict
+			- 2: list - (0,)
+			- 4: list - (0,)
+			- 8: list - (0,)
+			- 9: list - (0,)
+			- 11: list - (0,)
+			- 12: list - (0,)
+			- 14: list - (0,)
+			- 15: list - (0,)
+			- 20: list - (0,)
+			- 24: list - (0,)
+			- 25: list - (0,)
+			- 27: list - (0,)
+			- 30: list - (0,)
+			- 31: list - (0,)
+			- 33: list - (0,)
+			- 35: list - (0,)
+			- 39: list - (0,)
+			- 40: list - (0,)
+			- 43: list - (0,)
+			- 44: list - (0,)
+			- 47: list - (0,)
+			- 48: list - (0,)
+			- 51: list - (0,)
+			- 53: list - (0,)
+			- 56: list - (0,)
+			- 66: list - (0,)
+			- 68: list - (0,)
+			- 69: list - (0,)
+			- 72: list - (0,)
+			- 75: list - (0,)
+			- 79: list - (0,)
+			- 80: list - (0,)
+			- 81: list - (0,)
+			- 82: list - (0,)
+			- 84: list - (0,)
+			- 86: list - (0,)
+			- 89: list - (0,)
+			- 90: list - (0,)
+			- 92: list - (0,)
+			- 93: list - (0,)
+			- 98: list - (0,)
+			- 104: list - (0,)
+		- one_left_out_posterior_to_pf_surprises: dict
+			- 2: list - (65,)
+			- 4: list - (65,)
+			- 8: list - (65,)
+			- 9: list - (65,)
+			- 11: list - (65,)
+			- 12: list - (65,)
+			- 14: list - (65,)
+			- 15: list - (65,)
+			- 20: list - (65,)
+			- 24: list - (65,)
+			- 25: list - (65,)
+			- 27: list - (65,)
+			- 30: list - (65,)
+			- 31: list - (65,)
+			- 33: list - (65,)
+			- 35: list - (65,)
+			- 39: list - (65,)
+			- 40: list - (65,)
+			- 43: list - (65,)
+			- 44: list - (65,)
+			- 47: list - (65,)
+			- 48: list - (65,)
+			- 51: list - (65,)
+			- 53: list - (65,)
+			- 56: list - (65,)
+			- 66: list - (65,)
+			- 68: list - (65,)
+			- 69: list - (65,)
+			- 72: list - (65,)
+			- 75: list - (65,)
+			- 79: list - (65,)
+			- 80: list - (65,)
+			- 81: list - (65,)
+			- 82: list - (65,)
+			- 84: list - (65,)
+			- 86: list - (65,)
+			- 89: list - (65,)
+			- 90: list - (65,)
+			- 92: list - (65,)
+			- 93: list - (65,)
+			- 98: list - (65,)
+			- 104: list - (65,)
+		- one_left_out_posterior_to_scrambled_pf_surprises: dict
+			- 2: list - (65,)
+			- 4: list - (65,)
+			- 8: list - (65,)
+			- 9: list - (65,)
+			- 11: list - (65,)
+			- 12: list - (65,)
+			- 14: list - (65,)
+			- 15: list - (65,)
+			- 20: list - (65,)
+			- 24: list - (65,)
+			- 25: list - (65,)
+			- 27: list - (65,)
+			- 30: list - (65,)
+			- 31: list - (65,)
+			- 33: list - (65,)
+			- 35: list - (65,)
+			- 39: list - (65,)
+			- 40: list - (65,)
+			- 43: list - (65,)
+			- 44: list - (65,)
+			- 47: list - (65,)
+			- 48: list - (65,)
+			- 51: list - (65,)
+			- 53: list - (65,)
+			- 56: list - (65,)
+			- 66: list - (65,)
+			- 68: list - (65,)
+			- 69: list - (65,)
+			- 72: list - (65,)
+			- 75: list - (65,)
+			- 79: list - (65,)
+			- 80: list - (65,)
+			- 81: list - (65,)
+			- 82: list - (65,)
+			- 84: list - (65,)
+			- 86: list - (65,)
+			- 89: list - (65,)
+			- 90: list - (65,)
+			- 92: list - (65,)
+			- 93: list - (65,)
+			- 98: list - (65,)
+			- 104: list - (65,)
+		- one_left_out_to_global_surprises_mean: dict
+		- shuffle_IDXs: numpy.ndarray - (42,)
+	- new_result: pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions.LeaveOneOutDecodingResult
+		- one_left_out_to_global_surprises: dict
+		- one_left_out_posterior_to_pf_surprises: dict
+			- 0: numpy.ndarray - (1,)
+			- 1: numpy.ndarray - (0,)
+			- 2: numpy.ndarray - (1,)
+			- 3: numpy.ndarray - (0,)
+			- 4: numpy.ndarray - (1,)
+			- 5: numpy.ndarray - (4,)
+			- 6: numpy.ndarray - (0,)
+			- 7: numpy.ndarray - (1,)
+			- 8: numpy.ndarray - (0,)
+			- 9: numpy.ndarray - (2,)
+			- 10: numpy.ndarray - (3,)
+			- 11: numpy.ndarray - (3,)
+			- 12: numpy.ndarray - (3,)
+			- 13: numpy.ndarray - (3,)
+			- 14: numpy.ndarray - (2,)
+			- 15: numpy.ndarray - (2,)
+			- 16: numpy.ndarray - (2,)
+			- 17: numpy.ndarray - (2,)
+			- 18: numpy.ndarray - (1,)
+			- 19: numpy.ndarray - (0,)
+			- 20: numpy.ndarray - (0,)
+			- 21: numpy.ndarray - (3,)
+			- 22: numpy.ndarray - (2,)
+			- 23: numpy.ndarray - (3,)
+			- 24: numpy.ndarray - (2,)
+			- 25: numpy.ndarray - (5,)
+			- 26: numpy.ndarray - (6,)
+			- 27: numpy.ndarray - (4,)
+			- 28: numpy.ndarray - (3,)
+			- 29: numpy.ndarray - (5,)
+			- 30: numpy.ndarray - (2,)
+			- 31: numpy.ndarray - (2,)
+			- 32: numpy.ndarray - (2,)
+			- 33: numpy.ndarray - (1,)
+			- 34: numpy.ndarray - (1,)
+			- 35: numpy.ndarray - (1,)
+			- 36: numpy.ndarray - (4,)
+			- 37: numpy.ndarray - (8,)
+			- 38: numpy.ndarray - (3,)
+			- 39: numpy.ndarray - (4,)
+			- 40: numpy.ndarray - (4,)
+			- 41: numpy.ndarray - (4,)
+			- 42: numpy.ndarray - (3,)
+			- 43: numpy.ndarray - (0,)
+			- 44: numpy.ndarray - (5,)
+			- 45: numpy.ndarray - (1,)
+			- 46: numpy.ndarray - (1,)
+			- 47: numpy.ndarray - (3,)
+			- 48: numpy.ndarray - (0,)
+			- 49: numpy.ndarray - (0,)
+			- 50: numpy.ndarray - (1,)
+			- 51: numpy.ndarray - (1,)
+			- 52: numpy.ndarray - (5,)
+			- 53: numpy.ndarray - (3,)
+			- 54: numpy.ndarray - (2,)
+			- 55: numpy.ndarray - (0,)
+			- 56: numpy.ndarray - (0,)
+			- 57: numpy.ndarray - (4,)
+			- 58: numpy.ndarray - (1,)
+			- 59: numpy.ndarray - (1,)
+			- 60: numpy.ndarray - (2,)
+			- 61: numpy.ndarray - (0,)
+			- 62: numpy.ndarray - (1,)
+			- 63: numpy.ndarray - (1,)
+			- 64: numpy.ndarray - (2,)
+			- 65: numpy.ndarray - (4,)
+			- 66: numpy.ndarray - (4,)
+			- 67: numpy.ndarray - (8,)
+			- 68: numpy.ndarray - (4,)
+			- 69: numpy.ndarray - (0,)
+			- 70: numpy.ndarray - (2,)
+			- 71: numpy.ndarray - (4,)
+			- 72: numpy.ndarray - (5,)
+			- 73: numpy.ndarray - (6,)
+			- 74: numpy.ndarray - (4,)
+			- 75: numpy.ndarray - (7,)
+			- 76: numpy.ndarray - (0,)
+			- 77: numpy.ndarray - (1,)
+			- 78: numpy.ndarray - (2,)
+			- 79: numpy.ndarray - (0,)
+			- 80: numpy.ndarray - (1,)
+			- 81: numpy.ndarray - (4,)
+			- 82: numpy.ndarray - (1,)
+			- 83: numpy.ndarray - (2,)
+			- 84: numpy.ndarray - (3,)
+			- 85: numpy.ndarray - (2,)
+			- 86: numpy.ndarray - (1,)
+			- 87: numpy.ndarray - (4,)
+			- 88: numpy.ndarray - (2,)
+			- 89: numpy.ndarray - (3,)
+			- 90: numpy.ndarray - (0,)
+			- 91: numpy.ndarray - (0,)
+			- 92: numpy.ndarray - (0,)
+			- 93: numpy.ndarray - (4,)
+			- 94: numpy.ndarray - (1,)
+			- 95: numpy.ndarray - (2,)
+			- 96: numpy.ndarray - (1,)
+			- 97: numpy.ndarray - (0,)
+			- 98: numpy.ndarray - (5,)
+			- 99: numpy.ndarray - (3,)
+			- 100: numpy.ndarray - (2,)
+			- 101: numpy.ndarray - (2,)
+			- 102: numpy.ndarray - (3,)
+			- 103: numpy.ndarray - (2,)
+			- 104: numpy.ndarray - (2,)
+			- 105: numpy.ndarray - (3,)
+			- 106: numpy.ndarray - (6,)
+			- 107: numpy.ndarray - (7,)
+			- 108: numpy.ndarray - (4,)
+			- 109: numpy.ndarray - (3,)
+			- 110: numpy.ndarray - (2,)
+			- 111: numpy.ndarray - (8,)
+			- 112: numpy.ndarray - (4,)
+			- 113: numpy.ndarray - (1,)
+			- 114: numpy.ndarray - (2,)
+			- 115: numpy.ndarray - (4,)
+			- 116: numpy.ndarray - (2,)
+			- 117: numpy.ndarray - (3,)
+			- 118: numpy.ndarray - (5,)
+			- 119: numpy.ndarray - (7,)
+			- 120: numpy.ndarray - (4,)
+			- 121: numpy.ndarray - (4,)
+			- 122: numpy.ndarray - (3,)
+			- 123: numpy.ndarray - (7,)
+			- 124: numpy.ndarray - (5,)
+			- 125: numpy.ndarray - (9,)
+			- 126: numpy.ndarray - (5,)
+			- 127: numpy.ndarray - (3,)
+			- 128: numpy.ndarray - (0,)
+			- 129: numpy.ndarray - (1,)
+			- 130: numpy.ndarray - (2,)
+			- 131: numpy.ndarray - (5,)
+			- 132: numpy.ndarray - (5,)
+			- 133: numpy.ndarray - (6,)
+			- 134: numpy.ndarray - (12,)
+			- 135: numpy.ndarray - (1,)
+			- 136: numpy.ndarray - (2,)
+			- 137: numpy.ndarray - (7,)
+			- 138: numpy.ndarray - (2,)
+			- 139: numpy.ndarray - (1,)
+			- 140: numpy.ndarray - (2,)
+			- 141: numpy.ndarray - (3,)
+			- 142: numpy.ndarray - (1,)
+			- 143: numpy.ndarray - (1,)
+			- 144: numpy.ndarray - (0,)
+			- 145: numpy.ndarray - (1,)
+			- 146: numpy.ndarray - (1,)
+			- 147: numpy.ndarray - (2,)
+			- 148: numpy.ndarray - (2,)
+			- 149: numpy.ndarray - (4,)
+			- 150: numpy.ndarray - (4,)
+			- 151: numpy.ndarray - (3,)
+			- 152: numpy.ndarray - (2,)
+			- 153: numpy.ndarray - (5,)
+			- 154: numpy.ndarray - (5,)
+			- 155: numpy.ndarray - (8,)
+			- 156: numpy.ndarray - (3,)
+			- 157: numpy.ndarray - (6,)
+			- 158: numpy.ndarray - (6,)
+			- 159: numpy.ndarray - (4,)
+			- 160: numpy.ndarray - (2,)
+			- 161: numpy.ndarray - (1,)
+			- 162: numpy.ndarray - (0,)
+			- 163: numpy.ndarray - (1,)
+			- 164: numpy.ndarray - (3,)
+			- 165: numpy.ndarray - (3,)
+			- 166: numpy.ndarray - (2,)
+			- 167: numpy.ndarray - (3,)
+			- 168: numpy.ndarray - (3,)
+			- 169: numpy.ndarray - (4,)
+			- 170: numpy.ndarray - (1,)
+			- 171: numpy.ndarray - (2,)
+			- 172: numpy.ndarray - (4,)
+			- 173: numpy.ndarray - (6,)
+			- 174: numpy.ndarray - (5,)
+			- 175: numpy.ndarray - (5,)
+			- 176: numpy.ndarray - (7,)
+			- 177: numpy.ndarray - (6,)
+			- 178: numpy.ndarray - (4,)
+			- 179: numpy.ndarray - (5,)
+			- 180: numpy.ndarray - (5,)
+			- 181: numpy.ndarray - (11,)
+			- 182: numpy.ndarray - (11,)
+			- 183: numpy.ndarray - (2,)
+			- 184: numpy.ndarray - (3,)
+			- 185: numpy.ndarray - (3,)
+			- 186: numpy.ndarray - (2,)
+			- 187: numpy.ndarray - (8,)
+			- 188: numpy.ndarray - (3,)
+			- 189: numpy.ndarray - (1,)
+			- 190: numpy.ndarray - (3,)
+			- 191: numpy.ndarray - (4,)
+			- 192: numpy.ndarray - (1,)
+			- 193: numpy.ndarray - (3,)
+			- 194: numpy.ndarray - (5,)
+			- 195: numpy.ndarray - (4,)
+			- 196: numpy.ndarray - (2,)
+			- 197: numpy.ndarray - (1,)
+			- 198: numpy.ndarray - (2,)
+			- 199: numpy.ndarray - (1,)
+			- 200: numpy.ndarray - (0,)
+			- 201: numpy.ndarray - (1,)
+			- 202: numpy.ndarray - (1,)
+			- 203: numpy.ndarray - (1,)
+			- 204: numpy.ndarray - (2,)
+			- 205: numpy.ndarray - (2,)
+			- 206: numpy.ndarray - (2,)
+			- 207: numpy.ndarray - (1,)
+			- 208: numpy.ndarray - (2,)
+			- 209: numpy.ndarray - (1,)
+			- 210: numpy.ndarray - (0,)
+			- 211: numpy.ndarray - (3,)
+			- 212: numpy.ndarray - (4,)
+			- 213: numpy.ndarray - (2,)
+			- 214: numpy.ndarray - (5,)
+			- 215: numpy.ndarray - (5,)
+			- 216: numpy.ndarray - (3,)
+			- 217: numpy.ndarray - (2,)
+			- 218: numpy.ndarray - (0,)
+			- 219: numpy.ndarray - (3,)
+			- 220: numpy.ndarray - (5,)
+			- 221: numpy.ndarray - (8,)
+			- 222: numpy.ndarray - (1,)
+			- 223: numpy.ndarray - (0,)
+			- 224: numpy.ndarray - (1,)
+			- 225: numpy.ndarray - (7,)
+			- 226: numpy.ndarray - (8,)
+			- 227: numpy.ndarray - (3,)
+			- 228: numpy.ndarray - (2,)
+			- 229: numpy.ndarray - (1,)
+			- 230: numpy.ndarray - (4,)
+			- 231: numpy.ndarray - (5,)
+			- 232: numpy.ndarray - (6,)
+			- 233: numpy.ndarray - (3,)
+			- 234: numpy.ndarray - (6,)
+			- 235: numpy.ndarray - (4,)
+			- 236: numpy.ndarray - (3,)
+			- 237: numpy.ndarray - (6,)
+			- 238: numpy.ndarray - (4,)
+			- 239: numpy.ndarray - (3,)
+			- 240: numpy.ndarray - (1,)
+			- 241: numpy.ndarray - (3,)
+			- 242: numpy.ndarray - (3,)
+			- 243: numpy.ndarray - (1,)
+			- 244: numpy.ndarray - (2,)
+			- 245: numpy.ndarray - (0,)
+			- 246: numpy.ndarray - (1,)
+			- 247: numpy.ndarray - (2,)
+			- 248: numpy.ndarray - (1,)
+			- 249: numpy.ndarray - (3,)
+			- 250: numpy.ndarray - (6,)
+			- 251: numpy.ndarray - (4,)
+			- 252: numpy.ndarray - (3,)
+			- 253: numpy.ndarray - (7,)
+			- 254: numpy.ndarray - (9,)
+			- 255: numpy.ndarray - (8,)
+			- 256: numpy.ndarray - (3,)
+			- 257: numpy.ndarray - (3,)
+			- 258: numpy.ndarray - (4,)
+			- 259: numpy.ndarray - (4,)
+			- 260: numpy.ndarray - (1,)
+			- 261: numpy.ndarray - (1,)
+			- 262: numpy.ndarray - (3,)
+			- 263: numpy.ndarray - (4,)
+			- 264: numpy.ndarray - (4,)
+			- 265: numpy.ndarray - (0,)
+			- 266: numpy.ndarray - (5,)
+			- 267: numpy.ndarray - (6,)
+			- 268: numpy.ndarray - (1,)
+			- 269: numpy.ndarray - (1,)
+			- 270: numpy.ndarray - (5,)
+			- 271: numpy.ndarray - (1,)
+			- 272: numpy.ndarray - (4,)
+			- 273: numpy.ndarray - (5,)
+			- 274: numpy.ndarray - (9,)
+			- 275: numpy.ndarray - (6,)
+			- 276: numpy.ndarray - (4,)
+			- 277: numpy.ndarray - (1,)
+			- 278: numpy.ndarray - (2,)
+			- 279: numpy.ndarray - (2,)
+			- 280: numpy.ndarray - (8,)
+			- 281: numpy.ndarray - (5,)
+			- 282: numpy.ndarray - (6,)
+			- 283: numpy.ndarray - (2,)
+			- 284: numpy.ndarray - (0,)
+			- 285: numpy.ndarray - (3,)
+			- 286: numpy.ndarray - (2,)
+			- 287: numpy.ndarray - (1,)
+			- 288: numpy.ndarray - (0,)
+			- 289: numpy.ndarray - (2,)
+			- 290: numpy.ndarray - (4,)
+			- 291: numpy.ndarray - (3,)
+			- 292: numpy.ndarray - (5,)
+			- 293: numpy.ndarray - (1,)
+			- 294: numpy.ndarray - (1,)
+			- 295: numpy.ndarray - (1,)
+			- 296: numpy.ndarray - (2,)
+			- 297: numpy.ndarray - (2,)
+			- 298: numpy.ndarray - (5,)
+			- 299: numpy.ndarray - (7,)
+			- 300: numpy.ndarray - (4,)
+			- 301: numpy.ndarray - (4,)
+			- 302: numpy.ndarray - (2,)
+			- 303: numpy.ndarray - (4,)
+			- 304: numpy.ndarray - (4,)
+			- 305: numpy.ndarray - (5,)
+			- 306: numpy.ndarray - (7,)
+			- 307: numpy.ndarray - (8,)
+			- 308: numpy.ndarray - (3,)
+			- 309: numpy.ndarray - (4,)
+			- 310: numpy.ndarray - (2,)
+			- 311: numpy.ndarray - (5,)
+			- 312: numpy.ndarray - (0,)
+			- 313: numpy.ndarray - (0,)
+			- 314: numpy.ndarray - (1,)
+			- 315: numpy.ndarray - (5,)
+			- 316: numpy.ndarray - (1,)
+			- 317: numpy.ndarray - (2,)
+			- 318: numpy.ndarray - (3,)
+			- 319: numpy.ndarray - (5,)
+			- 320: numpy.ndarray - (2,)
+			- 321: numpy.ndarray - (5,)
+			- 322: numpy.ndarray - (2,)
+			- 323: numpy.ndarray - (3,)
+			- 324: numpy.ndarray - (4,)
+			- 325: numpy.ndarray - (2,)
+			- 326: numpy.ndarray - (6,)
+			- 327: numpy.ndarray - (2,)
+			- 328: numpy.ndarray - (1,)
+			- 329: numpy.ndarray - (5,)
+			- 330: numpy.ndarray - (3,)
+			- 331: numpy.ndarray - (1,)
+			- 332: numpy.ndarray - (4,)
+			- 333: numpy.ndarray - (5,)
+			- 334: numpy.ndarray - (3,)
+			- 335: numpy.ndarray - (0,)
+			- 336: numpy.ndarray - (3,)
+			- 337: numpy.ndarray - (5,)
+			- 338: numpy.ndarray - (7,)
+			- 339: numpy.ndarray - (2,)
+			- 340: numpy.ndarray - (1,)
+			- 341: numpy.ndarray - (3,)
+			- 342: numpy.ndarray - (3,)
+			- 343: numpy.ndarray - (1,)
+			- 344: numpy.ndarray - (1,)
+			- 345: numpy.ndarray - (1,)
+			- 346: numpy.ndarray - (2,)
+			- 347: numpy.ndarray - (4,)
+			- 348: numpy.ndarray - (3,)
+			- 349: numpy.ndarray - (7,)
+			- 350: numpy.ndarray - (3,)
+			- 351: numpy.ndarray - (4,)
+			- 352: numpy.ndarray - (4,)
+			- 353: numpy.ndarray - (3,)
+			- 354: numpy.ndarray - (1,)
+			- 355: numpy.ndarray - (3,)
+			- 356: numpy.ndarray - (2,)
+			- 357: numpy.ndarray - (0,)
+			- 358: numpy.ndarray - (1,)
+			- 359: numpy.ndarray - (3,)
+			- 360: numpy.ndarray - (5,)
+			- 361: numpy.ndarray - (3,)
+			- 362: numpy.ndarray - (1,)
+			- 363: numpy.ndarray - (2,)
+			- 364: numpy.ndarray - (2,)
+			- 365: numpy.ndarray - (0,)
+			- 366: numpy.ndarray - (1,)
+			- 367: numpy.ndarray - (2,)
+			- 368: numpy.ndarray - (1,)
+			- 369: numpy.ndarray - (2,)
+			- 370: numpy.ndarray - (6,)
+			- 371: numpy.ndarray - (2,)
+			- 372: numpy.ndarray - (2,)
+			- 373: numpy.ndarray - (2,)
+			- 374: numpy.ndarray - (3,)
+			- 375: numpy.ndarray - (3,)
+			- 376: numpy.ndarray - (4,)
+			- 377: numpy.ndarray - (3,)
+			- 378: numpy.ndarray - (0,)
+			- 379: numpy.ndarray - (3,)
+			- 380: numpy.ndarray - (3,)
+			- 381: numpy.ndarray - (3,)
+			- 382: numpy.ndarray - (1,)
+			- 383: numpy.ndarray - (0,)
+			- 384: numpy.ndarray - (0,)
+			- 385: numpy.ndarray - (0,)
+			- 386: numpy.ndarray - (1,)
+			- 387: numpy.ndarray - (2,)
+			- 388: numpy.ndarray - (1,)
+			- 389: numpy.ndarray - (6,)
+			- 390: numpy.ndarray - (2,)
+			- 391: numpy.ndarray - (0,)
+			- 392: numpy.ndarray - (0,)
+			- 393: numpy.ndarray - (1,)
+			- 394: numpy.ndarray - (1,)
+			- 395: numpy.ndarray - (1,)
+			- 396: numpy.ndarray - (2,)
+			- 397: numpy.ndarray - (0,)
+			- 398: numpy.ndarray - (1,)
+			- 399: numpy.ndarray - (0,)
+			- 400: numpy.ndarray - (5,)
+			- 401: numpy.ndarray - (2,)
+			- 402: numpy.ndarray - (2,)
+			- 403: numpy.ndarray - (1,)
+			- 404: numpy.ndarray - (1,)
+			- 405: numpy.ndarray - (11,)
+			- 406: numpy.ndarray - (6,)
+			- 407: numpy.ndarray - (1,)
+			- 408: numpy.ndarray - (4,)
+			- 409: numpy.ndarray - (6,)
+			- 410: numpy.ndarray - (8,)
+			- 411: numpy.ndarray - (3,)
+		- one_left_out_posterior_to_scrambled_pf_surprises: dict
+			- 0: numpy.ndarray - (1,)
+			- 1: numpy.ndarray - (0,)
+			- 2: numpy.ndarray - (1,)
+			- 3: numpy.ndarray - (0,)
+			- 4: numpy.ndarray - (1,)
+			- 5: numpy.ndarray - (4,)
+			- 6: numpy.ndarray - (0,)
+			- 7: numpy.ndarray - (1,)
+			- 8: numpy.ndarray - (0,)
+			- 9: numpy.ndarray - (2,)
+			- 10: numpy.ndarray - (3,)
+			- 11: numpy.ndarray - (3,)
+			- 12: numpy.ndarray - (3,)
+			- 13: numpy.ndarray - (3,)
+			- 14: numpy.ndarray - (2,)
+			- 15: numpy.ndarray - (2,)
+			- 16: numpy.ndarray - (2,)
+			- 17: numpy.ndarray - (2,)
+			- 18: numpy.ndarray - (1,)
+			- 19: numpy.ndarray - (0,)
+			- 20: numpy.ndarray - (0,)
+			- 21: numpy.ndarray - (3,)
+			- 22: numpy.ndarray - (2,)
+			- 23: numpy.ndarray - (3,)
+			- 24: numpy.ndarray - (2,)
+			- 25: numpy.ndarray - (5,)
+			- 26: numpy.ndarray - (6,)
+			- 27: numpy.ndarray - (4,)
+			- 28: numpy.ndarray - (3,)
+			- 29: numpy.ndarray - (5,)
+			- 30: numpy.ndarray - (2,)
+			- 31: numpy.ndarray - (2,)
+			- 32: numpy.ndarray - (2,)
+			- 33: numpy.ndarray - (1,)
+			- 34: numpy.ndarray - (1,)
+			- 35: numpy.ndarray - (1,)
+			- 36: numpy.ndarray - (4,)
+			- 37: numpy.ndarray - (8,)
+			- 38: numpy.ndarray - (3,)
+			- 39: numpy.ndarray - (4,)
+			- 40: numpy.ndarray - (4,)
+			- 41: numpy.ndarray - (4,)
+			- 42: numpy.ndarray - (3,)
+			- 43: numpy.ndarray - (0,)
+			- 44: numpy.ndarray - (5,)
+			- 45: numpy.ndarray - (1,)
+			- 46: numpy.ndarray - (1,)
+			- 47: numpy.ndarray - (3,)
+			- 48: numpy.ndarray - (0,)
+			- 49: numpy.ndarray - (0,)
+			- 50: numpy.ndarray - (1,)
+			- 51: numpy.ndarray - (1,)
+			- 52: numpy.ndarray - (5,)
+			- 53: numpy.ndarray - (3,)
+			- 54: numpy.ndarray - (2,)
+			- 55: numpy.ndarray - (0,)
+			- 56: numpy.ndarray - (0,)
+			- 57: numpy.ndarray - (4,)
+			- 58: numpy.ndarray - (1,)
+			- 59: numpy.ndarray - (1,)
+			- 60: numpy.ndarray - (2,)
+			- 61: numpy.ndarray - (0,)
+			- 62: numpy.ndarray - (1,)
+			- 63: numpy.ndarray - (1,)
+			- 64: numpy.ndarray - (2,)
+			- 65: numpy.ndarray - (4,)
+			- 66: numpy.ndarray - (4,)
+			- 67: numpy.ndarray - (8,)
+			- 68: numpy.ndarray - (4,)
+			- 69: numpy.ndarray - (0,)
+			- 70: numpy.ndarray - (2,)
+			- 71: numpy.ndarray - (4,)
+			- 72: numpy.ndarray - (5,)
+			- 73: numpy.ndarray - (6,)
+			- 74: numpy.ndarray - (4,)
+			- 75: numpy.ndarray - (7,)
+			- 76: numpy.ndarray - (0,)
+			- 77: numpy.ndarray - (1,)
+			- 78: numpy.ndarray - (2,)
+			- 79: numpy.ndarray - (0,)
+			- 80: numpy.ndarray - (1,)
+			- 81: numpy.ndarray - (4,)
+			- 82: numpy.ndarray - (1,)
+			- 83: numpy.ndarray - (2,)
+			- 84: numpy.ndarray - (3,)
+			- 85: numpy.ndarray - (2,)
+			- 86: numpy.ndarray - (1,)
+			- 87: numpy.ndarray - (4,)
+			- 88: numpy.ndarray - (2,)
+			- 89: numpy.ndarray - (3,)
+			- 90: numpy.ndarray - (0,)
+			- 91: numpy.ndarray - (0,)
+			- 92: numpy.ndarray - (0,)
+			- 93: numpy.ndarray - (4,)
+			- 94: numpy.ndarray - (1,)
+			- 95: numpy.ndarray - (2,)
+			- 96: numpy.ndarray - (1,)
+			- 97: numpy.ndarray - (0,)
+			- 98: numpy.ndarray - (5,)
+			- 99: numpy.ndarray - (3,)
+			- 100: numpy.ndarray - (2,)
+			- 101: numpy.ndarray - (2,)
+			- 102: numpy.ndarray - (3,)
+			- 103: numpy.ndarray - (2,)
+			- 104: numpy.ndarray - (2,)
+			- 105: numpy.ndarray - (3,)
+			- 106: numpy.ndarray - (6,)
+			- 107: numpy.ndarray - (7,)
+			- 108: numpy.ndarray - (4,)
+			- 109: numpy.ndarray - (3,)
+			- 110: numpy.ndarray - (2,)
+			- 111: numpy.ndarray - (8,)
+			- 112: numpy.ndarray - (4,)
+			- 113: numpy.ndarray - (1,)
+			- 114: numpy.ndarray - (2,)
+			- 115: numpy.ndarray - (4,)
+			- 116: numpy.ndarray - (2,)
+			- 117: numpy.ndarray - (3,)
+			- 118: numpy.ndarray - (5,)
+			- 119: numpy.ndarray - (7,)
+			- 120: numpy.ndarray - (4,)
+			- 121: numpy.ndarray - (4,)
+			- 122: numpy.ndarray - (3,)
+			- 123: numpy.ndarray - (7,)
+			- 124: numpy.ndarray - (5,)
+			- 125: numpy.ndarray - (9,)
+			- 126: numpy.ndarray - (5,)
+			- 127: numpy.ndarray - (3,)
+			- 128: numpy.ndarray - (0,)
+			- 129: numpy.ndarray - (1,)
+			- 130: numpy.ndarray - (2,)
+			- 131: numpy.ndarray - (5,)
+			- 132: numpy.ndarray - (5,)
+			- 133: numpy.ndarray - (6,)
+			- 134: numpy.ndarray - (12,)
+			- 135: numpy.ndarray - (1,)
+			- 136: numpy.ndarray - (2,)
+			- 137: numpy.ndarray - (7,)
+			- 138: numpy.ndarray - (2,)
+			- 139: numpy.ndarray - (1,)
+			- 140: numpy.ndarray - (2,)
+			- 141: numpy.ndarray - (3,)
+			- 142: numpy.ndarray - (1,)
+			- 143: numpy.ndarray - (1,)
+			- 144: numpy.ndarray - (0,)
+			- 145: numpy.ndarray - (1,)
+			- 146: numpy.ndarray - (1,)
+			- 147: numpy.ndarray - (2,)
+			- 148: numpy.ndarray - (2,)
+			- 149: numpy.ndarray - (4,)
+			- 150: numpy.ndarray - (4,)
+			- 151: numpy.ndarray - (3,)
+			- 152: numpy.ndarray - (2,)
+			- 153: numpy.ndarray - (5,)
+			- 154: numpy.ndarray - (5,)
+			- 155: numpy.ndarray - (8,)
+			- 156: numpy.ndarray - (3,)
+			- 157: numpy.ndarray - (6,)
+			- 158: numpy.ndarray - (6,)
+			- 159: numpy.ndarray - (4,)
+			- 160: numpy.ndarray - (2,)
+			- 161: numpy.ndarray - (1,)
+			- 162: numpy.ndarray - (0,)
+			- 163: numpy.ndarray - (1,)
+			- 164: numpy.ndarray - (3,)
+			- 165: numpy.ndarray - (3,)
+			- 166: numpy.ndarray - (2,)
+			- 167: numpy.ndarray - (3,)
+			- 168: numpy.ndarray - (3,)
+			- 169: numpy.ndarray - (4,)
+			- 170: numpy.ndarray - (1,)
+			- 171: numpy.ndarray - (2,)
+			- 172: numpy.ndarray - (4,)
+			- 173: numpy.ndarray - (6,)
+			- 174: numpy.ndarray - (5,)
+			- 175: numpy.ndarray - (5,)
+			- 176: numpy.ndarray - (7,)
+			- 177: numpy.ndarray - (6,)
+			- 178: numpy.ndarray - (4,)
+			- 179: numpy.ndarray - (5,)
+			- 180: numpy.ndarray - (5,)
+			- 181: numpy.ndarray - (11,)
+			- 182: numpy.ndarray - (11,)
+			- 183: numpy.ndarray - (2,)
+			- 184: numpy.ndarray - (3,)
+			- 185: numpy.ndarray - (3,)
+			- 186: numpy.ndarray - (2,)
+			- 187: numpy.ndarray - (8,)
+			- 188: numpy.ndarray - (3,)
+			- 189: numpy.ndarray - (1,)
+			- 190: numpy.ndarray - (3,)
+			- 191: numpy.ndarray - (4,)
+			- 192: numpy.ndarray - (1,)
+			- 193: numpy.ndarray - (3,)
+			- 194: numpy.ndarray - (5,)
+			- 195: numpy.ndarray - (4,)
+			- 196: numpy.ndarray - (2,)
+			- 197: numpy.ndarray - (1,)
+			- 198: numpy.ndarray - (2,)
+			- 199: numpy.ndarray - (1,)
+			- 200: numpy.ndarray - (0,)
+			- 201: numpy.ndarray - (1,)
+			- 202: numpy.ndarray - (1,)
+			- 203: numpy.ndarray - (1,)
+			- 204: numpy.ndarray - (2,)
+			- 205: numpy.ndarray - (2,)
+			- 206: numpy.ndarray - (2,)
+			- 207: numpy.ndarray - (1,)
+			- 208: numpy.ndarray - (2,)
+			- 209: numpy.ndarray - (1,)
+			- 210: numpy.ndarray - (0,)
+			- 211: numpy.ndarray - (3,)
+			- 212: numpy.ndarray - (4,)
+			- 213: numpy.ndarray - (2,)
+			- 214: numpy.ndarray - (5,)
+			- 215: numpy.ndarray - (5,)
+			- 216: numpy.ndarray - (3,)
+			- 217: numpy.ndarray - (2,)
+			- 218: numpy.ndarray - (0,)
+			- 219: numpy.ndarray - (3,)
+			- 220: numpy.ndarray - (5,)
+			- 221: numpy.ndarray - (8,)
+			- 222: numpy.ndarray - (1,)
+			- 223: numpy.ndarray - (0,)
+			- 224: numpy.ndarray - (1,)
+			- 225: numpy.ndarray - (7,)
+			- 226: numpy.ndarray - (8,)
+			- 227: numpy.ndarray - (3,)
+			- 228: numpy.ndarray - (2,)
+			- 229: numpy.ndarray - (1,)
+			- 230: numpy.ndarray - (4,)
+			- 231: numpy.ndarray - (5,)
+			- 232: numpy.ndarray - (6,)
+			- 233: numpy.ndarray - (3,)
+			- 234: numpy.ndarray - (6,)
+			- 235: numpy.ndarray - (4,)
+			- 236: numpy.ndarray - (3,)
+			- 237: numpy.ndarray - (6,)
+			- 238: numpy.ndarray - (4,)
+			- 239: numpy.ndarray - (3,)
+			- 240: numpy.ndarray - (1,)
+			- 241: numpy.ndarray - (3,)
+			- 242: numpy.ndarray - (3,)
+			- 243: numpy.ndarray - (1,)
+			- 244: numpy.ndarray - (2,)
+			- 245: numpy.ndarray - (0,)
+			- 246: numpy.ndarray - (1,)
+			- 247: numpy.ndarray - (2,)
+			- 248: numpy.ndarray - (1,)
+			- 249: numpy.ndarray - (3,)
+			- 250: numpy.ndarray - (6,)
+			- 251: numpy.ndarray - (4,)
+			- 252: numpy.ndarray - (3,)
+			- 253: numpy.ndarray - (7,)
+			- 254: numpy.ndarray - (9,)
+			- 255: numpy.ndarray - (8,)
+			- 256: numpy.ndarray - (3,)
+			- 257: numpy.ndarray - (3,)
+			- 258: numpy.ndarray - (4,)
+			- 259: numpy.ndarray - (4,)
+			- 260: numpy.ndarray - (1,)
+			- 261: numpy.ndarray - (1,)
+			- 262: numpy.ndarray - (3,)
+			- 263: numpy.ndarray - (4,)
+			- 264: numpy.ndarray - (4,)
+			- 265: numpy.ndarray - (0,)
+			- 266: numpy.ndarray - (5,)
+			- 267: numpy.ndarray - (6,)
+			- 268: numpy.ndarray - (1,)
+			- 269: numpy.ndarray - (1,)
+			- 270: numpy.ndarray - (5,)
+			- 271: numpy.ndarray - (1,)
+			- 272: numpy.ndarray - (4,)
+			- 273: numpy.ndarray - (5,)
+			- 274: numpy.ndarray - (9,)
+			- 275: numpy.ndarray - (6,)
+			- 276: numpy.ndarray - (4,)
+			- 277: numpy.ndarray - (1,)
+			- 278: numpy.ndarray - (2,)
+			- 279: numpy.ndarray - (2,)
+			- 280: numpy.ndarray - (8,)
+			- 281: numpy.ndarray - (5,)
+			- 282: numpy.ndarray - (6,)
+			- 283: numpy.ndarray - (2,)
+			- 284: numpy.ndarray - (0,)
+			- 285: numpy.ndarray - (3,)
+			- 286: numpy.ndarray - (2,)
+			- 287: numpy.ndarray - (1,)
+			- 288: numpy.ndarray - (0,)
+			- 289: numpy.ndarray - (2,)
+			- 290: numpy.ndarray - (4,)
+			- 291: numpy.ndarray - (3,)
+			- 292: numpy.ndarray - (5,)
+			- 293: numpy.ndarray - (1,)
+			- 294: numpy.ndarray - (1,)
+			- 295: numpy.ndarray - (1,)
+			- 296: numpy.ndarray - (2,)
+			- 297: numpy.ndarray - (2,)
+			- 298: numpy.ndarray - (5,)
+			- 299: numpy.ndarray - (7,)
+			- 300: numpy.ndarray - (4,)
+			- 301: numpy.ndarray - (4,)
+			- 302: numpy.ndarray - (2,)
+			- 303: numpy.ndarray - (4,)
+			- 304: numpy.ndarray - (4,)
+			- 305: numpy.ndarray - (5,)
+			- 306: numpy.ndarray - (7,)
+			- 307: numpy.ndarray - (8,)
+			- 308: numpy.ndarray - (3,)
+			- 309: numpy.ndarray - (4,)
+			- 310: numpy.ndarray - (2,)
+			- 311: numpy.ndarray - (5,)
+			- 312: numpy.ndarray - (0,)
+			- 313: numpy.ndarray - (0,)
+			- 314: numpy.ndarray - (1,)
+			- 315: numpy.ndarray - (5,)
+			- 316: numpy.ndarray - (1,)
+			- 317: numpy.ndarray - (2,)
+			- 318: numpy.ndarray - (3,)
+			- 319: numpy.ndarray - (5,)
+			- 320: numpy.ndarray - (2,)
+			- 321: numpy.ndarray - (5,)
+			- 322: numpy.ndarray - (2,)
+			- 323: numpy.ndarray - (3,)
+			- 324: numpy.ndarray - (4,)
+			- 325: numpy.ndarray - (2,)
+			- 326: numpy.ndarray - (6,)
+			- 327: numpy.ndarray - (2,)
+			- 328: numpy.ndarray - (1,)
+			- 329: numpy.ndarray - (5,)
+			- 330: numpy.ndarray - (3,)
+			- 331: numpy.ndarray - (1,)
+			- 332: numpy.ndarray - (4,)
+			- 333: numpy.ndarray - (5,)
+			- 334: numpy.ndarray - (3,)
+			- 335: numpy.ndarray - (0,)
+			- 336: numpy.ndarray - (3,)
+			- 337: numpy.ndarray - (5,)
+			- 338: numpy.ndarray - (7,)
+			- 339: numpy.ndarray - (2,)
+			- 340: numpy.ndarray - (1,)
+			- 341: numpy.ndarray - (3,)
+			- 342: numpy.ndarray - (3,)
+			- 343: numpy.ndarray - (1,)
+			- 344: numpy.ndarray - (1,)
+			- 345: numpy.ndarray - (1,)
+			- 346: numpy.ndarray - (2,)
+			- 347: numpy.ndarray - (4,)
+			- 348: numpy.ndarray - (3,)
+			- 349: numpy.ndarray - (7,)
+			- 350: numpy.ndarray - (3,)
+			- 351: numpy.ndarray - (4,)
+			- 352: numpy.ndarray - (4,)
+			- 353: numpy.ndarray - (3,)
+			- 354: numpy.ndarray - (1,)
+			- 355: numpy.ndarray - (3,)
+			- 356: numpy.ndarray - (2,)
+			- 357: numpy.ndarray - (0,)
+			- 358: numpy.ndarray - (1,)
+			- 359: numpy.ndarray - (3,)
+			- 360: numpy.ndarray - (5,)
+			- 361: numpy.ndarray - (3,)
+			- 362: numpy.ndarray - (1,)
+			- 363: numpy.ndarray - (2,)
+			- 364: numpy.ndarray - (2,)
+			- 365: numpy.ndarray - (0,)
+			- 366: numpy.ndarray - (1,)
+			- 367: numpy.ndarray - (2,)
+			- 368: numpy.ndarray - (1,)
+			- 369: numpy.ndarray - (2,)
+			- 370: numpy.ndarray - (6,)
+			- 371: numpy.ndarray - (2,)
+			- 372: numpy.ndarray - (2,)
+			- 373: numpy.ndarray - (2,)
+			- 374: numpy.ndarray - (3,)
+			- 375: numpy.ndarray - (3,)
+			- 376: numpy.ndarray - (4,)
+			- 377: numpy.ndarray - (3,)
+			- 378: numpy.ndarray - (0,)
+			- 379: numpy.ndarray - (3,)
+			- 380: numpy.ndarray - (3,)
+			- 381: numpy.ndarray - (3,)
+			- 382: numpy.ndarray - (1,)
+			- 383: numpy.ndarray - (0,)
+			- 384: numpy.ndarray - (0,)
+			- 385: numpy.ndarray - (0,)
+			- 386: numpy.ndarray - (1,)
+			- 387: numpy.ndarray - (2,)
+			- 388: numpy.ndarray - (1,)
+			- 389: numpy.ndarray - (6,)
+			- 390: numpy.ndarray - (2,)
+			- 391: numpy.ndarray - (0,)
+			- 392: numpy.ndarray - (0,)
+			- 393: numpy.ndarray - (1,)
+			- 394: numpy.ndarray - (1,)
+			- 395: numpy.ndarray - (1,)
+			- 396: numpy.ndarray - (2,)
+			- 397: numpy.ndarray - (0,)
+			- 398: numpy.ndarray - (1,)
+			- 399: numpy.ndarray - (0,)
+			- 400: numpy.ndarray - (5,)
+			- 401: numpy.ndarray - (2,)
+			- 402: numpy.ndarray - (2,)
+			- 403: numpy.ndarray - (1,)
+			- 404: numpy.ndarray - (1,)
+			- 405: numpy.ndarray - (11,)
+			- 406: numpy.ndarray - (6,)
+			- 407: numpy.ndarray - (1,)
+			- 408: numpy.ndarray - (4,)
+			- 409: numpy.ndarray - (6,)
+			- 410: numpy.ndarray - (8,)
+			- 411: numpy.ndarray - (3,)
+		- one_left_out_to_global_surprises_mean: dict
+		- shuffle_IDXs: NoneType
+		- random_noise_curves: dict
+			- 0: numpy.ndarray - (1, 120)
+			- 1: numpy.ndarray - (0,)
+			- 2: numpy.ndarray - (1, 120)
+			- 3: numpy.ndarray - (0,)
+			- 4: numpy.ndarray - (1, 120)
+			- 5: numpy.ndarray - (4, 120)
+			- 6: numpy.ndarray - (0,)
+			- 7: numpy.ndarray - (1, 120)
+			- 8: numpy.ndarray - (0,)
+			- 9: numpy.ndarray - (2, 120)
+			- 10: numpy.ndarray - (3, 120)
+			- 11: numpy.ndarray - (3, 120)
+			- 12: numpy.ndarray - (3, 120)
+			- 13: numpy.ndarray - (3, 120)
+			- 14: numpy.ndarray - (2, 120)
+			- 15: numpy.ndarray - (2, 120)
+			- 16: numpy.ndarray - (2, 120)
+			- 17: numpy.ndarray - (2, 120)
+			- 18: numpy.ndarray - (1, 120)
+			- 19: numpy.ndarray - (0,)
+			- 20: numpy.ndarray - (0,)
+			- 21: numpy.ndarray - (3, 120)
+			- 22: numpy.ndarray - (2, 120)
+			- 23: numpy.ndarray - (3, 120)
+			- 24: numpy.ndarray - (2, 120)
+			- 25: numpy.ndarray - (5, 120)
+			- 26: numpy.ndarray - (6, 120)
+			- 27: numpy.ndarray - (4, 120)
+			- 28: numpy.ndarray - (3, 120)
+			- 29: numpy.ndarray - (5, 120)
+			- 30: numpy.ndarray - (2, 120)
+			- 31: numpy.ndarray - (2, 120)
+			- 32: numpy.ndarray - (2, 120)
+			- 33: numpy.ndarray - (1, 120)
+			- 34: numpy.ndarray - (1, 120)
+			- 35: numpy.ndarray - (1, 120)
+			- 36: numpy.ndarray - (4, 120)
+			- 37: numpy.ndarray - (8, 120)
+			- 38: numpy.ndarray - (3, 120)
+			- 39: numpy.ndarray - (4, 120)
+			- 40: numpy.ndarray - (4, 120)
+			- 41: numpy.ndarray - (4, 120)
+			- 42: numpy.ndarray - (3, 120)
+			- 43: numpy.ndarray - (0,)
+			- 44: numpy.ndarray - (5, 120)
+			- 45: numpy.ndarray - (1, 120)
+			- 46: numpy.ndarray - (1, 120)
+			- 47: numpy.ndarray - (3, 120)
+			- 48: numpy.ndarray - (0,)
+			- 49: numpy.ndarray - (0,)
+			- 50: numpy.ndarray - (1, 120)
+			- 51: numpy.ndarray - (1, 120)
+			- 52: numpy.ndarray - (5, 120)
+			- 53: numpy.ndarray - (3, 120)
+			- 54: numpy.ndarray - (2, 120)
+			- 55: numpy.ndarray - (0,)
+			- 56: numpy.ndarray - (0,)
+			- 57: numpy.ndarray - (4, 120)
+			- 58: numpy.ndarray - (1, 120)
+			- 59: numpy.ndarray - (1, 120)
+			- 60: numpy.ndarray - (2, 120)
+			- 61: numpy.ndarray - (0,)
+			- 62: numpy.ndarray - (1, 120)
+			- 63: numpy.ndarray - (1, 120)
+			- 64: numpy.ndarray - (2, 120)
+			- 65: numpy.ndarray - (4, 120)
+			- 66: numpy.ndarray - (4, 120)
+			- 67: numpy.ndarray - (8, 120)
+			- 68: numpy.ndarray - (4, 120)
+			- 69: numpy.ndarray - (0,)
+			- 70: numpy.ndarray - (2, 120)
+			- 71: numpy.ndarray - (4, 120)
+			- 72: numpy.ndarray - (5, 120)
+			- 73: numpy.ndarray - (6, 120)
+			- 74: numpy.ndarray - (4, 120)
+			- 75: numpy.ndarray - (7, 120)
+			- 76: numpy.ndarray - (0,)
+			- 77: numpy.ndarray - (1, 120)
+			- 78: numpy.ndarray - (2, 120)
+			- 79: numpy.ndarray - (0,)
+			- 80: numpy.ndarray - (1, 120)
+			- 81: numpy.ndarray - (4, 120)
+			- 82: numpy.ndarray - (1, 120)
+			- 83: numpy.ndarray - (2, 120)
+			- 84: numpy.ndarray - (3, 120)
+			- 85: numpy.ndarray - (2, 120)
+			- 86: numpy.ndarray - (1, 120)
+			- 87: numpy.ndarray - (4, 120)
+			- 88: numpy.ndarray - (2, 120)
+			- 89: numpy.ndarray - (3, 120)
+			- 90: numpy.ndarray - (0,)
+			- 91: numpy.ndarray - (0,)
+			- 92: numpy.ndarray - (0,)
+			- 93: numpy.ndarray - (4, 120)
+			- 94: numpy.ndarray - (1, 120)
+			- 95: numpy.ndarray - (2, 120)
+			- 96: numpy.ndarray - (1, 120)
+			- 97: numpy.ndarray - (0,)
+			- 98: numpy.ndarray - (5, 120)
+			- 99: numpy.ndarray - (3, 120)
+			- 100: numpy.ndarray - (2, 120)
+			- 101: numpy.ndarray - (2, 120)
+			- 102: numpy.ndarray - (3, 120)
+			- 103: numpy.ndarray - (2, 120)
+			- 104: numpy.ndarray - (2, 120)
+			- 105: numpy.ndarray - (3, 120)
+			- 106: numpy.ndarray - (6, 120)
+			- 107: numpy.ndarray - (7, 120)
+			- 108: numpy.ndarray - (4, 120)
+			- 109: numpy.ndarray - (3, 120)
+			- 110: numpy.ndarray - (2, 120)
+			- 111: numpy.ndarray - (8, 120)
+			- 112: numpy.ndarray - (4, 120)
+			- 113: numpy.ndarray - (1, 120)
+			- 114: numpy.ndarray - (2, 120)
+			- 115: numpy.ndarray - (4, 120)
+			- 116: numpy.ndarray - (2, 120)
+			- 117: numpy.ndarray - (3, 120)
+			- 118: numpy.ndarray - (5, 120)
+			- 119: numpy.ndarray - (7, 120)
+			- 120: numpy.ndarray - (4, 120)
+			- 121: numpy.ndarray - (4, 120)
+			- 122: numpy.ndarray - (3, 120)
+			- 123: numpy.ndarray - (7, 120)
+			- 124: numpy.ndarray - (5, 120)
+			- 125: numpy.ndarray - (9, 120)
+			- 126: numpy.ndarray - (5, 120)
+			- 127: numpy.ndarray - (3, 120)
+			- 128: numpy.ndarray - (0,)
+			- 129: numpy.ndarray - (1, 120)
+			- 130: numpy.ndarray - (2, 120)
+			- 131: numpy.ndarray - (5, 120)
+			- 132: numpy.ndarray - (5, 120)
+			- 133: numpy.ndarray - (6, 120)
+			- 134: numpy.ndarray - (12, 120)
+			- 135: numpy.ndarray - (1, 120)
+			- 136: numpy.ndarray - (2, 120)
+			- 137: numpy.ndarray - (7, 120)
+			- 138: numpy.ndarray - (2, 120)
+			- 139: numpy.ndarray - (1, 120)
+			- 140: numpy.ndarray - (2, 120)
+			- 141: numpy.ndarray - (3, 120)
+			- 142: numpy.ndarray - (1, 120)
+			- 143: numpy.ndarray - (1, 120)
+			- 144: numpy.ndarray - (0,)
+			- 145: numpy.ndarray - (1, 120)
+			- 146: numpy.ndarray - (1, 120)
+			- 147: numpy.ndarray - (2, 120)
+			- 148: numpy.ndarray - (2, 120)
+			- 149: numpy.ndarray - (4, 120)
+			- 150: numpy.ndarray - (4, 120)
+			- 151: numpy.ndarray - (3, 120)
+			- 152: numpy.ndarray - (2, 120)
+			- 153: numpy.ndarray - (5, 120)
+			- 154: numpy.ndarray - (5, 120)
+			- 155: numpy.ndarray - (8, 120)
+			- 156: numpy.ndarray - (3, 120)
+			- 157: numpy.ndarray - (6, 120)
+			- 158: numpy.ndarray - (6, 120)
+			- 159: numpy.ndarray - (4, 120)
+			- 160: numpy.ndarray - (2, 120)
+			- 161: numpy.ndarray - (1, 120)
+			- 162: numpy.ndarray - (0,)
+			- 163: numpy.ndarray - (1, 120)
+			- 164: numpy.ndarray - (3, 120)
+			- 165: numpy.ndarray - (3, 120)
+			- 166: numpy.ndarray - (2, 120)
+			- 167: numpy.ndarray - (3, 120)
+			- 168: numpy.ndarray - (3, 120)
+			- 169: numpy.ndarray - (4, 120)
+			- 170: numpy.ndarray - (1, 120)
+			- 171: numpy.ndarray - (2, 120)
+			- 172: numpy.ndarray - (4, 120)
+			- 173: numpy.ndarray - (6, 120)
+			- 174: numpy.ndarray - (5, 120)
+			- 175: numpy.ndarray - (5, 120)
+			- 176: numpy.ndarray - (7, 120)
+			- 177: numpy.ndarray - (6, 120)
+			- 178: numpy.ndarray - (4, 120)
+			- 179: numpy.ndarray - (5, 120)
+			- 180: numpy.ndarray - (5, 120)
+			- 181: numpy.ndarray - (11, 120)
+			- 182: numpy.ndarray - (11, 120)
+			- 183: numpy.ndarray - (2, 120)
+			- 184: numpy.ndarray - (3, 120)
+			- 185: numpy.ndarray - (3, 120)
+			- 186: numpy.ndarray - (2, 120)
+			- 187: numpy.ndarray - (8, 120)
+			- 188: numpy.ndarray - (3, 120)
+			- 189: numpy.ndarray - (1, 120)
+			- 190: numpy.ndarray - (3, 120)
+			- 191: numpy.ndarray - (4, 120)
+			- 192: numpy.ndarray - (1, 120)
+			- 193: numpy.ndarray - (3, 120)
+			- 194: numpy.ndarray - (5, 120)
+			- 195: numpy.ndarray - (4, 120)
+			- 196: numpy.ndarray - (2, 120)
+			- 197: numpy.ndarray - (1, 120)
+			- 198: numpy.ndarray - (2, 120)
+			- 199: numpy.ndarray - (1, 120)
+			- 200: numpy.ndarray - (0,)
+			- 201: numpy.ndarray - (1, 120)
+			- 202: numpy.ndarray - (1, 120)
+			- 203: numpy.ndarray - (1, 120)
+			- 204: numpy.ndarray - (2, 120)
+			- 205: numpy.ndarray - (2, 120)
+			- 206: numpy.ndarray - (2, 120)
+			- 207: numpy.ndarray - (1, 120)
+			- 208: numpy.ndarray - (2, 120)
+			- 209: numpy.ndarray - (1, 120)
+			- 210: numpy.ndarray - (0,)
+			- 211: numpy.ndarray - (3, 120)
+			- 212: numpy.ndarray - (4, 120)
+			- 213: numpy.ndarray - (2, 120)
+			- 214: numpy.ndarray - (5, 120)
+			- 215: numpy.ndarray - (5, 120)
+			- 216: numpy.ndarray - (3, 120)
+			- 217: numpy.ndarray - (2, 120)
+			- 218: numpy.ndarray - (0,)
+			- 219: numpy.ndarray - (3, 120)
+			- 220: numpy.ndarray - (5, 120)
+			- 221: numpy.ndarray - (8, 120)
+			- 222: numpy.ndarray - (1, 120)
+			- 223: numpy.ndarray - (0,)
+			- 224: numpy.ndarray - (1, 120)
+			- 225: numpy.ndarray - (7, 120)
+			- 226: numpy.ndarray - (8, 120)
+			- 227: numpy.ndarray - (3, 120)
+			- 228: numpy.ndarray - (2, 120)
+			- 229: numpy.ndarray - (1, 120)
+			- 230: numpy.ndarray - (4, 120)
+			- 231: numpy.ndarray - (5, 120)
+			- 232: numpy.ndarray - (6, 120)
+			- 233: numpy.ndarray - (3, 120)
+			- 234: numpy.ndarray - (6, 120)
+			- 235: numpy.ndarray - (4, 120)
+			- 236: numpy.ndarray - (3, 120)
+			- 237: numpy.ndarray - (6, 120)
+			- 238: numpy.ndarray - (4, 120)
+			- 239: numpy.ndarray - (3, 120)
+			- 240: numpy.ndarray - (1, 120)
+			- 241: numpy.ndarray - (3, 120)
+			- 242: numpy.ndarray - (3, 120)
+			- 243: numpy.ndarray - (1, 120)
+			- 244: numpy.ndarray - (2, 120)
+			- 245: numpy.ndarray - (0,)
+			- 246: numpy.ndarray - (1, 120)
+			- 247: numpy.ndarray - (2, 120)
+			- 248: numpy.ndarray - (1, 120)
+			- 249: numpy.ndarray - (3, 120)
+			- 250: numpy.ndarray - (6, 120)
+			- 251: numpy.ndarray - (4, 120)
+			- 252: numpy.ndarray - (3, 120)
+			- 253: numpy.ndarray - (7, 120)
+			- 254: numpy.ndarray - (9, 120)
+			- 255: numpy.ndarray - (8, 120)
+			- 256: numpy.ndarray - (3, 120)
+			- 257: numpy.ndarray - (3, 120)
+			- 258: numpy.ndarray - (4, 120)
+			- 259: numpy.ndarray - (4, 120)
+			- 260: numpy.ndarray - (1, 120)
+			- 261: numpy.ndarray - (1, 120)
+			- 262: numpy.ndarray - (3, 120)
+			- 263: numpy.ndarray - (4, 120)
+			- 264: numpy.ndarray - (4, 120)
+			- 265: numpy.ndarray - (0,)
+			- 266: numpy.ndarray - (5, 120)
+			- 267: numpy.ndarray - (6, 120)
+			- 268: numpy.ndarray - (1, 120)
+			- 269: numpy.ndarray - (1, 120)
+			- 270: numpy.ndarray - (5, 120)
+			- 271: numpy.ndarray - (1, 120)
+			- 272: numpy.ndarray - (4, 120)
+			- 273: numpy.ndarray - (5, 120)
+			- 274: numpy.ndarray - (9, 120)
+			- 275: numpy.ndarray - (6, 120)
+			- 276: numpy.ndarray - (4, 120)
+			- 277: numpy.ndarray - (1, 120)
+			- 278: numpy.ndarray - (2, 120)
+			- 279: numpy.ndarray - (2, 120)
+			- 280: numpy.ndarray - (8, 120)
+			- 281: numpy.ndarray - (5, 120)
+			- 282: numpy.ndarray - (6, 120)
+			- 283: numpy.ndarray - (2, 120)
+			- 284: numpy.ndarray - (0,)
+			- 285: numpy.ndarray - (3, 120)
+			- 286: numpy.ndarray - (2, 120)
+			- 287: numpy.ndarray - (1, 120)
+			- 288: numpy.ndarray - (0,)
+			- 289: numpy.ndarray - (2, 120)
+			- 290: numpy.ndarray - (4, 120)
+			- 291: numpy.ndarray - (3, 120)
+			- 292: numpy.ndarray - (5, 120)
+			- 293: numpy.ndarray - (1, 120)
+			- 294: numpy.ndarray - (1, 120)
+			- 295: numpy.ndarray - (1, 120)
+			- 296: numpy.ndarray - (2, 120)
+			- 297: numpy.ndarray - (2, 120)
+			- 298: numpy.ndarray - (5, 120)
+			- 299: numpy.ndarray - (7, 120)
+			- 300: numpy.ndarray - (4, 120)
+			- 301: numpy.ndarray - (4, 120)
+			- 302: numpy.ndarray - (2, 120)
+			- 303: numpy.ndarray - (4, 120)
+			- 304: numpy.ndarray - (4, 120)
+			- 305: numpy.ndarray - (5, 120)
+			- 306: numpy.ndarray - (7, 120)
+			- 307: numpy.ndarray - (8, 120)
+			- 308: numpy.ndarray - (3, 120)
+			- 309: numpy.ndarray - (4, 120)
+			- 310: numpy.ndarray - (2, 120)
+			- 311: numpy.ndarray - (5, 120)
+			- 312: numpy.ndarray - (0,)
+			- 313: numpy.ndarray - (0,)
+			- 314: numpy.ndarray - (1, 120)
+			- 315: numpy.ndarray - (5, 120)
+			- 316: numpy.ndarray - (1, 120)
+			- 317: numpy.ndarray - (2, 120)
+			- 318: numpy.ndarray - (3, 120)
+			- 319: numpy.ndarray - (5, 120)
+			- 320: numpy.ndarray - (2, 120)
+			- 321: numpy.ndarray - (5, 120)
+			- 322: numpy.ndarray - (2, 120)
+			- 323: numpy.ndarray - (3, 120)
+			- 324: numpy.ndarray - (4, 120)
+			- 325: numpy.ndarray - (2, 120)
+			- 326: numpy.ndarray - (6, 120)
+			- 327: numpy.ndarray - (2, 120)
+			- 328: numpy.ndarray - (1, 120)
+			- 329: numpy.ndarray - (5, 120)
+			- 330: numpy.ndarray - (3, 120)
+			- 331: numpy.ndarray - (1, 120)
+			- 332: numpy.ndarray - (4, 120)
+			- 333: numpy.ndarray - (5, 120)
+			- 334: numpy.ndarray - (3, 120)
+			- 335: numpy.ndarray - (0,)
+			- 336: numpy.ndarray - (3, 120)
+			- 337: numpy.ndarray - (5, 120)
+			- 338: numpy.ndarray - (7, 120)
+			- 339: numpy.ndarray - (2, 120)
+			- 340: numpy.ndarray - (1, 120)
+			- 341: numpy.ndarray - (3, 120)
+			- 342: numpy.ndarray - (3, 120)
+			- 343: numpy.ndarray - (1, 120)
+			- 344: numpy.ndarray - (1, 120)
+			- 345: numpy.ndarray - (1, 120)
+			- 346: numpy.ndarray - (2, 120)
+			- 347: numpy.ndarray - (4, 120)
+			- 348: numpy.ndarray - (3, 120)
+			- 349: numpy.ndarray - (7, 120)
+			- 350: numpy.ndarray - (3, 120)
+			- 351: numpy.ndarray - (4, 120)
+			- 352: numpy.ndarray - (4, 120)
+			- 353: numpy.ndarray - (3, 120)
+			- 354: numpy.ndarray - (1, 120)
+			- 355: numpy.ndarray - (3, 120)
+			- 356: numpy.ndarray - (2, 120)
+			- 357: numpy.ndarray - (0,)
+			- 358: numpy.ndarray - (1, 120)
+			- 359: numpy.ndarray - (3, 120)
+			- 360: numpy.ndarray - (5, 120)
+			- 361: numpy.ndarray - (3, 120)
+			- 362: numpy.ndarray - (1, 120)
+			- 363: numpy.ndarray - (2, 120)
+			- 364: numpy.ndarray - (2, 120)
+			- 365: numpy.ndarray - (0,)
+			- 366: numpy.ndarray - (1, 120)
+			- 367: numpy.ndarray - (2, 120)
+			- 368: numpy.ndarray - (1, 120)
+			- 369: numpy.ndarray - (2, 120)
+			- 370: numpy.ndarray - (6, 120)
+			- 371: numpy.ndarray - (2, 120)
+			- 372: numpy.ndarray - (2, 120)
+			- 373: numpy.ndarray - (2, 120)
+			- 374: numpy.ndarray - (3, 120)
+			- 375: numpy.ndarray - (3, 120)
+			- 376: numpy.ndarray - (4, 120)
+			- 377: numpy.ndarray - (3, 120)
+			- 378: numpy.ndarray - (0,)
+			- 379: numpy.ndarray - (3, 120)
+			- 380: numpy.ndarray - (3, 120)
+			- 381: numpy.ndarray - (3, 120)
+			- 382: numpy.ndarray - (1, 120)
+			- 383: numpy.ndarray - (0,)
+			- 384: numpy.ndarray - (0,)
+			- 385: numpy.ndarray - (0,)
+			- 386: numpy.ndarray - (1, 120)
+			- 387: numpy.ndarray - (2, 120)
+			- 388: numpy.ndarray - (1, 120)
+			- 389: numpy.ndarray - (6, 120)
+			- 390: numpy.ndarray - (2, 120)
+			- 391: numpy.ndarray - (0,)
+			- 392: numpy.ndarray - (0,)
+			- 393: numpy.ndarray - (1, 120)
+			- 394: numpy.ndarray - (1, 120)
+			- 395: numpy.ndarray - (1, 120)
+			- 396: numpy.ndarray - (2, 120)
+			- 397: numpy.ndarray - (0,)
+			- 398: numpy.ndarray - (1, 120)
+			- 399: numpy.ndarray - (0,)
+			- 400: numpy.ndarray - (5, 120)
+			- 401: numpy.ndarray - (2, 120)
+			- 402: numpy.ndarray - (2, 120)
+			- 403: numpy.ndarray - (1, 120)
+			- 404: numpy.ndarray - (1, 120)
+			- 405: numpy.ndarray - (11, 120)
+			- 406: numpy.ndarray - (6, 120)
+			- 407: numpy.ndarray - (1, 120)
+			- 408: numpy.ndarray - (4, 120)
+			- 409: numpy.ndarray - (6, 120)
+			- 410: numpy.ndarray - (8, 120)
+			- 411: numpy.ndarray - (3, 120)
+		- decoded_timebins_p_x_given_n: dict
+			- 0: numpy.ndarray - (1, 120)
+			- 1: numpy.ndarray - (0,)
+			- 2: numpy.ndarray - (1, 120)
+			- 3: numpy.ndarray - (0,)
+			- 4: numpy.ndarray - (1, 120)
+			- 5: numpy.ndarray - (4, 120)
+			- 6: numpy.ndarray - (0,)
+			- 7: numpy.ndarray - (1, 120)
+			- 8: numpy.ndarray - (0,)
+			- 9: numpy.ndarray - (2, 120)
+			- 10: numpy.ndarray - (3, 120)
+			- 11: numpy.ndarray - (3, 120)
+			- 12: numpy.ndarray - (3, 120)
+			- 13: numpy.ndarray - (3, 120)
+			- 14: numpy.ndarray - (2, 120)
+			- 15: numpy.ndarray - (2, 120)
+			- 16: numpy.ndarray - (2, 120)
+			- 17: numpy.ndarray - (2, 120)
+			- 18: numpy.ndarray - (1, 120)
+			- 19: numpy.ndarray - (0,)
+			- 20: numpy.ndarray - (0,)
+			- 21: numpy.ndarray - (3, 120)
+			- 22: numpy.ndarray - (2, 120)
+			- 23: numpy.ndarray - (3, 120)
+			- 24: numpy.ndarray - (2, 120)
+			- 25: numpy.ndarray - (5, 120)
+			- 26: numpy.ndarray - (6, 120)
+			- 27: numpy.ndarray - (4, 120)
+			- 28: numpy.ndarray - (3, 120)
+			- 29: numpy.ndarray - (5, 120)
+			- 30: numpy.ndarray - (2, 120)
+			- 31: numpy.ndarray - (2, 120)
+			- 32: numpy.ndarray - (2, 120)
+			- 33: numpy.ndarray - (1, 120)
+			- 34: numpy.ndarray - (1, 120)
+			- 35: numpy.ndarray - (1, 120)
+			- 36: numpy.ndarray - (4, 120)
+			- 37: numpy.ndarray - (8, 120)
+			- 38: numpy.ndarray - (3, 120)
+			- 39: numpy.ndarray - (4, 120)
+			- 40: numpy.ndarray - (4, 120)
+			- 41: numpy.ndarray - (4, 120)
+			- 42: numpy.ndarray - (3, 120)
+			- 43: numpy.ndarray - (0,)
+			- 44: numpy.ndarray - (5, 120)
+			- 45: numpy.ndarray - (1, 120)
+			- 46: numpy.ndarray - (1, 120)
+			- 47: numpy.ndarray - (3, 120)
+			- 48: numpy.ndarray - (0,)
+			- 49: numpy.ndarray - (0,)
+			- 50: numpy.ndarray - (1, 120)
+			- 51: numpy.ndarray - (1, 120)
+			- 52: numpy.ndarray - (5, 120)
+			- 53: numpy.ndarray - (3, 120)
+			- 54: numpy.ndarray - (2, 120)
+			- 55: numpy.ndarray - (0,)
+			- 56: numpy.ndarray - (0,)
+			- 57: numpy.ndarray - (4, 120)
+			- 58: numpy.ndarray - (1, 120)
+			- 59: numpy.ndarray - (1, 120)
+			- 60: numpy.ndarray - (2, 120)
+			- 61: numpy.ndarray - (0,)
+			- 62: numpy.ndarray - (1, 120)
+			- 63: numpy.ndarray - (1, 120)
+			- 64: numpy.ndarray - (2, 120)
+			- 65: numpy.ndarray - (4, 120)
+			- 66: numpy.ndarray - (4, 120)
+			- 67: numpy.ndarray - (8, 120)
+			- 68: numpy.ndarray - (4, 120)
+			- 69: numpy.ndarray - (0,)
+			- 70: numpy.ndarray - (2, 120)
+			- 71: numpy.ndarray - (4, 120)
+			- 72: numpy.ndarray - (5, 120)
+			- 73: numpy.ndarray - (6, 120)
+			- 74: numpy.ndarray - (4, 120)
+			- 75: numpy.ndarray - (7, 120)
+			- 76: numpy.ndarray - (0,)
+			- 77: numpy.ndarray - (1, 120)
+			- 78: numpy.ndarray - (2, 120)
+			- 79: numpy.ndarray - (0,)
+			- 80: numpy.ndarray - (1, 120)
+			- 81: numpy.ndarray - (4, 120)
+			- 82: numpy.ndarray - (1, 120)
+			- 83: numpy.ndarray - (2, 120)
+			- 84: numpy.ndarray - (3, 120)
+			- 85: numpy.ndarray - (2, 120)
+			- 86: numpy.ndarray - (1, 120)
+			- 87: numpy.ndarray - (4, 120)
+			- 88: numpy.ndarray - (2, 120)
+			- 89: numpy.ndarray - (3, 120)
+			- 90: numpy.ndarray - (0,)
+			- 91: numpy.ndarray - (0,)
+			- 92: numpy.ndarray - (0,)
+			- 93: numpy.ndarray - (4, 120)
+			- 94: numpy.ndarray - (1, 120)
+			- 95: numpy.ndarray - (2, 120)
+			- 96: numpy.ndarray - (1, 120)
+			- 97: numpy.ndarray - (0,)
+			- 98: numpy.ndarray - (5, 120)
+			- 99: numpy.ndarray - (3, 120)
+			- 100: numpy.ndarray - (2, 120)
+			- 101: numpy.ndarray - (2, 120)
+			- 102: numpy.ndarray - (3, 120)
+			- 103: numpy.ndarray - (2, 120)
+			- 104: numpy.ndarray - (2, 120)
+			- 105: numpy.ndarray - (3, 120)
+			- 106: numpy.ndarray - (6, 120)
+			- 107: numpy.ndarray - (7, 120)
+			- 108: numpy.ndarray - (4, 120)
+			- 109: numpy.ndarray - (3, 120)
+			- 110: numpy.ndarray - (2, 120)
+			- 111: numpy.ndarray - (8, 120)
+			- 112: numpy.ndarray - (4, 120)
+			- 113: numpy.ndarray - (1, 120)
+			- 114: numpy.ndarray - (2, 120)
+			- 115: numpy.ndarray - (4, 120)
+			- 116: numpy.ndarray - (2, 120)
+			- 117: numpy.ndarray - (3, 120)
+			- 118: numpy.ndarray - (5, 120)
+			- 119: numpy.ndarray - (7, 120)
+			- 120: numpy.ndarray - (4, 120)
+			- 121: numpy.ndarray - (4, 120)
+			- 122: numpy.ndarray - (3, 120)
+			- 123: numpy.ndarray - (7, 120)
+			- 124: numpy.ndarray - (5, 120)
+			- 125: numpy.ndarray - (9, 120)
+			- 126: numpy.ndarray - (5, 120)
+			- 127: numpy.ndarray - (3, 120)
+			- 128: numpy.ndarray - (0,)
+			- 129: numpy.ndarray - (1, 120)
+			- 130: numpy.ndarray - (2, 120)
+			- 131: numpy.ndarray - (5, 120)
+			- 132: numpy.ndarray - (5, 120)
+			- 133: numpy.ndarray - (6, 120)
+			- 134: numpy.ndarray - (12, 120)
+			- 135: numpy.ndarray - (1, 120)
+			- 136: numpy.ndarray - (2, 120)
+			- 137: numpy.ndarray - (7, 120)
+			- 138: numpy.ndarray - (2, 120)
+			- 139: numpy.ndarray - (1, 120)
+			- 140: numpy.ndarray - (2, 120)
+			- 141: numpy.ndarray - (3, 120)
+			- 142: numpy.ndarray - (1, 120)
+			- 143: numpy.ndarray - (1, 120)
+			- 144: numpy.ndarray - (0,)
+			- 145: numpy.ndarray - (1, 120)
+			- 146: numpy.ndarray - (1, 120)
+			- 147: numpy.ndarray - (2, 120)
+			- 148: numpy.ndarray - (2, 120)
+			- 149: numpy.ndarray - (4, 120)
+			- 150: numpy.ndarray - (4, 120)
+			- 151: numpy.ndarray - (3, 120)
+			- 152: numpy.ndarray - (2, 120)
+			- 153: numpy.ndarray - (5, 120)
+			- 154: numpy.ndarray - (5, 120)
+			- 155: numpy.ndarray - (8, 120)
+			- 156: numpy.ndarray - (3, 120)
+			- 157: numpy.ndarray - (6, 120)
+			- 158: numpy.ndarray - (6, 120)
+			- 159: numpy.ndarray - (4, 120)
+			- 160: numpy.ndarray - (2, 120)
+			- 161: numpy.ndarray - (1, 120)
+			- 162: numpy.ndarray - (0,)
+			- 163: numpy.ndarray - (1, 120)
+			- 164: numpy.ndarray - (3, 120)
+			- 165: numpy.ndarray - (3, 120)
+			- 166: numpy.ndarray - (2, 120)
+			- 167: numpy.ndarray - (3, 120)
+			- 168: numpy.ndarray - (3, 120)
+			- 169: numpy.ndarray - (4, 120)
+			- 170: numpy.ndarray - (1, 120)
+			- 171: numpy.ndarray - (2, 120)
+			- 172: numpy.ndarray - (4, 120)
+			- 173: numpy.ndarray - (6, 120)
+			- 174: numpy.ndarray - (5, 120)
+			- 175: numpy.ndarray - (5, 120)
+			- 176: numpy.ndarray - (7, 120)
+			- 177: numpy.ndarray - (6, 120)
+			- 178: numpy.ndarray - (4, 120)
+			- 179: numpy.ndarray - (5, 120)
+			- 180: numpy.ndarray - (5, 120)
+			- 181: numpy.ndarray - (11, 120)
+			- 182: numpy.ndarray - (11, 120)
+			- 183: numpy.ndarray - (2, 120)
+			- 184: numpy.ndarray - (3, 120)
+			- 185: numpy.ndarray - (3, 120)
+			- 186: numpy.ndarray - (2, 120)
+			- 187: numpy.ndarray - (8, 120)
+			- 188: numpy.ndarray - (3, 120)
+			- 189: numpy.ndarray - (1, 120)
+			- 190: numpy.ndarray - (3, 120)
+			- 191: numpy.ndarray - (4, 120)
+			- 192: numpy.ndarray - (1, 120)
+			- 193: numpy.ndarray - (3, 120)
+			- 194: numpy.ndarray - (5, 120)
+			- 195: numpy.ndarray - (4, 120)
+			- 196: numpy.ndarray - (2, 120)
+			- 197: numpy.ndarray - (1, 120)
+			- 198: numpy.ndarray - (2, 120)
+			- 199: numpy.ndarray - (1, 120)
+			- 200: numpy.ndarray - (0,)
+			- 201: numpy.ndarray - (1, 120)
+			- 202: numpy.ndarray - (1, 120)
+			- 203: numpy.ndarray - (1, 120)
+			- 204: numpy.ndarray - (2, 120)
+			- 205: numpy.ndarray - (2, 120)
+			- 206: numpy.ndarray - (2, 120)
+			- 207: numpy.ndarray - (1, 120)
+			- 208: numpy.ndarray - (2, 120)
+			- 209: numpy.ndarray - (1, 120)
+			- 210: numpy.ndarray - (0,)
+			- 211: numpy.ndarray - (3, 120)
+			- 212: numpy.ndarray - (4, 120)
+			- 213: numpy.ndarray - (2, 120)
+			- 214: numpy.ndarray - (5, 120)
+			- 215: numpy.ndarray - (5, 120)
+			- 216: numpy.ndarray - (3, 120)
+			- 217: numpy.ndarray - (2, 120)
+			- 218: numpy.ndarray - (0,)
+			- 219: numpy.ndarray - (3, 120)
+			- 220: numpy.ndarray - (5, 120)
+			- 221: numpy.ndarray - (8, 120)
+			- 222: numpy.ndarray - (1, 120)
+			- 223: numpy.ndarray - (0,)
+			- 224: numpy.ndarray - (1, 120)
+			- 225: numpy.ndarray - (7, 120)
+			- 226: numpy.ndarray - (8, 120)
+			- 227: numpy.ndarray - (3, 120)
+			- 228: numpy.ndarray - (2, 120)
+			- 229: numpy.ndarray - (1, 120)
+			- 230: numpy.ndarray - (4, 120)
+			- 231: numpy.ndarray - (5, 120)
+			- 232: numpy.ndarray - (6, 120)
+			- 233: numpy.ndarray - (3, 120)
+			- 234: numpy.ndarray - (6, 120)
+			- 235: numpy.ndarray - (4, 120)
+			- 236: numpy.ndarray - (3, 120)
+			- 237: numpy.ndarray - (6, 120)
+			- 238: numpy.ndarray - (4, 120)
+			- 239: numpy.ndarray - (3, 120)
+			- 240: numpy.ndarray - (1, 120)
+			- 241: numpy.ndarray - (3, 120)
+			- 242: numpy.ndarray - (3, 120)
+			- 243: numpy.ndarray - (1, 120)
+			- 244: numpy.ndarray - (2, 120)
+			- 245: numpy.ndarray - (0,)
+			- 246: numpy.ndarray - (1, 120)
+			- 247: numpy.ndarray - (2, 120)
+			- 248: numpy.ndarray - (1, 120)
+			- 249: numpy.ndarray - (3, 120)
+			- 250: numpy.ndarray - (6, 120)
+			- 251: numpy.ndarray - (4, 120)
+			- 252: numpy.ndarray - (3, 120)
+			- 253: numpy.ndarray - (7, 120)
+			- 254: numpy.ndarray - (9, 120)
+			- 255: numpy.ndarray - (8, 120)
+			- 256: numpy.ndarray - (3, 120)
+			- 257: numpy.ndarray - (3, 120)
+			- 258: numpy.ndarray - (4, 120)
+			- 259: numpy.ndarray - (4, 120)
+			- 260: numpy.ndarray - (1, 120)
+			- 261: numpy.ndarray - (1, 120)
+			- 262: numpy.ndarray - (3, 120)
+			- 263: numpy.ndarray - (4, 120)
+			- 264: numpy.ndarray - (4, 120)
+			- 265: numpy.ndarray - (0,)
+			- 266: numpy.ndarray - (5, 120)
+			- 267: numpy.ndarray - (6, 120)
+			- 268: numpy.ndarray - (1, 120)
+			- 269: numpy.ndarray - (1, 120)
+			- 270: numpy.ndarray - (5, 120)
+			- 271: numpy.ndarray - (1, 120)
+			- 272: numpy.ndarray - (4, 120)
+			- 273: numpy.ndarray - (5, 120)
+			- 274: numpy.ndarray - (9, 120)
+			- 275: numpy.ndarray - (6, 120)
+			- 276: numpy.ndarray - (4, 120)
+			- 277: numpy.ndarray - (1, 120)
+			- 278: numpy.ndarray - (2, 120)
+			- 279: numpy.ndarray - (2, 120)
+			- 280: numpy.ndarray - (8, 120)
+			- 281: numpy.ndarray - (5, 120)
+			- 282: numpy.ndarray - (6, 120)
+			- 283: numpy.ndarray - (2, 120)
+			- 284: numpy.ndarray - (0,)
+			- 285: numpy.ndarray - (3, 120)
+			- 286: numpy.ndarray - (2, 120)
+			- 287: numpy.ndarray - (1, 120)
+			- 288: numpy.ndarray - (0,)
+			- 289: numpy.ndarray - (2, 120)
+			- 290: numpy.ndarray - (4, 120)
+			- 291: numpy.ndarray - (3, 120)
+			- 292: numpy.ndarray - (5, 120)
+			- 293: numpy.ndarray - (1, 120)
+			- 294: numpy.ndarray - (1, 120)
+			- 295: numpy.ndarray - (1, 120)
+			- 296: numpy.ndarray - (2, 120)
+			- 297: numpy.ndarray - (2, 120)
+			- 298: numpy.ndarray - (5, 120)
+			- 299: numpy.ndarray - (7, 120)
+			- 300: numpy.ndarray - (4, 120)
+			- 301: numpy.ndarray - (4, 120)
+			- 302: numpy.ndarray - (2, 120)
+			- 303: numpy.ndarray - (4, 120)
+			- 304: numpy.ndarray - (4, 120)
+			- 305: numpy.ndarray - (5, 120)
+			- 306: numpy.ndarray - (7, 120)
+			- 307: numpy.ndarray - (8, 120)
+			- 308: numpy.ndarray - (3, 120)
+			- 309: numpy.ndarray - (4, 120)
+			- 310: numpy.ndarray - (2, 120)
+			- 311: numpy.ndarray - (5, 120)
+			- 312: numpy.ndarray - (0,)
+			- 313: numpy.ndarray - (0,)
+			- 314: numpy.ndarray - (1, 120)
+			- 315: numpy.ndarray - (5, 120)
+			- 316: numpy.ndarray - (1, 120)
+			- 317: numpy.ndarray - (2, 120)
+			- 318: numpy.ndarray - (3, 120)
+			- 319: numpy.ndarray - (5, 120)
+			- 320: numpy.ndarray - (2, 120)
+			- 321: numpy.ndarray - (5, 120)
+			- 322: numpy.ndarray - (2, 120)
+			- 323: numpy.ndarray - (3, 120)
+			- 324: numpy.ndarray - (4, 120)
+			- 325: numpy.ndarray - (2, 120)
+			- 326: numpy.ndarray - (6, 120)
+			- 327: numpy.ndarray - (2, 120)
+			- 328: numpy.ndarray - (1, 120)
+			- 329: numpy.ndarray - (5, 120)
+			- 330: numpy.ndarray - (3, 120)
+			- 331: numpy.ndarray - (1, 120)
+			- 332: numpy.ndarray - (4, 120)
+			- 333: numpy.ndarray - (5, 120)
+			- 334: numpy.ndarray - (3, 120)
+			- 335: numpy.ndarray - (0,)
+			- 336: numpy.ndarray - (3, 120)
+			- 337: numpy.ndarray - (5, 120)
+			- 338: numpy.ndarray - (7, 120)
+			- 339: numpy.ndarray - (2, 120)
+			- 340: numpy.ndarray - (1, 120)
+			- 341: numpy.ndarray - (3, 120)
+			- 342: numpy.ndarray - (3, 120)
+			- 343: numpy.ndarray - (1, 120)
+			- 344: numpy.ndarray - (1, 120)
+			- 345: numpy.ndarray - (1, 120)
+			- 346: numpy.ndarray - (2, 120)
+			- 347: numpy.ndarray - (4, 120)
+			- 348: numpy.ndarray - (3, 120)
+			- 349: numpy.ndarray - (7, 120)
+			- 350: numpy.ndarray - (3, 120)
+			- 351: numpy.ndarray - (4, 120)
+			- 352: numpy.ndarray - (4, 120)
+			- 353: numpy.ndarray - (3, 120)
+			- 354: numpy.ndarray - (1, 120)
+			- 355: numpy.ndarray - (3, 120)
+			- 356: numpy.ndarray - (2, 120)
+			- 357: numpy.ndarray - (0,)
+			- 358: numpy.ndarray - (1, 120)
+			- 359: numpy.ndarray - (3, 120)
+			- 360: numpy.ndarray - (5, 120)
+			- 361: numpy.ndarray - (3, 120)
+			- 362: numpy.ndarray - (1, 120)
+			- 363: numpy.ndarray - (2, 120)
+			- 364: numpy.ndarray - (2, 120)
+			- 365: numpy.ndarray - (0,)
+			- 366: numpy.ndarray - (1, 120)
+			- 367: numpy.ndarray - (2, 120)
+			- 368: numpy.ndarray - (1, 120)
+			- 369: numpy.ndarray - (2, 120)
+			- 370: numpy.ndarray - (6, 120)
+			- 371: numpy.ndarray - (2, 120)
+			- 372: numpy.ndarray - (2, 120)
+			- 373: numpy.ndarray - (2, 120)
+			- 374: numpy.ndarray - (3, 120)
+			- 375: numpy.ndarray - (3, 120)
+			- 376: numpy.ndarray - (4, 120)
+			- 377: numpy.ndarray - (3, 120)
+			- 378: numpy.ndarray - (0,)
+			- 379: numpy.ndarray - (3, 120)
+			- 380: numpy.ndarray - (3, 120)
+			- 381: numpy.ndarray - (3, 120)
+			- 382: numpy.ndarray - (1, 120)
+			- 383: numpy.ndarray - (0,)
+			- 384: numpy.ndarray - (0,)
+			- 385: numpy.ndarray - (0,)
+			- 386: numpy.ndarray - (1, 120)
+			- 387: numpy.ndarray - (2, 120)
+			- 388: numpy.ndarray - (1, 120)
+			- 389: numpy.ndarray - (6, 120)
+			- 390: numpy.ndarray - (2, 120)
+			- 391: numpy.ndarray - (0,)
+			- 392: numpy.ndarray - (0,)
+			- 393: numpy.ndarray - (1, 120)
+			- 394: numpy.ndarray - (1, 120)
+			- 395: numpy.ndarray - (1, 120)
+			- 396: numpy.ndarray - (2, 120)
+			- 397: numpy.ndarray - (0,)
+			- 398: numpy.ndarray - (1, 120)
+			- 399: numpy.ndarray - (0,)
+			- 400: numpy.ndarray - (5, 120)
+			- 401: numpy.ndarray - (2, 120)
+			- 402: numpy.ndarray - (2, 120)
+			- 403: numpy.ndarray - (1, 120)
+			- 404: numpy.ndarray - (1, 120)
+			- 405: numpy.ndarray - (11, 120)
+			- 406: numpy.ndarray - (6, 120)
+			- 407: numpy.ndarray - (1, 120)
+			- 408: numpy.ndarray - (4, 120)
+			- 409: numpy.ndarray - (6, 120)
+			- 410: numpy.ndarray - (8, 120)
+			- 411: numpy.ndarray - (3, 120)
+		- one_left_out_posterior_to_pf_surprises_mean: dict
+			- 0: numpy.float64
+			- 2: numpy.float64
+			- 4: numpy.float64
+			- 5: numpy.float64
+			- 7: numpy.float64
+			- 9: numpy.float64
+			- 10: numpy.float64
+			- 11: numpy.float64
+			- 12: numpy.float64
+			- 13: numpy.float64
+			- 14: numpy.float64
+			- 15: numpy.float64
+			- 16: numpy.float64
+			- 17: numpy.float64
+			- 18: numpy.float64
+			- 21: numpy.float64
+			- 22: numpy.float64
+			- 23: numpy.float64
+			- 24: numpy.float64
+			- 25: numpy.float64
+			- 26: numpy.float64
+			- 27: numpy.float64
+			- 28: numpy.float64
+			- 29: numpy.float64
+			- 30: numpy.float64
+			- 31: numpy.float64
+			- 32: numpy.float64
+			- 33: numpy.float64
+			- 34: numpy.float64
+			- 35: numpy.float64
+			- 36: numpy.float64
+			- 37: numpy.float64
+			- 38: numpy.float64
+			- 39: numpy.float64
+			- 40: numpy.float64
+			- 41: numpy.float64
+			- 42: numpy.float64
+			- 44: numpy.float64
+			- 45: numpy.float64
+			- 46: numpy.float64
+			- 47: numpy.float64
+			- 50: numpy.float64
+			- 51: numpy.float64
+			- 52: numpy.float64
+			- 53: numpy.float64
+			- 54: numpy.float64
+			- 57: numpy.float64
+			- 58: numpy.float64
+			- 59: numpy.float64
+			- 60: numpy.float64
+			- 62: numpy.float64
+			- 63: numpy.float64
+			- 64: numpy.float64
+			- 65: numpy.float64
+			- 66: numpy.float64
+			- 67: numpy.float64
+			- 68: numpy.float64
+			- 70: numpy.float64
+			- 71: numpy.float64
+			- 72: numpy.float64
+			- 73: numpy.float64
+			- 74: numpy.float64
+			- 75: numpy.float64
+			- 77: numpy.float64
+			- 78: numpy.float64
+			- 80: numpy.float64
+			- 81: numpy.float64
+			- 82: numpy.float64
+			- 83: numpy.float64
+			- 84: numpy.float64
+			- 85: numpy.float64
+			- 86: numpy.float64
+			- 87: numpy.float64
+			- 88: numpy.float64
+			- 89: numpy.float64
+			- 93: numpy.float64
+			- 94: numpy.float64
+			- 95: numpy.float64
+			- 96: numpy.float64
+			- 98: numpy.float64
+			- 99: numpy.float64
+			- 100: numpy.float64
+			- 101: numpy.float64
+			- 102: numpy.float64
+			- 103: numpy.float64
+			- 104: numpy.float64
+			- 105: numpy.float64
+			- 106: numpy.float64
+			- 107: numpy.float64
+			- 108: numpy.float64
+			- 109: numpy.float64
+			- 110: numpy.float64
+			- 111: numpy.float64
+			- 112: numpy.float64
+			- 113: numpy.float64
+			- 114: numpy.float64
+			- 115: numpy.float64
+			- 116: numpy.float64
+			- 117: numpy.float64
+			- 118: numpy.float64
+			- 119: numpy.float64
+			- 120: numpy.float64
+			- 121: numpy.float64
+			- 122: numpy.float64
+			- 123: numpy.float64
+			- 124: numpy.float64
+			- 125: numpy.float64
+			- 126: numpy.float64
+			- 127: numpy.float64
+			- 129: numpy.float64
+			- 130: numpy.float64
+			- 131: numpy.float64
+			- 132: numpy.float64
+			- 133: numpy.float64
+			- 134: numpy.float64
+			- 135: numpy.float64
+			- 136: numpy.float64
+			- 137: numpy.float64
+			- 138: numpy.float64
+			- 139: numpy.float64
+			- 140: numpy.float64
+			- 141: numpy.float64
+			- 142: numpy.float64
+			- 143: numpy.float64
+			- 145: numpy.float64
+			- 146: numpy.float64
+			- 147: numpy.float64
+			- 148: numpy.float64
+			- 149: numpy.float64
+			- 150: numpy.float64
+			- 151: numpy.float64
+			- 152: numpy.float64
+			- 153: numpy.float64
+			- 154: numpy.float64
+			- 155: numpy.float64
+			- 156: numpy.float64
+			- 157: numpy.float64
+			- 158: numpy.float64
+			- 159: numpy.float64
+			- 160: numpy.float64
+			- 161: numpy.float64
+			- 163: numpy.float64
+			- 164: numpy.float64
+			- 165: numpy.float64
+			- 166: numpy.float64
+			- 167: numpy.float64
+			- 168: numpy.float64
+			- 169: numpy.float64
+			- 170: numpy.float64
+			- 171: numpy.float64
+			- 172: numpy.float64
+			- 173: numpy.float64
+			- 174: numpy.float64
+			- 175: numpy.float64
+			- 176: numpy.float64
+			- 177: numpy.float64
+			- 178: numpy.float64
+			- 179: numpy.float64
+			- 180: numpy.float64
+			- 181: numpy.float64
+			- 182: numpy.float64
+			- 183: numpy.float64
+			- 184: numpy.float64
+			- 185: numpy.float64
+			- 186: numpy.float64
+			- 187: numpy.float64
+			- 188: numpy.float64
+			- 189: numpy.float64
+			- 190: numpy.float64
+			- 191: numpy.float64
+			- 192: numpy.float64
+			- 193: numpy.float64
+			- 194: numpy.float64
+			- 195: numpy.float64
+			- 196: numpy.float64
+			- 197: numpy.float64
+			- 198: numpy.float64
+			- 199: numpy.float64
+			- 201: numpy.float64
+			- 202: numpy.float64
+			- 203: numpy.float64
+			- 204: numpy.float64
+			- 205: numpy.float64
+			- 206: numpy.float64
+			- 207: numpy.float64
+			- 208: numpy.float64
+			- 209: numpy.float64
+			- 211: numpy.float64
+			- 212: numpy.float64
+			- 213: numpy.float64
+			- 214: numpy.float64
+			- 215: numpy.float64
+			- 216: numpy.float64
+			- 217: numpy.float64
+			- 219: numpy.float64
+			- 220: numpy.float64
+			- 221: numpy.float64
+			- 222: numpy.float64
+			- 224: numpy.float64
+			- 225: numpy.float64
+			- 226: numpy.float64
+			- 227: numpy.float64
+			- 228: numpy.float64
+			- 229: numpy.float64
+			- 230: numpy.float64
+			- 231: numpy.float64
+			- 232: numpy.float64
+			- 233: numpy.float64
+			- 234: numpy.float64
+			- 235: numpy.float64
+			- 236: numpy.float64
+			- 237: numpy.float64
+			- 238: numpy.float64
+			- 239: numpy.float64
+			- 240: numpy.float64
+			- 241: numpy.float64
+			- 242: numpy.float64
+			- 243: numpy.float64
+			- 244: numpy.float64
+			- 246: numpy.float64
+			- 247: numpy.float64
+			- 248: numpy.float64
+			- 249: numpy.float64
+			- 250: numpy.float64
+			- 251: numpy.float64
+			- 252: numpy.float64
+			- 253: numpy.float64
+			- 254: numpy.float64
+			- 255: numpy.float64
+			- 256: numpy.float64
+			- 257: numpy.float64
+			- 258: numpy.float64
+			- 259: numpy.float64
+			- 260: numpy.float64
+			- 261: numpy.float64
+			- 262: numpy.float64
+			- 263: numpy.float64
+			- 264: numpy.float64
+			- 266: numpy.float64
+			- 267: numpy.float64
+			- 268: numpy.float64
+			- 269: numpy.float64
+			- 270: numpy.float64
+			- 271: numpy.float64
+			- 272: numpy.float64
+			- 273: numpy.float64
+			- 274: numpy.float64
+			- 275: numpy.float64
+			- 276: numpy.float64
+			- 277: numpy.float64
+			- 278: numpy.float64
+			- 279: numpy.float64
+			- 280: numpy.float64
+			- 281: numpy.float64
+			- 282: numpy.float64
+			- 283: numpy.float64
+			- 285: numpy.float64
+			- 286: numpy.float64
+			- 287: numpy.float64
+			- 289: numpy.float64
+			- 290: numpy.float64
+			- 291: numpy.float64
+			- 292: numpy.float64
+			- 293: numpy.float64
+			- 294: numpy.float64
+			- 295: numpy.float64
+			- 296: numpy.float64
+			- 297: numpy.float64
+			- 298: numpy.float64
+			- 299: numpy.float64
+			- 300: numpy.float64
+			- 301: numpy.float64
+			- 302: numpy.float64
+			- 303: numpy.float64
+			- 304: numpy.float64
+			- 305: numpy.float64
+			- 306: numpy.float64
+			- 307: numpy.float64
+			- 308: numpy.float64
+			- 309: numpy.float64
+			- 310: numpy.float64
+			- 311: numpy.float64
+			- 314: numpy.float64
+			- 315: numpy.float64
+			- 316: numpy.float64
+			- 317: numpy.float64
+			- 318: numpy.float64
+			- 319: numpy.float64
+			- 320: numpy.float64
+			- 321: numpy.float64
+			- 322: numpy.float64
+			- 323: numpy.float64
+			- 324: numpy.float64
+			- 325: numpy.float64
+			- 326: numpy.float64
+			- 327: numpy.float64
+			- 328: numpy.float64
+			- 329: numpy.float64
+			- 330: numpy.float64
+			- 331: numpy.float64
+			- 332: numpy.float64
+			- 333: numpy.float64
+			- 334: numpy.float64
+			- 336: numpy.float64
+			- 337: numpy.float64
+			- 338: numpy.float64
+			- 339: numpy.float64
+			- 340: numpy.float64
+			- 341: numpy.float64
+			- 342: numpy.float64
+			- 343: numpy.float64
+			- 344: numpy.float64
+			- 345: numpy.float64
+			- 346: numpy.float64
+			- 347: numpy.float64
+			- 348: numpy.float64
+			- 349: numpy.float64
+			- 350: numpy.float64
+			- 351: numpy.float64
+			- 352: numpy.float64
+			- 353: numpy.float64
+			- 354: numpy.float64
+			- 355: numpy.float64
+			- 356: numpy.float64
+			- 358: numpy.float64
+			- 359: numpy.float64
+			- 360: numpy.float64
+			- 361: numpy.float64
+			- 362: numpy.float64
+			- 363: numpy.float64
+			- 364: numpy.float64
+			- 366: numpy.float64
+			- 367: numpy.float64
+			- 368: numpy.float64
+			- 369: numpy.float64
+			- 370: numpy.float64
+			- 371: numpy.float64
+			- 372: numpy.float64
+			- 373: numpy.float64
+			- 374: numpy.float64
+			- 375: numpy.float64
+			- 376: numpy.float64
+			- 377: numpy.float64
+			- 379: numpy.float64
+			- 380: numpy.float64
+			- 381: numpy.float64
+			- 382: numpy.float64
+			- 386: numpy.float64
+			- 387: numpy.float64
+			- 388: numpy.float64
+			- 389: numpy.float64
+			- 390: numpy.float64
+			- 393: numpy.float64
+			- 394: numpy.float64
+			- 395: numpy.float64
+			- 396: numpy.float64
+			- 398: numpy.float64
+			- 400: numpy.float64
+			- 401: numpy.float64
+			- 402: numpy.float64
+			- 403: numpy.float64
+			- 404: numpy.float64
+			- 405: numpy.float64
+			- 406: numpy.float64
+			- 407: numpy.float64
+			- 408: numpy.float64
+			- 409: numpy.float64
+			- 410: numpy.float64
+			- 411: numpy.float64
+		- one_left_out_posterior_to_scrambled_pf_surprises_mean: dict
+			- 0: numpy.float64
+			- 2: numpy.float64
+			- 4: numpy.float64
+			- 5: numpy.float64
+			- 7: numpy.float64
+			- 9: numpy.float64
+			- 10: numpy.float64
+			- 11: numpy.float64
+			- 12: numpy.float64
+			- 13: numpy.float64
+			- 14: numpy.float64
+			- 15: numpy.float64
+			- 16: numpy.float64
+			- 17: numpy.float64
+			- 18: numpy.float64
+			- 21: numpy.float64
+			- 22: numpy.float64
+			- 23: numpy.float64
+			- 24: numpy.float64
+			- 25: numpy.float64
+			- 26: numpy.float64
+			- 27: numpy.float64
+			- 28: numpy.float64
+			- 29: numpy.float64
+			- 30: numpy.float64
+			- 31: numpy.float64
+			- 32: numpy.float64
+			- 33: numpy.float64
+			- 34: numpy.float64
+			- 35: numpy.float64
+			- 36: numpy.float64
+			- 37: numpy.float64
+			- 38: numpy.float64
+			- 39: numpy.float64
+			- 40: numpy.float64
+			- 41: numpy.float64
+			- 42: numpy.float64
+			- 44: numpy.float64
+			- 45: numpy.float64
+			- 46: numpy.float64
+			- 47: numpy.float64
+			- 50: numpy.float64
+			- 51: numpy.float64
+			- 52: numpy.float64
+			- 53: numpy.float64
+			- 54: numpy.float64
+			- 57: numpy.float64
+			- 58: numpy.float64
+			- 59: numpy.float64
+			- 60: numpy.float64
+			- 62: numpy.float64
+			- 63: numpy.float64
+			- 64: numpy.float64
+			- 65: numpy.float64
+			- 66: numpy.float64
+			- 67: numpy.float64
+			- 68: numpy.float64
+			- 70: numpy.float64
+			- 71: numpy.float64
+			- 72: numpy.float64
+			- 73: numpy.float64
+			- 74: numpy.float64
+			- 75: numpy.float64
+			- 77: numpy.float64
+			- 78: numpy.float64
+			- 80: numpy.float64
+			- 81: numpy.float64
+			- 82: numpy.float64
+			- 83: numpy.float64
+			- 84: numpy.float64
+			- 85: numpy.float64
+			- 86: numpy.float64
+			- 87: numpy.float64
+			- 88: numpy.float64
+			- 89: numpy.float64
+			- 93: numpy.float64
+			- 94: numpy.float64
+			- 95: numpy.float64
+			- 96: numpy.float64
+			- 98: numpy.float64
+			- 99: numpy.float64
+			- 100: numpy.float64
+			- 101: numpy.float64
+			- 102: numpy.float64
+			- 103: numpy.float64
+			- 104: numpy.float64
+			- 105: numpy.float64
+			- 106: numpy.float64
+			- 107: numpy.float64
+			- 108: numpy.float64
+			- 109: numpy.float64
+			- 110: numpy.float64
+			- 111: numpy.float64
+			- 112: numpy.float64
+			- 113: numpy.float64
+			- 114: numpy.float64
+			- 115: numpy.float64
+			- 116: numpy.float64
+			- 117: numpy.float64
+			- 118: numpy.float64
+			- 119: numpy.float64
+			- 120: numpy.float64
+			- 121: numpy.float64
+			- 122: numpy.float64
+			- 123: numpy.float64
+			- 124: numpy.float64
+			- 125: numpy.float64
+			- 126: numpy.float64
+			- 127: numpy.float64
+			- 129: numpy.float64
+			- 130: numpy.float64
+			- 131: numpy.float64
+			- 132: numpy.float64
+			- 133: numpy.float64
+			- 134: numpy.float64
+			- 135: numpy.float64
+			- 136: numpy.float64
+			- 137: numpy.float64
+			- 138: numpy.float64
+			- 139: numpy.float64
+			- 140: numpy.float64
+			- 141: numpy.float64
+			- 142: numpy.float64
+			- 143: numpy.float64
+			- 145: numpy.float64
+			- 146: numpy.float64
+			- 147: numpy.float64
+			- 148: numpy.float64
+			- 149: numpy.float64
+			- 150: numpy.float64
+			- 151: numpy.float64
+			- 152: numpy.float64
+			- 153: numpy.float64
+			- 154: numpy.float64
+			- 155: numpy.float64
+			- 156: numpy.float64
+			- 157: numpy.float64
+			- 158: numpy.float64
+			- 159: numpy.float64
+			- 160: numpy.float64
+			- 161: numpy.float64
+			- 163: numpy.float64
+			- 164: numpy.float64
+			- 165: numpy.float64
+			- 166: numpy.float64
+			- 167: numpy.float64
+			- 168: numpy.float64
+			- 169: numpy.float64
+			- 170: numpy.float64
+			- 171: numpy.float64
+			- 172: numpy.float64
+			- 173: numpy.float64
+			- 174: numpy.float64
+			- 175: numpy.float64
+			- 176: numpy.float64
+			- 177: numpy.float64
+			- 178: numpy.float64
+			- 179: numpy.float64
+			- 180: numpy.float64
+			- 181: numpy.float64
+			- 182: numpy.float64
+			- 183: numpy.float64
+			- 184: numpy.float64
+			- 185: numpy.float64
+			- 186: numpy.float64
+			- 187: numpy.float64
+			- 188: numpy.float64
+			- 189: numpy.float64
+			- 190: numpy.float64
+			- 191: numpy.float64
+			- 192: numpy.float64
+			- 193: numpy.float64
+			- 194: numpy.float64
+			- 195: numpy.float64
+			- 196: numpy.float64
+			- 197: numpy.float64
+			- 198: numpy.float64
+			- 199: numpy.float64
+			- 201: numpy.float64
+			- 202: numpy.float64
+			- 203: numpy.float64
+			- 204: numpy.float64
+			- 205: numpy.float64
+			- 206: numpy.float64
+			- 207: numpy.float64
+			- 208: numpy.float64
+			- 209: numpy.float64
+			- 211: numpy.float64
+			- 212: numpy.float64
+			- 213: numpy.float64
+			- 214: numpy.float64
+			- 215: numpy.float64
+			- 216: numpy.float64
+			- 217: numpy.float64
+			- 219: numpy.float64
+			- 220: numpy.float64
+			- 221: numpy.float64
+			- 222: numpy.float64
+			- 224: numpy.float64
+			- 225: numpy.float64
+			- 226: numpy.float64
+			- 227: numpy.float64
+			- 228: numpy.float64
+			- 229: numpy.float64
+			- 230: numpy.float64
+			- 231: numpy.float64
+			- 232: numpy.float64
+			- 233: numpy.float64
+			- 234: numpy.float64
+			- 235: numpy.float64
+			- 236: numpy.float64
+			- 237: numpy.float64
+			- 238: numpy.float64
+			- 239: numpy.float64
+			- 240: numpy.float64
+			- 241: numpy.float64
+			- 242: numpy.float64
+			- 243: numpy.float64
+			- 244: numpy.float64
+			- 246: numpy.float64
+			- 247: numpy.float64
+			- 248: numpy.float64
+			- 249: numpy.float64
+			- 250: numpy.float64
+			- 251: numpy.float64
+			- 252: numpy.float64
+			- 253: numpy.float64
+			- 254: numpy.float64
+			- 255: numpy.float64
+			- 256: numpy.float64
+			- 257: numpy.float64
+			- 258: numpy.float64
+			- 259: numpy.float64
+			- 260: numpy.float64
+			- 261: numpy.float64
+			- 262: numpy.float64
+			- 263: numpy.float64
+			- 264: numpy.float64
+			- 266: numpy.float64
+			- 267: numpy.float64
+			- 268: numpy.float64
+			- 269: numpy.float64
+			- 270: numpy.float64
+			- 271: numpy.float64
+			- 272: numpy.float64
+			- 273: numpy.float64
+			- 274: numpy.float64
+			- 275: numpy.float64
+			- 276: numpy.float64
+			- 277: numpy.float64
+			- 278: numpy.float64
+			- 279: numpy.float64
+			- 280: numpy.float64
+			- 281: numpy.float64
+			- 282: numpy.float64
+			- 283: numpy.float64
+			- 285: numpy.float64
+			- 286: numpy.float64
+			- 287: numpy.float64
+			- 289: numpy.float64
+			- 290: numpy.float64
+			- 291: numpy.float64
+			- 292: numpy.float64
+			- 293: numpy.float64
+			- 294: numpy.float64
+			- 295: numpy.float64
+			- 296: numpy.float64
+			- 297: numpy.float64
+			- 298: numpy.float64
+			- 299: numpy.float64
+			- 300: numpy.float64
+			- 301: numpy.float64
+			- 302: numpy.float64
+			- 303: numpy.float64
+			- 304: numpy.float64
+			- 305: numpy.float64
+			- 306: numpy.float64
+			- 307: numpy.float64
+			- 308: numpy.float64
+			- 309: numpy.float64
+			- 310: numpy.float64
+			- 311: numpy.float64
+			- 314: numpy.float64
+			- 315: numpy.float64
+			- 316: numpy.float64
+			- 317: numpy.float64
+			- 318: numpy.float64
+			- 319: numpy.float64
+			- 320: numpy.float64
+			- 321: numpy.float64
+			- 322: numpy.float64
+			- 323: numpy.float64
+			- 324: numpy.float64
+			- 325: numpy.float64
+			- 326: numpy.float64
+			- 327: numpy.float64
+			- 328: numpy.float64
+			- 329: numpy.float64
+			- 330: numpy.float64
+			- 331: numpy.float64
+			- 332: numpy.float64
+			- 333: numpy.float64
+			- 334: numpy.float64
+			- 336: numpy.float64
+			- 337: numpy.float64
+			- 338: numpy.float64
+			- 339: numpy.float64
+			- 340: numpy.float64
+			- 341: numpy.float64
+			- 342: numpy.float64
+			- 343: numpy.float64
+			- 344: numpy.float64
+			- 345: numpy.float64
+			- 346: numpy.float64
+			- 347: numpy.float64
+			- 348: numpy.float64
+			- 349: numpy.float64
+			- 350: numpy.float64
+			- 351: numpy.float64
+			- 352: numpy.float64
+			- 353: numpy.float64
+			- 354: numpy.float64
+			- 355: numpy.float64
+			- 356: numpy.float64
+			- 358: numpy.float64
+			- 359: numpy.float64
+			- 360: numpy.float64
+			- 361: numpy.float64
+			- 362: numpy.float64
+			- 363: numpy.float64
+			- 364: numpy.float64
+			- 366: numpy.float64
+			- 367: numpy.float64
+			- 368: numpy.float64
+			- 369: numpy.float64
+			- 370: numpy.float64
+			- 371: numpy.float64
+			- 372: numpy.float64
+			- 373: numpy.float64
+			- 374: numpy.float64
+			- 375: numpy.float64
+			- 376: numpy.float64
+			- 377: numpy.float64
+			- 379: numpy.float64
+			- 380: numpy.float64
+			- 381: numpy.float64
+			- 382: numpy.float64
+			- 386: numpy.float64
+			- 387: numpy.float64
+			- 388: numpy.float64
+			- 389: numpy.float64
+			- 390: numpy.float64
+			- 393: numpy.float64
+			- 394: numpy.float64
+			- 395: numpy.float64
+			- 396: numpy.float64
+			- 398: numpy.float64
+			- 400: numpy.float64
+			- 401: numpy.float64
+			- 402: numpy.float64
+			- 403: numpy.float64
+			- 404: numpy.float64
+			- 405: numpy.float64
+			- 406: numpy.float64
+			- 407: numpy.float64
+			- 408: numpy.float64
+			- 409: numpy.float64
+			- 410: numpy.float64
+			- 411: numpy.float64
+	- timebinned_neuron_info: pyphoplacecellanalysis.Analysis.Decoder.decoder_result.TimebinnedNeuronActivity
+		- n_timebins: numpy.int32
+		- active_IDXs: list - (412,)
+		- active_aclus: list - (412,)
+		- inactive_IDXs: list - (412,)
+		- inactive_aclus: list - (412,)
+		- time_bin_centers: numpy.ndarray - (412,)
+		- num_timebin_active_aclus: numpy.ndarray - (412,)
+		- is_timebin_valid: numpy.ndarray - (412,)
+	- result_df: pandas.core.frame.DataFrame (children omitted) - (369, 6)
+	- result_df_grouped: pandas.core.frame.DataFrame (children omitted) - (65, 5)
+	- one_left_out_decoder_dict: dict
+		- 2: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18122, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 4: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18313, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 8: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18275, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 9: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17963, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 11: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17951, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 12: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18176, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 14: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18320, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 15: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17672, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 20: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18342, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 24: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17998, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 25: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18096, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 27: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18012, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 30: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17663, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 31: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17986, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 33: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18379, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 35: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18388, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 39: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18075, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 40: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17411, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 43: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18192, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 44: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18094, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 47: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18318, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 48: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18121, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 51: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17977, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 53: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17926, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 56: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18153, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 66: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18312, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 68: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18187, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 69: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18394, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 72: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17544, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 75: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17991, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 79: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17477, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 80: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17984, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 81: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17311, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 82: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17263, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 84: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18092, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 86: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17641, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 89: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18231, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 90: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (18302, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 92: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17707, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 93: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17981, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 98: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17459, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+		- 104: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BasePositionDecoder
+			- pf: neuropy.analyses.placefields.PfND
+				- spikes_df: pandas.core.frame.DataFrame (children omitted) - (76534, 22)
+				- position: neuropy.core.position.Position
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _data: pandas.core.frame.DataFrame (children omitted) - (30844, 4)
+				- epochs: neuropy.core.epoch.Epoch
+					- _filename: NoneType
+					- _metadata: NoneType
+					- _df: pandas.core.frame.DataFrame (children omitted) - (38, 4)
+				- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+					- speed_thresh: float
+					- grid_bin: tuple - (2,)
+					- grid_bin_bounds: tuple - (2, 2)
+					- smooth: tuple - (2,)
+					- frate_thresh: float
+				- position_srate: numpy.float64
+				- setup_on_init: bool
+				- compute_on_init: bool
+				- _save_intermediate_spikes_maps: bool
+				- _ratemap: neuropy.core.ratemap.Ratemap
+					- _filename: NoneType
+					- _metadata: NoneType
+					- spikes_maps: numpy.ndarray - (41, 120)
+					- tuning_curves: numpy.ndarray - (41, 120)
+					- unsmoothed_tuning_maps: numpy.ndarray - (41, 120)
+					- _neuron_ids: list - (41,)
+					- _neuron_extended_ids: list - (41, 3)
+					- xbin: numpy.ndarray - (121,)
+					- ybin: NoneType
+					- occupancy: numpy.ndarray - (120,)
+				- _ratemap_spiketrains: list - (41,)
+				- _ratemap_spiketrains_pos: list - (41, 1)
+				- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (7707, 5)
+				- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (17052, 22)
+				- ndim: numpy.int32
+				- xbin: numpy.ndarray - (121,)
+				- ybin: NoneType
+				- bin_info: dict
+					- mode: str
+					- xstep: int
+					- xnum_bins: int
+				- _included_thresh_neurons_indx: NoneType
+				- _peak_frate_filter_function: NoneType
+			- neuron_IDXs: numpy.ndarray - (41,)
+			- neuron_IDs: numpy.ndarray - (41,)
+			- F: numpy.ndarray - (120, 41)
+			- P_x: numpy.ndarray - (120, 1)
+			- setup_on_init: bool
+			- post_load_on_init: bool
+			- debug_print: bool
+	- one_left_out_filter_epochs_decoder_result_dict: dict
+		- 2: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 4: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 8: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 9: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 11: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 12: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 14: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 15: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 20: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 24: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 25: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 27: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 30: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 31: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 33: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 35: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 39: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 40: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 43: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 44: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 47: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 48: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 51: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 53: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 56: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 66: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 68: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 69: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 72: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 75: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 79: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 80: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 81: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 82: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 84: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 86: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 89: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 90: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 92: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 93: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 98: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+		- 104: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult
+			- most_likely_positions_list: list - (65,)
+			- p_x_given_n_list: list - 65
+			- marginal_x_list: list - (65, 2)
+			- marginal_y_list: list - (65,)
+			- most_likely_position_indicies_list: list - 65
+			- spkcount: list - 65
+			- nbins: numpy.ndarray - (65,)
+			- time_bin_containers: list - (65,)
+			- decoding_time_bin_size: float
+			- num_filter_epochs: int
+			- time_bin_edges: list - (65,)
+			- epoch_description_list: NoneType
+	- is_non_firing_time_bin: numpy.ndarray - (42, 412)
+	- all_epochs_num_epoch_time_bins: numpy.ndarray - (65,)
+	- all_epochs_computed_one_left_out_posterior_to_pf_surprises: numpy.ma.core.MaskedArray - (42, 412)
+	- all_epochs_computed_one_left_out_posterior_to_scrambled_pf_surprises: numpy.ma.core.MaskedArray - (42, 412)
+	- all_epochs_reverse_flat_epoch_indicies_array: numpy.ndarray - (412,)
+	- split_by_epoch_reverse_flattened_time_bin_indicies: list - (65,)
+	- all_epochs_computed_cell_one_left_out_posterior_to_pf_surprises_mean: numpy.ma.core.MaskedArray - (65, 42)
+	- all_epochs_computed_cell_one_left_out_posterior_to_scrambled_pf_surprises_mean: numpy.ma.core.MaskedArray - (65, 42)
+	- all_epochs_all_cells_one_left_out_posterior_to_pf_surprises_mean: numpy.ma.core.MaskedArray - (65,)
+	- all_epochs_all_cells_one_left_out_posterior_to_scrambled_pf_surprises_mean: numpy.ma.core.MaskedArray - (65,)
