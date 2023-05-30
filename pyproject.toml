@@ -49,7 +49,8 @@ nptyping = {extras = ["complete"], version = "^2.5.0"} # allows specifying Numpy
 # jupyter-rfb = "^0.3.3"
 # deeptime = "^0.4.4" # what is this? Analysis?
 # python-picard = "^0.7"
-beartype = "^0.14.0"
+beartype = "^0.14.0" # for strict type enforcement of function calls
+awkward = "^2.2.1" # for ragged-arrays, testing
 
 
 [tool.poetry.group.dev.dependencies]
