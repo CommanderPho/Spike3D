@@ -51,6 +51,7 @@ nptyping = {extras = ["complete"], version = "^2.5.0"} # allows specifying Numpy
 # python-picard = "^0.7"
 beartype = "^0.14.0" # for strict type enforcement of function calls
 awkward = "^2.2.1" # for ragged-arrays, testing
+pyqt-checkbox-table-widget = "^0.0.14"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -5725,6 +5725,20 @@ type = "directory"
 url = "../pyPhoPlaceCellAnalysis"
 
 [[package]]
+name = "pyqt-checkbox-table-widget"
+version = "0.0.14"
+description = "PyQt's QTableWidget which has checkbox as first header item"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyqt-checkbox-table-widget-0.0.14.tar.gz", hash = "sha256:556b02d89f93877f55e4605616ad82e6e403b36c1efebf883a68b4421f5b2ef5"},
+    {file = "pyqt_checkbox_table_widget-0.0.14-py3-none-any.whl", hash = "sha256:4860271b179368f3985a833530e2cc382a1cfbe26cc79867e5959e5a1b6cd77b"},
+]
+
+[package.dependencies]
+PyQt5 = ">=5.8"
+
+[[package]]
 name = "pyqt-custom-titlebar-window"
 version = "0.0.50"
 description = "PyQt custom titlebar window (resizable, movable, minimize/maximize/close, etc.)"
@@ -8447,4 +8461,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "a102d7eb2df9a928944045b092357bb60e1d521ac00c5589c91ce93032f41bb6"
+content-hash = "cbdcfd84e94c9a23d1bcb0290e7a1d4fd7637526be2a9aaca1a9498079925199"
