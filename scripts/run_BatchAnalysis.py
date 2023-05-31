@@ -83,6 +83,9 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
         , post_run_callback_fn=_on_complete_success_execution_session
         
         Captures nothing.
+        
+        from Spike3D.scripts.run_BatchAnalysis import _on_complete_success_execution_session
+        
     """
     print(f'_on_complete_success_execution_session(curr_session_context: {curr_session_context}, curr_session_basedir: {str(curr_session_basedir)}, ...)')
     # print(f'curr_session_context: {curr_session_context}, curr_session_basedir: {str(curr_session_basedir)}')
@@ -146,31 +149,35 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
 # ==================================================================================================================== #
 # MAIN FUNCTION                                                                                                        #
 # ==================================================================================================================== #
-def main(active_global_batch_result_filename='global_batch_result.pkl', perform_execute=False, force_reload=True, debug_print=True):
+def main(active_global_batch_result_filename='global_batch_result.pkl', perform_execute=False, force_reload=True, enable_neptune=False, debug_print=True):
     """ Main Run Function
     from pyphoplacecellanalysis.General.Batch.runBatch import main, BatchRun, run_diba_batch, run_specific_batch
 
     """
     global_data_root_parent_path = find_first_extant_path([Path(r'W:\Data'), Path(r'/media/MAX/Data'), Path(r'/Volumes/MoverNew/data'), Path(r'/home/halechr/turbo/Data')])
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
+    global_batch_result_file_path = global_data_root_parent_path.joinpath(active_global_batch_result_filename).resolve()
+    
 
-    project = neptune.init_project()
-    project["general/global_batch_result_filename"] = active_global_batch_result_filename
-    project["general/global_data_root_parent_path"] = global_data_root_parent_path.as_posix()
+    if enable_neptune:
+        project = neptune.init_project()
+        project["general/global_batch_result_filename"] = active_global_batch_result_filename
+        project["general/global_data_root_parent_path"] = global_data_root_parent_path.as_posix()
 
+    ## Currently contains an explicit neptune dependency:
     with neptune.init_run() as run:
-        run['parameters/perform_execute'] = perform_execute
-
-        global_batch_result_file_path = global_data_root_parent_path.joinpath(active_global_batch_result_filename).resolve()
-        run['parameters/global_batch_result_file_path'] = global_batch_result_file_path.as_posix()
-        # project["general/data_analysis"].upload("data_analysis.ipynb")
-        run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images"
+        if enable_neptune:
+            run['parameters/perform_execute'] = perform_execute
+            run['parameters/global_batch_result_file_path'] = global_batch_result_file_path.as_posix()
+            # project["general/data_analysis"].upload("data_analysis.ipynb")
+            run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images"
 
         # Build `global_batch_run` pre-loading results (before execution)
         global_batch_run = BatchRun.try_init_from_file(global_data_root_parent_path, active_global_batch_result_filename=active_global_batch_result_filename, debug_print=debug_print) # on_needs_create_callback_fn=run_diba_batch
 
-        # Pre-execution dataframe view:
-        run["dataset/global_batch_run_progress_df"].upload(File.as_html(global_batch_run.to_dataframe(expand_context=True, good_only=False))) # "path/to/test_preds.csv"
+        if enable_neptune:
+            # Pre-execution dataframe view:
+            run["dataset/global_batch_run_progress_df"].upload(File.as_html(global_batch_run.to_dataframe(expand_context=True, good_only=False))) # "path/to/test_preds.csv"
 
         # Run Batch Executions/Computations
         if perform_execute:
@@ -201,23 +208,18 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
 
         # Save `global_batch_run` to file:
         saveData(global_batch_result_file_path, global_batch_run) # Update the global batch run dictionary
-        run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images" # update file progress post-load
-        # Post-execution dataframe view:
-        run["dataset/global_batch_run_progress_df"].upload(File.as_html(global_batch_run.to_dataframe(expand_context=True, good_only=False))) # "path/to/test_preds.csv"
+        if enable_neptune:
+            run["dataset/latest"].track_files(f"file://{global_batch_result_file_path}") # "s3://datasets/images" # update file progress post-load
+            # Post-execution dataframe view:
+            run["dataset/global_batch_run_progress_df"].upload(File.as_html(global_batch_run.to_dataframe(expand_context=True, good_only=False))) # "path/to/test_preds.csv"
         
 
         # run.stop() # don't call run.stop() inside the run.
 
-    ## POST Run
-    project.stop()
+    if enable_neptune:
+        ## POST Run
+        project.stop()
     return global_batch_run, global_batch_result_file_path
-
-        
-        # ### Get Outputs
-        # batch_progress_df = global_batch_run.to_dataframe(expand_context=True) # all
-        # good_only_batch_progress_df = global_batch_run.to_dataframe(expand_context=True, good_only=True)
-        # good_only_batch_progress_df
-
 
 
 if __name__ == "__main__":
