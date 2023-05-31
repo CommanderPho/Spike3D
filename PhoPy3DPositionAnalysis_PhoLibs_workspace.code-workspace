@@ -88,7 +88,9 @@
 			"joshspicer.touchbarcommandshortcuts",
 			"jakubniewczas.keybinding-mode",
 			"donjayamanne.python-environment-manager",
-			"felicio.vscode-fold"
+			"felicio.vscode-fold",
+			"tack2.python-function-spreader",
+			"sergelamikhov.copy-gather-paste"
 		]
 	},
 	"launch": {
