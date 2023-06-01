@@ -3,7 +3,7 @@ from pathlib import Path
 import glob # for finding .whl file after building binary repo
 
 
-global_script_dir = Path(os.path.dirname(os.path.abspath(__file__))) #
+global_script_dir = Path(os.path.dirname(os.path.abspath(__file__))) # CHANGEME, used to be located `../../../scripts/`
 global_exports_folder = global_script_dir.joinpath('exports').resolve()
 print(f'script_dir: {global_script_dir}\nglobal_exports_folder: {global_exports_folder}')
 global_root_dir = global_script_dir.parent # Top-level parent root repo dir
