@@ -54,7 +54,7 @@ def post_compute_validate(curr_active_pipeline):
 
 
 
-def _perform_plots(curr_active_pipeline):
+def _perform_plots(curr_active_pipeline, enable_neptune=True):
     """ 2023-05-25 - Performs all the batch plotting commands. """
     from pyphoplacecellanalysis.General.Batch.NonInteractiveWrapper import neptune_output_figures
     
@@ -69,10 +69,11 @@ def _perform_plots(curr_active_pipeline):
     except Exception as e:
         print(f'in `_perform_plots(...)`: batch_extended_programmatic_figures(...) failed with exception: {e}. Continuing.')
     
-    try:
-        neptune_output_figures(curr_active_pipeline)
-    except Exception as e:
-        print(f'in `_perform_plots(...)`: neptune_output_figures(...) failed with exception: {e}. Continuing.')
+    if enable_neptune:
+        try:
+            neptune_output_figures(curr_active_pipeline)
+        except Exception as e:
+            print(f'in `_perform_plots(...)`: neptune_output_figures(...) failed with exception: {e}. Continuing.')
     
 
 def _on_complete_success_execution_session(curr_session_context, curr_session_basedir, curr_active_pipeline):
