@@ -112,9 +112,10 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
         print(f'ERROR SAVING PIPELINE for curr_session_context: {curr_session_context}. error: {e}')
 
     ## GLOBAL FUNCTION:
+    # FIXME: doesn't seem like we should always use `force_recompute=True`
     try:
         # # 2023-01-* - Call extended computations to build `_display_short_long_firing_rate_index_comparison` figures:
-        extended_computations_include_whitelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_decoding_analyses'] # do only specifiedl
+        extended_computations_include_whitelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_decoding_analyses', 'long_short_post_decoding'] # do only specifiedl
         newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, force_recompute=True, debug_print=False)
         print(f'newly_computed_values: {newly_computed_values}')        
         if len(newly_computed_values) > 0:
