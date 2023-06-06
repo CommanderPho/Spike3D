@@ -1,6 +1,7 @@
 {
 	"folders": [
 		{
+			"name": "Spike3D",
 			"path": "."
 		},
 		{
@@ -17,26 +18,28 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
+		"python.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe", //"C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
+		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
-		"**/*.7z": true,
-		"**/.classpath": true,
-		"**/.factorypath": true,
-		"**/.ipynb_checkpoints": true,
-		"**/.project": true,
-		"**/.settings": true,
-		"**/.spyproject": true,
-		"**/.virtual_documents": true,
-		"**/.vscode": true
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true,
+			"**/Spike3D/.venv/*": true
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
 			"editor.lineHighlightBackground": "#1073cf2d",
 			"editor.lineHighlightBorder": "#9fced11f",
 			"activityBar.background": "#3D234B",
-			"titleBar.activeBackground": "#56306A",
-			"titleBar.activeForeground": "#FCFBFD"
+			"titleBar.activeBackground": "#53c763",
+			"titleBar.activeForeground": "#000000"
 		},
 		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
 		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
@@ -53,5 +56,10 @@
 			"-o \"${fileDirname}${pathSeparator}${fileBasenameNoExtension}.py\""
 		],
 
+	},
+	"extensions": {
+		"recommendations": [
+			"hbenl.vscode-test-explorer"
+		]
 	}
 }

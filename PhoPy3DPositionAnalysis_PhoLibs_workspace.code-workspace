@@ -1,18 +1,23 @@
 {
 	"folders": [
 		{
+			"name": "Spike3D",
 			"path": "."
 		},
 		{
-			"path": "..\\pyPhoCoreHelpers\\src\\pyphocorehelpers"
+			"name": "pyphocorehelpers",
+			"path": "../pyPhoCoreHelpers/src/pyphocorehelpers"
 		},
 		{
-			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+			"name": "pyphoplacecellanalysis",
+			"path": "../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
 		},
 		{
+			"name": "neuropy",
 			"path": "../NeuroPy/neuropy"
 		},
 		{
+			"name": "SCRIPTS",
 			"path": "../SCRIPTS"
 		}
 	],
@@ -90,7 +95,9 @@
 			"donjayamanne.python-environment-manager",
 			"felicio.vscode-fold",
 			"tack2.python-function-spreader",
-			"sergelamikhov.copy-gather-paste"
+			"sergelamikhov.copy-gather-paste",
+			"ezforo.copy-relative-path-and-line-numbers",
+			"jcmordan.mark-as-excluded"
 		]
 	},
 	"launch": {

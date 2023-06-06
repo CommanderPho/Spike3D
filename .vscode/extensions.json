@@ -9,6 +9,7 @@
 		"jasonlhy.hungry-delete",
 		"edgardmessias.clipboard-manager",
 		"ms-python.gather",
-		"felicio.vscode-fold"
+		"felicio.vscode-fold",
+		"jcmordan.mark-as-excluded"
 	]
 }
