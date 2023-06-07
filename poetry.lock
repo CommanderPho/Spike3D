@@ -4886,6 +4886,23 @@ qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
 
 [[package]]
+name = "patchworklib"
+version = "0.6.1"
+description = "patchwork for matplotlib"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "patchworklib-0.6.1-py3-none-any.whl", hash = "sha256:db9c630766265acb25637b18bb0a9e527233ec7cc8748ad793805f6077ebaf0b"},
+    {file = "patchworklib-0.6.1.tar.gz", hash = "sha256:d1097eea8cec156d15d37429307cedcada3aa74e2e65cdeba5fe50fe507f7339"},
+]
+
+[package.dependencies]
+dill = "*"
+matplotlib = ">=3.4"
+numpy = ">=1.16"
+pandas = ">=0.24"
+
+[[package]]
 name = "pathspec"
 version = "0.11.1"
 description = "Utility library for gitignore style pattern matching of file paths."
@@ -8461,4 +8478,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "cbdcfd84e94c9a23d1bcb0290e7a1d4fd7637526be2a9aaca1a9498079925199"
+content-hash = "2ca3360a454da56383619d6460e38b1793f07959a1f2205fec28f1f8b50cb9f0"
