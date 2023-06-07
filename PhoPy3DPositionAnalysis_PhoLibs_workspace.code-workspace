@@ -68,6 +68,7 @@
 		"python.analysis.extraPaths": [],
 		"python.pylanceLspNotebooksEnabled": true,
 		"dvc.studio.shareExperimentsLive": false,
+		"vscode-pydata-viewer.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 	},
 	"extensions": {
 		"recommendations": [
@@ -97,7 +98,8 @@
 			"tack2.python-function-spreader",
 			"sergelamikhov.copy-gather-paste",
 			"ezforo.copy-relative-path-and-line-numbers",
-			"jcmordan.mark-as-excluded"
+			"jcmordan.mark-as-excluded",
+			"percy.vscode-pydata-viewer"
 		]
 	},
 	"launch": {
