@@ -8,6 +8,8 @@
 		"berublan.vscode-log-viewer",
 		"jasonlhy.hungry-delete",
 		"edgardmessias.clipboard-manager",
-		"ms-python.gather"
+		"ms-python.gather",
+		"felicio.vscode-fold",
+		"jcmordan.mark-as-excluded"
 	]
 }

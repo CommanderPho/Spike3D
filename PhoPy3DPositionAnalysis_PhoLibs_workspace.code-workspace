@@ -1,34 +1,44 @@
 {
 	"folders": [
 		{
+			"name": "Spike3D",
 			"path": "."
 		},
 		{
-			"path": "..\\pyPhoCoreHelpers\\src\\pyphocorehelpers"
+			"name": "pyphocorehelpers",
+			"path": "../pyPhoCoreHelpers/src/pyphocorehelpers"
 		},
 		{
-			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+			"name": "pyphoplacecellanalysis",
+			"path": "../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
 		},
 		{
+			"name": "neuropy",
 			"path": "../NeuroPy/neuropy"
 		},
 		{
+			"name": "SCRIPTS",
 			"path": "../SCRIPTS"
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
+		"python.analysis.gotoDefinitionInStringLiteral": true,
+		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+		"python.linting.enabled": false,
+		"jupyter.askForKernelRestart": true,
+		"jupyter.debugJustMyCode": true,
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
-		"**/*.7z": true,
-		"**/.classpath": true,
-		"**/.factorypath": true,
-		"**/.ipynb_checkpoints": true,
-		"**/.project": true,
-		"**/.settings": true,
-		"**/.spyproject": true,
-		"**/.virtual_documents": true,
-		"**/.vscode": true
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true,
+			"**/Spike3D/.venv/*": true
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
@@ -57,6 +67,8 @@
 		"favorites.sortDirection": "DESC",
 		"python.analysis.extraPaths": [],
 		"python.pylanceLspNotebooksEnabled": true,
+		"dvc.studio.shareExperimentsLive": false,
+		"vscode-pydata-viewer.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 	},
 	"extensions": {
 		"recommendations": [
@@ -81,7 +93,13 @@
 			"gizak.shortcuts",
 			"joshspicer.touchbarcommandshortcuts",
 			"jakubniewczas.keybinding-mode",
-			"donjayamanne.python-environment-manager"
+			"donjayamanne.python-environment-manager",
+			"felicio.vscode-fold",
+			"tack2.python-function-spreader",
+			"sergelamikhov.copy-gather-paste",
+			"ezforo.copy-relative-path-and-line-numbers",
+			"jcmordan.mark-as-excluded",
+			"percy.vscode-pydata-viewer"
 		]
 	},
 	"launch": {
