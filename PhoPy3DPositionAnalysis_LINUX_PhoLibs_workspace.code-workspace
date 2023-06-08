@@ -62,7 +62,11 @@
 		"recommendations": [
 			"huynh-quang-phuc.create-file-from-template",
 			"kawamataryo.copy-python-dotted-path",
-			"kdcro101.favorites"
+			"kdcro101.favorites",
+			"iterativecloud.notebook-chatcompletion",
+			"vikasdubey0551.jupyterlab-browser",
+			"sourcery.sourcery",
+			"felicio.vscode-fold"
 		]
 	}
 }

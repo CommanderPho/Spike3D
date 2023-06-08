@@ -1,23 +1,8 @@
 import subprocess
 import pathlib
 
-def find_py_files(project_path, exclude_dirs=[]):
-    # Find all .py files in the project directory and its subdirectories
-    if not isinstance(project_path, pathlib.Path):
-        project_path = pathlib.Path(project_path)
-    py_files = project_path.glob("**/*.py")
-    py_files = [file_path for file_path in py_files] # to list
 
-    excluded_py_files = []
-    if exclude_dirs is not None:
-        # Find all .py files in the project directory and its subdirectories, excluding the 'my_exclude_dir' directory
-        exclude_paths = [project_path.joinpath(a_dir) for a_dir in exclude_dirs]
-        for an_exclude_path in exclude_paths:
-            excluded_py_files.extend([file_path for file_path in an_exclude_path.glob("**/*.py")])
-
-    included_py_files = [x for x in py_files if x not in excluded_py_files]
-    return included_py_files
-
+from scripts.helpers.source_code_helpers import find_py_files
 
 
 def build_code_index(project_path, exclude_dirs=[]):

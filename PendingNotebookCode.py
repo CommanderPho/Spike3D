@@ -29,6 +29,9 @@ from pyphocorehelpers.indexing_helpers import safe_numpy_index
 from pyphocorehelpers.indexing_helpers import Paginator
 
 
+
+
+
 # ==================================================================================================================== #
 # 2023-05-16 - Manual Post-hoc Conformance for Laps and Long/Short Bins                                                #
 # ==================================================================================================================== #
@@ -97,8 +100,6 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
     # computation_functions_name_whitelist=['_perform_baseline_placefield_computation']
     curr_active_pipeline.perform_computations(computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=None, fail_on_exception=True, debug_print=False, overwrite_extant_results=True) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
     return curr_active_pipeline
-
-
 
 
 
@@ -254,36 +255,7 @@ class PaginatedSelectionManager:
 
 from attrs import define, Factory
 import pyphoplacecellanalysis.External.pyqtgraph as pg
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.DefaultComputationFunctions import LeaveOneOutDecodingResult
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import TimebinnedNeuronActivity
 
-
-# ==================================================================================================================== #
-# 2023-04-14 - New Surprise Implementation                                                                             #
-# ==================================================================================================================== #
-
-# Distance metrics used by `_new_compute_surprise`
-from scipy.spatial import distance # for Jensen-Shannon distance in `_subfn_compute_leave_one_out_analysis`
-import random # for random.choice(mylist)
-# from PendingNotebookCode import _scramble_curve
-from scipy.stats import wasserstein_distance
-from scipy.stats import pearsonr
-from pyphocorehelpers.indexing_helpers import safe_np_vstack # for `_new_compute_surprise`
-
-## 0. Precompute the active neurons in each timebin, and the epoch-timebin-flattened decoded posteriors makes it easier to compute for a given time bin:
-
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder, BayesianPlacemapPositionDecoder
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import perform_full_session_leave_one_out_decoding_analysis
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
-from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import build_neurons_color_map # for plot_short_v_long_pf1D_comparison
-
-
-from attrs import define, field
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BayesianPlacemapPositionDecoder
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder
-from pyphoplacecellanalysis.General.Mixins.CrossComputationComparisonHelpers import SetPartition
-from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import SurpriseAnalysisResult
 
 
 # ==================================================================================================================== #
@@ -348,7 +320,7 @@ def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
         active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
         active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
 
-        spike_trimmed_active_epochs, epoch_split_spike_dfs, all_aclus, dense_epoch_split_frs_mat, is_cell_active_in_epoch_mat = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
+        spike_trimmed_active_epochs, _extra_outputs = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
         epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
 """
     from neuropy.utils.mixins.time_slicing import add_epochs_id_identity

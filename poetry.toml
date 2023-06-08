@@ -1,0 +1,6 @@
+[virtualenvs]
+in-project = false
+create = true
+
+[virtualenvs.options]
+always-copy = true

@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.1.5"
+version = "0.1.7"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9.2,<3.12"
+python = ">=3.9.2,<3.10"
 numba = "^0.56.4"
 pyvista = "^0.36.1"
 pyvistaqt = "^0.9.0"
@@ -26,44 +26,52 @@ pyqt5custom = "^1.0.1"
 matplotlib = "^3.7.0"
 numexpr = "^2.8.4"
 scipy = "^1.10.1"
-python-picard = "^0.7"
 dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
 qtconsole = "^5.4.0"
 ipython = "^8.11.0"
-deeptime = "^0.4.4" # what is this? Analysis?
 attrs = "^22.2.0"
-jupyterlab-lsp = "^4.0.0"
-jupyter-rfb = "^0.3.3"
 pillow = "^9.4.0"
 seaborn = "^0.12.2"
 param = "^1.13.0"
-patchworklib = "^0.5.2" # matplotlib figure layout/organization
+pyflakes = "^3.0.1" # required for code editor
+neptune = "^1.2.0"
+nptyping = {extras = ["complete"], version = "^2.5.0"} # allows specifying Numpy and Pandas types and shapes
+beartype = "^0.14.0" # for strict type enforcement of function calls
+awkward = "^2.2.1" # for ragged-arrays, testing
+pyqt-checkbox-table-widget = "^0.0.14"
+# dvc = "^2.57.2"
+# dvclive = "^2.9.0"
 # trame = "^2.3.2" # visualization, currently not used
 # modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
 # pandarallel = "^1.6.4" # not fully used, didn't work
 # lead-lag = "^2.3" # didn't work
 # mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
-
+# treelib = "^1.6.4"
+# jupyterlab-lsp = "^4.0.0"
+# jupyter-rfb = "^0.3.3"
+# deeptime = "^0.4.4" # what is this? Analysis?
+# python-picard = "^0.7"
+# patchworklib = "^0.5.2" # matplotlib figure layout/organization
+patchworklib = "^0.6.1"
 
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
 ipython = "^8.9.0"
 viztracer = "^0.15.6"
-psgdemos = "^1.12.1"
-# pylint = "^2.16.2"
-graphviz = "^0.20.1"
-pydot = "^1.4.2"
-pycallgraph2 = "^1.1.3"
 ipykernel = "^6.21.2"
 jupyterlab = "^3.6.1"
 dvc = {version = "^2.45.1", extras = ["gdrive"]}
 cookiecutter = "^2.1.1"
-pretty-errors = "^1.2.25"
 jedi-language-server = "^0.40.0"
 python-lsp-server = "^1.7.1"
-sphinx = "^6.1.3"
-sphinx-autodoc-typehints = "^1.22"
+# sphinx = "^6.1.3"
+# sphinx-autodoc-typehints = "^1.22"
+# psgdemos = "^1.12.1"
+# graphviz = "^0.20.1"
+# pydot = "^1.4.2"
+# pycallgraph2 = "^1.1.3"
+# pylint = "^2.16.2"
 # vulture = "^2.7" # Unused Code Cleanup - Independent from Codebase
 # coverage = "^7.2.3" # Unused Code Cleanup - Independent from Codebase
 # uncalled = "^0.1.6" # Unused Code Cleanup - Independent from Codebase
@@ -71,6 +79,7 @@ sphinx-autodoc-typehints = "^1.22"
 # pyflakes = "^3.0.1" # Unused Code Cleanup - Independent from Codebase
 # ipympl = "^0.9.3"
 # panel = "^0.14.4"
+# pretty-errors = "^1.2.25"
 
 [tool.poetry.group.remote.dependencies]
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
@@ -79,13 +88,13 @@ pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 
 [tool.poetry.group.testing.dependencies]
 silx = "^1.1.2"
-pygwalker = "^0.1.6.1"
-altair = "5.0.0rc1" #"^4.2.2"
-plotly = "5.13.1"
 ipywidgets = "^8.0.5"
-nicegui = "^1.2.11"
-streamsync = {extras = ["ds"], version = "^0.1.6"}
-textual = {extras = ["dev"], version = "^0.24.1"} # gui tool
+# pygwalker = "^0.1.6.1"
+# altair = "5.0.0rc1" #"^4.2.2"
+# plotly = "5.13.1"
+# nicegui = "^1.2.11"
+# streamsync = {extras = ["ds"], version = "^0.1.6"}
+# textual = {extras = ["dev"], version = "^0.24.1"} # gui tool
 # symdexer = "^0.2.10" # Code Searching Cleanup - Independent from Codebase
 # pycscope = {path = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl", develop=true} # pycscope = "^1.2.1" # Code Searching Cleanup - Independent from Codebase
 # codequery = "^0.1.4" # Code Searching Cleanup - Independent from Codebase
@@ -109,6 +118,7 @@ textual = {extras = ["dev"], version = "^0.24.1"} # gui tool
 # paths = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis", "../Spike3D"]
 # sort_by_size = true
 # verbose = true
+
 
 
 [build-system]
