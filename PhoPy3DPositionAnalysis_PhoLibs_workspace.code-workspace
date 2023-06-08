@@ -99,7 +99,8 @@
 			"sergelamikhov.copy-gather-paste",
 			"ezforo.copy-relative-path-and-line-numbers",
 			"jcmordan.mark-as-excluded",
-			"percy.vscode-pydata-viewer"
+			"percy.vscode-pydata-viewer",
+			"codeandstuff.vscode-navigate-edit-history"
 		]
 	},
 	"launch": {
