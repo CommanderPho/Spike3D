@@ -15,10 +15,6 @@
 		{
 			"name": "neuropy",
 			"path": "../NeuroPy/neuropy"
-		},
-		{
-			"name": "SCRIPTS",
-			"path": "../SCRIPTS"
 		}
 	],
 	"settings": {
