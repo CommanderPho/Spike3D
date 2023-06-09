@@ -53,6 +53,7 @@ pyqt-checkbox-table-widget = "^0.0.14"
 # python-picard = "^0.7"
 # patchworklib = "^0.5.2" # matplotlib figure layout/organization
 patchworklib = "^0.6.1"
+papermill = {extras = ["black"], version = "^2.4.0"}
 
 
 [tool.poetry.group.dev.dependencies]
