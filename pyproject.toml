@@ -54,6 +54,7 @@ pyqt-checkbox-table-widget = "^0.0.14"
 # patchworklib = "^0.5.2" # matplotlib figure layout/organization
 patchworklib = "^0.6.1"
 papermill = {extras = ["black"], version = "^2.4.0"}
+neptune-notebooks = "^0.9.3"
 
 
 [tool.poetry.group.dev.dependencies]

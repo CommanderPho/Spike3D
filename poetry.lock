@@ -4288,6 +4288,71 @@ xgboost = ["neptune-xgboost"]
 zenml = ["zenml"]
 
 [[package]]
+name = "neptune-client"
+version = "1.2.0"
+description = "Neptune Client"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "neptune_client-1.2.0-py3-none-any.whl", hash = "sha256:d5ed63ef7a0266b53b8536a7eecfded43e39b10ca97f48350e6b03eca889fc9f"},
+    {file = "neptune_client-1.2.0.tar.gz", hash = "sha256:8f3c1ac63ec956b4bbf24487a950301fa69be7de62e468c31b9fd813aea8617c"},
+]
+
+[package.dependencies]
+boto3 = ">=1.16.0"
+bravado = ">=11.0.0,<12.0.0"
+click = ">=7.0"
+future = ">=0.17.1"
+GitPython = ">=2.0.8"
+oauthlib = ">=2.1.0"
+packaging = "*"
+pandas = "*"
+Pillow = ">=1.1.6"
+psutil = "*"
+PyJWT = "*"
+requests = ">=2.20.0"
+requests-oauthlib = ">=1.0.0"
+six = ">=1.12.0"
+swagger-spec-validator = ">=2.7.4"
+urllib3 = "*"
+websocket-client = ">=0.35.0,<1.0.0 || >1.0.0"
+
+[package.extras]
+aws = ["neptune-aws"]
+detectron2 = ["neptune-detectron2"]
+dev = ["Faker", "altair", "bokeh", "coverage[toml]", "freezegun", "matplotlib", "mock", "moto[s3]", "munch", "plotly", "pre-commit", "pytest", "pytest-mock", "pytest-timeout", "pytest-xdist", "tensorflow", "torch", "vega_datasets"]
+e2e = ["optuna", "pytorch-lightning", "scikit-learn", "torchvision", "transformers", "zenml"]
+fastai = ["neptune-fastai"]
+kedro = ["kedro-neptune"]
+lightgbm = ["neptune-lightgbm"]
+optuna = ["neptune-optuna"]
+prophet = ["neptune-prophet"]
+pytorch-lightning = ["pytorch-lightning"]
+sacred = ["neptune-sacred"]
+sklearn = ["neptune-sklearn"]
+tensorflow-keras = ["neptune-tensorflow-keras"]
+transformers = ["transformers"]
+xgboost = ["neptune-xgboost"]
+zenml = ["zenml"]
+
+[[package]]
+name = "neptune-notebooks"
+version = "0.9.3"
+description = ""
+optional = false
+python-versions = "*"
+files = [
+    {file = "neptune-notebooks-0.9.3.tar.gz", hash = "sha256:514d3b1136bacc22fddaaca0f20bdeafbef3bfb3eb5aeb2997c07dc3880cb0bd"},
+]
+
+[package.dependencies]
+click = ">=7.0"
+future = ">=0.17.1"
+neptune-client = ">=0.9.0"
+notebook = ">=4.3.0"
+"path.py" = "*"
+
+[[package]]
 name = "nest-asyncio"
 version = "1.5.6"
 description = "Patch asyncio to allow nested event loops"
@@ -5001,6 +5066,39 @@ dill = "*"
 matplotlib = ">=3.4"
 numpy = ">=1.16"
 pandas = ">=0.24"
+
+[[package]]
+name = "path"
+version = "16.6.0"
+description = "A module wrapper for os.path"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "path-16.6.0-py3-none-any.whl", hash = "sha256:30fcdc78febebc7b8732dea1bd7393eed8e1fff9add6791af75a29909508f31b"},
+    {file = "path-16.6.0.tar.gz", hash = "sha256:bea3816e1d54f4e33aac78d2031a0b0ed2f95e69db85b45d51f17df97071da69"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)"]
+testing = ["appdirs", "flake8 (<5)", "packaging", "pygments", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)", "pywin32"]
+
+[[package]]
+name = "path-py"
+version = "12.5.0"
+description = "A module wrapper for os.path"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "path.py-12.5.0-py3-none-any.whl", hash = "sha256:a43e82eb2c344c3fd0b9d6352f6b856f40b8b7d3d65cc05978b42c3715668496"},
+    {file = "path.py-12.5.0.tar.gz", hash = "sha256:8d885e8b2497aed005703d94e0fd97943401f035e42a136810308bff034529a8"},
+]
+
+[package.dependencies]
+path = "*"
+
+[package.extras]
+docs = ["jaraco.packaging (>=3.2)", "rst.linker (>=1.9)", "sphinx"]
+testing = ["appdirs", "packaging", "pygments", "pytest (>=3.5,!=3.7.3)", "pytest-black-multipy", "pytest-checkdocs (>=1.2.3)", "pytest-cov", "pytest-flake8"]
 
 [[package]]
 name = "pathspec"
@@ -8614,4 +8712,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "21819fb39b2703a8f67c430b55927c6c8948be2150f77c90f05bec9e0b9fa082"
+content-hash = "9731aa66fe5f7d10961c6685bbbebf2bcc6b6697027b022fe8d60ad2e4a2dd9b"
