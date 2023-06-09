@@ -33,7 +33,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loa
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun
 from pyphoplacecellanalysis.General.Batch.runBatch import run_diba_batch
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import LongShortPipelineTests
-from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import neptune_output_figures
+from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import set_environment_variables, neptune_output_figures
 
 ## Post Compute Validate 2023-05-16:
 from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import _update_pipeline_missing_preprocessing_parameters
@@ -56,7 +56,7 @@ def post_compute_validate(curr_active_pipeline):
 
 def _perform_plots(curr_active_pipeline, enable_neptune=True):
     """ 2023-05-25 - Performs all the batch plotting commands. """
-    from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import neptune_output_figures
+    from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import set_environment_variables, neptune_output_figures
     
     curr_active_pipeline.reload_default_display_functions()
     try:
