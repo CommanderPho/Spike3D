@@ -33,7 +33,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loa
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun
 from pyphoplacecellanalysis.General.Batch.runBatch import run_diba_batch
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import LongShortPipelineTests
-from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import set_environment_variables, neptune_output_figures
+from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import set_environment_variables, neptune_output_figures, batch_perform_all_plots
 
 ## Post Compute Validate 2023-05-16:
 from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import _update_pipeline_missing_preprocessing_parameters
@@ -116,7 +116,7 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
 
     # ### Programmatic Figure Outputs:
     try:
-        batch_perform_all_plots(curr_active_pipeline)
+        neptuner = batch_perform_all_plots(curr_active_pipeline, enable_neptune=True, neptuner=None)
     except Exception as e:
         print(f'_perform_plots failed with exception: {e}')
         # raise e
