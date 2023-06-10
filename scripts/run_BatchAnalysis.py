@@ -33,10 +33,10 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loa
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun
 from pyphoplacecellanalysis.General.Batch.runBatch import run_diba_batch
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import LongShortPipelineTests
-from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import set_environment_variables, neptune_output_figures, batch_perform_all_plots
+# from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import set_environment_variables, neptune_output_figures
+from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import batch_perform_all_plots, _update_pipeline_missing_preprocessing_parameters
 
 ## Post Compute Validate 2023-05-16:
-from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import _update_pipeline_missing_preprocessing_parameters
 
 def post_compute_validate(curr_active_pipeline):
     """ 2023-05-16 - Ensures that the laps are used for the placefield computation epochs, the number of bins are the same between the long and short tracks. """
