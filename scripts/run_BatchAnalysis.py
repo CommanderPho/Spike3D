@@ -96,8 +96,8 @@ def _on_complete_success_execution_session(curr_session_context, curr_session_ba
     # FIXME: doesn't seem like we should always use `force_recompute=True`
     try:
         # # 2023-01-* - Call extended computations to build `_display_short_long_firing_rate_index_comparison` figures:
-        extended_computations_include_whitelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_decoding_analyses', 'long_short_post_decoding'] # do only specifiedl
-        newly_computed_values = batch_extended_computations(curr_active_pipeline, include_whitelist=extended_computations_include_whitelist, include_global_functions=True, fail_on_exception=True, progress_print=True, force_recompute=True, debug_print=False)
+        extended_computations_include_includelist=['long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_decoding_analyses', 'long_short_post_decoding'] # do only specifiedl
+        newly_computed_values = batch_extended_computations(curr_active_pipeline, include_includelist=extended_computations_include_includelist, include_global_functions=True, fail_on_exception=True, progress_print=True, force_recompute=True, debug_print=False)
         print(f'newly_computed_values: {newly_computed_values}')        
         if len(newly_computed_values) > 0:
             print(f'newly_computed_values: {newly_computed_values}. Saving global results...')
@@ -164,7 +164,7 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
         # Run Batch Executions/Computations
         if perform_execute:
             ## Execute the non-global functions with the custom arguments.
-            active_computation_functions_name_whitelist=['_perform_baseline_placefield_computation',
+            active_computation_functions_name_includelist=['_perform_baseline_placefield_computation',
                                                     # '_perform_time_dependent_placefield_computation',
                                                     '_perform_extended_statistics_computation',
                                                     '_perform_position_decoding_computation', 
@@ -177,7 +177,7 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
 
             # All Sessions:
             global_batch_run.execute_all(force_reload=force_reload, skip_extended_batch_computations=True, post_run_callback_fn=_on_complete_success_execution_session,
-                                **{'computation_functions_name_whitelist': active_computation_functions_name_whitelist,
+                                **{'computation_functions_name_includelist': active_computation_functions_name_includelist,
                                 'active_session_computation_configs': None}) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
             # 4m 39.8s
 
@@ -186,7 +186,7 @@ def main(active_global_batch_result_filename='global_batch_result.pkl', perform_
         # curr_sess_context = IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15')
         # global_batch_run.reset_session(curr_sess_context) ## reset the context so it can be ran fresh.
         # global_batch_run.execute_session(session_context=curr_sess_context, force_reload=True, skip_extended_batch_computations=True,
-        #                                               computation_functions_name_whitelist=active_computation_functions_name_whitelist, active_session_computation_configs=None) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
+        #                                               computation_functions_name_includelist=active_computation_functions_name_includelist, active_session_computation_configs=None) # can override `active_session_computation_configs` if we want to set custom ones like only the laps.)
 
         # Save `global_batch_run` to file:
         saveData(global_batch_result_file_path, global_batch_run) # Update the global batch run dictionary

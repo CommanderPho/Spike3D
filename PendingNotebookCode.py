@@ -88,7 +88,7 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
 
 
     # Compute with the new computation config:
-    computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+    computation_functions_name_includelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
                                         '_perform_position_decoding_computation', 
                                         '_perform_firing_rate_trends_computation',
                                         '_perform_pf_find_ratemap_peaks_computation',
@@ -97,8 +97,8 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
                                         # '_perform_recursive_latent_placefield_decoding'
                                     ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
 
-    # computation_functions_name_whitelist=['_perform_baseline_placefield_computation']
-    curr_active_pipeline.perform_computations(computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=None, fail_on_exception=True, debug_print=False, overwrite_extant_results=True) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+    # computation_functions_name_includelist=['_perform_baseline_placefield_computation']
+    curr_active_pipeline.perform_computations(computation_functions_name_includelist=computation_functions_name_includelist, computation_functions_name_excludelist=None, fail_on_exception=True, debug_print=False, overwrite_extant_results=True) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
     return curr_active_pipeline
 
 
