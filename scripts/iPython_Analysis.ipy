@@ -88,7 +88,7 @@ def batch_programmatic_figures(curr_active_pipeline):
     """
     ## 🗨️🟢 2022-10-26 - Jonathan Firing Rate Analyses
     # Perform missing global computations                                                                                  #
-    curr_active_pipeline.perform_specific_computation(computation_functions_name_whitelist=['_perform_jonathan_replay_firing_rate_analyses', '_perform_short_long_pf_overlap_analyses'], fail_on_exception=True, debug_print=True)
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_includelist=['_perform_jonathan_replay_firing_rate_analyses', '_perform_short_long_pf_overlap_analyses'], fail_on_exception=True, debug_print=True)
 
     ## Get global 'jonathan_firing_rate_analysis' results:
     curr_jonathan_firing_rate_analysis = curr_active_pipeline.global_computation_results.computed_data['jonathan_firing_rate_analysis']
@@ -153,17 +153,17 @@ local_session_root_parent_path = global_data_root_parent_path.joinpath('KDIBA')
 
 ## Animal `gor01`:
 local_session_parent_path = local_session_root_parent_path.joinpath('gor01', 'one')
-local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, blacklist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
+local_session_paths_list, local_session_names_list =  find_local_session_paths(local_session_parent_path, excludelist=['PhoHelpers', 'Spike3D-Minimal-Test', 'Unused'])
 
 # local_session_parent_path = local_session_root_parent_path.joinpath('gor01', 'two')
-# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=[])
+# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, excludelist=[])
     
 # ### Animal `vvp01`:
 # local_session_parent_path = local_session_root_parent_path.joinpath('vvp01', 'one')
-# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=[])
+# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, excludelist=[])
 
 # local_session_parent_path = local_session_root_parent_path.joinpath('vvp01', 'two')
-# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, blacklist=[])
+# local_session_paths_list, local_session_names_list =  _find_local_session_paths(local_session_parent_path, excludelist=[])
 
 # local_session_paths_list = [local_session_parent_path.joinpath(a_name).resolve() for a_name in local_session_names_list]
 # basedir = local_session_paths_list[1] # NOT 3
