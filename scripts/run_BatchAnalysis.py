@@ -55,8 +55,7 @@ def post_compute_validate(curr_active_pipeline):
 
 
 
-
-def _on_complete_success_execution_session(curr_session_context, curr_session_basedir, curr_active_pipeline):
+def _on_complete_success_execution_session(active_batch_run, curr_session_context, curr_session_basedir, curr_active_pipeline):
     """ called when the execute_session completes like:
         `post_run_callback_fn_output = post_run_callback_fn(curr_session_context, curr_session_basedir, curr_active_pipeline)`
         
