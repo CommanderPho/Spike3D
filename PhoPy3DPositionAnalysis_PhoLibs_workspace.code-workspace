@@ -95,7 +95,17 @@
 			"ezforo.copy-relative-path-and-line-numbers",
 			"jcmordan.mark-as-excluded",
 			"percy.vscode-pydata-viewer",
-			"codeandstuff.vscode-navigate-edit-history"
+			"codeandstuff.vscode-navigate-edit-history",
+			"fabiospampinato.vscode-highlight",
+			"pnmougel.df-renderer",
+			"donjayamanne.vscode-jupytext",
+			"sourcery.sourcery",
+			"pavan.vsnotebooks",
+			"zhaouv.vscode-python-highlight-cell-splitter",
+			"ryanmaynard.datapack",
+			"congyiwu.vscode-jupytext",
+			"randomfractalsinc.vscode-data-table",
+			"faxes.easycollapse"
 		]
 	},
 	"launch": {
