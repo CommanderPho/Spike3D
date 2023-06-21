@@ -66,7 +66,8 @@
 			"iterativecloud.notebook-chatcompletion",
 			"vikasdubey0551.jupyterlab-browser",
 			"sourcery.sourcery",
-			"felicio.vscode-fold"
+			"felicio.vscode-fold",
+			"herdingbits.file-focus"
 		]
 	}
 }
