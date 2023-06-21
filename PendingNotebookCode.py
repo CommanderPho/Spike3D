@@ -29,6 +29,124 @@ from pyphocorehelpers.indexing_helpers import safe_numpy_index
 from pyphocorehelpers.indexing_helpers import Paginator
 
 
+# 2023-06-20 21:37 - Factor out Figure 1 Code
+
+from neuropy.utils.result_context import IdentifyingContext
+from pyphoplacecellanalysis.GUI.Qt.Mixins.PaginationMixins import SelectionsObject
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import determine_long_short_pf1D_indicies_sort_by_peak
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _prepare_spikes_df_from_filter_epochs, _find_example_epochs
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import JonathanFiringRateAnalysisResult
+
+
+
+def get_user_annotations():
+    """ hardcoded user annotations """
+    user_annotations = {}
+
+    ## IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15')
+    user_annotations[IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15',display_fn_name='DecodedEpochSlices',epochs='replays',decoder='long_results_obj',user_annotation='selections')] = np.array([ 13,  14,  15,  25,  27,  28,  31,  37,  42,  45,  48,  57,  61,  62,  63,  76,  79,  82,  89,  90, 111, 112, 113, 115])
+    user_annotations[IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15',display_fn_name='DecodedEpochSlices',epochs='replays',decoder='short_results_obj',user_annotation='selections')] = np.array([  9,  11,  13,  14,  15,  20,  22,  25,  37,  40,  45,  48,  61, 62,  76,  79,  84,  89,  90,  93,  94, 111, 112, 113, 115, 121])
+
+    ## IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19')
+    user_annotations[IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19',display_fn_name='DecodedEpochSlices',epochs='replays',decoder='long_results_obj',user_annotation='selections')] = np.array([5,  13,  15,  17,  20,  21,  24,  31,  33,  43,  44,  49,  63, 64,  66,  68,  70,  71,  74,  76,  77,  78,  84,  90,  94,  95, 104, 105, 122, 123])
+    user_annotations[IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19',display_fn_name='DecodedEpochSlices',epochs='replays',decoder='short_results_obj',user_annotation='selections')] = np.array([ 12,  13,  15,  17,  20,  24,  30,  31,  32,  33,  41,  43,  49, 54,  55,  68,  70,  71,  73,  76,  77,  78,  84,  89,  94, 100, 104, 105, 111, 114, 115, 117, 118, 122, 123, 131])
+
+    return user_annotations
+
+
+
+def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline):
+    """ 
+    
+    # general approach copied from `pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations._epoch_unit_avg_firing_rates`
+    
+    # requires: selection_idxs_L, selection_idxs_S
+        - Uses the `long_short_decoding_analyses` global result to access `long_results_obj.active_filter_epochs`:
+        - Uses the `JonathanFiringRateAnalysisResult` global result to get info about the long/short placefields:
+    
+    long_results_obj, short_results_obj 
+    """
+   
+    
+
+    ## Use the `long_short_decoding_analyses` global result to access `long_results_obj.active_filter_epochs`:
+    curr_long_short_decoding_analyses = curr_active_pipeline.global_computation_results.computed_data['long_short_leave_one_out_decoding_analysis']
+    long_one_step_decoder_1D, short_one_step_decoder_1D, long_replays, short_replays, global_replays, long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, shared_aclus, long_short_pf_neurons_diff, n_neurons, long_results_obj, short_results_obj, is_global = curr_long_short_decoding_analyses.long_decoder, curr_long_short_decoding_analyses.short_decoder, curr_long_short_decoding_analyses.long_replays, curr_long_short_decoding_analyses.short_replays, curr_long_short_decoding_analyses.global_replays, curr_long_short_decoding_analyses.long_shared_aclus_only_decoder, curr_long_short_decoding_analyses.short_shared_aclus_only_decoder, curr_long_short_decoding_analyses.shared_aclus, curr_long_short_decoding_analyses.long_short_pf_neurons_diff, curr_long_short_decoding_analyses.n_neurons, curr_long_short_decoding_analyses.long_results_obj, curr_long_short_decoding_analyses.short_results_obj, curr_long_short_decoding_analyses.is_global
+
+    ## Use the `JonathanFiringRateAnalysisResult` to get info about the long/short placefields:
+    jonathan_firing_rate_analysis_result = JonathanFiringRateAnalysisResult(**curr_active_pipeline.global_computation_results.computed_data.jonathan_firing_rate_analysis.to_dict())
+    neuron_replay_stats_df, short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset = jonathan_firing_rate_analysis_result.get_cell_track_partitions()
+
+    # included_neuron_ids = deepcopy(exclusive_aclus)
+    # included_neuron_ids = None
+    included_neuron_ids = EITHER_subset.track_exclusive_aclus
+    spikes_df: pd.DataFrame = deepcopy(curr_active_pipeline.sess.spikes_df).spikes.sliced_by_neuron_type('pyr')
+    # filter_epochs = deepcopy(curr_active_pipeline.sess.replay)
+    # spikes_df = deepcopy(long_results_obj.spikes_df) # LeaveOneOutDecodingAnalysisResult
+    # spikes_df[np.isin(spikes_df.aclu, included_neuron_ids)]
+    filter_epochs_df = deepcopy(long_results_obj.active_filter_epochs.to_dataframe())
+
+
+    filter_epoch_spikes_df, filter_epochs_df = _find_example_epochs(spikes_df, filter_epochs_df, EITHER_subset.track_exclusive_aclus, included_neuron_ids=included_neuron_ids) # adds 'active_unique_aclus'
+    # epoch_contains_any_exclusive_aclus.append(np.isin(epoch_spikes_unique_aclus, exclusive_aclus).any())
+    filter_epochs_df['has_SHORT_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, short_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in filter_epochs_df['active_unique_aclus']]
+    filter_epochs_df['has_LONG_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, long_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in filter_epochs_df['active_unique_aclus']]
+
+    # Get the manual user annotations to determine the good replays for both long/short decoding:
+    user_annotations = get_user_annotations()
+
+    final_context_L = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='long_results_obj')
+    final_context_S = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='short_results_obj')
+    # _out_pagination_controller.params.active_identifying_figure_ctx.adding_context(None,  user_annotation="selections")
+    selections_context_L = final_context_L.adding_context(None,  user_annotation="selections")
+    selections_context_S = final_context_S.adding_context(None,  user_annotation="selections")
+    
+    ## try to get the user annotations for this session:
+    selection_idxs_L = user_annotations[selections_context_L]
+    selection_idxs_S = user_annotations[selections_context_S]
+    
+    # for updating the filter_epochs_df (`filter_epochs_df`) from the selections:
+    filter_epochs_df['long_is_user_included'] = np.isin(filter_epochs_df.index, selection_idxs_L)
+    filter_epochs_df['short_is_user_included'] = np.isin(filter_epochs_df.index, selection_idxs_S)
+
+
+
+    #### Finally, get only the epochs that meet the criteria:
+
+    # # only include those with one or more exclusive aclu:
+    # considered_filter_epochs_df = filter_epochs_df[filter_epochs_df.contains_one_exclusive_aclu].copy()
+    # # require inclusion for long or short:
+    # considered_filter_epochs_df = considered_filter_epochs_df[np.logical_xor(filter_epochs_df['long_is_user_included'], filter_epochs_df['short_is_user_included'])]
+
+    # Get separate long-side/short-side canidate replays:
+    # considered_long_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_LONG_exclusive_aclu'] & ~filter_epochs_df['short_is_user_included'] & filter_epochs_df['long_is_user_included'])].copy() # replay not considered good by user for short decoding, but it is for long decoding. Finally, has at least one LONG exclusive ACLU.
+    considered_long_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_LONG_exclusive_aclu'] & filter_epochs_df['long_is_user_included'])].copy() # replay not considered good by user for short decoding, but it is for long decoding. Finally, has at least one LONG exclusive ACLU.
+    # considered_long_side_epochs_df
+    # considered_short_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_SHORT_exclusive_aclu'] & filter_epochs_df['short_is_user_included'] & ~filter_epochs_df['long_is_user_included'])].copy()  # replay not considered good by user for long decoding, but it is for short decoding. Finally, has at least one SHORT exclusive ACLU.
+    considered_short_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_SHORT_exclusive_aclu'] & filter_epochs_df['short_is_user_included'])].copy()  # replay not considered good by user for long decoding, but it is for short decoding. Finally, has at least one SHORT exclusive ACLU.
+    # considered_short_side_epochs_df
+
+
+    # Common for all rasters:
+    new_all_aclus_sort_indicies = determine_long_short_pf1D_indicies_sort_by_peak(curr_active_pipeline=curr_active_pipeline, curr_any_context_neurons=EITHER_subset.track_exclusive_aclus)
+
+    # considered_filter_epochs_df = deepcopy(considered_long_side_epochs_df)
+    # considered_filter_epochs_df = deepcopy(considered_short_side_epochs_df)
+    # considered_filter_epochs_df = deepcopy(filter_epochs_df)
+    # filter_epoch_spikes_df = _prepare_spikes_df_from_filter_epochs(filter_epoch_spikes_df, filter_epochs=considered_filter_epochs_df, included_neuron_ids=EITHER_subset.track_exclusive_aclus, epoch_id_key_name='replay_epoch_id', debug_print=False) # replay_epoch_id
+
+    # Build one spikes_df for Long and Short:
+    filter_epoch_spikes_df_L, filter_epoch_spikes_df_S = [_prepare_spikes_df_from_filter_epochs(filter_epoch_spikes_df, filter_epochs=an_epochs_df, included_neuron_ids=EITHER_subset.track_exclusive_aclus, epoch_id_key_name='replay_epoch_id', debug_print=False) for an_epochs_df in (considered_long_side_epochs_df, considered_short_side_epochs_df)]
+    
+    return (considered_long_side_epochs_df, considered_short_side_epochs_df), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies
+
+
+
+
+
+
+
 
 
 
