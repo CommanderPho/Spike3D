@@ -57,7 +57,7 @@ def get_user_annotations():
     return user_annotations
 
 
-
+@function_attributes(short_name=None, tags=['FIGURE1', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 21:40', related_items=[])
 def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline):
     """ 
     
@@ -162,16 +162,15 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     decoding_time_bin_size = long_one_step_decoder_1D.time_bin_size # 1.0/30.0 # 0.03333333333333333
 
     ## Get global 'long_short_post_decoding' results:
-    curr_long_short_post_decoding = curr_active_pipeline.global_computation_results.computed_data['long_short_post_decoding']
-    expected_v_observed_result, curr_long_short_rr = curr_long_short_post_decoding.expected_v_observed_result, curr_long_short_post_decoding.rate_remapping
-    rate_remapping_df, high_remapping_cells_only = curr_long_short_rr.rr_df, curr_long_short_rr.high_only_rr_df
-    Flat_epoch_time_bins_mean, Flat_decoder_time_bin_centers, num_neurons, num_timebins_in_epoch, num_total_flat_timebins, is_short_track_epoch, is_long_track_epoch, short_short_diff, long_long_diff = expected_v_observed_result['Flat_epoch_time_bins_mean'], expected_v_observed_result['Flat_decoder_time_bin_centers'], expected_v_observed_result['num_neurons'], expected_v_observed_result['num_timebins_in_epoch'], expected_v_observed_result['num_total_flat_timebins'], expected_v_observed_result['is_short_track_epoch'], expected_v_observed_result['is_long_track_epoch'], expected_v_observed_result['short_short_diff'], expected_v_observed_result['long_long_diff']
+    # curr_long_short_post_decoding = curr_active_pipeline.global_computation_results.computed_data['long_short_post_decoding']
+    # expected_v_observed_result, curr_long_short_rr = curr_long_short_post_decoding.expected_v_observed_result, curr_long_short_post_decoding.rate_remapping
+    # rate_remapping_df, high_remapping_cells_only = curr_long_short_rr.rr_df, curr_long_short_rr.high_only_rr_df
+    # Flat_epoch_time_bins_mean, Flat_decoder_time_bin_centers, num_neurons, num_timebins_in_epoch, num_total_flat_timebins, is_short_track_epoch, is_long_track_epoch, short_short_diff, long_long_diff = expected_v_observed_result['Flat_epoch_time_bins_mean'], expected_v_observed_result['Flat_decoder_time_bin_centers'], expected_v_observed_result['num_neurons'], expected_v_observed_result['num_timebins_in_epoch'], expected_v_observed_result['num_total_flat_timebins'], expected_v_observed_result['is_short_track_epoch'], expected_v_observed_result['is_long_track_epoch'], expected_v_observed_result['short_short_diff'], expected_v_observed_result['long_long_diff']
 
     jonathan_firing_rate_analysis_result = JonathanFiringRateAnalysisResult(**curr_active_pipeline.global_computation_results.computed_data.jonathan_firing_rate_analysis.to_dict())
 
 
     curr_active_pipeline.reload_default_display_functions()
-
 
     # ==================================================================================================================== #
     # Show 1D Placefields for both Short and Long (top half of the figure)                                                 #
@@ -192,13 +191,15 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     #                                    short_kwargs={'included_unit_neuron_IDs': curr_any_context_neurons, 'included_unit_indicies': None,'sortby': sort_idx, 'single_cell_pfmap_processing_fn': short_single_cell_pfmap_processing_fn, 'curve_hatch_style': {'hatch':'///', 'edgecolor':'k'}},
     #                                   )
 
-    out = curr_active_pipeline.display('_display_short_long_pf1D_comparison', active_identifying_session_ctx, single_figure=False, debug_print=False, fignum='Short v Long pf1D Comparison',
+    pf1d_compare_graphics = curr_active_pipeline.display('_display_short_long_pf1D_comparison', active_identifying_session_ctx, single_figure=False, debug_print=False, fignum='Short v Long pf1D Comparison',
                                     long_kwargs={'sortby': sort_idx, 'single_cell_pfmap_processing_fn': long_single_cell_pfmap_processing_fn},
                                     short_kwargs={'sortby': sort_idx, 'single_cell_pfmap_processing_fn': short_single_cell_pfmap_processing_fn, 'curve_hatch_style': {'hatch':'///', 'edgecolor':'k'}},
+                                    save_figure=False,
+                                    defer_render=False
                                     )
                                     
 
-# ax = out.axes[0]
+    # ax = out.axes[0]
 
 
     # ==================================================================================================================== #
@@ -208,12 +209,54 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
 
     # Common for all rasters:
     new_all_aclus_sort_indicies = determine_long_short_pf1D_indicies_sort_by_peak(curr_active_pipeline=curr_active_pipeline, curr_any_context_neurons=EITHER_subset.track_exclusive_aclus)
+    
+    # unit_colors_list = None # default rainbow of colors for the raster plots
+    neuron_qcolors_list = [pg.mkColor('green') for aclu in EITHER_subset.track_exclusive_aclus] # solid green for all
+    unit_colors_list = DataSeriesColorHelpers.qColorsList_to_NDarray(neuron_qcolors_list, is_255_array=True)
+
+    # Copy and modify the colors for the cells that are long/short exclusive:
+    unit_colors_list_L = deepcopy(unit_colors_list)
+    is_L_exclusive = np.isin(EITHER_subset.track_exclusive_aclus, long_exclusive.track_exclusive_aclus) # get long exclusive
+    unit_colors_list_L[0, is_L_exclusive] = 255 # [1.0, 0.0, 0.0, 1.0]
+    unit_colors_list_L[1, is_L_exclusive] = 0.0
+    unit_colors_list_L[2, is_L_exclusive] = 0.0
+    
+    unit_colors_list_S = deepcopy(unit_colors_list)
+    is_S_exclusive = np.isin(EITHER_subset.track_exclusive_aclus, short_exclusive.track_exclusive_aclus) # get short exclusive
+    unit_colors_list_S[0, is_S_exclusive] = 0.0 # [1.0, 0.0, 0.0, 1.0]
+    unit_colors_list_S[1, is_S_exclusive] = 0.0
+    unit_colors_list_S[2, is_S_exclusive] = 255.0
+    
+    
+    ## Build scatterplot args:    
+    # Common Tick Label
+    vtick = pg.QtGui.QPainterPath()
+
+    # Thicker Tick Label:
+    tick_width = 0.25
+    # tick_width = 10.0
+    half_tick_width = 0.5 * tick_width
+    vtick.moveTo(-half_tick_width, -0.5)
+    vtick.addRect(-half_tick_width, -0.5, tick_width, 1.0) # x, y, width, height
+    pen = {'color': 'white', 'width': 1}
+    override_scatter_plot_kwargs = dict(pxMode=True, symbol=vtick, size=6, pen=pen)
+
+    # Not sure if needed:
+    # filter_epoch_spikes_df_L.spikes.rebuild_fragile_linear_neuron_IDXs()
+
+    example_epoch_rasters_L = plot_multiple_raster_plot(epochs_df_L, filter_epoch_spikes_df_L, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_L, scatter_plot_kwargs=override_scatter_plot_kwargs,
+										epoch_id_key_name='replay_epoch_id', scatter_app_name="Long Decoded Example Replays")
+    # app_L, win_L, plots_L, plots_data_L = example_epoch_rasters_L
+
+    example_epoch_rasters_S = plot_multiple_raster_plot(epochs_df_S, filter_epoch_spikes_df_S, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_S, scatter_plot_kwargs=override_scatter_plot_kwargs,
+                                                                 epoch_id_key_name='replay_epoch_id', scatter_app_name="Short Decoded Example Replays")
+    # app_S, win_S, plots_S, plots_data_S = example_epoch_rasters_S
 
 
-    _out = curr_active_pipeline.display('_display_long_and_short_stacked_epoch_slices')
+    example_stacked_epoch_graphics = curr_active_pipeline.display('_display_long_and_short_stacked_epoch_slices', defer_render=False, save_figure=True)
 
 
-
+    return pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics
 
 
 # ==================================================================================================================== #
