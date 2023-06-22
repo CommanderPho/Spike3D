@@ -114,9 +114,6 @@ def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline):
     # included_neuron_ids = None
     included_neuron_ids = EITHER_subset.track_exclusive_aclus
     spikes_df: pd.DataFrame = deepcopy(curr_active_pipeline.sess.spikes_df).spikes.sliced_by_neuron_type('pyr')
-    # filter_epochs = deepcopy(curr_active_pipeline.sess.replay)
-    # spikes_df = deepcopy(long_results_obj.spikes_df) # LeaveOneOutDecodingAnalysisResult
-    # spikes_df[np.isin(spikes_df.aclu, included_neuron_ids)]
     filter_epochs_df = deepcopy(long_results_obj.active_filter_epochs.to_dataframe())
 
 
@@ -171,6 +168,9 @@ def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline):
     # Build one spikes_df for Long and Short:
     filter_epoch_spikes_df_L, filter_epoch_spikes_df_S = [_prepare_spikes_df_from_filter_epochs(filter_epoch_spikes_df, filter_epochs=an_epochs_df, included_neuron_ids=EITHER_subset.track_exclusive_aclus, epoch_id_key_name='replay_epoch_id', debug_print=False) for an_epochs_df in (considered_long_side_epochs_df, considered_short_side_epochs_df)]
     
+
+    # requires epochs_df_L, epochs_df_S from `PAPER_FIGURE_figure_1_add_replay_epoch_rasters`
+
     return (considered_long_side_epochs_df, considered_short_side_epochs_df), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies
 
 
