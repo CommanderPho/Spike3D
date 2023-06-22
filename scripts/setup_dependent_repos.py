@@ -25,8 +25,8 @@ import glob
 
 from helpers.poetry_helpers import build_pyproject_toml_file
 from helpers.source_code_helpers import did_file_hash_change # for finding .whl file after building binary repo
-
-
+from helpers.git_helpers import GitHelpers
+from helpers.poetry_helpers import install_ipython_kernel
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
@@ -146,7 +146,7 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enab
         # update existing repo
         print(f'\t repo exists. Updating {repo_path}...')
         os.chdir(repo_path)
-        _reset_local_changes(repo_path)
+        GitHelpers.reset_local_changes(repo_path)
         # new files that are local only still hold things up
         os.system("git pull")
 
@@ -205,6 +205,7 @@ def main():
     # os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
     print(f'done with all.')
 
+    install_ipython_kernel(kernel_name="spike3d-poetry") # run this to install the kernel for the poetry environment
     os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
 
 if __name__ == '__main__':
