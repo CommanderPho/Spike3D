@@ -24,6 +24,7 @@
 			"**/.qt_for_python": true,
 			"**/.settings": true,
 			"**/.spyproject": true,
+			"**/.venv": true,
 			"**/.virtual_documents": true,
 			"**/.vscode": true,
 			"**/*.7z": true
