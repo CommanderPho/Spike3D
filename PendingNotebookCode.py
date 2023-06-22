@@ -42,6 +42,36 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContex
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
 from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
 
+
+# ==================================================================================================================== #
+# 2023-06-22 13:24 `attrs` auto field exploration                                                                      #
+# ==================================================================================================================== #
+
+# from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+# from attrs import asdict, fields, evolve
+
+# ## For loop version:
+# for a_field in fields(type(subset)):
+# 	if 'n_epochs' in a_field.metadata.get('shape', ()):
+# 		# is a field indexed by epochs
+# 		print(a_field.name)
+# 		print(a_field.value)
+
+# # Find all fields that contain a 'n_neurons':
+# epoch_indexed_attributes = [a_field for a_field in fields(type(subset)) if ('n_epochs' in a_field.metadata.get('shape', ()))]
+# epoch_indexed_attributes
+
+# # neuron_shape_index_for_attributes = [a_field.metadata['shape'].index('n_neurons') for a_field in neuron_indexed_attributes]
+# epoch_shape_index_for_attribute_name_dict = {a_field.name:a_field.metadata['shape'].index('n_epochs') for a_field in epoch_indexed_attributes} # need the actual attributes so that we can get the .metadata['shape'] from them and find the n_epochs index location
+# epoch_shape_index_for_attribute_name_dict
+# _temp_obj_dict = {k:v.take(indices=is_included_in_subset, axis=epoch_shape_index_for_attribute_name_dict[k]) for k, v in _temp_obj_dict.items()} # filter the n_epochs axis containing items to get a reduced dictionary
+# evolve(subset, **_temp_obj_dict)
+
+
+# ==================================================================================================================== #
+# 2023-06-21 User Annotations and Paper Figure 1                                                                       #
+# ==================================================================================================================== #
+
 def get_user_annotations():
     """ hardcoded user annotations """
     user_annotations = {}
