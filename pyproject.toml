@@ -30,6 +30,7 @@ dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
 qtconsole = "^5.4.0"
 ipython = "^8.11.0"
 attrs = "^22.2.0"
+cattrs = "^23.1.2"
 pillow = "^9.4.0"
 seaborn = "^0.12.2"
 param = "^1.13.0"
@@ -39,6 +40,7 @@ nptyping = {extras = ["complete"], version = "^2.5.0"} # allows specifying Numpy
 beartype = "^0.14.0" # for strict type enforcement of function calls
 awkward = "^2.2.1" # for ragged-arrays, testing
 pyqt-checkbox-table-widget = "^0.0.14"
+patchworklib = "^0.6.1" # matplotlib figure layout/organization
 # dvc = "^2.57.2"
 # dvclive = "^2.9.0"
 # trame = "^2.3.2" # visualization, currently not used
@@ -51,10 +53,9 @@ pyqt-checkbox-table-widget = "^0.0.14"
 # jupyter-rfb = "^0.3.3"
 # deeptime = "^0.4.4" # what is this? Analysis?
 # python-picard = "^0.7"
-# patchworklib = "^0.5.2" # matplotlib figure layout/organization
-patchworklib = "^0.6.1"
-cattrs = "^23.1.2"
-
+# patchworklib = "^0.5.2" 
+flexitext = "^0.2.0"
+adjusttext = "^0.8"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
@@ -66,6 +67,7 @@ dvc = {version = "^2.45.1", extras = ["gdrive"]}
 cookiecutter = "^2.1.1"
 jedi-language-server = "^0.40.0"
 python-lsp-server = "^1.7.1"
+pylustrator = "^1.3.0"
 # sphinx = "^6.1.3"
 # sphinx-autodoc-typehints = "^1.22"
 # psgdemos = "^1.12.1"
