@@ -149,25 +149,14 @@ def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline):
     # considered_filter_epochs_df = considered_filter_epochs_df[np.logical_xor(filter_epochs_df['long_is_user_included'], filter_epochs_df['short_is_user_included'])]
 
     # Get separate long-side/short-side canidate replays:
-    # considered_long_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_LONG_exclusive_aclu'] & ~filter_epochs_df['short_is_user_included'] & filter_epochs_df['long_is_user_included'])].copy() # replay not considered good by user for short decoding, but it is for long decoding. Finally, has at least one LONG exclusive ACLU.
     considered_long_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_LONG_exclusive_aclu'] & filter_epochs_df['long_is_user_included'])].copy() # replay not considered good by user for short decoding, but it is for long decoding. Finally, has at least one LONG exclusive ACLU.
-    # considered_long_side_epochs_df
-    # considered_short_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_SHORT_exclusive_aclu'] & filter_epochs_df['short_is_user_included'] & ~filter_epochs_df['long_is_user_included'])].copy()  # replay not considered good by user for long decoding, but it is for short decoding. Finally, has at least one SHORT exclusive ACLU.
     considered_short_side_epochs_df = filter_epochs_df[(filter_epochs_df['has_SHORT_exclusive_aclu'] & filter_epochs_df['short_is_user_included'])].copy()  # replay not considered good by user for long decoding, but it is for short decoding. Finally, has at least one SHORT exclusive ACLU.
-    # considered_short_side_epochs_df
-
 
     # Common for all rasters:
     new_all_aclus_sort_indicies = determine_long_short_pf1D_indicies_sort_by_peak(curr_active_pipeline=curr_active_pipeline, curr_any_context_neurons=EITHER_subset.track_exclusive_aclus)
 
-    # considered_filter_epochs_df = deepcopy(considered_long_side_epochs_df)
-    # considered_filter_epochs_df = deepcopy(considered_short_side_epochs_df)
-    # considered_filter_epochs_df = deepcopy(filter_epochs_df)
-    # filter_epoch_spikes_df = _prepare_spikes_df_from_filter_epochs(filter_epoch_spikes_df, filter_epochs=considered_filter_epochs_df, included_neuron_ids=EITHER_subset.track_exclusive_aclus, epoch_id_key_name='replay_epoch_id', debug_print=False) # replay_epoch_id
-
     # Build one spikes_df for Long and Short:
-    filter_epoch_spikes_df_L, filter_epoch_spikes_df_S = [_prepare_spikes_df_from_filter_epochs(filter_epoch_spikes_df, filter_epochs=an_epochs_df, included_neuron_ids=EITHER_subset.track_exclusive_aclus, epoch_id_key_name='replay_epoch_id', debug_print=False) for an_epochs_df in (considered_long_side_epochs_df, considered_short_side_epochs_df)]
-    
+    filter_epoch_spikes_df_L, filter_epoch_spikes_df_S = [_prepare_spikes_df_from_filter_epochs(filter_epoch_spikes_df, filter_epochs=an_epochs_df, included_neuron_ids=EITHER_subset.track_exclusive_aclus, epoch_id_key_name='replay_epoch_id', debug_print=False) for an_epochs_df in (considered_long_side_epochs_df, considered_short_side_epochs_df)]    
 
     # requires epochs_df_L, epochs_df_S from `PAPER_FIGURE_figure_1_add_replay_epoch_rasters`
 
@@ -237,9 +226,6 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     # ==================================================================================================================== #
     (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
 
-    # Common for all rasters:
-    new_all_aclus_sort_indicies = determine_long_short_pf1D_indicies_sort_by_peak(curr_active_pipeline=curr_active_pipeline, curr_any_context_neurons=EITHER_subset.track_exclusive_aclus)
-    
     # unit_colors_list = None # default rainbow of colors for the raster plots
     neuron_qcolors_list = [pg.mkColor('green') for aclu in EITHER_subset.track_exclusive_aclus] # solid green for all
     unit_colors_list = DataSeriesColorHelpers.qColorsList_to_NDarray(neuron_qcolors_list, is_255_array=True)
