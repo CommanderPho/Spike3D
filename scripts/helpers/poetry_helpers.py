@@ -135,6 +135,12 @@ def get_current_poetry_env(working_dir=None) -> str:
     return curr_env_path
 
 
+def install_ipython_kernel(kernel_name:str="spike3d-poetry"):
+    """ run this to install the kernel for the poetry environment """
+    os.system(f"poetry run ipython kernel install --user --name={kernel_name}") # run this to install the kernel for the poetry environment
+
+
+
 # global_script_dir = Path(os.path.dirname(os.path.abspath(__file__))) #
 # global_exports_folder = global_script_dir.joinpath('exports').resolve()
 # print(f'script_dir: {global_script_dir}\nglobal_exports_folder: {global_exports_folder}')
