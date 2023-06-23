@@ -105,7 +105,8 @@
 			"ryanmaynard.datapack",
 			"congyiwu.vscode-jupytext",
 			"randomfractalsinc.vscode-data-table",
-			"faxes.easycollapse"
+			"faxes.easycollapse",
+			"genap.copy-to-chat-gpt"
 		]
 	},
 	"launch": {
