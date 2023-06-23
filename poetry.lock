@@ -5173,13 +5173,13 @@ yarg = "*"
 
 [[package]]
 name = "platformdirs"
-version = "3.7.0"
+version = "3.8.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-3.7.0-py3-none-any.whl", hash = "sha256:cfd065ba43133ff103ab3bd10aecb095c2a0035fcd1f07217c9376900d94ba07"},
-    {file = "platformdirs-3.7.0.tar.gz", hash = "sha256:87fbf6473e87c078d536980ba970a472422e94f17b752cfad17024c18876d481"},
+    {file = "platformdirs-3.8.0-py3-none-any.whl", hash = "sha256:ca9ed98ce73076ba72e092b23d3c93ea6c4e186b3f1c3dad6edd98ff6ffcca2e"},
+    {file = "platformdirs-3.8.0.tar.gz", hash = "sha256:b0cabcb11063d21a0b261d557acb0a9d2126350e63b70cdf7db6347baea456dc"},
 ]
 
 [package.extras]
@@ -5528,13 +5528,13 @@ pyparsing = ">=2.1.4"
 
 [[package]]
 name = "pydrive2"
-version = "1.15.4"
+version = "1.16.0"
 description = "Google Drive API made easy. Maintained fork of PyDrive."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "PyDrive2-1.15.4-py3-none-any.whl", hash = "sha256:91fe28e5f094a6dfff834495c4aee0041cbef979467ad27cd0d4b1f91afa8869"},
-    {file = "PyDrive2-1.15.4.tar.gz", hash = "sha256:0c011b74ebc24f3c6ca72820626b77f1dfe0ae88f5740c5a5cf96e83dd79ba99"},
+    {file = "PyDrive2-1.16.0-py3-none-any.whl", hash = "sha256:6c38392ccdd2ea6e0615ffcd93ee30be1fac62a170ddeacebad7958a3e040ca4"},
+    {file = "PyDrive2-1.16.0.tar.gz", hash = "sha256:bbdc8d2e002e4f87d20f9bd849f93fd6589ebb40dad97f94b6f382b4ffd6b3c1"},
 ]
 
 [package.dependencies]
