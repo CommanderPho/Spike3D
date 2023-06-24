@@ -104,6 +104,13 @@ class UserAnnotationsManager:
         
         saved_selection_L.is_selected
         
+        
+        saved_selection_L = update_selections_from_annotations(saved_selection_L, user_anootations)
+        saved_selection_S = update_selections_from_annotations(saved_selection_S, user_anootations)
+        ## re-apply the selections:
+        pagination_controller_L.restore_selections(saved_selection_L)
+        pagination_controller_S.restore_selections(saved_selection_S)
+
         """
         final_figure_context = saved_selection.figure_ctx
         was_annotation_found = False
@@ -161,7 +168,7 @@ def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_p
     filter_epochs_df['has_LONG_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, long_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in filter_epochs_df['active_unique_aclus']]
 
     # Get the manual user annotations to determine the good replays for both long/short decoding:
-    user_annotations = get_user_annotations()
+    user_annotations = UserAnnotationsManager.get_user_annotations()
 
     final_context_L = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='long_results_obj')
     final_context_S = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='short_results_obj')
