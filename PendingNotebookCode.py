@@ -68,6 +68,23 @@ from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSer
 # evolve(subset, **_temp_obj_dict)
 
 
+
+
+# ==================================================================================================================== #
+# 2023-06-26 Figure 3                                                                                                  #
+# ==================================================================================================================== #
+def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True):
+    """ Firing rate index, Long|Short firing rate figures 
+
+    from PendingNotebookCode import PAPER_FIGURE_figure_3
+    _out, _out2 = PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True)
+    
+    """
+    _out = curr_active_pipeline.display('_display_short_long_firing_rate_index_comparison', curr_active_pipeline.get_session_context(), defer_render=defer_render, save_figure=save_figure)
+    _out2 = curr_active_pipeline.display('_display_long_and_short_firing_rate_replays_v_laps', curr_active_pipeline.get_session_context(), defer_render=defer_render, save_figure=save_figure)
+
+    return (_out, _out2)
+
 # ==================================================================================================================== #
 # 2023-06-21 User Annotations and Paper Figure 1                                                                       #
 # ==================================================================================================================== #
