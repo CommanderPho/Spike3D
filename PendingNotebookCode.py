@@ -101,14 +101,71 @@ class PaperFigureTwo:
 
         # Note that in general LxC and SxC might have differing numbers of cells.
         self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
-        
-        
-                
-    def display(self, defer_show=False):
-        import numpy as np
-        import matplotlib.pyplot as plt
 
-        def fig_2_Theta_FR(Fig2_Laps_FR, defer_show=False):
+
+
+    # @register_variant('fig_2_Theta_FR', 'matplotlib')
+    @staticmethod
+    def fig_2_Theta_FR_pyqtgraph(Fig2_Laps_FR):
+        """ Plots the bar graph that displays the Long/Short eXclusive cells during the laps (theta).
+        Usage:
+            _fig_2_theta_out = fig_2_Theta_FR(Fig2_Laps_FR)
+        """
+        x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
+        
+        mean_values = np.array([v[0] for v in Fig2_Laps_FR])
+        std_values = np.array([v[1] for v in Fig2_Laps_FR])
+
+        app = pg.mkQApp("new")
+        win = pg.GraphicsWindow(title="Laps")
+        plot = win.addPlot()
+
+        x_axis = pg.AxisItem(orientation='bottom')
+        x_axis.setTicks([list(enumerate(x_labels))])
+        plot.setAxisItems({'bottom': x_axis})
+        plot.setLabel('left', 'Laps Firing Rates (Hz)')
+        plot.setTitle('Lap (Theta) Firing Rates for Long/Short eXclusive Cells on each track')
+
+        bars = pg.BarGraphItem(x=np.arange(len(x_labels)), height=mean_values, width=0.3, brush='b')
+        plot.addItem(bars)
+
+        error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
+        plot.addItem(error_bars)
+
+        return app, win, plot, bars
+
+    @staticmethod
+    def fig_2_Replay_FR_pyqtgraph(Fig2_Replay_FR):
+        """ Plots the bar graph that displays the Long/Short eXclusive cells during the replays.
+        
+        Usage:
+            _fig_2_replay_out = fig_2_Replay_FR(Fig2_Replay_FR)
+        
+        """
+        x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
+        mean_values = np.array([v[0] for v in Fig2_Replay_FR])
+        std_values = np.array([v[1] for v in Fig2_Replay_FR])
+
+        app = pg.mkQApp("new")
+        win = pg.GraphicsWindow(title="Replay")
+        plot = win.addPlot()
+
+        x_axis = pg.AxisItem(orientation='bottom')
+        x_axis.setTicks([list(enumerate(x_labels))])
+        plot.setAxisItems({'bottom': x_axis})
+        plot.setLabel('left', 'Replay Firing Rates (Hz)')
+        plot.setTitle('Replay Firing Rates for Long/Short eXclusive Cells on each track')
+
+        bars = pg.BarGraphItem(x=np.arange(len(x_labels)), height=mean_values, width=0.3, brush='b')
+        plot.addItem(bars)
+
+        error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
+        plot.addItem(error_bars)
+
+        return app, win, plot, bars
+        
+    @staticmethod
+    def fig_2_Theta_FR_matplotlib(Fig2_Laps_FR, defer_show=False):
             # x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
             x_labels = ['$L_x C$\t$\\theta_{\\Delta -}$', '$L_x C$\t$\\theta_{\\Delta +}$', '$S_x C$\t$\\theta_{\\Delta -}$', '$S_x C$\t$\\theta_{\\Delta +}$']
 
@@ -136,34 +193,49 @@ class PaperFigureTwo:
                         
             return fig, ax, bars
         
-        def fig_2_Replay_FR(Fig2_Replay_FR, defer_show=False):
-            # x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
-            x_labels = ['$L_x C$\t$R_{\\Delta -}$', '$L_x C$\t$R_{\\Delta +}$', '$S_x C$\t$R_{\\Delta -}$', '$S_x C$\t$R_{\\Delta +}$']
-            
-            mean_values = np.array([v[0] for v in Fig2_Replay_FR])
-            std_values = np.array([v[1] for v in Fig2_Replay_FR])
-
-            fig, ax = plt.subplots()
-            x = np.arange(len(x_labels))
-            width = 0.3
-
-            bars = ax.bar(x, mean_values, width, yerr=std_values, capsize=5)
-            
-            ax.set_xlabel('Groups')
-            ax.set_ylabel('Replay Firing Rates (Hz)')
-            ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
-            ax.set_xticks(x)
-            ax.set_xticklabels(x_labels)
-
-            if not defer_show:
-                plt.show()
-                        
-            return fig, ax, bars
+    @staticmethod
+    def fig_2_Replay_FR_matplotlib(Fig2_Replay_FR, defer_show=False):
+        # x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
+        x_labels = ['$L_x C$\t$R_{\\Delta -}$', '$L_x C$\t$R_{\\Delta +}$', '$S_x C$\t$R_{\\Delta -}$', '$S_x C$\t$R_{\\Delta +}$']
         
+        mean_values = np.array([v[0] for v in Fig2_Replay_FR])
+        std_values = np.array([v[1] for v in Fig2_Replay_FR])
+
+        fig, ax = plt.subplots()
+        x = np.arange(len(x_labels))
+        width = 0.3
+
+        bars = ax.bar(x, mean_values, width, yerr=std_values, capsize=5)
+        
+        ax.set_xlabel('Groups')
+        ax.set_ylabel('Replay Firing Rates (Hz)')
+        ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
+        ax.set_xticks(x)
+        ax.set_xticklabels(x_labels)
+
+        if not defer_show:
+            plt.show()
+                    
+        return fig, ax, bars
+
+
+
+    def display(self, defer_show=False):
+
+        # Matplotlib Mode:
+        import numpy as np
+        import matplotlib.pyplot as plt
+        fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_matplotlib, self.fig_2_Replay_FR_matplotlib
+        
+        # # PyQtGraph Mode:
+        # import pyphoplacecellanalysis.External.pyqtgraph as pg
+        # fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_pyqtgraph, self.fig_2_Replay_FR_pyqtgraph
+
+        # Any Mode:
         _fig_2_theta_out = fig_2_Theta_FR(self.Fig2_Laps_FR, defer_show=defer_show)
         _fig_2_replay_out = fig_2_Replay_FR(self.Fig2_Replay_FR, defer_show=defer_show)
 
-        
+
 
 
 
