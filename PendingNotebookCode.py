@@ -1,6 +1,6 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
 from copy import deepcopy
-from typing import List
+from typing import Any, List
 from matplotlib.colors import ListedColormap
 from pathlib import Path
 import numpy as np
@@ -41,6 +41,132 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import determine_long_short_pf1D_indicies_sort_by_peak
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
 from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
+
+
+# ==================================================================================================================== #
+# 2023-06-26 - Paper Figure 2 Code                                                                                     #
+# ==================================================================================================================== #
+# Instantaneous versions:
+from quantities import ms, s, Hz
+from neo.core.spiketrain import SpikeTrain
+from elephant.kernels import GaussianKernel
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis import SpikeRateTrends
+
+@define(slots=False)
+class PaperFigureTwo:
+    instantaneous_time_bin_size_seconds: float = 0.01 # 20ms
+    Fig2_Replay_FR: list[tuple[Any, Any]] = field(init=False)
+    Fig2_Laps_FR: list[tuple[Any, Any]] = field(init=False)
+
+    def compute(self, curr_active_pipeline):
+        """ full instantaneous computations for both Long and Short epochs:
+        
+        """
+        long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+        long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # only uses global_session
+        (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
+        
+        long_short_fr_indicies_analysis_results = curr_active_pipeline.global_computation_results.computed_data['long_short_fr_indicies_analysis']
+        long_laps, long_replays, short_laps, short_replays, global_laps, global_replays = [long_short_fr_indicies_analysis_results[k] for k in ['long_laps', 'long_replays', 'short_laps', 'short_replays', 'global_laps', 'global_replays']]
+
+        # Replays: Uses `global_session.spikes_df`, `long_exclusive.track_exclusive_aclus, `short_exclusive.track_exclusive_aclus`, `long_replays`, `short_replays`
+        # LxC: `long_exclusive.track_exclusive_aclus`
+        # ReplayDeltaMinus: `long_replays`
+        LxC_ReplayDeltaMinus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=long_replays, included_neuron_ids=long_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+        # ReplayDeltaPlus: `short_replays`
+        LxC_ReplayDeltaPlus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=short_replays, included_neuron_ids=long_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+
+        # SxC: `short_exclusive.track_exclusive_aclus`
+        # ReplayDeltaMinus: `long_replays`
+        SxC_ReplayDeltaMinus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=long_replays, included_neuron_ids=short_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+        # ReplayDeltaPlus: `short_replays`
+        SxC_ReplayDeltaPlus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=short_replays, included_neuron_ids=short_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+
+        # Note that in general LxC and SxC might have differing numbers of cells.
+        self.Fig2_Replay_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus)]
+        
+
+        # Laps/Theta: Uses `global_session.spikes_df`, `long_exclusive.track_exclusive_aclus, `short_exclusive.track_exclusive_aclus`, `long_laps`, `short_laps`
+        # LxC: `long_exclusive.track_exclusive_aclus`
+        # ThetaDeltaMinus: `long_laps`
+        LxC_ThetaDeltaMinus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=long_laps, included_neuron_ids=long_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+        # ThetaDeltaPlus: `short_laps`
+        LxC_ThetaDeltaPlus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=short_laps, included_neuron_ids=long_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+
+        # SxC: `short_exclusive.track_exclusive_aclus`
+        # ThetaDeltaMinus: `long_laps`
+        SxC_ThetaDeltaMinus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=long_laps, included_neuron_ids=short_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+        # ThetaDeltaPlus: `short_laps`
+        SxC_ThetaDeltaPlus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=short_laps, included_neuron_ids=short_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+
+        # Note that in general LxC and SxC might have differing numbers of cells.
+        self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
+        
+        
+                
+    def display(self, defer_show=False):
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        def fig_2_Theta_FR(Fig2_Laps_FR, defer_show=False):
+            # x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
+            x_labels = ['$L_x C$\t$\\theta_{\\Delta -}$', '$L_x C$\t$\\theta_{\\Delta +}$', '$S_x C$\t$\\theta_{\\Delta -}$', '$S_x C$\t$\\theta_{\\Delta +}$']
+
+            mean_values = np.array([v[0] for v in Fig2_Laps_FR])
+            std_values = np.array([v[1] for v in Fig2_Laps_FR])
+
+            fig, ax = plt.subplots()
+            x = np.arange(len(x_labels))
+            width = 0.3
+
+            bars = ax.bar(x, mean_values, width, yerr=std_values, capsize=5)
+            
+            ax.set_xlabel('Groups')
+            ax.set_ylabel('Laps Firing Rates (Hz)')
+            ax.set_title('Lap ($\\theta$) Firing Rates for Long/Short eXclusive Cells on each track')
+            ax.set_xticks(x)
+            ax.set_xticklabels(x_labels)
+            
+            # # Add grouping annotations
+            # ax.text((x[0] + x[1]) / 2, -0.25, '$L_x C$', ha='center', va='center')
+            # ax.text((x[2] + x[3]) / 2, -0.25, '$S_x C$', ha='center', va='center')
+            
+            if not defer_show:
+                plt.show()
+                        
+            return fig, ax, bars
+        
+        def fig_2_Replay_FR(Fig2_Replay_FR, defer_show=False):
+            # x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
+            x_labels = ['$L_x C$\t$R_{\\Delta -}$', '$L_x C$\t$R_{\\Delta +}$', '$S_x C$\t$R_{\\Delta -}$', '$S_x C$\t$R_{\\Delta +}$']
+            
+            mean_values = np.array([v[0] for v in Fig2_Replay_FR])
+            std_values = np.array([v[1] for v in Fig2_Replay_FR])
+
+            fig, ax = plt.subplots()
+            x = np.arange(len(x_labels))
+            width = 0.3
+
+            bars = ax.bar(x, mean_values, width, yerr=std_values, capsize=5)
+            
+            ax.set_xlabel('Groups')
+            ax.set_ylabel('Replay Firing Rates (Hz)')
+            ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
+            ax.set_xticks(x)
+            ax.set_xticklabels(x_labels)
+
+            if not defer_show:
+                plt.show()
+                        
+            return fig, ax, bars
+        
+        _fig_2_theta_out = fig_2_Theta_FR(self.Fig2_Laps_FR, defer_show=defer_show)
+        _fig_2_replay_out = fig_2_Replay_FR(self.Fig2_Replay_FR, defer_show=defer_show)
+
+        
+
+
+
 
 
 # ==================================================================================================================== #
