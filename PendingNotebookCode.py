@@ -85,7 +85,7 @@ class PaperFigureTwo:
         """
         long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
         long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # only uses global_session
-        (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
+        (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies, assigning_epochs_obj = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
         
         long_short_fr_indicies_analysis_results = curr_active_pipeline.global_computation_results.computed_data['long_short_fr_indicies_analysis']
         long_laps, long_replays, short_laps, short_replays, global_laps, global_replays = [long_short_fr_indicies_analysis_results[k] for k in ['long_laps', 'long_replays', 'short_laps', 'short_replays', 'global_laps', 'global_replays']]
@@ -369,11 +369,40 @@ class UserAnnotationsManager:
         return saved_selection
 
 
+
+from enum import Enum
+from pyphocorehelpers.mixins.key_value_hashable import KeyValueHashableObject
+
+
+class TrackAssignmentState(Enum):
+	"""Docstring for TrackAssignmentState."""
+	UNASSIGNED = "unassigned"
+	LONG_TRACK = "long_track"
+	SHORT_TRACK = "short_track"
+	NEITHER = "neither"
+	
+
+@define(slots=False, frozen=True)
+class TrackAssignmentDecision(KeyValueHashableObject):
+    decision: TrackAssignmentState
+    confidence: float # a value between 0 and 1
+
+
 @define(slots=False)
 class AssigningEpochs:
     """ class responsible for iteratively applying various criteria to assign epochs to a particular track starting with the unassigned set of all epochs (in this analysis replay events) """
     filter_epochs_df: pd.DataFrame
     
+
+    @property
+    def unassigned_epochs_df(self):
+        """A convenience accessor for only the unassigned epochs remaining in the self.filter_epochs_df."""
+        is_unassigned = np.array([v.decision == TrackAssignmentState.UNASSIGNED for v in self.filter_epochs_df.track_assignment])
+        return self.filter_epochs_df[is_unassigned]
+    @unassigned_epochs_df.setter
+    def unassigned_epochs_df(self, value):
+        self.filter_epochs_df[np.array([v.decision == TrackAssignmentState.UNASSIGNED for v in self.filter_epochs_df.track_assignment])] = value
+        
 
     def _subfn_find_example_epochs(self, spikes_df: pd.DataFrame, exclusive_aclus, included_neuron_ids=None):
         """ aims to find epochs for use as examples in Figure 1:
@@ -428,7 +457,7 @@ class AssigningEpochs:
 
 
     def determine_if_contains_active_set_exclusive_cells(self, spikes_df: pd.DataFrame, exclusive_aclus, short_exclusive, long_exclusive, included_neuron_ids=None):
-        """ 
+        """ NOTE: also updates `filter_epoch_spikes_df` which is returned
     
         adds ['contains_one_exclusive_aclu', 'active_unique_aclus', 'has_SHORT_exclusive_aclu', 'has_LONG_exclusive_aclu'] columns to `filter_epochs_df`
         """
@@ -459,6 +488,80 @@ class AssigningEpochs:
         # for updating the filter_epochs_df (`filter_epochs_df`) from the selections:
         self.filter_epochs_df['long_is_user_included'] = np.isin(self.filter_epochs_df.index, selection_idxs_L)
         self.filter_epochs_df['short_is_user_included'] = np.isin(self.filter_epochs_df.index, selection_idxs_S)
+
+
+    def debug_print_assignment_statuses(self, debug_print=True):
+        is_unassigned = np.array([v.decision == TrackAssignmentState.UNASSIGNED for v in self.filter_epochs_df.track_assignment])
+        is_disregarded = np.array([v.decision == TrackAssignmentState.NEITHER for v in self.filter_epochs_df.track_assignment])
+        num_unassigned = np.sum(is_unassigned)
+        num_disregarded = np.sum(is_disregarded)
+        num_assigned = len(self.filter_epochs_df) - (num_unassigned + num_disregarded)
+        if debug_print:
+            print(f'num_unassigned: {num_unassigned}, num_disregarded: {num_disregarded}, num_assigned: {num_assigned}')
+        return num_unassigned, num_disregarded, num_assigned
+    
+
+    def plot_epoch_track_assignments(self):
+        """ Plots a figure that represents each epoch as a little box that can be colored in based on the track assignment: grey for Unassigned, blue for Long, red for Short, black for Neither.
+
+        Args:
+        - assigning_epochs_obj: an object of type AssigningEpochs
+
+        Returns:
+        - None
+        """
+        import matplotlib.patches as mpatches
+        
+        # Create a figure and axis object
+        fig, ax = plt.subplots(figsize=(20, 10))
+
+        # Set the x and y limits of the axis
+        ax.set_xlim([0, len(self.filter_epochs_df)])
+        ax.set_ylim([0, 1])
+
+        # Add vertical grid lines
+        for i in range(len(self.filter_epochs_df)):
+            ax.axvline(x=i, color='white', linewidth=0.5)
+
+        # Iterate over each epoch in the filter_epochs_df
+        for i, epoch in self.filter_epochs_df.iterrows():
+            # Get the track assignment of the epoch
+            track_assignment = epoch['track_assignment'].decision.name
+
+            # Set the color of the epoch based on the track assignment
+            if track_assignment == 'UNASSIGNED':
+                color = 'grey'
+            elif track_assignment == 'LONG_TRACK':
+                color = 'blue'
+            elif track_assignment == 'SHORT_TRACK':
+                color = 'red'
+            elif track_assignment == 'NEITHER':
+                color = 'black'
+
+            # Draw a rectangle for the epoch
+            ax.add_patch(plt.Rectangle((i, 0), 1, 1, color=color))
+
+        # Set the title and axis labels
+        ax.set_title('Replay Track Assignments')
+        ax.set_xlabel('Replay Epoch Index')
+        ax.set_ylabel('') # Track Assignment
+
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+
+        # Add legend
+        grey_patch = mpatches.Patch(color='grey', label='Unassigned')
+        blue_patch = mpatches.Patch(color='blue', label='Long')
+        red_patch = mpatches.Patch(color='red', label='Short')
+        black_patch = mpatches.Patch(color='black', label='Neither')
+        plt.legend(handles=[grey_patch, blue_patch, red_patch, black_patch], loc='lower center', ncol=4)
+
+        # Show the plot
+        plt.show()
+            
+
 
 
 @function_attributes(short_name=None, tags=['FIGURE1', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 21:40', related_items=[])
@@ -531,7 +634,7 @@ def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_p
         print(f'good_example_epoch_indicies_S: {good_example_epoch_indicies_S}')
 
 
-    return (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies
+    return (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies, assigning_epochs_obj
 
 
 @function_attributes(short_name=None, tags=['FINAL', 'publication', 'figure', 'combined'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 14:33', related_items=[])
@@ -595,7 +698,7 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     # ==================================================================================================================== #
     # Show Example Replay Epochs containing the long or short only cells                                                                  #
     # ==================================================================================================================== #
-    (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
+    (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies, assigning_epochs_obj = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
 
     # unit_colors_list = None # default rainbow of colors for the raster plots
     neuron_qcolors_list = [pg.mkColor('black') for aclu in EITHER_subset.track_exclusive_aclus] # solid green for all
