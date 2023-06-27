@@ -2875,6 +2875,29 @@ pyside6 = ["pyside6"]
 test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio", "pytest-cov", "pytest-timeout"]
 
 [[package]]
+name = "ipympl"
+version = "0.9.3"
+description = "Matplotlib Jupyter Extension"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ipympl-0.9.3-py2.py3-none-any.whl", hash = "sha256:d113cd55891bafe9b27ef99b6dd111a87beb6bb2ae550c404292272103be8013"},
+    {file = "ipympl-0.9.3.tar.gz", hash = "sha256:49bab75c05673a6881d1aaec5d8ac81d4624f73d292d154c5fb7096f10236a2b"},
+]
+
+[package.dependencies]
+ipython = "<9"
+ipython-genutils = "*"
+ipywidgets = ">=7.6.0,<9"
+matplotlib = ">=3.4.0,<4"
+numpy = "*"
+pillow = "*"
+traitlets = "<6"
+
+[package.extras]
+docs = ["Sphinx (>=1.5)", "myst-nb", "sphinx-book-theme", "sphinx-copybutton", "sphinx-thebe", "sphinx-togglebutton"]
+
+[[package]]
 name = "ipython"
 version = "8.14.0"
 description = "IPython: Productive Interactive Computing"
@@ -3829,6 +3852,20 @@ files = [
 traitlets = "*"
 
 [[package]]
+name = "matplotlib-scalebar"
+version = "0.8.1"
+description = "Artist for matplotlib to display a scale bar"
+optional = false
+python-versions = "~=3.7"
+files = [
+    {file = "matplotlib-scalebar-0.8.1.tar.gz", hash = "sha256:14887af1093579c5e6afae51a0a1ecc3f715cdbc5c4d7ef59cdeec76ee6bb15d"},
+    {file = "matplotlib_scalebar-0.8.1-py2.py3-none-any.whl", hash = "sha256:a8a2f361d4c2d576d087df3092ed95cac2f708f8b40d5d2bb992bd190e740b3a"},
+]
+
+[package.dependencies]
+matplotlib = "*"
+
+[[package]]
 name = "mdurl"
 version = "0.1.2"
 description = "Markdown URL utilities"
@@ -3860,6 +3897,29 @@ files = [
     {file = "monotonic-1.6-py2.py3-none-any.whl", hash = "sha256:68687e19a14f11f26d140dd5c86f3dba4bf5df58003000ed467e0e2a69bca96c"},
     {file = "monotonic-1.6.tar.gz", hash = "sha256:3a55207bcfed53ddd5c5bae174524062935efed17792e9de2ad0205ce9ad63f7"},
 ]
+
+[[package]]
+name = "mpl-interactions"
+version = "0.23.1"
+description = "Matplotlib aware interact functions"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "mpl_interactions-0.23.1-py3-none-any.whl", hash = "sha256:cf2ba3a0029bed834b8debcd3779990962f2f4b4997948f21e6d274215efca0d"},
+    {file = "mpl_interactions-0.23.1.tar.gz", hash = "sha256:ceeaf83913b8b229e2523085b6500b0054aa413990f5478366f80f712ba5c440"},
+]
+
+[package.dependencies]
+ipympl = {version = ">=0.5.8", optional = true, markers = "extra == \"jupyter\""}
+ipywidgets = {version = ">=7.5.0", optional = true, markers = "extra == \"jupyter\""}
+matplotlib = ">=3.4"
+
+[package.extras]
+dev = ["PyQt5", "Sphinx (>=1.5)", "black", "ipympl (>=0.5.8)", "ipywidgets (>=7.5.0)", "isort", "jupyter-sphinx", "mpl-playback (>=0.1.1)", "myst-nb", "nbval", "numpydoc", "pandas", "pre-commit", "pytest", "pytest-mpl", "requests", "scipy", "sphinx-autobuild", "sphinx-book-theme", "sphinx-copybutton", "sphinx-gallery (>=0.8.2)", "sphinx-panels", "sphinx-thebe", "sphinx-togglebutton", "tox (>=1.9)", "xarray"]
+doc = ["Sphinx (>=1.5)", "ipympl (>=0.5.8)", "ipywidgets (>=7.5.0)", "jupyter-sphinx", "mpl-playback (>=0.1.1)", "myst-nb", "numpydoc", "sphinx-book-theme", "sphinx-copybutton", "sphinx-gallery (>=0.8.2)", "sphinx-panels", "sphinx-thebe", "sphinx-togglebutton", "xarray"]
+jupyter = ["ipympl (>=0.5.8)", "ipywidgets (>=7.5.0)"]
+sty = ["black", "isort"]
+test = ["PyQt5", "nbval", "pandas", "pytest", "pytest-mpl", "requests", "scipy", "xarray"]
 
 [[package]]
 name = "mpl-multitab"
@@ -4798,6 +4858,17 @@ files = [
 ]
 
 [[package]]
+name = "palettable"
+version = "3.3.3"
+description = "Color palettes for Python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "palettable-3.3.3-py2.py3-none-any.whl", hash = "sha256:74e9e7d7fe5a9be065e02397558ed1777b2df0b793a6f4ce1a5ee74f74fb0caa"},
+    {file = "palettable-3.3.3.tar.gz", hash = "sha256:094dd7d9a5fc1cca4854773e5c1fc6a315b33bd5b3a8f47064928facaf0490a8"},
+]
+
+[[package]]
 name = "pandas"
 version = "1.5.3"
 description = "Powerful data structures for data analysis, time series, and statistics"
@@ -5211,6 +5282,27 @@ files = [
     {file = "ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce"},
     {file = "ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3"},
 ]
+
+[[package]]
+name = "pooch"
+version = "1.7.0"
+description = "\"Pooch manages your Python library's sample data files: it automatically downloads and stores them in a local directory, with support for versioning and corruption checks.\""
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pooch-1.7.0-py3-none-any.whl", hash = "sha256:74258224fc33d58f53113cf955e8d51bf01386b91492927d0d1b6b341a765ad7"},
+    {file = "pooch-1.7.0.tar.gz", hash = "sha256:f174a1041b6447f0eef8860f76d17f60ed2f857dc0efa387a7f08228af05d998"},
+]
+
+[package.dependencies]
+packaging = ">=20.0"
+platformdirs = ">=2.5.0"
+requests = ">=2.19.0"
+
+[package.extras]
+progress = ["tqdm (>=4.41.0,<5.0.0)"]
+sftp = ["paramiko (>=2.7.0)"]
+xxhash = ["xxhash (>=1.4.3)"]
 
 [[package]]
 name = "portion"
@@ -7047,11 +7139,32 @@ files = [
 matplotlib = ">=3.1,<3.6.1 || >3.6.1"
 numpy = ">=1.17,<1.24.0 || >1.24.0"
 pandas = ">=0.25"
+scipy = {version = ">=1.3", optional = true, markers = "extra == \"stats\""}
+statsmodels = {version = ">=0.10", optional = true, markers = "extra == \"stats\""}
 
 [package.extras]
 dev = ["flake8", "flit", "mypy", "pandas-stubs", "pre-commit", "pytest", "pytest-cov", "pytest-xdist"]
 docs = ["ipykernel", "nbconvert", "numpydoc", "pydata_sphinx_theme (==0.10.0rc2)", "pyyaml", "sphinx-copybutton", "sphinx-design", "sphinx-issues"]
 stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
+
+[[package]]
+name = "seaborn-image"
+version = "0.6.0"
+description = "Attractive, descriptive and effective image visualization with seaborn-like API built on top of matplotlib"
+optional = false
+python-versions = ">=3.8,<3.11"
+files = [
+    {file = "seaborn_image-0.6.0-py3-none-any.whl", hash = "sha256:16afca5a2ca48cb5feed3778f9b271aaae4c19e1ebe8ab4dc9ca1695219a2194"},
+    {file = "seaborn_image-0.6.0.tar.gz", hash = "sha256:aa99bed46d2188c6a5af6ac0b080b19cd25d3a436ae0b83f0273c54d3f608c56"},
+]
+
+[package.dependencies]
+matplotlib = ">=3.2.2"
+matplotlib-scalebar = ">=0.7.0,<0.9.0"
+palettable = ">=3.3.0"
+pooch = ">=1.2.0"
+scikit-image = ">=0.17.2"
+scipy = ">=1.5.1"
 
 [[package]]
 name = "send2trash"
@@ -8683,4 +8796,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "2fc69b0ce8c01d330e6c9f6cb0d3a8edabdc653df9454be889c137fd2db4054a"
+content-hash = "0e5236d4f6f80183853d837cde71533160aea182e43be8da28a9234d3215bcad"

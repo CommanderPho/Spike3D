@@ -32,7 +32,7 @@ ipython = "^8.11.0"
 attrs = "^22.2.0"
 cattrs = "^23.1.2"
 pillow = "^9.4.0"
-seaborn = "^0.12.2"
+seaborn = {extras = ["stats"], version = "^0.12.2"}
 param = "^1.13.0"
 pyflakes = "^3.0.1" # required for code editor
 neptune = "^1.2.0"
@@ -56,6 +56,8 @@ patchworklib = "^0.6.1" # matplotlib figure layout/organization
 # patchworklib = "^0.5.2" 
 flexitext = "^0.2.0"
 adjusttext = "^0.8"
+seaborn-image = "^0.6.0"
+mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
