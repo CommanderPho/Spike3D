@@ -41,6 +41,10 @@ beartype = "^0.14.0" # for strict type enforcement of function calls
 awkward = "^2.2.1" # for ragged-arrays, testing
 pyqt-checkbox-table-widget = "^0.0.14"
 patchworklib = "^0.6.1" # matplotlib figure layout/organization
+flexitext = "^0.2.0"
+adjusttext = "^0.8"
+seaborn-image = "^0.6.0"
+mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
 # dvc = "^2.57.2"
 # dvclive = "^2.9.0"
 # trame = "^2.3.2" # visualization, currently not used
@@ -54,10 +58,9 @@ patchworklib = "^0.6.1" # matplotlib figure layout/organization
 # deeptime = "^0.4.4" # what is this? Analysis?
 # python-picard = "^0.7"
 # patchworklib = "^0.5.2" 
-flexitext = "^0.2.0"
-adjusttext = "^0.8"
-seaborn-image = "^0.6.0"
-mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
+python-lsp-server = {extras = ["rope"], version = "^1.7.3"}
+pylsp-rope = "^0.1.11"
+
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
@@ -95,6 +98,7 @@ pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 [tool.poetry.group.testing.dependencies]
 silx = "^1.1.2"
 ipywidgets = "^8.0.5"
+# 'python-language-server[yapf]'
 # pygwalker = "^0.1.6.1"
 # altair = "5.0.0rc1" #"^4.2.2"
 # plotly = "5.13.1"
