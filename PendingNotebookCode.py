@@ -35,7 +35,7 @@ from neuropy.utils.result_context import IdentifyingContext
 from pyphoplacecellanalysis.GUI.Qt.Mixins.PaginationMixins import SelectionsObject
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import determine_long_short_pf1D_indicies_sort_by_peak
-from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _prepare_spikes_df_from_filter_epochs, _find_example_epochs
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _prepare_spikes_df_from_filter_epochs
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import JonathanFiringRateAnalysisResult
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import determine_long_short_pf1D_indicies_sort_by_peak
@@ -309,7 +309,7 @@ def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=
 # 2023-06-21 User Annotations and Paper Figure 1                                                                       #
 # ==================================================================================================================== #
 
-
+from pyphocorehelpers.indexing_helpers import partition # needed by `AssigningEpochs` to partition the dataframe by aclus
 
 @define(slots=False)
 class UserAnnotationsManager:
@@ -369,6 +369,98 @@ class UserAnnotationsManager:
         return saved_selection
 
 
+@define(slots=False)
+class AssigningEpochs:
+    """ class responsible for iteratively applying various criteria to assign epochs to a particular track starting with the unassigned set of all epochs (in this analysis replay events) """
+    filter_epochs_df: pd.DataFrame
+    
+
+    def _subfn_find_example_epochs(self, spikes_df: pd.DataFrame, exclusive_aclus, included_neuron_ids=None):
+        """ aims to find epochs for use as examples in Figure 1:
+            1. Contain spikes from aclus that are exclusive to one of the two tracks (either short or long)
+            2. Are labeled as "good replays" by my user annotations
+            
+            Adds: 'contains_one_exclusive_aclu' column to filter_epochs_df
+            
+            Usage:
+                from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _find_example_epochs
+                # included_neuron_ids = deepcopy(exclusive_aclus)
+                # included_neuron_ids = None
+                included_neuron_ids = EITHER_subset.track_exclusive_aclus
+                spikes_df: pd.DataFrame = deepcopy(curr_active_pipeline.sess.spikes_df).spikes.sliced_by_neuron_type('pyr')
+                # filter_epochs = deepcopy(curr_active_pipeline.sess.replay)
+                # spikes_df = deepcopy(long_results_obj.spikes_df) # LeaveOneOutDecodingAnalysisResult
+                # spikes_df[np.isin(spikes_df.aclu, included_neuron_ids)]
+                filter_epochs = deepcopy(long_results_obj.active_filter_epochs)
+
+                filter_epoch_spikes_df, filter_epochs_df = _find_example_epochs(spikes_df, filter_epochs, EITHER_subset.track_exclusive_aclus, included_neuron_ids=included_neuron_ids)
+
+        """
+
+        if included_neuron_ids is None:
+            included_neuron_ids = spikes_df.spikes.neuron_ids
+            
+        filter_epoch_spikes_df = deepcopy(spikes_df)
+        filter_epoch_spikes_df = _prepare_spikes_df_from_filter_epochs(filter_epoch_spikes_df, filter_epochs=self.filter_epochs_df, included_neuron_ids=included_neuron_ids, epoch_id_key_name='replay_epoch_id', debug_print=False) # replay_epoch_id
+
+        unique_replay_epoch_id_values, epoch_split_spikes_df_list = partition(filter_epoch_spikes_df, 'replay_epoch_id')
+        # filter_epoch_spikes_df.groupby('replay_epoch_id')
+        # unique_replay_epoch_id_values # (198,)
+        epoch_spikes_unique_aclus_list = [] # a list of each aclu that fires at least once in the epoch
+        epoch_contains_any_exclusive_aclus = []
+
+        for an_epoch_id, epoch_specific_spikes_df in zip(unique_replay_epoch_id_values, epoch_split_spikes_df_list):
+            # Loop through the epochs
+            # find epochs containing at least one in `exclusive_aclus`:
+            epoch_spikes_unique_aclus = epoch_specific_spikes_df.aclu.unique()
+            epoch_spikes_unique_aclus_list.append(epoch_spikes_unique_aclus)
+            # epoch_spikes_unique_aclus # finds lists of all the active aclus in the given epoch
+            if len(epoch_spikes_unique_aclus) > 0:	
+                epoch_contains_any_exclusive_aclus.append(np.isin(epoch_spikes_unique_aclus, exclusive_aclus).any())
+            else:
+                epoch_contains_any_exclusive_aclus.append(False)
+            # epoch_contains_any_exclusive_aclus # returns True if the epoch contains one ore more spikes from the search list `exclusive_aclus`
+
+        assert len(epoch_contains_any_exclusive_aclus) == np.shape(self.filter_epochs_df)[0]
+        self.filter_epochs_df['contains_one_exclusive_aclu'] = epoch_contains_any_exclusive_aclus # adds the appropriate column to the filter_epochs_df
+        self.filter_epochs_df['active_unique_aclus'] = epoch_spikes_unique_aclus_list
+        return filter_epoch_spikes_df, self.filter_epochs_df
+
+
+    def determine_if_contains_active_set_exclusive_cells(self, spikes_df: pd.DataFrame, exclusive_aclus, short_exclusive, long_exclusive, included_neuron_ids=None):
+        """ 
+    
+        adds ['contains_one_exclusive_aclu', 'active_unique_aclus', 'has_SHORT_exclusive_aclu', 'has_LONG_exclusive_aclu'] columns to `filter_epochs_df`
+        """
+        filter_epoch_spikes_df, self.filter_epochs_df = self._subfn_find_example_epochs(spikes_df, exclusive_aclus=exclusive_aclus, included_neuron_ids=included_neuron_ids) # adds 'active_unique_aclus'
+        # epoch_contains_any_exclusive_aclus.append(np.isin(epoch_spikes_unique_aclus, exclusive_aclus).any())
+        self.filter_epochs_df['has_SHORT_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, short_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in self.filter_epochs_df['active_unique_aclus']]
+        self.filter_epochs_df['has_LONG_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, long_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in self.filter_epochs_df['active_unique_aclus']]
+        return filter_epoch_spikes_df, self.filter_epochs_df
+
+
+    def filter_by_user_selections(self, curr_active_pipeline):
+        """Get the manual user annotations to determine the good replays for both long/short decoding
+        
+        Adds the ['long_is_user_included', 'short_is_user_included'] columns to the `filter_epochs_df` DataFrame
+        """
+        user_annotations = UserAnnotationsManager.get_user_annotations()
+
+        final_context_L = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='long_results_obj')
+        final_context_S = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='short_results_obj')
+        # _out_pagination_controller.params.active_identifying_figure_ctx.adding_context(None,  user_annotation="selections")
+        selections_context_L = final_context_L.adding_context(None,  user_annotation="selections")
+        selections_context_S = final_context_S.adding_context(None,  user_annotation="selections")
+        
+        ## try to get the user annotations for this session:
+        selection_idxs_L = user_annotations[selections_context_L]
+        selection_idxs_S = user_annotations[selections_context_S]
+        
+        # for updating the filter_epochs_df (`filter_epochs_df`) from the selections:
+        self.filter_epochs_df['long_is_user_included'] = np.isin(self.filter_epochs_df.index, selection_idxs_L)
+        self.filter_epochs_df['short_is_user_included'] = np.isin(self.filter_epochs_df.index, selection_idxs_S)
+
+
 @function_attributes(short_name=None, tags=['FIGURE1', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 21:40', related_items=[])
 def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_print=True):
     """ 
@@ -392,36 +484,23 @@ def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_p
     jonathan_firing_rate_analysis_result = JonathanFiringRateAnalysisResult(**curr_active_pipeline.global_computation_results.computed_data.jonathan_firing_rate_analysis.to_dict())
     neuron_replay_stats_df, short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset = jonathan_firing_rate_analysis_result.get_cell_track_partitions()
 
+    assigning_epochs_obj = AssigningEpochs(filter_epochs_df=deepcopy(long_results_obj.active_filter_epochs.to_dataframe()))
+
+
     # included_neuron_ids = deepcopy(exclusive_aclus)
     # included_neuron_ids = None
     included_neuron_ids = EITHER_subset.track_exclusive_aclus
     spikes_df: pd.DataFrame = deepcopy(curr_active_pipeline.sess.spikes_df).spikes.sliced_by_neuron_type('pyr')
-    filter_epochs_df = deepcopy(long_results_obj.active_filter_epochs.to_dataframe())
-
-
-    filter_epoch_spikes_df, filter_epochs_df = _find_example_epochs(spikes_df, filter_epochs_df, EITHER_subset.track_exclusive_aclus, included_neuron_ids=included_neuron_ids) # adds 'active_unique_aclus'
-    # epoch_contains_any_exclusive_aclus.append(np.isin(epoch_spikes_unique_aclus, exclusive_aclus).any())
-    filter_epochs_df['has_SHORT_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, short_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in filter_epochs_df['active_unique_aclus']]
-    filter_epochs_df['has_LONG_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, long_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in filter_epochs_df['active_unique_aclus']]
+    # filter_epochs_df = deepcopy(long_results_obj.active_filter_epochs.to_dataframe())
+    filter_epoch_spikes_df, filter_epochs_df = assigning_epochs_obj.determine_if_contains_active_set_exclusive_cells(spikes_df, exclusive_aclus=EITHER_subset.track_exclusive_aclus, short_exclusive=short_exclusive, long_exclusive=long_exclusive, included_neuron_ids=included_neuron_ids) # adds 'active_unique_aclus'    
+    # filter_epoch_spikes_df, filter_epochs_df = assigning_epochs_obj._find_example_epochs(spikes_df, EITHER_subset.track_exclusive_aclus, included_neuron_ids=included_neuron_ids) # adds 'active_unique_aclus'
+    # # epoch_contains_any_exclusive_aclus.append(np.isin(epoch_spikes_unique_aclus, exclusive_aclus).any())
+    # filter_epochs_df['has_SHORT_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, short_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in filter_epochs_df['active_unique_aclus']]
+    # filter_epochs_df['has_LONG_exclusive_aclu'] = [np.isin(epoch_spikes_unique_aclus, long_exclusive.track_exclusive_aclus).any() for epoch_spikes_unique_aclus in filter_epochs_df['active_unique_aclus']]
 
     # Get the manual user annotations to determine the good replays for both long/short decoding:
-    user_annotations = UserAnnotationsManager.get_user_annotations()
-
-    final_context_L = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='long_results_obj')
-    final_context_S = curr_active_pipeline.build_display_context_for_session(display_fn_name='DecodedEpochSlices', epochs='replays', decoder='short_results_obj')
-    # _out_pagination_controller.params.active_identifying_figure_ctx.adding_context(None,  user_annotation="selections")
-    selections_context_L = final_context_L.adding_context(None,  user_annotation="selections")
-    selections_context_S = final_context_S.adding_context(None,  user_annotation="selections")
+    assigning_epochs_obj.filter_by_user_selections(curr_active_pipeline=curr_active_pipeline)
     
-    ## try to get the user annotations for this session:
-    selection_idxs_L = user_annotations[selections_context_L]
-    selection_idxs_S = user_annotations[selections_context_S]
-    
-    # for updating the filter_epochs_df (`filter_epochs_df`) from the selections:
-    filter_epochs_df['long_is_user_included'] = np.isin(filter_epochs_df.index, selection_idxs_L)
-    filter_epochs_df['short_is_user_included'] = np.isin(filter_epochs_df.index, selection_idxs_S)
-
-
 
     #### Finally, get only the epochs that meet the criteria:
 
