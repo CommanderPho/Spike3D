@@ -313,7 +313,7 @@ def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=
 
 @define(slots=False)
 class UserAnnotationsManager:
-
+    """ class for holding User Annotations of the data. Performed interactive by the user, and then saved to disk for later use. An example are the selected replays to be used as examples. """
     @staticmethod
     def get_user_annotations():
         """ hardcoded user annotations

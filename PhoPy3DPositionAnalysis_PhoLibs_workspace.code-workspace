@@ -106,7 +106,8 @@
 			"congyiwu.vscode-jupytext",
 			"randomfractalsinc.vscode-data-table",
 			"faxes.easycollapse",
-			"genap.copy-to-chat-gpt"
+			"genap.copy-to-chat-gpt",
+			"ms-python.vscode-pylance"
 		]
 	},
 	"launch": {

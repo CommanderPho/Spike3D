@@ -3116,6 +3116,7 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, !=3.6.*"
 files = [
     {file = "jsonpointer-2.4-py2.py3-none-any.whl", hash = "sha256:15d51bba20eea3165644553647711d150376234112651b4f1811022aecad7d7a"},
+    {file = "jsonpointer-2.4.tar.gz", hash = "sha256:585cee82b70211fa9e6043b7bb89db6e1aa49524340dde8ad6b63206ea689d88"},
 ]
 
 [[package]]
@@ -5761,6 +5762,25 @@ docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
 tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
+name = "pylsp-rope"
+version = "0.1.11"
+description = "Extended refactoring capabilities for Python LSP Server using Rope."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pylsp-rope-0.1.11.tar.gz", hash = "sha256:48aadf993dafa5e8fca1108b4a5431314cf80bc78cffdd56400ead9c407553be"},
+    {file = "pylsp_rope-0.1.11-py3-none-any.whl", hash = "sha256:71fb08dc6ead9a69202f2e7c5f7bbc5ada037a0f0722d7eb2d1f8cac2c9a18af"},
+]
+
+[package.dependencies]
+python-lsp-server = "*"
+rope = ">=0.21.0"
+
+[package.extras]
+dev = ["build", "pytest", "twine"]
+test = ["pytest"]
+
+[[package]]
 name = "pylustrator"
 version = "1.3.0"
 description = "Adds interactivity to arrange panels in matplotlib."
@@ -6324,6 +6344,7 @@ docstring-to-markdown = "*"
 jedi = ">=0.17.2,<0.19.0"
 pluggy = ">=1.0.0"
 python-lsp-jsonrpc = ">=1.0.0"
+rope = {version = ">1.2.0", optional = true, markers = "extra == \"rope\""}
 setuptools = ">=39.0.0"
 ujson = ">=3.0.0"
 
@@ -6357,6 +6378,28 @@ text-unidecode = ">=1.3"
 
 [package.extras]
 unidecode = ["Unidecode (>=1.1.1)"]
+
+[[package]]
+name = "pytoolconfig"
+version = "1.2.5"
+description = "Python tool configuration"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytoolconfig-1.2.5-py3-none-any.whl", hash = "sha256:239ba9d3e537b91d0243275a497700ea39a5e259ddb80421c366e3b288bf30fe"},
+    {file = "pytoolconfig-1.2.5.tar.gz", hash = "sha256:a50f9dfe23b03a9d40414c1fdf902fefbeae12f2ac75a3c8f915944d6ffac279"},
+]
+
+[package.dependencies]
+packaging = ">=22.0"
+platformdirs = {version = ">=1.4.4", optional = true, markers = "extra == \"global\""}
+tomli = {version = ">=2.0.1", markers = "python_version < \"3.11\""}
+
+[package.extras]
+doc = ["sphinx (>=4.5.0)", "tabulate (>=0.8.9)"]
+gendocs = ["pytoolconfig[doc]", "sphinx (>=4.5.0)", "sphinx-autodoc-typehints (>=1.18.1)", "sphinx-rtd-theme (>=1.0.0)"]
+global = ["platformdirs (>=1.4.4)"]
+validation = ["pydantic (>=1.7.4)"]
 
 [[package]]
 name = "pytz"
@@ -6841,6 +6884,24 @@ pygments = ">=2.13.0,<3.0.0"
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
+
+[[package]]
+name = "rope"
+version = "1.8.0"
+description = "a python refactoring library..."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "rope-1.8.0-py3-none-any.whl", hash = "sha256:0767424ed40ce237dcf1c1f5088054fef960e5b19f4a0850783a259a3600d7bd"},
+    {file = "rope-1.8.0.tar.gz", hash = "sha256:3de1d1f1cf2412540c6a150067fe25298175e7c2b72455b6ca8395f61678da82"},
+]
+
+[package.dependencies]
+pytoolconfig = {version = ">=1.2.2", extras = ["global"]}
+
+[package.extras]
+dev = ["build (>=0.7.0)", "pip-tools (>=6.12.1)", "pre-commit (>=2.20.0)", "pytest (>=7.0.1)", "pytest-timeout (>=2.1.0)", "toml (>=0.10.2)"]
+doc = ["pytoolconfig[doc]", "sphinx (>=4.5.0)", "sphinx-autodoc-typehints (>=1.18.1)", "sphinx-rtd-theme (>=1.0.0)"]
 
 [[package]]
 name = "rsa"
@@ -8796,4 +8857,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "0e5236d4f6f80183853d837cde71533160aea182e43be8da28a9234d3215bcad"
+content-hash = "de50036ba6695859e6fce3695316a832c6ab7ffdbc0a269a1e3e55dd4f533193"
