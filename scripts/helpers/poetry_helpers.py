@@ -140,6 +140,51 @@ def install_ipython_kernel(kernel_name:str="spike3d-poetry"):
     os.system(f"poetry run ipython kernel install --user --name={kernel_name}") # run this to install the kernel for the poetry environment
 
 
+def duplicate_poetry_env():
+    # Get the path to the current Poetry environment
+    env_path = subprocess.check_output(['poetry', 'env', 'info', '--path']).decode().strip()
+
+    # Create a new environment with the same packages as the current environment
+    new_env_path = os.path.join(os.path.dirname(env_path), 'new_env')
+    subprocess.run(['python', '-m', 'venv', new_env_path])
+    subprocess.run([os.path.join(new_env_path, 'bin', 'pip'), 'install', '-r', os.path.join(env_path, 'requirements.txt')])
+
+    return new_env_path
+
+
+
+r""" 
+cache-dir = "W:\\FastSwap\\pypoetry_CACHE"
+experimental.system-git-client = false
+installer.max-workers = null
+installer.modern-installation = true
+installer.no-binary = null
+installer.parallel = true
+virtualenvs.create = true
+virtualenvs.in-project = true
+virtualenvs.options.always-copy = true
+virtualenvs.options.no-pip = false
+virtualenvs.options.no-setuptools = false
+virtualenvs.options.system-site-packages = false
+virtualenvs.path = "{cache-dir}\\virtualenvs"  # W:\FastSwap\pypoetry_CACHE\virtualenvs
+virtualenvs.prefer-active-python = true
+virtualenvs.prompt = "{project_name}-py{python_version}"
+"""
+
+r""" TODO: turn into poetry commands:
+
+(spike3d-py3.9) C:\Users\pho\repos\Spike3DWorkEnv\Spike3D>poetry env info --executable
+C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\Scripts\python.exe
+
+(spike3d-py3.9) C:\Users\pho\repos\Spike3DWorkEnv\Spike3D>poetry env info --path
+C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv
+
+(spike3d-py3.9) C:\Users\pho\repos\Spike3DWorkEnv\Spike3D>poetry env list --full-path
+C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv (Activated)
+W:\FastSwap\pypoetry_CACHE\virtualenvs\spike3d-UP7QTzFM-py3.9
+
+
+"""
 
 # global_script_dir = Path(os.path.dirname(os.path.abspath(__file__))) #
 # global_exports_folder = global_script_dir.joinpath('exports').resolve()
