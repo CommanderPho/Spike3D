@@ -43,6 +43,14 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRaster
 from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
 
 
+
+# ==================================================================================================================== #
+# 2023-06-27 - Paper Figure 1 Code                                                                                     #
+# ==================================================================================================================== #
+
+
+
+
 # ==================================================================================================================== #
 # 2023-06-26 - Paper Figure 2 Code                                                                                     #
 # ==================================================================================================================== #
@@ -283,6 +291,8 @@ class PaperFigureTwo:
 # ==================================================================================================================== #
 # 2023-06-26 Figure 3                                                                                                  #
 # ==================================================================================================================== #
+
+@function_attributes(short_name=None, tags=['figure_3', 'paper'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-27 03:03', related_items=[])
 def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True):
     """ Firing rate index, Long|Short firing rate figures 
 
