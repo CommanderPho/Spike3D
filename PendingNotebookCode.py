@@ -47,13 +47,26 @@ from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSer
 # 2023-06-26 - Paper Figure 2 Code                                                                                     #
 # ==================================================================================================================== #
 # Instantaneous versions:
+from typing import Any, List
 from quantities import ms, s, Hz
 from neo.core.spiketrain import SpikeTrain
 from elephant.kernels import GaussianKernel
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis import SpikeRateTrends
+import matplotlib.pyplot as plt
+from pyphocorehelpers.programming_helpers import metadata_attributes
+from pyphocorehelpers.function_helpers import function_attributes
 
-@define(slots=False)
+@metadata_attributes(short_name=None, tags=['figure_2', 'paper', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-26 21:36', related_items=[])
+@define(slots=False, repr=False)
 class PaperFigureTwo:
+    """ full instantaneous computations for both Long and Short epochs
+    
+    Usage:
+        _out_fig_2 = PaperFigureTwo(instantaneous_time_bin_size_seconds=0.01) # 10ms
+        _out_fig_2.compute(curr_active_pipeline=curr_active_pipeline)
+        _out_fig_2.display()
+
+    """
     instantaneous_time_bin_size_seconds: float = 0.01 # 20ms
     Fig2_Replay_FR: list[tuple[Any, Any]] = field(init=False)
     Fig2_Laps_FR: list[tuple[Any, Any]] = field(init=False)
@@ -223,8 +236,7 @@ class PaperFigureTwo:
     def display(self, defer_show=False):
 
         # Matplotlib Mode:
-        import numpy as np
-        import matplotlib.pyplot as plt
+        matplotlib.use('Qt5Agg')  # Set the backend to Qt5Agg
         fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_matplotlib, self.fig_2_Replay_FR_matplotlib
         
         # # PyQtGraph Mode:
