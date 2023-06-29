@@ -25,8 +25,72 @@ _debug_print = False
 import sys
 
 from attrs import define, field, Factory
-from pyphocorehelpers.indexing_helpers import safe_numpy_index
-from pyphocorehelpers.indexing_helpers import Paginator
+
+
+# ==================================================================================================================== #
+# 2023-06-29 - Build Properly sorted ratemaps with potentially missing entries                                         #
+# ==================================================================================================================== #
+
+from neuropy.plotting.ratemaps import _help_plot_ratemap_neuronIDs # required for build_shared_sorted_neuronIDs
+
+@function_attributes(short_name=None, tags=['active', 'sort', 'neuron_ids'], input_requires=[], output_provides=[], uses=['_help_plot_ratemap_neuronIDs'], used_by=[], creation_date='2023-06-29 07:46', related_items=[])
+def build_shared_sorted_neuronIDs(ratemap, included_unit_neuron_IDs, sort_ind):
+    """ 
+    
+    `sort_ind` should be the indicies to sort `included_unit_neuron_IDs`.
+        `included_unit_neuron_IDs` may include entries not present in `ratemap`.
+    
+    Usage:
+        ratemap = long_pf1D.ratemap
+        included_unit_neuron_IDs = EITHER_subset.track_exclusive_aclus
+        rediculous_final_sorted_all_included_neuron_ID, rediculous_final_sorted_all_included_pfmap = build_shared_sorted_neuronIDs(ratemap, included_unit_neuron_IDs, sort_ind=new_all_aclus_sort_indicies.copy())
+    """
+    if not isinstance(sort_ind, np.ndarray):
+        sort_ind = np.array(sort_ind)
+    assert np.size(included_unit_neuron_IDs) == np.size(sort_ind), f"`sort_ind` should be the indicies to sort `included_unit_neuron_IDs`."
+
+    #TODO 2023-06-29 06:50: - [ ] SOOO CLOSE. This is the right way to do it... the way that's done in `neuropy.plotting.ratemaps.plot_ratemap_1D`, but because i'm trying to plot the ratemaps as a heatmap I need to fill the missing entries with appropriately sized np.nans or something.
+    active_maps, title_substring, included_unit_indicies = _help_plot_ratemap_neuronIDs(ratemap, included_unit_neuron_IDs=included_unit_neuron_IDs, debug_print=True)
+    n_neurons = len(included_unit_indicies) # n_neurons includes Non-active neurons without a placefield if they're provided in included_unit_indicies.
+    if not isinstance(included_unit_indicies, np.ndarray):
+        included_unit_indicies = np.array(included_unit_indicies)
+    included_unit_indicies
+
+    needed_empty_map_shape = np.shape(active_maps)[1:]
+
+    sorted_included_unit_indicies = included_unit_indicies[sort_ind]
+    rediculous_final_sorted_all_included_pfmap = []
+    rediculous_final_sorted_all_included_neuron_ID = []
+
+    for i, curr_included_unit_index in enumerate(sorted_included_unit_indicies):
+        # `curr_included_unit_index` is either an index into the `included_unit_neuron_IDs` array or None
+        ### Three things must be considered for each "row" of the plot: 1. the pfmap curve values, 2. the cell id label displayed to the left of the row, 3. the color which is used for the row.
+        if curr_included_unit_index is not None:
+            # valid neuron ID, access like normal
+            pfmap = active_maps[curr_included_unit_index]
+            # normal (non-shared mode)
+            curr_ratemap_relative_neuron_IDX = curr_included_unit_index
+            curr_neuron_ID = ratemap.neuron_ids[curr_ratemap_relative_neuron_IDX]
+            
+        else:
+            # invalid neuron ID, generate blank entry
+            curr_ratemap_relative_neuron_IDX = None # This neuron_ID doesn't correspond to a neuron_IDX in the current ratemap, so we'll mark this value as None
+            assert included_unit_neuron_IDs is not None
+            curr_neuron_ID = included_unit_neuron_IDs[sort_ind[i]]
+
+            # pfmap = np.zeros((np.shape(active_maps)[1],)) # fully allocated new array of zeros
+            pfmap = np.zeros(needed_empty_map_shape) # fully allocated new array of zeros
+            
+        rediculous_final_sorted_all_included_pfmap.append(pfmap)
+        rediculous_final_sorted_all_included_neuron_ID.append(curr_neuron_ID)
+
+    rediculous_final_sorted_all_included_neuron_ID = np.array(rediculous_final_sorted_all_included_neuron_ID)
+    rediculous_final_sorted_all_included_neuron_ID
+    rediculous_final_sorted_all_included_pfmap = np.vstack(rediculous_final_sorted_all_included_pfmap)
+    rediculous_final_sorted_all_included_pfmap.shape # (68, 117)
+    return rediculous_final_sorted_all_included_neuron_ID, rediculous_final_sorted_all_included_pfmap
+
+
 
 
 # 2023-06-20 21:37 - Factor out Figure 1 Code
@@ -375,12 +439,12 @@ from pyphocorehelpers.mixins.key_value_hashable import KeyValueHashableObject
 
 
 class TrackAssignmentState(Enum):
-	"""Docstring for TrackAssignmentState."""
-	UNASSIGNED = "unassigned"
-	LONG_TRACK = "long_track"
-	SHORT_TRACK = "short_track"
-	NEITHER = "neither"
-	
+    """Docstring for TrackAssignmentState."""
+    UNASSIGNED = "unassigned"
+    LONG_TRACK = "long_track"
+    SHORT_TRACK = "short_track"
+    NEITHER = "neither"
+    
 
 @define(slots=False, frozen=True)
 class TrackAssignmentDecision(KeyValueHashableObject):
@@ -735,7 +799,7 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     # filter_epoch_spikes_df_L.spikes.rebuild_fragile_linear_neuron_IDXs()
 
     example_epoch_rasters_L = plot_multiple_raster_plot(epochs_df_L, filter_epoch_spikes_df_L, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_L, scatter_plot_kwargs=override_scatter_plot_kwargs,
-										epoch_id_key_name='replay_epoch_id', scatter_app_name="Long Decoded Example Replays")
+                                        epoch_id_key_name='replay_epoch_id', scatter_app_name="Long Decoded Example Replays")
     # app_L, win_L, plots_L, plots_data_L = example_epoch_rasters_L
 
     example_epoch_rasters_S = plot_multiple_raster_plot(epochs_df_S, filter_epoch_spikes_df_S, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_S, scatter_plot_kwargs=override_scatter_plot_kwargs,
