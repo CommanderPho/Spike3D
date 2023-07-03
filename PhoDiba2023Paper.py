@@ -8,42 +8,30 @@ import pandas as pd
 import matplotlib
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from neuropy.core.neuron_identities import PlotStringBrevityModeEnum
-from neuropy.plotting.ratemaps import BackgroundRenderingOptions
-from pyphocorehelpers.DataStructure.RenderPlots.MatplotLibRenderPlots import MatplotlibRenderPlots
 
 from enum import Enum
 from pyphocorehelpers.mixins.key_value_hashable import KeyValueHashableObject
 from pyphocorehelpers.indexing_helpers import partition # needed by `AssigningEpochs` to partition the dataframe by aclus
 
+from pyphocorehelpers.programming_helpers import metadata_attributes
 from pyphocorehelpers.function_helpers import function_attributes
-from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
-from neuropy.core.neuron_identities import PlotStringBrevityModeEnum # for display_all_pf_2D_pyqtgraph_binned_image_rendering
-from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
 
 ## Laps Stuff:
-from neuropy.core.epoch import NamedTimerange
 
 from neuropy.utils.result_context import IdentifyingContext
-from pyphoplacecellanalysis.GUI.Qt.Mixins.PaginationMixins import SelectionsObject
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import determine_long_short_pf1D_indicies_sort_by_peak
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _prepare_spikes_df_from_filter_epochs
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import JonathanFiringRateAnalysisResult
-
-from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import determine_long_short_pf1D_indicies_sort_by_peak
-from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
 from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
 
 from typing import Any, List
-from quantities import ms, s, Hz
-from neo.core.spiketrain import SpikeTrain
-from elephant.kernels import GaussianKernel
+
+from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import batch_perform_all_plots
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis import SpikeRateTrends
+
 import matplotlib.pyplot as plt
-from pyphocorehelpers.programming_helpers import metadata_attributes
-from pyphocorehelpers.function_helpers import function_attributes
 
 
 _bak_rcParams = mpl.rcParams.copy()
@@ -114,13 +102,9 @@ def build_shared_sorted_neuronIDs(ratemap, included_unit_neuron_IDs, sort_ind):
     rediculous_final_sorted_all_included_pfmap.shape # (68, 117)
     return rediculous_final_sorted_all_included_neuron_ID, rediculous_final_sorted_all_included_pfmap
 
-
-
-
 # ==================================================================================================================== #
 # 2023-06-27 - Paper Figure 1 Code                                                                                     #
 # ==================================================================================================================== #
-
 
 # ==================================================================================================================== #
 # 2023-06-21 User Annotations and Paper Figure 1                                                                       #
