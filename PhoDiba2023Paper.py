@@ -1,6 +1,6 @@
 import sys
 from copy import deepcopy
-from typing import Any, List
+from typing import Any, Callable, List
 from attrs import define, field, Factory
 import numpy as np
 import pandas as pd
@@ -667,13 +667,29 @@ class PaperFigureTwo:
     Fig2_Replay_FR: list[tuple[Any, Any]] = field(init=False)
     Fig2_Laps_FR: list[tuple[Any, Any]] = field(init=False)
 
-    def compute(self, curr_active_pipeline):
+    _pipeline_file_callback_fn: Callable = field(init=False, repr=False, default=None)
+
+
+    def compute(self, curr_active_pipeline, **kwargs):
         """ full instantaneous computations for both Long and Short epochs:
         
         """
-        sess = curr_active_pipeline.sess
-        self.active_identifying_session_ctx = sess.get_context()
+        sess = curr_active_pipeline.sess 
+         # Get the provided context or use the session context:
+        active_context = kwargs.get('active_context', sess.get_context()) 
         
+        # curr_fig_num = kwargs.pop('fignum', None)
+        # if curr_fig_num is None:
+        #     ## Set the fig_num, if not already set:
+        #     curr_fig_num = f'long|short fr indicies_{active_context.get_description(separator="/")}'
+        # kwargs['fignum'] = curr_fig_num
+
+        # graphics_output_dict: MatplotlibRenderPlots = _make_pho_jonathan_batch_plots(t_split, time_bins, neuron_replay_stats_df, time_binned_unit_specific_binned_spike_rate, pf1D_all, aclu_to_idx, rdf, irdf,
+        #     show_inter_replay_frs=show_inter_replay_frs, n_max_plot_rows=n_max_plot_rows, included_unit_neuron_IDs=included_unit_neuron_IDs, cell_spikes_dfs_dict=cell_spikes_dfs_dict, time_variable_name=time_variable_name, defer_render=defer_render, **kwargs)
+
+        self.active_identifying_session_ctx = active_context
+        self._pipeline_file_callback_fn = curr_active_pipeline.output_figure # lambda args, kwargs: self.write_to_file(args, kwargs, curr_active_pipeline)
+
         long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
         long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # only uses global_session
         (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies, assigning_epochs_obj = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
@@ -843,8 +859,14 @@ class PaperFigureTwo:
         return MatplotlibRenderPlots(name="fig_2_Replay_FR_matplotlib", figures=[fig], axes=[ax], context=active_context)
 
 
+    def perform_save(self, *args, **kwargs):
+        """ used to save the figure without needing a hard reference to curr_active_pipeline """
+        assert self._pipeline_file_callback_fn is not None
+        return self._pipeline_file_callback_fn(*args, **kwargs) # call the saved callback
+
+
     @overwriting_display_context(fig='2')
-    def display(self, defer_show=False, **kwargs):
+    def display(self, defer_show=False, save_figure=True, **kwargs):
         # Get the provided context or use the session context:
         active_context = kwargs.get('active_context', self.active_identifying_session_ctx)
 
@@ -866,9 +888,23 @@ class PaperFigureTwo:
         # fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_pyqtgraph, self.fig_2_Replay_FR_pyqtgraph
 
         # Any Mode:
-        _fig_2_theta_out = fig_2_Theta_FR(self.Fig2_Laps_FR, defer_show=defer_show)
-        _fig_2_replay_out = fig_2_Replay_FR(self.Fig2_Replay_FR, defer_show=defer_show)
+        _fig_2_theta_out = fig_2_Theta_FR(self.Fig2_Laps_FR, defer_show=defer_show, active_context=active_context)
+        _fig_2_replay_out = fig_2_Replay_FR(self.Fig2_Replay_FR, defer_show=defer_show, active_context=active_context)
 
+
+        def _perform_write_to_file_callback():
+            ## 2023-05-31 - Reference Output of matplotlib figure to file, along with building appropriate context.
+            return (self.perform_save(_fig_2_theta_out.context, _fig_2_theta_out.figures[0]), 
+                    self.perform_save(_fig_2_replay_out.context, _fig_2_replay_out.figures[0]))
+
+        if save_figure:
+             _fig_2_theta_out['saved_figures'],  _fig_2_replay_out['saved_figures'] = _perform_write_to_file_callback()
+        else:
+            _fig_2_theta_out['saved_figures'],  _fig_2_replay_out['saved_figures'] = [], []
+
+        # Merge the two (_fig_2_theta_out | _fig_2_replay_out)
+        return (_fig_2_theta_out, _fig_2_replay_out)
+            
 
 # ==================================================================================================================== #
 # 2023-06-26 Figure 3                                                                                                  #
@@ -894,7 +930,7 @@ def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=
 # ==================================================================================================================== #
 # MAIN RUN FUNCTION TO GENERATE ALL FIGURES                                                                            #
 # ==================================================================================================================== #
-def main_complete_figure_generations(curr_active_pipeline):
+def main_complete_figure_generations(curr_active_pipeline, defer_show=True, save_figure=True):
     """ main run function to generate all figures
     
         from PhoDiba2023Paper import main_complete_figure_generations
@@ -959,13 +995,13 @@ def main_complete_figure_generations(curr_active_pipeline):
 
     _out_fig_2 = PaperFigureTwo(instantaneous_time_bin_size_seconds=0.01) # 10ms
     _out_fig_2.compute(curr_active_pipeline=curr_active_pipeline)
-    _out_fig_2.display(defer_show=True)
+    _out_fig_2.display(defer_show=defer_show, save_figure=save_figure)
 
 
     # ==================================================================================================================== #
     # Figure 3) `PAPER_FIGURE_figure_3`: Firing Rate Index and Long/Short Firing Rate Replays v. Laps                      #
     # ==================================================================================================================== #
-    _out_fig_3_a, _out_fig_3_b = PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True)
+    _out_fig_3_a, _out_fig_3_b = PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=defer_show, save_figure=save_figure)
 
     # # ==================================================================================================================== #
     # # HELPERS: Interactive Components                                                                                      #
