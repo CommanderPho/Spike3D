@@ -59,6 +59,23 @@ mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
 # python-picard = "^0.7"
 # patchworklib = "^0.5.2" 
 papermill = "^2.4.0"
+matplotlib-aximgcache = "^0.1.0"
+matplotlib-extract = "^0.1.2"
+mkdocs = "^1.4.3"
+mkdocs-matplotlib = "^0.10.1"
+click-man = "^0.4.1"
+mkdocs-dracula-theme = "^1.0.4"
+mkdocs-windmill = "^1.0.5"
+mkdocstrings = {extras = ["python"], version = "^0.22.0"}
+mkdocs-jupyter = "^0.24.2"
+tikzplotlib = "^0.10.1"
+mpl-sizes = "^0.0.2"
+lovelyplots = "^0.0.26"
+mkdocs-gen-files = "^0.5.0"
+mknotebooks = "^0.7.1"
+python-markdown-math = "^0.8"
+mkdocs-literate-nav = "^0.6.0"
+mkdocs-section-index = "^0.3.5"
 
 
 
