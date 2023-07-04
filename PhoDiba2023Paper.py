@@ -8,8 +8,12 @@ import pandas as pd
 import matplotlib
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches # used for plot_epoch_track_assignments
+
 
 from enum import Enum
+from neuropy.utils.mixins.enum_helpers import ExtendedEnum # used in TrackAssignmentState
+
 from pyphocorehelpers.mixins.key_value_hashable import KeyValueHashableObject
 from pyphocorehelpers.indexing_helpers import partition # needed by `AssigningEpochs` to partition the dataframe by aclus
 
@@ -167,12 +171,36 @@ class UserAnnotationsManager:
             print(f'WARNING: no matching context found in {len(user_anootations)} annotations. `saved_selection` will be returned unaltered.')
         return saved_selection
 
-class TrackAssignmentState(Enum):
+
+
+class TrackAssignmentState(ExtendedEnum):
     """Docstring for TrackAssignmentState."""
     UNASSIGNED = "unassigned"
     LONG_TRACK = "long_track"
     SHORT_TRACK = "short_track"
     NEITHER = "neither"
+    
+
+    @property
+    def displayColor(self):
+        return self.displayColorList()[self]
+    
+    @classmethod
+    def displayColorList(cls):
+        return cls.build_member_value_dict(['grey', 'blue', 'red', 'black'])
+    
+
+    # track_assignment = epoch['track_assignment'].decision.name
+    # # Set the color of the epoch based on the track assignment
+    # if track_assignment == 'UNASSIGNED':
+    #     color = 'grey'
+    # elif track_assignment == 'LONG_TRACK':
+    #     color = 'blue'
+    # elif track_assignment == 'SHORT_TRACK':
+    #     color = 'red'
+    # elif track_assignment == 'NEITHER':
+    #     color = 'black'
+
 
 @define(slots=False, frozen=True)
 class TrackAssignmentDecision(KeyValueHashableObject):
@@ -282,7 +310,7 @@ class AssigningEpochs:
         self.filter_epochs_df['short_is_user_included'] = np.isin(self.filter_epochs_df.index, selection_idxs_S)
 
 
-    def debug_print_assignment_statuses(self, debug_print=True):
+    def _debug_print_assignment_statuses(self, debug_print=True):
         is_unassigned = np.array([v.decision == TrackAssignmentState.UNASSIGNED for v in self.filter_epochs_df.track_assignment])
         is_disregarded = np.array([v.decision == TrackAssignmentState.NEITHER for v in self.filter_epochs_df.track_assignment])
         num_unassigned = np.sum(is_unassigned)
@@ -293,7 +321,9 @@ class AssigningEpochs:
         return num_unassigned, num_disregarded, num_assigned
     
 
-    def plot_epoch_track_assignments(self):
+    
+
+    def _subfn_plot_epoch_track_assignments(self, axis_idx:int, fig=None, axs=None, defer_render=False):
         """ Plots a figure that represents each epoch as a little box that can be colored in based on the track assignment: grey for Unassigned, blue for Long, red for Short, black for Neither.
 
         Args:
@@ -302,57 +332,128 @@ class AssigningEpochs:
         Returns:
         - None
         """
-        import matplotlib.patches as mpatches
-        
-        # Create a figure and axis object
-        fig, ax = plt.subplots(figsize=(20, 10))
+        def _subfn_setup_each_individual_row_axis(ax, is_bottom_row=False):
+            """ captures self 
+            """
+            # Set the x and y limits of the axis
+            ax.set_xlim([0, len(self.filter_epochs_df)])
+            ax.set_ylim([0, 1])
+            
+            # Add vertical grid lines
+            for i in range(len(self.filter_epochs_df)):
+                ax.axvline(x=i, color='white', linewidth=0.5)
 
-        # Set the x and y limits of the axis
-        ax.set_xlim([0, len(self.filter_epochs_df)])
-        ax.set_ylim([0, 1])
+            # Set the title and axis labels
+            if is_bottom_row:
+                ax.set_title('Replay Track Assignments')
+                ax.set_xlabel('Replay Epoch Index')
+                
+            ax.set_ylabel('') # Track Assignment
 
-        # Add vertical grid lines
-        for i in range(len(self.filter_epochs_df)):
-            ax.axvline(x=i, color='white', linewidth=0.5)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.set_xticklabels([])
+            ax.set_yticklabels([])
+
+            return ax            
+
+        # Create a figure and axis object if not provided
+        if fig is None or axs is None:
+            fig, axs = plt.subplots(ncols=1, nrows=5, sharex=True, sharey=True, figsize=(20, 10))
+            
+            # Set up each individual row axis
+            for ax in axs:
+                ax = _subfn_setup_each_individual_row_axis(ax, is_bottom_row=(ax == axs[-1]))
+            
+            # Add legend (only to the bottom axis)
+            grey_patch = mpatches.Patch(color='grey', label='Unassigned')
+            blue_patch = mpatches.Patch(color='blue', label='Long')
+            red_patch = mpatches.Patch(color='red', label='Short')
+            black_patch = mpatches.Patch(color='black', label='Neither')
+            plt.legend(handles=[grey_patch, blue_patch, red_patch, black_patch], loc='lower center', ncol=4)
+
+
+        # Get the axis object
+        ax = axs[axis_idx]
 
         # Iterate over each epoch in the filter_epochs_df
         for i, epoch in self.filter_epochs_df.iterrows():
             # Get the track assignment of the epoch
-            track_assignment = epoch['track_assignment'].decision.name
+            # track_assignment = epoch['track_assignment'].decision.name
+            
+            track_assignment = epoch['track_assignment'].decision
+            track_assignment_color = track_assignment.displayColor
 
-            # Set the color of the epoch based on the track assignment
-            if track_assignment == 'UNASSIGNED':
-                color = 'grey'
-            elif track_assignment == 'LONG_TRACK':
-                color = 'blue'
-            elif track_assignment == 'SHORT_TRACK':
-                color = 'red'
-            elif track_assignment == 'NEITHER':
-                color = 'black'
+            # # Set the color of the epoch based on the track assignment
+            # if track_assignment == 'UNASSIGNED':
+            #     color = 'grey'
+            # elif track_assignment == 'LONG_TRACK':
+            #     color = 'blue'
+            # elif track_assignment == 'SHORT_TRACK':
+            #     color = 'red'
+            # elif track_assignment == 'NEITHER':
+            #     color = 'black'
 
             # Draw a rectangle for the epoch
-            ax.add_patch(plt.Rectangle((i, 0), 1, 1, color=color))
-
-        # Set the title and axis labels
-        ax.set_title('Replay Track Assignments')
-        ax.set_xlabel('Replay Epoch Index')
-        ax.set_ylabel('') # Track Assignment
-
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.set_xticklabels([])
-        ax.set_yticklabels([])
-
-        # Add legend
-        grey_patch = mpatches.Patch(color='grey', label='Unassigned')
-        blue_patch = mpatches.Patch(color='blue', label='Long')
-        red_patch = mpatches.Patch(color='red', label='Short')
-        black_patch = mpatches.Patch(color='black', label='Neither')
-        plt.legend(handles=[grey_patch, blue_patch, red_patch, black_patch], loc='lower center', ncol=4)
+            ax.add_patch(plt.Rectangle((i, len(ax.get_yticks())), 1, 1, color=track_assignment_color))
 
         # Show the plot
-        plt.show()
+        if not defer_render:
+            plt.show()
             
+        return fig, axs
+    
+
+    @classmethod
+    def main_plot_iterative_epoch_track_assignments(cls, curr_active_pipeline, defer_render=False):
+        """ 2023-06-27 - Test how many can actually be sorted by active_set criteria:
+        
+        """
+        ## First filter by only those user-included replays (in the future this won't be done)
+
+        # from PhoDiba2023Paper import TrackAssignmentDecision, TrackAssignmentState, AssigningEpochs
+        (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies, assigning_epochs_obj = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
+
+        ## Initialize to unassigned
+        axis_idx:int = 0
+        assigning_epochs_obj.filter_epochs_df['track_assignment'] = TrackAssignmentDecision(TrackAssignmentState.UNASSIGNED, 0.0)
+        assigning_epochs_obj._debug_print_assignment_statuses()
+        fig, axs = assigning_epochs_obj._subfn_plot_epoch_track_assignments(axis_idx=axis_idx, defer_render=True)
+
+        # Partition based on whether the user included the epoch in the long or short track in the user-included epochs:
+        is_user_exclusive_L = np.logical_and(assigning_epochs_obj.unassigned_epochs_df['long_is_user_included'], np.logical_not(assigning_epochs_obj.unassigned_epochs_df['short_is_user_included']))
+        is_user_exclusive_S = np.logical_and(assigning_epochs_obj.unassigned_epochs_df['short_is_user_included'], np.logical_not(assigning_epochs_obj.unassigned_epochs_df['long_is_user_included']))
+        is_user_unassigned_in_both_epochs = np.logical_and(np.logical_not(assigning_epochs_obj.unassigned_epochs_df['short_is_user_included']), np.logical_not(assigning_epochs_obj.unassigned_epochs_df['long_is_user_included'])) # the user said it was bad in both epochs, so assign it to neither with high confidence
+
+        # NOTE: be sure to assign to the filter_epochs_df, not the unassigned_epochs_df, because the unassigned_epochs_df is a subset of the filter_epochs_df, and we want to assign to the filter_epochs_df so that the unassigned_epochs_df will be a subset of the filter_epochs_df:
+        # assign the user_exclusive_L to long_track:
+        assigning_epochs_obj.filter_epochs_df.loc[is_user_exclusive_L, 'track_assignment'] = TrackAssignmentDecision(TrackAssignmentState.LONG_TRACK, 1.0)
+        # assign the user_exclusive_S to short_track:
+        assigning_epochs_obj.filter_epochs_df.loc[is_user_exclusive_S, 'track_assignment'] = TrackAssignmentDecision(TrackAssignmentState.SHORT_TRACK, 1.0)
+        # assign the user_unassigned_in_both_epochs to neither:
+        assigning_epochs_obj.filter_epochs_df.loc[is_user_unassigned_in_both_epochs, 'track_assignment'] = TrackAssignmentDecision(TrackAssignmentState.NEITHER, 1.0)
+
+        # assigning_epochs_obj.filter_epochs_df[is_user_exclusive_S]
+        # assigning_epochs_obj.filter_epochs_df[is_user_exclusive_L]
+        axis_idx = axis_idx + 1
+        assigning_epochs_obj._debug_print_assignment_statuses()
+        fig, axs = assigning_epochs_obj._subfn_plot_epoch_track_assignments(axis_idx=axis_idx, fig=fig, axs=axs, defer_render=True)
+
+
+        # Filter based on the active_set cells (LxC, SxC):
+        assigning_epochs_obj.unassigned_epochs_df.loc[np.logical_and(assigning_epochs_obj.unassigned_epochs_df['has_LONG_exclusive_aclu'], np.logical_not(assigning_epochs_obj.unassigned_epochs_df['has_SHORT_exclusive_aclu'])), 'track_assignment'] = TrackAssignmentDecision(TrackAssignmentState.LONG_TRACK, 1.0)
+        assigning_epochs_obj._debug_print_assignment_statuses()
+        # assign the user_exclusive_S to short_track:
+        assigning_epochs_obj.unassigned_epochs_df.loc[np.logical_and(np.logical_not(assigning_epochs_obj.unassigned_epochs_df['has_LONG_exclusive_aclu']), assigning_epochs_obj.unassigned_epochs_df['has_SHORT_exclusive_aclu']), 'track_assignment'] = TrackAssignmentDecision(TrackAssignmentState.SHORT_TRACK, 1.0)
+        axis_idx = axis_idx + 1
+        assigning_epochs_obj._debug_print_assignment_statuses()
+        fig, axs = assigning_epochs_obj._subfn_plot_epoch_track_assignments(axis_idx=axis_idx, fig=fig, axs=axs, defer_render=True)
+        
+        if not defer_render:
+            fig.show() 
+            
+        return fig, axs
+
 
 @function_attributes(short_name=None, tags=['FIGURE1', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 21:40', related_items=[])
 def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_print=True):
@@ -830,28 +931,29 @@ def main_complete_figure_generations(curr_active_pipeline):
     # ==================================================================================================================== #
     # Figure 3) `PAPER_FIGURE_figure_3`: Firing Rate Index and Long/Short Firing Rate Replays v. Laps                      #
     # ==================================================================================================================== #
-    _out, _out2 = PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True)
+    _out_fig_3_a, _out_fig_3_b = PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True)
 
-    # ==================================================================================================================== #
-    # HELPERS: Interactive Components                                                                                      #
-    # ==================================================================================================================== #
-    from neuropy.utils.matplotlib_helpers import interactive_select_grid_bin_bounds_2D
-    # fig, ax, rect_selector, set_extents = interactive_select_grid_bin_bounds_2D(curr_active_pipeline, epoch_name='maze', should_block_for_input=True)
+    # # ==================================================================================================================== #
+    # # HELPERS: Interactive Components                                                                                      #
+    # # ==================================================================================================================== #
+    # from neuropy.utils.matplotlib_helpers import interactive_select_grid_bin_bounds_2D
+    # # fig, ax, rect_selector, set_extents = interactive_select_grid_bin_bounds_2D(curr_active_pipeline, epoch_name='maze', should_block_for_input=True)
 
-    grid_bin_bounds = interactive_select_grid_bin_bounds_2D(curr_active_pipeline, epoch_name='maze', should_block_for_input=True, should_apply_updates_to_pipeline=False)
-    print(f'grid_bin_bounds: {grid_bin_bounds}')
-    print(f"Add this to `specific_session_override_dict`:\n\n{curr_active_pipeline.get_session_context().get_initialization_code_string()}:dict(grid_bin_bounds=({(grid_bin_bounds[0], grid_bin_bounds[1]), (grid_bin_bounds[2], grid_bin_bounds[3])})),\n")
+    # grid_bin_bounds = interactive_select_grid_bin_bounds_2D(curr_active_pipeline, epoch_name='maze', should_block_for_input=True, should_apply_updates_to_pipeline=False)
+    # print(f'grid_bin_bounds: {grid_bin_bounds}')
+    # print(f"Add this to `specific_session_override_dict`:\n\n{curr_active_pipeline.get_session_context().get_initialization_code_string()}:dict(grid_bin_bounds=({(grid_bin_bounds[0], grid_bin_bounds[1]), (grid_bin_bounds[2], grid_bin_bounds[3])})),\n")
 
-    # ==================================================================================================================== #
-    # DEBUGGING:                                                                                                           #
-    # ==================================================================================================================== #
-    ### Testing `plot_kourosh_activity_style_figure` for debugging:
-    from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import plot_kourosh_activity_style_figure
+    # # ==================================================================================================================== #
+    # # DEBUGGING:                                                                                                           #
+    # # ==================================================================================================================== #
+    # ### Testing `plot_kourosh_activity_style_figure` for debugging:
+    # from pyphoplacecellanalysis.Analysis.Decoder.decoder_result import plot_kourosh_activity_style_figure
 
-    # plot_aclus = EITHER_subset.track_exclusive_aclus.copy()
-    plot_aclus = EITHER_subset.track_exclusive_aclus[new_all_aclus_sort_indicies].copy()
-    _out_A = plot_kourosh_activity_style_figure(long_results_obj, long_session, plot_aclus, unit_sort_order=new_all_aclus_sort_indicies, epoch_idx=13, callout_epoch_IDXs=None, skip_rendering_callouts=False)
-    app, win, plots, plots_data = _out_A
+    # # plot_aclus = EITHER_subset.track_exclusive_aclus.copy()
+    # plot_aclus = EITHER_subset.track_exclusive_aclus[new_all_aclus_sort_indicies].copy()
+    # _out_A = plot_kourosh_activity_style_figure(long_results_obj, long_session, plot_aclus, unit_sort_order=new_all_aclus_sort_indicies, epoch_idx=13, callout_epoch_IDXs=None, skip_rendering_callouts=False)
+    # app, win, plots, plots_data = _out_A
+
     # plots
 
 
