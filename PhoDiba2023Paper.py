@@ -22,8 +22,9 @@ from pyphocorehelpers.function_helpers import function_attributes
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
 ## Laps Stuff:
-
+from pyphocorehelpers.DataStructure.RenderPlots.MatplotLibRenderPlots import MatplotlibRenderPlots
 from neuropy.utils.result_context import IdentifyingContext
+from neuropy.utils.result_context import overwriting_display_context
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import determine_long_short_pf1D_indicies_sort_by_peak
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _prepare_spikes_df_from_filter_epochs
@@ -37,6 +38,11 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAn
 import pyphoplacecellanalysis.External.pyqtgraph as pg # pyqtgraph
 
 import matplotlib.pyplot as plt
+
+
+# Testing:
+from pyphocorehelpers.plotting.figure_management import capture_new_figures_decorator
+
 
 _bak_rcParams = mpl.rcParams.copy()
 # mpl.rcParams['toolbar'] = 'None' # disable toolbars
@@ -644,6 +650,7 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
 # 2023-06-26 - Paper Figure 2 Code                                                                                     #
 # ==================================================================================================================== #
 # Instantaneous versions:
+# @overwriting_display_context(
 @metadata_attributes(short_name=None, tags=['figure_2', 'paper', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-26 21:36', related_items=[])
 @define(slots=False, repr=False)
 class PaperFigureTwo:
@@ -656,6 +663,7 @@ class PaperFigureTwo:
 
     """
     instantaneous_time_bin_size_seconds: float = 0.01 # 20ms
+    active_identifying_session_ctx: IdentifyingContext = field(init=False)
     Fig2_Replay_FR: list[tuple[Any, Any]] = field(init=False)
     Fig2_Laps_FR: list[tuple[Any, Any]] = field(init=False)
 
@@ -663,6 +671,9 @@ class PaperFigureTwo:
         """ full instantaneous computations for both Long and Short epochs:
         
         """
+        sess = curr_active_pipeline.sess
+        self.active_identifying_session_ctx = sess.get_context()
+        
         long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
         long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # only uses global_session
         (epochs_df_L, epochs_df_S), (filter_epoch_spikes_df_L, filter_epoch_spikes_df_S), (good_example_epoch_indicies_L, good_example_epoch_indicies_S), (short_exclusive, long_exclusive, BOTH_subset, EITHER_subset, XOR_subset, NEITHER_subset), new_all_aclus_sort_indicies, assigning_epochs_obj = PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline)
@@ -704,7 +715,6 @@ class PaperFigureTwo:
         self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
 
 
-
     # @register_variant('fig_2_Theta_FR', 'matplotlib')
     @staticmethod
     def fig_2_Theta_FR_pyqtgraph(Fig2_Laps_FR):
@@ -733,7 +743,7 @@ class PaperFigureTwo:
         error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
         plot.addItem(error_bars)
 
-        return app, win, plot, bars
+        return app, win, plot, (bars, error_bars)
 
     @staticmethod
     def fig_2_Replay_FR_pyqtgraph(Fig2_Replay_FR):
@@ -763,10 +773,15 @@ class PaperFigureTwo:
         error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
         plot.addItem(error_bars)
 
-        return app, win, plot, bars
+        return app, win, plot, (bars, error_bars)
         
     @staticmethod
-    def fig_2_Theta_FR_matplotlib(Fig2_Laps_FR, defer_show=False):
+    @overwriting_display_context(fig='2', frs='Laps')
+    def fig_2_Theta_FR_matplotlib(Fig2_Laps_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
+            active_context = kwargs.get('active_context', None)
+            assert active_context is not None
+            print(f'\t{active_context}')
+        
             # x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
             x_labels = ['$L_x C$\t$\\theta_{\\Delta -}$', '$L_x C$\t$\\theta_{\\Delta +}$', '$S_x C$\t$\\theta_{\\Delta -}$', '$S_x C$\t$\\theta_{\\Delta +}$']
 
@@ -792,10 +807,17 @@ class PaperFigureTwo:
             if not defer_show:
                 plt.show()
                         
-            return fig, ax, bars
+            return MatplotlibRenderPlots(name="fig_2_Theta_FR_matplotlib", figures=[fig], axes=[ax], context=active_context)
+            # return fig, ax, bars
         
     @staticmethod
-    def fig_2_Replay_FR_matplotlib(Fig2_Replay_FR, defer_show=False):
+    @overwriting_display_context(fig='2', frs='Replay')
+    def fig_2_Replay_FR_matplotlib(Fig2_Replay_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
+        
+        active_context = kwargs.get('active_context', None)
+        assert active_context is not None
+        print(f'\t{active_context}')
+        
         # x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
         x_labels = ['$L_x C$\t$R_{\\Delta -}$', '$L_x C$\t$R_{\\Delta +}$', '$S_x C$\t$R_{\\Delta -}$', '$S_x C$\t$R_{\\Delta +}$']
         
@@ -817,14 +839,26 @@ class PaperFigureTwo:
         if not defer_show:
             plt.show()
                     
-        return fig, ax, bars
+        # return fig, ax, bars
+        return MatplotlibRenderPlots(name="fig_2_Replay_FR_matplotlib", figures=[fig], axes=[ax], context=active_context)
 
 
+    @overwriting_display_context(fig='2')
+    def display(self, defer_show=False, **kwargs):
+        # Get the provided context or use the session context:
+        active_context = kwargs.get('active_context', self.active_identifying_session_ctx)
 
-    def display(self, defer_show=False):
+        active_context = active_context.adding_context_if_missing(display_fn_name='fig_2_Lap vs Replay FR')
+        # curr_fig_num = kwargs.pop('fignum', None)
+        # if curr_fig_num is None:
+        #     ## Set the fig_num, if not already set:
+        #     curr_fig_num = f'long|short fr indicies_{active_context.get_description(separator="/")}'
+        # kwargs['fignum'] = curr_fig_num
+
 
         # Matplotlib Mode:
-        matplotlib.use('Qt5Agg')  # Set the backend to Qt5Agg
+        # matplotlib.use('Qt5Agg')  # Set the backend to Qt5Agg
+    
         fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_matplotlib, self.fig_2_Replay_FR_matplotlib
         
         # # PyQtGraph Mode:
