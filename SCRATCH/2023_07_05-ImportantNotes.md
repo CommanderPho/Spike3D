@@ -42,6 +42,11 @@ with disable_function(plt, "show"):
 # TOPIC: Non-blocking plotting in matplotlib
 https://stackoverflow.com/questions/28269157/plotting-in-a-non-blocking-way-with-matplotlib
 https://discourse.matplotlib.org/t/plot-show-behavior-with-block-false/23145
+# plt.ion()
+# ## PLOT: https://stackoverflow.com/questions/28269157/plotting-in-a-non-blocking-way-with-matplotlib
+# plt.draw()
+# plt.pause(0.001)
+
 
 
 # ==================================================================================================================== #
@@ -96,3 +101,6 @@ IPython.lib.pretty.PrettyPrinter(output, max_width=79, newline='\n', max_seq_len
 
 
 # TOPIC: https://stackoverflow.com/questions/395735/how-to-check-whether-a-variable-is-a-class-or-not
+
+
+# TOPIC: Potential B
