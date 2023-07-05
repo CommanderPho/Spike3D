@@ -22,6 +22,20 @@ should_display_2D_plots = True
 _debug_print = False
 
 
+# 2023-07-05 - MiracleWrapper Idea
+"""
+# Wish it was easier to get things in and out of functions.
+def a_fn(...):
+    pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics = a_computation_fn(...)
+    miracle_wrapper = MiracleWrapper(pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics)
+    miracle_wrapper.add(pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics)
+    return miracle_wrapper
+
+miracle_wrapper = a_fn(...)
+# Ideally, you could get them out "by magic" by specifying the same name that they were put in with on the LHS of an assignment eqn:
+pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics = miracle_wrapper.magic_unwrap()
+"""
+
 
 
 # ==================================================================================================================== #

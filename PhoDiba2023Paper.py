@@ -30,6 +30,8 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContex
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _prepare_spikes_df_from_filter_epochs
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import JonathanFiringRateAnalysisResult
 from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import export_pyqtgraph_plot
+
 
 from typing import Any, List
 
@@ -107,9 +109,9 @@ def build_shared_sorted_neuronIDs(ratemap, included_unit_neuron_IDs, sort_ind):
         rediculous_final_sorted_all_included_neuron_ID.append(curr_neuron_ID)
 
     rediculous_final_sorted_all_included_neuron_ID = np.array(rediculous_final_sorted_all_included_neuron_ID)
-    rediculous_final_sorted_all_included_neuron_ID
+    
     rediculous_final_sorted_all_included_pfmap = np.vstack(rediculous_final_sorted_all_included_pfmap)
-    rediculous_final_sorted_all_included_pfmap.shape # (68, 117)
+    # rediculous_final_sorted_all_included_pfmap.shape # (68, 117)
     return rediculous_final_sorted_all_included_neuron_ID, rediculous_final_sorted_all_included_pfmap
 
 # ==================================================================================================================== #
@@ -535,7 +537,7 @@ def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_p
 
 
 @function_attributes(short_name=None, tags=['FINAL', 'publication', 'figure', 'combined'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 14:33', related_items=[])
-def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
+def PAPER_FIGURE_figure_1_full(curr_active_pipeline, defer_show=False, save_figure=True):
     ## long_short_decoding_analyses:
     curr_long_short_decoding_analyses = curr_active_pipeline.global_computation_results.computed_data['long_short_leave_one_out_decoding_analysis']
     ## Extract variables from results object:
@@ -556,11 +558,6 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     # expected_v_observed_result, curr_long_short_rr = curr_long_short_post_decoding.expected_v_observed_result, curr_long_short_post_decoding.rate_remapping
     # rate_remapping_df, high_remapping_cells_only = curr_long_short_rr.rr_df, curr_long_short_rr.high_only_rr_df
     # Flat_epoch_time_bins_mean, Flat_decoder_time_bin_centers, num_neurons, num_timebins_in_epoch, num_total_flat_timebins, is_short_track_epoch, is_long_track_epoch, short_short_diff, long_long_diff = expected_v_observed_result['Flat_epoch_time_bins_mean'], expected_v_observed_result['Flat_decoder_time_bin_centers'], expected_v_observed_result['num_neurons'], expected_v_observed_result['num_timebins_in_epoch'], expected_v_observed_result['num_total_flat_timebins'], expected_v_observed_result['is_short_track_epoch'], expected_v_observed_result['is_long_track_epoch'], expected_v_observed_result['short_short_diff'], expected_v_observed_result['long_long_diff']
-
-    jonathan_firing_rate_analysis_result = JonathanFiringRateAnalysisResult(**curr_active_pipeline.global_computation_results.computed_data.jonathan_firing_rate_analysis.to_dict())
-
-
-    curr_active_pipeline.reload_default_display_functions()
 
     # ==================================================================================================================== #
     # Show 1D Placefields for both Short and Long (top half of the figure)                                                 #
@@ -584,8 +581,8 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     pf1d_compare_graphics = curr_active_pipeline.display('_display_short_long_pf1D_comparison', active_identifying_session_ctx, single_figure=False, debug_print=False, fignum='Short v Long pf1D Comparison',
                                     long_kwargs={'sortby': sort_idx, 'single_cell_pfmap_processing_fn': long_single_cell_pfmap_processing_fn},
                                     short_kwargs={'sortby': sort_idx, 'single_cell_pfmap_processing_fn': short_single_cell_pfmap_processing_fn, 'curve_hatch_style': {'hatch':'///', 'edgecolor':'k'}},
-                                    save_figure=True,
-                                    defer_render=False
+                                    save_figure=save_figure,
+                                    defer_render=defer_show
                                     )
                                     
 
@@ -632,16 +629,23 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline):
     # filter_epoch_spikes_df_L.spikes.rebuild_fragile_linear_neuron_IDXs()
 
     example_epoch_rasters_L = plot_multiple_raster_plot(epochs_df_L, filter_epoch_spikes_df_L, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_L, scatter_plot_kwargs=override_scatter_plot_kwargs,
-                                        epoch_id_key_name='replay_epoch_id', scatter_app_name="Long Decoded Example Replays")
-    # app_L, win_L, plots_L, plots_data_L = example_epoch_rasters_L
+                                        epoch_id_key_name='replay_epoch_id', scatter_app_name="Long Decoded Example Replays", defer_show=defer_show)
+    app_L, win_L, plots_L, plots_data_L = example_epoch_rasters_L
+    if save_figure:
+        #TODO 2023-07-05 15:38: - [ ] Get how the filenames and etc are generated using the context via the pipeline's export function. Maybe just add this export there.
+        export_pyqtgraph_plot(win_L, savepath=f"{plots_data_L.get('active_context','example_epoch_rasters_L')}.png") # works
+
+        
 
     example_epoch_rasters_S = plot_multiple_raster_plot(epochs_df_S, filter_epoch_spikes_df_S, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_S, scatter_plot_kwargs=override_scatter_plot_kwargs,
-                                                                 epoch_id_key_name='replay_epoch_id', scatter_app_name="Short Decoded Example Replays")
-    # app_S, win_S, plots_S, plots_data_S = example_epoch_rasters_S
-
+                                                                 epoch_id_key_name='replay_epoch_id', scatter_app_name="Short Decoded Example Replays", defer_show=defer_show)
+    app_S, win_S, plots_S, plots_data_S = example_epoch_rasters_S
+    if save_figure:
+        #TODO 2023-07-05 15:38: - [ ] Get how the filenames and etc are generated using the context via the pipeline's export function. Maybe just add this export there.
+        export_pyqtgraph_plot(win_S, savepath=f"{plots_data_S.get('active_context','example_epoch_rasters_L')}.png") # works
 
     ## Stacked Epoch Plot
-    example_stacked_epoch_graphics = curr_active_pipeline.display('_display_long_and_short_stacked_epoch_slices', defer_render=False, save_figure=False)
+    example_stacked_epoch_graphics = curr_active_pipeline.display('_display_long_and_short_stacked_epoch_slices', defer_render=defer_show, save_figure=save_figure)
 
 
     return pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics
@@ -979,7 +983,10 @@ def main_complete_figure_generations(curr_active_pipeline, defer_show=True, save
     pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics = PAPER_FIGURE_figure_1_full(curr_active_pipeline) # did not display the pf1
 
 
-    # Critical new code:
+
+
+
+    # Critical new code: Not used anyhwere
     ratemap = long_pf1D.ratemap
     included_unit_neuron_IDs = EITHER_subset.track_exclusive_aclus
     rediculous_final_sorted_all_included_neuron_ID, rediculous_final_sorted_all_included_pfmap = build_shared_sorted_neuronIDs(ratemap, included_unit_neuron_IDs, sort_ind=new_all_aclus_sort_indicies.copy())
