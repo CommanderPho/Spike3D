@@ -631,18 +631,16 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline, defer_show=False, save_figu
     example_epoch_rasters_L = plot_multiple_raster_plot(epochs_df_L, filter_epoch_spikes_df_L, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_L, scatter_plot_kwargs=override_scatter_plot_kwargs,
                                         epoch_id_key_name='replay_epoch_id', scatter_app_name="Long Decoded Example Replays", defer_show=defer_show)
     app_L, win_L, plots_L, plots_data_L = example_epoch_rasters_L
+    plots_data_L.active_context = curr_active_pipeline.build_display_context_for_session('plot_multiple_raster_plot', fig=1, track='long', epoch='example_replays')
     if save_figure:
-        #TODO 2023-07-05 15:38: - [ ] Get how the filenames and etc are generated using the context via the pipeline's export function. Maybe just add this export there.
-        export_pyqtgraph_plot(win_L, savepath=f"{plots_data_L.get('active_context','example_epoch_rasters_L')}.png") # works
-
-        
+        curr_active_pipeline.output_figure(plots_data_L.active_context, win_L) 
 
     example_epoch_rasters_S = plot_multiple_raster_plot(epochs_df_S, filter_epoch_spikes_df_S, included_neuron_ids=EITHER_subset.track_exclusive_aclus, unit_sort_order=new_all_aclus_sort_indicies, unit_colors_list=unit_colors_list_S, scatter_plot_kwargs=override_scatter_plot_kwargs,
-                                                                 epoch_id_key_name='replay_epoch_id', scatter_app_name="Short Decoded Example Replays", defer_show=defer_show)
+                                                                    epoch_id_key_name='replay_epoch_id', scatter_app_name="Short Decoded Example Replays", defer_show=defer_show)
     app_S, win_S, plots_S, plots_data_S = example_epoch_rasters_S
+    plots_data_S.active_context = curr_active_pipeline.build_display_context_for_session('plot_multiple_raster_plot', fig=1, track='short', epoch='example_replays')
     if save_figure:
-        #TODO 2023-07-05 15:38: - [ ] Get how the filenames and etc are generated using the context via the pipeline's export function. Maybe just add this export there.
-        export_pyqtgraph_plot(win_S, savepath=f"{plots_data_S.get('active_context','example_epoch_rasters_L')}.png") # works
+        curr_active_pipeline.output_figure(plots_data_S.active_context, win_S)
 
     ## Stacked Epoch Plot
     example_stacked_epoch_graphics = curr_active_pipeline.display('_display_long_and_short_stacked_epoch_slices', defer_render=defer_show, save_figure=save_figure)
@@ -735,7 +733,6 @@ class PaperFigureTwo:
         self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
 
 
-    # @register_variant('fig_2_Theta_FR', 'matplotlib')
     @staticmethod
     def fig_2_Theta_FR_pyqtgraph(Fig2_Laps_FR):
         """ Plots the bar graph that displays the Long/Short eXclusive cells during the laps (theta).
