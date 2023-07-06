@@ -668,9 +668,28 @@ class PaperFigureTwo:
 
     _pipeline_file_callback_fn: Callable = field(init=False, repr=False, default=None)
 
+    ## Extra Debugging data:
+    LxC_ReplayDeltaMinus: SpikeRateTrends = field(init=False, repr=False, default=None)
+    LxC_ReplayDeltaPlus: SpikeRateTrends = field(init=False, repr=False, default=None)
+    SxC_ReplayDeltaMinus: SpikeRateTrends = field(init=False, repr=False, default=None)
+    SxC_ReplayDeltaPlus: SpikeRateTrends = field(init=False, repr=False, default=None)
+    
+    LxC_ThetaDeltaMinus: SpikeRateTrends = field(init=False, repr=False, default=None)
+    LxC_ThetaDeltaPlus: SpikeRateTrends = field(init=False, repr=False, default=None)
+    SxC_ThetaDeltaMinus: SpikeRateTrends = field(init=False, repr=False, default=None)
+    SxC_ThetaDeltaPlus: SpikeRateTrends = field(init=False, repr=False, default=None)
+
 
     def compute(self, curr_active_pipeline, **kwargs):
         """ full instantaneous computations for both Long and Short epochs:
+        
+        Can access via:
+            from PhoDiba2023Paper import PaperFigureTwo
+
+            _out_fig_2 = PaperFigureTwo(instantaneous_time_bin_size_seconds=0.01) # 10ms
+            _out_fig_2.compute(curr_active_pipeline=curr_active_pipeline, active_context=curr_active_pipeline.sess.get_context())
+            LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus = _out_fig_2.LxC_ReplayDeltaMinus, _out_fig_2.LxC_ReplayDeltaPlus, _out_fig_2.SxC_ReplayDeltaMinus, _out_fig_2.SxC_ReplayDeltaPlus
+            LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus = _out_fig_2.LxC_ThetaDeltaMinus, _out_fig_2.LxC_ThetaDeltaPlus, _out_fig_2.SxC_ThetaDeltaMinus, _out_fig_2.SxC_ThetaDeltaPlus
         
         """
         sess = curr_active_pipeline.sess 
@@ -709,6 +728,8 @@ class PaperFigureTwo:
         # ReplayDeltaPlus: `short_replays`
         SxC_ReplayDeltaPlus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=short_replays, included_neuron_ids=short_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
 
+        self.LxC_ReplayDeltaMinus, self.LxC_ReplayDeltaPlus, self.SxC_ReplayDeltaMinus, self.SxC_ReplayDeltaPlus = LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus
+
         # Note that in general LxC and SxC might have differing numbers of cells.
         self.Fig2_Replay_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus)]
         
@@ -725,6 +746,8 @@ class PaperFigureTwo:
         SxC_ThetaDeltaMinus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=long_laps, included_neuron_ids=short_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
         # ThetaDeltaPlus: `short_laps`
         SxC_ThetaDeltaPlus: SpikeRateTrends = SpikeRateTrends.init_from_spikes_and_epochs(spikes_df=global_session.spikes_df, filter_epochs=short_laps, included_neuron_ids=short_exclusive.track_exclusive_aclus, instantaneous_time_bin_size_seconds=self.instantaneous_time_bin_size_seconds)
+
+        self.LxC_ThetaDeltaMinus, self.LxC_ThetaDeltaPlus, self.SxC_ThetaDeltaMinus, self.SxC_ThetaDeltaPlus = LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus
 
         # Note that in general LxC and SxC might have differing numbers of cells.
         self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
