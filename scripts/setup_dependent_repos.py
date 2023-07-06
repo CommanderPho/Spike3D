@@ -19,6 +19,7 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 """
 import os
 from pathlib import Path
+from datetime import datetime
 import argparse
 
 import glob
@@ -31,7 +32,7 @@ from helpers.poetry_helpers import install_ipython_kernel
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
 # parser.add_argument('--name', help='the name to greet')
-parser.add_argument('--upgrade', action='store_const', help='resets child repos by forcefully pulling from remote', const=True, default=True)
+parser.add_argument('--force', action='store_const', help='resets child repos by forcefully pulling from remote', const=True, default=False)
 parser.add_argument('--skip_lock', action='store_const', help='whether to skip `poetry lock` for child repos', const=True, default=False)
 parser.add_argument('--skip_building_templates', action='store_const', help='whether to skip templating the pyproject.toml file', const=True, default=False)
 parser.add_argument('--skip_building_binary_repos', action='store_const', help='whether to skip building child binary repos', const=True, default=False)
@@ -63,7 +64,9 @@ def _reset_local_changes(repo_path):
     os.chdir(repo_path)
     # os.system("git reset --hard HEAD")
     # os.system("git clean -f -d")
-    os.system("git stash")
+    date_now_str = datetime.now().strftime("%Y%m%d%H%M%S")
+    os.system(f'git stash save "stash_{date_now_str}"')
+    # os.system(f'git stash') # PREV CODE, NO SAVE
     os.system("git stash drop")
 
 
@@ -176,7 +179,7 @@ def main():
     # else:
     #     print('Hello, world!')
 
-    force_overwrite_child_repos_from_remote = args.upgrade
+    force_overwrite_child_repos_from_remote = args.force
     skip_lock_for_child_repos = args.skip_lock
     is_release = (args.release == True)
     enable_install_for_child_repos = False
