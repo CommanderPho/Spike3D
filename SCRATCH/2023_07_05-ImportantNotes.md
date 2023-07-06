@@ -1,43 +1,3 @@
-""" Disable a function within a context manager
-
-Could be used for plt.show().
-```python
-import matplotlib.pyplot as plt
-with disable_function(plt, "show"):
-    run_me(x)
-```
-
-https://stackoverflow.com/questions/10388411/possible-to-globally-replace-a-function-with-a-context-manager-in-python
-
-"""
-
-from contextlib import contextmanager
-
-class X:
-    def disable_me():
-        print("do stuff")
-
-def run_me(x):
-    print("run_me")
-    x.disable_me()
-
-@contextmanager
-def disable_function(obj, name):
-    temp = getattr(obj, name)
-    setattr(obj, name, lambda: None)
-    yield
-    setattr(obj, name, temp)
-
-x = X()
-with disable_function(x, "disable_me"):
-    run_me(x)
-    
-
-import matplotlib.pyplot as plt
-with disable_function(plt, "show"):
-    run_me(x)
-    
-
 
 # TOPIC: Non-blocking plotting in matplotlib
 https://stackoverflow.com/questions/28269157/plotting-in-a-non-blocking-way-with-matplotlib
@@ -101,6 +61,3 @@ IPython.lib.pretty.PrettyPrinter(output, max_width=79, newline='\n', max_seq_len
 
 
 # TOPIC: https://stackoverflow.com/questions/395735/how-to-check-whether-a-variable-is-a-class-or-not
-
-
-# TOPIC: Potential B
