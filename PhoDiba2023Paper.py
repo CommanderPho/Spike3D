@@ -790,7 +790,7 @@ class PaperFigureTwo:
         return app, win, plot, (bars, error_bars)
         
     @staticmethod
-    @overwriting_display_context(fig='2', frs='Laps')
+    @providing_context(fig='2', frs='Laps')
     def fig_2_Theta_FR_matplotlib(Fig2_Laps_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
             active_context = kwargs.get('active_context', None)
             assert active_context is not None
@@ -825,7 +825,7 @@ class PaperFigureTwo:
             # return fig, ax, bars
         
     @staticmethod
-    @overwriting_display_context(fig='2', frs='Replay')
+    @providing_context(fig='2', frs='Replay')
     def fig_2_Replay_FR_matplotlib(Fig2_Replay_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
         
         active_context = kwargs.get('active_context', None)
@@ -863,7 +863,7 @@ class PaperFigureTwo:
         return self._pipeline_file_callback_fn(*args, **kwargs) # call the saved callback
 
 
-    @overwriting_display_context(fig='2')
+    @providing_context(fig='2')
     def display(self, defer_show=False, save_figure=True, **kwargs):
         # Get the provided context or use the session context:
         active_context = kwargs.get('active_context', self.active_identifying_session_ctx)
@@ -995,8 +995,8 @@ def main_complete_figure_generations(curr_active_pipeline, defer_show=True, save
     from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis import SpikeRateTrends
 
     _out_fig_2 = PaperFigureTwo(instantaneous_time_bin_size_seconds=0.01) # 10ms
-    _out_fig_2.compute(curr_active_pipeline=curr_active_pipeline)
-    _out_fig_2.display(defer_show=defer_show, save_figure=save_figure)
+    _out_fig_2.compute(curr_active_pipeline=curr_active_pipeline, active_context=curr_active_pipeline.sess.get_context())
+    _out_fig_2.display(defer_show=defer_show, save_figure=save_figure, active_context=curr_active_pipeline.sess.get_context())
 
 
     # ==================================================================================================================== #
