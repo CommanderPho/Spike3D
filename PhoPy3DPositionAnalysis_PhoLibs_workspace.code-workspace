@@ -64,6 +64,8 @@
 		"python.pylanceLspNotebooksEnabled": true,
 		"dvc.studio.shareExperimentsLive": false,
 		"vscode-pydata-viewer.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+		"GitLink.defaultRemote": "origin",
+		"GitLink.hostType": "github",
 	},
 	"extensions": {
 		"recommendations": [
@@ -107,7 +109,9 @@
 			"randomfractalsinc.vscode-data-table",
 			"faxes.easycollapse",
 			"genap.copy-to-chat-gpt",
-			"ms-python.vscode-pylance"
+			"ms-python.vscode-pylance",
+			"hipdotmedia.hipdot-vs-code-url-scheme-grabber",
+			"salbert.copy-text"
 		]
 	},
 	"launch": {
