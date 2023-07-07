@@ -116,6 +116,12 @@ def _on_complete_success_execution_session(active_batch_run, curr_session_contex
     # ### Programmatic Figure Outputs:
     try:
         neptuner = batch_perform_all_plots(curr_active_pipeline, enable_neptune=True, neptuner=None)
+        # IF thst's done, clear all the plots:
+        from matplotlib import pyplot as plt
+        plt.close('all') # this takes care of the matplotlib-backed figures.
+        curr_active_pipeline.clear_display_outputs()
+        curr_active_pipeline.clear_registered_output_files()
+
     except Exception as e:
         print(f'_perform_plots failed with exception: {e}')
         # raise e
