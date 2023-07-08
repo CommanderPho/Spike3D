@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches # used for plot_epoch_track_assignments
-
+from flexitext import flexitext ## flexitext version
 
 from enum import Enum
 from neuropy.utils.mixins.enum_helpers import ExtendedEnum # used in TrackAssignmentState
@@ -681,6 +681,10 @@ class PaperFigureTwo:
     SxC_ThetaDeltaMinus: SpikeRateTrends = field(init=False, repr=False, default=None)
     SxC_ThetaDeltaPlus: SpikeRateTrends = field(init=False, repr=False, default=None)
 
+    @classmethod
+    def get_bar_colors(cls):
+        return [(0, 0, 1.0, 1), (0, 0, 0.65, 1), (0.65, 0, 0, 1), (1.0, 0, 0, 1)]    # corresponding colors
+    
 
     def compute(self, curr_active_pipeline, **kwargs):
         """ full instantaneous computations for both Long and Short epochs:
@@ -695,7 +699,7 @@ class PaperFigureTwo:
         
         """
         sess = curr_active_pipeline.sess 
-         # Get the provided context or use the session context:
+        # Get the provided context or use the session context:
         active_context = kwargs.get('active_context', sess.get_context()) 
         
         # curr_fig_num = kwargs.pop('fignum', None)
@@ -733,7 +737,7 @@ class PaperFigureTwo:
         self.LxC_ReplayDeltaMinus, self.LxC_ReplayDeltaPlus, self.SxC_ReplayDeltaMinus, self.SxC_ReplayDeltaPlus = LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus
 
         # Note that in general LxC and SxC might have differing numbers of cells.
-        self.Fig2_Replay_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus)]
+        self.Fig2_Replay_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std(), v.cell_agg_inst_fr_list) for v in (LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus)]
         
 
         # Laps/Theta: Uses `global_session.spikes_df`, `long_exclusive.track_exclusive_aclus, `short_exclusive.track_exclusive_aclus`, `long_laps`, `short_laps`
@@ -752,11 +756,11 @@ class PaperFigureTwo:
         self.LxC_ThetaDeltaMinus, self.LxC_ThetaDeltaPlus, self.SxC_ThetaDeltaMinus, self.SxC_ThetaDeltaPlus = LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus
 
         # Note that in general LxC and SxC might have differing numbers of cells.
-        self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std()) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
+        self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std(), v.cell_agg_inst_fr_list) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
 
 
-    @staticmethod
-    def fig_2_Theta_FR_pyqtgraph(Fig2_Laps_FR):
+    @classmethod
+    def fig_2_Theta_FR_pyqtgraph(cls, Fig2_Laps_FR):
         """ Plots the bar graph that displays the Long/Short eXclusive cells during the laps (theta).
         Usage:
             _fig_2_theta_out = fig_2_Theta_FR(Fig2_Laps_FR)
@@ -784,8 +788,8 @@ class PaperFigureTwo:
 
         return app, win, plot, (bars, error_bars)
 
-    @staticmethod
-    def fig_2_Replay_FR_pyqtgraph(Fig2_Replay_FR):
+    @classmethod
+    def fig_2_Replay_FR_pyqtgraph(cls, Fig2_Replay_FR):
         """ Plots the bar graph that displays the Long/Short eXclusive cells during the replays.
         
         Usage:
@@ -814,28 +818,67 @@ class PaperFigureTwo:
 
         return app, win, plot, (bars, error_bars)
         
-    @staticmethod
+
+    @classmethod
+    def _build_footer_string(cls, active_context):
+        """ buidls the dim, grey string for the figure's footer that is passed into `flexitext`.
+        Usage:
+            footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
+        """
+        first_portion_sess_ctxt_str = active_context.get_description(subset_includelist=['format_name', 'animal', 'exper_name'], separator=' | ')
+        session_name_sess_ctxt_str = active_context.get_description(subset_includelist=['session_name'], separator=' | ') # 2006-6-08_14-26-15
+        return (f"<color:silver, size:10>{first_portion_sess_ctxt_str} | <weight:bold>{session_name_sess_ctxt_str}</></>")
+
+    @classmethod
     @providing_context(fig='2', frs='Laps')
-    def fig_2_Theta_FR_matplotlib(Fig2_Laps_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
+    def fig_2_Theta_FR_matplotlib(cls, Fig2_Laps_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
             active_context = kwargs.get('active_context', None)
             assert active_context is not None
-            print(f'\t{active_context}')
+            top_margin, left_margin, bottom_margin = kwargs.get('top_margin', 0.8), kwargs.get('left_margin', 0.090), kwargs.get('bottom_margin', 0.150)
         
             # x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
             x_labels = ['$L_x C$\t$\\theta_{\\Delta -}$', '$L_x C$\t$\\theta_{\\Delta +}$', '$S_x C$\t$\\theta_{\\Delta -}$', '$S_x C$\t$\\theta_{\\Delta +}$']
-
+            
             mean_values = np.array([v[0] for v in Fig2_Laps_FR])
             std_values = np.array([v[1] for v in Fig2_Laps_FR])
+            all_data_points = np.array([v[2] for v in Fig2_Laps_FR])
+            
+            x = np.arange(len(x_labels)) # x-coordinates of your bars
+            width = 0.3 # bar width            
+            y = all_data_points
+            # y = mean_values
 
             fig, ax = plt.subplots()
-            x = np.arange(len(x_labels))
-            width = 0.3
+            fig.subplots_adjust(top=top_margin, left=left_margin, bottom=bottom_margin)
+            bars = ax.bar(x,
+                height=[np.mean(yi) for yi in y], # could just pass `mean_values`
+                yerr=[np.std(yi) for yi in y],    # error bars
+                capsize=5, # error bar cap width in points
+                width=width,    # bar width
+                tick_label=x_labels,
+                color=(0,0,0,0),  # face color transparent
+                edgecolor=cls.get_bar_colors(),
+                #ecolor=colors,    # error bar colors; setting this raises an error for whatever reason.
+                )
 
-            bars = ax.bar(x, mean_values, width, yerr=std_values, capsize=5)
-            
+            # Add actual datapoints on top:
+            for i in range(len(x)):
+                # distribute scatter randomly across whole width of bar
+                ax.scatter(x[i] + np.random.random(y[i].size) * width - width / 2, y[i], color=cls.get_bar_colors()[i])
+
             ax.set_xlabel('Groups')
             ax.set_ylabel('Laps Firing Rates (Hz)')
-            ax.set_title('Lap ($\\theta$) Firing Rates for Long/Short eXclusive Cells on each track')
+
+            # Original title: 'Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track'
+            # ax.set_title('Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track')
+            # Add flexitext
+            title_formatted_text = (
+                "<size:22><weight:bold>Lap</> ($\\theta$) Firing Rates\n"
+                "<size:14>for the "
+                "<color:royalblue, weight:bold>Long</>/<color:crimson, weight:bold>Short</> eXclusive Cells on each track</></>"
+            )
+            flexitext(left_margin, top_margin, title_formatted_text, va="bottom", xycoords="figure fraction")
+            footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
             ax.set_xticks(x)
             ax.set_xticklabels(x_labels)
             
@@ -849,29 +892,57 @@ class PaperFigureTwo:
             return MatplotlibRenderPlots(name="fig_2_Theta_FR_matplotlib", figures=[fig], axes=[ax], context=active_context)
             # return fig, ax, bars
         
-    @staticmethod
+    @classmethod
     @providing_context(fig='2', frs='Replay')
-    def fig_2_Replay_FR_matplotlib(Fig2_Replay_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
+    def fig_2_Replay_FR_matplotlib(cls, Fig2_Replay_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
         
         active_context = kwargs.get('active_context', None)
         assert active_context is not None
-        print(f'\t{active_context}')
+        top_margin, left_margin, bottom_margin = kwargs.get('top_margin', 0.8), kwargs.get('left_margin', 0.090), kwargs.get('bottom_margin', 0.150)
         
         # x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
         x_labels = ['$L_x C$\t$R_{\\Delta -}$', '$L_x C$\t$R_{\\Delta +}$', '$S_x C$\t$R_{\\Delta -}$', '$S_x C$\t$R_{\\Delta +}$']
         
         mean_values = np.array([v[0] for v in Fig2_Replay_FR])
         std_values = np.array([v[1] for v in Fig2_Replay_FR])
-
+        all_data_points = np.array([v[2] for v in Fig2_Replay_FR])
+        
+        x = np.arange(len(x_labels)) # x-coordinates of your bars
+        width = 0.3 # bar width            
+        y = all_data_points
+        
+        
         fig, ax = plt.subplots()
-        x = np.arange(len(x_labels))
-        width = 0.3
+        fig.subplots_adjust(top=top_margin, left=left_margin, bottom=bottom_margin)
+        
+        bars = ax.bar(x,
+            height=[np.mean(yi) for yi in y], # could just pass `mean_values`
+            yerr=[np.std(yi) for yi in y],    # error bars
+            capsize=5, # error bar cap width in points
+            width=width,    # bar width
+            tick_label=x_labels,
+            color=(0,0,0,0),  # face color transparent
+            edgecolor=cls.get_bar_colors(),
+            #ecolor=colors,    # error bar colors; setting this raises an error for whatever reason.
+            )
 
-        bars = ax.bar(x, mean_values, width, yerr=std_values, capsize=5)
+        # Add actual datapoints on top:
+        for i in range(len(x)):
+            # distribute scatter randomly across whole width of bar
+            ax.scatter(x[i] + np.random.random(y[i].size) * width - width / 2, y[i], color=cls.get_bar_colors()[i])
         
         ax.set_xlabel('Groups')
         ax.set_ylabel('Replay Firing Rates (Hz)')
-        ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
+        # ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
+        # Add flexitext
+        title_formatted_text = (
+            "<size:22><weight:bold>Replay</> Firing Rates\n"
+            "<size:14>for the "
+            "<color:royalblue, weight:bold>Long</>/<color:crimson, weight:bold>Short</> eXclusive Cells on each track</></>"
+        )
+        flexitext(left_margin, top_margin, title_formatted_text, va="bottom", xycoords="figure fraction")
+        footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
+    
         ax.set_xticks(x)
         ax.set_xticklabels(x_labels)
 
@@ -888,12 +959,13 @@ class PaperFigureTwo:
         return self._pipeline_file_callback_fn(*args, **kwargs) # call the saved callback
 
 
-    @providing_context(fig='2')
+    @providing_context(fig='2', display_fn_name='inst_FR_bar_graphs')
     def display(self, defer_show=False, save_figure=True, **kwargs):
         # Get the provided context or use the session context:
         active_context = kwargs.get('active_context', self.active_identifying_session_ctx)
-
-        active_context = active_context.adding_context_if_missing(display_fn_name='fig_2_Lap vs Replay FR')
+        top_margin, left_margin, bottom_margin = kwargs.get('top_margin', 0.8), kwargs.get('left_margin', 0.090), kwargs.get('bottom_margin', 0.150)
+        
+        # active_context = active_context.adding_context_if_missing(display_fn_name='inst_FR_bar_graphs')
         # curr_fig_num = kwargs.pop('fignum', None)
         # if curr_fig_num is None:
         #     ## Set the fig_num, if not already set:
@@ -911,8 +983,8 @@ class PaperFigureTwo:
         # fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_pyqtgraph, self.fig_2_Replay_FR_pyqtgraph
 
         # Any Mode:
-        _fig_2_theta_out = fig_2_Theta_FR(self.Fig2_Laps_FR, defer_show=defer_show, active_context=active_context)
-        _fig_2_replay_out = fig_2_Replay_FR(self.Fig2_Replay_FR, defer_show=defer_show, active_context=active_context)
+        _fig_2_theta_out = fig_2_Theta_FR(self.Fig2_Laps_FR, defer_show=defer_show, active_context=active_context, top_margin=top_margin, left_margin=left_margin, bottom_margin=bottom_margin)
+        _fig_2_replay_out = fig_2_Replay_FR(self.Fig2_Replay_FR, defer_show=defer_show, active_context=active_context, top_margin=top_margin, left_margin=left_margin, bottom_margin=bottom_margin)
 
 
         def _perform_write_to_file_callback():
@@ -921,7 +993,7 @@ class PaperFigureTwo:
                     self.perform_save(_fig_2_replay_out.context, _fig_2_replay_out.figures[0]))
 
         if save_figure:
-             _fig_2_theta_out['saved_figures'],  _fig_2_replay_out['saved_figures'] = _perform_write_to_file_callback()
+            _fig_2_theta_out['saved_figures'],  _fig_2_replay_out['saved_figures'] = _perform_write_to_file_callback()
         else:
             _fig_2_theta_out['saved_figures'],  _fig_2_replay_out['saved_figures'] = [], []
 
@@ -953,7 +1025,7 @@ def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=
 # ==================================================================================================================== #
 # MAIN RUN FUNCTION TO GENERATE ALL FIGURES                                                                            #
 # ==================================================================================================================== #
-def main_complete_figure_generations(curr_active_pipeline, defer_show=True, save_figure=True):
+def main_complete_figure_generations(curr_active_pipeline, save_figures_only:bool=False, save_figure=True):
     """ main run function to generate all figures
     
         from PhoDiba2023Paper import main_complete_figure_generations
@@ -961,6 +1033,12 @@ def main_complete_figure_generations(curr_active_pipeline, defer_show=True, save
         
     
     """
+
+    if save_figures_only:
+        defer_show = True
+    else:
+        defer_show = False
+        
     curr_active_pipeline.reload_default_display_functions()
 
     # ==================================================================================================================== #
@@ -999,7 +1077,7 @@ def main_complete_figure_generations(curr_active_pipeline, defer_show=True, save
     # ==================================================================================================================== #
     # Figure 1) pf1D Ratemaps, Active set, etc                                                                             #
     # ==================================================================================================================== #
-    pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics = PAPER_FIGURE_figure_1_full(curr_active_pipeline, defer_show=defer_show, save_figure=save_figure) # did not display the pf1
+    _out_fig_1 = PAPER_FIGURE_figure_1_full(curr_active_pipeline, defer_show=defer_show, save_figure=save_figure) # did not display the pf1
 
 
 
@@ -1050,6 +1128,12 @@ def main_complete_figure_generations(curr_active_pipeline, defer_show=True, save
     # _out_A = plot_kourosh_activity_style_figure(long_results_obj, long_session, plot_aclus, unit_sort_order=new_all_aclus_sort_indicies, epoch_idx=13, callout_epoch_IDXs=None, skip_rendering_callouts=False)
     # app, win, plots, plots_data = _out_A
 
+    # Unwrapping:
+    # pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics = _out_fig_1
+    if not save_figures_only:
+        # only in active display mode is there something to return:
+        return (_out_fig_1, _out_fig_2, _out_fig_3_a, _out_fig_3_b)
+    
     # plots
 
 
