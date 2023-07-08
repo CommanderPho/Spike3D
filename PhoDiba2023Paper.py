@@ -683,7 +683,9 @@ class PaperFigureTwo:
 
     @classmethod
     def get_bar_colors(cls):
-        return [(0, 0, 1.0, 1), (0, 0, 0.65, 1), (0.65, 0, 0, 1), (1.0, 0, 0, 1)]    # corresponding colors
+        return [(1.0, 0, 0, 1), (0.65, 0, 0, 1), (0, 0, 0.65, 1), (0, 0, 1.0, 1)]    # corresponding colors
+
+
     
 
     def compute(self, curr_active_pipeline, **kwargs):
@@ -819,8 +821,19 @@ class PaperFigureTwo:
         return app, win, plot, (bars, error_bars)
         
 
+    
     @classmethod
-    def _build_footer_string(cls, active_context):
+    def _build_formatted_title_string(cls, epochs_name) -> str:
+        """ buidls the two line colored string figure's footer that is passed into `flexitext`.
+        """
+        return (f"<size:22><weight:bold>{epochs_name}</> Firing Rates\n"
+                "<size:14>for the "
+                "<color:crimson, weight:bold>Long</>/<color:royalblue, weight:bold>Short</> eXclusive Cells on each track</></>"
+                )
+
+
+    @classmethod
+    def _build_footer_string(cls, active_context) -> str:
         """ buidls the dim, grey string for the figure's footer that is passed into `flexitext`.
         Usage:
             footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
@@ -872,12 +885,7 @@ class PaperFigureTwo:
             # Original title: 'Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track'
             # ax.set_title('Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track')
             # Add flexitext
-            title_formatted_text = (
-                "<size:22><weight:bold>Lap</> ($\\theta$) Firing Rates\n"
-                "<size:14>for the "
-                "<color:royalblue, weight:bold>Long</>/<color:crimson, weight:bold>Short</> eXclusive Cells on each track</></>"
-            )
-            flexitext(left_margin, top_margin, title_formatted_text, va="bottom", xycoords="figure fraction")
+            flexitext(left_margin, top_margin, cls._build_formatted_title_string(epochs_name='Lap ($\\theta$)'), va="bottom", xycoords="figure fraction")
             footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
             ax.set_xticks(x)
             ax.set_xticklabels(x_labels)
@@ -934,13 +942,8 @@ class PaperFigureTwo:
         ax.set_xlabel('Groups')
         ax.set_ylabel('Replay Firing Rates (Hz)')
         # ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
-        # Add flexitext
-        title_formatted_text = (
-            "<size:22><weight:bold>Replay</> Firing Rates\n"
-            "<size:14>for the "
-            "<color:royalblue, weight:bold>Long</>/<color:crimson, weight:bold>Short</> eXclusive Cells on each track</></>"
-        )
-        flexitext(left_margin, top_margin, title_formatted_text, va="bottom", xycoords="figure fraction")
+        # Add flexitext        
+        flexitext(left_margin, top_margin, cls._build_formatted_title_string(epochs_name='Replay'), va="bottom", xycoords="figure fraction")
         footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
     
         ax.set_xticks(x)
