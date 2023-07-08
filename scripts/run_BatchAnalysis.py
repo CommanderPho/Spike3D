@@ -21,6 +21,7 @@ from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDib
 from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
 from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
 from neuropy.core.epoch import Epoch
+from neuropy.utils.matplotlib_helpers import matplotlib_file_only
 
 ## For computation parameters:
 from neuropy.utils.result_context import IdentifyingContext
@@ -35,6 +36,8 @@ from pyphoplacecellanalysis.General.Batch.runBatch import run_diba_batch
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import LongShortPipelineTests
 # from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import set_environment_variables, neptune_output_figures
 from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import batch_perform_all_plots, _update_pipeline_missing_preprocessing_parameters
+
+from PhoDiba2023Paper import main_complete_figure_generations
 
 ## Post Compute Validate 2023-05-16:
 
@@ -115,7 +118,12 @@ def _on_complete_success_execution_session(active_batch_run, curr_session_contex
 
     # ### Programmatic Figure Outputs:
     try:
-        neptuner = batch_perform_all_plots(curr_active_pipeline, enable_neptune=True, neptuner=None)
+        ## To file only:
+        with matplotlib_file_only():
+            # Perform non-interactive Matplotlib operations with 'AGG' backend
+            # neptuner = batch_perform_all_plots(curr_active_pipeline, enable_neptune=True, neptuner=None)
+            main_complete_figure_generations(curr_active_pipeline, save_figures_only=True, save_figure=True)
+            
         # IF thst's done, clear all the plots:
         from matplotlib import pyplot as plt
         plt.close('all') # this takes care of the matplotlib-backed figures.
