@@ -179,8 +179,6 @@ class UserAnnotationsManager:
             print(f'WARNING: no matching context found in {len(user_anootations)} annotations. `saved_selection` will be returned unaltered.')
         return saved_selection
 
-
-
 class TrackAssignmentState(ExtendedEnum):
     """Docstring for TrackAssignmentState."""
     UNASSIGNED = "unassigned"
@@ -208,7 +206,6 @@ class TrackAssignmentState(ExtendedEnum):
     #     color = 'red'
     # elif track_assignment == 'NEITHER':
     #     color = 'black'
-
 
 @define(slots=False, frozen=True)
 class TrackAssignmentDecision(KeyValueHashableObject):
@@ -461,7 +458,6 @@ class AssigningEpochs:
             fig.show() 
             
         return fig, axs
-
 
 @function_attributes(short_name=None, tags=['FIGURE1', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 21:40', related_items=[])
 def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_print=True):
@@ -842,6 +838,8 @@ class PaperFigureTwo:
         session_name_sess_ctxt_str = active_context.get_description(subset_includelist=['session_name'], separator=' | ') # 2006-6-08_14-26-15
         return (f"<color:silver, size:10>{first_portion_sess_ctxt_str} | <weight:bold>{session_name_sess_ctxt_str}</></>")
 
+
+
     @classmethod
     @providing_context(fig='2', frs='Laps')
     def fig_2_Theta_FR_matplotlib(cls, Fig2_Laps_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
@@ -1020,6 +1018,49 @@ def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=
     _out2 = curr_active_pipeline.display('_display_long_and_short_firing_rate_replays_v_laps', curr_active_pipeline.get_session_context(), defer_render=defer_render, save_figure=save_figure)
 
     return (_out, _out2)
+
+@define()
+class FormattedFigureText:
+    """ builds flexitext matplotlib figure title and footers """
+    # fig.subplots_adjust(top=top_margin, left=left_margin, bottom=bottom_margin)
+    top_margin: float = 0.8
+    left_margin: float = 0.090
+    bottom_margin: float = 0.150
+
+
+    @classmethod
+    def _build_formatted_title_string(cls, epochs_name) -> str:
+        """ buidls the two line colored string figure's footer that is passed into `flexitext`.
+        """
+        return (f"<size:22><weight:bold>{epochs_name}</> Firing Rates\n"
+                "<size:14>for the "
+                "<color:crimson, weight:bold>Long</>/<color:royalblue, weight:bold>Short</> eXclusive Cells on each track</></>"
+                )
+
+
+    @classmethod
+    def _build_footer_string(cls, active_context) -> str:
+        """ buidls the dim, grey string for the figure's footer that is passed into `flexitext`.
+        Usage:
+            footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
+        """
+        first_portion_sess_ctxt_str = active_context.get_description(subset_includelist=['format_name', 'animal', 'exper_name'], separator=' | ')
+        session_name_sess_ctxt_str = active_context.get_description(subset_includelist=['session_name'], separator=' | ') # 2006-6-08_14-26-15
+        return (f"<color:silver, size:10>{first_portion_sess_ctxt_str} | <weight:bold>{session_name_sess_ctxt_str}</></>")
+
+
+    def setup_margins(self, fig, **kwargs):
+        top_margin, left_margin, bottom_margin = kwargs.get('top_margin', self.top_margin), kwargs.get('left_margin', self.left_margin), kwargs.get('bottom_margin', self.bottom_margin)
+        fig.subplots_adjust(top=top_margin, left=left_margin, bottom=bottom_margin) # perform the adjustment on the figure
+
+    def add_flexitext(self, fig, **kwargs):
+        self.setup_margins(fig, **kwargs)
+        # Add flexitext
+        top_margin, left_margin, bottom_margin = kwargs.get('top_margin', self.top_margin), kwargs.get('left_margin', self.left_margin), kwargs.get('bottom_margin', self.bottom_margin)
+        title_text_obj = flexitext(left_margin, top_margin, 'long ($L$)|short($S$) firing rate indicies', va="bottom", xycoords="figure fraction")
+        footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), self._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
+        return title_text_obj, footer_text_obj
+
 
 
 
