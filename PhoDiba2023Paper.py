@@ -755,68 +755,6 @@ class PaperFigureTwo:
 
         # Note that in general LxC and SxC might have differing numbers of cells.
         self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std(), v.cell_agg_inst_fr_list) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
-
-
-    @classmethod
-    def fig_2_Theta_FR_pyqtgraph(cls, Fig2_Laps_FR):
-        """ Plots the bar graph that displays the Long/Short eXclusive cells during the laps (theta).
-        Usage:
-            _fig_2_theta_out = fig_2_Theta_FR(Fig2_Laps_FR)
-        """
-        x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
-        
-        mean_values = np.array([v[0] for v in Fig2_Laps_FR])
-        std_values = np.array([v[1] for v in Fig2_Laps_FR])
-
-        app = pg.mkQApp("new")
-        win = pg.GraphicsWindow(title="Laps")
-        plot = win.addPlot()
-
-        x_axis = pg.AxisItem(orientation='bottom')
-        x_axis.setTicks([list(enumerate(x_labels))])
-        plot.setAxisItems({'bottom': x_axis})
-        plot.setLabel('left', 'Laps Firing Rates (Hz)')
-        plot.setTitle('Lap (Theta) Firing Rates for Long/Short eXclusive Cells on each track')
-
-        bars = pg.BarGraphItem(x=np.arange(len(x_labels)), height=mean_values, width=0.3, brush='b')
-        plot.addItem(bars)
-
-        error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
-        plot.addItem(error_bars)
-
-        return app, win, plot, (bars, error_bars)
-
-    @classmethod
-    def fig_2_Replay_FR_pyqtgraph(cls, Fig2_Replay_FR):
-        """ Plots the bar graph that displays the Long/Short eXclusive cells during the replays.
-        
-        Usage:
-            _fig_2_replay_out = fig_2_Replay_FR(Fig2_Replay_FR)
-        
-        """
-        x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
-        mean_values = np.array([v[0] for v in Fig2_Replay_FR])
-        std_values = np.array([v[1] for v in Fig2_Replay_FR])
-
-        app = pg.mkQApp("new")
-        win = pg.GraphicsWindow(title="Replay")
-        plot = win.addPlot()
-
-        x_axis = pg.AxisItem(orientation='bottom')
-        x_axis.setTicks([list(enumerate(x_labels))])
-        plot.setAxisItems({'bottom': x_axis})
-        plot.setLabel('left', 'Replay Firing Rates (Hz)')
-        plot.setTitle('Replay Firing Rates for Long/Short eXclusive Cells on each track')
-
-        bars = pg.BarGraphItem(x=np.arange(len(x_labels)), height=mean_values, width=0.3, brush='b')
-        plot.addItem(bars)
-
-        error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
-        plot.addItem(error_bars)
-
-        return app, win, plot, (bars, error_bars)
-        
-
     
     @classmethod
     def _build_formatted_title_string(cls, epochs_name) -> str:
@@ -998,6 +936,11 @@ class PaperFigureTwo:
 def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True):
     """ Firing rate index, Long|Short firing rate figures 
 
+        Renders 3 Subfigures:
+            a) Shows the firing rate index between the long and short track computed for two different periods: the laps along the x-axis and the replays along the y-axis.
+            b) The ratio of lap to replay firing rate on the long track.
+            c) The ratio of lap to replay firing rate on the short track.
+    
     from PendingNotebookCode import PAPER_FIGURE_figure_3
     _out, _out2 = PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True)
     
