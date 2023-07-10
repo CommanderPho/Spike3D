@@ -807,7 +807,6 @@ class PaperFigureTwo:
             ax.set_ylabel('Laps Firing Rates (Hz)')
 
             # Original title: 'Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track'
-            # ax.set_title('Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track')
             # Add flexitext
             flexitext(text_formatter.left_margin, text_formatter.top_margin, cls._build_formatted_title_string(epochs_name='Lap ($\\theta$)'), va="bottom", xycoords="figure fraction")
             footer_text_obj = flexitext((text_formatter.left_margin*0.1), (text_formatter.bottom_margin*0.25), text_formatter._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
@@ -830,7 +829,7 @@ class PaperFigureTwo:
         
         active_context = kwargs.get('active_context', None)
         assert active_context is not None
-        top_margin, left_margin, bottom_margin = kwargs.get('top_margin', 0.8), kwargs.get('left_margin', 0.090), kwargs.get('bottom_margin', 0.150)
+        text_formatter = FormattedFigureText()
         
         # x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
         x_labels = ['$L_x C$\t$R_{\\Delta -}$', '$L_x C$\t$R_{\\Delta +}$', '$S_x C$\t$R_{\\Delta -}$', '$S_x C$\t$R_{\\Delta +}$']
@@ -845,7 +844,7 @@ class PaperFigureTwo:
         
         
         fig, ax = plt.subplots()
-        fig.subplots_adjust(top=top_margin, left=left_margin, bottom=bottom_margin)
+        text_formatter.setup_margins(fig)
         
         bars = ax.bar(x,
             height=[np.mean(yi) for yi in y], # could just pass `mean_values`
@@ -866,10 +865,9 @@ class PaperFigureTwo:
         ax.set_xlabel('Groups')
         ax.set_ylabel('Replay Firing Rates (Hz)')
         # ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
-        # Add flexitext        
-        flexitext(left_margin, top_margin, cls._build_formatted_title_string(epochs_name='Replay'), va="bottom", xycoords="figure fraction")
-        footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
-    
+        # Add flexitext
+        flexitext(text_formatter.left_margin, text_formatter.top_margin, cls._build_formatted_title_string(epochs_name='Replay'), va="bottom", xycoords="figure fraction")
+        footer_text_obj = flexitext((text_formatter.left_margin*0.1), (text_formatter.bottom_margin*0.25), text_formatter._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
         ax.set_xticks(x)
         ax.set_xticklabels(x_labels)
 
