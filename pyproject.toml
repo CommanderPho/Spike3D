@@ -76,6 +76,9 @@ mknotebooks = "^0.7.1"
 python-markdown-math = "^0.8"
 mkdocs-literate-nav = "^0.6.0"
 mkdocs-section-index = "^0.3.5"
+desert = "^2022.9.22"
+marshmallow-enum = "^1.5.1"
+marshmallow-dataframe = "^0.1.4"
 
 
 
