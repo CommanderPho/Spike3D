@@ -1,3 +1,4 @@
+#!/bin/bash
 cd ~/repos/NeuroPy/
 git pull
 cd ~/repos/pyPhoCoreHelpers/
