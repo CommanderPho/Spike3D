@@ -1003,15 +1003,10 @@ class PaperFigureTwo:
         # Matplotlib Mode:
         # matplotlib.use('Qt5Agg')  # Set the backend to Qt5Agg
     
-        fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_matplotlib, self.fig_2_Replay_FR_matplotlib
-        
-        # # PyQtGraph Mode:
-        # import pyphoplacecellanalysis.External.pyqtgraph as pg
-        # fig_2_Theta_FR, fig_2_Replay_FR = self.fig_2_Theta_FR_pyqtgraph, self.fig_2_Replay_FR_pyqtgraph
-
         # Any Mode:
-        _fig_2_theta_out = fig_2_Theta_FR(self.Fig2_Laps_FR, defer_show=defer_show, active_context=active_context, top_margin=top_margin, left_margin=left_margin, bottom_margin=bottom_margin)
-        _fig_2_replay_out = fig_2_Replay_FR(self.Fig2_Replay_FR, defer_show=defer_show, active_context=active_context, top_margin=top_margin, left_margin=left_margin, bottom_margin=bottom_margin)
+        _fig_2_theta_out = self.fig_2_Theta_FR_matplotlib(self.Fig2_Laps_FR, defer_show=defer_show, active_context=active_context, top_margin=top_margin, left_margin=left_margin, bottom_margin=bottom_margin)
+        _fig_2_replay_out = self.fig_2_Replay_FR_matplotlib(self.Fig2_Replay_FR, defer_show=defer_show, active_context=active_context, top_margin=top_margin, left_margin=left_margin, bottom_margin=bottom_margin)
+
 
 
         def _perform_write_to_file_callback():
