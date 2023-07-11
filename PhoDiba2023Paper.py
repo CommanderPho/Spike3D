@@ -31,7 +31,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRaster
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import JonathanFiringRateAnalysisResult
 from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
 from pyphoplacecellanalysis.General.Mixins.ExportHelpers import export_pyqtgraph_plot
-
+from pyphoplacecellanalysis.Pho2D.matplotlib.AdvancedMatplotlibText import FormattedFigureText
 
 from typing import Any, List
 
@@ -179,8 +179,6 @@ class UserAnnotationsManager:
             print(f'WARNING: no matching context found in {len(user_anootations)} annotations. `saved_selection` will be returned unaltered.')
         return saved_selection
 
-
-
 class TrackAssignmentState(ExtendedEnum):
     """Docstring for TrackAssignmentState."""
     UNASSIGNED = "unassigned"
@@ -208,7 +206,6 @@ class TrackAssignmentState(ExtendedEnum):
     #     color = 'red'
     # elif track_assignment == 'NEITHER':
     #     color = 'black'
-
 
 @define(slots=False, frozen=True)
 class TrackAssignmentDecision(KeyValueHashableObject):
@@ -461,7 +458,6 @@ class AssigningEpochs:
             fig.show() 
             
         return fig, axs
-
 
 @function_attributes(short_name=None, tags=['FIGURE1', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-21 21:40', related_items=[])
 def PAPER_FIGURE_figure_1_add_replay_epoch_rasters(curr_active_pipeline, debug_print=True):
@@ -759,68 +755,6 @@ class PaperFigureTwo:
 
         # Note that in general LxC and SxC might have differing numbers of cells.
         self.Fig2_Laps_FR: list[tuple[Any, Any]] = [(v.cell_agg_inst_fr_list.mean(), v.cell_agg_inst_fr_list.std(), v.cell_agg_inst_fr_list) for v in (LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus)]
-
-
-    @classmethod
-    def fig_2_Theta_FR_pyqtgraph(cls, Fig2_Laps_FR):
-        """ Plots the bar graph that displays the Long/Short eXclusive cells during the laps (theta).
-        Usage:
-            _fig_2_theta_out = fig_2_Theta_FR(Fig2_Laps_FR)
-        """
-        x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
-        
-        mean_values = np.array([v[0] for v in Fig2_Laps_FR])
-        std_values = np.array([v[1] for v in Fig2_Laps_FR])
-
-        app = pg.mkQApp("new")
-        win = pg.GraphicsWindow(title="Laps")
-        plot = win.addPlot()
-
-        x_axis = pg.AxisItem(orientation='bottom')
-        x_axis.setTicks([list(enumerate(x_labels))])
-        plot.setAxisItems({'bottom': x_axis})
-        plot.setLabel('left', 'Laps Firing Rates (Hz)')
-        plot.setTitle('Lap (Theta) Firing Rates for Long/Short eXclusive Cells on each track')
-
-        bars = pg.BarGraphItem(x=np.arange(len(x_labels)), height=mean_values, width=0.3, brush='b')
-        plot.addItem(bars)
-
-        error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
-        plot.addItem(error_bars)
-
-        return app, win, plot, (bars, error_bars)
-
-    @classmethod
-    def fig_2_Replay_FR_pyqtgraph(cls, Fig2_Replay_FR):
-        """ Plots the bar graph that displays the Long/Short eXclusive cells during the replays.
-        
-        Usage:
-            _fig_2_replay_out = fig_2_Replay_FR(Fig2_Replay_FR)
-        
-        """
-        x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
-        mean_values = np.array([v[0] for v in Fig2_Replay_FR])
-        std_values = np.array([v[1] for v in Fig2_Replay_FR])
-
-        app = pg.mkQApp("new")
-        win = pg.GraphicsWindow(title="Replay")
-        plot = win.addPlot()
-
-        x_axis = pg.AxisItem(orientation='bottom')
-        x_axis.setTicks([list(enumerate(x_labels))])
-        plot.setAxisItems({'bottom': x_axis})
-        plot.setLabel('left', 'Replay Firing Rates (Hz)')
-        plot.setTitle('Replay Firing Rates for Long/Short eXclusive Cells on each track')
-
-        bars = pg.BarGraphItem(x=np.arange(len(x_labels)), height=mean_values, width=0.3, brush='b')
-        plot.addItem(bars)
-
-        error_bars = pg.ErrorBarItem(x=np.arange(len(x_labels)), y=mean_values, height=std_values, beam=0.2)
-        plot.addItem(error_bars)
-
-        return app, win, plot, (bars, error_bars)
-        
-
     
     @classmethod
     def _build_formatted_title_string(cls, epochs_name) -> str:
@@ -833,21 +767,11 @@ class PaperFigureTwo:
 
 
     @classmethod
-    def _build_footer_string(cls, active_context) -> str:
-        """ buidls the dim, grey string for the figure's footer that is passed into `flexitext`.
-        Usage:
-            footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
-        """
-        first_portion_sess_ctxt_str = active_context.get_description(subset_includelist=['format_name', 'animal', 'exper_name'], separator=' | ')
-        session_name_sess_ctxt_str = active_context.get_description(subset_includelist=['session_name'], separator=' | ') # 2006-6-08_14-26-15
-        return (f"<color:silver, size:10>{first_portion_sess_ctxt_str} | <weight:bold>{session_name_sess_ctxt_str}</></>")
-
-    @classmethod
     @providing_context(fig='2', frs='Laps')
     def fig_2_Theta_FR_matplotlib(cls, Fig2_Laps_FR, defer_show=False, **kwargs) -> MatplotlibRenderPlots:
             active_context = kwargs.get('active_context', None)
             assert active_context is not None
-            top_margin, left_margin, bottom_margin = kwargs.get('top_margin', 0.8), kwargs.get('left_margin', 0.090), kwargs.get('bottom_margin', 0.150)
+            text_formatter = FormattedFigureText()
         
             # x_labels = ['LxC_ThetaDeltaMinus', 'LxC_ThetaDeltaPlus', 'SxC_ThetaDeltaMinus', 'SxC_ThetaDeltaPlus']
             x_labels = ['$L_x C$\t$\\theta_{\\Delta -}$', '$L_x C$\t$\\theta_{\\Delta +}$', '$S_x C$\t$\\theta_{\\Delta -}$', '$S_x C$\t$\\theta_{\\Delta +}$']
@@ -862,7 +786,7 @@ class PaperFigureTwo:
             # y = mean_values
 
             fig, ax = plt.subplots()
-            fig.subplots_adjust(top=top_margin, left=left_margin, bottom=bottom_margin)
+            text_formatter.setup_margins(fig)
             bars = ax.bar(x,
                 height=[np.mean(yi) for yi in y], # could just pass `mean_values`
                 yerr=[np.std(yi) for yi in y],    # error bars
@@ -883,10 +807,9 @@ class PaperFigureTwo:
             ax.set_ylabel('Laps Firing Rates (Hz)')
 
             # Original title: 'Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track'
-            # ax.set_title('Lap ($\\theta$) Firing Rates\n for Long/Short eXclusive Cells on each track')
             # Add flexitext
-            flexitext(left_margin, top_margin, cls._build_formatted_title_string(epochs_name='Lap ($\\theta$)'), va="bottom", xycoords="figure fraction")
-            footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
+            flexitext(text_formatter.left_margin, text_formatter.top_margin, cls._build_formatted_title_string(epochs_name='Lap ($\\theta$)'), va="bottom", xycoords="figure fraction")
+            footer_text_obj = flexitext((text_formatter.left_margin*0.1), (text_formatter.bottom_margin*0.25), text_formatter._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
             ax.set_xticks(x)
             ax.set_xticklabels(x_labels)
             
@@ -906,7 +829,7 @@ class PaperFigureTwo:
         
         active_context = kwargs.get('active_context', None)
         assert active_context is not None
-        top_margin, left_margin, bottom_margin = kwargs.get('top_margin', 0.8), kwargs.get('left_margin', 0.090), kwargs.get('bottom_margin', 0.150)
+        text_formatter = FormattedFigureText()
         
         # x_labels = ['LxC_RDeltaMinus', 'LxC_RDeltaPlus', 'SxC_RDeltaMinus', 'SxC_RDeltaPlus']
         x_labels = ['$L_x C$\t$R_{\\Delta -}$', '$L_x C$\t$R_{\\Delta +}$', '$S_x C$\t$R_{\\Delta -}$', '$S_x C$\t$R_{\\Delta +}$']
@@ -921,7 +844,7 @@ class PaperFigureTwo:
         
         
         fig, ax = plt.subplots()
-        fig.subplots_adjust(top=top_margin, left=left_margin, bottom=bottom_margin)
+        text_formatter.setup_margins(fig)
         
         bars = ax.bar(x,
             height=[np.mean(yi) for yi in y], # could just pass `mean_values`
@@ -942,10 +865,9 @@ class PaperFigureTwo:
         ax.set_xlabel('Groups')
         ax.set_ylabel('Replay Firing Rates (Hz)')
         # ax.set_title('Replay Firing Rates for Long/Short eXclusive Cells on each track')
-        # Add flexitext        
-        flexitext(left_margin, top_margin, cls._build_formatted_title_string(epochs_name='Replay'), va="bottom", xycoords="figure fraction")
-        footer_text_obj = flexitext((left_margin*0.1), (bottom_margin*0.25), cls._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
-    
+        # Add flexitext
+        flexitext(text_formatter.left_margin, text_formatter.top_margin, cls._build_formatted_title_string(epochs_name='Replay'), va="bottom", xycoords="figure fraction")
+        footer_text_obj = flexitext((text_formatter.left_margin*0.1), (text_formatter.bottom_margin*0.25), text_formatter._build_footer_string(active_context=active_context), va="top", xycoords="figure fraction")
         ax.set_xticks(x)
         ax.set_xticklabels(x_labels)
 
@@ -1012,6 +934,11 @@ class PaperFigureTwo:
 def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True):
     """ Firing rate index, Long|Short firing rate figures 
 
+        Renders 3 Subfigures:
+            a) Shows the firing rate index between the long and short track computed for two different periods: the laps along the x-axis and the replays along the y-axis.
+            b) The ratio of lap to replay firing rate on the long track.
+            c) The ratio of lap to replay firing rate on the short track.
+    
     from PendingNotebookCode import PAPER_FIGURE_figure_3
     _out, _out2 = PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=True)
     
@@ -1020,6 +947,7 @@ def PAPER_FIGURE_figure_3(curr_active_pipeline, defer_render=False, save_figure=
     _out2 = curr_active_pipeline.display('_display_long_and_short_firing_rate_replays_v_laps', curr_active_pipeline.get_session_context(), defer_render=defer_render, save_figure=save_figure)
 
     return (_out, _out2)
+
 
 
 
