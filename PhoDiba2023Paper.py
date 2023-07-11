@@ -23,6 +23,8 @@ from pyphocorehelpers.function_helpers import function_attributes
 
 ## Laps Stuff:
 from pyphocorehelpers.DataStructure.RenderPlots.MatplotLibRenderPlots import MatplotlibRenderPlots
+from pyphocorehelpers.mixins.serialized import SerializedAttributesAllowBlockSpecifyingClass
+
 from neuropy.utils.result_context import IdentifyingContext
 from neuropy.utils.result_context import overwriting_display_context, providing_context
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import plot_multiple_raster_plot
@@ -752,7 +754,7 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline, defer_show=False, save_figu
 # @overwriting_display_context(
 @metadata_attributes(short_name=None, tags=['figure_2', 'paper', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-26 21:36', related_items=[])
 @define(slots=False, repr=False)
-class PaperFigureTwo:
+class PaperFigureTwo(SerializedAttributesAllowBlockSpecifyingClass):
     """ full instantaneous firing rate computations for both Long and Short epochs
     
     Usage:
@@ -766,7 +768,7 @@ class PaperFigureTwo:
     Fig2_Replay_FR: list[tuple[Any, Any]] = field(init=False)
     Fig2_Laps_FR: list[tuple[Any, Any]] = field(init=False)
 
-    _pipeline_file_callback_fn: Callable = field(init=False, repr=False, default=None)
+    _pipeline_file_callback_fn: Callable = field(init=False, repr=False, default=None) # this callback is 2737.983306 MB!!
 
     ## Extra Debugging data:
     LxC_ReplayDeltaMinus: SpikeRateTrends = field(init=False, repr=False, default=None)
@@ -1042,6 +1044,13 @@ class PaperFigureTwo:
         # Merge the two (_fig_2_theta_out | _fig_2_replay_out)
         return (_fig_2_theta_out, _fig_2_replay_out)
             
+
+    @classmethod
+    def serialized_key_blocklist(cls):
+        """ specifies specific keys NOT to serialize (to remove before serialization). If `serialized_key_allowlist` is specified, this variable will be ignored. """
+        return ['_pipeline_file_callback_fn'] # no keys by default
+
+
 
 # ==================================================================================================================== #
 # 2023-06-26 Figure 3                                                                                                  #
