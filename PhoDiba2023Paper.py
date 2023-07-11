@@ -249,10 +249,32 @@ class UserAnnotationsManager:
     def interactive_good_epoch_selections(self, curr_active_pipeline):
         # Allows the user to interactively select good epochs and generate hardcoded user_annotation entries from the results:
         ## Stacked Epoch Plot
+        from pyphoplacecellanalysis.GUI.Qt.Mixins.PaginationMixins import SelectionsObject
+        from PhoDiba2023Paper import UserAnnotationsManager
+        from pyphoplacecellanalysis.Pho2D.stacked_epoch_slices import DecodedEpochSlicesPaginatedFigureController
+
+        ## Stacked Epoch Plot
         example_stacked_epoch_graphics = curr_active_pipeline.display('_display_long_and_short_stacked_epoch_slices', defer_render=False, save_figure=True)
         pagination_controller_L, pagination_controller_S = example_stacked_epoch_graphics.plot_data['controllers']
         ax_L, ax_S = example_stacked_epoch_graphics.axes
         final_figure_context_L, final_context_S = example_stacked_epoch_graphics.context
+
+        user_annotations = UserAnnotationsManager.get_user_annotations()
+
+        ## Capture current user selection
+        saved_selection_L: SelectionsObject = pagination_controller_L.save_selection()
+        saved_selection_S: SelectionsObject = pagination_controller_S.save_selection()
+        final_L_context = saved_selection_L.figure_ctx.adding_context_if_missing(user_annotation='selections')
+        final_S_context = saved_selection_S.figure_ctx.adding_context_if_missing(user_annotation='selections')
+        user_annotations[final_L_context] = saved_selection_L.flat_all_data_indicies[saved_selection_L.is_selected]
+        user_annotations[final_S_context] = saved_selection_S.flat_all_data_indicies[saved_selection_S.is_selected]
+        # Updates the context. Needs to generate the code.
+
+        ## Generate code to insert int user_annotations:
+        print('Add the following code to UserAnnotationsManager.get_user_annotations() function body:')
+        print(f"user_annotations[{final_L_context.get_initialization_code_string()}] = np.array({list(saved_selection_L.flat_all_data_indicies[saved_selection_L.is_selected])})")
+        print(f"user_annotations[{final_S_context.get_initialization_code_string()}] = np.array({list(saved_selection_S.flat_all_data_indicies[saved_selection_S.is_selected])})")
+
 
 
 
@@ -731,7 +753,7 @@ def PAPER_FIGURE_figure_1_full(curr_active_pipeline, defer_show=False, save_figu
 @metadata_attributes(short_name=None, tags=['figure_2', 'paper', 'figure'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-06-26 21:36', related_items=[])
 @define(slots=False, repr=False)
 class PaperFigureTwo:
-    """ full instantaneous computations for both Long and Short epochs
+    """ full instantaneous firing rate computations for both Long and Short epochs
     
     Usage:
         _out_fig_2 = PaperFigureTwo(instantaneous_time_bin_size_seconds=0.01) # 10ms
