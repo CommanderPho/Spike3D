@@ -22,6 +22,17 @@ should_display_2D_plots = True
 _debug_print = False
 
 
+
+
+# 2023-07-13 - Helpers for future swapping of the x and y axis on many of the plots like Kamran suggested.
+
+def _swap_x_and_y_axis(x_frs, y_frs, should_swap_axis:bool=True):
+    """ swaps the order of the arguments depending on the value of `should_swap_axis`. Can be used to reverse the x and y axes for a plot."""
+    if not should_swap_axis:
+        return (x_frs, y_frs) # return in same order
+    else:
+        return (y_frs, x_frs)
+
 # 2023-07-05 - MiracleWrapper Idea
 """
 # Wish it was easier to get things in and out of functions.
