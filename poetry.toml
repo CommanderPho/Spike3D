@@ -1,5 +1,5 @@
 [virtualenvs]
-in-project = false
+in-project = true
 create = true
 
 [virtualenvs.options]

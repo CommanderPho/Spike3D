@@ -117,8 +117,9 @@ pylustrator = {path = "../pylustrator", develop=true}
 
 [tool.poetry.group.remote.dependencies]
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
-pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
+pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true, extras = ["accel","vizqt"]}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
+pylustrator = {path = "../pylustrator", develop=true}
 
 [tool.poetry.group.testing.dependencies]
 silx = "^1.1.2"
