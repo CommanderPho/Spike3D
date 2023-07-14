@@ -12,6 +12,7 @@
 		"felicio.vscode-fold",
 		"jcmordan.mark-as-excluded",
 		"herdingbits.file-focus",
-		"ms-python.vscode-pylance"
+		"ms-python.vscode-pylance",
+		"stackbreak.comment-divider"
 	]
 }
