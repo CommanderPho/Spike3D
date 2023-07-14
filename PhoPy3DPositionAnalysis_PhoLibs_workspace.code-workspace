@@ -113,7 +113,8 @@
 			"hipdotmedia.hipdot-vs-code-url-scheme-grabber",
 			"salbert.copy-text",
 			"zengfanfan.zeng-color-picker",
-			"stackbreak.comment-divider"
+			"stackbreak.comment-divider",
+			"pomdtr.excalidraw-editor"
 		]
 	},
 	"launch": {
