@@ -147,7 +147,7 @@ active_session_computation_configs = active_data_mode_registered_class.build_def
 
 # + pycharm={"is_executing": false} tags=["Rachel"]
 curr_active_pipeline.filter_sessions(active_session_filter_configurations)
-curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation']) # Causes "IndexError: index 59 is out of bounds for axis 0 with size 59"
+curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_excludelist=['_perform_spike_burst_detection_computation']) # Causes "IndexError: index 59 is out of bounds for axis 0 with size 59"
 curr_active_pipeline.prepare_for_display(should_smooth_maze=True) # TODO: pass a display config
 
 # + [markdown] tags=[] jp-MarkdownHeadingCollapsed=true
@@ -177,10 +177,10 @@ print(f'basedir: {str(basedir)}')
 
 curr_active_pipeline = NeuropyPipeline.try_init_from_saved_pickle_or_reload_if_needed(active_data_mode_name, active_data_mode_type_properties, override_basepath=Path(basedir), override_post_load_functions=[], force_reload=False, active_pickle_filename='loadedSessPickle.pkl')
 # active_session_filter_configurations = active_data_mode_registered_class.build_default_filter_functions(sess=curr_active_pipeline.sess) # build_filters_pyramidal_epochs(sess=curr_kdiba_pipeline.sess)
-active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze','maze1','maze2'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1','maze2'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze1'])
-# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_whitelist=['maze2'])
+active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_includelist=['maze','maze1','maze2'])
+# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_includelist=['maze1','maze2'])
+# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_includelist=['maze1'])
+# active_session_filter_configurations = active_data_mode_registered_class.build_filters_pyramidal_epochs(sess=curr_active_pipeline.sess, epoch_name_includelist=['maze2'])
 
 # sess.epochs.t_start = 22.26 # exclude the first short period where the animal isn't on the maze yet
 # active_session_filter_configurations = {'maze1': lambda x: (x.filtered_by_neuron_type('pyramidal').filtered_by_epoch(x.epochs.get_named_timerange('maze1')), x.epochs.get_named_timerange('maze1')),
@@ -193,24 +193,24 @@ active_session_computation_configs = active_data_mode_registered_class.build_def
 # active_session_computation_configs = build_eloy_computation_configs(sess=curr_active_pipeline.sess)
 curr_active_pipeline.filter_sessions(active_session_filter_configurations)
 
-# Whitelist Mode:
-computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+# includelist Mode:
+computation_functions_name_includelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
                                         # '_perform_position_decoding_computation', 
                                         '_perform_firing_rate_trends_computation',
                                         '_perform_pf_find_ratemap_peaks_computation',
                                         # '_perform_two_step_position_decoding_computation',
                                         # '_perform_recursive_latent_placefield_decoding'
                                      ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
-computation_functions_name_blacklist=None
+computation_functions_name_excludelist=None
 
-# # Blacklist Mode:
-# computation_functions_name_whitelist=None
-# computation_functions_name_blacklist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
+# # excludelist Mode:
+# computation_functions_name_includelist=None
+# computation_functions_name_excludelist=['_perform_spike_burst_detection_computation','_perform_recursive_latent_placefield_decoding']
 
 
-curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=True, debug_print=False) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_includelist=computation_functions_name_includelist, computation_functions_name_excludelist=computation_functions_name_excludelist, fail_on_exception=True, debug_print=False) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
 
-# curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # whitelist: ['_perform_baseline_placefield_computation']
+# curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_excludelist=['_perform_spike_burst_detection_computation'], debug_print=False, fail_on_exception=False) # includelist: ['_perform_baseline_placefield_computation']
 curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\Data\Output', should_smooth_maze=True) # TODO: pass a display config
 curr_active_pipeline.save_pipeline()
 
@@ -346,14 +346,14 @@ list(curr_active_pipeline.computation_results['maze_PYR'].computed_data.firing_r
 curr_active_pipeline.computation_results['maze1_PYR'].computed_data['firing_rate_trends']
 
 # + tags=["main_run", "ActiveScene"]
-curr_active_pipeline.stage.run_specific_computations_single_context(computation_functions_name_whitelist=['_perform_firing_rate_trends_computation'])
+curr_active_pipeline.stage.run_specific_computations_single_context(computation_functions_name_includelist=['_perform_firing_rate_trends_computation'])
 
 # + tags=["main_run", "ActiveScene"]
 from pyphoplacecellanalysis.General.Pipeline.Stages.Computation import EvaluationActions
 # progress_logger_callback=(lambda x: curr_active_pipeline.logger.info(x))
 progress_logger_callback=(lambda x: print(f'{x}'))
 curr_active_pipeline.stage.perform_action_for_all_contexts(EvaluationActions.RUN_SPECIFIC, enabled_filter_names=['maze_PYR'], active_computation_params=None, overwrite_extant_results=False,
-            computation_functions_name_whitelist=['_perform_firing_rate_trends_computation'], fail_on_exception=True, progress_logger_callback=progress_logger_callback, debug_print=True) #, computation_functions_name_blacklist=computation_functions_name_blacklist, fail_on_exception=fail_on_exception, progress_logger_callback=progress_logger_callback, debug_print=debug_print
+            computation_functions_name_includelist=['_perform_firing_rate_trends_computation'], fail_on_exception=True, progress_logger_callback=progress_logger_callback, debug_print=True) #, computation_functions_name_excludelist=computation_functions_name_excludelist, fail_on_exception=fail_on_exception, progress_logger_callback=progress_logger_callback, debug_print=debug_print
 
 # + tags=["main_run", "ActiveScene"]
 curr_active_pipeline.perform_drop_computed_result(computed_data_keys_to_drop=['firing_rate_trends'])
@@ -414,7 +414,7 @@ curr_active_pipeline.sess.flattened_spiketrains._time_variable_name
 
 curr_active_pipeline.filter_sessions(active_session_filter_configurations)
 
-curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_blacklist=['_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation'], fail_on_exception=True)
+curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_excludelist=['_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation'], fail_on_exception=True)
 curr_active_pipeline.prepare_for_display(should_smooth_maze=True) # TODO: pass a display config
 
 # + Scene=true scene__Default tags=["ActiveScene"]
@@ -6512,7 +6512,7 @@ params, plots_data, plots, ui = stacked_epoch_slices_view_laps_containers
 # %matplotlib qt
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.MultiContextComparingDisplayFunctions.LongShortTrackComparingDisplayFunctions import _make_jonathan_interactive_plot, _final_compute_jonathan_replay_fr_analyses
 owning_pipeline_reference = curr_active_pipeline
-include_whitelist = None
+include_includelist = None
 computation_results = curr_active_pipeline.computation_results
 
 neuron_IDs = np.unique(computation_results['maze_PYR'].sess.spikes_df.aclu)
@@ -6546,15 +6546,15 @@ neuron_IDs = pf.ratemap.neuron_ids
 active_firing_rate_trends.all_session_spikes.time_binned_unit_specific_binned_spike_rate
 
 # +
-if include_whitelist is None:
-    include_whitelist = owning_pipeline_reference.active_completed_computation_result_names # ['maze', 'sprinkle']
+if include_includelist is None:
+    include_includelist = owning_pipeline_reference.active_completed_computation_result_names # ['maze', 'sprinkle']
 
-long_epoch_name = include_whitelist[0] # 'maze1_PYR'
-short_epoch_name = include_whitelist[1] # 'maze2_PYR'
-if len(include_whitelist) > 2:
-    global_epoch_name = include_whitelist[-1] # 'maze_PYR'
+long_epoch_name = include_includelist[0] # 'maze1_PYR'
+short_epoch_name = include_includelist[1] # 'maze2_PYR'
+if len(include_includelist) > 2:
+    global_epoch_name = include_includelist[-1] # 'maze_PYR'
 
-print(f'include_whitelist: {include_whitelist}\nlong_epoch_name: {long_epoch_name}, short_epoch_name: {short_epoch_name}, global_epoch_name: {global_epoch_name}')
+print(f'include_includelist: {include_includelist}\nlong_epoch_name: {long_epoch_name}, short_epoch_name: {short_epoch_name}, global_epoch_name: {global_epoch_name}')
 pf1d_long = computation_results[long_epoch_name]['computed_data']['pf1D']
 pf1d_short = computation_results[short_epoch_name]['computed_data']['pf1D']
 

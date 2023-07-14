@@ -1,3 +1,5 @@
+import os
+import sys
 import pathlib
 import re
 import hashlib # for hashing pyproject.toml files and seeing if they changed

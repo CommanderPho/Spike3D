@@ -2,3 +2,4 @@
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
+pylustrator = {path = "../pylustrator", develop=true}

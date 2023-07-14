@@ -24,6 +24,7 @@
 			"**/.qt_for_python": true,
 			"**/.settings": true,
 			"**/.spyproject": true,
+			"**/.venv": true,
 			"**/.virtual_documents": true,
 			"**/.vscode": true,
 			"**/*.7z": true
@@ -66,7 +67,9 @@
 			"iterativecloud.notebook-chatcompletion",
 			"vikasdubey0551.jupyterlab-browser",
 			"sourcery.sourcery",
-			"felicio.vscode-fold"
+			"felicio.vscode-fold",
+			"herdingbits.file-focus",
+			"codeandstuff.vscode-navigate-edit-history"
 		]
 	}
 }
