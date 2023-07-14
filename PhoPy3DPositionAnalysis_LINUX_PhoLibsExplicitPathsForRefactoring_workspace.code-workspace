@@ -4,23 +4,29 @@
 			"path": "."
 		},
 		{
-			"path": "../NeuroPy"
+			"path": "../NeuroPy",
+			"name": "NeuroPy"
 		},
 		{
-			"path": "../pyPhoCoreHelpers/src"
+			"path": "../pyPhoCoreHelpers/src",
+			"name": "pyPhoCoreHelpers"
 		},
 		{
-			"path": "../pyPhoPlaceCellAnalysis/src"
+			"path": "../pyPhoPlaceCellAnalysis/src",
+			"name": "pyPhoPlaceCellAnalysis"
 		},
 		{
-			"path": "../pyqode.core"
+			"path": "../NeuroPy/tests",
+			"name": "TESTS/NeuroPy"
 		},
 		{
-			"path": "../pyqode.python"
+			"path": "../pyPhoPlaceCellAnalysis/tests",
+			"name": "TESTS/pyPhoPlaceCellAnalysis"
 		},
 		{
-			"path": "../pyPhoPlaceCellAnalysis"
-		}
+			"path": "../pyPhoCoreHelpers/tests",
+			"name": "TESTS/pyPhoCoreHelpers"
+		},
 	],
 	"settings": {
 		"jupyter.jupyterServerType": "local",

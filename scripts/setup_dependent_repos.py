@@ -19,19 +19,20 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 """
 import os
 from pathlib import Path
+from datetime import datetime
 import argparse
 
 import glob
 
 from helpers.poetry_helpers import build_pyproject_toml_file
 from helpers.source_code_helpers import did_file_hash_change # for finding .whl file after building binary repo
-
-
+from helpers.git_helpers import GitHelpers
+from helpers.poetry_helpers import install_ipython_kernel
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
 # parser.add_argument('--name', help='the name to greet')
-parser.add_argument('--upgrade', action='store_const', help='resets child repos by forcefully pulling from remote', const=True, default=True)
+parser.add_argument('--force', action='store_const', help='resets child repos by forcefully pulling from remote', const=True, default=False)
 parser.add_argument('--skip_lock', action='store_const', help='whether to skip `poetry lock` for child repos', const=True, default=False)
 parser.add_argument('--skip_building_templates', action='store_const', help='whether to skip templating the pyproject.toml file', const=True, default=False)
 parser.add_argument('--skip_building_binary_repos', action='store_const', help='whether to skip building child binary repos', const=True, default=False)
@@ -63,7 +64,9 @@ def _reset_local_changes(repo_path):
     os.chdir(repo_path)
     # os.system("git reset --hard HEAD")
     # os.system("git clean -f -d")
-    os.system("git stash")
+    date_now_str = datetime.now().strftime("%Y%m%d%H%M%S")
+    os.system(f'git stash save "stash_{date_now_str}"')
+    # os.system(f'git stash') # PREV CODE, NO SAVE
     os.system("git stash drop")
 
 
@@ -146,7 +149,7 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enab
         # update existing repo
         print(f'\t repo exists. Updating {repo_path}...')
         os.chdir(repo_path)
-        _reset_local_changes(repo_path)
+        GitHelpers.reset_local_changes(repo_path)
         # new files that are local only still hold things up
         os.system("git pull")
 
@@ -176,7 +179,7 @@ def main():
     # else:
     #     print('Hello, world!')
 
-    force_overwrite_child_repos_from_remote = args.upgrade
+    force_overwrite_child_repos_from_remote = args.force
     skip_lock_for_child_repos = args.skip_lock
     is_release = (args.release == True)
     enable_install_for_child_repos = False
@@ -205,6 +208,7 @@ def main():
     # os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
     print(f'done with all.')
 
+    install_ipython_kernel(kernel_name="spike3d-poetry") # run this to install the kernel for the poetry environment
     os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
 
 if __name__ == '__main__':

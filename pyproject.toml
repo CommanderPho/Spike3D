@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.1.7"
+version = "0.1.8"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"
@@ -30,8 +30,9 @@ dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
 qtconsole = "^5.4.0"
 ipython = "^8.11.0"
 attrs = "^22.2.0"
+cattrs = "^23.1.2"
 pillow = "^9.4.0"
-seaborn = "^0.12.2"
+seaborn = {extras = ["stats"], version = "^0.12.2"}
 param = "^1.13.0"
 pyflakes = "^3.0.1" # required for code editor
 neptune = "^1.2.0"
@@ -39,6 +40,11 @@ nptyping = {extras = ["complete"], version = "^2.5.0"} # allows specifying Numpy
 beartype = "^0.14.0" # for strict type enforcement of function calls
 awkward = "^2.2.1" # for ragged-arrays, testing
 pyqt-checkbox-table-widget = "^0.0.14"
+patchworklib = "^0.6.1" # matplotlib figure layout/organization
+flexitext = "^0.2.0" # Very good, used in several places to generate nice titles for the paper's plots
+adjusttext = "^0.8"
+seaborn-image = "^0.6.0"
+mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
 # dvc = "^2.57.2"
 # dvclive = "^2.9.0"
 # trame = "^2.3.2" # visualization, currently not used
@@ -51,8 +57,29 @@ pyqt-checkbox-table-widget = "^0.0.14"
 # jupyter-rfb = "^0.3.3"
 # deeptime = "^0.4.4" # what is this? Analysis?
 # python-picard = "^0.7"
-# patchworklib = "^0.5.2" # matplotlib figure layout/organization
-patchworklib = "^0.6.1"
+papermill = "^2.4.0"
+matplotlib-aximgcache = "^0.1.0"
+matplotlib-extract = "^0.1.2"
+mkdocs = "^1.4.3"
+mkdocs-matplotlib = "^0.10.1"
+click-man = "^0.4.1"
+mkdocs-dracula-theme = "^1.0.4"
+mkdocs-windmill = "^1.0.5"
+mkdocstrings = {extras = ["python"], version = "^0.22.0"}
+mkdocs-jupyter = "^0.24.2"
+tikzplotlib = "^0.10.1"
+mpl-sizes = "^0.0.2"
+lovelyplots = "^0.0.26"
+mkdocs-gen-files = "^0.5.0"
+mknotebooks = "^0.7.1"
+python-markdown-math = "^0.8"
+mkdocs-literate-nav = "^0.6.0"
+mkdocs-section-index = "^0.3.5"
+desert = "^2022.9.22"
+marshmallow-enum = "^1.5.1"
+marshmallow-dataframe = "^0.1.4"
+cairosvg = "^2.7.0"
+
 
 
 [tool.poetry.group.dev.dependencies]
@@ -63,8 +90,13 @@ ipykernel = "^6.21.2"
 jupyterlab = "^3.6.1"
 dvc = {version = "^2.45.1", extras = ["gdrive"]}
 cookiecutter = "^2.1.1"
-jedi-language-server = "^0.40.0"
-python-lsp-server = "^1.7.1"
+pylustrator = {path = "../pylustrator", develop=true}
+# pylustrator = "^1.3.0"
+# jedi-language-server = "^0.40.0"
+# python-lsp-server = "^1.7.1"
+# python-lsp-server = {extras = ["rope"], version = "^1.7.3"}
+# pylsp-rope = "^0.1.11"
+# pylustrator = {path = "../../ExternalTesting/pylustrator", develop=true} # pylustrator = "^1.3.0"
 # sphinx = "^6.1.3"
 # sphinx-autodoc-typehints = "^1.22"
 # psgdemos = "^1.12.1"
@@ -89,6 +121,7 @@ pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 [tool.poetry.group.testing.dependencies]
 silx = "^1.1.2"
 ipywidgets = "^8.0.5"
+# 'python-language-server[yapf]'
 # pygwalker = "^0.1.6.1"
 # altair = "5.0.0rc1" #"^4.2.2"
 # plotly = "5.13.1"

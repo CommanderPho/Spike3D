@@ -15,17 +15,12 @@
 		{
 			"name": "neuropy",
 			"path": "../NeuroPy/neuropy"
-		},
-		{
-			"name": "SCRIPTS",
-			"path": "../SCRIPTS"
 		}
 	],
 	"settings": {
-		"python.analysis.gotoDefinitionInStringLiteral": true,
 		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 		"python.linting.enabled": false,
-		"jupyter.askForKernelRestart": true,
+		"jupyter.askForKernelRestart": false,
 		"jupyter.debugJustMyCode": true,
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
@@ -40,7 +35,7 @@
 			"**/*.7z": true,
 			"**/Spike3D/.venv/*": true
 		},
-		"python.analysis.logLevel": "Error",
+		"python.analysis.logLevel": "Information",
 		"workbench.colorCustomizations": {
 			"titleBar.activeBackground": "#3086a2"
 		},
@@ -69,6 +64,8 @@
 		"python.pylanceLspNotebooksEnabled": true,
 		"dvc.studio.shareExperimentsLive": false,
 		"vscode-pydata-viewer.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+		"GitLink.defaultRemote": "origin",
+		"GitLink.hostType": "github",
 	},
 	"extensions": {
 		"recommendations": [
@@ -99,7 +96,25 @@
 			"sergelamikhov.copy-gather-paste",
 			"ezforo.copy-relative-path-and-line-numbers",
 			"jcmordan.mark-as-excluded",
-			"percy.vscode-pydata-viewer"
+			"percy.vscode-pydata-viewer",
+			"codeandstuff.vscode-navigate-edit-history",
+			"fabiospampinato.vscode-highlight",
+			"pnmougel.df-renderer",
+			"donjayamanne.vscode-jupytext",
+			"sourcery.sourcery",
+			"pavan.vsnotebooks",
+			"zhaouv.vscode-python-highlight-cell-splitter",
+			"ryanmaynard.datapack",
+			"congyiwu.vscode-jupytext",
+			"randomfractalsinc.vscode-data-table",
+			"faxes.easycollapse",
+			"genap.copy-to-chat-gpt",
+			"ms-python.vscode-pylance",
+			"hipdotmedia.hipdot-vs-code-url-scheme-grabber",
+			"salbert.copy-text",
+			"zengfanfan.zeng-color-picker",
+			"stackbreak.comment-divider",
+			"pomdtr.excalidraw-editor"
 		]
 	},
 	"launch": {
@@ -115,5 +130,15 @@
             "env": {"PYDEVD_WARN_SLOW_RESOLVE_TIMEOUT": "2"}
 		}
 	]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "echo",
+				"type": "shell",
+				"command": "echo Hello"
+			}
+		]
 	}
 }

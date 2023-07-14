@@ -1,6 +1,6 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
 from copy import deepcopy
-from typing import List
+from typing import Any, List
 from matplotlib.colors import ListedColormap
 from pathlib import Path
 import numpy as np
@@ -22,15 +22,56 @@ should_display_2D_plots = True
 _debug_print = False
 
 
-import sys
-
-from attrs import define, field, Factory
-from pyphocorehelpers.indexing_helpers import safe_numpy_index
-from pyphocorehelpers.indexing_helpers import Paginator
 
 
+# 2023-07-13 - Helpers for future swapping of the x and y axis on many of the plots like Kamran suggested.
+
+def _swap_x_and_y_axis(x_frs, y_frs, should_swap_axis:bool=True):
+    """ swaps the order of the arguments depending on the value of `should_swap_axis`. Can be used to reverse the x and y axes for a plot."""
+    if not should_swap_axis:
+        return (x_frs, y_frs) # return in same order
+    else:
+        return (y_frs, x_frs)
+
+# 2023-07-05 - MiracleWrapper Idea
+"""
+# Wish it was easier to get things in and out of functions.
+def a_fn(...):
+    pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics = a_computation_fn(...)
+    miracle_wrapper = MiracleWrapper(pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics)
+    miracle_wrapper.add(pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics)
+    return miracle_wrapper
+
+miracle_wrapper = a_fn(...)
+# Ideally, you could get them out "by magic" by specifying the same name that they were put in with on the LHS of an assignment eqn:
+pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), example_stacked_epoch_graphics = miracle_wrapper.magic_unwrap()
+"""
 
 
+
+# ==================================================================================================================== #
+# 2023-06-22 13:24 `attrs` auto field exploration                                                                      #
+# ==================================================================================================================== #
+
+# from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+# from attrs import asdict, fields, evolve
+
+# ## For loop version:
+# for a_field in fields(type(subset)):
+# 	if 'n_epochs' in a_field.metadata.get('shape', ()):
+# 		# is a field indexed by epochs
+# 		print(a_field.name)
+# 		print(a_field.value)
+
+# # Find all fields that contain a 'n_neurons':
+# epoch_indexed_attributes = [a_field for a_field in fields(type(subset)) if ('n_epochs' in a_field.metadata.get('shape', ()))]
+# epoch_indexed_attributes
+
+# # neuron_shape_index_for_attributes = [a_field.metadata['shape'].index('n_neurons') for a_field in neuron_indexed_attributes]
+# epoch_shape_index_for_attribute_name_dict = {a_field.name:a_field.metadata['shape'].index('n_epochs') for a_field in epoch_indexed_attributes} # need the actual attributes so that we can get the .metadata['shape'] from them and find the n_epochs index location
+# epoch_shape_index_for_attribute_name_dict
+# _temp_obj_dict = {k:v.take(indices=is_included_in_subset, axis=epoch_shape_index_for_attribute_name_dict[k]) for k, v in _temp_obj_dict.items()} # filter the n_epochs axis containing items to get a reduced dictionary
+# evolve(subset, **_temp_obj_dict)
 
 # ==================================================================================================================== #
 # 2023-05-16 - Manual Post-hoc Conformance for Laps and Long/Short Bins                                                #
@@ -88,7 +129,7 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
 
 
     # Compute with the new computation config:
-    computation_functions_name_whitelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
+    computation_functions_name_includelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation',
                                         '_perform_position_decoding_computation', 
                                         '_perform_firing_rate_trends_computation',
                                         '_perform_pf_find_ratemap_peaks_computation',
@@ -97,8 +138,8 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
                                         # '_perform_recursive_latent_placefield_decoding'
                                     ]  # '_perform_pf_find_ratemap_peaks_peak_prominence2d_computation'
 
-    # computation_functions_name_whitelist=['_perform_baseline_placefield_computation']
-    curr_active_pipeline.perform_computations(computation_functions_name_whitelist=computation_functions_name_whitelist, computation_functions_name_blacklist=None, fail_on_exception=True, debug_print=False, overwrite_extant_results=True) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
+    # computation_functions_name_includelist=['_perform_baseline_placefield_computation']
+    curr_active_pipeline.perform_computations(computation_functions_name_includelist=computation_functions_name_includelist, computation_functions_name_excludelist=None, fail_on_exception=True, debug_print=False, overwrite_extant_results=True) #, overwrite_extant_results=False  ], fail_on_exception=True, debug_print=False)
     return curr_active_pipeline
 
 
@@ -755,112 +796,187 @@ def _normalize_flat_relative_entropy_infs(flat_relative_entropy_results):
 # 2022-12-13 Misc                                                                                                      #
 # ==================================================================================================================== #
 
-def process_session_plots(curr_active_pipeline, active_config_name, debug_print=False):
-    """ Unwrap single config 
-    UNUSED AND UNTESTED
+# def process_session_plots(curr_active_pipeline, active_config_name, debug_print=False):
+#     """ Unwrap single config 
+#     UNUSED AND UNTESTED
 
-    Usage:
+#     Usage:
 
-        from PendingNotebookCode import process_session_plots
+#         from PendingNotebookCode import process_session_plots
 
-        # active_config_name = 'maze1'
-        # active_config_name = 'maze2'
-        # active_config_name = 'maze'
-        # active_config_name = 'sprinkle'
+#         # active_config_name = 'maze1'
+#         # active_config_name = 'maze2'
+#         # active_config_name = 'maze'
+#         # active_config_name = 'sprinkle'
 
-        # active_config_name = 'maze_PYR'
+#         # active_config_name = 'maze_PYR'
 
-        # active_config_name = 'maze1_rippleOnly'
-        # active_config_name = 'maze2_rippleOnly'
+#         # active_config_name = 'maze1_rippleOnly'
+#         # active_config_name = 'maze2_rippleOnly'
 
-        # active_config_name = curr_active_pipeline.active_config_names[0] # get the first name by default
-        active_config_name = curr_active_pipeline.active_config_names[-1] # get the last name
+#         # active_config_name = curr_active_pipeline.active_config_names[0] # get the first name by default
+#         active_config_name = curr_active_pipeline.active_config_names[-1] # get the last name
 
-        active_identifying_filtered_session_ctx, programmatic_display_function_testing_output_parent_path = process_session_plots(curr_active_pipeline, active_config_name)
+#         active_identifying_filtered_session_ctx, programmatic_display_function_testing_output_parent_path = process_session_plots(curr_active_pipeline, active_config_name)
 
-    """
-    print(f'active_config_name: {active_config_name}')
+#     """
 
-    active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
+#     def _subfn_build_pdf_export_metadata(session_descriptor_string, filter_name, out_path=None, debug_print=False):
+#         """ OLD - Pre 2022-10-04 - Builds the PDF metadata generating function from the passed info
+        
+#             session_descriptor_string: a string describing the context of the session like 'sess_kdiba_2006-6-07_11-26-53'
+#                 Can be obtained from pipleine via `curr_active_pipeline.sess.get_description()`
+#             filter_name: a name like 'maze1'
+#             out_path: an optional Path to use instead of generating a new one
+            
+#         Returns:
+#             a function that takes one argument, the display function name, and returns the PDF metadata
+            
+#         History:
+#             Refactored from PhoPy3DPositionAnalysis2021.PendingNotebookCode._build_programmatic_display_function_testing_pdf_metadata on 2022-08-17
+            
+#         Usage:
+#             session_descriptor_string = curr_active_pipeline.sess.get_description()
+#             ## PDF Output, NOTE this is single plot stuff: uses active_config_name
+#             from matplotlib.backends import backend_pdf, backend_pgf, backend_ps
+#             from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_export_metadata
 
-    ## Add the filter to the active context
-    # active_identifying_filtered_session_ctx = active_identifying_session_ctx.adding_context('filter', filter_name=active_config_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
-    active_identifying_filtered_session_ctx = curr_active_pipeline.filtered_contexts[active_config_name] # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
+#             filter_name = active_config_name
+#             _build_pdf_pages_output_info, out_parent_path = build_pdf_export_metadata(session_descriptor_string, filter_name=active_config_name, out_path=None)
+#             _build_pdf_pages_output_info, programmatic_display_function_testing_output_parent_path = build_pdf_export_metadata(curr_active_pipeline.sess.get_description(), filter_name=filter_name)
+#             print(f'Figure Output path: {str(programmatic_display_function_testing_output_parent_path)}')
 
-    # Get relevant variables:
-    # curr_active_pipeline is set above, and usable here
-    sess = curr_active_pipeline.filtered_sessions[active_config_name]
+            
+#             curr_display_function_name = '_display_1d_placefield_validations'
+#             built_pdf_metadata, curr_pdf_save_path = _build_pdf_pages_output_info(curr_display_function_name)
+#             with backend_pdf.PdfPages(curr_pdf_save_path, keep_empty=False, metadata=built_pdf_metadata) as pdf:
+#                 # plt.ioff() # disable displaying the plots inline in the Jupyter-lab notebook. NOTE: does not work in Jupyter-Lab, figures still show
+#                 plots = curr_active_pipeline.display(curr_display_function_name, active_config_name) # works, but generates a TON of plots!
+#                 # plt.ion()
+#                 for fig_idx, a_fig in enumerate(plots):
+#                     # print(f'saving fig: {fig_idx+1}/{len(plots)}')
+#                     pdf.savefig(a_fig)
+#                     # pdf.savefig(a_fig, transparent=True)
+#                 # When no figure is specified the current figure is saved
+#                 # pdf.savefig()
 
-    active_computation_results = curr_active_pipeline.computation_results[active_config_name]
-    active_computed_data = curr_active_pipeline.computation_results[active_config_name].computed_data
-    active_computation_config = curr_active_pipeline.computation_results[active_config_name].computation_config
-    active_computation_errors = curr_active_pipeline.computation_results[active_config_name].accumulated_errors
-    print(f'active_computed_data.keys(): {list(active_computed_data.keys())}')
-    print(f'active_computation_errors: {active_computation_errors}')
-    active_pf_1D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf1D']
-    active_pf_2D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf2D']
-    active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
-    active_pf_2D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_dt', None)
-    active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
-    active_one_step_decoder_2D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None) # BayesianPlacemapPositionDecoder
-    active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None) 
-    active_one_step_decoder_1D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_Decoder', None) # BayesianPlacemapPositionDecoder
-    active_two_step_decoder_1D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_TwoStepDecoder', None)
-    active_extended_stats = curr_active_pipeline.computation_results[active_config_name].computed_data.get('extended_stats', None)
-    active_eloy_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('EloyAnalysis', None)
-    active_simpler_pf_densities_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('SimplerNeuronMeetingThresholdFiringAnalysis', None)
-    active_ratemap_peaks_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', None)
-    active_peak_prominence_2d_results = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', {}).get('PeakProminence2D', None)
-    active_measured_positions = curr_active_pipeline.computation_results[active_config_name].sess.position.to_dataframe()
-    curr_spikes_df = sess.spikes_df
+            
+#         """
+#         if out_path is None:   
+#             out_day_date_folder_name = datetime.today().strftime('%Y-%m-%d') # A string with the day's date like '2022-01-16'
+#             out_path = Path(r'EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting').joinpath(out_day_date_folder_name).resolve()
+#         else:
+#             out_path = Path(out_path) # make sure it's a Path
+#         out_path.mkdir(exist_ok=True)
 
-    curr_active_config = curr_active_pipeline.active_configs[active_config_name]
-    curr_active_display_config = curr_active_config.plotting_config
+        
+#         pho_pdf_metadata = {'Creator': 'Spike3D - TestNeuroPyPipeline116', 'Author': 'Pho Hale', 'Title': session_descriptor_string, 'Subject': '', 'Keywords': [session_descriptor_string]}
+#         if debug_print:
+#             print(f'filter_name: {filter_name}')
 
-    active_display_output = curr_active_pipeline.display_output[active_identifying_filtered_session_ctx]
-    print(f'active_display_output: {active_display_output}')
+#         def _build_pdf_pages_output_info(display_function_name):
+#             """ 
+#             Implicitly captures:
+#                 programmatic_display_fcn_out_path
+#                 session_descriptor_string
+#                 pho_pdf_metadata
+#                 filter_name
+#             """
+#             built_pdf_metadata = pho_pdf_metadata.copy()
+#             context_tuple = [session_descriptor_string, filter_name, display_function_name]
+#             built_pdf_metadata['Title'] = '_'.join(context_tuple)
+#             built_pdf_metadata['Subject'] = display_function_name
+#             built_pdf_metadata['Keywords'] = ' | '.join(context_tuple)
+#             curr_pdf_save_path = out_path.joinpath(('_'.join(context_tuple) + '.pdf'))
+#             return built_pdf_metadata, curr_pdf_save_path
+        
+#         return _build_pdf_pages_output_info, out_path
 
-    # Create `master_dock_win` - centralized plot output window to collect individual figures/controls in (2022-08-18)
-    display_output = active_display_output | curr_active_pipeline.display('_display_context_nested_docks', active_identifying_session_ctx, enable_gui=False, debug_print=True) # returns {'master_dock_win': master_dock_win, 'app': app, 'out_items': out_items}
-    master_dock_win = display_output['master_dock_win']
-    app = display_output['app']
-    out_items = display_output['out_items']
 
-    def _get_curr_figure_format_config():
-        """ Aims to fetch the current figure_format_config and context from the figure_format_config widget:    
-        Implicitly captures: `out_items`, `active_config_name`, `active_identifying_filtered_session_ctx` 
-        """
-        ## Get the figure_format_config from the figure_format_config widget:
-        # Fetch the context from the GUI:
-        _curr_gui_session_ctx, _curr_gui_out_display_items = out_items[active_config_name]
-        _curr_gui_figure_format_config_widget = _curr_gui_out_display_items[active_identifying_filtered_session_ctx.adding_context('display_fn', display_fn_name='figure_format_config_widget')] # [0] is seemingly not needed to unpack the tuple
-        if _curr_gui_figure_format_config_widget is not None:
-            # has GUI for config
-            figure_format_config = _curr_gui_figure_format_config_widget.figure_format_config
-        else:
-            # has non-GUI provider of figure_format_config
-            figure_format_config = _curr_gui_figure_format_config_widget.figure_format_config
 
-        if debug_print:
-            print(f'recovered gui figure_format_config: {figure_format_config}')
 
-        return figure_format_config
 
-    figure_format_config = _get_curr_figure_format_config()
+#     # START FUNCTION BODY ________________________________________________________________________________________________ #
+#     print(f'active_config_name: {active_config_name}')
 
-    ## PDF Output, NOTE this is single plot stuff: uses active_config_name
-    from pyphoplacecellanalysis.General.Mixins.ExportHelpers import build_pdf_export_metadata
+#     active_identifying_session_ctx = curr_active_pipeline.sess.get_context() # 'bapun_RatN_Day4_2019-10-15_11-30-06'
 
-    filter_name = active_config_name
-    _build_pdf_pages_output_info, programmatic_display_function_testing_output_parent_path = build_pdf_export_metadata(curr_active_pipeline.sess.get_description(), filter_name=filter_name)
-    print(f'Figure Output path: {str(programmatic_display_function_testing_output_parent_path)}')
+#     ## Add the filter to the active context
+#     # active_identifying_filtered_session_ctx = active_identifying_session_ctx.adding_context('filter', filter_name=active_config_name) # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
+#     active_identifying_filtered_session_ctx = curr_active_pipeline.filtered_contexts[active_config_name] # 'bapun_RatN_Day4_2019-10-15_11-30-06_maze'
+
+#     # Get relevant variables:
+#     # curr_active_pipeline is set above, and usable here
+#     sess = curr_active_pipeline.filtered_sessions[active_config_name]
+
+#     active_computation_results = curr_active_pipeline.computation_results[active_config_name]
+#     active_computed_data = curr_active_pipeline.computation_results[active_config_name].computed_data
+#     active_computation_config = curr_active_pipeline.computation_results[active_config_name].computation_config
+#     active_computation_errors = curr_active_pipeline.computation_results[active_config_name].accumulated_errors
+#     print(f'active_computed_data.keys(): {list(active_computed_data.keys())}')
+#     print(f'active_computation_errors: {active_computation_errors}')
+#     active_pf_1D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf1D']
+#     active_pf_2D = curr_active_pipeline.computation_results[active_config_name].computed_data['pf2D']
+#     active_pf_1D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_dt', None)
+#     active_pf_2D_dt = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_dt', None)
+#     active_firing_rate_trends = curr_active_pipeline.computation_results[active_config_name].computed_data.get('firing_rate_trends', None)
+#     active_one_step_decoder_2D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_Decoder', None) # BayesianPlacemapPositionDecoder
+#     active_two_step_decoder = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf2D_TwoStepDecoder', None) 
+#     active_one_step_decoder_1D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_Decoder', None) # BayesianPlacemapPositionDecoder
+#     active_two_step_decoder_1D = curr_active_pipeline.computation_results[active_config_name].computed_data.get('pf1D_TwoStepDecoder', None)
+#     active_extended_stats = curr_active_pipeline.computation_results[active_config_name].computed_data.get('extended_stats', None)
+#     active_eloy_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('EloyAnalysis', None)
+#     active_simpler_pf_densities_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('SimplerNeuronMeetingThresholdFiringAnalysis', None)
+#     active_ratemap_peaks_analysis = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', None)
+#     active_peak_prominence_2d_results = curr_active_pipeline.computation_results[active_config_name].computed_data.get('RatemapPeaksAnalysis', {}).get('PeakProminence2D', None)
+#     active_measured_positions = curr_active_pipeline.computation_results[active_config_name].sess.position.to_dataframe()
+#     curr_spikes_df = sess.spikes_df
+
+#     curr_active_config = curr_active_pipeline.active_configs[active_config_name]
+#     curr_active_display_config = curr_active_config.plotting_config
+
+#     active_display_output = curr_active_pipeline.display_output[active_identifying_filtered_session_ctx]
+#     print(f'active_display_output: {active_display_output}')
+
+#     # Create `master_dock_win` - centralized plot output window to collect individual figures/controls in (2022-08-18)
+#     display_output = active_display_output | curr_active_pipeline.display('_display_context_nested_docks', active_identifying_session_ctx, enable_gui=False, debug_print=True) # returns {'master_dock_win': master_dock_win, 'app': app, 'out_items': out_items}
+#     master_dock_win = display_output['master_dock_win']
+#     app = display_output['app']
+#     out_items = display_output['out_items']
+
+#     def _get_curr_figure_format_config():
+#         """ Aims to fetch the current figure_format_config and context from the figure_format_config widget:    
+#         Implicitly captures: `out_items`, `active_config_name`, `active_identifying_filtered_session_ctx` 
+#         """
+#         ## Get the figure_format_config from the figure_format_config widget:
+#         # Fetch the context from the GUI:
+#         _curr_gui_session_ctx, _curr_gui_out_display_items = out_items[active_config_name]
+#         _curr_gui_figure_format_config_widget = _curr_gui_out_display_items[active_identifying_filtered_session_ctx.adding_context('display_fn', display_fn_name='figure_format_config_widget')] # [0] is seemingly not needed to unpack the tuple
+#         if _curr_gui_figure_format_config_widget is not None:
+#             # has GUI for config
+#             figure_format_config = _curr_gui_figure_format_config_widget.figure_format_config
+#         else:
+#             # has non-GUI provider of figure_format_config
+#             figure_format_config = _curr_gui_figure_format_config_widget.figure_format_config
+
+#         if debug_print:
+#             print(f'recovered gui figure_format_config: {figure_format_config}')
+
+#         return figure_format_config
+
+#     figure_format_config = _get_curr_figure_format_config()
+
+#     ## PDF Output, NOTE this is single plot stuff: uses active_config_name
+#     filter_name = active_config_name
+#     _build_pdf_pages_output_info, programmatic_display_function_testing_output_parent_path = _subfn_build_pdf_export_metadata(curr_active_pipeline.sess.get_description(), filter_name=filter_name)
+#     print(f'Figure Output path: {str(programmatic_display_function_testing_output_parent_path)}')
     
     
-    ## Test getting figure save paths:
-    _test_fig_path = curr_active_config.plotting_config.get_figure_save_path('test')
-    print(f'_test_fig_path: {_test_fig_path}\n\t exists? {_test_fig_path.exists()}')
+#     ## Test getting figure save paths:
+#     _test_fig_path = curr_active_config.plotting_config.get_figure_save_path('test')
+#     print(f'_test_fig_path: {_test_fig_path}\n\t exists? {_test_fig_path.exists()}')
 
-    return active_identifying_filtered_session_ctx, programmatic_display_function_testing_output_parent_path
+#     return active_identifying_filtered_session_ctx, programmatic_display_function_testing_output_parent_path
     
 
 # ==================================================================================================================== #
