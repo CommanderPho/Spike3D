@@ -20,7 +20,7 @@
 	"settings": {
 		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 		"python.linting.enabled": false,
-		"jupyter.askForKernelRestart": true,
+		"jupyter.askForKernelRestart": false,
 		"jupyter.debugJustMyCode": true,
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
