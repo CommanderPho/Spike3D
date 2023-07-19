@@ -79,8 +79,8 @@ desert = "^2022.9.22"
 marshmallow-enum = "^1.5.1"
 marshmallow-dataframe = "^0.1.4"
 cairosvg = "^2.7.0"
-codequery = "^0.1.4" # Code Searching Cleanup - Independent from Codebase
-pycscope = {path = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl", develop=true} # pycscope = "^1.2.1" # Code Searching Cleanup - Independent from Codebase
+# codequery = "^0.1.4" # Code Searching Cleanup - Independent from Codebase
+# pycscope = {path = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl", develop=true} # pycscope = "^1.2.1" # Code Searching Cleanup - Independent from Codebase
 # symdexer = "^0.2.10" # Code Searching Cleanup - Independent from Codebase
 
 [tool.poetry.group.dev.dependencies]
