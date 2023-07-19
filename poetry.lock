@@ -1232,6 +1232,17 @@ prompt-toolkit = ">=3.0.36"
 testing = ["pytest (>=7.2.1)", "pytest-cov (>=4.0.0)", "tox (>=4.4.3)"]
 
 [[package]]
+name = "codequery"
+version = "0.1.4"
+description = "Queries and code facts checking support for python source code"
+optional = false
+python-versions = ">3.6"
+files = [
+    {file = "codequery-0.1.4-py3-none-any.whl", hash = "sha256:42a14849360e4d3370f9d76e4276f04165221826d295cf12d35bd6983def4a0c"},
+    {file = "codequery-0.1.4.tar.gz", hash = "sha256:81d409cad1f216bca8a9cd10e5c6dec7c666dcfaf1afce6dd7088e98d54799a2"},
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -6014,6 +6025,20 @@ files = [
 ]
 
 [[package]]
+name = "pycscope"
+version = "1.2.3"
+description = "Generates a cscope index of Python source trees"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pycscope-1.2.3-py3-none-any.whl", hash = "sha256:c1673a7fc9a9a2ab3aef2810e132386a19e893da554983eb9b990fe8ed6cc9ce"},
+]
+
+[package.source]
+type = "file"
+url = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl"
+
+[[package]]
 name = "pyct"
 version = "0.5.0"
 description = "Python package common tasks for users (e.g. copy examples, fetch data, ...)"
@@ -9337,4 +9362,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "13786c3e0b65764f9346e7b80692e424caac205050f8b9de5991d676ecf6a4b1"
+content-hash = "0581794ac238eed8dc444cb4153d488410d1b36737a5fa0c8b18690398d1b36e"
