@@ -136,8 +136,10 @@ ipywidgets = "^8.0.5"
 # statsmodels = {git = "https://github.com/statsmodels/statsmodels"}
 
 
-# [tool.poetry.scripts]
-# setup_dependent_repos = 'scripts.console:run'
+[tool.poetry.scripts]
+pull-changes = "scripts/unix/repos_pull_changes.sh"
+launch-jupyter-remote = "scripts/unix/launch_jupyter_lab_with_remote_access.sh"
+setup_dependent_repos = 'scripts/setup_dependent_repos.py' # 'scripts.console:run'
 
 
 # [tool.vulture]
