@@ -41,23 +41,10 @@ beartype = "^0.14.0" # for strict type enforcement of function calls
 awkward = "^2.2.1" # for ragged-arrays, testing
 pyqt-checkbox-table-widget = "^0.0.14"
 patchworklib = "^0.6.1" # matplotlib figure layout/organization
-# flexitext = "^0.2.0" # Very good, used in several places to generate nice titles for the paper's plots
-flexitext = {path = "../flexitext", develop=true} # Very good, used in several places to generate nice titles for the paper's plots
+# flexitext = {path = "../flexitext", develop=true} # Very good, used in several places to generate nice titles for the paper's plots
 adjusttext = "^0.8"
 seaborn-image = "^0.6.0"
 mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
-# dvc = "^2.57.2"
-# dvclive = "^2.9.0"
-# trame = "^2.3.2" # visualization, currently not used
-# modin = {extras = ["all"], version = "^0.18.1"} # not fully used, didn't work
-# pandarallel = "^1.6.4" # not fully used, didn't work
-# lead-lag = "^2.3" # didn't work
-# mplfig = "^1.0.1" # matplotlib '.fig' saving similar to MATLAB
-# treelib = "^1.6.4"
-# jupyterlab-lsp = "^4.0.0"
-# jupyter-rfb = "^0.3.3"
-# deeptime = "^0.4.4" # what is this? Analysis?
-# python-picard = "^0.7"
 papermill = "^2.4.0"
 matplotlib-aximgcache = "^0.1.0"
 matplotlib-extract = "^0.1.2"
@@ -80,9 +67,6 @@ desert = "^2022.9.22"
 marshmallow-enum = "^1.5.1"
 marshmallow-dataframe = "^0.1.4"
 cairosvg = "^2.7.0"
-# codequery = "^0.1.4" # Code Searching Cleanup - Independent from Codebase
-# pycscope = {path = "../../ExternalTesting/pycscope/dist/pycscope-1.2.3-py3-none-any.whl", develop=true} # pycscope = "^1.2.1" # Code Searching Cleanup - Independent from Codebase
-# symdexer = "^0.2.10" # Code Searching Cleanup - Independent from Codebase
 pyqt5singleton = "^0.1"
 
 [tool.poetry.group.dev.dependencies]
@@ -120,6 +104,7 @@ pylustrator = {path = "../pylustrator", develop=true}
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
+pylustrator = {path = "../pylustrator", develop=true}
 
 [tool.poetry.group.testing.dependencies]
 silx = "^1.1.2"
