@@ -69,6 +69,10 @@ marshmallow-dataframe = "^0.1.4"
 cairosvg = "^2.7.0"
 pyqt5singleton = "^0.1"
 tables = "^3.8.0"
+hvplot = "^0.8.4"
+pyviz-comms = "^2.3.2"
+objexplore = "^1.6.3"
+hdf5storage = "^0.1.19"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
