@@ -68,6 +68,7 @@ marshmallow-enum = "^1.5.1"
 marshmallow-dataframe = "^0.1.4"
 cairosvg = "^2.7.0"
 pyqt5singleton = "^0.1"
+tables = "^3.8.0"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
