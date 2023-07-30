@@ -1594,6 +1594,25 @@ files = [
 ]
 
 [[package]]
+name = "deepdish"
+version = "0.3.7"
+description = "Deep Learning experiments from University of Chicago."
+optional = false
+python-versions = "*"
+files = [
+    {file = "deepdish-0.3.7-py2.py3-none-any.whl", hash = "sha256:272d6b075239efe66dd3e6d4e89bb6b0ffe68b0d9ce4f823e4e1c4549c4a294a"},
+    {file = "deepdish-0.3.7.tar.gz", hash = "sha256:6aff3abef693cec34438f183f29d1a2d9862aba27bb959d4f24d56e007e41ff3"},
+]
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+tables = "*"
+
+[package.extras]
+image = ["skimage"]
+
+[[package]]
 name = "deeptime"
 version = "0.4.4"
 description = "Python library for analysis of time series data including dimensionality reduction, clustering, and Markov model estimation."
@@ -9589,4 +9608,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "2584b9d63385a6dbe292454af7f721a24477bf23d5fc9ec784e2e503afe585ef"
+content-hash = "aacdf91fff76f37664124ed58702531960e39f06fbdc58e11ec872e0ffd07d3d"
