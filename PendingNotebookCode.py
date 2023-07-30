@@ -48,31 +48,6 @@ pf1d_compare_graphics, (example_epoch_rasters_L, example_epoch_rasters_S), examp
 """
 
 
-
-# ==================================================================================================================== #
-# 2023-06-22 13:24 `attrs` auto field exploration                                                                      #
-# ==================================================================================================================== #
-
-# from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
-# from attrs import asdict, fields, evolve
-
-# ## For loop version:
-# for a_field in fields(type(subset)):
-# 	if 'n_epochs' in a_field.metadata.get('shape', ()):
-# 		# is a field indexed by epochs
-# 		print(a_field.name)
-# 		print(a_field.value)
-
-# # Find all fields that contain a 'n_neurons':
-# epoch_indexed_attributes = [a_field for a_field in fields(type(subset)) if ('n_epochs' in a_field.metadata.get('shape', ()))]
-# epoch_indexed_attributes
-
-# # neuron_shape_index_for_attributes = [a_field.metadata['shape'].index('n_neurons') for a_field in neuron_indexed_attributes]
-# epoch_shape_index_for_attribute_name_dict = {a_field.name:a_field.metadata['shape'].index('n_epochs') for a_field in epoch_indexed_attributes} # need the actual attributes so that we can get the .metadata['shape'] from them and find the n_epochs index location
-# epoch_shape_index_for_attribute_name_dict
-# _temp_obj_dict = {k:v.take(indices=is_included_in_subset, axis=epoch_shape_index_for_attribute_name_dict[k]) for k, v in _temp_obj_dict.items()} # filter the n_epochs axis containing items to get a reduced dictionary
-# evolve(subset, **_temp_obj_dict)
-
 # ==================================================================================================================== #
 # 2023-05-16 - Manual Post-hoc Conformance for Laps and Long/Short Bins                                                #
 # ==================================================================================================================== #
