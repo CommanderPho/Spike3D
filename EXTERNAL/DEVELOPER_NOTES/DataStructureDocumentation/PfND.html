@@ -18,39 +18,50 @@
 </head>
 <body class="body_foreground body_background" style="font-size: normal;" >
 <pre class="ansi2html-content">
-<span class="ansi1"></span><span class="ansi1 ansi91">PfND</span> - printed by DocumentationFilePrinter on 2023-02-27
+<span class="ansi1"></span><span class="ansi1 ansi91">PfND</span> - printed by DocumentationFilePrinter on 2023-07-29
 ===================================================================================================
 - <span class="ansi94">PfND</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+	- <span class="ansi94">spikes_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (101136, 22)
+	- <span class="ansi94">position</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Position</span>
+		- <span class="ansi94">_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+		- <span class="ansi94">_metadata</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+		- <span class="ansi94">_data</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (36310, 10)
+	- <span class="ansi94">epochs</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Epoch</span>
+		- <span class="ansi94">_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+		- <span class="ansi94">_metadata</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+		- <span class="ansi94">_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (40, 4)
 	- <span class="ansi94">config</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PlacefieldComputationParameters</span>
 		- <span class="ansi94">speed_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
 		- <span class="ansi94">grid_bin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
-		- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
+		- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2, 2)
 		- <span class="ansi94">smooth</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
 		- <span class="ansi94">frate_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
 	- <span class="ansi94">position_srate</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float64</span>
+	- <span class="ansi94">setup_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+	- <span class="ansi94">compute_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+	- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+	- <span class="ansi94">_ratemap</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Ratemap</span>
+		- <span class="ansi94">_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+		- <span class="ansi94">_metadata</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+		- <span class="ansi94">spikes_maps</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (79, 117)
+		- <span class="ansi94">tuning_curves</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (79, 117)
+		- <span class="ansi94">unsmoothed_tuning_maps</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (79, 117)
+		- <span class="ansi94">_neuron_ids</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (79,)
+		- <span class="ansi94">_neuron_extended_ids</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (79, 3)
+		- <span class="ansi94">xbin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (118,)
+		- <span class="ansi94">ybin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+		- <span class="ansi94">occupancy</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (117,)
+	- <span class="ansi94">_ratemap_spiketrains</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (79,)
+	- <span class="ansi94">_ratemap_spiketrains_pos</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (79, 1)
+	- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (8775, 11)
+	- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (27562, 22)
 	- <span class="ansi94">ndim</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span>
-	- <span class="ansi94">xbin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (64,)
+	- <span class="ansi94">xbin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (118,)
 	- <span class="ansi94">ybin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
 	- <span class="ansi94">bin_info</span>: <span class="ansi92"></span><span class="ansi1 ansi92">dict</span>
 		- <span class="ansi94">mode</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
-		- <span class="ansi94">xstep</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float64</span>
+		- <span class="ansi94">xstep</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
 		- <span class="ansi94">xnum_bins</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
-	- <span class="ansi94">_filtered_spikes_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (182109, 22)
-	- <span class="ansi94">_filtered_pos_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (36310, 5)
-	- <span class="ansi94">ratemap</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Ratemap</span>
-		- <span class="ansi94">_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
-		- <span class="ansi94">_metadata</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
-		- <span class="ansi94">spikes_maps</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (104, 63)
-		- <span class="ansi94">tuning_curves</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (104, 63)
-		- <span class="ansi94">unsmoothed_tuning_maps</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (104, 63)
-		- <span class="ansi94">_neuron_ids</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (104,)
-		- <span class="ansi94">_neuron_extended_ids</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (104, 3)
-		- <span class="ansi94">xbin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (64,)
-		- <span class="ansi94">ybin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
-		- <span class="ansi94">occupancy</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (63,)
-	- <span class="ansi94">ratemap_spiketrains</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (104,)
-	- <span class="ansi94">ratemap_spiketrains_pos</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (104, 1)
-	- <span class="ansi94">_save_intermediate_spikes_maps</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
 	- <span class="ansi94">_included_thresh_neurons_indx</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
 	- <span class="ansi94">_peak_frate_filter_function</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
 

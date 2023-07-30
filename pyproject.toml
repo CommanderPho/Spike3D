@@ -73,6 +73,8 @@ hvplot = "^0.8.4"
 pyviz-comms = "^2.3.2"
 objexplore = "^1.6.3"
 hdf5storage = "^0.1.19"
+vitables = "^3.0.2"
+h5glance = "^0.8.1"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"

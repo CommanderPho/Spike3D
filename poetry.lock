@@ -2741,6 +2741,21 @@ files = [
 colorama = ">=0.4"
 
 [[package]]
+name = "h5glance"
+version = "0.8.1"
+description = "Explore HDF5 files in an HTML view"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "h5glance-0.8.1-py3-none-any.whl", hash = "sha256:6cd50f54308f312c1115b5675d41cecfb8d18c761603055882bd98702dfead9e"},
+    {file = "h5glance-0.8.1.tar.gz", hash = "sha256:5afb44cd82af7d0cfd25e884aa15859ef6f0bb01e78a0a2589c0a0b5b207e26f"},
+]
+
+[package.dependencies]
+h5py = ">=2.10"
+htmlgen = "*"
+
+[[package]]
 name = "h5py"
 version = "3.9.0"
 description = "Read and write HDF5 files from Python"
@@ -2910,6 +2925,16 @@ tests-gpu = ["bokeh", "cftime", "codecov", "cudf", "dash (>=1.16)", "dask", "dat
 tests-nb = ["nbval"]
 ui = ["playwright", "pytest-playwright"]
 unit-tests = ["bokeh", "bokeh (>=2.4.3)", "cftime", "codecov", "dash (>=1.16)", "dask", "datashader (>=0.11.1)", "ffmpeg", "flaky", "ibis-framework", "ipython (>=5.4.0)", "matplotlib (>=3)", "nbconvert", "netcdf4", "networkx", "notebook", "pillow", "plotly (>=4.0)", "pooch", "pre-commit", "pyarrow", "pytest", "pytest-cov", "pytest-xdist", "ruff", "scikit-image", "scipy", "selenium", "shapely", "spatialpandas", "streamz (>=0.5.0)", "xarray (>=0.10.4)"]
+
+[[package]]
+name = "htmlgen"
+version = "2.0.0"
+description = "HTML 5 Generator"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "htmlgen-2.0.0-py3-none-any.whl", hash = "sha256:c138e0eda7d20eed2b70cac955c180e23203cad561991e5eb86f085b0db51a77"},
+]
 
 [[package]]
 name = "httplib2"
@@ -8952,6 +8977,24 @@ files = [
 ]
 
 [[package]]
+name = "vitables"
+version = "3.0.2"
+description = "A viewer for PyTables package"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ViTables-3.0.2-py3-none-any.whl", hash = "sha256:7fa84009b637531c4858903c20ad9be6c5f8227712e88367197bfdc7713851c8"},
+    {file = "ViTables-3.0.2.tar.gz", hash = "sha256:964650c2b0674ff2af5f009605cfa6b49281dfa93687e15e8717bc25910268ee"},
+]
+
+[package.dependencies]
+numexpr = ">=2.0"
+numpy = ">=1.4.1"
+PyQt5 = ">=5.5.1"
+qtpy = ">=1.2.1"
+tables = ">=3.0"
+
+[[package]]
 name = "viztracer"
 version = "0.15.6"
 description = "A debugging and profiling tool that can trace and visualize python code execution"
@@ -9546,4 +9589,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "8f223da6b53f71f90c55a2cb3451afc2c0de391952f2d117cd2f21efe599303b"
+content-hash = "2584b9d63385a6dbe292454af7f721a24477bf23d5fc9ec784e2e503afe585ef"
