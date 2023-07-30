@@ -114,7 +114,8 @@
 			"salbert.copy-text",
 			"zengfanfan.zeng-color-picker",
 			"stackbreak.comment-divider",
-			"pomdtr.excalidraw-editor"
+			"pomdtr.excalidraw-editor",
+			"ms-toolsai.datawrangler"
 		]
 	},
 	"launch": {

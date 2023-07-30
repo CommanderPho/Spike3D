@@ -15,6 +15,7 @@
 		"ms-python.vscode-pylance",
 		"stackbreak.comment-divider",
 		"volcanicbytes.virtual-workspace",
-		"gruntfuggly.virtual-folders"
+		"gruntfuggly.virtual-folders",
+		"ms-toolsai.datawrangler"
 	]
 }
