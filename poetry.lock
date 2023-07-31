@@ -4942,6 +4942,20 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx", "sphinxcontrib-github-al
 test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
+name = "ndindex"
+version = "1.7"
+description = "A Python library for manipulating indices of ndarrays."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "ndindex-1.7-py3-none-any.whl", hash = "sha256:4c0555d352ac9947b0f022562aea9f5d57fa06743ea069669138f75a88b42884"},
+    {file = "ndindex-1.7.tar.gz", hash = "sha256:bf9bd0b76eeada1c8275e04091f8291869ed2b373b7af48e56faf7579fd2efd2"},
+]
+
+[package.extras]
+arrays = ["numpy"]
+
+[[package]]
 name = "neo"
 version = "0.12.0"
 description = "Neo is a package for representing electrophysiology data in Python, together with support for reading a wide range of neurophysiology file formats"
@@ -8985,6 +8999,24 @@ reference = "release/pho-working"
 resolved_reference = "a0784a47d1b1a92f71b81f153c12856ccf7ec242"
 
 [[package]]
+name = "versioned-hdf5"
+version = "1.3.14"
+description = "Versioned HDF5"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "versioned-hdf5-1.3.14.tar.gz", hash = "sha256:f1fe37fbbf63c1b9d8ac2ebc716bbc30dca4da565ee4f17ee73d299db6ae05b0"},
+]
+
+[package.dependencies]
+h5py = "*"
+ndindex = ">=1.5.1"
+numpy = "*"
+
+[package.extras]
+test = ["pytest"]
+
+[[package]]
 name = "vine"
 version = "5.0.0"
 description = "Promises, promises, promises."
@@ -9608,4 +9640,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "aacdf91fff76f37664124ed58702531960e39f06fbdc58e11ec872e0ffd07d3d"
+content-hash = "3b3b65aff75b001da152981e73f32c080048218a8460db159bccb6cfbe15c351"
