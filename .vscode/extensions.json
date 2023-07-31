@@ -16,6 +16,7 @@
 		"stackbreak.comment-divider",
 		"volcanicbytes.virtual-workspace",
 		"gruntfuggly.virtual-folders",
-		"ms-toolsai.datawrangler"
+		"ms-toolsai.datawrangler",
+		"h5web.vscode-h5web"
 	]
 }
