@@ -59,7 +59,8 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"hbenl.vscode-test-explorer"
+			"hbenl.vscode-test-explorer",
+			"h5web.vscode-h5web"
 		]
 	}
 }
