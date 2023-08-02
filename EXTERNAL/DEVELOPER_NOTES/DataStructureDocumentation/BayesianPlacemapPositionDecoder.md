@@ -1,0 +1,85 @@
+BayesianPlacemapPositionDecoder - printed by print_keys_if_possible on 2023-07-29
+===================================================================================================
+
+
+- BayesianPlacemapPositionDecoder: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.BayesianPlacemapPositionDecoder
+	- pf: neuropy.analyses.placefields.PfND
+		- spikes_df: pandas.core.frame.DataFrame (children omitted) - (101136, 22)
+		- position: neuropy.core.position.Position
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _data: pandas.core.frame.DataFrame (children omitted) - (36310, 10)
+		- epochs: neuropy.core.epoch.Epoch
+			- _filename: NoneType
+			- _metadata: NoneType
+			- _df: pandas.core.frame.DataFrame (children omitted) - (40, 4)
+		- config: neuropy.analyses.placefields.PlacefieldComputationParameters
+			- speed_thresh: float
+			- grid_bin: tuple - (2,)
+			- grid_bin_bounds: tuple - (2, 2)
+			- smooth: tuple - (2,)
+			- frate_thresh: float
+		- position_srate: numpy.float64
+		- setup_on_init: bool
+		- compute_on_init: bool
+		- _save_intermediate_spikes_maps: bool
+		- _ratemap: neuropy.core.ratemap.Ratemap
+			- _filename: NoneType
+			- _metadata: NoneType
+			- spikes_maps: numpy.ndarray - (79, 117)
+			- tuning_curves: numpy.ndarray - (79, 117)
+			- unsmoothed_tuning_maps: numpy.ndarray - (79, 117)
+			- _neuron_ids: list - (79,)
+			- _neuron_extended_ids: list - (79, 3)
+			- xbin: numpy.ndarray - (118,)
+			- ybin: NoneType
+			- occupancy: numpy.ndarray - (117,)
+		- _ratemap_spiketrains: list - (79,)
+		- _ratemap_spiketrains_pos: list - (79, 1)
+		- _filtered_pos_df: pandas.core.frame.DataFrame (children omitted) - (8775, 11)
+		- _filtered_spikes_df: pandas.core.frame.DataFrame (children omitted) - (27562, 22)
+		- ndim: numpy.int32
+		- xbin: numpy.ndarray - (118,)
+		- ybin: NoneType
+		- bin_info: dict
+			- mode: str
+			- xstep: int
+			- xnum_bins: int
+		- _included_thresh_neurons_indx: NoneType
+		- _peak_frate_filter_function: NoneType
+	- neuron_IDXs: numpy.ndarray - (79,)
+	- neuron_IDs: numpy.ndarray - (79,)
+	- F: numpy.ndarray - (117, 79)
+	- P_x: numpy.ndarray - (117, 1)
+	- setup_on_init: bool
+	- post_load_on_init: bool
+	- debug_print: bool
+	- time_bin_size: float
+	- spikes_df: pandas.core.frame.DataFrame (children omitted) - (27562, 23)
+	- time_binning_container: neuropy.utils.mixins.binning_helpers.BinningContainer
+		- edges: numpy.ndarray - (36247,)
+		- centers: numpy.ndarray - (36246,)
+		- edge_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+			- variable_extents: list - (2,)
+			- step: numpy.float64
+			- num_bins: int
+			- bin_indicies: numpy.ndarray - (36247,)
+		- center_info: neuropy.utils.mixins.binning_helpers.BinningInfo
+			- variable_extents: list - (2,)
+			- step: numpy.float64
+			- num_bins: int
+			- bin_indicies: numpy.ndarray - (36246,)
+	- unit_specific_time_binned_spike_counts: numpy.ndarray - (79, 35888)
+	- total_spike_counts_per_window: numpy.ndarray - (35888,)
+	- flat_p_x_given_n: numpy.ndarray - (117, 36246)
+	- p_x_given_n: numpy.ndarray - (117, 36246)
+	- most_likely_position_flat_indicies: numpy.ndarray - (36246,)
+	- most_likely_position_indicies: NoneType
+	- marginal: neuropy.utils.dynamic_container.DynamicContainer
+		- x: neuropy.utils.dynamic_container.DynamicContainer
+			- p_x_given_n: numpy.ndarray - (117, 36246)
+			- most_likely_positions_1D: numpy.ndarray - (36246,)
+			- revised_most_likely_positions_1D: numpy.ndarray - (36246,)
+		- y: NoneType
+	- most_likely_positions: numpy.ndarray - (36246,)
+	- revised_most_likely_positions: numpy.ndarray - (36246,)
