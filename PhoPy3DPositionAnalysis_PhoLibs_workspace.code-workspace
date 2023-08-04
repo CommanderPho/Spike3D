@@ -37,7 +37,10 @@
 		},
 		"python.analysis.logLevel": "Information",
 		"workbench.colorCustomizations": {
-			"titleBar.activeBackground": "#3086a2"
+			"titleBar.activeBackground": "#3086a2",
+			"titleBar.inactiveBackground": "#3085a2a2",
+			"activityBar.background": "#062731",
+			
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
