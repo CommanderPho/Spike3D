@@ -9029,21 +9029,25 @@ files = [
 
 [[package]]
 name = "vitables"
-version = "3.0.2"
-description = "A viewer for PyTables package"
+version = "3.0.3"
+description = "A viewer for HDF5 files."
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "ViTables-3.0.2-py3-none-any.whl", hash = "sha256:7fa84009b637531c4858903c20ad9be6c5f8227712e88367197bfdc7713851c8"},
-    {file = "ViTables-3.0.2.tar.gz", hash = "sha256:964650c2b0674ff2af5f009605cfa6b49281dfa93687e15e8717bc25910268ee"},
+    {file = "vitables-3.0.3-py3-none-any.whl", hash = "sha256:9d518ef67db70d7b78fc416d05b654441dec08ecf820e1c221516a4ebe163450"},
+    {file = "vitables-3.0.3.tar.gz", hash = "sha256:24570963c1a2fc8df3ecb39a736256a5384aff114b56540c6bdad7c4197881a0"},
 ]
 
 [package.dependencies]
-numexpr = ">=2.0"
-numpy = ">=1.4.1"
-PyQt5 = ">=5.5.1"
-qtpy = ">=1.2.1"
+qtpy = ">=2.2"
+setuptools = ">=65.0"
 tables = ">=3.0"
+
+[package.extras]
+pyqt5 = ["pyqt5 (>=5.5.1)"]
+pyqt6 = ["pyqt6 (>=6.0)"]
+pyside2 = ["pyside2 (>=5.15.2)"]
+pyside6 = ["pyside6 (>=6.4)"]
 
 [[package]]
 name = "viztracer"
