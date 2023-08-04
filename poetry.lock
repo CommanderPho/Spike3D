@@ -3241,6 +3241,20 @@ files = [
 ]
 
 [[package]]
+name = "ipytree"
+version = "0.2.2"
+description = "A Tree Widget using jsTree"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ipytree-0.2.2-py2.py3-none-any.whl", hash = "sha256:744dc1a02c3ec26df8a5ecd87d085a67dc8232a1def6048834403ddcf3b64143"},
+    {file = "ipytree-0.2.2.tar.gz", hash = "sha256:d53d739bbaaa45415733cd06e0dc420a2af3d173438617db472a517bc7a61e56"},
+]
+
+[package.dependencies]
+ipywidgets = ">=7.5.0,<9"
+
+[[package]]
 name = "ipywidgets"
 version = "8.0.7"
 description = "Jupyter interactive widgets"
@@ -9644,4 +9658,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "3b3b65aff75b001da152981e73f32c080048218a8460db159bccb6cfbe15c351"
+content-hash = "cd785f230ed12c16222916266a3369d607bf1373495fdcc9090f6e5b2ed0677c"
