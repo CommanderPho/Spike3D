@@ -118,7 +118,8 @@
 			"zengfanfan.zeng-color-picker",
 			"stackbreak.comment-divider",
 			"pomdtr.excalidraw-editor",
-			"ms-toolsai.datawrangler"
+			"ms-toolsai.datawrangler",
+			"ranyitz.search-presets"
 		]
 	},
 	"launch": {

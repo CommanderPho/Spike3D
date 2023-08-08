@@ -17,6 +17,7 @@
 		"volcanicbytes.virtual-workspace",
 		"gruntfuggly.virtual-folders",
 		"ms-toolsai.datawrangler",
-		"h5web.vscode-h5web"
+		"h5web.vscode-h5web",
+		"ranyitz.search-presets"
 	]
 }
