@@ -50,8 +50,8 @@ if __name__ == "__main__":
 
     """ Usage:
     
-    python runSingleBatch.py --active_result_suffix "2023-08-08_Apogee" --num_processes 4 --should_force_reload_all --should_perform_figure_generation_to_file --debug_print
-    python runSingleBatch.py --active_result_suffix "2023-08-08_LNX00052" --num_processes 4 --should_force_reload_all --debug_print
+    python scripts/runSingleBatch.py --active_result_suffix "2023-08-08_Apogee" --num_processes 4 --should_force_reload_all --should_perform_figure_generation_to_file --debug_print
+    python scripts/runSingleBatch.py --active_result_suffix "2023-08-08_LNX00052" --num_processes 4 --should_force_reload_all --debug_print
     
     --should_perform_figure_generation_to_file
     
