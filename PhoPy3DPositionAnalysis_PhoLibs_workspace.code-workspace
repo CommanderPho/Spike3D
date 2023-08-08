@@ -35,7 +35,7 @@
 			"**/*.7z": true,
 			"**/Spike3D/.venv/*": true
 		},
-		"python.analysis.logLevel": "Information",
+		"python.analysis.logLevel": "Warning",
 		"workbench.colorCustomizations": {
 			"titleBar.activeBackground": "#3086a2",
 			"titleBar.inactiveBackground": "#3085a2a2",
@@ -44,12 +44,12 @@
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
-			"**/EXTERNAL/TESTING/OLD": true
+			"**/EXTERNAL": true,
+			"**/EXTERNAL/TESTING/OLD": true,
+			"**/LibrariesExamples": true
 		},
 		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
 		"qtForPython.uic.path": "C:\\Users\\pho\\miniconda3\\envs\\PyQt6\\Scripts\\pyuic5.exe",
-		"qtForPython.qmllint.enabled": false,
-		"python.autoComplete.extraPaths": [],
 		"git.ignoreLimitWarning": true,
 		"qtForPython.uic.options": [
 			"-o",
@@ -64,11 +64,47 @@
 		],
 		"favorites.sortDirection": "DESC",
 		"python.analysis.extraPaths": [],
-		"python.pylanceLspNotebooksEnabled": true,
-		"dvc.studio.shareExperimentsLive": false,
-		"vscode-pydata-viewer.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
-		"GitLink.defaultRemote": "origin",
-		"GitLink.hostType": "github",
+		"python.analysis.include": [
+			"../NeuroPy/neuropy",
+			"../pyPhoCoreHelpers/src/pyphocorehelpers",
+			"../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+		],
+		"python.analysis.fixAll": [
+
+],
+"python.analysis.inlayHints.callArgumentNames": false,
+"python.analysis.persistAllIndices": true,
+"python.analysis.packageIndexDepths": [
+
+	{
+		"name": "sklearn",
+		"depth": 2
+	},
+	{
+		"name": "matplotlib",
+		"depth": 2
+	},
+	{
+		"name": "scipy",
+		"depth": 2
+	},
+	{
+		"name": "django",
+		"depth": 2
+	},
+	{
+		"name": "flask",
+		"depth": 2
+	},
+	{
+		"name": "fastapi",
+		"depth": 2
+	}
+],
+"python.terminal.launchArgs": [],
+"python.analysis.exclude": [
+	"**/EXTERNAL"
+],
 	},
 	"extensions": {
 		"recommendations": [
