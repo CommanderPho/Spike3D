@@ -176,9 +176,11 @@
 		"version": "2.0.0",
 		"tasks": [
 			{
-				"label": "echo",
+				"label": "Launch ViTables",
 				"type": "shell",
-				"command": "echo Hello"
+				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables",
+				// "command": "./.venv/Scripts/python.exe -m vitables",
+				"problemMatcher": []
 			}
 		]
 	}
