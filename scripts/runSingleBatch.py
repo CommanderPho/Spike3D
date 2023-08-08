@@ -5,21 +5,9 @@ import numpy as np
 import pandas as pd
 
 ## Pho's Custom Libraries:
-from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
-
-# pyPhoPlaceCellAnalysis:
-# NeuroPy (Diba Lab Python Repo) Loading
-# from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
-# from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
-# from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
-# from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
-# from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
-
-## For computation parameters:
 from neuropy.utils.result_context import IdentifyingContext
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SessionBatchProgress, main
 from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionsResults, AcrossSessionsVisualizations
-# from pyphocorehelpers.Filesystem.path_helpers import set_posix_windows
 
 
 if __name__ == "__main__":
