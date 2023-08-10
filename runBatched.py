@@ -481,7 +481,7 @@ SxC_aclus = _out_fig_2.computation_result.SxC_aclus
 LxC_aclus
 
 # %%
-from pyphoplacecellanalysis.General.Mixins.ExportHelpers import FigureOutputManager, FigureOutputLocation, ContextToPathMode
+from pyphoplacecellanalysis.General.Mixins.ExportHelpers import FileOutputManager, FigureOutputLocation, ContextToPathMode
 
 registered_output_files = {}
 
@@ -493,7 +493,7 @@ def output_figure(final_context: IdentifyingContext, fig, write_vector_format:bo
         print(f'register_output_file(output_path: {output_path}, ...)')
         registered_output_files[output_path] = output_metadata or {}
 
-    fig_out_man = FigureOutputManager(figure_output_location=FigureOutputLocation.DAILY_PROGRAMMATIC_OUTPUT_FOLDER, context_to_path_mode=ContextToPathMode.HIERARCHY_UNIQUE)
+    fig_out_man = FileOutputManager(figure_output_location=FigureOutputLocation.DAILY_PROGRAMMATIC_OUTPUT_FOLDER, context_to_path_mode=ContextToPathMode.HIERARCHY_UNIQUE)
     active_out_figure_paths = build_and_write_to_file(fig, final_context, fig_out_man, write_vector_format=write_vector_format, write_png=write_png, register_output_file_fn=register_output_file)
     return active_out_figure_paths, final_context
 
