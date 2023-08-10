@@ -1,0 +1,157 @@
+{
+  "main": {
+    "id": "2618f7b3672c4deb",
+    "type": "split",
+    "children": [
+      {
+        "id": "77da743d7f00a926",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8a12e9da6e42cfa0",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2023-08-10 - Output Files and Exports.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "492c216e5f3db69b",
+    "type": "split",
+    "children": [
+      {
+        "id": "6fbb06043309c557",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4ee83e81474cd484",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "4a5b5d02c5e7f318",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "76a3377d89405222",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 451.5
+  },
+  "right": {
+    "id": "2d5b05803d90d54f",
+    "type": "split",
+    "children": [
+      {
+        "id": "1343a96e14697bdd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fb34f7d5849aaeb1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "2023-08-10 - Output Files and Exports.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "c98f0779660dca07",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "2023-08-10 - Output Files and Exports.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "19f6376a31ddf28c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "b3b0b9f950154adc",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "2023-08-10 - Output Files and Exports.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "8a12e9da6e42cfa0",
+  "lastOpenFiles": [
+    "Untitled-4.md",
+    "2023-08-10 - Output Files and Exports.md",
+    "2023-08-03 - HDF5 Serialization Realization.md",
+    "VSCode Idea - copy structure of class (for referencing).md",
+    "PhoInitialRepoSetupNotes2022.md"
+  ]
+}
