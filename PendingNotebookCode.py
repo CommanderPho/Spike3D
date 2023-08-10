@@ -21,6 +21,32 @@ should_force_recompute_placefields = True
 should_display_2D_plots = True
 _debug_print = False
 
+#TODO 2023-08-10 16:50: - [ ] 
+
+
+
+from enum import Enum, auto
+from attrs import define, field
+
+@define(slots=False)
+class SwiftLikeEnum:
+    """ # can enums store associated data?
+	# some properties only make sense for certain enum values, like .
+    """
+    value: int
+    attribute: str
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}.{self.name}"
+
+class MyEnum(Enum):
+    CASE1 = SwiftLikeEnum(value=auto(), attribute="attribute1")
+    CASE2 = SwiftLikeEnum(value=auto(), attribute="attribute2")
+
+    @property
+    def attribute(self):
+        return self.value.attribute
+
 
 
 
