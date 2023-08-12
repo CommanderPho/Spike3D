@@ -83,6 +83,7 @@ tqdm = "^4.65.1"
 phoglobushelpers = {git = "https://github.com/CommanderPho/PhoGlobusHelpers.git"}
 jinja2 = "^3.1.2"
 psutil = "^5.9.5"
+filprofiler = "^2023.3.1"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
