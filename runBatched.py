@@ -409,7 +409,9 @@ IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_n
 
 # %%
 from neuropy.utils.matplotlib_helpers import matplotlib_configuration_update
-from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import PaperFigureTwo, InstantaneousSpikeRateGroupsComputation
+from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import PaperFigureTwo
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import \
+    InstantaneousSpikeRateGroupsComputation
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.SpikeAnalysis import SpikeRateTrends
 from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import list_of_dicts_to_dict_of_lists
 from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionsResults, AcrossSessionsVisualizations
