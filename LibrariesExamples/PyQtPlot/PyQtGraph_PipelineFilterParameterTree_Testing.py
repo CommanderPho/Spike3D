@@ -16,7 +16,7 @@ from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.ParameterTreeWidget import crea
 # NeuroPy (Diba Lab Python Repo) Loading
 from neuropy import core
 importlib.reload(core)
-from neuropy.core.neurons import NeuronType
+from neuropy.core.neuron_identities import NeuronType
 
 # Custom Param Types:
 from _buildFilterParamTypes import makeAllParamTypes
