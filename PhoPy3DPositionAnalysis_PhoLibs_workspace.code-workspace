@@ -179,8 +179,32 @@
 				"label": "Launch ViTables",
 				"type": "shell",
 				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables",
-				// "command": "./.venv/Scripts/python.exe -m vitables",
-				"problemMatcher": []
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			},
+			{
+				"label": "Launch ViTables with selected file path (TODO)",
+				"type": "shell",
+				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+				"args": [
+						"-m",
+						"vitables",
+						"$VITABLES_FILE_PATH"
+				],
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
 			}
 		]
 	}
