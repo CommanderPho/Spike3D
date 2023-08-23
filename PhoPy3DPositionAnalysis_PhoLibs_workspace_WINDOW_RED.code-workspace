@@ -42,6 +42,12 @@
 			"titleBar.activeForeground": "#000000",
 			"titleBar.inactiveBackground": "#c753538e"
 		},
+		"notebook.find.scope": {
+			"markupSource": true,
+			"markupPreview": true,
+			"codeSource": true,
+			"codeOutput": false
+		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
 			"**/EXTERNAL/TESTING/OLD": true
