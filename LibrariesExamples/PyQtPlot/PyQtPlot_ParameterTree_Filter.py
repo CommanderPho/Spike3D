@@ -23,7 +23,7 @@ except ImportError:
     print("neuropy module not found, adding directory to sys.path. \n >> Updated sys.path.")
     from neuropy import core
 
-from neuropy.core.neurons import NeuronType
+from neuropy.core.neuron_identities import NeuronType
 # Custom Param Types:
 from _buildFilterParamTypes import makeAllParamTypes
 
