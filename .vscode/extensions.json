@@ -18,6 +18,7 @@
 		"gruntfuggly.virtual-folders",
 		"ms-toolsai.datawrangler",
 		"h5web.vscode-h5web",
-		"ranyitz.search-presets"
+		"ranyitz.search-presets",
+		"sketchbuch.vsc-workspace-sidebar"
 	]
 }

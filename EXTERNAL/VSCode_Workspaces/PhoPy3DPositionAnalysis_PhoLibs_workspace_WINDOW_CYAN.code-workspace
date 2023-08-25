@@ -2,23 +2,19 @@
 	"folders": [
 		{
 			"name": "Spike3D",
-			"path": "."
+			"path": "../../"
 		},
 		{
 			"name": "pyphocorehelpers",
-			"path": "../pyPhoCoreHelpers/src/pyphocorehelpers"
+			"path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
 		},
 		{
 			"name": "pyphoplacecellanalysis",
-			"path": "../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+			"path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
 		},
 		{
 			"name": "neuropy",
-			"path": "../NeuroPy/neuropy"
-		},
-		{
-			"name": "SCRIPTS",
-			"path": "../SCRIPTS"
+			"path": "../../../NeuroPy/neuropy"
 		}
 	],
 	"settings": {
@@ -43,10 +39,11 @@
 		"workbench.colorCustomizations": {
 			"editor.lineHighlightBackground": "#10cfcf2d",
 			"editor.lineHighlightBorder": "#9fbfd11f",
-			"activityBar.background": "#232a4b",
+			"activityBar.background": "#234b4b",
 			"titleBar.activeBackground": "#53b6c7",
 			"titleBar.activeForeground": "#000000",
-			"titleBar.inactiveBackground": "#53c3c78e"
+			"titleBar.inactiveBackground": "#53c3c78e",
+			"statusBar.background": "#00727a46",
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
