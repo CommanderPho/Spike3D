@@ -1,0 +1,18 @@
+name: viz3d
+channels:
+  - defaults
+dependencies:
+  - matplotlib
+  - seaborn
+  - pymc
+  - jupyterlab
+  - pyvista
+  - vaex
+  - ipympl
+  - hdf5storage
+  - ipywidgets
+  - ipygany
+  - ipyvolume
+  - ipyvtklink
+  - panel
+prefix: C:\Users\Pho\anaconda3\envs\viz3d
