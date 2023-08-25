@@ -19,9 +19,8 @@
 	],
 	"settings": {
 		"python.analysis.gotoDefinitionInStringLiteral": true,
+		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 		"python.linting.enabled": false,
-		"jupyter.askForKernelRestart": true,
-		"jupyter.debugJustMyCode": true,
 		"files.exclude": {
 			"**/.classpath": true,
 			"**/.factorypath": true,
@@ -36,13 +35,19 @@
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
-			"editor.lineHighlightBackground": "#1073cf2d",
-			"editor.lineHighlightBorder": "#9fced11f",
-			"activityBar.background": "#244b23",
-			"titleBar.activeBackground": "#53c763",
+			"editor.lineHighlightBackground": "#cf10102d",
+			"editor.lineHighlightBorder": "#d19f9f1f",
+			"activityBar.background": "#4b2323",
+			"titleBar.activeBackground": "#c75353",
 			"titleBar.activeForeground": "#000000",
-			"titleBar.inactiveBackground": "#53c7628e",
-			"statusBar.background": "#007a1446",
+			"titleBar.inactiveBackground": "#c753538e",
+			"statusBar.background": "#7a000046",
+		},
+		"notebook.find.scope": {
+			"markupSource": true,
+			"markupPreview": true,
+			"codeSource": true,
+			"codeOutput": false
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
@@ -63,9 +68,7 @@
 			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
 		],
 		"favorites.sortDirection": "DESC",
-		"python.analysis.extraPaths": [],
-		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
-		"windowColors.🌈 BaseColor": "'whitesmoke'"
+		"python.analysis.extraPaths": []
 	},
 	"tasks": {
 		"version": "2.0.0",
@@ -101,11 +104,6 @@
 					"showReuseMessage": false
 				}
 			}
-		]
-	},
-	"extensions": {
-		"recommendations": [
-			"sketchbuch.vsc-workspace-sidebar"
 		]
 	}
 }
