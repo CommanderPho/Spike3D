@@ -1,0 +1,73 @@
+,format_name,animal,exper_name,session_name,context,basedirs,status,errors,n_long_laps,n_long_replays,n_short_laps,n_short_replays,is_ready
+0,kdiba,gor01,one,2006-6-07_11-26-53,kdiba_gor01_one_2006-6-07_11-26-53,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/one/2006-6-07_11-26-53,SessionBatchProgress.COMPLETED,,41,396,1,90,False
+1,kdiba,gor01,one,2006-6-08_14-26-15,kdiba_gor01_one_2006-6-08_14-26-15,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/one/2006-6-08_14-26-15,SessionBatchProgress.COMPLETED,,40,8,40,6,True
+2,kdiba,gor01,one,2006-6-09_1-22-43,kdiba_gor01_one_2006-6-09_1-22-43,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/one/2006-6-09_1-22-43,SessionBatchProgress.COMPLETED,,42,32,40,15,True
+3,kdiba,gor01,one,2006-6-09_3-23-37,kdiba_gor01_one_2006-6-09_3-23-37,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/one/2006-6-09_3-23-37,SessionBatchProgress.COMPLETED,,32,0,0,0,False
+4,kdiba,gor01,one,2006-6-12_15-55-31,kdiba_gor01_one_2006-6-12_15-55-31,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/one/2006-6-12_15-55-31,SessionBatchProgress.COMPLETED,,42,8,34,12,True
+5,kdiba,gor01,one,2006-6-13_14-42-6,kdiba_gor01_one_2006-6-13_14-42-6,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/one/2006-6-13_14-42-6,SessionBatchProgress.COMPLETED,,40,0,39,8,False
+6,kdiba,gor01,two,2006-6-07_16-40-19,kdiba_gor01_two_2006-6-07_16-40-19,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/two/2006-6-07_16-40-19,SessionBatchProgress.COMPLETED,,40,1,40,0,False
+7,kdiba,gor01,two,2006-6-08_15-46-47,kdiba_gor01_two_2006-6-08_15-46-47,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/two/2006-6-08_15-46-47,SessionBatchProgress.COMPLETED,,42,57,0,4,False
+8,kdiba,gor01,two,2006-6-08_21-16-25,kdiba_gor01_two_2006-6-08_21-16-25,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/two/2006-6-08_21-16-25,SessionBatchProgress.COMPLETED,,40,163,40,228,True
+9,kdiba,gor01,two,2006-6-09_22-24-40,kdiba_gor01_two_2006-6-09_22-24-40,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/two/2006-6-09_22-24-40,SessionBatchProgress.COMPLETED,,51,24,43,107,True
+10,kdiba,gor01,two,2006-6-12_16-53-46,kdiba_gor01_two_2006-6-12_16-53-46,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/two/2006-6-12_16-53-46,SessionBatchProgress.COMPLETED,,40,20,40,7,True
+11,kdiba,gor01,two,2006-6-13_15-22-3,kdiba_gor01_two_2006-6-13_15-22-3,/nfs/turbo/umms-kdiba/Data/KDIBA/gor01/two/2006-6-13_15-22-3,SessionBatchProgress.COMPLETED,,40,34,40,39,True
+12,kdiba,vvp01,one,2006-4-09_17-29-30,kdiba_vvp01_one_2006-4-09_17-29-30,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-09_17-29-30,SessionBatchProgress.COMPLETED,,63,57,44,38,True
+13,kdiba,vvp01,one,2006-4-10_12-25-50,kdiba_vvp01_one_2006-4-10_12-25-50,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-10_12-25-50,SessionBatchProgress.FAILED,index 0 is out of bounds for axis 0 with size 0,0,0,0,0,False
+14,kdiba,vvp01,one,2006-4-10_21-2-40,kdiba_vvp01_one_2006-4-10_21-2-40,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-10_21-2-40,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+15,kdiba,vvp01,one,2006-4-11_15-16-59,kdiba_vvp01_one_2006-4-11_15-16-59,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-11_15-16-59,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+16,kdiba,vvp01,one,2006-4-12_14-39-31,kdiba_vvp01_one_2006-4-12_14-39-31,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-12_14-39-31,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+17,kdiba,vvp01,one,2006-4-12_17-53-55,kdiba_vvp01_one_2006-4-12_17-53-55,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-12_17-53-55,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+18,kdiba,vvp01,one,2006-4-16_15-12-23,kdiba_vvp01_one_2006-4-16_15-12-23,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-16_15-12-23,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+19,kdiba,vvp01,one,2006-4-17_12-33-47,kdiba_vvp01_one_2006-4-17_12-33-47,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-17_12-33-47,SessionBatchProgress.COMPLETED,,44,56,46,62,True
+20,kdiba,vvp01,one,2006-4-18_13-6-1,kdiba_vvp01_one_2006-4-18_13-6-1,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-18_13-6-1,SessionBatchProgress.COMPLETED,,53,26,52,29,True
+21,kdiba,vvp01,one,2006-4-18_15-23-32,kdiba_vvp01_one_2006-4-18_15-23-32,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-18_15-23-32,SessionBatchProgress.COMPLETED,,42,11,41,7,True
+22,kdiba,vvp01,one,2006-4-19_13-34-40,kdiba_vvp01_one_2006-4-19_13-34-40,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-19_13-34-40,SessionBatchProgress.COMPLETED,,42,16,44,23,True
+23,kdiba,vvp01,one,2006-4-19_16-48-9,kdiba_vvp01_one_2006-4-19_16-48-9,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-19_16-48-9,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+24,kdiba,vvp01,one,2006-4-21_10-24-35,kdiba_vvp01_one_2006-4-21_10-24-35,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-21_10-24-35,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+25,kdiba,vvp01,one,2006-4-25_14-28-51,kdiba_vvp01_one_2006-4-25_14-28-51,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-25_14-28-51,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+26,kdiba,vvp01,one,2006-4-25_17-17-6,kdiba_vvp01_one_2006-4-25_17-17-6,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-25_17-17-6,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+27,kdiba,vvp01,one,2006-4-26_13-22-13,kdiba_vvp01_one_2006-4-26_13-22-13,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-26_13-22-13,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+28,kdiba,vvp01,one,2006-4-27_14-43-12,kdiba_vvp01_one_2006-4-27_14-43-12,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-27_14-43-12,SessionBatchProgress.COMPLETED,,55,42,35,17,True
+29,kdiba,vvp01,one,2006-4-28_12-17-27,kdiba_vvp01_one_2006-4-28_12-17-27,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-28_12-17-27,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-28_12-17-27/2006-4-28_12-17-27.position_info.mat does not exist.,0,0,0,0,False
+30,kdiba,vvp01,one,2006-4-28_16-48-29,kdiba_vvp01_one_2006-4-28_16-48-29,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/one/2006-4-28_16-48-29,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+31,kdiba,vvp01,two,2006-4-09_16-40-54,kdiba_vvp01_two_2006-4-09_16-40-54,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-09_16-40-54,SessionBatchProgress.COMPLETED,,48,136,50,32,True
+32,kdiba,vvp01,two,2006-4-10_12-58-3,kdiba_vvp01_two_2006-4-10_12-58-3,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-10_12-58-3,SessionBatchProgress.COMPLETED,,54,56,40,26,True
+33,kdiba,vvp01,two,2006-4-10_19-11-57,kdiba_vvp01_two_2006-4-10_19-11-57,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-10_19-11-57,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+34,kdiba,vvp01,two,2006-4-11_12-48-38,kdiba_vvp01_two_2006-4-11_12-48-38,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-11_12-48-38,SessionBatchProgress.COMPLETED,,42,53,44,34,True
+35,kdiba,vvp01,two,2006-4-11_16-2-46,kdiba_vvp01_two_2006-4-11_16-2-46,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-11_16-2-46,SessionBatchProgress.COMPLETED,,42,32,40,22,True
+36,kdiba,vvp01,two,2006-4-12_14-59-23,kdiba_vvp01_two_2006-4-12_14-59-23,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-12_14-59-23,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-12_14-59-23/2006-4-12_14-59-23.position_info.mat does not exist.,0,0,0,0,False
+37,kdiba,vvp01,two,2006-4-12_15-25-59,kdiba_vvp01_two_2006-4-12_15-25-59,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-12_15-25-59,SessionBatchProgress.COMPLETED,,40,16,40,9,True
+38,kdiba,vvp01,two,2006-4-16_14-49-24,kdiba_vvp01_two_2006-4-16_14-49-24,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-16_14-49-24,SessionBatchProgress.COMPLETED,,56,53,42,37,True
+39,kdiba,vvp01,two,2006-4-16_18-47-52,kdiba_vvp01_two_2006-4-16_18-47-52,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-16_18-47-52,SessionBatchProgress.COMPLETED,,46,49,40,14,True
+40,kdiba,vvp01,two,2006-4-17_12-52-15,kdiba_vvp01_two_2006-4-17_12-52-15,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-17_12-52-15,SessionBatchProgress.COMPLETED,,46,39,40,36,True
+41,kdiba,vvp01,two,2006-4-18_13-28-57,kdiba_vvp01_two_2006-4-18_13-28-57,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-18_13-28-57,SessionBatchProgress.FAILED,index -1 is out of bounds for axis 0 with size 0,0,0,0,0,False
+42,kdiba,vvp01,two,2006-4-18_15-38-2,kdiba_vvp01_two_2006-4-18_15-38-2,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-18_15-38-2,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+43,kdiba,vvp01,two,2006-4-19_13-50-7,kdiba_vvp01_two_2006-4-19_13-50-7,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-19_13-50-7,SessionBatchProgress.COMPLETED,,42,23,42,14,True
+44,kdiba,vvp01,two,2006-4-19_16-37-40,kdiba_vvp01_two_2006-4-19_16-37-40,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-19_16-37-40,SessionBatchProgress.COMPLETED,,40,3,40,2,False
+45,kdiba,vvp01,two,2006-4-21_11-19-2,kdiba_vvp01_two_2006-4-21_11-19-2,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-21_11-19-2,SessionBatchProgress.COMPLETED,,42,11,41,3,False
+46,kdiba,vvp01,two,2006-4-25_13-20-55,kdiba_vvp01_two_2006-4-25_13-20-55,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-25_13-20-55,SessionBatchProgress.COMPLETED,,42,14,42,9,True
+47,kdiba,vvp01,two,2006-4-25_17-33-28,kdiba_vvp01_two_2006-4-25_17-33-28,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-25_17-33-28,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+48,kdiba,vvp01,two,2006-4-26_13-51-50,kdiba_vvp01_two_2006-4-26_13-51-50,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-26_13-51-50,SessionBatchProgress.COMPLETED,,40,34,44,8,True
+49,kdiba,vvp01,two,2006-4-27_18-21-57,kdiba_vvp01_two_2006-4-27_18-21-57,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-27_18-21-57,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-27_18-21-57/2006-4-27_18-21-57.position_info.mat does not exist.,0,0,0,0,False
+50,kdiba,vvp01,two,2006-4-28_12-38-13,kdiba_vvp01_two_2006-4-28_12-38-13,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-28_12-38-13,SessionBatchProgress.FAILED,index 0 is out of bounds for axis 0 with size 0,0,0,0,0,False
+51,kdiba,vvp01,two,2006-4-28_17-6-14,kdiba_vvp01_two_2006-4-28_17-6-14,/nfs/turbo/umms-kdiba/Data/KDIBA/vvp01/two/2006-4-28_17-6-14,SessionBatchProgress.FAILED,'t_rel_seconds',0,0,0,0,False
+52,kdiba,pin01,one,11-02_17-46-44,kdiba_pin01_one_11-02_17-46-44,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-02_17-46-44,SessionBatchProgress.COMPLETED,,58,84,54,199,True
+53,kdiba,pin01,one,11-02_19-28-0,kdiba_pin01_one_11-02_19-28-0,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-02_19-28-0,SessionBatchProgress.COMPLETED,,54,76,50,49,True
+54,kdiba,pin01,one,11-03_12-3-25,kdiba_pin01_one_11-03_12-3-25,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-03_12-3-25,SessionBatchProgress.COMPLETED,,42,69,42,49,True
+55,kdiba,pin01,one,11-03_21-26-8,kdiba_pin01_one_11-03_21-26-8,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-03_21-26-8,SessionBatchProgress.COMPLETED,,54,27,36,23,True
+56,kdiba,pin01,one,11-05_19-26-43,kdiba_pin01_one_11-05_19-26-43,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-05_19-26-43,SessionBatchProgress.COMPLETED,,46,122,40,126,True
+57,kdiba,pin01,one,11-09_11-43-50,kdiba_pin01_one_11-09_11-43-50,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-09_11-43-50,SessionBatchProgress.COMPLETED,,48,20,40,4,False
+58,kdiba,pin01,one,11-09_12-15-3,kdiba_pin01_one_11-09_12-15-3,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-09_12-15-3,SessionBatchProgress.FAILED,index -1 is out of bounds for axis 0 with size 0,0,0,0,0,False
+59,kdiba,pin01,one,11-09_21-17-16,kdiba_pin01_one_11-09_21-17-16,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-09_21-17-16,SessionBatchProgress.COMPLETED,,58,53,44,25,True
+60,kdiba,pin01,one,11-09_22-4-5,kdiba_pin01_one_11-09_22-4-5,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-09_22-4-5,SessionBatchProgress.COMPLETED,,40,50,63,33,True
+61,kdiba,pin01,one,11-19_12-35-59,kdiba_pin01_one_11-19_12-35-59,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-19_12-35-59,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-19_12-35-59/11-19_12-35-59.spikeII.mat does not exist.,0,0,0,0,False
+62,kdiba,pin01,one,11-19_13-2-0,kdiba_pin01_one_11-19_13-2-0,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-19_13-2-0,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-19_13-2-0/11-19_13-2-0.spikeII.mat does not exist.,0,0,0,0,False
+63,kdiba,pin01,one,11-19_13-55-7,kdiba_pin01_one_11-19_13-55-7,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-19_13-55-7,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/11-19_13-55-7/11-19_13-55-7.spikeII.mat does not exist.,0,0,0,0,False
+64,kdiba,pin01,one,fet11-01_12-58-54,kdiba_pin01_one_fet11-01_12-58-54,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/fet11-01_12-58-54,SessionBatchProgress.COMPLETED,,249,499,131,265,True
+65,kdiba,pin01,one,fet11-03_11-0-53,kdiba_pin01_one_fet11-03_11-0-53,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/fet11-03_11-0-53,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/fet11-03_11-0-53/fet11-03_11-0-53.spikeII.mat does not exist.,0,0,0,0,False
+66,kdiba,pin01,one,fet11-03_20-28-3,kdiba_pin01_one_fet11-03_20-28-3,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/fet11-03_20-28-3,SessionBatchProgress.FAILED,index -1 is out of bounds for axis 0 with size 0,0,0,0,0,False
+67,kdiba,pin01,one,fet11-04_21-20-3,kdiba_pin01_one_fet11-04_21-20-3,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/fet11-04_21-20-3,SessionBatchProgress.COMPLETED,,78,57,58,71,True
+68,kdiba,pin01,one,redundant,kdiba_pin01_one_redundant,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/redundant,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/redundant/redundant.xml does not exist.,0,0,0,0,False
+69,kdiba,pin01,one,showclus,kdiba_pin01_one_showclus,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/showclus,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/showclus/showclus.xml does not exist.,0,0,0,0,False
+70,kdiba,pin01,one,sleep,kdiba_pin01_one_sleep,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/sleep,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/sleep/sleep.xml does not exist.,0,0,0,0,False
+71,kdiba,pin01,one,tmaze,kdiba_pin01_one_tmaze,/nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/tmaze,SessionBatchProgress.FAILED,Required File: /nfs/turbo/umms-kdiba/Data/KDIBA/pin01/one/tmaze/tmaze.xml does not exist.,0,0,0,0,False
