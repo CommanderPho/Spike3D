@@ -70,6 +70,9 @@ phoglobushelpers = {git = "https://github.com/CommanderPho/PhoGlobusHelpers.git"
 jinja2 = "^3.1.2"
 psutil = "^5.9.5"
 plotly = "^5.16.1"
+dash = "^2.12.1"
+floweaver = "^2.0.1"
+ipysankeywidget = "^0.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
