@@ -46,6 +46,8 @@
 			"statusBar.background": "#0011ff31",
 			// "statusBar.border": "#000000",
 			// "statusBar.foreground": "#ffffff",
+			"notebook.outputContainerBackgroundColor": "#395a3e50", //"#a5c2aa50"
+			"notebook.outputContainerBorderColor": "#10ff10"
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
