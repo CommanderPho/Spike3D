@@ -1,0 +1,52 @@
+{
+	"folders": [
+		{
+			"name": "Spike3D",
+			"path": "."
+		},
+		{
+			"name": "NeuroPy",
+			"path": "../NeuroPy"
+		},
+		{
+			"name": "pyphocorehelpers",
+			"path": "../pyPhoCoreHelpers/src/pyphocorehelpers"
+		},
+		{
+			"name": "pyphoplacecellanalysis",
+			"path": "../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.classpath": true,
+			"**/.dvc": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.qt_for_python": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.venv": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true
+		},
+		"python.analysis.logLevel": "Error",
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#1073cf2d",
+			"editor.lineHighlightBorder": "#00ff9d1f",
+			"activityBar.background": "#234b3f",
+			
+			"titleBar.activeBackground": "#306a4a",
+			"titleBar.activeForeground": "#FCFBFD"
+		},
+		"search.exclude": {
+			"**/.ipynb_checkpoints": true,
+			"**/EXTERNAL/TESTING/OLD": true
+		},
+		"python.autoComplete.extraPaths": [],
+		"git.ignoreLimitWarning": true,
+		"python.analysis.extraPaths": []
+	}
+}
