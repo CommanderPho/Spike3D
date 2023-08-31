@@ -105,7 +105,8 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"sketchbuch.vsc-workspace-sidebar"
+			"sketchbuch.vsc-workspace-sidebar",
+			"salmonmode.activity-heatmap"
 		]
 	}
 }
