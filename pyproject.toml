@@ -73,6 +73,7 @@ dash = "^2.12.1"
 floweaver = "^2.0.1"
 ipysankeywidget = "^0.5.0"
 pathlib = "^1.0.1"
+pandas = "1.5.3"
 
 
 [tool.poetry.group.dev.dependencies]
