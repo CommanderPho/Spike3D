@@ -1,0 +1,41 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\NeuroPy"
+		},
+		{
+			"path": "..\\pyPhoCoreHelpers\\src\\pyphocorehelpers"
+		},
+		{
+			"path": "..\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis"
+		},
+		{
+			"path": "..\\pyPhoCoreHelpers\\tests"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\python.exe",
+		"jupyter.jupyterServerType": "local",
+		"files.exclude": {
+		"**/*.7z": true,
+		"**/.classpath": true,
+		"**/.factorypath": true,
+		"**/.ipynb_checkpoints": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/.spyproject": true,
+		"**/.virtual_documents": true,
+		"**/.vscode": true
+		},
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#1073cf2d",
+			"editor.lineHighlightBorder": "#9fced11f",
+			"activityBar.background": "#462609",
+			"titleBar.activeBackground": "#62350C",
+			"titleBar.activeForeground": "#FEF9F4"
+		}
+	}
+}
