@@ -1,0 +1,41 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../NeuroPy/neuropy"
+		},
+		{
+			"path": "../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+		},
+		{
+			"path": "../pyPhoCoreHelpers/src/pyphocorehelpers"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
+		"jupyter.jupyterServerType": "local",
+		"files.exclude": {
+		"**/*.7z": true,
+		"**/.classpath": true,
+		"**/.factorypath": true,
+		"**/.ipynb_checkpoints": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/.spyproject": true,
+		"**/.virtual_documents": true,
+		"**/.vscode": true
+		},
+		"python.analysis.logLevel": "Error",
+		"workbench.colorCustomizations": {
+			"titleBar.activeBackground": "#08176e"
+		},
+		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
+		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
+		"search.exclude": {
+			"**/.ipynb_checkpoints": true
+		},
+
+	}
+}

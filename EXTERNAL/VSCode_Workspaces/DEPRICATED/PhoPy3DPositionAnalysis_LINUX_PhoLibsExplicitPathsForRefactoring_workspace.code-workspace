@@ -1,0 +1,86 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../NeuroPy",
+			"name": "NeuroPy"
+		},
+		{
+			"path": "../pyPhoCoreHelpers/src",
+			"name": "pyPhoCoreHelpers"
+		},
+		{
+			"path": "../pyPhoPlaceCellAnalysis/src",
+			"name": "pyPhoPlaceCellAnalysis"
+		},
+		{
+			"path": "../NeuroPy/tests",
+			"name": "TESTS/NeuroPy"
+		},
+		{
+			"path": "../pyPhoPlaceCellAnalysis/tests",
+			"name": "TESTS/pyPhoPlaceCellAnalysis"
+		},
+		{
+			"path": "../pyPhoCoreHelpers/tests",
+			"name": "TESTS/pyPhoCoreHelpers"
+		},
+	],
+	"settings": {
+		"jupyter.jupyterServerType": "local",
+		"files.exclude": {
+		"**/*.7z": true,
+		"**/.classpath": true,
+		"**/.factorypath": true,
+		"**/.ipynb_checkpoints": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/.spyproject": true,
+		"**/.virtual_documents": true,
+		"**/.vscode": true
+		},
+		"python.analysis.logLevel": "Error",
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#1073cf2d",
+			"editor.lineHighlightBorder": "#9fced11f",
+			"activityBar.background": "#3D234B",
+			"titleBar.activeBackground": "#56306A",
+			"titleBar.activeForeground": "#FCFBFD"
+		},
+		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
+		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Scripts/pyuic5.exe",
+		"search.exclude": {
+			"**/.ipynb_checkpoints": true
+		},
+		"qtForPython.uic.args": [
+			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\"",
+			"--execute",
+			"--import-from \"pyphoplacecellanalysis.Resources\"",
+			"--resource-suffix \"\""
+		],
+		"qtForPython.rcc.args": [
+			"-o \"${fileDirname}${pathSeparator}${fileBasenameNoExtension}.py\""
+		],
+
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Launch ViTables",
+				"type": "shell",
+				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables",
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			},
+		]
+	}
+}
