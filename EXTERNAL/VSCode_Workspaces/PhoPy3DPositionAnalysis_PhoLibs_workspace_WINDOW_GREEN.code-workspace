@@ -15,10 +15,6 @@
 		{
 			"name": "neuropy",
 			"path": "../../../NeuroPy/neuropy"
-		},
-		{
-			"name": "SCRIPTS",
-			"path": "../../../SCRIPTS"
 		}
 	],
 	"settings": {
@@ -45,7 +41,8 @@
 			"activityBar.background": "#244b23",
 			"titleBar.activeBackground": "#53c763",
 			"titleBar.activeForeground": "#000000",
-			"titleBar.inactiveBackground": "#53c7628e"
+			"titleBar.inactiveBackground": "#53c7628e",
+			"statusBar.background": "#007a1446",
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
@@ -104,6 +101,12 @@
 					"showReuseMessage": false
 				}
 			}
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"sketchbuch.vsc-workspace-sidebar",
+			"salmonmode.activity-heatmap"
 		]
 	}
 }
