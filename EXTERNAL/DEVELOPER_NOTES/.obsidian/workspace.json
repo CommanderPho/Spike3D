@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "2023-08-10 - Output Files and Exports.md",
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "2023-08-10 - Output Files and Exports.md",
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "2023-08-10 - Output Files and Exports.md",
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "2023-08-10 - Output Files and Exports.md"
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md"
               }
             }
           }
@@ -148,8 +148,14 @@
   },
   "active": "8a12e9da6e42cfa0",
   "lastOpenFiles": [
-    "Untitled-4.md",
+    "DataStructureDocumentation/BayesianPlacemapPositionDecoder.md",
+    "PoetryEnvironments/PoetryEnvironmentExamples.md",
+    "DataStructureDocumentation/SurpriseAnalysisResult.md",
+    "jupyter-lab-debugging.md",
+    "DataStructureDocumentation/BasePositionDecoder.md",
+    "DataStructureDocumentation/ComputationResult.md",
     "2023-08-10 - Output Files and Exports.md",
+    "Untitled-4.md",
     "2023-08-03 - HDF5 Serialization Realization.md",
     "VSCode Idea - copy structure of class (for referencing).md",
     "PhoInitialRepoSetupNotes2022.md"
