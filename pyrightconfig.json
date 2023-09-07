@@ -22,7 +22,6 @@
     "**/build",
     "**/.idea",
     "**/.venv_alt",
-    "**/.venv",
     "**/LibrariesExamples",
     "**/EXTERNAL",
     "**/output",
@@ -32,6 +31,7 @@
   ],
 
   "ignore": [
+    "**/.venv",
     "LibrariesExamples",
     "EXTERNAL",
     "scripts",
