@@ -32,7 +32,9 @@
 			"**/.virtual_documents": true,
 			"**/.vscode": true,
 			"**/*.7z": true,
-			"**/Spike3D/.venv/*": true
+			"**/Spike3D/.venv/*": true,
+			"**/.git": true,
+			"**/.DS_Store": true
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
@@ -45,6 +47,11 @@
 			"statusBar.background": "#007a1446",
 		},
 		"search.exclude": {
+			"**/.ipynb_checkpoints": true,
+			"**/EXTERNAL/TESTING/OLD": true
+		},
+		"files.watcherExclude": {
+			"**/.git/objects/**": true,
 			"**/.ipynb_checkpoints": true,
 			"**/EXTERNAL/TESTING/OLD": true
 		},
