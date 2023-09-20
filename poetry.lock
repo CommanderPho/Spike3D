@@ -3216,6 +3216,27 @@ files = [
 ]
 
 [[package]]
+name = "ipygany"
+version = "0.5.0"
+description = "Scientific Visualization in Jupyter"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "ipygany-0.5.0-py2.py3-none-any.whl", hash = "sha256:a26267190888309544a379624b055390c77267c87885d0193a0add773573256b"},
+    {file = "ipygany-0.5.0.tar.gz", hash = "sha256:a665e0875bd9500d4f11082770540d46361bd3cfa85b7814e38403c108918b3d"},
+]
+
+[package.dependencies]
+ipywidgets = ">=7.6.0"
+numpy = "*"
+traittypes = "*"
+
+[package.extras]
+docs = ["jupyter-sphinx", "nbsphinx (>=0.2.13,<0.4.0)", "nbsphinx-link", "pypandoc", "pytest-check-links", "recommonmark", "sphinx (>=1.5)", "sphinx-rtd-theme"]
+examples = ["vtk"]
+test = ["nbval", "pytest (>=3.6)", "pytest-cov"]
+
+[[package]]
 name = "ipykernel"
 version = "6.25.2"
 description = "IPython Kernel for Jupyter"
@@ -9420,6 +9441,23 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["argcomplete (>=2.0)", "pre-commit", "pytest", "pytest-mock"]
 
 [[package]]
+name = "traittypes"
+version = "0.2.1"
+description = "Scipy trait types"
+optional = false
+python-versions = "*"
+files = [
+    {file = "traittypes-0.2.1-py2.py3-none-any.whl", hash = "sha256:1340af133810b6eee1a2eb2e988f862b0d12b6c2d16f282aaf3207b782134c2e"},
+    {file = "traittypes-0.2.1.tar.gz", hash = "sha256:be6fa26294733e7489822ded4ae25da5b4824a8a7a0e0c2dccfde596e3489bd6"},
+]
+
+[package.dependencies]
+traitlets = ">=4.2.2"
+
+[package.extras]
+test = ["numpy", "pandas", "pytest", "xarray"]
+
+[[package]]
 name = "twisted"
 version = "23.8.0"
 description = "An asynchronous networking framework written in Python"
@@ -10270,4 +10308,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "5a7ee50a24cabb8b1b813a5944725522c9fc24ba49110b345b1f5633ab486f54"
+content-hash = "501f778511e1f73f1d25f931dcd8418017de894a3d22cf09f9b2d4afbb64a6ea"
