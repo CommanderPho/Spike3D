@@ -74,6 +74,7 @@ jupyter-book = "^0.15.1"
 jupyter-rfb = "^0.4.1"
 silx = {extras = ["full"], version = "^1.1.2"}
 ipygany = "^0.5.0"
+pyqode-core = {path = "../pyqode.core/dist/current.whl"}
 
 
 [tool.poetry.group.dev.dependencies]
