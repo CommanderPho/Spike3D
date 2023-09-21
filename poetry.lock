@@ -6393,6 +6393,17 @@ reference = "HEAD"
 resolved_reference = "1ba22ea6caa047676821f5c54ac548c022de67af"
 
 [[package]]
+name = "pycodestyle"
+version = "2.11.0"
+description = "Python style guide checker"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pycodestyle-2.11.0-py2.py3-none-any.whl", hash = "sha256:5d1013ba8dc7895b548be5afb05740ca82454fd899971563d2ef625d090326f8"},
+    {file = "pycodestyle-2.11.0.tar.gz", hash = "sha256:259bcc17857d8a8b3b4a2327324b79e5f020a13c16074670f9c8c8f872ea76d0"},
+]
+
+[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -6957,6 +6968,27 @@ pygments = "*"
 [package.source]
 type = "file"
 url = "../pyqode.core/dist/pyqode_core-3.0.0-py2.py3-none-any.whl"
+
+[[package]]
+name = "pyqode.python"
+version = "2.15.2"
+description = "Adds python support to pyqode.core"
+optional = false
+python-versions = "*"
+files = [
+    {file = "current.whl", hash = "sha256:92f1c90463e6f60b59f149cdd9826d8dbb6a72674cbfe8c91860caf9ef359143"},
+]
+
+[package.dependencies]
+docutils = "*"
+jedi = "*"
+pycodestyle = "*"
+pyflakes = "*"
+"pyqode.core" = "*"
+
+[package.source]
+type = "file"
+url = "../pyqode.python/dist/pyqode.python-2.15.2-py2.py3-none-any.whl"
 
 [[package]]
 name = "pyqt-checkbox-table-widget"
@@ -10355,4 +10387,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "9741a40d4e049adc27908c0aa4a316f7038c36dbe2114888367846eb5881e216"
+content-hash = "2ce22b59d571bd960fd1c174152659796d37471501251277328ffed97bdd0610"
