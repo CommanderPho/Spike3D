@@ -15,9 +15,6 @@
 		{
 			"name": "neuropy",
 			"path": "../../../NeuroPy/neuropy"
-		},
-		{
-			"path": "../../../PhoGlobusHelpers"
 		}
 	],
 	"settings": {
