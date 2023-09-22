@@ -71,6 +71,7 @@
 			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
 		],
 		"favorites.sortDirection": "DESC",
+		"favorites.storageFilePath": "../.favorites.json",
 		"python.analysis.extraPaths": [],
 		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
 		"windowColors.🌈 BaseColor": "'whitesmoke'"
