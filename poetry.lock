@@ -3831,18 +3831,18 @@ files = [
 
 [package.dependencies]
 attrs = ">=22.2.0"
-fqdn = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-idna = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-isoduration = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-jsonpointer = {version = ">1.13", optional = true, markers = "extra == \"format-nongpl\""}
+fqdn = {version = "*", optional = true, markers = "extra == \"format\""}
+idna = {version = "*", optional = true, markers = "extra == \"format\""}
+isoduration = {version = "*", optional = true, markers = "extra == \"format\""}
+jsonpointer = {version = ">1.13", optional = true, markers = "extra == \"format\""}
 jsonschema-specifications = ">=2023.03.6"
 referencing = ">=0.28.4"
-rfc3339-validator = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
+rfc3339-validator = {version = "*", optional = true, markers = "extra == \"format\""}
 rfc3986-validator = {version = ">0.1.0", optional = true, markers = "extra == \"format-nongpl\""}
 rfc3987 = {version = "*", optional = true, markers = "extra == \"format\""}
 rpds-py = ">=0.7.1"
-uri-template = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-webcolors = {version = ">=1.11", optional = true, markers = "extra == \"format-nongpl\""}
+uri-template = {version = "*", optional = true, markers = "extra == \"format\""}
+webcolors = {version = ">=1.11", optional = true, markers = "extra == \"format\""}
 
 [package.extras]
 format = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3987", "uri-template", "webcolors (>=1.11)"]
@@ -4836,6 +4836,34 @@ files = [
 ]
 
 [[package]]
+name = "microfilm"
+version = "0.2.1"
+description = "Creating figures and animations for multi-channel images with a focus on microscopy."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "microfilm-0.2.1-py3-none-any.whl", hash = "sha256:057496de82e6913fe34d09e5801051c0bc9ae2793f9e45921e58c4a918dd851f"},
+    {file = "microfilm-0.2.1.tar.gz", hash = "sha256:577cea475dac691c5bc640eac51ad86d159ac0b8005fd1b06117649ac0aaf01f"},
+]
+
+[package.dependencies]
+h5py = "*"
+imageio = "*"
+matplotlib = "*"
+matplotlib-scalebar = "*"
+natsort = "*"
+numpy = "*"
+scikit-image = "*"
+tifffile = "*"
+xarray = "*"
+
+[package.extras]
+all = ["aicsimageio", "imageio-ffmpeg", "ipywidgets", "nd2reader"]
+animation = ["imageio-ffmpeg", "ipywidgets"]
+multipage = ["aicsimageio"]
+nd2 = ["nd2reader"]
+
+[[package]]
 name = "mistune"
 version = "3.0.1"
 description = "A sane and fast Markdown parser with useful plugins and renderers"
@@ -5258,6 +5286,25 @@ release = ["PyGithub (>=1.44.1)", "gitpython (>=3.1.0)", "requests-cache (>=0.9.
 testing = ["IPython (>=7.25.0)", "babel (>=2.9.0)", "fsspec", "hypothesis (>=6.8.0)", "lxml", "matplotlib", "pooch (>=1.6.0)", "pytest (>=7.0.0)", "pytest-cov", "pytest-pretty (>=1.1.0)", "pytest-qt", "qtconsole (>=4.5.1)", "rich (>=12.0.0)", "tensorstore (>=0.1.13)", "torch (>=1.7)", "virtualenv", "xarray (>=0.16.2)", "zarr (>=2.12.0)"]
 
 [[package]]
+name = "napari-animated-gif-io"
+version = "0.1.2"
+description = "Save 3D image stacks as animated gifs"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "napari-animated-gif-io-0.1.2.tar.gz", hash = "sha256:ab9a3af2f74fd0eb63d99a94cade0a11da8f96dc1307161ec1b755bc815ac540"},
+    {file = "napari_animated_gif_io-0.1.2-py3-none-any.whl", hash = "sha256:ca9b3ade7fa7f1a67f23bd68442bb5c9abf7f31244326881476b05903e12b530"},
+]
+
+[package.dependencies]
+imageio = "*"
+microfilm = "*"
+napari = "*"
+napari-plugin-engine = ">=0.1.4"
+napari-tools-menu = "*"
+numpy = "*"
+
+[[package]]
 name = "napari-animation"
 version = "0.0.7"
 description = "A plugin for making animations in napari"
@@ -5335,6 +5382,22 @@ vispy = ">=0.6.4"
 
 [package.extras]
 testing = ["napari (>=0.4)", "pyqt5", "pytest", "pytest-cov"]
+
+[[package]]
+name = "napari-tools-menu"
+version = "0.1.19"
+description = "Attaches a customizable Tools menu to napari"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "napari-tools-menu-0.1.19.tar.gz", hash = "sha256:6b58ac45d7fe84bc5975e7a53142340d5d62beff9ade0f2f58d7a3a4a0a8e8f8"},
+    {file = "napari_tools_menu-0.1.19-py3-none-any.whl", hash = "sha256:bba864f7c67b5e8768a83d6e298cf038c6d87186dd54ed8af6f5cdb83d64be25"},
+]
+
+[package.dependencies]
+napari = "*"
+napari-plugin-engine = ">=0.1.4"
+numpy = "*"
 
 [[package]]
 name = "natsort"
@@ -7373,6 +7436,8 @@ jinja2 = "^3.1.2"
 klepto = "0.2.2"
 magicgui = "^0.6.1"
 napari = {version = "^0.4.18", extras = ["pyqt5"]}
+napari-animated-gif-io = "^0.1.2"
+napari-animation = "^0.0.7"
 opencv-python = "^4.7.0.68"
 pandas = "1.5.3"
 param = "^1.12.3"
