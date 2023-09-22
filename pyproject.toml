@@ -77,6 +77,8 @@ ipygany = "^0.5.0"
 pyqode-core = {path = "../pyqode.core/dist/current.whl"}
 pyqode-python = {path = "../pyqode.python/dist/current.whl"}
 jupyter-dash = "^0.4.2"
+dask = {extras = ["complete"], version = "^2023.9.2"}
+napari-animation = "^0.0.7"
 
 
 [tool.poetry.group.dev.dependencies]
