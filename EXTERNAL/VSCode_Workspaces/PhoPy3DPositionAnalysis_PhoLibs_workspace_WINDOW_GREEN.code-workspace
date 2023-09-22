@@ -72,7 +72,8 @@
 		"favorites.sortDirection": "DESC",
 		"python.analysis.extraPaths": [],
 		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
-		"windowColors.🌈 BaseColor": "'whitesmoke'"
+		"windowColors.🌈 BaseColor": "'whitesmoke'",
+		"favorites.storageFilePath": "../.favorites.json"
 	},
 	"tasks": {
 		"version": "2.0.0",
