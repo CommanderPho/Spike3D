@@ -32,7 +32,9 @@
 			"**/.virtual_documents": true,
 			"**/.vscode": true,
 			"**/*.7z": true,
-			"**/Spike3D/.venv/*": true
+			"**/Spike3D/.venv/*": true,
+			"**/.git": true,
+			"**/.DS_Store": true
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {
@@ -41,10 +43,24 @@
 			"activityBar.background": "#244b23",
 			"titleBar.activeBackground": "#53c763",
 			"titleBar.activeForeground": "#000000",
-			"titleBar.inactiveBackground": "#53c7628e",
-			"statusBar.background": "#007a1446",
+			"scrollbarSlider.background": "#fffb0057",
+			"scrollbarSlider.hoverBackground": "#fffb0082",
+			"scrollbarSlider.activeBackground": "#ccff00df",
+			"activityBar.inactiveForeground": "#ffffff3c",
+			"activityBar.foreground": "#ffffff",
+			"notebook.outputContainerBackgroundColor": "#395a3e50",
+			"notebook.outputContainerBorderColor": "#10ff10",
+			"notebook.focusedCellBorder": "#ffff00da",
+			"notebook.focusedEditorBorder": "#f6ff00",
+			"notebook.inactiveFocusedCellBorder": "#ffff0063",
+			"titleBar.inactiveBackground": "#53c7628e"
 		},
 		"search.exclude": {
+			"**/.ipynb_checkpoints": true,
+			"**/EXTERNAL/TESTING/OLD": true
+		},
+		"files.watcherExclude": {
+			"**/.git/objects/**": true,
 			"**/.ipynb_checkpoints": true,
 			"**/EXTERNAL/TESTING/OLD": true
 		},
@@ -65,7 +81,8 @@
 		"favorites.sortDirection": "DESC",
 		"python.analysis.extraPaths": [],
 		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
-		"windowColors.🌈 BaseColor": "'whitesmoke'"
+		"windowColors.🌈 BaseColor": "'whitesmoke'",
+		"favorites.storageFilePath": "../.favorites.json"
 	},
 	"tasks": {
 		"version": "2.0.0",
@@ -106,7 +123,11 @@
 	"extensions": {
 		"recommendations": [
 			"sketchbuch.vsc-workspace-sidebar",
-			"salmonmode.activity-heatmap"
+			"salmonmode.activity-heatmap",
+			"ohyee.custom-button",
+			"orepor.color-tabs-vscode-ext",
+			"ryu1kn.partial-diff",
+			"rebornix.toggle"
 		]
 	}
 }

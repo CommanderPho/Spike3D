@@ -3,6 +3,13 @@
 This file serves to document some of the weirdness involving Poetry virtual environments.
 
 
+---
+
+```shell
+poetry env use C:\Users\pho\.pyenv\pyenv-win\versions\3.9.13\python.exe
+poetry env use .\.venv_alt\Scripts\python.exe
+```
+
 # Normal .venv directory:
 
 (`virtualenvs.in-project` == False)

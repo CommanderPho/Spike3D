@@ -4,17 +4,38 @@
   ],
   
   "exclude": [
+    "**/.git", "**.svn", "**/.hg", "**/CVS", "**/*.asv",
     "**/node_modules",
+    "**/.classpath",
+    "**/.factorypath",
+    "**/.ipynb_checkpoints",
+    "**/.project",
+    "**/.settings",
+    "**/.spyproject",
+    "**/.virtual_documents",
+    "**/.vscode",
+    "**/.dvc",
     "**/__pycache__",
     "**/.vscode",
     "**/.idea",
     "**/dist",
     "**/build",
+    "**/.idea",
+    "**/.venv_alt",
+    "**/LibrariesExamples",
+    "**/EXTERNAL",
+    "**/output",
+    "**/docs",
+    "**/data",
+    "**/templating"
   ],
 
   "ignore": [
+    "**/.venv",
     "LibrariesExamples",
-    "EXTERNAL"
+    "EXTERNAL",
+    "scripts",
+    "templating"
   ],
 
   "defineConstant": {
