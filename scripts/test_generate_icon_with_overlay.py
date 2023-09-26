@@ -5,10 +5,10 @@ from pathlib import Path
 from PIL import Image
 from math import ceil, floor
 
-PATH = r"C:\Users\path\to\images"
+# PATH = r"C:\Users\path\to\images"
 
-BaseIconParentPath = Path(r'C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\Design\Icons\Potential')
-OverlayIconsParentPath = Path(r'C:\Users\pho\repos\PhoPy3DPositionAnalysis2021\EXTERNAL\Design\Icons\Potential\Overlays')
+BaseIconParentPath = Path(r'C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\EXTERNAL\Design\Icons\Potential')
+OverlayIconsParentPath = Path(r'C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\EXTERNAL\Design\Icons\Potential\Overlays')
 
 def build_icon(baseIconPath, overlayIconPath, outputIconPath=None):
     """ 2022-10-04 - This builds a simple icon with an overlay icon. Not quite working because the overlay icon is rendering with a white background. """
@@ -54,13 +54,13 @@ def build_icon(baseIconPath, overlayIconPath, outputIconPath=None):
     return new_im
 
 
-def build_icon_example_grid():
+def build_icon_example_grid(icons_path=Path(r"C:\Users\path\to\images")):
 
     frame_width = 1920
     images_per_row = 5
     padding = 2
 
-    os.chdir(PATH)
+    os.chdir(icons_path)
 
     images = glob.glob("*.png")
     images = images[:30]                #get the first 30 images
@@ -101,7 +101,8 @@ def main():
     selectedOverlayIconFilename = r'png\1x\noise-control-off-delete.png'
     # selectedOverlayIconFilename = r'svg\noise-control-off-add.svg'
 
-    baseIconPath = BaseIconParentPath.joinpath(selectedBaseIconFilename)
+    baseIconPath = Path(r'C:\Users\pho\repos\VSCode Extensions\vscode-favorites\icons\favorites.png').resolve()
+    # baseIconPath = BaseIconParentPath.joinpath(selectedBaseIconFilename)
     overlayIconPath = OverlayIconsParentPath.joinpath(selectedOverlayIconFilename)
 
     new_icon = build_icon(baseIconPath, overlayIconPath, outputIconPath='new_test_overlay_icon.png')
@@ -109,4 +110,6 @@ def main():
     # return build_icon()
 
 
-main()
+
+if __name__ == '__main__':
+    main()
