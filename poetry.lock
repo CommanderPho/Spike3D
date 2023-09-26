@@ -3175,6 +3175,17 @@ files = [
 ]
 
 [[package]]
+name = "geojson"
+version = "3.0.1"
+description = "Python bindings and utilities for GeoJSON"
+optional = false
+python-versions = ">=3.7, <3.12"
+files = [
+    {file = "geojson-3.0.1-py3-none-any.whl", hash = "sha256:e49df982b204ed481e4c1236c57f587adf71537301cf8faf7120ab27d73c7568"},
+    {file = "geojson-3.0.1.tar.gz", hash = "sha256:ff3d75acab60b1e66504a11f7ea12c104bad32ff3c410a807788663b966dee4a"},
+]
+
+[[package]]
 name = "ghp-import"
 version = "2.1.0"
 description = "Copy your docs directly to the gh-pages branch."
@@ -6164,6 +6175,61 @@ IPython = ">=7.7.0"
 napari-plugin-engine = ">=0.1.9"
 qtconsole = ">=4.5.1,<4.7.6 || >4.7.6,<5.4.2 || >5.4.2"
 qtpy = ">=1.7.0"
+
+[[package]]
+name = "napari-geojson"
+version = "0.1.3"
+description = "Read and write geojson files in napari"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "napari_geojson-0.1.3-py3-none-any.whl", hash = "sha256:0fdeeae84103896d19582ef90cf71f50cbd2b977f93f96d726adbd69435daa06"},
+    {file = "napari_geojson-0.1.3.tar.gz", hash = "sha256:d376f4a658573d32ab99410411184c61db3d14869eede7648a3bc92958912d71"},
+]
+
+[package.dependencies]
+geojson = "*"
+numpy = "*"
+
+[package.extras]
+dev = ["black", "flake8", "flake8-black", "flake8-docstrings", "flake8-isort", "isort", "mypy", "pre-commit", "pytest", "pytest-cov", "pytest-qt", "tox"]
+testing = ["napari[all]", "pytest", "pytest-cov", "pytest-qt", "tox"]
+
+[[package]]
+name = "napari-geoscience-viewer"
+version = "0.1.1"
+description = "A napari plugin for quick-viewing HDF5 and NetCDF files"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "napari-geoscience-viewer-0.1.1.tar.gz", hash = "sha256:b65b45838d6a6b6f3f06ba5de2bd8bc286a87bb6a8ca6accc20a631eaf1e02ab"},
+    {file = "napari_geoscience_viewer-0.1.1-py3-none-any.whl", hash = "sha256:c58bdef587e96a2a4aaf56fc891922528e68ad3e7aba695a7cc664d38a01e1b0"},
+]
+
+[package.dependencies]
+h5py = "*"
+magicgui = "*"
+napari-geojson = "*"
+netCDF4 = "*"
+numpy = "*"
+shapely = "*"
+xarray = "*"
+
+[package.extras]
+testing = ["napari", "pyqt5", "pytest", "pytest-cov", "pytest-qt", "tox"]
+
+[[package]]
+name = "napari-hdf5-netcdf-viewer"
+version = "0.1.1"
+description = "napari-hdf5-netcdf-viewer is now napari-geoscience-viewer"
+optional = false
+python-versions = "*"
+files = [
+    {file = "napari-hdf5-netcdf-viewer-0.1.1.tar.gz", hash = "sha256:9edac33507aa28c6a9e0480405340745ca968c6bfd80dd8652a6444e5b435f1e"},
+]
+
+[package.dependencies]
+napari-geoscience-viewer = "*"
 
 [[package]]
 name = "napari-plugin-engine"
@@ -12751,4 +12817,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.10"
-content-hash = "1cd9095fee893e6b37ac8c47aafee2dfa439970c9cc73b6968bcf0ef4a5fdcb9"
+content-hash = "17bf40506948cc77455b0db2026424c8ad644accbe8bb2c737b0e028c160ff8d"
