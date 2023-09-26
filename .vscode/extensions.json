@@ -20,6 +20,8 @@
 		"h5web.vscode-h5web",
 		"ranyitz.search-presets",
 		"sketchbuch.vsc-workspace-sidebar",
-		"ohyee.custom-button"
+		"ohyee.custom-button",
+		"orepor.color-tabs-vscode-ext",
+		"rebornix.toggle"
 	]
 }

@@ -43,8 +43,17 @@
 			"activityBar.background": "#244b23",
 			"titleBar.activeBackground": "#53c763",
 			"titleBar.activeForeground": "#000000",
-			"titleBar.inactiveBackground": "#53c7628e",
-			"statusBar.background": "#007a1446",
+			"scrollbarSlider.background": "#fffb0057",
+			"scrollbarSlider.hoverBackground": "#fffb0082",
+			"scrollbarSlider.activeBackground": "#ccff00df",
+			"activityBar.inactiveForeground": "#ffffff3c",
+			"activityBar.foreground": "#ffffff",
+			"notebook.outputContainerBackgroundColor": "#395a3e50",
+			"notebook.outputContainerBorderColor": "#10ff10",
+			"notebook.focusedCellBorder": "#ffff00da",
+			"notebook.focusedEditorBorder": "#f6ff00",
+			"notebook.inactiveFocusedCellBorder": "#ffff0063",
+			"titleBar.inactiveBackground": "#53c7628e"
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
@@ -115,7 +124,10 @@
 		"recommendations": [
 			"sketchbuch.vsc-workspace-sidebar",
 			"salmonmode.activity-heatmap",
-			"ohyee.custom-button"
+			"ohyee.custom-button",
+			"orepor.color-tabs-vscode-ext",
+			"ryu1kn.partial-diff",
+			"rebornix.toggle"
 		]
 	}
 }
