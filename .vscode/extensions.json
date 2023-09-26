@@ -19,6 +19,7 @@
 		"ms-toolsai.datawrangler",
 		"h5web.vscode-h5web",
 		"ranyitz.search-presets",
-		"sketchbuch.vsc-workspace-sidebar"
+		"sketchbuch.vsc-workspace-sidebar",
+		"ohyee.custom-button"
 	]
 }
