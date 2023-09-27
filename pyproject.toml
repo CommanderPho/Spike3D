@@ -89,6 +89,7 @@ xarray = {extras = ["complete"], version = "^2023.9.0"}
 h5netcdf = "^1.2.0"
 xarray-datatree = "^0.0.12"
 napari-hdf5-netcdf-viewer = "^0.1.1"
+opencv-python = "^4.8.0.76"
 
 
 [tool.poetry.group.dev.dependencies]
