@@ -94,6 +94,7 @@ napari-plot-profile = "^0.2.2"
 ipykernel = "^6.25.2"
 pip = "^23.2.1"
 streamlit = "^1.27.1"
+streamlit-extras = "^0.3.2"
 
 
 [tool.poetry.group.dev.dependencies]
