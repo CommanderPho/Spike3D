@@ -129,7 +129,7 @@ def import_data_dir_with_flattened_spikes_mats(basedir = r'R:\data\KDIBA\gor01\o
     spikes_df = pd.DataFrame(flat_spikes_out_dict) # 1014937 rows × 11 columns
     classNames = ['pyramidal','contaminated','interneurons']
     classCutoffValues = [0, 4, 7, 9]
-    spikes_df['cell_type'] = pd.cut(x=spikes_df['qclu'], bins=classCutoffValues, labels=classNames)
+    spikes_df['neuron_type'] = pd.cut(x=spikes_df['qclu'], bins=classCutoffValues, labels=classNames)
     # unique_cell_ids, unique_cell_id_indices = np.unique(flat_spikes_out_dict['aclu'], return_index=True)
     unique_cell_ids = np.unique(flat_spikes_out_dict['aclu'])
     flat_cell_ids = [int(cell_id) for cell_id in unique_cell_ids] 
@@ -149,7 +149,7 @@ def import_data_dir_with_flattened_spikes_mats(basedir = r'R:\data\KDIBA\gor01\o
         spiketrains.append(curr_cell_dataframe['t'].to_numpy())
         shank_ids[i] = curr_cell_dataframe['shank'].to_numpy()[0] # get the first shank identifier, which should be the same for all of this curr_cell_id
         cell_quality[i] = curr_cell_dataframe['qclu'].mean() # should be the same for all instances of curr_cell_id, but use mean just to make sure
-        cell_type.append(curr_cell_dataframe['cell_type'].to_numpy()[0])
+        cell_type.append(curr_cell_dataframe['neuron_type'].to_numpy()[0])
         
     spiketrains = np.array(spiketrains, dtype='object')
     t_stop = np.max(flat_spikes_out_dict['t'])
