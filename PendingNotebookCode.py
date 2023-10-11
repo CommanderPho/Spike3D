@@ -21,6 +21,63 @@ should_force_recompute_placefields = True
 should_display_2D_plots = True
 _debug_print = False
 
+
+
+
+
+
+
+
+
+
+
+
+
+# 2023-10-11 
+from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionTables
+
+def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE):
+	""" captures a lot of stuff still, don't remember what. 
+    
+    Usage:    
+        # BATCH_DATE_TO_USE = '2023-10-05_NewParameters'
+        BATCH_DATE_TO_USE = '2023-10-07'
+        all_sessions_joined_neruon_fri_df, out_path = build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE)
+
+
+    TODO: seems like it should probably go into AcrossSessionResults or AcrossSessionTables
+    
+    """
+
+
+	# Rootfolder mode:
+	# joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+
+	# Subfolder mode:
+	# joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+
+	# Both mode:
+	joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+	joined_neruon_fri_df_file_paths = [a_path for a_path in joined_neruon_fri_df_file_paths if a_path.exists()] # only get the paths that exist
+
+	data_frames = [AcrossSessionTables.load_table_from_file(global_data_root_parent_path=a_path.parent, output_filename=a_path.name) for a_path in joined_neruon_fri_df_file_paths]
+	# data_frames = [df for df in data_frames if df is not None] # remove empty results
+	print(f'joined_neruon_fri_df: concatenating dataframes from {len(data_frames)}')
+	all_sessions_joined_neruon_fri_df = pd.concat(data_frames, ignore_index=True)
+
+	## Finally save out the combined result:
+	all_sessions_joined_neruon_fri_df_basename = f'{BATCH_DATE_TO_USE}_MERGED_joined_neruon_fri_df'
+	out_path = global_data_root_parent_path.joinpath(all_sessions_joined_neruon_fri_df_basename).resolve()
+	AcrossSessionTables.write_table_to_files(all_sessions_joined_neruon_fri_df, global_data_root_parent_path=global_data_root_parent_path, output_basename=all_sessions_joined_neruon_fri_df_basename)
+	print(f'>>\t done with {out_path}')
+	return all_sessions_joined_neruon_fri_df, out_path
+
+
+
+
+
+
+
 #TODO 2023-08-10 16:50: - [ ] 
 
 
