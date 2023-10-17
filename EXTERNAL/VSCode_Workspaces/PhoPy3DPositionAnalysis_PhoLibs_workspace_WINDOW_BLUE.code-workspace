@@ -42,12 +42,17 @@
 			"activityBar.background": "#232a4b",
 			"titleBar.activeBackground": "#535bc7",
 			"titleBar.activeForeground": "#ffffff",
-			"titleBar.inactiveBackground": "#5372c78e",
-			"statusBar.background": "#0011ff31",
-			// "statusBar.border": "#000000",
-			// "statusBar.foreground": "#ffffff",
-			"notebook.outputContainerBackgroundColor": "#395a3e50", //"#a5c2aa50"
-			"notebook.outputContainerBorderColor": "#10ff10"
+			"scrollbarSlider.background": "#fffb0057",
+			"scrollbarSlider.hoverBackground": "#fffb0082",
+			"scrollbarSlider.activeBackground": "#ccff00df",
+			"activityBar.inactiveForeground": "#ffffff3c",
+			"activityBar.foreground": "#ffffff",
+			"notebook.outputContainerBackgroundColor": "#395a3e50",
+			"notebook.outputContainerBorderColor": "#10ff10",
+			"notebook.focusedCellBorder": "#ffff00da",
+			"notebook.focusedEditorBorder": "#f6ff00",
+			"notebook.inactiveFocusedCellBorder": "#ffff0063",
+			"titleBar.inactiveBackground": "#5372c78e"
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
