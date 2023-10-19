@@ -3,6 +3,7 @@ from copy import deepcopy
 from typing import Any, List
 from matplotlib.colors import ListedColormap
 from pathlib import Path
+from neuropy.core import Epoch
 import numpy as np
 import pandas as pd
 import pyvista as pv
@@ -28,12 +29,102 @@ _debug_print = False
 
 
 
+# ==================================================================================================================== #
+# 2023-10-19 Weighted Correlation                                                                                      #
+# ==================================================================================================================== #
+from neuropy.core import Epoch
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+
+@function_attributes(short_name=None, tags=['maze', 'maze_id', 'epochs', 'column'], input_requires=[], output_provides=[], uses=['Epoch'], used_by=[], creation_date='2023-10-19 08:01', related_items=[])
+def _add_maze_id_to_epochs(active_filter_epochs: Epoch, track_change_time: float):
+	""" adds a 'maze_id' columns to the `active_filter_epochs`'s internal dataframe.
+	
+	 Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
+
+		Usage:
+	 
+		# Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
+		track_change_time = short_session.t_start
+		active_filter_epochs: Epoch = long_results_obj.active_filter_epochs ## no copy
+		active_filter_epochs = _add_maze_id_to_epochs(active_filter_epochs, track_change_time)
+		active_filter_epochs
+
+	"""
+	active_filter_epochs._df['maze_id'] = np.nan
+	long_active_filter_epochs = active_filter_epochs.time_slice(long_session.t_start, track_change_time)
+	active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, long_active_filter_epochs.labels), 'maze_id'] = 0
+
+	short_active_filter_epochs = active_filter_epochs.time_slice(track_change_time, short_session.t_stop)
+	active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, short_active_filter_epochs.labels), 'maze_id'] = 1
+	active_filter_epochs._df = active_filter_epochs._df.astype({'maze_id': 'int8'}) # Change column type to int8 for column: 'maze_id'
+
+	return active_filter_epochs
+
+
+@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'epoch'], input_requires=[], output_provides=[], uses=['WeightedCorr'], used_by=['add_weighted_correlation_result'], creation_date='2023-10-19 07:54', related_items=[])
+def compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n):
+	""" computes the weighted_correlation for the epoch given the decoded posterior
+
+	# FLATTEN for WeightedCorr calculation, filling as appropriate:
+	X, Y are vectors
+	W is a matrix containing the posteriors
+	
+	"""
+	from neuropy.utils.external.WeightedCorr import WeightedCorr
+	
+	n_xbins = len(xbin_centers)
+	curr_n_time_bins = len(curr_time_bins)
+	curr_flat_length = int(float(curr_n_time_bins) * float(n_xbins))
+	
+	X = np.repeat(curr_time_bins, n_xbins)
+	Y = np.tile(xbin_centers, curr_n_time_bins)
+	assert np.shape(X) == np.shape(Y)
+	W = np.reshape(curr_long_epoch_p_x_given_n, newshape=curr_flat_length, order='F') # order='F' means take the first axis (xbins) as changing the fastest
+	assert np.allclose(curr_long_epoch_p_x_given_n[:,1], W[n_xbins:n_xbins+n_xbins]) # compare the lienarlly-index second timestamp with the 2D-indexed version to ensure flattening was done correctly.
+	data_df = pd.DataFrame({'x':X, 'y':Y, 'w':W})
+	weighted_corr_result = WeightedCorr(xyw=data_df[['x', 'y', 'w']])(method='pearson') # -0.01427267216037025
+	return weighted_corr_result
+
+
+
+@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder'], input_requires=[], output_provides=[], uses=['compute_epoch_weighted_correlation'], used_by=[], creation_date='2023-10-19 07:54', related_items=[])
+def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: DecodedFilterEpochsResult, a_short_decoder_result: DecodedFilterEpochsResult, debug_print = False):
+	""" builds the weighted correlation for each epoch respective to the posteriors decoded by each decoder (long/short) """
+	epoch_long_weighted_corr_results = []
+	epoch_short_weighted_corr_results = []
+
+	for decoded_epoch_idx in np.arange(a_long_decoder_result.num_filter_epochs):
+		# decoded_epoch_idx:int = 0
+		curr_epoch_time_bin_container = a_long_decoder_result.time_bin_containers[decoded_epoch_idx]
+		curr_time_bins = curr_epoch_time_bin_container.centers
+		curr_n_time_bins = len(curr_time_bins)
+		if debug_print:
+			print(f'curr_n_time_bins: {curr_n_time_bins}')
+
+		## Long Decoding:
+		curr_long_epoch_p_x_given_n = a_long_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
+		weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n)
+		epoch_long_weighted_corr_results.append(weighted_corr_result)
+
+		## Short Decoding:
+		curr_short_epoch_p_x_given_n = a_short_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
+		weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_short_epoch_p_x_given_n)
+		epoch_short_weighted_corr_results.append(weighted_corr_result)
+
+	# ## Build separate result dataframe:
+	# epoch_weighted_corr_results_df = pd.DataFrame({'weighted_corr_LONG': np.array(epoch_long_weighted_corr_results), 'weighted_corr_SHORT': np.array(epoch_short_weighted_corr_results)})
+	# epoch_weighted_corr_results_df
+
+	return np.array(epoch_long_weighted_corr_results), np.array(epoch_short_weighted_corr_results)
+	
+	
 
 
 
 
-
-# 2023-10-11 
+# ==================================================================================================================== #
+# 2023-10-11                                                                                                           #
+# ==================================================================================================================== #
 from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionTables
 
 def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE):
