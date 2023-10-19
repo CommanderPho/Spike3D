@@ -36,87 +36,97 @@ from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilter
 
 @function_attributes(short_name=None, tags=['maze', 'maze_id', 'epochs', 'column'], input_requires=[], output_provides=[], uses=['Epoch'], used_by=[], creation_date='2023-10-19 08:01', related_items=[])
 def _add_maze_id_to_epochs(active_filter_epochs: Epoch, track_change_time: float):
-	""" adds a 'maze_id' columns to the `active_filter_epochs`'s internal dataframe.
-	
-	 Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
+    """ adds a 'maze_id' columns to the `active_filter_epochs`'s internal dataframe.
+    
+     Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
 
-		Usage:
-	 
-		# Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
-		track_change_time = short_session.t_start
-		active_filter_epochs: Epoch = long_results_obj.active_filter_epochs ## no copy
-		active_filter_epochs = _add_maze_id_to_epochs(active_filter_epochs, track_change_time)
-		active_filter_epochs
+        Usage:
+     
+        # Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
+        track_change_time = short_session.t_start
+        active_filter_epochs: Epoch = long_results_obj.active_filter_epochs ## no copy
+        active_filter_epochs = _add_maze_id_to_epochs(active_filter_epochs, track_change_time)
+        active_filter_epochs
 
-	"""
-	active_filter_epochs._df['maze_id'] = np.nan
-	long_active_filter_epochs = active_filter_epochs.time_slice(None, track_change_time)
-	active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, long_active_filter_epochs.labels), 'maze_id'] = 0
+    """
+    active_filter_epochs._df['maze_id'] = np.nan
+    long_active_filter_epochs = active_filter_epochs.time_slice(None, track_change_time)
+    active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, long_active_filter_epochs.labels), 'maze_id'] = 0
 
-	short_active_filter_epochs = active_filter_epochs.time_slice(track_change_time, None)
-	active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, short_active_filter_epochs.labels), 'maze_id'] = 1
-	active_filter_epochs._df = active_filter_epochs._df.astype({'maze_id': 'int8'}) # Change column type to int8 for column: 'maze_id'
+    short_active_filter_epochs = active_filter_epochs.time_slice(track_change_time, None)
+    active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, short_active_filter_epochs.labels), 'maze_id'] = 1
+    active_filter_epochs._df = active_filter_epochs._df.astype({'maze_id': 'int8'}) # Change column type to int8 for column: 'maze_id'
 
-	return active_filter_epochs
+    return active_filter_epochs
 
 
 @function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'epoch'], input_requires=[], output_provides=[], uses=['WeightedCorr'], used_by=['add_weighted_correlation_result'], creation_date='2023-10-19 07:54', related_items=[])
-def compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n):
-	""" computes the weighted_correlation for the epoch given the decoded posterior
+def compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n, method='spearman') -> List[float]:
+    """ computes the weighted_correlation for the epoch given the decoded posterior
 
-	# FLATTEN for WeightedCorr calculation, filling as appropriate:
-	X, Y are vectors
-	W is a matrix containing the posteriors
-	
-	"""
-	from neuropy.utils.external.WeightedCorr import WeightedCorr
-	
-	n_xbins = len(xbin_centers)
-	curr_n_time_bins = len(curr_time_bins)
-	curr_flat_length = int(float(curr_n_time_bins) * float(n_xbins))
-	
-	X = np.repeat(curr_time_bins, n_xbins)
-	Y = np.tile(xbin_centers, curr_n_time_bins)
-	assert np.shape(X) == np.shape(Y)
-	W = np.reshape(curr_long_epoch_p_x_given_n, newshape=curr_flat_length, order='F') # order='F' means take the first axis (xbins) as changing the fastest
-	assert np.allclose(curr_long_epoch_p_x_given_n[:,1], W[n_xbins:n_xbins+n_xbins]) # compare the lienarlly-index second timestamp with the 2D-indexed version to ensure flattening was done correctly.
-	data_df = pd.DataFrame({'x':X, 'y':Y, 'w':W})
-	weighted_corr_result = WeightedCorr(xyw=data_df[['x', 'y', 'w']])(method='pearson') # -0.01427267216037025
-	return weighted_corr_result
+    # FLATTEN for WeightedCorr calculation, filling as appropriate:
+    X, Y are vectors
+    W is a matrix containing the posteriors
+    
+    """
+    from neuropy.utils.external.WeightedCorr import WeightedCorr
+    
+    n_xbins = len(xbin_centers)
+    curr_n_time_bins = len(curr_time_bins)
+    curr_flat_length = int(float(curr_n_time_bins) * float(n_xbins))
+    
+    X = np.repeat(curr_time_bins, n_xbins)
+    Y = np.tile(xbin_centers, curr_n_time_bins)
+    assert np.shape(X) == np.shape(Y)
+    W = np.reshape(curr_long_epoch_p_x_given_n, newshape=curr_flat_length, order='F') # order='F' means take the first axis (xbins) as changing the fastest
+    assert np.allclose(curr_long_epoch_p_x_given_n[:,1], W[n_xbins:n_xbins+n_xbins]) # compare the lienarlly-index second timestamp with the 2D-indexed version to ensure flattening was done correctly.
+    data_df = pd.DataFrame({'x':X, 'y':Y, 'w':W})
+    
+    weighted_corr_results = []
+
+    if isinstance(method, str):
+        # wrap in single element list:
+        method = (method, )
+        
+    a_weighted_corr_obj = WeightedCorr(xyw=data_df[['x', 'y', 'w']])
+    for a_method in method:
+        weighted_corr_results.append(a_weighted_corr_obj(method=a_method)) # append the scalar
+
+    return weighted_corr_results
 
 
 
 @function_attributes(short_name=None, tags=['weighted_correlation', 'decoder'], input_requires=[], output_provides=[], uses=['compute_epoch_weighted_correlation'], used_by=[], creation_date='2023-10-19 07:54', related_items=[])
-def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: DecodedFilterEpochsResult, a_short_decoder_result: DecodedFilterEpochsResult, debug_print = False):
-	""" builds the weighted correlation for each epoch respective to the posteriors decoded by each decoder (long/short) """
-	epoch_long_weighted_corr_results = []
-	epoch_short_weighted_corr_results = []
+def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: DecodedFilterEpochsResult, a_short_decoder_result: DecodedFilterEpochsResult, method=('pearson', 'spearman'), debug_print = False):
+    """ builds the weighted correlation for each epoch respective to the posteriors decoded by each decoder (long/short) """
+    epoch_long_weighted_corr_results = []
+    epoch_short_weighted_corr_results = []
 
-	for decoded_epoch_idx in np.arange(a_long_decoder_result.num_filter_epochs):
-		# decoded_epoch_idx:int = 0
-		curr_epoch_time_bin_container = a_long_decoder_result.time_bin_containers[decoded_epoch_idx]
-		curr_time_bins = curr_epoch_time_bin_container.centers
-		curr_n_time_bins = len(curr_time_bins)
-		if debug_print:
-			print(f'curr_n_time_bins: {curr_n_time_bins}')
+    for decoded_epoch_idx in np.arange(a_long_decoder_result.num_filter_epochs):
+        # decoded_epoch_idx:int = 0
+        curr_epoch_time_bin_container = a_long_decoder_result.time_bin_containers[decoded_epoch_idx]
+        curr_time_bins = curr_epoch_time_bin_container.centers
+        curr_n_time_bins = len(curr_time_bins)
+        if debug_print:
+            print(f'curr_n_time_bins: {curr_n_time_bins}')
 
-		## Long Decoding:
-		curr_long_epoch_p_x_given_n = a_long_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
-		weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n)
-		epoch_long_weighted_corr_results.append(weighted_corr_result)
+        ## Long Decoding:
+        curr_long_epoch_p_x_given_n = a_long_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
+        weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n, method=method)
+        epoch_long_weighted_corr_results.append(weighted_corr_result)
 
-		## Short Decoding:
-		curr_short_epoch_p_x_given_n = a_short_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
-		weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_short_epoch_p_x_given_n)
-		epoch_short_weighted_corr_results.append(weighted_corr_result)
+        ## Short Decoding:
+        curr_short_epoch_p_x_given_n = a_short_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
+        weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_short_epoch_p_x_given_n, method=method)
+        epoch_short_weighted_corr_results.append(weighted_corr_result)
 
-	# ## Build separate result dataframe:
-	# epoch_weighted_corr_results_df = pd.DataFrame({'weighted_corr_LONG': np.array(epoch_long_weighted_corr_results), 'weighted_corr_SHORT': np.array(epoch_short_weighted_corr_results)})
-	# epoch_weighted_corr_results_df
+    # ## Build separate result dataframe:
+    # epoch_weighted_corr_results_df = pd.DataFrame({'weighted_corr_LONG': np.array(epoch_long_weighted_corr_results), 'weighted_corr_SHORT': np.array(epoch_short_weighted_corr_results)})
+    # epoch_weighted_corr_results_df
 
-	return np.array(epoch_long_weighted_corr_results), np.array(epoch_short_weighted_corr_results)
-	
-	
+    return np.array(epoch_long_weighted_corr_results), np.array(epoch_short_weighted_corr_results)
+    
+    
 
 
 
@@ -127,7 +137,7 @@ def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: Decoded
 from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionTables
 
 def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE):
-	""" captures a lot of stuff still, don't remember what. 
+    """ captures a lot of stuff still, don't remember what. 
     
     Usage:    
         # BATCH_DATE_TO_USE = '2023-10-05_NewParameters'
@@ -140,27 +150,27 @@ def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_pa
     """
 
 
-	# Rootfolder mode:
-	# joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+    # Rootfolder mode:
+    # joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
 
-	# Subfolder mode:
-	# joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+    # Subfolder mode:
+    # joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
 
-	# Both mode:
-	joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
-	joined_neruon_fri_df_file_paths = [a_path for a_path in joined_neruon_fri_df_file_paths if a_path.exists()] # only get the paths that exist
+    # Both mode:
+    joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+    joined_neruon_fri_df_file_paths = [a_path for a_path in joined_neruon_fri_df_file_paths if a_path.exists()] # only get the paths that exist
 
-	data_frames = [AcrossSessionTables.load_table_from_file(global_data_root_parent_path=a_path.parent, output_filename=a_path.name) for a_path in joined_neruon_fri_df_file_paths]
-	# data_frames = [df for df in data_frames if df is not None] # remove empty results
-	print(f'joined_neruon_fri_df: concatenating dataframes from {len(data_frames)}')
-	all_sessions_joined_neruon_fri_df = pd.concat(data_frames, ignore_index=True)
+    data_frames = [AcrossSessionTables.load_table_from_file(global_data_root_parent_path=a_path.parent, output_filename=a_path.name) for a_path in joined_neruon_fri_df_file_paths]
+    # data_frames = [df for df in data_frames if df is not None] # remove empty results
+    print(f'joined_neruon_fri_df: concatenating dataframes from {len(data_frames)}')
+    all_sessions_joined_neruon_fri_df = pd.concat(data_frames, ignore_index=True)
 
-	## Finally save out the combined result:
-	all_sessions_joined_neruon_fri_df_basename = f'{BATCH_DATE_TO_USE}_MERGED_joined_neruon_fri_df'
-	out_path = global_data_root_parent_path.joinpath(all_sessions_joined_neruon_fri_df_basename).resolve()
-	AcrossSessionTables.write_table_to_files(all_sessions_joined_neruon_fri_df, global_data_root_parent_path=global_data_root_parent_path, output_basename=all_sessions_joined_neruon_fri_df_basename)
-	print(f'>>\t done with {out_path}')
-	return all_sessions_joined_neruon_fri_df, out_path
+    ## Finally save out the combined result:
+    all_sessions_joined_neruon_fri_df_basename = f'{BATCH_DATE_TO_USE}_MERGED_joined_neruon_fri_df'
+    out_path = global_data_root_parent_path.joinpath(all_sessions_joined_neruon_fri_df_basename).resolve()
+    AcrossSessionTables.write_table_to_files(all_sessions_joined_neruon_fri_df, global_data_root_parent_path=global_data_root_parent_path, output_basename=all_sessions_joined_neruon_fri_df_basename)
+    print(f'>>\t done with {out_path}')
+    return all_sessions_joined_neruon_fri_df, out_path
 
 
 
@@ -178,7 +188,7 @@ from attrs import define, field
 @define(slots=False)
 class SwiftLikeEnum:
     """ # can enums store associated data?
-	# some properties only make sense for certain enum values, like .
+    # some properties only make sense for certain enum values, like .
     """
     value: int
     attribute: str
@@ -499,90 +509,93 @@ def _compute_parameter_sweep(spikes_df, active_pos, all_param_sweep_options: dic
 
 # +
 
+class SpikesRankOrder:
 
-def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
-    """ 
-    Usage:
-        from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
+    def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
+        """ 
+        Usage:
+            from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
 
-        active_sess = curr_active_pipeline.filtered_sessions['maze']
-        active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
-        active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
+            active_sess = curr_active_pipeline.filtered_sessions['maze']
+            active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
+            active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
 
-        spike_trimmed_active_epochs, _extra_outputs = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
-        epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
-"""
-    from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
-    
-    # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
-    active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1) # uses new add_epochs_id_identity
-
-    # Get all aclus and epoch_idxs used throughout the entire spikes_df:
-    all_aclus = active_spikes_df['aclu'].unique()
-    all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
-
-    # first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spikes
-    first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spikes
-    # rank the aclu values by their first t value in each Probe_Epoch_id
-    ranked_aclus = first_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
-    # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
-    ranked_aclus_dict = {}
-    for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
-        if epoch_id not in ranked_aclus_dict:
-            ranked_aclus_dict[epoch_id] = {}
-        ranked_aclus_dict[epoch_id][aclu] = rank
-    # ranked_aclus_dict
-    return ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus
-
-# -
-
-
-# +
-
-def compute_rankordered_stats(epoch_ranked_aclus_dict):
-    """ Spearman rank-order tests:
-        
-    WARNING, from documentation: Although calculation of the p-value does not make strong assumptions about the distributions underlying the samples, it is only accurate for very large samples (>500 observations). For smaller sample sizes, consider a permutation test (see Examples section below).
-
-    Usage: 
-        
-        epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = compute_rankordered_stats(epoch_ranked_aclus_dict)
-
+            spike_trimmed_active_epochs, _extra_outputs = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
+            epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
     """
-    import scipy.stats
-    
-    epoch_ranked_aclus_stats_dict = {epoch_id:scipy.stats.spearmanr(np.array(list(rank_dict.keys())), np.array(list(rank_dict.values()))) for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
-    # epoch_ranked_aclus_stats_dict
+        from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+        
+        # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
+        active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1) # uses new add_epochs_id_identity
 
-    # Spearman statistic (correlation) values:
-    epoch_ranked_aclus_stats_corr_values = np.array([np.abs(rank_stats.statistic) for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
-    outside_epochs_ranked_aclus_stats_corr_value = epoch_ranked_aclus_stats_corr_values[0]
-    epoch_ranked_aclus_stats_corr_values = epoch_ranked_aclus_stats_corr_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+        # Get all aclus and epoch_idxs used throughout the entire spikes_df:
+        all_aclus = active_spikes_df['aclu'].unique()
+        all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
 
-    # Spearman p-values:
-    epoch_ranked_aclus_stats_p_values = np.array([rank_stats.pvalue for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
-    outside_epochs_ranked_aclus_stats_p_value = epoch_ranked_aclus_stats_p_values[0]
-    epoch_ranked_aclus_stats_p_values = epoch_ranked_aclus_stats_p_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+        selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spikes
+        # selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spikes
+        
+        
+        # rank the aclu values by their first t value in each Probe_Epoch_id
+        ranked_aclus = selected_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
+        # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
+        ranked_aclus_dict = {}
+        for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
+            if epoch_id not in ranked_aclus_dict:
+                ranked_aclus_dict[epoch_id] = {}
+            ranked_aclus_dict[epoch_id][aclu] = rank
+        # ranked_aclus_dict
+        return ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus
 
-    return epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value)
+    # -
 
 
-# # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# # ### 2023-02-16 TODO: try to overcome issue with small sample sizes mentioned above by performing the permutation test:
+    # +
 
-# # +
-# # def statistic(x):  # permute only `x`
-# #     return scipy.stats.spearmanr(x, y).statistic
-# # res_exact = scipy.stats.permutation_test((x,), statistic, permutation_type='pairings')
-# res_asymptotic = scipy.stats.spearmanr(x, y)
-# res_exact.pvalue, res_asymptotic.pvalue  # asymptotic pvalue is too low
+    def compute_rankordered_stats(epoch_ranked_aclus_dict):
+        """ Spearman rank-order tests:
+            
+        WARNING, from documentation: Although calculation of the p-value does not make strong assumptions about the distributions underlying the samples, it is only accurate for very large samples (>500 observations). For smaller sample sizes, consider a permutation test (see Examples section below).
 
-# # scipy.stats.permutation_test((x,), (lambda x: scipy.stats.spearmanr(x, y).statistic), permutation_type='pairings')
+        Usage: 
+            
+            epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = compute_rankordered_stats(epoch_ranked_aclus_dict)
 
-# ## Compute the exact value using permutations:
-# # epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.keys())),), (lambda x: scipy.stats.spearmanr(x, np.array(list(rank_dict.values()))).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
-# epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.values())),), (lambda y: scipy.stats.spearmanr(np.array(list(rank_dict.keys())), y).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()} # ValueError: each sample in `data` must contain two or more observations along `axis`.
-# epoch_ranked_aclus_stats_exact_dict
+        """
+        import scipy.stats
+        
+        epoch_ranked_aclus_stats_dict = {epoch_id:scipy.stats.spearmanr(np.array(list(rank_dict.keys())), np.array(list(rank_dict.values()))) for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+        # epoch_ranked_aclus_stats_dict
+
+        # Spearman statistic (correlation) values:
+        epoch_ranked_aclus_stats_corr_values = np.array([np.abs(rank_stats.statistic) for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+        outside_epochs_ranked_aclus_stats_corr_value = epoch_ranked_aclus_stats_corr_values[0]
+        epoch_ranked_aclus_stats_corr_values = epoch_ranked_aclus_stats_corr_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+        # Spearman p-values:
+        epoch_ranked_aclus_stats_p_values = np.array([rank_stats.pvalue for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+        outside_epochs_ranked_aclus_stats_p_value = epoch_ranked_aclus_stats_p_values[0]
+        epoch_ranked_aclus_stats_p_values = epoch_ranked_aclus_stats_p_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+        return epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value)
+
+
+    # # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+    # # ### 2023-02-16 TODO: try to overcome issue with small sample sizes mentioned above by performing the permutation test:
+
+    # # +
+    # # def statistic(x):  # permute only `x`
+    # #     return scipy.stats.spearmanr(x, y).statistic
+    # # res_exact = scipy.stats.permutation_test((x,), statistic, permutation_type='pairings')
+    # res_asymptotic = scipy.stats.spearmanr(x, y)
+    # res_exact.pvalue, res_asymptotic.pvalue  # asymptotic pvalue is too low
+
+    # # scipy.stats.permutation_test((x,), (lambda x: scipy.stats.spearmanr(x, y).statistic), permutation_type='pairings')
+
+    # ## Compute the exact value using permutations:
+    # # epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.keys())),), (lambda x: scipy.stats.spearmanr(x, np.array(list(rank_dict.values()))).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+    # epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.values())),), (lambda y: scipy.stats.spearmanr(np.array(list(rank_dict.keys())), y).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()} # ValueError: each sample in `data` must contain two or more observations along `axis`.
+    # epoch_ranked_aclus_stats_exact_dict
 
 
 
