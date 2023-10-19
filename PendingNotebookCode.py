@@ -10,7 +10,6 @@ import pyvista as pv
 import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 
 from pyphocorehelpers.function_helpers import function_attributes
-from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 from neuropy.core.neuron_identities import PlotStringBrevityModeEnum # for display_all_pf_2D_pyqtgraph_binned_image_rendering
 from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
@@ -51,10 +50,10 @@ def _add_maze_id_to_epochs(active_filter_epochs: Epoch, track_change_time: float
 
 	"""
 	active_filter_epochs._df['maze_id'] = np.nan
-	long_active_filter_epochs = active_filter_epochs.time_slice(long_session.t_start, track_change_time)
+	long_active_filter_epochs = active_filter_epochs.time_slice(None, track_change_time)
 	active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, long_active_filter_epochs.labels), 'maze_id'] = 0
 
-	short_active_filter_epochs = active_filter_epochs.time_slice(track_change_time, short_session.t_stop)
+	short_active_filter_epochs = active_filter_epochs.time_slice(track_change_time, None)
 	active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, short_active_filter_epochs.labels), 'maze_id'] = 1
 	active_filter_epochs._df = active_filter_epochs._df.astype({'maze_id': 'int8'}) # Change column type to int8 for column: 'maze_id'
 
