@@ -274,7 +274,8 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
     # refined_grid_bin_bounds = ((24.12, 259.80), (130.00, 150.09))
     # temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
     # temp_comp_params.pf_params.speed_thresh = 10 # 4.0 cm/sec
-    temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
+    # temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
+    temp_comp_params.pf_params.grid_bin = (1.5, 1.5) # (1.5cm x 1.5cm)
     temp_comp_params.pf_params.grid_bin_bounds = final_grid_bin_bounds # same bounds for all
     # temp_comp_params.pf_params.smooth = (0.0, 0.0) # No smoothing
     # temp_comp_params.pf_params.frate_thresh = 1 # Minimum for non-smoothed peak is 1Hz
