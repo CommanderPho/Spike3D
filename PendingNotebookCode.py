@@ -24,7 +24,199 @@ _debug_print = False
 
 
 
+# ==================================================================================================================== #
+# 2023-10-20 - Close-to-working Rank Order Strategy:                                                                   #
+# ==================================================================================================================== #
 
+from attrs import define, field, Factory, astuple
+from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import pho_stats_paired_t_test
+from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+import scipy.stats
+from scipy import ndimage
+from neuropy.utils.misc import build_shuffled_ids # used in _SHELL_analyze_leave_one_out_decoding_results
+
+
+def compute_placefield_center_of_masses(tuning_curves):
+	return np.squeeze(np.array([ndimage.center_of_mass(x) for x in tuning_curves]))
+
+@define()
+class ShuffleHelper:
+	shared_aclus_only_neuron_IDs = field()
+	is_good_aclus = field()
+	long_pf_peak_ranks = field()
+	short_pf_peak_ranks = field()
+	shuffled_aclus = field()
+	shuffle_IDX = field()
+
+
+@define()
+class Zscorer:
+    original_values: np.array
+    mean: float
+    std_dev: float
+    n_values: int
+    z_score_values: np.array # z-score values
+
+    @classmethod
+    def init_from_values(cls, stats_corr_values: np.array):
+        _obj = cls(original_values=stats_corr_values, mean=np.mean(stats_corr_values), std_dev=np.std(stats_corr_values), n_values=len(stats_corr_values), z_score_values=None)
+        _obj.z_score_values = _obj.Zscore(stats_corr_values)
+        return _obj
+
+    def Zscore(self, xcritical: np.array) -> np.array:
+        return (xcritical - self.mean)/self.std_dev
+
+def Zscore(xcritical, mean, stdev):
+    return (xcritical - mean)/stdev
+
+
+def build_track_templates_for_shuffle(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles: int = 100, bimodal_exclude_aclus = [5, 14, 25, 46, 61, 66, 86, 88, 95]):
+    
+    shared_aclus_only_neuron_IDs = deepcopy(long_shared_aclus_only_decoder.neuron_IDs)
+    # Exclude the bimodal cells:
+    if bimodal_exclude_aclus is None:
+        bimodal_exclude_aclus = []
+
+    is_good_aclus = np.logical_not(np.isin(shared_aclus_only_neuron_IDs, bimodal_exclude_aclus))
+    shared_aclus_only_neuron_IDs = shared_aclus_only_neuron_IDs[is_good_aclus]
+
+    shuffled_aclus, shuffle_IDXs = build_shuffled_ids(shared_aclus_only_neuron_IDs, num_shuffles=num_shuffles, seed=1337)
+
+    # shared_aclus_only_neuron_IDs, is_good_aclus, shuffled_aclus, shuffle_IDXs 
+
+    ## 2023-10-11 - Get the long/short peak locations
+    long_com, short_com = [compute_placefield_center_of_masses(curve) for curve in (long_shared_aclus_only_decoder.pf.ratemap.pdf_normalized_tuning_curves, short_shared_aclus_only_decoder.pf.ratemap.pdf_normalized_tuning_curves)]
+    long_peaks_com = long_com[is_good_aclus]
+    short_peaks_com = short_com[is_good_aclus]
+
+    # long_peak_bin_indicies = long_shared_aclus_only_decoder.peak_indicies[is_good_aclus]
+    # short_peaks_bin_indicies = short_shared_aclus_only_decoder.peak_indicies[is_good_aclus]
+
+    # long_peaks = long_peak_bin_indicies
+    # short_peaks = short_peaks_bin_indicies
+
+    # long_peaks_dict, short_peaks_dict = [dict(zip(shared_aclus_only_neuron_IDs, peaks)) for peaks in (long_peaks, short_peaks)]
+    # long_peaks_series, short_peaks_series = [pd.Series(data=peaks, index=shared_aclus_only_neuron_IDs) for peaks in (long_peaks, short_peaks)]
+    # long_peaks_series, short_peaks_series = [pd.Series(data=peaks, index=shared_aclus_only_neuron_IDs) for peaks in (long_peaks_com, long_peaks_com)]
+
+    ## Compute the ranks:
+    long_pf_peak_ranks, short_pf_peak_ranks = [scipy.stats.rankdata(a_peaks_com, method='dense') for a_peaks_com in (long_peaks_com, short_peaks_com)]
+    # long_pf_peak_ranks, short_pf_peak_ranks = [a_peaks_series.rank(method='dense') for a_peaks_series in (long_peaks_series, short_peaks_series)]
+
+
+    # template_peaks_df = pd.DataFrame({'aclu': shared_aclus_only_neuron_IDs, 'long_peak': long_peaks, 'long_com': long_peaks_com, 'short_peak': short_peaks, 'short_com': short_peaks_com})
+
+    # # #TEMP: as a workaround for duplicated values, drop duplicate rows in columns: 'long_peak', 'short_peak'
+    # # template_peaks_df = template_peaks_df.drop_duplicates(subset=['long_peak', 'short_peak'])
+    # template_peaks_df
+    display(long_pf_peak_ranks)
+    display(short_pf_peak_ranks)
+
+
+    # return shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs
+    return ShuffleHelper(shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs)
+
+def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle_helper):
+
+    shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs = astuple(shuffle_helper)
+    # epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = SpikesRankOrder.compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
+    # epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = SpikesRankOrder.compute_rankordered_stats(epoch_ranked_aclus_dict)
+
+    active_spikes_df, active_aclu_to_fragile_linear_neuron_IDX_dict = active_spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs()
+    unique_neuron_identities = active_spikes_df.spikes.extract_unique_neuron_identities()
+    # [['t_rel_seconds', 'shank', 'cluster', 'aclu', 'qclu', 'traj', 'lap', 'maze_relative_lap', 'flat_spike_idx', 'maze_id', 'fragile_linear_neuron_IDX', 'neuron_type', 'PBE_id']]
+    # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
+    active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1)[['t_rel_seconds', 'shank', 'cluster', 'aclu', 'qclu', 'traj', 'lap', 'maze_relative_lap', 'maze_id', 'fragile_linear_neuron_IDX', 'neuron_type', 'flat_spike_idx', 'PBE_id', 'Probe_Epoch_id']]
+    # uses new add_epochs_id_identity
+
+    # Sort by columns: 't_rel_seconds' (ascending), 'aclu' (ascending)
+    active_spikes_df = active_spikes_df.sort_values(['t_rel_seconds', 'aclu'])
+
+
+    # Get all aclus and epoch_idxs used throughout the entire spikes_df:
+    all_aclus = active_spikes_df['aclu'].unique()
+    all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
+
+    selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spikes
+    # selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spikes
+
+    # rank the aclu values by their first t value in each Probe_Epoch_id
+    ranked_aclus = selected_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
+
+    # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
+    epoch_ranked_aclus_dict = {}
+    epoch_ranked_fragile_linear_neuron_IDX_dict = {} # structure is different 
+
+    for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
+        if epoch_id not in epoch_ranked_aclus_dict:
+            epoch_ranked_aclus_dict[epoch_id] = {}
+            epoch_ranked_fragile_linear_neuron_IDX_dict[epoch_id] = []
+        epoch_ranked_aclus_dict[epoch_id][aclu] = int(rank)
+        
+        neuron_IDX = active_aclu_to_fragile_linear_neuron_IDX_dict[aclu] # ordered dict that maps each aclu to a flat neuronIDX!
+        epoch_ranked_fragile_linear_neuron_IDX_dict[epoch_id].append((neuron_IDX, int(rank)))
+
+    # Convert all to np.ndarrays post-hoc:
+    epoch_ranked_fragile_linear_neuron_IDX_dict = {epoch_id:np.array(epoch_ranked_fragile_linear_neuron_IDXs) for epoch_id, epoch_ranked_fragile_linear_neuron_IDXs in epoch_ranked_fragile_linear_neuron_IDX_dict.items()}
+
+    ## Do the actual computations:
+    epoch_ranked_aclus_stats_dict = {}
+
+    # for epoch_id, rank_dict in epoch_ranked_aclus_dict.items():
+    for epoch_id in list(epoch_ranked_aclus_dict.keys()):
+        # if epoch_id < 5:
+        rank_dict = epoch_ranked_aclus_dict[epoch_id]
+        epoch_aclus = np.array(list(rank_dict.keys()))
+        epoch_aclu_ranks = np.array(list(rank_dict.values()))
+
+        epoch_ranked_fragile_linear_neuron_IDXs_array = epoch_ranked_fragile_linear_neuron_IDX_dict[epoch_id]
+        epoch_neuron_IDXs = np.squeeze(epoch_ranked_fragile_linear_neuron_IDXs_array[:,0])
+        epoch_neuron_IDX_ranks = np.squeeze(epoch_ranked_fragile_linear_neuron_IDXs_array[:,1])
+        
+        long_spearmanr_rank_stats_results = []
+        short_spearmanr_rank_stats_results = []
+
+        ## PERFORM SHUFFLE HERE:
+        for i, (a_shuffled_aclus, a_shuffled_IDXs) in enumerate(zip(shuffled_aclus, shuffle_IDXs)):
+            # long_shared_aclus_only_decoder.pf.ratemap.get_by_id(a_shuffled_aclus)
+            epoch_specific_shuffled_indicies = a_shuffled_IDXs[epoch_neuron_IDXs] # get only the subset that is active during this epoch
+            # long_pf_peak_ranks[epoch_specific_shuffled_indicies] # get the shuffled entries from the
+            # short_pf_peak_ranks[epoch_specific_shuffled_indicies]
+
+            ## Get the matching components of the long/short pf ranks using epoch_ranked_fragile_linear_neuron_IDXs's first column which are the relevant indicies:
+            #### 🎯🌟🐞 POTENTIAL_BUG: TODO 2023-10-20: for the `long_pf_peak_ranks[epoch_specific_shuffled_indicies]`, do I need to convert the ranks to the same range? Right now they're missing entires
+            long_rank_stats = scipy.stats.spearmanr(long_pf_peak_ranks[epoch_specific_shuffled_indicies], epoch_neuron_IDX_ranks)
+            long_result = (np.abs(long_rank_stats.statistic), long_rank_stats.pvalue)
+            long_spearmanr_rank_stats_results.append(long_result)
+
+            short_rank_stats = scipy.stats.spearmanr(short_pf_peak_ranks[epoch_specific_shuffled_indicies], epoch_neuron_IDX_ranks)
+            short_result = (np.abs(short_rank_stats.statistic), short_rank_stats.pvalue)
+            short_spearmanr_rank_stats_results.append(short_result)
+            
+        long_spearmanr_rank_stats_results = np.array(long_spearmanr_rank_stats_results)
+        short_spearmanr_rank_stats_results = np.array(short_spearmanr_rank_stats_results)
+
+        long_stats_corr_values = long_spearmanr_rank_stats_results[:,0]
+        short_stats_corr_values = short_spearmanr_rank_stats_results[:,0]
+
+        # long_stats_z_values = Zscore(long_stats_corr_values, mean=np.mean(long_stats_corr_values), stdev=np.std(long_stats_corr_values))
+        # short_stats_z_values = Zscore(short_stats_corr_values, mean=np.mean(short_stats_corr_values), stdev=np.std(short_stats_corr_values))
+
+        long_stats_z_scorer = Zscorer.init_from_values(long_stats_corr_values)
+        short_stats_z_scorer = Zscorer.init_from_values(short_stats_corr_values)
+
+        # long_short_z_diff = long_stats_z_values - short_stats_z_values
+        long_short_z_diff: np.array = long_stats_z_scorer.z_score_values - short_stats_z_scorer.z_score_values
+
+        # epoch_ranked_aclus_stats_dict[epoch_id] = (np.array(long_spearmanr_rank_stats_results),  np.array(short_spearmanr_rank_stats_results))
+        epoch_ranked_aclus_stats_dict[epoch_id] = (long_stats_z_scorer, short_stats_z_scorer, long_short_z_diff)
+
+    # 16.9s
+    # for epoch_id, epoch_stats in epoch_ranked_aclus_stats_dict.items():
+    #     long_stats_z_scorer, short_stats_z_scorer, long_short_z_diff = epoch_stats
+    #     paired_test = pho_stats_paired_t_test(long_stats_z_scorer.z_score_values, short_stats_z_scorer.z_score_values) # this doesn't seem to work well
+
+    return epoch_ranked_aclus_stats_dict
 
 
 
