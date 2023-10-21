@@ -76,16 +76,25 @@ class Zscorer:
     mean: float
     std_dev: float
     n_values: int
-    z_score_values: np.array # z-score values
+
+    real_value: float = None
+    z_score_value: float = None # z-score values
+
 
     @classmethod
-    def init_from_values(cls, stats_corr_values: np.array):
-        _obj = cls(original_values=stats_corr_values, mean=np.mean(stats_corr_values), std_dev=np.std(stats_corr_values), n_values=len(stats_corr_values), z_score_values=None)
-        _obj.z_score_values = _obj.Zscore(stats_corr_values)
+    def init_from_values(cls, stats_corr_values: np.array, real_value=None):
+        _obj = cls(original_values=stats_corr_values, mean=np.mean(stats_corr_values), std_dev=np.std(stats_corr_values), n_values=len(stats_corr_values), real_value=real_value, z_score_value=None)
+        _obj.z_score_value = _obj.Zscore(real_value)
         return _obj
 
-    def Zscore(self, xcritical: np.array) -> np.array:
-        return (xcritical - self.mean)/self.std_dev
+
+    def Zscore(self, xcritical):
+        self.z_score_value = (xcritical - self.mean)/self.std_dev
+        return self.z_score_value
+
+
+    # def Zscore(self, xcritical: np.array) -> np.array:
+    #     return (xcritical - self.mean)/self.std_dev
 
 def Zscore(xcritical, mean, stdev):
     return (xcritical - mean)/stdev
@@ -137,13 +146,18 @@ def build_track_templates_for_shuffle(long_shared_aclus_only_decoder, short_shar
     # return shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs
     return ShuffleHelper(shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs)
 
+@function_attributes(short_name=None, tags=['shuffle', 'rank_order'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-21 00:23', related_items=[])
 def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle_helper):
+    """ 
 
+        
+
+    """
     shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs = astuple(shuffle_helper)
     # epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = SpikesRankOrder.compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
     # epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = SpikesRankOrder.compute_rankordered_stats(epoch_ranked_aclus_dict)
 
-    active_spikes_df, active_aclu_to_fragile_linear_neuron_IDX_dict = active_spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs()
+    active_spikes_df, active_aclu_to_fragile_linear_neuron_IDX_dict = active_spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs() # NOTE: `active_aclu_to_fragile_linear_neuron_IDX_dict` is actually pretty important here. It's an ordered dict that maps each aclu to a flat neuronIDX!
     unique_neuron_identities = active_spikes_df.spikes.extract_unique_neuron_identities()
     # [['t_rel_seconds', 'shank', 'cluster', 'aclu', 'qclu', 'traj', 'lap', 'maze_relative_lap', 'flat_spike_idx', 'maze_id', 'fragile_linear_neuron_IDX', 'neuron_type', 'PBE_id']]
     # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
@@ -152,7 +166,6 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
 
     # Sort by columns: 't_rel_seconds' (ascending), 'aclu' (ascending)
     active_spikes_df = active_spikes_df.sort_values(['t_rel_seconds', 'aclu'])
-
 
     # Get all aclus and epoch_idxs used throughout the entire spikes_df:
     all_aclus = active_spikes_df['aclu'].unique()
@@ -195,6 +208,12 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
         long_spearmanr_rank_stats_results = []
         short_spearmanr_rank_stats_results = []
 
+        # The real result:
+        real_long_rank_stats = scipy.stats.spearmanr(long_pf_peak_ranks[epoch_neuron_IDXs], epoch_neuron_IDX_ranks)
+        real_long_result_corr_value = (np.abs(real_long_rank_stats.statistic), real_long_rank_stats.pvalue)[0]
+        real_short_rank_stats = scipy.stats.spearmanr(short_pf_peak_ranks[epoch_neuron_IDXs], epoch_neuron_IDX_ranks)
+        real_short_result_corr_value = (np.abs(real_short_rank_stats.statistic), real_short_rank_stats.pvalue)[0]
+        
         ## PERFORM SHUFFLE HERE:
         for i, (a_shuffled_aclus, a_shuffled_IDXs) in enumerate(zip(shuffled_aclus, shuffle_IDXs)):
             # long_shared_aclus_only_decoder.pf.ratemap.get_by_id(a_shuffled_aclus)
@@ -221,11 +240,17 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
         # long_stats_z_values = Zscore(long_stats_corr_values, mean=np.mean(long_stats_corr_values), stdev=np.std(long_stats_corr_values))
         # short_stats_z_values = Zscore(short_stats_corr_values, mean=np.mean(short_stats_corr_values), stdev=np.std(short_stats_corr_values))
 
-        long_stats_z_scorer = Zscorer.init_from_values(long_stats_corr_values)
-        short_stats_z_scorer = Zscorer.init_from_values(short_stats_corr_values)
+        real_long_result_corr_value
+        real_short_result_corr_value
+
+        long_stats_z_scorer = Zscorer.init_from_values(long_stats_corr_values, real_long_result_corr_value)
+        short_stats_z_scorer = Zscorer.init_from_values(short_stats_corr_values, real_short_result_corr_value)
 
         # long_short_z_diff = long_stats_z_values - short_stats_z_values
-        long_short_z_diff: np.array = long_stats_z_scorer.z_score_values - short_stats_z_scorer.z_score_values
+        # long_short_z_diff: np.array = long_stats_z_scorer.z_score_values - short_stats_z_scorer.z_score_values
+
+        long_short_z_diff: float = long_stats_z_scorer.z_score_value - short_stats_z_scorer.z_score_value
+
 
         # epoch_ranked_aclus_stats_dict[epoch_id] = (np.array(long_spearmanr_rank_stats_results),  np.array(short_spearmanr_rank_stats_results))
         epoch_ranked_aclus_stats_dict[epoch_id] = (long_stats_z_scorer, short_stats_z_scorer, long_short_z_diff)
@@ -235,7 +260,27 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     #     long_stats_z_scorer, short_stats_z_scorer, long_short_z_diff = epoch_stats
     #     paired_test = pho_stats_paired_t_test(long_stats_z_scorer.z_score_values, short_stats_z_scorer.z_score_values) # this doesn't seem to work well
 
-    return epoch_ranked_aclus_stats_dict
+    # Extract the results:
+    long_z_score_values = []
+    short_z_score_values = []
+    long_short_z_score_diff_values = []
+
+    for epoch_id, epoch_stats in epoch_ranked_aclus_stats_dict.items():
+        long_stats_z_scorer, short_stats_z_scorer, long_short_z_diff = epoch_stats
+        # paired_test = pho_stats_paired_t_test(long_stats_z_scorer.z_score_values, short_stats_z_scorer.z_score_values) # this doesn't seem to work well
+        long_z_score_values.append(long_stats_z_scorer.z_score_value)
+        short_z_score_values.append(short_stats_z_scorer.z_score_value)
+        long_short_z_score_diff_values.append(long_short_z_diff)
+
+    long_z_score_values = np.array(long_z_score_values)
+    short_z_score_values = np.array(short_z_score_values)
+    long_short_z_score_diff_values = np.array(long_short_z_score_diff_values)
+
+    long_short_z_score_diff_values
+
+
+
+    return epoch_ranked_aclus_stats_dict, (long_z_score_values, short_z_score_values, long_short_z_score_diff_values)
 
 
 
