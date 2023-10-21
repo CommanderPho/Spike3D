@@ -46,6 +46,20 @@ _debug_print = False
 	n_epochs sets of results
 		n_shuffles scores of delta_Z
 
+
+Usage:
+    from neuropy.utils.misc import build_shuffled_ids # used in _SHELL_analyze_leave_one_out_decoding_results
+    from PendingNotebookCode import compute_shuffled_rankorder_analyses, build_track_templates_for_shuffle, compute_shuffled_rankorder_analyses, ShuffleHelper
+
+
+    shuffle_helper = build_track_templates_for_shuffle(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles=100, bimodal_exclude_aclus = [5, 14, 25, 46, 61, 66, 86, 88, 95])
+    active_epochs = deepcopy(global_replays)
+    active_spikes_df = deepcopy(global_pf1D.spikes_df).spikes.sliced_by_neuron_id(shared_aclus_only_neuron_IDs)
+    epoch_ranked_aclus_stats_dict, (long_z_score_values, short_z_score_values, long_short_z_score_diff_values) = compute_shuffled_rankorder_analyses(active_spikes_df, global_replays, shuffle_helper)
+
+
+
+
 """
 
 
