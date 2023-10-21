@@ -27,6 +27,27 @@ _debug_print = False
 # ==================================================================================================================== #
 # 2023-10-20 - Close-to-working Rank Order Strategy:                                                                   #
 # ==================================================================================================================== #
+"""
+
+🟢 2023-10-21 - Z-Score Comparisons with Neuron_ID Shuffled templates
+1. Take the intersection of the long and short templates to get only the common cells
+2. Determine the long and short "tempaltes": this is done by ranking the aclus for each by their placefields' center of mass. `compute_placefield_center_of_masses`
+	2a. `long_pf_peak_ranks`, `short_pf_peak_ranks` - there are one of each of these for each shared aclu.
+3. Generate the unit_id shuffled (`shuffled_aclus`, `shuffle_IDXs`) ahead of time to use to shuffle the two templates during the epochs.
+4. For each replay event, take each shuffled template
+	4a. Iterate through each shuffle and obtain the shuffled templates like `long_pf_peak_ranks[epoch_specific_shuffled_indicies]`, `short_pf_peak_ranks[epoch_specific_shuffled_indicies]`
+	4b. compute the spearman rank-order of the event and each shuffled template, and accumulate the results in `long_spearmanr_rank_stats_results`, `short_spearmanr_rank_stats_results`
+
+5. After we're done with the shuffle loop, accumulate the results and convert to the right output format.
+
+6. When all epochs are done, loop through the results (the epochs again) and compute the z-scores for each epoch so they can be compared to each other. Keep track of the means and std_dev for comparisons later, and subtract the two sets of z-scores (long/short) to get the delta_Z for each template.
+
+7. TODO: Next figure out what to do with the array of z-scores and delta_Z. We have:
+	n_epochs sets of results
+		n_shuffles scores of delta_Z
+
+"""
+
 
 from attrs import define, field, Factory, astuple
 from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import pho_stats_paired_t_test
@@ -144,7 +165,7 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     ranked_aclus = selected_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
 
     # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
-    epoch_ranked_aclus_dict = {}
+    epoch_ranked_aclus_dict = {} # this one isn't needed anymore probably, the `epoch_ranked_fragile_linear_neuron_IDX_dict` is easier.
     epoch_ranked_fragile_linear_neuron_IDX_dict = {} # structure is different 
 
     for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
@@ -162,9 +183,7 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     ## Do the actual computations:
     epoch_ranked_aclus_stats_dict = {}
 
-    # for epoch_id, rank_dict in epoch_ranked_aclus_dict.items():
     for epoch_id in list(epoch_ranked_aclus_dict.keys()):
-        # if epoch_id < 5:
         rank_dict = epoch_ranked_aclus_dict[epoch_id]
         epoch_aclus = np.array(list(rank_dict.keys()))
         epoch_aclu_ranks = np.array(list(rank_dict.values()))
