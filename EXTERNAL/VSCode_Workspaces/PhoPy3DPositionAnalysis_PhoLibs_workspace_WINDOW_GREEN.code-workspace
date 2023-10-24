@@ -65,7 +65,9 @@
 			"**/EXTERNAL/TESTING/OLD": true
 		},
 		"qtForPython.uic.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
-		"python.autoComplete.extraPaths": [],
+		"python.autoComplete.extraPaths": [
+
+		],
 		"git.ignoreLimitWarning": true,
 		"qtForPython.uic.options": [
 			"-o",
@@ -83,7 +85,10 @@
 		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
 		"windowColors.🌈 BaseColor": "'whitesmoke'",
 		"favorites.storageFilePath": "../.favorites.json",
-		"qtForPython.uic.liveExecution.enabled": false
+		"qtForPython.uic.liveExecution.enabled": false,
+		"notebook.cellToolbarVisibility": "hover",
+		"notebook.diff.ignoreOutputs": true,
+		"bookmarks.label.suggestion": "dontUse"
 	},
 	"tasks": {
 		"version": "2.0.0",
