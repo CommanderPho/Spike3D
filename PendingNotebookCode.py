@@ -191,7 +191,7 @@ def build_track_templates_for_shuffle(long_shared_aclus_only_decoder, short_shar
     
 
 @function_attributes(short_name=None, tags=['shuffle', 'rank_order'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-21 00:23', related_items=[])
-def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle_helper, debug_print=True):
+def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle_helper, rank_alignment: str = 'first', debug_print=True):
     """ 
 
         
@@ -216,7 +216,16 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
 
     ## Determine which spikes to use to represent the order:
-    selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spike times only
+    selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name]
+
+    if rank_alignment == 'first':
+        selected_spikes = selected_spikes.first() # first spike times only
+    elif rank_alignment == 'median':
+        selected_spikes = selected_spikes.median() # median spike times only
+    else:
+        raise NotImplementedError(f'invalid rank_alignment specified : {rank_alignment}. valid options are [first, median, ...]')
+
+    # selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spike times only
     # selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spike times only
 
 
