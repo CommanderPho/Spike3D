@@ -18,9 +18,9 @@
 </head>
 <body class="body_foreground body_background" style="font-size: normal;" >
 <pre class="ansi2html-content">
-<span class="ansi1"></span><span class="ansi1 ansi91">InteractivePlaceCellConfig</span> - printed by DocumentationFilePrinter on 2023-01-15
+<span class="ansi1"></span><span class="ansi1 ansi91">InteractivePlaceCellConfig</span> - printed by DocumentationFilePrinter on 2023-10-23
 ===================================================================================================
-- <span class="ansi94">InteractivePlaceCellConfig</span>: <span class="ansi92">pyphoplacecellanalysis.General.Configs.</span><span class="ansi1 ansi92">InteractivePlaceCellConfig</span>
+- <span class="ansi94">InteractivePlaceCellConfig</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.Configs.</span><span class="ansi1 ansi92">InteractivePlaceCellConfig</span>
 	- <span class="ansi94">active_session_config</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionConfig</span>
 		- <span class="ansi94">format_name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 		- <span class="ansi94">basepath</span>: <span class="ansi92"></span><span class="ansi1 ansi92">WindowsPath</span>
@@ -30,39 +30,55 @@
 			- <span class="ansi94">optional_files</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (2,)
 			- <span class="ansi94">additional_validation_requirements</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (0,)
 		- <span class="ansi94">session_context</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">IdentifyingContext</span>
-			- <span class="ansi94">format_name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
-			- <span class="ansi94">animal</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
-			- <span class="ansi94">exper_name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
-			- <span class="ansi94">session_name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
+		- <span class="ansi94">preprocessing_parameters</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">ParametersContainer</span>
+			- <span class="ansi94">epoch_estimation_parameters</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">DynamicContainer</span>
+				- <span class="ansi94">laps</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">DynamicContainer</span>
+					- <span class="ansi94">N</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+					- <span class="ansi94">should_backup_extant_laps_obj</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+				- <span class="ansi94">PBEs</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">DynamicContainer</span>
+					- <span class="ansi94">thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
+					- <span class="ansi94">min_dur</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+					- <span class="ansi94">merge_dur</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+					- <span class="ansi94">max_dur</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+				- <span class="ansi94">replays</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">DynamicContainer</span>
+					- <span class="ansi94">require_intersecting_epoch</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Epoch</span>
+						- <span class="ansi94">_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+						- <span class="ansi94">_metadata</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+						- <span class="ansi94">_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (81, 4)
+					- <span class="ansi94">min_epoch_included_duration</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+					- <span class="ansi94">max_epoch_included_duration</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+					- <span class="ansi94">maximum_speed_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+					- <span class="ansi94">min_inclusion_fr_active_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+					- <span class="ansi94">min_num_unique_aclu_inclusions</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
 		- <span class="ansi94">is_resolved</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
 		- <span class="ansi94">resolved_required_filespecs_dict</span>: <span class="ansi92"></span><span class="ansi1 ansi92">dict</span>
-			- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.xml</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
+			- <span class="ansi94">W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.xml</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
 				- <span class="ansi94">fileSpecString</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">suggestedBaseName</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">description</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">session_load_callback</span>: <span class="ansi92"></span><span class="ansi1 ansi92">method</span>
-			- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.spikeII.mat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
+			- <span class="ansi94">W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.spikeII.mat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
 				- <span class="ansi94">fileSpecString</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">suggestedBaseName</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">description</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">session_load_callback</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
-			- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.position_info.mat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
+			- <span class="ansi94">W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.position_info.mat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
 				- <span class="ansi94">fileSpecString</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">suggestedBaseName</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">description</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">session_load_callback</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
-			- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.epochs_info.mat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
+			- <span class="ansi94">W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.epochs_info.mat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
 				- <span class="ansi94">fileSpecString</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">suggestedBaseName</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">description</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">session_load_callback</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
 		- <span class="ansi94">resolved_optional_filespecs_dict</span>: <span class="ansi92"></span><span class="ansi1 ansi92">dict</span>
-			- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.eeg</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
+			- <span class="ansi94">W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.eeg</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
 				- <span class="ansi94">fileSpecString</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">suggestedBaseName</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">description</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">session_load_callback</span>: <span class="ansi92"></span><span class="ansi1 ansi92">method</span>
-			- <span class="ansi94">W:\Data\KDIBA\gor01\two\2006-6-07_16-40-19\2006-6-07_16-40-19.dat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
+			- <span class="ansi94">W:\Data\KDIBA\gor01\one\2006-6-08_14-26-15\2006-6-08_14-26-15.dat</span>: <span class="ansi92">neuropy.core.session.Formats.</span><span class="ansi1 ansi92">SessionFileSpec</span>
 				- <span class="ansi94">fileSpecString</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">suggestedBaseName</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 				- <span class="ansi94">description</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
@@ -71,36 +87,51 @@
 		- <span class="ansi94">position_sampling_rate_Hz</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
 	- <span class="ansi94">active_epochs</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">NamedTimerange</span>
 		- <span class="ansi94">name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
-		- <span class="ansi94">start_end_times</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (2,)
-	- <span class="ansi94">video_output_config</span>: <span class="ansi92">pyphoplacecellanalysis.General.Configs.</span><span class="ansi1 ansi92">VideoOutputModeConfig</span>
+		- <span class="ansi94">start_end_times</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (2,)
+	- <span class="ansi94">video_output_config</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.Configs.</span><span class="ansi1 ansi92">VideoOutputModeConfig</span>
 		- <span class="ansi94">active_frame_range</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (20,)
 		- <span class="ansi94">video_output_parent_dir</span>: <span class="ansi92"></span><span class="ansi1 ansi92">WindowsPath</span>
 		- <span class="ansi94">active_is_video_output_mode</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
 		- <span class="ansi94">active_video_output_parent_dir</span>: <span class="ansi92"></span><span class="ansi1 ansi92">WindowsPath</span>
 		- <span class="ansi94">active_video_output_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 		- <span class="ansi94">active_video_output_fullpath</span>: <span class="ansi92"></span><span class="ansi1 ansi92">WindowsPath</span>
-	- <span class="ansi94">plotting_config</span>: <span class="ansi92">pyphoplacecellanalysis.General.Configs.</span><span class="ansi1 ansi92">PlottingConfig</span>
+	- <span class="ansi94">plotting_config</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.Configs.</span><span class="ansi1 ansi92">PlottingConfig</span>
 		- <span class="ansi94">output_subplots_shape</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
 		- <span class="ansi94">output_parent_dir</span>: <span class="ansi92"></span><span class="ansi1 ansi92">WindowsPath</span>
 		- <span class="ansi94">use_age_proportional_spike_scale</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
 		- <span class="ansi94">plotter_type</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
 		- <span class="ansi94">subplots_shape</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
 		- <span class="ansi94">active_output_parent_dir</span>: <span class="ansi92"></span><span class="ansi1 ansi92">WindowsPath</span>
-		- <span class="ansi94">pf_neuron_identities</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (63,)
-		- <span class="ansi94">pf_sort_ind</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (63,)
-		- <span class="ansi94">pf_colors</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (4, 63)
-		- <span class="ansi94">pf_colormap</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (63, 4)
-		- <span class="ansi94">pf_listed_colormap</span>: <span class="ansi92">matplotlib.</span><span class="ansi1 ansi92">ListedColormap</span><span class="ansi93"> (children omitted)</span> - OMITTED TYPE WITH NO SHAPE
+		- <span class="ansi94">pf_neuron_identities</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (81,)
+		- <span class="ansi94">pf_sort_ind</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (81,)
+		- <span class="ansi94">pf_colors</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (4, 81)
+		- <span class="ansi94">pf_colormap</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (81, 4)
+		- <span class="ansi94">pf_listed_colormap</span>: <span class="ansi92">matplotlib.</span><span class="ansi1 ansi92">ListedColormap</span>
+			- <span class="ansi94">monochrome</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+			- <span class="ansi94">colors</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (81, 4)
+			- <span class="ansi94">name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span>
+			- <span class="ansi94">N</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+			- <span class="ansi94">_rgba_bad</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (4,)
+			- <span class="ansi94">_rgba_under</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+			- <span class="ansi94">_rgba_over</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+			- <span class="ansi94">_i_under</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+			- <span class="ansi94">_i_over</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+			- <span class="ansi94">_i_bad</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+			- <span class="ansi94">_isinit</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+			- <span class="ansi94">colorbar_extend</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
 		- <span class="ansi94">use_smoothed_maze_rendering</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
 	- <span class="ansi94">computation_config</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">DynamicContainer</span>
 		- <span class="ansi94">pf_params</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PlacefieldComputationParameters</span>
-			- <span class="ansi94">speed_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+			- <span class="ansi94">speed_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
 			- <span class="ansi94">grid_bin</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
-			- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
+			- <span class="ansi94">grid_bin_bounds</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2, 2)
 			- <span class="ansi94">smooth</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (2,)
-			- <span class="ansi94">frate_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+			- <span class="ansi94">frate_thresh</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
 			- <span class="ansi94">time_bin_size</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
-			- <span class="ansi94">computation_epochs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+			- <span class="ansi94">computation_epochs</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Epoch</span>
+				- <span class="ansi94">_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+				- <span class="ansi94">_metadata</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span>
+				- <span class="ansi94">_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (40, 6)
 		- <span class="ansi94">spike_analysis</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">DynamicContainer</span>
 			- <span class="ansi94">max_num_spikes_per_neuron</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
 			- <span class="ansi94">kleinberg_parameters</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">DynamicContainer</span>
