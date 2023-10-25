@@ -100,6 +100,7 @@ panel = "^1.2.3"
 params = "^0.9.0"
 jupyter-bokeh = "^3.0.7"
 findpeaks = "^2.5.4"
+qtvoila = "^2.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
