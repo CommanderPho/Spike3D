@@ -133,7 +133,8 @@
 			"ohyee.custom-button",
 			"orepor.color-tabs-vscode-ext",
 			"ryu1kn.partial-diff",
-			"rebornix.toggle"
+			"rebornix.toggle",
+			"amodio.restore-editors"
 		]
 	}
 }
