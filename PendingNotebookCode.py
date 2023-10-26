@@ -25,52 +25,8 @@ _debug_print = False
 # ==================================================================================================================== #
 # 2023-10-26 - Directional Placefields to generate four templates                                                      #
 # ==================================================================================================================== #
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalLapsHelpers
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder
+# from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalLapsHelpers
 
-
-def build_directional_constrained_decoders(curr_active_pipeline):
-    """ 2023-10-26 - Builds the four templates for the directioanl placefields """
-    long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
-    odd_laps_suffix, even_laps_suffix = DirectionalLapsHelpers.split_directional_laps_name_parts
-
-    long_odd_laps_name, long_even_laps_name = [f'{long_epoch_name}_{a_suffix}' for a_suffix in (odd_laps_suffix, even_laps_suffix)]
-    short_odd_laps_name, short_even_laps_name = [f'{short_epoch_name}_{a_suffix}' for a_suffix in (odd_laps_suffix, even_laps_suffix)]
-
-    print(long_odd_laps_name, long_even_laps_name, short_odd_laps_name, short_even_laps_name) # ('maze1_odd_laps', 'maze1_even_laps', 'maze2_odd_laps', 'maze2_even_laps')
-
-    # Unpacking for non-direction specific epochs (to get the replays, etc):
-    long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    long_replays, short_replays, global_replays = [a_session.replay for a_session in [long_session, short_session, global_session]]
-
-    # Unpacking for `(long_odd_laps_name, long_even_laps_name, short_odd_laps_name, short_even_laps_name)`
-    (long_odd_laps_context, long_even_laps_context, short_odd_laps_context, short_even_laps_context) = [curr_active_pipeline.filtered_contexts[a_name] for a_name in (long_odd_laps_name, long_even_laps_name, short_odd_laps_name, short_even_laps_name)]
-    (long_odd_laps_obj, long_even_laps_obj, short_odd_laps_obj, short_even_laps_obj) = [Epoch(curr_active_pipeline.sess.epochs.to_dataframe().epochs.label_slice(an_epoch_name)) for an_epoch_name in (long_odd_laps_name, long_even_laps_name, short_odd_laps_name, short_even_laps_name)]
-    (long_odd_laps_session, long_even_laps_session, short_odd_laps_session, short_even_laps_session) = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in (long_odd_laps_name, long_even_laps_name, short_odd_laps_name, short_even_laps_name)]
-    (long_odd_laps_results, long_even_laps_results, short_odd_laps_results, short_even_laps_results) = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in (long_odd_laps_name, long_even_laps_name, short_odd_laps_name, short_even_laps_name)]
-    (long_odd_laps_computation_config, long_even_laps_computation_config, short_odd_laps_computation_config, short_even_laps_computation_config) = [curr_active_pipeline.computation_results[an_epoch_name]['computation_config'] for an_epoch_name in (long_odd_laps_name, long_even_laps_name, short_odd_laps_name, short_even_laps_name)]
-    (long_odd_laps_pf1D, long_even_laps_pf1D, short_odd_laps_pf1D, short_even_laps_pf1D) = (long_odd_laps_results.pf1D, long_even_laps_results.pf1D, short_odd_laps_results.pf1D, short_even_laps_results.pf1D)
-    (long_odd_laps_pf2D, long_even_laps_pf2D, short_odd_laps_pf2D, short_even_laps_pf2D) = (long_odd_laps_results.pf2D, long_even_laps_results.pf2D, short_odd_laps_results.pf2D, short_even_laps_results.pf2D)
-
-    # Validate:
-    assert not (curr_active_pipeline.computation_results[long_odd_laps_name]['computation_config']['pf_params'].computation_epochs is curr_active_pipeline.computation_results[long_even_laps_name]['computation_config']['pf_params'].computation_epochs)
-    assert not (curr_active_pipeline.computation_results[short_odd_laps_name]['computation_config']['pf_params'].computation_epochs is curr_active_pipeline.computation_results[long_even_laps_name]['computation_config']['pf_params'].computation_epochs)
-
-    ## Build the `BasePositionDecoder` for each of the four templates analagous to what is done in `_long_short_decoding_analysis_from_decoders`:
-    long_odd_laps_one_step_decoder_1D, long_even_laps_one_step_decoder_1D, short_odd_laps_one_step_decoder_1D, short_even_laps_one_step_decoder_1D  = [BasePositionDecoder.init_from_stateful_decoder(deepcopy(results_data.get('pf1D_Decoder', None))) for results_data in (long_odd_laps_results, long_even_laps_results, short_odd_laps_results, short_even_laps_results)]
-
-    # Prune to the shared aclus in both epochs (short/long):
-    active_neuron_IDs_list = [a_decoder.neuron_IDs for a_decoder in (long_odd_laps_one_step_decoder_1D, long_even_laps_one_step_decoder_1D, short_odd_laps_one_step_decoder_1D, short_even_laps_one_step_decoder_1D)]
-
-    # Find only the common aclus amongst all four templates:
-    shared_aclus = np.array(list(set.intersection(*map(set,active_neuron_IDs_list)))) # array([ 6,  7,  8, 11, 15, 16, 20, 24, 25, 26, 31, 33, 34, 35, 39, 40, 45, 46, 50, 51, 52, 53, 54, 55, 56, 58, 60, 61, 62, 63, 64])
-    n_neurons = len(shared_aclus)
-    print(f'n_neurons: {n_neurons}, shared_aclus: {shared_aclus}')
-
-    # build the four `*_shared_aclus_only_one_step_decoder_1D` versions of the decoders constrained only to common aclus:
-    long_odd_shared_aclus_only_one_step_decoder_1D, long_even_shared_aclus_only_one_step_decoder_1D, short_odd_shared_aclus_only_one_step_decoder_1D, short_even_shared_aclus_only_one_step_decoder_1D = [a_decoder.get_by_id(shared_aclus) for a_decoder in (long_odd_laps_one_step_decoder_1D, long_even_laps_one_step_decoder_1D, short_odd_laps_one_step_decoder_1D, short_even_laps_one_step_decoder_1D)]
-
-    return long_odd_shared_aclus_only_one_step_decoder_1D, long_even_shared_aclus_only_one_step_decoder_1D, short_odd_shared_aclus_only_one_step_decoder_1D, short_even_shared_aclus_only_one_step_decoder_1D 
 
 
 
