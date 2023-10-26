@@ -27,9 +27,6 @@ _debug_print = False
 # ==================================================================================================================== #
 # from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalLapsHelpers
 
-
-
-
 # ==================================================================================================================== #
 # 2023-10-20 - Close-to-working Rank Order Strategy:                                                                   #
 # ==================================================================================================================== #
@@ -67,10 +64,9 @@ from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
 import scipy.stats
 from scipy import ndimage
 from neuropy.utils.misc import build_shuffled_ids # used in _SHELL_analyze_leave_one_out_decoding_results
+from neuropy.utils.mixins.print_helpers import print_array
+import matplotlib.pyplot as plt
 
-def print_array(a):
-    """ computes an numpy array with the full separators for use in pasting back into code. """
-    return np.array2string(a, separator=',')
 
 @function_attributes(short_name=None, tags=['rank_order', 'shuffle', 'renormalize'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-23 13:05', related_items=[])
 def relative_re_ranking(rank_array: NDArray, filter_indicies: NDArray, debug_checking=False) -> NDArray:
@@ -232,6 +228,8 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
         selected_spikes = selected_spikes.first() # first spike times only
     elif rank_alignment == 'median':
         selected_spikes = selected_spikes.median() # median spike times only
+    elif rank_alignment == 'center_of_mass':
+        selected_spikes = compute_placefield_center_of_masses(selected_spikes)
     else:
         raise NotImplementedError(f'invalid rank_alignment specified : {rank_alignment}. valid options are [first, median, ...]')
 
@@ -360,6 +358,79 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     long_short_z_score_diff_values = np.array(long_short_z_score_diff_values)
 
     return epoch_ranked_aclus_stats_dict, (long_z_score_values, short_z_score_values, long_short_z_score_diff_values)
+
+
+class RankOrderAnalyses:
+    ## Plot Laps Analysis
+    def _plot_laps_shuffle_analysis(laps_long_short_z_score_diff_values, suffix_str=''):
+        laps_fig, laps_ax = plt.subplots()
+        laps_ax.scatter(np.arange(len(laps_long_short_z_score_diff_values)), laps_long_short_z_score_diff_values, label=f'laps{suffix_str}')
+        plt.title(f'Rank-Order Long-Short ZScore Diff for Laps over time ({suffix_str})')
+        plt.ylabel(f'Long-Short Z-Score Diff ({suffix_str})')
+        plt.xlabel('Lap Index')
+        return laps_fig, laps_ax
+
+    ## Plot Ripple-Events Analysis
+    def _plot_ripple_events_shuffle_analysis(ripple_evts_long_short_z_score_diff_values, global_replays, suffix_str=''):
+        replay_fig, replay_ax = plt.subplots()
+        # replay_ax.scatter(np.arange(len(ripple_evts_long_z_score_values)), ripple_evts_long_z_score_values, label='ripple-events')
+
+        # Plot with actual times:
+        replays_midpoint_times = global_replays.starts + ((global_replays.stops - global_replays.starts)/2.0)
+        replay_ax.scatter(replays_midpoint_times, ripple_evts_long_short_z_score_diff_values[1:], label=f'ripple-events{suffix_str}')
+        plt.title(f'Rank-Order Long-Short ZScore Diff for Ripple-Events over time ({suffix_str})')
+        plt.ylabel(f'Long-Short Z-Score Diff ({suffix_str})')
+        # plt.xlabel('Ripple Event Index')
+        plt.xlabel('Ripple Event Mid-time (t)')
+        return replay_fig, replay_ax
+
+
+    @function_attributes(short_name=None, tags=['direction_dependent', 'rank_order', 'NOT_FINISHED'], input_requires=[], output_provides=[], uses=['build_track_templates_for_shuffle', 'compute_shuffled_rankorder_analyses'], used_by=[], creation_date='2023-10-26 16:48', related_items=[])
+    def direction_dependent_rank_order_template_shuffle_analysis(long_odd_shared_aclus_only_one_step_decoder_1D, short_odd_shared_aclus_only_one_step_decoder_1D, long_even_shared_aclus_only_one_step_decoder_1D, short_even_shared_aclus_only_one_step_decoder_1D, global_spikes_df, global_laps, global_replays):
+        """ TODO 2023-10-26 - Not usable yet because of all the returns values
+
+            long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+            global_spikes_df = deepcopy(curr_active_pipeline.computation_results[global_epoch_name]['computed_data'].pf1D.spikes_df)
+            global_laps = deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].laps)
+
+        """
+        raise NotImplementedError
+        ## 2023-10-24 - Simple long/short (2-template, direction independent) analysis:
+        # shuffle_helper = build_track_templates_for_shuffle(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles=1000, bimodal_exclude_aclus=[5, 14, 25, 46, 61, 66, 86, 88, 95])
+        # shared_aclus_only_neuron_IDs = shuffle_helper.shared_aclus_only_neuron_IDs
+
+        # 2023-10-26 - Direction Dependent (4 template) analysis: long_odd_shared_aclus_only_one_step_decoder_1D, long_even_shared_aclus_only_one_step_decoder_1D, short_odd_shared_aclus_only_one_step_decoder_1D, short_even_shared_aclus_only_one_step_decoder_1D
+        odd_shuffle_helper = build_track_templates_for_shuffle(long_odd_shared_aclus_only_one_step_decoder_1D, short_odd_shared_aclus_only_one_step_decoder_1D, num_shuffles=60, bimodal_exclude_aclus=[])
+        even_shuffle_helper = build_track_templates_for_shuffle(long_even_shared_aclus_only_one_step_decoder_1D, short_even_shared_aclus_only_one_step_decoder_1D, num_shuffles=60, bimodal_exclude_aclus=[])
+        shared_aclus_only_neuron_IDs = odd_shuffle_helper.shared_aclus_only_neuron_IDs # same for both shuffler_helpers
+
+        # shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs = astuple(shuffle_helper)
+        active_spikes_df = deepcopy(global_spikes_df).spikes.sliced_by_neuron_id(shared_aclus_only_neuron_IDs)
+
+        if isinstance(global_replays, pd.DataFrame):
+            global_replays = Epoch(global_replays.epochs.get_valid_df())
+
+        ## Replay Epochs:
+        # ripple_evts_epoch_ranked_aclus_stats_dict, (ripple_evts_long_z_score_values, ripple_evts_short_z_score_values, ripple_evts_long_short_z_score_diff_values) = compute_shuffled_rankorder_analyses(active_spikes_df, deepcopy(global_replays), shuffle_helper, rank_alignment='first', debug_print=False)
+        odd_ripple_evts_epoch_ranked_aclus_stats_dict, (odd_ripple_evts_long_z_score_values, odd_ripple_evts_short_z_score_values, odd_ripple_evts_long_short_z_score_diff_values) = compute_shuffled_rankorder_analyses(active_spikes_df, deepcopy(global_replays), odd_shuffle_helper, rank_alignment='first', debug_print=False)
+        even_ripple_evts_epoch_ranked_aclus_stats_dict, (even_ripple_evts_long_z_score_values, even_ripple_evts_short_z_score_values, even_ripple_evts_long_short_z_score_diff_values) = compute_shuffled_rankorder_analyses(active_spikes_df, deepcopy(global_replays), even_shuffle_helper, rank_alignment='first', debug_print=False)
+
+        ripple_evts_paired_tests = [pho_stats_paired_t_test(ripple_evts_long_z_score_values, ripple_evts_short_z_score_values) for ripple_evts_long_z_score_values, ripple_evts_short_z_score_values in zip((odd_ripple_evts_long_z_score_values, odd_ripple_evts_short_z_score_values), (even_ripple_evts_long_z_score_values, even_ripple_evts_short_z_score_values))]
+
+        ## Laps Epochs:
+        # TODO: CenterOfMass for Laps instead of median spike
+        odd_laps_epoch_ranked_aclus_stats_dict, (odd_laps_long_z_score_values, odd_laps_short_z_score_values, odd_laps_long_short_z_score_diff_values) = compute_shuffled_rankorder_analyses(active_spikes_df, deepcopy(global_laps), odd_shuffle_helper, rank_alignment='median', debug_print=False)
+        even_laps_epoch_ranked_aclus_stats_dict, (even_laps_long_z_score_values, even_laps_short_z_score_values, even_laps_long_short_z_score_diff_values) = compute_shuffled_rankorder_analyses(active_spikes_df, deepcopy(global_laps), even_shuffle_helper, rank_alignment='median', debug_print=False)
+
+        laps_paired_tests = [pho_stats_paired_t_test(ripple_evts_long_z_score_values, ripple_evts_short_z_score_values) for ripple_evts_long_z_score_values, ripple_evts_short_z_score_values in zip((odd_laps_long_z_score_values, odd_laps_short_z_score_values), (even_laps_long_z_score_values, even_laps_short_z_score_values))]
+
+
+        ## Plots:
+        replay_fig, replay_ax = _plot_ripple_events_shuffle_analysis(odd_ripple_evts_long_short_z_score_diff_values, global_replays, suffix_str='_odd')
+        replay_fig, replay_ax = _plot_ripple_events_shuffle_analysis(even_ripple_evts_long_short_z_score_diff_values, global_replays, suffix_str='_even')
+
+        laps_fig, laps_ax = _plot_laps_shuffle_analysis(odd_laps_long_short_z_score_diff_values, suffix_str='_odd')
+        laps_fig, laps_ax = _plot_laps_shuffle_analysis(even_laps_long_short_z_score_diff_values, suffix_str='_even')
 
 
 
