@@ -53,7 +53,10 @@
 			"notebook.focusedCellBorder": "#ffff00da",
 			"notebook.focusedEditorBorder": "#f6ff00",
 			"notebook.inactiveFocusedCellBorder": "#ffff0063",
-			"titleBar.inactiveBackground": "#53c7628e"
+			"titleBar.inactiveBackground": "#53c7628e",
+			"tab.activeBorder": "#2F3C2E",
+			"statusBar.background": "#2F3C2E",
+			"statusBar.foreground": "#ffffff"
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
@@ -88,7 +91,21 @@
 		"qtForPython.uic.liveExecution.enabled": false,
 		"notebook.cellToolbarVisibility": "hover",
 		"notebook.diff.ignoreOutputs": true,
-		"bookmarks.label.suggestion": "dontUse"
+		"bookmarks.label.suggestion": "dontUse",
+		"colorTabs.config": [
+			{
+				"regex": "Spike3D/LibrariesExamples\\.*"
+			},
+			{
+				"regex": ".*/../../../NeuroPy/neuropy/**/*.py"
+			},
+			{
+				"regex": ".*/EXTERNAL/.*"
+			},
+			{
+				"regex": ".*/templating/.*"
+			}
+		]
 	},
 	"tasks": {
 		"version": "2.0.0",
