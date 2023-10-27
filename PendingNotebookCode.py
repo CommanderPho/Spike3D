@@ -207,7 +207,7 @@ class ShuffleHelper:
     @classmethod
     def init_from_long_short_shared_aclus_only_decoders(cls, long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles: int = 100, bimodal_exclude_aclus = [5, 14, 25, 46, 61, 66, 86, 88, 95]) -> "ShuffleHelper":
         """ two (long/short) decoders only version."""
-        return cls.init_from_shared_aclus_only_decoders(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles, bimodal_exclude_aclus)
+        return cls.init_from_shared_aclus_only_decoders(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles=num_shuffles, bimodal_exclude_aclus=bimodal_exclude_aclus)
     
 
 
@@ -253,7 +253,8 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
         
 
     """
-    shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs = astuple(shuffle_helper)
+    shared_aclus_only_neuron_IDs, is_good_aclus, shuffled_aclus, shuffle_IDXs, (long_pf_peak_ranks, short_pf_peak_ranks) = astuple(shuffle_helper)
+
     # epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = SpikesRankOrder.compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
     # epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = SpikesRankOrder.compute_rankordered_stats(epoch_ranked_aclus_dict)
 
