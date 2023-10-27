@@ -70,40 +70,99 @@ import matplotlib.pyplot as plt
 
 @function_attributes(short_name=None, tags=['rank_order', 'shuffle', 'renormalize'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-23 13:05', related_items=[])
 def relative_re_ranking(rank_array: NDArray, filter_indicies: NDArray, debug_checking=False) -> NDArray:
-	""" Re-index the rank_array once filtered flat to extract the global ranks. 
+    """ Re-index the rank_array once filtered flat to extract the global ranks. 
         
     Idea: During each ripple event epoch, only a subset of all cells are active. As a result, we need to extract valid ranks from the epoch's subset so they can be compared directly to the ranks within that epoch.
 
-	"""
-	if debug_checking:
-		global_max_rank = np.max(rank_array)
-		global_min_rank = np.min(rank_array) # should be 1.0
-		print(f'global_max_rank: {global_max_rank}, global_min_rank: {global_min_rank}')
-	subset_rank_array = rank_array[filter_indicies]
-	if debug_checking:
-		subset_max_rank = np.max(subset_rank_array)
-		subset_min_rank = np.min(subset_rank_array)
-		print(f'subset_rank_array: {subset_rank_array}, subset_max_rank: {subset_max_rank}, subset_min_rank: {subset_min_rank}')
-	subset_rank_array = scipy.stats.rankdata(subset_rank_array) # re-rank the subset 
-	if debug_checking:
-		re_subset_max_rank = np.max(subset_rank_array)
-		re_subset_min_rank = np.min(subset_rank_array)
-		print(f're_subset_rank_array: {subset_rank_array}, re_subset_max_rank: {re_subset_max_rank}, re_subset_min_rank: {re_subset_min_rank}')
-	return subset_rank_array
+    """
+    if debug_checking:
+        global_max_rank = np.max(rank_array)
+        global_min_rank = np.min(rank_array) # should be 1.0
+        print(f'global_max_rank: {global_max_rank}, global_min_rank: {global_min_rank}')
+    subset_rank_array = rank_array[filter_indicies]
+    if debug_checking:
+        subset_max_rank = np.max(subset_rank_array)
+        subset_min_rank = np.min(subset_rank_array)
+        print(f'subset_rank_array: {subset_rank_array}, subset_max_rank: {subset_max_rank}, subset_min_rank: {subset_min_rank}')
+    subset_rank_array = scipy.stats.rankdata(subset_rank_array) # re-rank the subset 
+    if debug_checking:
+        re_subset_max_rank = np.max(subset_rank_array)
+        re_subset_min_rank = np.min(subset_rank_array)
+        print(f're_subset_rank_array: {subset_rank_array}, re_subset_max_rank: {re_subset_max_rank}, re_subset_min_rank: {re_subset_min_rank}')
+    return subset_rank_array
 
 
 def compute_placefield_center_of_masses(tuning_curves):
     return np.squeeze(np.array([ndimage.center_of_mass(x) for x in tuning_curves]))
+
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder # used in TrackTemplates
+
+@define(slots=False, repr=False)
+class TrackTemplates:
+    """ Holds the four directional templates for direction placefield analysis.
+    from PendingNotebookCode import TrackTemplates
+    
+    History:
+        Based off of `ShuffleHelper` on 2023-10-27
+        TODO: eliminate functional overlap with `ShuffleHelper`
+    """
+    long_LR_decoder: BasePositionDecoder = field()
+    long_RL_decoder: BasePositionDecoder = field()
+    short_LR_decoder: BasePositionDecoder = field()
+    short_RL_decoder: BasePositionDecoder = field()
+    
+    shared_aclus_only_neuron_IDs: NDArray = field()
+    is_good_aclus: NDArray = field()
+
+    ## Computed properties
+    decoder_pf_peak_ranks_list: List = field()
+    
+    @classmethod
+    def init_from_shared_aclus_only_decoders(cls, long_LR_decoder: BasePositionDecoder, long_RL_decoder: BasePositionDecoder, short_LR_decoder: BasePositionDecoder, short_RL_decoder: BasePositionDecoder, bimodal_exclude_aclus=None) -> "ShuffleHelper":
+        """ 
+        """        
+        shared_aclus_only_neuron_IDs = deepcopy(long_LR_decoder.neuron_IDs)
+
+        # Exclude the bimodal cells:
+        if bimodal_exclude_aclus is None:
+            bimodal_exclude_aclus = []
+
+        is_good_aclus = np.logical_not(np.isin(shared_aclus_only_neuron_IDs, bimodal_exclude_aclus))
+        shared_aclus_only_neuron_IDs = shared_aclus_only_neuron_IDs[is_good_aclus]
+
+        ## 2023-10-11 - Get the long/short peak locations
+        decoder_peak_coms_list = [a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses[is_good_aclus] for a_decoder in (long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder)]
+        ## Compute the ranks:
+        decoder_pf_peak_ranks_list = [scipy.stats.rankdata(a_peaks_com, method='dense') for a_peaks_com in decoder_peak_coms_list]
+        # return shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs
+        return cls(long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder, shared_aclus_only_neuron_IDs, is_good_aclus, decoder_pf_peak_ranks_list=decoder_pf_peak_ranks_list)
 
 
 @define()
 class ShuffleHelper:
     shared_aclus_only_neuron_IDs = field()
     is_good_aclus = field()
-    long_pf_peak_ranks = field()
-    short_pf_peak_ranks = field()
     shuffled_aclus = field()
     shuffle_IDX = field()
+    
+    decoder_pf_peak_ranks_list = field()
+    
+    # long_pf_peak_ranks = field()
+    # short_pf_peak_ranks = field()
+
+    @property
+    def long_pf_peak_ranks(self):
+        """ 2023-10-27 - for backwards compat. """
+        assert len(self.decoder_pf_peak_ranks_list) >= 2
+        return self.decoder_pf_peak_ranks_list[0]
+
+    @property
+    def short_pf_peak_ranks(self):
+        """ 2023-10-27 - for backwards compat. """
+        assert len(self.decoder_pf_peak_ranks_list) >= 2
+        return self.decoder_pf_peak_ranks_list[1]
+
+
 
     def to_tuple(self):
         """ 
@@ -117,8 +176,11 @@ class ShuffleHelper:
         return scipy.stats.rankdata(compute_placefield_center_of_masses(a_decoder.pf.ratemap.pdf_normalized_tuning_curves), method='dense')
 
     @classmethod
-    def init_from_long_short_shared_aclus_only_decoders(cls, long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles: int = 100, bimodal_exclude_aclus = [5, 14, 25, 46, 61, 66, 86, 88, 95]) -> "ShuffleHelper":
-        shared_aclus_only_neuron_IDs = deepcopy(long_shared_aclus_only_decoder.neuron_IDs)
+    def init_from_shared_aclus_only_decoders(cls, *decoder_args, num_shuffles: int = 100, bimodal_exclude_aclus=[]) -> "ShuffleHelper":
+        assert len(decoder_args) > 0
+        
+        shared_aclus_only_neuron_IDs = deepcopy(decoder_args[0].neuron_IDs)
+
         # Exclude the bimodal cells:
         if bimodal_exclude_aclus is None:
             bimodal_exclude_aclus = []
@@ -131,36 +193,24 @@ class ShuffleHelper:
         # shared_aclus_only_neuron_IDs, is_good_aclus, shuffled_aclus, shuffle_IDXs 
 
         ## 2023-10-11 - Get the long/short peak locations
-        long_com, short_com = [compute_placefield_center_of_masses(curve) for curve in (long_shared_aclus_only_decoder.pf.ratemap.pdf_normalized_tuning_curves, short_shared_aclus_only_decoder.pf.ratemap.pdf_normalized_tuning_curves)]
-        long_peaks_com = long_com[is_good_aclus]
-        short_peaks_com = short_com[is_good_aclus]
+        decoder_peak_coms_list = [a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses[is_good_aclus] for a_decoder in decoder_args]
 
-        # long_peak_bin_indicies = long_shared_aclus_only_decoder.peak_indicies[is_good_aclus]
-        # short_peaks_bin_indicies = short_shared_aclus_only_decoder.peak_indicies[is_good_aclus]
-
-        # long_peaks = long_peak_bin_indicies
-        # short_peaks = short_peaks_bin_indicies
-
-        # long_peaks_dict, short_peaks_dict = [dict(zip(shared_aclus_only_neuron_IDs, peaks)) for peaks in (long_peaks, short_peaks)]
-        # long_peaks_series, short_peaks_series = [pd.Series(data=peaks, index=shared_aclus_only_neuron_IDs) for peaks in (long_peaks, short_peaks)]
-        # long_peaks_series, short_peaks_series = [pd.Series(data=peaks, index=shared_aclus_only_neuron_IDs) for peaks in (long_peaks_com, long_peaks_com)]
 
         ## Compute the ranks:
-        long_pf_peak_ranks, short_pf_peak_ranks = [scipy.stats.rankdata(a_peaks_com, method='dense') for a_peaks_com in (long_peaks_com, short_peaks_com)]
-        # long_pf_peak_ranks, short_pf_peak_ranks = [a_peaks_series.rank(method='dense') for a_peaks_series in (long_peaks_series, short_peaks_series)]
-
-
-        # template_peaks_df = pd.DataFrame({'aclu': shared_aclus_only_neuron_IDs, 'long_peak': long_peaks, 'long_com': long_peaks_com, 'short_peak': short_peaks, 'short_com': short_peaks_com})
-
-        # # #TEMP: as a workaround for duplicated values, drop duplicate rows in columns: 'long_peak', 'short_peak'
-        # # template_peaks_df = template_peaks_df.drop_duplicates(subset=['long_peak', 'short_peak'])
-        # template_peaks_df
-        # display(long_pf_peak_ranks)
-        # display(short_pf_peak_ranks)
-
-
+        decoder_pf_peak_ranks_list = [scipy.stats.rankdata(a_peaks_com, method='dense') for a_peaks_com in decoder_peak_coms_list]
+        
         # return shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs
-        return cls(shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs)
+        return cls(shared_aclus_only_neuron_IDs, is_good_aclus, shuffled_aclus, shuffle_IDXs, decoder_pf_peak_ranks_list=decoder_pf_peak_ranks_list)
+
+
+
+    @classmethod
+    def init_from_long_short_shared_aclus_only_decoders(cls, long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles: int = 100, bimodal_exclude_aclus = [5, 14, 25, 46, 61, 66, 86, 88, 95]) -> "ShuffleHelper":
+        """ two (long/short) decoders only version."""
+        return cls.init_from_shared_aclus_only_decoders(long_shared_aclus_only_decoder, short_shared_aclus_only_decoder, num_shuffles, bimodal_exclude_aclus)
+    
+
+
 
 
 @define()
