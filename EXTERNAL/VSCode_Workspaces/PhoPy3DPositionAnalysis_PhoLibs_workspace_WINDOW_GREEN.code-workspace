@@ -106,7 +106,8 @@
 				"regex": ".*/templating/.*"
 			}
 		],
-		"python.analysis.stubPath": ""
+		"python.analysis.stubPath": "",
+		"python.analysis.enablePytestSupport": false
 	},
 	"tasks": {
 		"version": "2.0.0",
