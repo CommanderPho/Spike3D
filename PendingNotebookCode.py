@@ -67,6 +67,7 @@ from neuropy.utils.misc import build_shuffled_ids # used in _SHELL_analyze_leave
 from neuropy.utils.mixins.print_helpers import print_array
 import matplotlib.pyplot as plt
 
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 
 @function_attributes(short_name=None, tags=['rank_order', 'shuffle', 'renormalize'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-23 13:05', related_items=[])
 def relative_re_ranking(rank_array: NDArray, filter_indicies: NDArray, debug_checking=False) -> NDArray:
@@ -259,7 +260,7 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     # epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = SpikesRankOrder.compute_rankordered_stats(epoch_ranked_aclus_dict)
 
     active_spikes_df, active_aclu_to_fragile_linear_neuron_IDX_dict = active_spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs() # NOTE: `active_aclu_to_fragile_linear_neuron_IDX_dict` is actually pretty important here. It's an ordered dict that maps each aclu to a flat neuronIDX!
-    unique_neuron_identities = active_spikes_df.spikes.extract_unique_neuron_identities()
+    # unique_neuron_identities = active_spikes_df.spikes.extract_unique_neuron_identities()
     # [['t_rel_seconds', 'shank', 'cluster', 'aclu', 'qclu', 'traj', 'lap', 'maze_relative_lap', 'flat_spike_idx', 'maze_id', 'fragile_linear_neuron_IDX', 'neuron_type', 'PBE_id']]
     # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
     active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1)[['t_rel_seconds', 'shank', 'cluster', 'aclu', 'qclu', 'traj', 'lap', 'maze_relative_lap', 'maze_id', 'fragile_linear_neuron_IDX', 'neuron_type', 'flat_spike_idx', 'PBE_id', 'Probe_Epoch_id']]
@@ -284,10 +285,7 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     else:
         raise NotImplementedError(f'invalid rank_alignment specified : {rank_alignment}. valid options are [first, median, ...]')
 
-    # selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spike times only
-    # selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spike times only
-
-
+    
     # rank the aclu values by their first t value in each Probe_Epoch_id
     ranked_aclus = selected_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
 
@@ -434,6 +432,74 @@ class RankOrderAnalyses:
         # plt.xlabel('Ripple Event Index')
         plt.xlabel('Ripple Event Mid-time (t)')
         return replay_fig, replay_ax
+
+
+    def _perform_plot_z_score_raw(global_laps, odd_laps_long_z_score_values, odd_laps_short_z_score_values, even_laps_long_z_score_values, even_laps_short_z_score_values):
+        """ plots the raw z-scores for each of the four templates 
+
+        Usage:
+            app, win, p1, (long_even_out_plot_1D, long_odd_out_plot_1D, short_even_out_plot_1D, short_odd_out_plot_1D) = _perform_plot_z_score_raw(global_laps, odd_laps_long_z_score_values, odd_laps_short_z_score_values, even_laps_long_z_score_values, even_laps_short_z_score_values)
+
+        """
+        app = pg.mkQApp("Rank Order Laps Epoch Debugger")
+        win = pg.GraphicsLayoutWidget(show=True, title="Rank-Order (Raw) Laps Epoch Debugger")
+        win.setWindowTitle('Rank Order (Raw) Laps Epoch Debugger')
+        label = pg.LabelItem(justify='right')
+        win.addItem(label)
+        p1 = win.addPlot(row=1, col=0, title='Rank-Order Long-Short ZScore (Raw) for Laps over time', left='Z-Score (Raw)', bottom='Lap Index')
+        p1.addLegend()
+        p1.showGrid(x=False, y=True, alpha=1.0) # p1 is a new_ax
+
+        # epoch_idx_list = np.arange(len(even_laps_long_short_z_score_diff_values))
+        epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
+
+        # even_laps_long_z_score_values = even_laps_long_z_score_values[1:]
+        # odd_laps_long_z_score_values = odd_laps_long_z_score_values[1:]
+        # even_laps_short_z_score_values = even_laps_short_z_score_values[1:]
+        # odd_laps_short_z_score_values = odd_laps_short_z_score_values[1:]
+
+        long_even_out_plot_1D = p1.plot(epoch_idx_list, even_laps_long_z_score_values, pen=None, symbolBrush='orange', symbolPen='w', symbol='o', name='long_even') ## setting pen=None disables line drawing
+        long_odd_out_plot_1D = p1.plot(epoch_idx_list, odd_laps_long_z_score_values, pen=None, symbolBrush='red', symbolPen='w', symbol='p', name='long_odd') ## setting pen=None disables line drawing
+        short_even_out_plot_1D = p1.plot(epoch_idx_list, even_laps_short_z_score_values, pen=None, symbolBrush='blue', symbolPen='w', symbol='p', name='short_even') ## setting pen=None disables line drawing
+        short_odd_out_plot_1D = p1.plot(epoch_idx_list, odd_laps_short_z_score_values, pen=None, symbolBrush='teal', symbolPen='w', symbol='p', name='short_odd') ## setting pen=None disables line drawing
+        return app, win, p1, (long_even_out_plot_1D, long_odd_out_plot_1D, short_even_out_plot_1D, short_odd_out_plot_1D)
+
+    def _perform_plot_z_score_diff(global_laps, odd_laps_long_z_score_values, odd_laps_short_z_score_values):
+        """ plots the z-score differences 
+        Usage:
+            app, win, p1, (even_out_plot_1D, odd_out_plot_1D) = _perform_plot_z_score_diff(global_laps, even_laps_long_short_z_score_diff_values, odd_laps_long_short_z_score_diff_values)
+        """
+        app = pg.mkQApp("Rank Order Laps Epoch Debugger")
+        win = pg.GraphicsLayoutWidget(show=True, title="Rank Order Laps Epoch Debugger")
+        win.setWindowTitle('Rank Order Laps Epoch Debugger')
+        label = pg.LabelItem(justify='right')
+        win.addItem(label)
+        p1 = win.addPlot(row=1, col=0, title='Rank-Order Long-Short ZScore Diff for Laps over time', left='Long-Short Z-Score Diff', bottom='Lap Index')
+        p1.addLegend()
+        p1.showGrid(x=False, y=True, alpha=1.0) # p1 is a new_ax
+
+        # p2 = win.addPlot(row=2, col=0)
+
+        # laps_fig, laps_ax = plt.subplots()
+        # laps_ax.scatter(np.arange(len(laps_long_short_z_score_diff_values)), laps_long_short_z_score_diff_values, label=f'laps{suffix_str}')
+        # plt.title(f'Rank-Order Long-Short ZScore Diff for Laps over time ({suffix_str})')
+        # plt.ylabel(f'Long-Short Z-Score Diff ({suffix_str})')
+        # plt.xlabel('Lap Index')
+
+        # epoch_idx_list = np.arange(len(even_laps_long_short_z_score_diff_values))
+        epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
+        # out_plot_1D = pg.plot(epoch_idx_list, even_laps_long_short_z_score_diff_values[1:], pen=None, symbol='o', title='Rank-Order Long-Short ZScore Diff for Laps over time', left='Long-Short Z-Score Diff', bottom='Lap Index') ## setting pen=None disables line drawing
+
+        # even_laps_long_short_z_score_diff_values = even_laps_long_short_z_score_diff_values[1:]
+        # odd_laps_long_short_z_score_diff_values = odd_laps_long_short_z_score_diff_values[1:]
+
+        even_out_plot_1D = p1.plot(epoch_idx_list, even_laps_long_short_z_score_diff_values, pen=None, symbolBrush='orange', symbolPen='w', symbol='o', name='even') ## setting pen=None disables line drawing
+        odd_out_plot_1D = p1.plot(epoch_idx_list, odd_laps_long_short_z_score_diff_values, pen=None, symbolBrush='blue', symbolPen='w', symbol='p', name='odd') ## setting pen=None disables line drawing
+
+        return app, win, p1, (even_out_plot_1D, odd_out_plot_1D)
+
+
+
 
 
     @function_attributes(short_name=None, tags=['direction_dependent', 'rank_order', 'NOT_FINISHED'], input_requires=[], output_provides=[], uses=['build_track_templates_for_shuffle', 'compute_shuffled_rankorder_analyses'], used_by=[], creation_date='2023-10-26 16:48', related_items=[])
