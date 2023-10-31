@@ -1,6 +1,6 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
 from copy import deepcopy
-from typing import Any, List
+from typing import Any, List, Tuple
 from matplotlib.colors import ListedColormap
 from pathlib import Path
 from neuropy.core import Epoch
@@ -189,31 +189,72 @@ class TrackTemplates:
     short_LR_decoder: BasePositionDecoder = field()
     short_RL_decoder: BasePositionDecoder = field()
     
-    shared_aclus_only_neuron_IDs: NDArray = field()
-    is_good_aclus: NDArray = field()
+    # shared_aclus_only_neuron_IDs: NDArray = field()
+    # is_good_aclus: NDArray = field()
+
+    # ## Computed properties
+    # decoder_pf_peak_ranks_list: List = field()
+
+
+    shared_LR_aclus_only_neuron_IDs: NDArray = field()
+    is_good_LR_aclus: NDArray = field()
+    
+    shared_RL_aclus_only_neuron_IDs: NDArray = field()
+    is_good_RL_aclus: NDArray = field()
+
 
     ## Computed properties
-    decoder_pf_peak_ranks_list: List = field()
+    decoder_LR_pf_peak_ranks_list: List = field()
+    decoder_RL_pf_peak_ranks_list: List = field()
+
+
+
+    # @classmethod
+    # def init_from_shared_aclus_only_decoders(cls, long_LR_decoder: BasePositionDecoder, long_RL_decoder: BasePositionDecoder, short_LR_decoder: BasePositionDecoder, short_RL_decoder: BasePositionDecoder, bimodal_exclude_aclus=None) -> "ShuffleHelper":
+    #     """ 
+    #     """        
+    #     shared_aclus_only_neuron_IDs = deepcopy(long_LR_decoder.neuron_IDs)
+
+    #     # Exclude the bimodal cells:
+    #     if bimodal_exclude_aclus is None:
+    #         bimodal_exclude_aclus = []
+
+    #     is_good_aclus = np.logical_not(np.isin(shared_aclus_only_neuron_IDs, bimodal_exclude_aclus))
+    #     shared_aclus_only_neuron_IDs = shared_aclus_only_neuron_IDs[is_good_aclus]
+
+    #     ## 2023-10-11 - Get the long/short peak locations
+    #     decoder_peak_coms_list = [a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses[is_good_aclus] for a_decoder in (long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder)]
+    #     ## Compute the ranks:
+    #     decoder_pf_peak_ranks_list = [scipy.stats.rankdata(a_peaks_com, method='dense') for a_peaks_com in decoder_peak_coms_list]
+    #     # return shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs
+    #     return cls(long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder, shared_aclus_only_neuron_IDs, is_good_aclus, decoder_pf_peak_ranks_list=decoder_pf_peak_ranks_list)
     
+
     @classmethod
-    def init_from_shared_aclus_only_decoders(cls, long_LR_decoder: BasePositionDecoder, long_RL_decoder: BasePositionDecoder, short_LR_decoder: BasePositionDecoder, short_RL_decoder: BasePositionDecoder, bimodal_exclude_aclus=None) -> "ShuffleHelper":
-        """ 
+    def init_from_paired_decoders(cls, LR_decoder_pair: Tuple[BasePositionDecoder, BasePositionDecoder], RL_decoder_pair: Tuple[BasePositionDecoder, BasePositionDecoder]) -> "ShuffleHelper":
+        """ 2023-10-31 - Extract from pairs
+        
         """        
-        shared_aclus_only_neuron_IDs = deepcopy(long_LR_decoder.neuron_IDs)
+        long_LR_decoder, short_LR_decoder = LR_decoder_pair
+        long_RL_decoder, short_RL_decoder = RL_decoder_pair
+            
+        shared_LR_aclus_only_neuron_IDs = deepcopy(long_LR_decoder.neuron_IDs)
+        shared_RL_aclus_only_neuron_IDs = deepcopy(long_RL_decoder.neuron_IDs)
 
-        # Exclude the bimodal cells:
-        if bimodal_exclude_aclus is None:
-            bimodal_exclude_aclus = []
-
-        is_good_aclus = np.logical_not(np.isin(shared_aclus_only_neuron_IDs, bimodal_exclude_aclus))
-        shared_aclus_only_neuron_IDs = shared_aclus_only_neuron_IDs[is_good_aclus]
+    
+        # is_good_aclus = np.logical_not(np.isin(shared_aclus_only_neuron_IDs, bimodal_exclude_aclus))
+        # shared_aclus_only_neuron_IDs = shared_aclus_only_neuron_IDs[is_good_aclus]
 
         ## 2023-10-11 - Get the long/short peak locations
-        decoder_peak_coms_list = [a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses[is_good_aclus] for a_decoder in (long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder)]
+        # decoder_peak_coms_list = [a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses[is_good_aclus] for a_decoder in (long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder)]
         ## Compute the ranks:
-        decoder_pf_peak_ranks_list = [scipy.stats.rankdata(a_peaks_com, method='dense') for a_peaks_com in decoder_peak_coms_list]
-        # return shared_aclus_only_neuron_IDs, is_good_aclus, long_pf_peak_ranks, short_pf_peak_ranks, shuffled_aclus, shuffle_IDXs
-        return cls(long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder, shared_aclus_only_neuron_IDs, is_good_aclus, decoder_pf_peak_ranks_list=decoder_pf_peak_ranks_list)
+        # decoder_pf_peak_ranks_list = [scipy.stats.rankdata(a_peaks_com, method='dense') for a_peaks_com in decoder_peak_coms_list]
+        
+        return cls(long_LR_decoder, long_RL_decoder, short_LR_decoder, short_RL_decoder, shared_LR_aclus_only_neuron_IDs, None, shared_RL_aclus_only_neuron_IDs, None,
+                    decoder_LR_pf_peak_ranks_list=[scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense') for a_decoder in (long_LR_decoder, short_LR_decoder)],
+                    decoder_RL_pf_peak_ranks_list=[scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense') for a_decoder in (long_RL_decoder, short_RL_decoder)] )
+
+
 
 
 @define()
