@@ -507,11 +507,11 @@ class RankOrderAnalyses:
         return replay_fig, replay_ax
 
 
-    def _perform_plot_z_score_raw(global_laps, odd_laps_long_z_score_values, odd_laps_short_z_score_values, even_laps_long_z_score_values, even_laps_short_z_score_values):
+    def _perform_plot_z_score_raw(epoch_idx_list, odd_laps_long_z_score_values, odd_laps_short_z_score_values, even_laps_long_z_score_values, even_laps_short_z_score_values):
         """ plots the raw z-scores for each of the four templates 
 
         Usage:
-            app, win, p1, (long_even_out_plot_1D, long_odd_out_plot_1D, short_even_out_plot_1D, short_odd_out_plot_1D) = _perform_plot_z_score_raw(global_laps, odd_laps_long_z_score_values, odd_laps_short_z_score_values, even_laps_long_z_score_values, even_laps_short_z_score_values)
+            app, win, p1, (long_even_out_plot_1D, long_odd_out_plot_1D, short_even_out_plot_1D, short_odd_out_plot_1D) = _perform_plot_z_score_raw(deepcopy(global_laps).lap_id, odd_laps_long_z_score_values, odd_laps_short_z_score_values, even_laps_long_z_score_values, even_laps_short_z_score_values)
 
         """
         app = pg.mkQApp("Rank Order Laps Epoch Debugger")
@@ -524,7 +524,7 @@ class RankOrderAnalyses:
         p1.showGrid(x=False, y=True, alpha=1.0) # p1 is a new_ax
 
         # epoch_idx_list = np.arange(len(even_laps_long_short_z_score_diff_values))
-        epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
+        # epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
 
         # even_laps_long_z_score_values = even_laps_long_z_score_values[1:]
         # odd_laps_long_z_score_values = odd_laps_long_z_score_values[1:]
@@ -537,10 +537,10 @@ class RankOrderAnalyses:
         short_odd_out_plot_1D = p1.plot(epoch_idx_list, odd_laps_short_z_score_values, pen=None, symbolBrush='teal', symbolPen='w', symbol='p', name='short_odd') ## setting pen=None disables line drawing
         return app, win, p1, (long_even_out_plot_1D, long_odd_out_plot_1D, short_even_out_plot_1D, short_odd_out_plot_1D)
 
-    def _perform_plot_z_score_diff(global_laps, even_laps_long_short_z_score_diff_values, odd_laps_long_short_z_score_diff_values):
+    def _perform_plot_z_score_diff(epoch_idx_list, even_laps_long_short_z_score_diff_values, odd_laps_long_short_z_score_diff_values):
         """ plots the z-score differences 
         Usage:
-            app, win, p1, (even_out_plot_1D, odd_out_plot_1D) = _perform_plot_z_score_diff(global_laps, even_laps_long_short_z_score_diff_values, odd_laps_long_short_z_score_diff_values)
+            app, win, p1, (even_out_plot_1D, odd_out_plot_1D) = _perform_plot_z_score_diff(deepcopy(global_laps).lap_id, even_laps_long_short_z_score_diff_values, odd_laps_long_short_z_score_diff_values)
         """
         app = pg.mkQApp("Rank Order Laps Epoch Debugger")
         win = pg.GraphicsLayoutWidget(show=True, title="Rank Order Laps Epoch Debugger")
@@ -560,7 +560,7 @@ class RankOrderAnalyses:
         # plt.xlabel('Lap Index')
 
         # epoch_idx_list = np.arange(len(even_laps_long_short_z_score_diff_values))
-        epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
+        # epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
         # out_plot_1D = pg.plot(epoch_idx_list, even_laps_long_short_z_score_diff_values[1:], pen=None, symbol='o', title='Rank-Order Long-Short ZScore Diff for Laps over time', left='Long-Short Z-Score Diff', bottom='Lap Index') ## setting pen=None disables line drawing
 
         # even_laps_long_short_z_score_diff_values = even_laps_long_short_z_score_diff_values[1:]
