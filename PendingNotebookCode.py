@@ -25,37 +25,57 @@ _debug_print = False
 # ==================================================================================================================== #
 # 2023-10-31 - Debug Plotting for Directional Placefield Templates                                                     #
 # ==================================================================================================================== #
+import pyphoplacecellanalysis.External.pyqtgraph as pg
 from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _build_default_tick, build_scatter_plot_kwargs
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import RasterScatterPlotManager, UnitSortOrderManager, _build_default_tick, _build_scatter_plotting_managers, _prepare_spikes_df_from_filter_epochs, _subfn_build_and_add_scatterplot_row
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _plot_multi_sort_raster_browser
 
-def _debug_plot_directional_template_rasters(spikes_df, track_templates):
-    desired_sort_indicies_list = [(a_sort-1) for a_sort in track_templates.decoder_pf_peak_ranks_list]
-    even_long, odd_long, even_short, odd_short,  = desired_sort_indicies_list
-    n_neurons = len(track_templates.shared_aclus_only_neuron_IDs)
+def _debug_plot_directional_template_rasters(spikes_df, active_epochs_df, track_templates):
+    """ Perform raster plotting by getting our data from track_templates (TrackTemplates)
+    There will be four templates, one for each run direction x each maze configuration
+
+
+    Usage:
+        from PendingNotebookCode import _debug_plot_directional_template_rasters
+
+        long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+        global_spikes_df = deepcopy(curr_active_pipeline.computation_results[global_epoch_name]['computed_data'].pf1D.spikes_df)
+        global_laps = deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].laps).trimmed_to_non_overlapping()
+        global_laps_epochs_df = global_laps.to_dataframe()
+        app, win, plots, plots_data, (on_update_active_epoch, on_update_active_scatterplot_kwargs) = _debug_plot_directional_template_rasters(global_spikes_df, global_laps_epochs_df, track_templates)
+
+    """
+    ## spikes_df: get the spikes to plot
+    included_neuron_ids = track_templates.shared_aclus_only_neuron_IDs
+    n_neurons = len(included_neuron_ids)
+
+    # Get only the spikes for the shared_aclus:
+    spikes_df = spikes_df.spikes.sliced_by_neuron_id(included_neuron_ids)
+    spikes_df = spikes_df.spikes.adding_lap_identity_column(active_epochs_df, epoch_id_key_name='new_lap_IDX')
+    spikes_df = spikes_df[(spikes_df['new_lap_IDX'] != -1)] # ['lap', 'maze_relative_lap', 'maze_id']
+    spikes_df, neuron_id_to_new_IDX_map = spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs() # rebuild the fragile indicies afterwards
+
+    even_long, odd_long, even_short, odd_short = [(a_sort-1) for a_sort in track_templates.decoder_pf_peak_ranks_list]    
     neuron_qcolors_list, neuron_colors_ndarray = DataSeriesColorHelpers.build_cell_colors(n_neurons, colormap_name='PAL-relaxed_bright', colormap_source=None)
     unit_colors_list = neuron_colors_ndarray.copy()
 
-
-
-
-    included_neuron_ids = track_templates.shared_aclus_only_neuron_IDs
     unit_sort_orders_dict = dict(zip(['long_even', 'long_odd', 'short_even', 'short_odd'], (even_long, odd_long, even_short, odd_short)))
     unit_colors_list_dict = dict(zip(['long_even', 'long_odd', 'short_even', 'short_odd'], (unit_colors_list, unit_colors_list, unit_colors_list, unit_colors_list)))
 
     app, win, plots, plots_data, on_update_active_epoch, on_update_active_scatterplot_kwargs = _plot_multi_sort_raster_browser(spikes_df, included_neuron_ids, unit_sort_orders_dict=unit_sort_orders_dict, unit_colors_list_dict=unit_colors_list_dict, scatter_app_name='pho_directional_laps_rasters', defer_show=False, active_context=None)
+    return app, win, plots, plots_data, (on_update_active_epoch, on_update_active_scatterplot_kwargs)
 
 
 from scipy import stats # _recover_samples_per_sec_from_laps_df
 
 def _recover_samples_per_sec_from_laps_df(global_laps_df, time_start_column_name='start_t_rel_seconds', time_stop_column_name='end_t_rel_seconds',
-			extra_indexed_column_start_column_name='start_position_index', extra_indexed_column_stop_column_name='end_position_index') -> float:
-	""" Recovers the index/time relation for the specified index columns by computing both the time duration and the number of indicies spanned by a given epoch.
+            extra_indexed_column_start_column_name='start_position_index', extra_indexed_column_stop_column_name='end_position_index') -> float:
+    """ Recovers the index/time relation for the specified index columns by computing both the time duration and the number of indicies spanned by a given epoch.
 
-	returns the `mode_samples_per_sec` corresponding to that column.
+    returns the `mode_samples_per_sec` corresponding to that column.
 
-	ASSUMES REGULAR SAMPLEING!
+    ASSUMES REGULAR SAMPLEING!
 
     Usage:
 
@@ -66,12 +86,12 @@ def _recover_samples_per_sec_from_laps_df(global_laps_df, time_start_column_name
         position_mode_samples_per_sec # 29.956350269267112
 
 
-	 """
-	duration_sec = global_laps_df[time_stop_column_name] - global_laps_df[time_start_column_name]
-	num_position_samples = global_laps_df[extra_indexed_column_stop_column_name] - global_laps_df[extra_indexed_column_start_column_name]
-	samples_per_sec = (num_position_samples/duration_sec).to_numpy()
-	mode_samples_per_sec = stats.mode(samples_per_sec)[0] # take the mode of all the epochs
-	return mode_samples_per_sec
+     """
+    duration_sec = global_laps_df[time_stop_column_name] - global_laps_df[time_start_column_name]
+    num_position_samples = global_laps_df[extra_indexed_column_stop_column_name] - global_laps_df[extra_indexed_column_start_column_name]
+    samples_per_sec = (num_position_samples/duration_sec).to_numpy()
+    mode_samples_per_sec = stats.mode(samples_per_sec)[0] # take the mode of all the epochs
+    return mode_samples_per_sec
 
 
 
@@ -120,7 +140,7 @@ from neuropy.utils.misc import build_shuffled_ids # used in _SHELL_analyze_leave
 from neuropy.utils.mixins.print_helpers import print_array
 import matplotlib.pyplot as plt
 
-import pyphoplacecellanalysis.External.pyqtgraph as pg
+
 
 @function_attributes(short_name=None, tags=['rank_order', 'shuffle', 'renormalize'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-23 13:05', related_items=[])
 def relative_re_ranking(rank_array: NDArray, filter_indicies: NDArray, debug_checking=False) -> NDArray:
@@ -517,7 +537,7 @@ class RankOrderAnalyses:
         short_odd_out_plot_1D = p1.plot(epoch_idx_list, odd_laps_short_z_score_values, pen=None, symbolBrush='teal', symbolPen='w', symbol='p', name='short_odd') ## setting pen=None disables line drawing
         return app, win, p1, (long_even_out_plot_1D, long_odd_out_plot_1D, short_even_out_plot_1D, short_odd_out_plot_1D)
 
-    def _perform_plot_z_score_diff(global_laps, odd_laps_long_z_score_values, odd_laps_short_z_score_values):
+    def _perform_plot_z_score_diff(global_laps, even_laps_long_short_z_score_diff_values, odd_laps_long_short_z_score_diff_values):
         """ plots the z-score differences 
         Usage:
             app, win, p1, (even_out_plot_1D, odd_out_plot_1D) = _perform_plot_z_score_diff(global_laps, even_laps_long_short_z_score_diff_values, odd_laps_long_short_z_score_diff_values)
