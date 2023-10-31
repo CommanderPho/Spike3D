@@ -370,22 +370,33 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     epoch_ranked_aclus_dict = {} # this one isn't needed anymore probably, the `epoch_ranked_fragile_linear_neuron_IDX_dict` is easier.
     epoch_ranked_fragile_linear_neuron_IDX_dict = {} # structure is different 
 
+    epoch_selected_spikes_fragile_linear_neuron_IDX_dict = {}
+
     for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
         if epoch_id not in epoch_ranked_aclus_dict:
             # Initialize new dicts/arrays for the epoch if needed:
             epoch_ranked_aclus_dict[epoch_id] = {}
             epoch_ranked_fragile_linear_neuron_IDX_dict[epoch_id] = []
+            epoch_selected_spikes_fragile_linear_neuron_IDX_dict[epoch_id] = []
             
         ## Add the rank to the dict/array
         epoch_ranked_aclus_dict[epoch_id][aclu] = int(rank)        
         neuron_IDX = active_aclu_to_fragile_linear_neuron_IDX_dict[aclu] # ordered dict that maps each aclu to a flat neuronIDX!
         epoch_ranked_fragile_linear_neuron_IDX_dict[epoch_id].append((neuron_IDX, int(rank))) # note we are adding indicies, not aclus
-
+        
+        a_value: float = selected_spikes.groupby(['Probe_Epoch_id', 'aclu']).get_group((epoch_id, aclu)).values[0] # extracts the single float item
+        epoch_selected_spikes_fragile_linear_neuron_IDX_dict[epoch_id].append((neuron_IDX, a_value))
+        
     # Convert all to np.ndarrays post-hoc:
     epoch_ranked_fragile_linear_neuron_IDX_dict = {epoch_id:np.array(epoch_ranked_fragile_linear_neuron_IDXs) for epoch_id, epoch_ranked_fragile_linear_neuron_IDXs in epoch_ranked_fragile_linear_neuron_IDX_dict.items()}
+    epoch_selected_spikes_fragile_linear_neuron_IDX_dict = {epoch_id:np.array(epoch_ranked_fragile_linear_neuron_IDXs) for epoch_id, epoch_ranked_fragile_linear_neuron_IDXs in epoch_selected_spikes_fragile_linear_neuron_IDX_dict.items()}
 
     ## Loop over the results now to do the actual stats:
     epoch_ranked_aclus_stats_dict = {}
+
+
+    # epoch_neuron_IDX_selected_spikes = np.squeeze(epoch_selected_spikes_fragile_linear_neuron_IDX_dict[:,1])
+    
 
     for epoch_id in list(epoch_ranked_aclus_dict.keys()):
         # rank_dict = epoch_ranked_aclus_dict[epoch_id]
@@ -395,24 +406,27 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
         epoch_ranked_fragile_linear_neuron_IDXs_array = epoch_ranked_fragile_linear_neuron_IDX_dict[epoch_id]
         epoch_neuron_IDXs = np.squeeze(epoch_ranked_fragile_linear_neuron_IDXs_array[:,0])
         epoch_neuron_IDX_ranks = np.squeeze(epoch_ranked_fragile_linear_neuron_IDXs_array[:,1])
+        # epoch_neuron_IDX_selected_spikes = np.squeeze(epoch_selected_spikes_fragile_linear_neuron_IDX_dict[:,1])
+        
         
         if debug_print:
             print(f'epoch_id: {epoch_id}')
             # print(f'\tepoch_ranked_fragile_linear_neuron_IDXs_array:\n{epoch_ranked_fragile_linear_neuron_IDXs_array}')
             print(f'\tepoch_neuron_IDXs: {print_array(epoch_neuron_IDXs)}')
             print(f'\tepoch_neuron_IDX_ranks: {print_array(epoch_neuron_IDX_ranks)}')
+            # print(f'\tepoch_neuron_IDX_selected_spikes: {print_array(epoch_neuron_IDX_selected_spikes)}')
 
         long_spearmanr_rank_stats_results = []
         short_spearmanr_rank_stats_results = []
 
         # The "real" result for this epoch:
         # active_epoch_aclu_long_ranks = long_pf_peak_ranks[epoch_neuron_IDXs]
-        active_epoch_aclu_long_ranks = relative_re_ranking(long_pf_peak_ranks, epoch_neuron_IDXs)
+        active_epoch_aclu_long_ranks = relative_re_ranking(long_pf_peak_ranks, epoch_neuron_IDXs, disable_re_ranking=disable_re_ranking)
         real_long_rank_stats = scipy.stats.spearmanr(active_epoch_aclu_long_ranks, epoch_neuron_IDX_ranks)
         real_long_result_corr_value = (np.abs(real_long_rank_stats.statistic), real_long_rank_stats.pvalue)[0]
         
         # active_epoch_aclu_short_ranks = short_pf_peak_ranks[epoch_neuron_IDXs]
-        active_epoch_aclu_short_ranks = relative_re_ranking(short_pf_peak_ranks, epoch_neuron_IDXs)
+        active_epoch_aclu_short_ranks = relative_re_ranking(short_pf_peak_ranks, epoch_neuron_IDXs, disable_re_ranking=disable_re_ranking)
         real_short_rank_stats = scipy.stats.spearmanr(active_epoch_aclu_short_ranks, epoch_neuron_IDX_ranks)
         real_short_result_corr_value = (np.abs(real_short_rank_stats.statistic), real_short_rank_stats.pvalue)[0]
         
@@ -428,12 +442,12 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
             # short_pf_peak_ranks[epoch_specific_shuffled_indicies]
 
             ## Get the matching components of the long/short pf ranks using epoch_ranked_fragile_linear_neuron_IDXs's first column which are the relevant indicies:
-            active_shuffle_epoch_aclu_long_ranks = relative_re_ranking(long_pf_peak_ranks, epoch_specific_shuffled_indicies)
+            active_shuffle_epoch_aclu_long_ranks = relative_re_ranking(long_pf_peak_ranks, epoch_specific_shuffled_indicies, disable_re_ranking=disable_re_ranking)
             long_rank_stats = scipy.stats.spearmanr(active_shuffle_epoch_aclu_long_ranks, epoch_neuron_IDX_ranks)
             long_result = (np.abs(long_rank_stats.statistic), long_rank_stats.pvalue)
             long_spearmanr_rank_stats_results.append(long_result)
             
-            active_shuffle_epoch_aclu_short_ranks = relative_re_ranking(short_pf_peak_ranks, epoch_specific_shuffled_indicies)
+            active_shuffle_epoch_aclu_short_ranks = relative_re_ranking(short_pf_peak_ranks, epoch_specific_shuffled_indicies, disable_re_ranking=disable_re_ranking)
             short_rank_stats = scipy.stats.spearmanr(active_shuffle_epoch_aclu_short_ranks, epoch_neuron_IDX_ranks)
             short_result = (np.abs(short_rank_stats.statistic), short_rank_stats.pvalue)
             short_spearmanr_rank_stats_results.append(short_result)
@@ -444,20 +458,10 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
         long_stats_corr_values = long_spearmanr_rank_stats_results[:,0]
         short_stats_corr_values = short_spearmanr_rank_stats_results[:,0]
 
-        # long_stats_z_values = Zscore(long_stats_corr_values, mean=np.mean(long_stats_corr_values), stdev=np.std(long_stats_corr_values))
-        # short_stats_z_values = Zscore(short_stats_corr_values, mean=np.mean(short_stats_corr_values), stdev=np.std(short_stats_corr_values))
-
-        real_long_result_corr_value
-        real_short_result_corr_value
-
         long_stats_z_scorer = Zscorer.init_from_values(long_stats_corr_values, real_long_result_corr_value)
         short_stats_z_scorer = Zscorer.init_from_values(short_stats_corr_values, real_short_result_corr_value)
 
-        # long_short_z_diff = long_stats_z_values - short_stats_z_values
-        # long_short_z_diff: np.array = long_stats_z_scorer.z_score_values - short_stats_z_scorer.z_score_values
-
         long_short_z_diff: float = long_stats_z_scorer.z_score_value - short_stats_z_scorer.z_score_value
-
 
         # epoch_ranked_aclus_stats_dict[epoch_id] = (np.array(long_spearmanr_rank_stats_results),  np.array(short_spearmanr_rank_stats_results))
         epoch_ranked_aclus_stats_dict[epoch_id] = (long_stats_z_scorer, short_stats_z_scorer, long_short_z_diff)
@@ -482,8 +486,11 @@ def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle
     long_z_score_values = np.array(long_z_score_values)
     short_z_score_values = np.array(short_z_score_values)
     long_short_z_score_diff_values = np.array(long_short_z_score_diff_values)
+    
+    # for epoch_id, epoch_stats in epoch_ranked_aclus_stats_dict.items()
 
-    return epoch_ranked_aclus_stats_dict, (long_z_score_values, short_z_score_values, long_short_z_score_diff_values)
+
+    return epoch_ranked_aclus_stats_dict, epoch_selected_spikes_fragile_linear_neuron_IDX_dict, (long_z_score_values, short_z_score_values, long_short_z_score_diff_values)
 
 
 class RankOrderAnalyses:
@@ -529,11 +536,15 @@ class RankOrderAnalyses:
 
         # epoch_idx_list = np.arange(len(even_laps_long_short_z_score_diff_values))
         # epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
-
-        # even_laps_long_z_score_values = even_laps_long_z_score_values[1:]
-        # odd_laps_long_z_score_values = odd_laps_long_z_score_values[1:]
-        # even_laps_short_z_score_values = even_laps_short_z_score_values[1:]
-        # odd_laps_short_z_score_values = odd_laps_short_z_score_values[1:]
+        n_x_points = len(epoch_idx_list)
+        n_y_points = np.shape(even_laps_long_z_score_values)[0]
+        if n_y_points > n_x_points:
+            num_missing_points: int = n_y_points - n_x_points
+            print(f'WARNING: trimming y-data to [{num_missing_points}:]')
+            even_laps_long_z_score_values = even_laps_long_z_score_values[num_missing_points:]
+            odd_laps_long_z_score_values = odd_laps_long_z_score_values[num_missing_points:]
+            even_laps_short_z_score_values = even_laps_short_z_score_values[num_missing_points:]
+            odd_laps_short_z_score_values = odd_laps_short_z_score_values[num_missing_points:]
 
         long_even_out_plot_1D = p1.plot(epoch_idx_list, even_laps_long_z_score_values, pen=None, symbolBrush='orange', symbolPen='w', symbol='o', name='long_even') ## setting pen=None disables line drawing
         long_odd_out_plot_1D = p1.plot(epoch_idx_list, odd_laps_long_z_score_values, pen=None, symbolBrush='red', symbolPen='w', symbol='p', name='long_odd') ## setting pen=None disables line drawing
@@ -555,7 +566,13 @@ class RankOrderAnalyses:
         p1.addLegend()
         p1.showGrid(x=False, y=True, alpha=1.0) # p1 is a new_ax
 
-        # p2 = win.addPlot(row=2, col=0)
+        n_x_points = len(epoch_idx_list)
+        n_y_points = np.shape(even_laps_long_short_z_score_diff_values)[0]
+        if n_y_points > n_x_points:
+            num_missing_points: int = n_y_points - n_x_points
+            print(f'WARNING: trimming y-data to [{num_missing_points}:]')
+            even_laps_long_short_z_score_diff_values = even_laps_long_short_z_score_diff_values[num_missing_points:]
+            odd_laps_long_short_z_score_diff_values = odd_laps_long_short_z_score_diff_values[num_missing_points:]
 
         # laps_fig, laps_ax = plt.subplots()
         # laps_ax.scatter(np.arange(len(laps_long_short_z_score_diff_values)), laps_long_short_z_score_diff_values, label=f'laps{suffix_str}')
@@ -566,9 +583,6 @@ class RankOrderAnalyses:
         # epoch_idx_list = np.arange(len(even_laps_long_short_z_score_diff_values))
         # epoch_idx_list = deepcopy(global_laps).lap_id # np.arange(len(even_laps_long_short_z_score_diff_values))
         # out_plot_1D = pg.plot(epoch_idx_list, even_laps_long_short_z_score_diff_values[1:], pen=None, symbol='o', title='Rank-Order Long-Short ZScore Diff for Laps over time', left='Long-Short Z-Score Diff', bottom='Lap Index') ## setting pen=None disables line drawing
-
-        # even_laps_long_short_z_score_diff_values = even_laps_long_short_z_score_diff_values[1:]
-        # odd_laps_long_short_z_score_diff_values = odd_laps_long_short_z_score_diff_values[1:]
 
         even_out_plot_1D = p1.plot(epoch_idx_list, even_laps_long_short_z_score_diff_values, pen=None, symbolBrush='orange', symbolPen='w', symbol='o', name='even') ## setting pen=None disables line drawing
         odd_out_plot_1D = p1.plot(epoch_idx_list, odd_laps_long_short_z_score_diff_values, pen=None, symbolBrush='blue', symbolPen='w', symbol='p', name='odd') ## setting pen=None disables line drawing
