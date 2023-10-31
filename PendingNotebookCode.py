@@ -143,27 +143,31 @@ import matplotlib.pyplot as plt
 
 
 @function_attributes(short_name=None, tags=['rank_order', 'shuffle', 'renormalize'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-23 13:05', related_items=[])
-def relative_re_ranking(rank_array: NDArray, filter_indicies: NDArray, debug_checking=False) -> NDArray:
+def relative_re_ranking(rank_array: NDArray, filter_indicies: NDArray, debug_checking=False, disable_re_ranking: bool=False) -> NDArray:
     """ Re-index the rank_array once filtered flat to extract the global ranks. 
         
     Idea: During each ripple event epoch, only a subset of all cells are active. As a result, we need to extract valid ranks from the epoch's subset so they can be compared directly to the ranks within that epoch.
 
     """
-    if debug_checking:
-        global_max_rank = np.max(rank_array)
-        global_min_rank = np.min(rank_array) # should be 1.0
-        print(f'global_max_rank: {global_max_rank}, global_min_rank: {global_min_rank}')
-    subset_rank_array = rank_array[filter_indicies]
-    if debug_checking:
-        subset_max_rank = np.max(subset_rank_array)
-        subset_min_rank = np.min(subset_rank_array)
-        print(f'subset_rank_array: {subset_rank_array}, subset_max_rank: {subset_max_rank}, subset_min_rank: {subset_min_rank}')
-    subset_rank_array = scipy.stats.rankdata(subset_rank_array) # re-rank the subset 
-    if debug_checking:
-        re_subset_max_rank = np.max(subset_rank_array)
-        re_subset_min_rank = np.min(subset_rank_array)
-        print(f're_subset_rank_array: {subset_rank_array}, re_subset_max_rank: {re_subset_max_rank}, re_subset_min_rank: {re_subset_min_rank}')
-    return subset_rank_array
+    if disable_re_ranking:
+        # Disable any re-ranking, just return the original ranks
+        return rank_array[filter_indicies]
+    else:
+        if debug_checking:
+            global_max_rank = np.max(rank_array)
+            global_min_rank = np.min(rank_array) # should be 1.0
+            print(f'global_max_rank: {global_max_rank}, global_min_rank: {global_min_rank}')
+        subset_rank_array = rank_array[filter_indicies]
+        if debug_checking:
+            subset_max_rank = np.max(subset_rank_array)
+            subset_min_rank = np.min(subset_rank_array)
+            print(f'subset_rank_array: {subset_rank_array}, subset_max_rank: {subset_max_rank}, subset_min_rank: {subset_min_rank}')
+        subset_rank_array = scipy.stats.rankdata(subset_rank_array) # re-rank the subset 
+        if debug_checking:
+            re_subset_max_rank = np.max(subset_rank_array)
+            re_subset_min_rank = np.min(subset_rank_array)
+            print(f're_subset_rank_array: {subset_rank_array}, re_subset_max_rank: {re_subset_max_rank}, re_subset_min_rank: {re_subset_min_rank}')
+        return subset_rank_array
 
 
 def compute_placefield_center_of_masses(tuning_curves):
@@ -321,7 +325,7 @@ def build_track_templates_for_shuffle(long_shared_aclus_only_decoder, short_shar
     
 
 @function_attributes(short_name=None, tags=['shuffle', 'rank_order'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-10-21 00:23', related_items=[])
-def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle_helper, rank_alignment: str = 'first', debug_print=True):
+def compute_shuffled_rankorder_analyses(active_spikes_df, active_epochs, shuffle_helper, rank_alignment: str = 'first', disable_re_ranking:bool=True, debug_print=True):
     """ 
 
         
