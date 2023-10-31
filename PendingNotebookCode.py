@@ -23,6 +23,59 @@ _debug_print = False
 
 
 # ==================================================================================================================== #
+# 2023-10-31 - Debug Plotting for Directional Placefield Templates                                                     #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.General.Mixins.DataSeriesColorHelpers import DataSeriesColorHelpers
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _build_default_tick, build_scatter_plot_kwargs
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import RasterScatterPlotManager, UnitSortOrderManager, _build_default_tick, _build_scatter_plotting_managers, _prepare_spikes_df_from_filter_epochs, _subfn_build_and_add_scatterplot_row
+from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _plot_multi_sort_raster_browser
+
+def _debug_plot_directional_template_rasters(spikes_df, track_templates):
+    desired_sort_indicies_list = [(a_sort-1) for a_sort in track_templates.decoder_pf_peak_ranks_list]
+    even_long, odd_long, even_short, odd_short,  = desired_sort_indicies_list
+    n_neurons = len(track_templates.shared_aclus_only_neuron_IDs)
+    neuron_qcolors_list, neuron_colors_ndarray = DataSeriesColorHelpers.build_cell_colors(n_neurons, colormap_name='PAL-relaxed_bright', colormap_source=None)
+    unit_colors_list = neuron_colors_ndarray.copy()
+
+
+
+
+    included_neuron_ids = track_templates.shared_aclus_only_neuron_IDs
+    unit_sort_orders_dict = dict(zip(['long_even', 'long_odd', 'short_even', 'short_odd'], (even_long, odd_long, even_short, odd_short)))
+    unit_colors_list_dict = dict(zip(['long_even', 'long_odd', 'short_even', 'short_odd'], (unit_colors_list, unit_colors_list, unit_colors_list, unit_colors_list)))
+
+    app, win, plots, plots_data, on_update_active_epoch, on_update_active_scatterplot_kwargs = _plot_multi_sort_raster_browser(spikes_df, included_neuron_ids, unit_sort_orders_dict=unit_sort_orders_dict, unit_colors_list_dict=unit_colors_list_dict, scatter_app_name='pho_directional_laps_rasters', defer_show=False, active_context=None)
+
+
+from scipy import stats # _recover_samples_per_sec_from_laps_df
+
+def _recover_samples_per_sec_from_laps_df(global_laps_df, time_start_column_name='start_t_rel_seconds', time_stop_column_name='end_t_rel_seconds',
+			extra_indexed_column_start_column_name='start_position_index', extra_indexed_column_stop_column_name='end_position_index') -> float:
+	""" Recovers the index/time relation for the specified index columns by computing both the time duration and the number of indicies spanned by a given epoch.
+
+	returns the `mode_samples_per_sec` corresponding to that column.
+
+	ASSUMES REGULAR SAMPLEING!
+
+    Usage:
+
+        global_laps_df = global_laps.to_dataframe()
+        position_mode_samples_per_sec = _recover_samples_per_sec_from_laps_df(global_laps_df, time_start_column_name='start_t_rel_seconds', time_stop_column_name='end_t_rel_seconds',
+                    extra_indexed_column_start_column_name='start_position_index', extra_indexed_column_stop_column_name='end_position_index')
+
+        position_mode_samples_per_sec # 29.956350269267112
+
+
+	 """
+	duration_sec = global_laps_df[time_stop_column_name] - global_laps_df[time_start_column_name]
+	num_position_samples = global_laps_df[extra_indexed_column_stop_column_name] - global_laps_df[extra_indexed_column_start_column_name]
+	samples_per_sec = (num_position_samples/duration_sec).to_numpy()
+	mode_samples_per_sec = stats.mode(samples_per_sec)[0] # take the mode of all the epochs
+	return mode_samples_per_sec
+
+
+
+# ==================================================================================================================== #
 # 2023-10-26 - Directional Placefields to generate four templates                                                      #
 # ==================================================================================================================== #
 # from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalLapsHelpers
