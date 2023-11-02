@@ -31,6 +31,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRaster
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import RasterScatterPlotManager, UnitSortOrderManager, _build_default_tick, _build_scatter_plotting_managers, _prepare_spikes_df_from_filter_epochs, _subfn_build_and_add_scatterplot_row
 from pyphoplacecellanalysis.General.Pipeline.Stages.DisplayFunctions.SpikeRasters import _plot_multi_sort_raster_browser
 
+
 def _debug_plot_directional_template_rasters(spikes_df, active_epochs_df, track_templates):
     """ Perform raster plotting by getting our data from track_templates (TrackTemplates)
     There will be four templates, one for each run direction x each maze configuration
@@ -47,11 +48,14 @@ def _debug_plot_directional_template_rasters(spikes_df, active_epochs_df, track_
 
     """
     ## spikes_df: get the spikes to plot
+    # included_neuron_ids = track_templates.shared_aclus_only_neuron_IDs
     included_neuron_ids = track_templates.shared_aclus_only_neuron_IDs
+    # track_templates.shared_LR_aclus_only_neuron_IDs
+
     n_neurons = len(included_neuron_ids)
 
     # Get only the spikes for the shared_aclus:
-    spikes_df = spikes_df.spikes.sliced_by_neuron_id(included_neuron_ids)
+    # spikes_df = spikes_df.spikes.sliced_by_neuron_id(included_neuron_ids)
     spikes_df = spikes_df.spikes.adding_lap_identity_column(active_epochs_df, epoch_id_key_name='new_lap_IDX')
     spikes_df = spikes_df[(spikes_df['new_lap_IDX'] != -1)] # ['lap', 'maze_relative_lap', 'maze_id']
     spikes_df, neuron_id_to_new_IDX_map = spikes_df.spikes.rebuild_fragile_linear_neuron_IDXs() # rebuild the fragile indicies afterwards
