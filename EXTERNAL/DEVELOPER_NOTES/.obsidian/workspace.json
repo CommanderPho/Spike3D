@@ -30,9 +30,19 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "1f2f45d3eb0df4f1",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.4.16"
+              }
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -141,6 +151,16 @@
                 "file": "DataStructureDocumentation/BasePositionDecoder.md"
               }
             }
+          },
+          {
+            "id": "054682473e70828a",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency"
+              }
+            }
           }
         ]
       }
@@ -159,7 +179,7 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "4ee83e81474cd484",
+  "active": "1f2f45d3eb0df4f1",
   "lastOpenFiles": [
     "VSCode Idea - copy structure of class (for referencing).md",
     "DataStructureDocumentation/BayesianPlacemapPositionDecoder.md",
