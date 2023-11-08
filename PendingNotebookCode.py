@@ -26,6 +26,20 @@ _debug_print = False
 # 2023-10-31 - Debug Plotting for Directional Placefield Templates                                                     #
 # ==================================================================================================================== #
 
+# from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import build_shared_sorted_neuronIDs
+# from pyphoplacecellanalysis.Pho2D.matplotlib.visualize_heatmap import visualize_heatmap_pyqtgraph
+
+# ratemap = long_pf1D.ratemap
+# included_unit_neuron_IDs = EITHER_subset.track_exclusive_aclus
+# rediculous_final_sorted_all_included_neuron_ID, rediculous_final_sorted_all_included_pfmap = build_shared_sorted_neuronIDs(ratemap, included_unit_neuron_IDs, sort_ind=new_all_aclus_sort_indicies.copy())
+
+# heatmap_pf1D_win, heatmap_pf1D_img = visualize_heatmap_pyqtgraph(rediculous_final_sorted_all_included_pfmap, show_yticks=False, title=f"pf1D Sorted Visualization", defer_show=True)
+# active_curves_sorted = long_pf1D.ratemap.normalized_tuning_curves[is_included][included_new_all_aclus_sort_indicies]
+# heatmap_pf1D_win, heatmap_pf1D_img = visualize_heatmap_pyqtgraph(active_curves_sorted, show_yticks=False, title=f"pf1D Sorted Visualization", defer_show=True)
+
+# _out = visualize_heatmap_pyqtgraph(np.vstack([odd_shuffle_helper.long_pf_peak_ranks, odd_shuffle_helper.short_pf_peak_ranks, even_shuffle_helper.long_pf_peak_ranks, even_shuffle_helper.short_pf_peak_ranks]), show_value_labels=True, show_xticks=True, show_yticks=True, show_colorbar=False)
+
+
 
 from scipy import stats # _recover_samples_per_sec_from_laps_df
 
