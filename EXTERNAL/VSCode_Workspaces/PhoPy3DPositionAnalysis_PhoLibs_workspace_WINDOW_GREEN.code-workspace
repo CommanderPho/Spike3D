@@ -153,7 +153,8 @@
 			"orepor.color-tabs-vscode-ext",
 			"ryu1kn.partial-diff",
 			"rebornix.toggle",
-			"amodio.restore-editors"
+			"amodio.restore-editors",
+			"buenon.scratchpads"
 		]
 	}
 }
