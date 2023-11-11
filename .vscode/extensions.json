@@ -24,6 +24,7 @@
 		"orepor.color-tabs-vscode-ext",
 		"rebornix.toggle",
 		"amodio.restore-editors",
-		"buenon.scratchpads"
+		"buenon.scratchpads",
+		"geddski.macros"
 	]
 }
