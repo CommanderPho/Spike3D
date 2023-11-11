@@ -16,6 +16,21 @@
             "env": {"PYDEVD_WARN_SLOW_RESOLVE_TIMEOUT": "3",
 				
 			}
-		}
+		},
+		// { // from commenter on https://stackoverflow.com/questions/38558989/node-js-heap-out-of-memory
+		// 	"type": "node",
+		// 	"request": "launch",
+		// 	"name": "Launch Program",
+		// 	"program": "${workspaceRoot}\\server.js"
+		// },
+		// {
+		// 	"type": "node",
+		// 	"request": "launch",
+		// 	"name": "Launch Training Script",
+		// 	"program": "${workspaceRoot}\\training-script.js",
+		// 	"runtimeArgs": [
+		// 		"--max-old-space-size=4096"
+		// 	]
+		// },
 	]
 }
