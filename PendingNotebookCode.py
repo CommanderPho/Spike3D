@@ -22,6 +22,30 @@ should_display_2D_plots = True
 _debug_print = False
 
 
+
+# ==================================================================================================================== #
+# Programmatic Attr Class Generation with attr.ib                                                                      #
+# ==================================================================================================================== #
+
+import attr
+import attrs
+from attrs import define, field, Factory
+
+def create_class_from_dict(class_name, input_dict):
+    attributes = {}
+    for key, value in input_dict.items():
+        attributes[key] = attr.ib(type=type(value), default=value) # , repr=False
+
+    return attrs.make_class(class_name, attributes)
+
+TempGraphicsOutput = create_class_from_dict('TempGraphicsOutput', _out)
+TempGraphicsOutput
+
+
+# ==================================================================================================================== #
+# 2023-11-14 - Transition Matrix                                                                                       #
+# ==================================================================================================================== #
+
 from copy import deepcopy
 import numpy as np
 from neuropy.utils.mixins.binning_helpers import transition_matrix
