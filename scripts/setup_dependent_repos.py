@@ -24,11 +24,9 @@ import argparse
 
 import glob
 
-
-from scripts.helpers.poetry_helpers import PoetryHelpers, VersionType
-from helpers.source_code_helpers import did_file_hash_change # for finding .whl file after building binary repo
-from helpers.git_helpers import GitHelpers
-from helpers.poetry_helpers import install_ipython_kernel
+from pyphocorehelpers.Filesystem.poetry_helpers import PoetryHelpers, VersionType
+from pyphocorehelpers.Filesystem.source_code_helpers import did_file_hash_change  # for finding .whl file after building binary repo
+from pyphocorehelpers.Filesystem.git_helpers import GitHelpers
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
@@ -209,7 +207,7 @@ def main():
     # os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
     print(f'done with all.')
 
-    install_ipython_kernel(kernel_name="spike3d-poetry") # run this to install the kernel for the poetry environment
+    PoetryHelpers.install_ipython_kernel(kernel_name="spike3d-poetry") # run this to install the kernel for the poetry environment
     os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
 
 if __name__ == '__main__':
