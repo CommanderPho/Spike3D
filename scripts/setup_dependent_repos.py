@@ -24,7 +24,8 @@ import argparse
 
 import glob
 
-from helpers.poetry_helpers import build_pyproject_toml_file
+
+from scripts.helpers.poetry_helpers import PoetryHelpers, VersionType
 from helpers.source_code_helpers import did_file_hash_change # for finding .whl file after building binary repo
 from helpers.git_helpers import GitHelpers
 from helpers.poetry_helpers import install_ipython_kernel
@@ -73,7 +74,7 @@ def _reset_local_changes(repo_path):
 def _process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_toml=True, skip_lock=False, enable_install=False):
     ## Build final pyproj.toml file
     if enable_build_pyproject_toml:
-        final_pyproject_toml_path = build_pyproject_toml_file(repo_path, is_release=is_release, pyproject_final_file_name = 'pyproject.toml')
+        final_pyproject_toml_path = PoetryHelpers.build_pyproject_toml_file(repo_path, is_release=is_release, pyproject_final_file_name = 'pyproject.toml')
     else:
         print(f'skipping build pyproject.toml for {repo_path}')
         final_pyproject_toml_path = 'pyproject.toml'
