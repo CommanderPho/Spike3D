@@ -7,3 +7,11 @@ packages:
 - path: silx_examples
 - path: scripts
 - path: vtk_ui
+- dist: neuropy
+  shallow: false
+  # exclude:
+  # - django.db
+- dist: pyphocorehelpers
+  shallow: false
+- dist: pyphoplacecellanalysis
+  shallow: false
