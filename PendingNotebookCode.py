@@ -119,7 +119,7 @@ class TransitionMatrixComputations:
 # 2023-10-31 - Debug Plotting for Directional Placefield Templates                                                     #
 # ==================================================================================================================== #
 
-# from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import build_shared_sorted_neuronIDs
+# from pyphoplacecellanalysis.SpecificResults.PhoDiba2023Paper import build_shared_sorted_neuronIDs
 # from pyphoplacecellanalysis.Pho2D.matplotlib.visualize_heatmap import visualize_heatmap_pyqtgraph
 
 # ratemap = long_pf1D.ratemap

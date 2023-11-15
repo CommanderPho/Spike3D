@@ -10,7 +10,7 @@ from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultD
     SessionBatchProgress, main
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.BatchCompletionHandler import \
     BatchSessionCompletionHandler, BatchComputationProcessOptions
-from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionsResults, AcrossSessionsVisualizations
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionsResults, AcrossSessionsVisualizations
 
 def run_main(active_result_suffix, num_processes, should_force_reload_all, should_perform_figure_generation_to_file, debug_print):
     """ run main function to perform batch processing. """
