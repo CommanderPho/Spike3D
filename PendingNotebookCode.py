@@ -274,7 +274,7 @@ def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: Decoded
 # ==================================================================================================================== #
 # 2023-10-11                                                                                                           #
 # ==================================================================================================================== #
-from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionTables
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionTables
 
 def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE):
     """ captures a lot of stuff still, don't remember what. 
