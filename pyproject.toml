@@ -140,7 +140,6 @@ pylustrator = {path = "../pylustrator", develop=false}
 # ipympl = "^0.9.3"
 # panel = "^0.14.4"
 # pretty-errors = "^1.2.25"
-appmap = "^1.18.1"
 
 [tool.poetry.group.remote.dependencies]
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
