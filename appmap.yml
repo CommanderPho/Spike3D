@@ -1,0 +1,9 @@
+appmap_dir: tmp/appmap
+language: python
+name: Spike3D
+packages:
+- path: PyQtPlot
+- path: PhoPyPlaceCellReplayAnalysis
+- path: silx_examples
+- path: scripts
+- path: vtk_ui

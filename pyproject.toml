@@ -103,6 +103,10 @@ params = "^0.9.0"
 jupyter-bokeh = "^3.0.7"
 findpeaks = "^2.5.4"
 qtvoila = "^2.1.0"
+pyqt-builder = "^1.15.3"
+statsmodels = "^0.14.0"
+black = "^23.11.0"
+ruff = "^0.1.5"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -136,6 +140,7 @@ pylustrator = {path = "../pylustrator", develop=false}
 # ipympl = "^0.9.3"
 # panel = "^0.14.4"
 # pretty-errors = "^1.2.25"
+appmap = "^1.18.1"
 
 [tool.poetry.group.remote.dependencies]
 neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
