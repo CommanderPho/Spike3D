@@ -119,7 +119,7 @@ class TransitionMatrixComputations:
 # 2023-10-31 - Debug Plotting for Directional Placefield Templates                                                     #
 # ==================================================================================================================== #
 
-# from pyphoplacecellanalysis.General.Batch.PhoDiba2023Paper import build_shared_sorted_neuronIDs
+# from pyphoplacecellanalysis.SpecificResults.PhoDiba2023Paper import build_shared_sorted_neuronIDs
 # from pyphoplacecellanalysis.Pho2D.matplotlib.visualize_heatmap import visualize_heatmap_pyqtgraph
 
 # ratemap = long_pf1D.ratemap
@@ -274,7 +274,7 @@ def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: Decoded
 # ==================================================================================================================== #
 # 2023-10-11                                                                                                           #
 # ==================================================================================================================== #
-from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionTables
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionTables
 
 def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE):
     """ captures a lot of stuff still, don't remember what. 
