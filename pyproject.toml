@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.1.9"
+version = "0.2.0"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"

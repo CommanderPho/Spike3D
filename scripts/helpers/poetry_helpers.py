@@ -103,7 +103,7 @@ class PoetryHelpers:
             curr_env_path = subprocess.check_output(['poetry env list --full-path'], shell=True) # use the current working directory
         return curr_env_path
 
-
+    @staticmethod
     def install_ipython_kernel(kernel_name:str="spike3d-poetry"):
         """ run this to install the kernel for the poetry environment """
         os.system(f"poetry run ipython kernel install --user --name={kernel_name}") # run this to install the kernel for the poetry environment
