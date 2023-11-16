@@ -24,6 +24,80 @@ _debug_print = False
 
 
 # ==================================================================================================================== #
+# 2023-11-16 - Long/Short Most-likely LR/RL decoder                                                                    #
+# ==================================================================================================================== #
+
+from neuropy.analyses.placefields import PfND
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder
+from neuropy.utils.mixins.time_slicing import TimeColumnAliasesProtocol
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import TrackTemplates, RankOrderAnalyses, ShuffleHelper, Zscorer
+
+def most_likely_directional_rank_order_shuffling(curr_active_pipeline, decoding_time_bin_size=0.003):
+    # Unpack all directional variables:
+    ## {"even": "RL", "odd": "LR"}
+    long_LR_name, short_LR_name, global_LR_name, long_RL_name, short_RL_name, global_RL_name, long_any_name, short_any_name, global_any_name = ['maze1_odd', 'maze2_odd', 'maze_odd', 'maze1_even', 'maze2_even', 'maze_even', 'maze1_any', 'maze2_any', 'maze_any']
+    global_epoch_name = global_any_name
+    
+    # Most popular
+    # long_LR_name, short_LR_name, long_RL_name, short_RL_name, global_any_name
+
+    # Unpacking for `(long_LR_name, long_RL_name, short_LR_name, short_RL_name)`
+    # (long_LR_context, long_RL_context, short_LR_context, short_RL_context) = [curr_active_pipeline.filtered_contexts[a_name] for a_name in (long_LR_name, long_RL_name, short_LR_name, short_RL_name)]
+    # long_LR_epochs_obj, long_RL_epochs_obj, short_LR_epochs_obj, short_RL_epochs_obj, global_any_laps_epochs_obj = [curr_active_pipeline.computation_results[an_epoch_name]['computation_config'].pf_params.computation_epochs for an_epoch_name in (long_LR_name, long_RL_name, short_LR_name, short_RL_name, global_any_name)] # note has global also
+    # (long_LR_session, long_RL_session, short_LR_session, short_RL_session) = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in (long_LR_name, long_RL_name, short_LR_name, short_RL_name)] # sessions are correct at least, seems like just the computation parameters are messed up
+    (long_LR_results, long_RL_results, short_LR_results, short_RL_results) = [curr_active_pipeline.computation_results[an_epoch_name]['computed_data'] for an_epoch_name in (long_LR_name, long_RL_name, short_LR_name, short_RL_name)]
+    # (long_LR_computation_config, long_RL_computation_config, short_LR_computation_config, short_RL_computation_config) = [curr_active_pipeline.computation_results[an_epoch_name]['computation_config'] for an_epoch_name in (long_LR_name, long_RL_name, short_LR_name, short_RL_name)]
+    (long_LR_pf1D, long_RL_pf1D, short_LR_pf1D, short_RL_pf1D) = (long_LR_results.pf1D, long_RL_results.pf1D, short_LR_results.pf1D, short_RL_results.pf1D)
+    # (long_LR_pf2D, long_RL_pf2D, short_LR_pf2D, short_RL_pf2D) = (long_LR_results.pf2D, long_RL_results.pf2D, short_LR_results.pf2D, short_RL_results.pf2D)
+    # (long_LR_pf1D_Decoder, long_RL_pf1D_Decoder, short_LR_pf1D_Decoder, short_RL_pf1D_Decoder) = (long_LR_results.pf1D_Decoder, long_RL_results.pf1D_Decoder, short_LR_results.pf1D_Decoder, short_RL_results.pf1D_Decoder)
+
+
+    # Use the four epochs to make to a pseudo-y:
+    all_directional_decoder_names = ['long_LR', 'long_RL', 'short_LR', 'short_RL']
+    all_directional_pf1D = PfND.build_merged_directional_placefields(deepcopy(long_LR_pf1D), deepcopy(long_RL_pf1D), deepcopy(short_LR_pf1D), deepcopy(short_RL_pf1D), debug_print=False)
+    all_directional_pf1D_Decoder = BasePositionDecoder(all_directional_pf1D, setup_on_init=True, post_load_on_init=True, debug_print=False)
+
+
+    ## Combine the non-directional PDFs and renormalize to get the directional PDF:
+    # Inputs: long_LR_pf1D, long_RL_pf1D
+    long_directional_decoder_names = ['long_LR', 'long_RL']
+    long_directional_pf1D = PfND.build_merged_directional_placefields(deepcopy(long_LR_pf1D), deepcopy(long_RL_pf1D), debug_print=False)
+    long_directional_pf1D_Decoder = BasePositionDecoder(long_directional_pf1D, setup_on_init=True, post_load_on_init=True, debug_print=False)
+
+    # Inputs: short_LR_pf1D, short_RL_pf1D
+    short_directional_decoder_names = ['short_LR', 'short_RL']
+    short_directional_pf1D = PfND.build_merged_directional_placefields(deepcopy(short_LR_pf1D), deepcopy(short_RL_pf1D), debug_print=False)
+    short_directional_pf1D_Decoder = BasePositionDecoder(short_directional_pf1D, setup_on_init=True, post_load_on_init=True, debug_print=False)
+    # takes 6.3 seconds
+
+
+    # Decode using long_directional_decoder
+    global_spikes_df, (odd_shuffle_helper, even_shuffle_helper) = RankOrderAnalyses.common_analysis_helper(curr_active_pipeline=curr_active_pipeline, num_shuffles=1000)
+    spikes_df = deepcopy(global_spikes_df) #.spikes.sliced_by_neuron_id(track_templates.shared_aclus_only_neuron_IDs)
+    global_replays = TimeColumnAliasesProtocol.renaming_synonym_columns_if_needed(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].replay))
+    
+
+
+    long_directional_decoding_result: DecodedFilterEpochsResult = long_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, global_replays, decoding_time_bin_size=decoding_time_bin_size)
+    short_directional_decoding_result: DecodedFilterEpochsResult = short_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, global_replays, decoding_time_bin_size=decoding_time_bin_size)
+    # all_directional_decoding_result: DecodedFilterEpochsResult = all_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, global_replays, decoding_time_bin_size=decoding_time_bin_size)
+
+
+    # sum across timebins to get total likelihood for each of the two directions
+    long_relative_direction_likelihoods = np.vstack([(np.sum(long_directional_decoding_result.marginal_y_list[epoch_idx].p_x_given_n, axis=1)/long_directional_decoding_result.time_bin_containers[epoch_idx].num_bins) for epoch_idx in np.arange(long_directional_decoding_result.num_filter_epochs)]) # should get 2 values
+    short_relative_direction_likelihoods = np.vstack([(np.sum(short_directional_decoding_result.marginal_y_list[epoch_idx].p_x_given_n, axis=1)/short_directional_decoding_result.time_bin_containers[epoch_idx].num_bins) for epoch_idx in np.arange(short_directional_decoding_result.num_filter_epochs)]) # should get 2 values
+    # display(long_relative_direction_likelihoods.shape) # (n_epochs, 2)
+
+    # np.all(np.sum(long_relative_direction_likelihoods, axis=1) == 1)
+    # np.sum(long_relative_direction_likelihoods, axis=1) # not sure why some NaN values are getting in there
+    long_is_good_epoch = np.isfinite(np.sum(long_relative_direction_likelihoods, axis=1))
+    short_is_good_epoch = np.isfinite(np.sum(short_relative_direction_likelihoods, axis=1))
+
+    # now do the shuffle:
+    
+
+# ==================================================================================================================== #
 # Programmatic Attr Class Generation with attr.ib                                                                      #
 # ==================================================================================================================== #
 
