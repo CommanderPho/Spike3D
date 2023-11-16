@@ -1,0 +1,5 @@
+appmap_dir: tmp/appmap
+language: python
+name: Spike3D
+packages:
+- path: Spike3D
