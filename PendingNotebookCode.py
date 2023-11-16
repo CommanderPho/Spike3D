@@ -112,8 +112,8 @@ def most_likely_directional_rank_order_shuffling(curr_active_pipeline, decoding_
 
     ## 2023-11-16 - Finally, get the raw z-score values for the best direction at each epoch and then take the long - short difference of those to get `ripple_evts_long_short_best_dir_z_score_diff_values`:
     # Using NumPy advanced indexing to select from array_a or array_b:
-    ripple_evts_long_best_dir_z_score_values = np.where(long_best_direction_indicies, odd_ripple_evts_long_z_score_values, even_ripple_evts_long_z_score_values)
-    ripple_evts_short_best_dir_z_score_values = np.where(short_best_direction_indicies, odd_ripple_evts_short_z_score_values, even_ripple_evts_short_z_score_values)
+    ripple_evts_long_best_dir_z_score_values = np.where(~long_best_direction_indicies, odd_ripple_evts_long_z_score_values, even_ripple_evts_long_z_score_values)
+    ripple_evts_short_best_dir_z_score_values = np.where(~short_best_direction_indicies, odd_ripple_evts_short_z_score_values, even_ripple_evts_short_z_score_values)
     print(f'np.shape(ripple_evts_long_best_dir_z_score_values): {np.shape(ripple_evts_long_best_dir_z_score_values)}')
     ripple_evts_long_short_best_dir_z_score_diff_values = ripple_evts_long_best_dir_z_score_values - ripple_evts_short_best_dir_z_score_values
     print(f'np.shape(ripple_evts_long_short_best_dir_z_score_diff_values): {np.shape(ripple_evts_long_short_best_dir_z_score_diff_values)}')
@@ -122,9 +122,21 @@ def most_likely_directional_rank_order_shuffling(curr_active_pipeline, decoding_
 
 
     ## Laps:
+    long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+    global_laps = deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].laps).trimmed_to_non_overlapping()
+    active_epochs = global_laps.copy()
+    long_relative_direction_likelihoods, short_relative_direction_likelihoods, long_best_direction_indicies, short_best_direction_indicies = _compute_best(active_epochs)
+
     odd_laps_epoch_ranked_aclus_stats_dict, odd_laps_epoch_selected_spikes_fragile_linear_neuron_IDX_dict, odd_laps_long_z_score_values, odd_laps_short_z_score_values, odd_laps_long_short_z_score_diff_values = rank_order_results.odd_laps # LR_laps_rank_order_result
     even_laps_epoch_ranked_aclus_stats_dict, even_laps_epoch_selected_spikes_fragile_linear_neuron_IDX_dict, even_laps_long_z_score_values, even_laps_short_z_score_values, even_laps_long_short_z_score_diff_values = rank_order_results.even_laps
 
+    # Using NumPy advanced indexing to select from array_a or array_b:
+    ripple_evts_long_best_dir_z_score_values = np.where(~long_best_direction_indicies, odd_ripple_evts_long_z_score_values, even_ripple_evts_long_z_score_values)
+    ripple_evts_short_best_dir_z_score_values = np.where(~short_best_direction_indicies, odd_ripple_evts_short_z_score_values, even_ripple_evts_short_z_score_values)
+    print(f'np.shape(ripple_evts_long_best_dir_z_score_values): {np.shape(ripple_evts_long_best_dir_z_score_values)}')
+    ripple_evts_long_short_best_dir_z_score_diff_values = ripple_evts_long_best_dir_z_score_values - ripple_evts_short_best_dir_z_score_values
+    print(f'np.shape(ripple_evts_long_short_best_dir_z_score_diff_values): {np.shape(ripple_evts_long_short_best_dir_z_score_diff_values)}')
+    
 
     return long_relative_direction_likelihoods, short_relative_direction_likelihoods, (ripple_evts_long_best_dir_z_score_values, ripple_evts_short_best_dir_z_score_values, ripple_evts_long_short_best_dir_z_score_diff_values)
 
