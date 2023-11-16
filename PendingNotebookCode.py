@@ -52,12 +52,13 @@ def most_likely_directional_rank_order_shuffling(curr_active_pipeline, decoding_
     # (long_LR_pf2D, long_RL_pf2D, short_LR_pf2D, short_RL_pf2D) = (long_LR_results.pf2D, long_RL_results.pf2D, short_LR_results.pf2D, short_RL_results.pf2D)
     # (long_LR_pf1D_Decoder, long_RL_pf1D_Decoder, short_LR_pf1D_Decoder, short_RL_pf1D_Decoder) = (long_LR_results.pf1D_Decoder, long_RL_results.pf1D_Decoder, short_LR_results.pf1D_Decoder, short_RL_results.pf1D_Decoder)
 
+    rank_order_results = curr_active_pipeline.global_computation_results.computed_data['RankOrder']
 
-    # Use the four epochs to make to a pseudo-y:
-    all_directional_decoder_names = ['long_LR', 'long_RL', 'short_LR', 'short_RL']
-    all_directional_pf1D = PfND.build_merged_directional_placefields(deepcopy(long_LR_pf1D), deepcopy(long_RL_pf1D), deepcopy(short_LR_pf1D), deepcopy(short_RL_pf1D), debug_print=False)
-    all_directional_pf1D_Decoder = BasePositionDecoder(all_directional_pf1D, setup_on_init=True, post_load_on_init=True, debug_print=False)
 
+    # # Use the four epochs to make to a pseudo-y:
+    # all_directional_decoder_names = ['long_LR', 'long_RL', 'short_LR', 'short_RL']
+    # all_directional_pf1D = PfND.build_merged_directional_placefields(deepcopy(long_LR_pf1D), deepcopy(long_RL_pf1D), deepcopy(short_LR_pf1D), deepcopy(short_RL_pf1D), debug_print=False)
+    # all_directional_pf1D_Decoder = BasePositionDecoder(all_directional_pf1D, setup_on_init=True, post_load_on_init=True, debug_print=False)
 
     ## Combine the non-directional PDFs and renormalize to get the directional PDF:
     # Inputs: long_LR_pf1D, long_RL_pf1D
@@ -71,31 +72,61 @@ def most_likely_directional_rank_order_shuffling(curr_active_pipeline, decoding_
     short_directional_pf1D_Decoder = BasePositionDecoder(short_directional_pf1D, setup_on_init=True, post_load_on_init=True, debug_print=False)
     # takes 6.3 seconds
 
-
-    # Decode using long_directional_decoder
+    # Decode using specific directional_decoders:
     global_spikes_df, (odd_shuffle_helper, even_shuffle_helper) = RankOrderAnalyses.common_analysis_helper(curr_active_pipeline=curr_active_pipeline, num_shuffles=1000)
     spikes_df = deepcopy(global_spikes_df) #.spikes.sliced_by_neuron_id(track_templates.shared_aclus_only_neuron_IDs)
+
+    def _compute_best(active_epochs):
+        """ captures: long_directional_pf1D_Decoder, short_directional_pf1D_Decoder, spikes_df, decoding_time_bin_size """
+        long_directional_decoding_result: DecodedFilterEpochsResult = long_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, active_epochs, decoding_time_bin_size=decoding_time_bin_size)
+        short_directional_decoding_result: DecodedFilterEpochsResult = short_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, active_epochs, decoding_time_bin_size=decoding_time_bin_size)
+        # all_directional_decoding_result: DecodedFilterEpochsResult = all_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, active_epochs, decoding_time_bin_size=decoding_time_bin_size)
+
+        # sum across timebins to get total likelihood for each of the two directions
+        long_relative_direction_likelihoods = np.vstack([(np.sum(long_directional_decoding_result.marginal_y_list[epoch_idx].p_x_given_n, axis=1)/long_directional_decoding_result.time_bin_containers[epoch_idx].num_bins) for epoch_idx in np.arange(long_directional_decoding_result.num_filter_epochs)]) # should get 2 values
+        short_relative_direction_likelihoods = np.vstack([(np.sum(short_directional_decoding_result.marginal_y_list[epoch_idx].p_x_given_n, axis=1)/short_directional_decoding_result.time_bin_containers[epoch_idx].num_bins) for epoch_idx in np.arange(short_directional_decoding_result.num_filter_epochs)]) # should get 2 values
+        # display(long_relative_direction_likelihoods.shape) # (n_epochs, 2)
+
+        # np.all(np.sum(long_relative_direction_likelihoods, axis=1) == 1)
+        # np.sum(long_relative_direction_likelihoods, axis=1) # not sure why some NaN values are getting in there -- actually I do, it's because there aren't spikes in that epoch
+        long_is_good_epoch = np.isfinite(np.sum(long_relative_direction_likelihoods, axis=1))
+        short_is_good_epoch = np.isfinite(np.sum(short_relative_direction_likelihoods, axis=1))
+
+        # Use the relative likelihoods to determine which points to use:
+        long_best_direction_indicies = np.argmax(long_relative_direction_likelihoods, axis=1)
+        short_best_direction_indicies = np.argmax(short_relative_direction_likelihoods, axis=1)
+
+        return long_relative_direction_likelihoods, short_relative_direction_likelihoods, long_best_direction_indicies, short_best_direction_indicies
+
+
+    ## Replays:
     global_replays = TimeColumnAliasesProtocol.renaming_synonym_columns_if_needed(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].replay))
     
-
-
-    long_directional_decoding_result: DecodedFilterEpochsResult = long_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, global_replays, decoding_time_bin_size=decoding_time_bin_size)
-    short_directional_decoding_result: DecodedFilterEpochsResult = short_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, global_replays, decoding_time_bin_size=decoding_time_bin_size)
-    # all_directional_decoding_result: DecodedFilterEpochsResult = all_directional_pf1D_Decoder.decode_specific_epochs(spikes_df, global_replays, decoding_time_bin_size=decoding_time_bin_size)
-
-
-    # sum across timebins to get total likelihood for each of the two directions
-    long_relative_direction_likelihoods = np.vstack([(np.sum(long_directional_decoding_result.marginal_y_list[epoch_idx].p_x_given_n, axis=1)/long_directional_decoding_result.time_bin_containers[epoch_idx].num_bins) for epoch_idx in np.arange(long_directional_decoding_result.num_filter_epochs)]) # should get 2 values
-    short_relative_direction_likelihoods = np.vstack([(np.sum(short_directional_decoding_result.marginal_y_list[epoch_idx].p_x_given_n, axis=1)/short_directional_decoding_result.time_bin_containers[epoch_idx].num_bins) for epoch_idx in np.arange(short_directional_decoding_result.num_filter_epochs)]) # should get 2 values
-    # display(long_relative_direction_likelihoods.shape) # (n_epochs, 2)
-
-    # np.all(np.sum(long_relative_direction_likelihoods, axis=1) == 1)
-    # np.sum(long_relative_direction_likelihoods, axis=1) # not sure why some NaN values are getting in there
-    long_is_good_epoch = np.isfinite(np.sum(long_relative_direction_likelihoods, axis=1))
-    short_is_good_epoch = np.isfinite(np.sum(short_relative_direction_likelihoods, axis=1))
+    active_epochs = global_replays.copy()
+    long_relative_direction_likelihoods, short_relative_direction_likelihoods, long_best_direction_indicies, short_best_direction_indicies = _compute_best(active_epochs)
 
     # now do the shuffle:
-    
+    # Old-style (Odd/Even) naming:
+    odd_ripple_evts_epoch_ranked_aclus_stats_dict, odd_ripple_evts_epoch_selected_spikes_fragile_linear_neuron_IDX_dict, odd_ripple_evts_long_z_score_values, odd_ripple_evts_short_z_score_values, odd_ripple_evts_long_short_z_score_diff_values = rank_order_results.odd_ripple # LR_ripple_rank_order_result # rank_order_results.odd_ripple
+    even_ripple_evts_epoch_ranked_aclus_stats_dict, even_ripple_evts_epoch_selected_spikes_fragile_linear_neuron_IDX_dict, even_ripple_evts_long_z_score_values, even_ripple_evts_short_z_score_values, even_ripple_evts_long_short_z_score_diff_values = rank_order_results.even_ripple # RL_ripple_rank_order_result # rank_order_results.even_ripple
+
+    ## 2023-11-16 - Finally, get the raw z-score values for the best direction at each epoch and then take the long - short difference of those to get `ripple_evts_long_short_best_dir_z_score_diff_values`:
+    # Using NumPy advanced indexing to select from array_a or array_b:
+    ripple_evts_long_best_dir_z_score_values = np.where(long_best_direction_indicies, odd_ripple_evts_long_z_score_values, even_ripple_evts_long_z_score_values)
+    ripple_evts_short_best_dir_z_score_values = np.where(short_best_direction_indicies, odd_ripple_evts_short_z_score_values, even_ripple_evts_short_z_score_values)
+    print(f'np.shape(ripple_evts_long_best_dir_z_score_values): {np.shape(ripple_evts_long_best_dir_z_score_values)}')
+    ripple_evts_long_short_best_dir_z_score_diff_values = ripple_evts_long_best_dir_z_score_values - ripple_evts_short_best_dir_z_score_values
+    print(f'np.shape(ripple_evts_long_short_best_dir_z_score_diff_values): {np.shape(ripple_evts_long_short_best_dir_z_score_diff_values)}')
+
+    # outputs: ripple_evts_long_short_best_dir_z_score_diff_values
+
+
+    ## Laps:
+    odd_laps_epoch_ranked_aclus_stats_dict, odd_laps_epoch_selected_spikes_fragile_linear_neuron_IDX_dict, odd_laps_long_z_score_values, odd_laps_short_z_score_values, odd_laps_long_short_z_score_diff_values = rank_order_results.odd_laps # LR_laps_rank_order_result
+    even_laps_epoch_ranked_aclus_stats_dict, even_laps_epoch_selected_spikes_fragile_linear_neuron_IDX_dict, even_laps_long_z_score_values, even_laps_short_z_score_values, even_laps_long_short_z_score_diff_values = rank_order_results.even_laps
+
+
+    return long_relative_direction_likelihoods, short_relative_direction_likelihoods, (ripple_evts_long_best_dir_z_score_values, ripple_evts_short_best_dir_z_score_values, ripple_evts_long_short_best_dir_z_score_diff_values)
 
 # ==================================================================================================================== #
 # Programmatic Attr Class Generation with attr.ib                                                                      #
@@ -106,14 +137,17 @@ import attrs
 from attrs import define, field, Factory
 
 def create_class_from_dict(class_name, input_dict):
+    """ 
+    TempGraphicsOutput = create_class_from_dict('TempGraphicsOutput', _out)
+    TempGraphicsOutput
+    """
     attributes = {}
     for key, value in input_dict.items():
         attributes[key] = attr.ib(type=type(value), default=value) # , repr=False
 
     return attrs.make_class(class_name, attributes)
 
-TempGraphicsOutput = create_class_from_dict('TempGraphicsOutput', _out)
-TempGraphicsOutput
+
 
 
 # ==================================================================================================================== #
