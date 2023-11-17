@@ -20,7 +20,6 @@
 	"settings": {
 		"python.analysis.gotoDefinitionInStringLiteral": true,
 		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
-		"python.linting.enabled": false,
 		"jupyter.askForKernelRestart": true,
 		"jupyter.debugJustMyCode": true,
 		"files.exclude": {
@@ -113,6 +112,11 @@
 					"showReuseMessage": false
 				}
 			}
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"chrisjdavies.heatmap"
 		]
 	}
 }
