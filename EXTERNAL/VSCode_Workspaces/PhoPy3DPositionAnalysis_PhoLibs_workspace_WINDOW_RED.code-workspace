@@ -20,7 +20,6 @@
 	"settings": {
 		"python.analysis.gotoDefinitionInStringLiteral": true,
 		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
-		"python.linting.enabled": false,
 		"files.exclude": {
 			"**/.classpath": true,
 			"**/.factorypath": true,

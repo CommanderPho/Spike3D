@@ -19,7 +19,6 @@
 	],
 	"settings": {
 		"python.analysis.gotoDefinitionInStringLiteral": true,
-		"python.linting.enabled": false,
 		"jupyter.askForKernelRestart": true,
 		"jupyter.debugJustMyCode": true,
 		"files.exclude": {
