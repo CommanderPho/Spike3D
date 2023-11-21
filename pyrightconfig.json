@@ -35,7 +35,7 @@
     "LibrariesExamples",
     "EXTERNAL",
     "scripts",
-    "templating"
+    "templating",
   ],
 
   "defineConstant": {
