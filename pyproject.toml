@@ -106,6 +106,7 @@ qtvoila = "^2.1.0"
 pyqt-builder = "^1.15.3"
 statsmodels = "^0.14.0"
 pathos = "^0.2.9"
+jupyterhub = "^4.0.2"
 
 
 [tool.poetry.group.dev.dependencies]
