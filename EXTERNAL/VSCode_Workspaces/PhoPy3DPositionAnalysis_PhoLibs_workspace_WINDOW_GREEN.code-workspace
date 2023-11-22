@@ -39,24 +39,23 @@
 		"workbench.colorCustomizations": {
 			"editor.lineHighlightBackground": "#1073cf2d",
 			"editor.lineHighlightBorder": "#9fced11f",
-			"activityBar.background": "#FF0000",
-			"titleBar.activeBackground": "#FF0000",
+			"activityBar.background": "#244b23",
+			"titleBar.activeBackground": "#53c763",
 			"titleBar.activeForeground": "#000000",
 			"scrollbarSlider.background": "#fffb0057",
 			"scrollbarSlider.hoverBackground": "#fffb0082",
 			"scrollbarSlider.activeBackground": "#ccff00df",
 			"activityBar.inactiveForeground": "#ffffff3c",
-			"activityBar.foreground": "#000000",
+			"activityBar.foreground": "#ffffff",
 			"notebook.outputContainerBackgroundColor": "#395a3e50",
 			"notebook.outputContainerBorderColor": "#10ff10",
 			"notebook.focusedCellBorder": "#ffff00da",
 			"notebook.focusedEditorBorder": "#f6ff00",
 			"notebook.inactiveFocusedCellBorder": "#ffff0063",
 			"titleBar.inactiveBackground": "#53c7628e",
-			"tab.activeBorder": "#FF0000",
-			"statusBar.background": "#FF0000",
-			"statusBar.foreground": "#000000",
-			"tab.activeBackground": "#FF0000"
+			"tab.activeBorder": "#2F3C2E",
+			"statusBar.background": "#2F3C2E",
+			"statusBar.foreground": "#ffffff"
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
@@ -94,33 +93,20 @@
 		"bookmarks.label.suggestion": "dontUse",
 		"colorTabs.config": [
 			{
-				"regex": "Spike3D/templating\\.*",
-				"color": "#FF0000",
-				"label": "templating"
+				"regex": "Spike3D/LibrariesExamples\\.*"
 			},
 			{
-				"regex": "Spike3D/LibrariesExamples\\.*",
-				"color": "#b2b3ac",
-				"label": "EXAMPLES"
+				"regex": ".*/../../../NeuroPy/neuropy/**/*.py"
 			},
 			{
-				"regex": "**/NeuroPy/neuropy/**/*.py",
-				"color": "#9f00e9",
-				"label": "NeuroPy"
+				"regex": ".*/EXTERNAL/.*"
 			},
 			{
-				"regex": "**/EXTERNAL/.*",
-				"color": "#b2b3ac",
-				"label": "EXTERNAL"
+				"regex": ".*/templating/.*"
 			}
 		],
 		"python.analysis.stubPath": "",
-		"python.analysis.enablePytestSupport": false,
-		"colorTabs.activityBarBackground": false,
-		"colorTabs.titleBackground": false,
-		"colorTabs.tabBackground": false,
-		"colorTabs.ignoreCase": true,
-		"colorTabs.statusBarBackground": false
+		"python.analysis.enablePytestSupport": false
 	},
 	"tasks": {
 		"version": "2.0.0",
@@ -168,8 +154,7 @@
 			"rebornix.toggle",
 			"amodio.restore-editors",
 			"buenon.scratchpads",
-			"geddski.macros",
-			"zengfanfan.zeng-color-picker"
+			"geddski.macros"
 		]
 	}
 }
