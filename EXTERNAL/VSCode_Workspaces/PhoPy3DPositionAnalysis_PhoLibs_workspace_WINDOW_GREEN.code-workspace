@@ -106,7 +106,10 @@
 			}
 		],
 		"python.analysis.stubPath": "",
-		"python.analysis.enablePytestSupport": false
+		"python.analysis.enablePytestSupport": false,
+		"editor.fontSize": 12,
+		"colorTabs.statusBarBackground": false,
+		"colorTabs.tabBorder": true
 	},
 	"tasks": {
 		"version": "2.0.0",
