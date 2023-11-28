@@ -1357,7 +1357,7 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
     min_height = 500
     if extant_dockAreaWidget is None:
         created_new_main_widget = True
-        active_containing_dockAreaWidget, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
+        active_containing_dockAreaWidget, app = DockAreaWrapper.build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
     else:
         created_new_main_widget = False
         active_containing_dockAreaWidget = extant_dockAreaWidget
