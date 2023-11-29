@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import QStyledItemDelegate, QColorDialog
 from PyQt5.QtGui import QBrush, QColor, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeView, QVBoxLayout, QWidget, QStyleFactory
 
+from pyphoplacecellanalysis.External import pyqtgraph
+
 class CustomDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
         super().__init__(parent)
