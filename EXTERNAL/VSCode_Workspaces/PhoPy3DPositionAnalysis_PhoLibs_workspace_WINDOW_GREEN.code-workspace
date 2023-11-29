@@ -82,6 +82,8 @@
 			"-o",
 			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
 		],
+		"pyqt-integration.pyuic.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
+		"pyqt-integration.pyuic.compile.addOptions": "-o ${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py --import-from pyphoplacecellanalysis.Resources --resource-suffix=\"\"",
 		"favorites.sortDirection": "DESC",
 		"python.analysis.extraPaths": [],
 		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
