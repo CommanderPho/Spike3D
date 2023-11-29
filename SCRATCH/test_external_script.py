@@ -1,4 +1,4 @@
-from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.ContainerBased.RankOrderDebugger import RankOrderDebugger
+from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.ContainerBased.RankOrderRastersDebugger import RankOrderRastersDebugger
 
 """ 
 Call from a Jupyter Notebook like:
@@ -16,7 +16,7 @@ It should recieve all of the variables from the notebook.
 # print(f"var1: {var1}, var2: {var2}")
 
 
-## RankOrderDebugger: 
+## RankOrderRastersDebugger: 
 spikes_df = curr_active_pipeline.sess.spikes_df
 rank_order_results: RankOrderComputationsContainer = curr_active_pipeline.global_computation_results.computed_data['RankOrder']
 
@@ -29,9 +29,9 @@ rank_order_results: RankOrderComputationsContainer = curr_active_pipeline.global
 
 ripple_result_tuple, laps_result_tuple = rank_order_results.ripple_most_likely_result_tuple, rank_order_results.laps_most_likely_result_tuple
 
-_out = RankOrderDebugger.init_rank_order_debugger(spikes_df, ripple_result_tuple.active_epochs, track_templates, rank_order_results.RL_ripple.selected_spikes_fragile_linear_neuron_IDX_dict, rank_order_results.LR_ripple.selected_spikes_fragile_linear_neuron_IDX_dict)
-# _out = RankOrderDebugger.init_rank_order_debugger(spikes_df, ripple_result_tuple.active_epochs, track_templates, rank_order_results.RL_ripple.selected_spikes_df, rank_order_results.LR_ripple.selected_spikes_df)
-# _out = RankOrderDebugger.init_rank_order_debugger(spikes_df, ripple_result_tuple.active_epochs, track_templates, None, None)
+_out = RankOrderRastersDebugger.init_rank_order_debugger(spikes_df, ripple_result_tuple.active_epochs, track_templates, rank_order_results.RL_ripple.selected_spikes_fragile_linear_neuron_IDX_dict, rank_order_results.LR_ripple.selected_spikes_fragile_linear_neuron_IDX_dict)
+# _out = RankOrderRastersDebugger.init_rank_order_debugger(spikes_df, ripple_result_tuple.active_epochs, track_templates, rank_order_results.RL_ripple.selected_spikes_df, rank_order_results.LR_ripple.selected_spikes_df)
+# _out = RankOrderRastersDebugger.init_rank_order_debugger(spikes_df, ripple_result_tuple.active_epochs, track_templates, None, None)
 n_epochs: int = np.shape(_out.active_epochs_df)[0] # 626
 print(f'n_epochs: {n_epochs}')
 
