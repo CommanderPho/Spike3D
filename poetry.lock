@@ -9280,7 +9280,7 @@ description = "PyQt/PySide Source Code Editor Widget"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "current.whl", hash = "sha256:8dee0c794bcd3ae4c599620ec490b9b7772310ebc65352bff53ea697d29f8d16"},
+    {file = "current.whl", hash = "sha256:7ea77921719fd8212c0d48c5a16484e3dedc9849e4c9cfb0eb8f69673d1f44b4"},
 ]
 
 [package.dependencies]
@@ -9298,7 +9298,7 @@ description = "Adds python support to pyqode.core"
 optional = false
 python-versions = "*"
 files = [
-    {file = "current.whl", hash = "sha256:761631c1737ee9d4ef3eb1ed5437722cafb041eba4285160c043edd5332a2b69"},
+    {file = "current.whl", hash = "sha256:b70537babf7604de5be5152debc1bdf2031960626d1b25b02bc22911beaf2bb9"},
 ]
 
 [package.dependencies]
