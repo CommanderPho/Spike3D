@@ -64,6 +64,9 @@
 		"files.watcherExclude": {
 			"**/.git/objects/**": true,
 			"**/.ipynb_checkpoints": true,
+			"../../EXTERNAL/**": true,
+			// "../../EXTERNAL/LibrariesExamples/**": false,
+			"../../EXTERNAL/VSCode_Workspaces": false,
 			"**/EXTERNAL/TESTING/OLD": true
 		},
 		"qtForPython.uic.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
