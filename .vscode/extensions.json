@@ -26,6 +26,7 @@
 		"amodio.restore-editors",
 		"buenon.scratchpads",
 		"geddski.macros",
-		"zengfanfan.zeng-color-picker"
+		"zengfanfan.zeng-color-picker",
+		"phohale.color-tabs-vscode-ext"
 	]
 }

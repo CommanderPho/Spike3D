@@ -47,7 +47,11 @@
 			"notebook.focusedCellBorder": "#ffff00da",
 			"notebook.focusedEditorBorder": "#f6ff00",
 			"notebook.inactiveFocusedCellBorder": "#ffff0063",
-			"titleBar.inactiveBackground": "#4b4b4b8e"
+			"titleBar.inactiveBackground": "#4b4b4b8e",
+			"tab.activeBorder": "#2E9341",
+			"statusBar.background": "#2E9341",
+			"statusBar.foreground": "#ffffff",
+			"tab.activeBackground": "#2E9341"
 		},
 		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
 		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimasste/Scripts/pyuic5.exe",
@@ -63,12 +67,30 @@
 		"qtForPython.rcc.args": [
 			"-o \"${fileDirname}${pathSeparator}${fileBasenameNoExtension}.py\""
 		],
+		"colorTabs.config": [
+			{
+				"regex": "Spike3D/scripts\\.*"
+			},
+			{
+				"regex": "Spike3D/LibrariesExamples/.*"
+			},
+			{
+				"regex": ".*/../../../NeuroPy/neuropy/**/*.py"
+			},
+			{
+				"regex": ".*/EXTERNAL/.*"
+			},
+			{
+				"regex": ".*/templating/.*"
+			}
+		],
 
 	},
 	"extensions": {
 		"recommendations": [
 			"hbenl.vscode-test-explorer",
-			"h5web.vscode-h5web"
+			"h5web.vscode-h5web",
+			"phohale.color-tabs-vscode-ext"
 		]
 	},
 	"tasks": {
