@@ -8,6 +8,209 @@ import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 from pyphocorehelpers.function_helpers import function_attributes
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
+
+
+
+# ==================================================================================================================== #
+# 2023-12-13 - Trying to re-implement spearman and correlation                                                         #
+# ==================================================================================================================== #
+
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import RankOrderAnalyses, RankOrderResult, ShuffleHelper, Zscorer, LongShortStatsTuple, DirectionalRankOrderLikelihoods, DirectionalRankOrderResult, RankOrderComputationsContainer
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import TimeColumnAliasesProtocol
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import RankOrderComputationsContainer
+
+
+def combine_rank_order_results(rank_order_results, global_replays, track_templates: "TrackTemplates"):
+    ## Unpacks `rank_order_results`: 
+    minimum_inclusion_fr_Hz: float = rank_order_results.minimum_inclusion_fr_Hz
+    included_qclu_values: List[int] = rank_order_results.included_qclu_values
+    ripple_result_tuple, laps_result_tuple = rank_order_results.ripple_most_likely_result_tuple, rank_order_results.laps_most_likely_result_tuple
+
+    # global_replays = Epoch(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].replay))
+    selected_spikes_df: pd.DataFrame = deepcopy(rank_order_results.LR_ripple.selected_spikes_df) #TODO 2023-12-13 01:32: - [ ] WARN: this is just the LR_ripple's selected_spikes_df, I might need to merge with RL_ripple's selected_spikes_df?? `ripple_result_tuple.active_epochs.label`
+    active_epochs_df = deepcopy(ripple_result_tuple.active_epochs)
+    active_selected_spikes_df, active_epochs_df = RankOrderAnalyses.new_compute_correlations(selected_spikes_df=selected_spikes_df, active_epochs=active_epochs_df, track_templates=track_templates)
+
+    ## Add previously computed (using pre-2023-12-13 method) Spearman Raw results:
+    # active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.LR_ripple.ranked_aclus_stats_dict[x]._asdict())
+    _old_spearman_column_names = ['LR_Long_Old_Spearman', 'RL_Long_Old_Spearman', 'LR_Short_Old_Spearman', 'RL_Short_Old_Spearman']
+    active_epochs_df[_old_spearman_column_names] = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan]], index=active_epochs_df.index)
+
+    active_epochs_df['LR_Long_Old_Spearman'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.LR_ripple.ranked_aclus_stats_dict[x].long_stats_z_scorer.real_value)
+    active_epochs_df['RL_Long_Old_Spearman'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.RL_ripple.ranked_aclus_stats_dict[x].long_stats_z_scorer.real_value)
+    active_epochs_df['LR_Short_Old_Spearman'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.LR_ripple.ranked_aclus_stats_dict[x].short_stats_z_scorer.real_value)
+    active_epochs_df['RL_Short_Old_Spearman'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.RL_ripple.ranked_aclus_stats_dict[x].short_stats_z_scorer.real_value)
+
+    ## LARGE columns (lists of actually active number of cells, etc):
+    active_epochs_df['LR_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.LR_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
+    active_epochs_df['LR_Long_rel_num_cells'] = 0
+    active_epochs_df['LR_Long_rel_num_cells'] = active_epochs_df.label.astype('uint64').map(lambda x: len(rank_order_results.LR_ripple.extra_info_dict[x][1]))
+
+    active_epochs_df['RL_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.RL_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
+    active_epochs_df['RL_Long_rel_num_cells'] = 0
+    active_epochs_df['RL_Long_rel_num_cells'] = active_epochs_df.label.astype('uint64').map(lambda x: len(rank_order_results.RL_ripple.extra_info_dict[x][1]))
+    ## Short
+    active_epochs_df['LR_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.LR_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
+    active_epochs_df['LR_Short_rel_num_cells'] = 0
+    active_epochs_df['LR_Short_rel_num_cells'] = active_epochs_df.label.astype('uint64').map(lambda x: len(rank_order_results.LR_ripple.extra_info_dict[x][1]))
+
+    active_epochs_df['RL_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.RL_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
+    active_epochs_df['RL_Short_rel_num_cells'] = 0
+    active_epochs_df['RL_Short_rel_num_cells'] = active_epochs_df.label.astype('uint64').map(lambda x: len(rank_order_results.RL_ripple.extra_info_dict[x][1]))
+
+    # ['LR_Long_ActuallyIncludedAclus', 'RL_Long_ActuallyIncludedAclus', 'LR_Short_ActuallyIncludedAclus', 'RL_Short_ActuallyIncludedAclus']
+
+    # active_epochs_df
+
+    # adding back in `ripple_rank_order_z_score_df` ______________________________________________________________________ #
+    ## #TODO 2023-12-13 10:51: - [ ] Not sure if I need this:
+
+    ## Replays:
+    
+    if isinstance(global_replays, pd.DataFrame):
+        global_replays = Epoch(global_replays.epochs.get_valid_df())
+
+    # get the aligned epochs and the z-scores aligned to them:
+    active_replay_epochs, ripple_rank_order_z_score_df, (active_LR_ripple_long_z_score, active_RL_ripple_long_z_score, active_LR_ripple_short_z_score, active_RL_ripple_short_z_score) = rank_order_results.get_aligned_events(global_replays.to_dataframe().copy(), is_laps=False)
+
+    ## Add in the previous Z-score results from `ripple_rank_order_z_score_df`:
+    old_ripple_rank_order_z_score_df = deepcopy(ripple_rank_order_z_score_df).astype({'label': 'uint64'}).drop((['duration', 'end', 'stop', 'start']), axis=1, inplace=False) # ['stop', 'start']
+    active_epochs_df = active_epochs_df.astype({'label': 'uint64'})
+    active_epochs_df = active_epochs_df.merge(old_ripple_rank_order_z_score_df, left_on='label', right_on='label', how='left', suffixes=('', '_prev'))
+    return active_replay_epochs, active_epochs_df, active_selected_spikes_df
+
+
+from neuropy.utils.misc import build_shuffled_ids # pandas_df_based_correlation_computations
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import LongShortStatsTuple
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import Zscorer, RankOrderResult, DirectionalRankOrderResult, RankOrderComputationsContainer, DirectionalRankOrderLikelihoods
+
+
+def pandas_df_based_correlation_computations():
+    ## Shuffle each map's aclus, takes `selected_spikes_df`
+
+
+    # LongShortStatsTuple: Tuple[Zscorer, Zscorer, float, float, bool]
+
+    num_shuffles = 100
+    rng = np.random.default_rng() # seed=13378 #TODO 2023-12-13 05:13: - [ ] DO NOT SET THE SEED! This makes the random permutation/shuffle the same every time!!!
+    long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map = track_templates.get_decoder_aclu_peak_maps()
+
+    ## Restrict to only the relevant columns, and Initialize the dataframe columns to np.nan:
+    active_selected_spikes_df: pd.DataFrame = deepcopy(selected_spikes_df[['t_rel_seconds', 'aclu', 'Probe_Epoch_id']]).sort_values(['Probe_Epoch_id', 't_rel_seconds', 'aclu']).astype({'Probe_Epoch_id': 'uint64'}) # Sort by columns: 'Probe_Epoch_id' (ascending), 't_rel_seconds' (ascending), 'aclu' (ascending)
+    _pf_peak_x_column_names = ['LR_Long_pf_peak_x', 'RL_Long_pf_peak_x', 'LR_Short_pf_peak_x', 'RL_Short_pf_peak_x']
+    active_selected_spikes_df[_pf_peak_x_column_names] = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan]], index=active_selected_spikes_df.index)
+
+    ## Normal:
+    active_selected_spikes_df['LR_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_LR_aclu_peak_map)
+    active_selected_spikes_df['RL_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_RL_aclu_peak_map)
+    active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
+    active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
+
+    active_epochs = deepcopy(ripple_result_tuple.active_epochs)
+
+    ## PERFORM SHUFFLE HERE:
+    # On-the-fly shuffling mode using shuffle_helper:
+    # epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies = build_shuffled_ids(list(long_LR_aclu_peak_map.keys()), num_shuffles=num_shuffles, seed=None) # .shape: ((num_shuffles, n_neurons), (num_shuffles, n_neurons))
+
+    ## USES selected_spikes_df
+    all_decoder_aclus_map_keys_list = [np.array(list(a_map.keys())) for a_map in (long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map)] # list of four elements
+    all_shuffled_decoder_aclus_map_keys_list = [build_shuffled_ids(a_map_keys, num_shuffles=num_shuffles, seed=None)[0] for a_map_keys in all_decoder_aclus_map_keys_list] # [0] only gets the shuffled_aclus themselves, which are of shape .shape: ((num_shuffles, n_neurons[i]) where i is the decoder_index
+    # all_shuffled_decoder_aclus_map_keys_list[0]
+
+    long_LR_epoch_specific_shuffled_aclus, long_RL_epoch_specific_shuffled_aclus, short_LR_epoch_specific_shuffled_aclus, short_RL_epoch_specific_shuffled_aclus = all_shuffled_decoder_aclus_map_keys_list
+
+    ## Shuffle a single map, but will eventually need one for each of the four decoders::
+    # epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies = build_shuffled_ids(list(long_LR_aclu_peak_map.keys()), num_shuffles=num_shuffles, seed=None) # .shape: ((num_shuffles, n_neurons), (num_shuffles, n_neurons))
+
+    # for i, (epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies) in enumerate(zip(epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies)):
+    # for epoch_specific_shuffled_aclus_tuple in zip(all_shuffled_decoder_aclus_map_keys_list):
+        
+    output_active_epochs_dfs = []
+    output_active_epoch_computed_values = []
+
+    for shuffle_IDX in np.arange(num_shuffles):
+        """ within the loop we modify: 
+            active_selected_spikes_df, active_epochs 
+            
+            From active_selected_spikes_df I only need: ['t_rel_seconds', 'aclu', 'Probe_Epoch_id', 'label']
+            
+        """
+        
+        active_selected_spikes_df[_pf_peak_x_column_names] = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan]], index=active_selected_spikes_df.index)
+        # assert len(epoch_specific_shuffled_aclus_tuple) == 4, f"len(epoch_specific_shuffled_aclus_tuple): {len(epoch_specific_shuffled_aclus_tuple)}"
+        
+        #TODO 2023-11-22 12:50: - [X] Are the sizes correct since `a_shuffled_IDXs` doesn't know the size of the template?
+        # epoch_specific_shuffled_long_LR_aclu_peak_map = dict(zip(epoch_specific_shuffled_aclus, long_LR_aclu_peak_map.values()))
+        # print(f'epoch_specific_shuffled_long_LR_aclu_peak_map: {epoch_specific_shuffled_long_LR_aclu_peak_map}')
+
+        # selected_spikes_df: pd.DataFrame = deepcopy(rank_order_results.LR_ripple.selected_spikes_df) #TODO 2023-12-13 01:32: - [ ] WARN: this is just the LR_ripple's selected_spikes_df, I might need to merge with RL_ripple's selected_spikes_df?? `ripple_result_tuple.active_epochs.label`
+        
+        # for a_name in _pf_peak_x_column_names:
+        # 	epoch_specific_shuffled_long_LR_aclu_peak_map = dict(zip(epoch_specific_shuffled_aclus, long_LR_aclu_peak_map.values()))
+        # 	active_selected_spikes_df[a_name] = active_selected_spikes_df.aclu.map(epoch_specific_shuffled_long_LR_aclu_peak_map)
+
+        a_name = 'LR_Long_pf_peak_x'
+        active_selected_spikes_df[a_name] = active_selected_spikes_df.aclu.map(dict(zip(long_LR_epoch_specific_shuffled_aclus[shuffle_IDX], long_LR_aclu_peak_map.values())))
+
+        a_name = 'RL_Long_pf_peak_x'
+        active_selected_spikes_df[a_name] = active_selected_spikes_df.aclu.map(dict(zip(long_RL_epoch_specific_shuffled_aclus[shuffle_IDX], long_RL_aclu_peak_map.values())))
+        
+        a_name = 'LR_Short_pf_peak_x'
+        active_selected_spikes_df[a_name] = active_selected_spikes_df.aclu.map(dict(zip(short_LR_epoch_specific_shuffled_aclus[shuffle_IDX], short_LR_aclu_peak_map.values())))
+        
+        a_name = 'RL_Short_pf_peak_x'
+        active_selected_spikes_df[a_name] = active_selected_spikes_df.aclu.map(dict(zip(short_RL_epoch_specific_shuffled_aclus[shuffle_IDX], short_RL_aclu_peak_map.values())))
+        
+
+        epoch_id_grouped_selected_spikes_df =  active_selected_spikes_df.groupby('Probe_Epoch_id') # I can even compute this outside the loop?
+        spearman_correlations = epoch_id_grouped_selected_spikes_df.apply(lambda group: RankOrderAnalyses._subfn_calculate_correlations(group, method='spearman', enable_shuffle=False)).reset_index() # Reset index to make 'Probe_Epoch_id' a column
+        pearson_correlations = epoch_id_grouped_selected_spikes_df.apply(lambda group: RankOrderAnalyses._subfn_calculate_correlations(group, method='pearson', enable_shuffle=False)).reset_index() # Reset index to make 'Probe_Epoch_id' a column
+
+        output_active_epoch_computed_values.append((spearman_correlations, pearson_correlations))
+        # active_epochs_merged_correlations_df = spearman_correlations_reset.merge(pearson_correlations_reset, on='Probe_Epoch_id', how='left')
+
+        # # Merge with the active_epochs DataFrame
+        # active_epochs_df: pd.DataFrame = deepcopy(active_epochs)
+        # # Change column type to uint64 for column: 'label'
+        # active_epochs_df = active_epochs_df.astype({'label': 'uint64'})
+        # active_epochs_df = active_epochs_df.merge(spearman_correlations, left_on='label', right_on='Probe_Epoch_id', how='left', suffixes=('', '_spearman'))
+        # active_epochs_df = active_epochs_df.merge(pearson_correlations, left_on='label', right_on='Probe_Epoch_id', how='left', suffixes=('', '_pearson'))
+        # active_epochs_df.drop(['Probe_Epoch_id', 'Probe_Epoch_id_pearson'], axis=1, inplace=True) # Drop the extra 'Probe_Epoch_id' columns
+
+        # output_active_epochs_dfs.append(active_epochs_df)
+        
+        # active_selected_spikes_df, active_epochs_df = RankOrderAnalyses.new_compute_correlations(selected_spikes_df=selected_spikes_df, active_epochs=active_epochs, track_templates=track_templates)
+        # active_epochs_df
+
+    # output_active_epochs_dfs
+
+    ## Build the outputs:
+
+    # Convert each DataFrame to a NumPy array and stack them # shape of this array will be (n, m, p) where n is the number of DataFrames, m is the number of rows, and p is the number of columns in each DataFrame.
+
+    # output_active_epoch_computed_values[0][0].to_numpy()
+    # output_active_epoch_computed_values
+    # dfs = [pd.concat(a_tuple, axis='columns', join='inner') for a_tuple in output_active_epoch_computed_values]
+    names0 = ['LR_Long_spearman', 'RL_Long_spearman', 'LR_Short_spearman', 'RL_Short_spearman']
+    dfs0 = [a_tuple[0] for a_tuple in output_active_epoch_computed_values] # [0] is just spearman_correlations
+    stacked_arrays0 = np.array([df[names0].values for df in dfs0])
+    # dfs = [a_tuple[1] for a_tuple in output_active_epoch_computed_values] # [0] is just spearman_correlations
+    names1 = ['LR_Long_pearson', 'RL_Long_pearson', 'LR_Short_pearson', 'RL_Short_pearson']
+    dfs1 = [a_tuple[1] for a_tuple in output_active_epoch_computed_values] # [0] is just spearman_correlations
+    stacked_arrays1 = np.array([df[names1].values for df in dfs1])
+
+    stacked_arrays = np.concatenate((stacked_arrays0, stacked_arrays1), axis=-1).shape # (100, 412, 8)
+
+    return output_active_epoch_computed_values
+
+
+
+# ==================================================================================================================== #
+# OLD                                                                                                                  #
+# ==================================================================================================================== #
+
+
+
 ## Laps Stuff:
 
 should_force_recompute_placefields = True
