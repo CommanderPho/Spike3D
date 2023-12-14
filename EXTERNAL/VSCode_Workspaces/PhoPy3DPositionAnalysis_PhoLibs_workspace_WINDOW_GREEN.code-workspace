@@ -115,7 +115,7 @@
 		],
 		"python.analysis.stubPath": "",
 		"python.analysis.enablePytestSupport": false,
-		"editor.fontSize": 12,
+		"editor.fontSize": 11,
 		"colorTabs.statusBarBackground": false,
 		"colorTabs.tabBorder": true,
 		"debug.focusWindowOnBreak": false,
@@ -123,7 +123,7 @@
 		"debug.autoExpandLazyVariables": false,
 		"debug.console.acceptSuggestionOnEnter": "on",
 		"debug.console.fontSize": 12,
-		"debug.toolBarLocation": "docked",
+		"debug.toolBarLocation": "floating",
 		"qtForPython.rcc.liveExecution.enabled": false,
 		"qtForPython.rcc.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe"
 	},
