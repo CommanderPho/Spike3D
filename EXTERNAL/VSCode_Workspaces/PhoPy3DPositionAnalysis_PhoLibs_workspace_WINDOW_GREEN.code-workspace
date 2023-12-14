@@ -15,6 +15,9 @@
 		{
 			"name": "neuropy",
 			"path": "../../../NeuroPy/neuropy"
+		},
+		{
+			"path": "../../../../cloud/turbo/Data/Output/gen_scripts"
 		}
 	],
 	"settings": {
