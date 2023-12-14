@@ -1,5 +1,7 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
 from typing import  List
+import numpy as np
+import pandas as pd
 from matplotlib.colors import ListedColormap
 import pandas as pd
 import pyvista as pv
@@ -8,6 +10,155 @@ import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 from pyphocorehelpers.function_helpers import function_attributes
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
+
+# ==================================================================================================================== #
+# 2023-12-14 - Replay Direction Active Set FR Classification:                                                          #
+# ==================================================================================================================== #
+
+
+@function_attributes(short_name=None, tags=['active_set', 'directional'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-12-14 13:40', related_items=[])
+def epoch_directionality_active_set_evidence(decoders_dict, epochs_df_L: pd.DataFrame):
+    """ 
+    
+    Returns:
+    epoch_rate_dfs
+    epoch_accumulated_evidence
+
+    Usage:    
+
+
+    from PendingNotebookCode import epoch_directionality_active_set_evidence
+    
+    
+        spikes_df = curr_active_pipeline.sess.spikes_df
+        rank_order_results: RankOrderComputationsContainer = curr_active_pipeline.global_computation_results.computed_data['RankOrder']
+        minimum_inclusion_fr_Hz: float = rank_order_results.minimum_inclusion_fr_Hz
+        included_qclu_values: List[int] = rank_order_results.included_qclu_values
+        ripple_result_tuple, laps_result_tuple = rank_order_results.ripple_most_likely_result_tuple, rank_order_results.laps_most_likely_result_tuple
+        directional_laps_results: DirectionalLapsResult = curr_active_pipeline.global_computation_results.computed_data['DirectionalLaps']
+        track_templates: TrackTemplates = directional_laps_results.get_templates(minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz) # non-shared-only -- !! Is minimum_inclusion_fr_Hz=None the issue/difference?
+        print(f'minimum_inclusion_fr_Hz: {minimum_inclusion_fr_Hz}')
+        print(f'included_qclu_values: {included_qclu_values}')
+        # ripple_result_tuple
+
+        ## Unpacks `rank_order_results`: 
+        # global_replays = Epoch(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].replay))
+        global_replays = TimeColumnAliasesProtocol.renaming_synonym_columns_if_needed(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].replay))
+        active_replay_epochs, active_epochs_df, active_selected_spikes_df = combine_rank_order_results(rank_order_results, global_replays, track_templates=track_templates)
+        active_epochs_df
+
+    """
+    def _subfn_compute_evidence_for_epoch(epoch_rate_df):
+        """ 
+        
+        """
+        epoch_rate_df['norm_term'] = epoch_rate_df.sum(axis=1)
+
+
+        # epoch_rate_df.update({'Normed_LR_rate': epoch_rate_df['LR_rate']/epoch_rate_df['norm_term'], 'Normed_RL_rate': epoch_rate_df['RL_rate']/epoch_rate_df['norm_term']})
+
+        # Update DataFrame with new columns
+        epoch_rate_df = epoch_rate_df.assign(
+            Normed_LR_rate=epoch_rate_df['LR_rate'] / epoch_rate_df['norm_term'],
+            Normed_RL_rate=epoch_rate_df['RL_rate'] / epoch_rate_df['norm_term']
+        )
+
+
+        # Drop missing rows, not sure why these emerge (where there are cells with 0.0 fr for both directions.
+        epoch_rate_df = epoch_rate_df[~((epoch_rate_df['Normed_LR_rate'].isna()) | (epoch_rate_df['Normed_RL_rate'].isna()))]
+
+        ## Accumulate over all cells in the event:
+        accumulated_evidence_by_sum: pd.Series = epoch_rate_df.sum(axis=0)
+                
+        # Transpose the DataFrame to have columns as rows
+        # accumulated_evidence_df = accumulated_evidence_df.transpose()
+
+        # Rename the columns if necessary
+        # accumulated_evidence_df.columns = ['Accumulated_LR_rate', 'Accumulated_RL_rate'] # , 'Product_Accumulated_LR_rate', 'Product_Accumulated_RL_rate'
+
+        accumulated_evidence_by_product: pd.Series = epoch_rate_df.product(axis=0)
+        
+        # # Update DataFrame with new columns
+        # accumulated_evidence = accumulated_evidence.assign(
+        #     Product_Accumulated_LR_rate=accumulated_evidence_by_product['Normed_LR_rate'],
+        #     Product_Accumulated_RL_rate=accumulated_evidence_by_product['Normed_RL_rate']
+        # )
+        
+        # # Create a DataFrame with both sum and product columns
+        # accumulated_evidence_df = pd.DataFrame({
+        #     'Accumulated_LR_rate': accumulated_evidence['Normed_LR_rate'],
+        #     'Accumulated_RL_rate': accumulated_evidence['Normed_RL_rate'],
+        #     'Product_Accumulated_LR_rate': epoch_rate_df['Normed_LR_rate'].product(),
+        #     'Product_Accumulated_RL_rate': epoch_rate_df['Normed_RL_rate'].product()
+        # }, index=[])
+
+        accumulated_evidence = {
+            'Sum_Accumulated_LR_rate': accumulated_evidence_by_sum['Normed_LR_rate'],
+            'Sum_Accumulated_RL_rate': accumulated_evidence_by_sum['Normed_RL_rate'],
+            'Product_Accumulated_LR_rate': accumulated_evidence_by_product['Normed_LR_rate'],
+            'Product_Accumulated_RL_rate': accumulated_evidence_by_product['Normed_RL_rate']
+        }
+
+        return accumulated_evidence, epoch_rate_df
+
+
+    # BEGIN FUNCTION BODY ________________________________________________________________________________________________ #
+    decoders_aclu_peak_fr_dict = {a_decoder_name:dict(zip(np.array(a_decoder.pf.ratemap.neuron_ids), a_decoder.pf.ratemap.tuning_curve_unsmoothed_peak_firing_rates)) for a_decoder_name, a_decoder in decoders_dict.items()}
+
+    long_LR_aclu_peak_fr_map = decoders_aclu_peak_fr_dict['long_LR']
+    long_RL_aclu_peak_fr_map = decoders_aclu_peak_fr_dict['long_RL']
+
+    epoch_rate_dfs = {}
+    epoch_accumulated_evidence = {}
+
+    for row in epochs_df_L.itertuples(name="EpochRow"):
+        try:
+            active_unique_aclus = row.active_unique_aclus
+
+        except (KeyError, AttributeError):    
+            ## Make map exhaustive
+            either_direction_aclus = np.sort(np.union1d(row.LR_Long_ActuallyIncludedAclus, row.LR_Long_ActuallyIncludedAclus))
+            active_unique_aclus = either_direction_aclus
+            # LR_Long_ActuallyIncludedAclus
+            # RL_Long_ActuallyIncludedAclus
+            pass
+
+        epoch_LR_rates = []
+        epoch_RL_rates = []
+
+        for an_aclu in active_unique_aclus:
+            LR_rate = long_LR_aclu_peak_fr_map.get(an_aclu, 0.0)
+            RL_rate = long_RL_aclu_peak_fr_map.get(an_aclu, 0.0)
+            epoch_LR_rates.append(LR_rate)
+            epoch_RL_rates.append(RL_rate)
+            
+            _norm_term = (LR_rate + RL_rate)
+            
+            
+        epoch_LR_rates = np.array(epoch_LR_rates)
+        epoch_RL_rates = np.array(epoch_RL_rates)
+        
+        epoch_rate_df = pd.DataFrame({'LR_rate': epoch_LR_rates, 'RL_rate': epoch_RL_rates})
+        accumulated_evidence, epoch_rate_df = _subfn_compute_evidence_for_epoch(epoch_rate_df)
+
+        # Update the LR_evidence and RL_evidence columns in epochs_df_L
+        epochs_df_L.at[row.Index, 'LR_evidence'] = accumulated_evidence['Sum_Accumulated_LR_rate']
+        epochs_df_L.at[row.Index, 'RL_evidence'] = accumulated_evidence['Sum_Accumulated_RL_rate']
+        epochs_df_L.at[row.Index, 'LR_product_evidence'] = accumulated_evidence['Product_Accumulated_LR_rate']
+        epochs_df_L.at[row.Index, 'RL_product_evidence'] = accumulated_evidence['Product_Accumulated_RL_rate']
+
+        ## add to the output dicts:
+        epoch_rate_dfs[int(row.label)] = epoch_rate_df
+        epoch_accumulated_evidence[int(row.label)] = accumulated_evidence
+
+    
+    epochs_df_L['normed_LR_evidence'] = epochs_df_L['LR_evidence']/epochs_df_L[['LR_evidence', 'RL_evidence']].sum(axis=1)
+    epochs_df_L['normed_RL_evidence'] = epochs_df_L['RL_evidence']/epochs_df_L[['LR_evidence', 'RL_evidence']].sum(axis=1)
+    
+    epochs_df_L['normed_product_LR_evidence'] = epochs_df_L['LR_product_evidence']/epochs_df_L[['LR_product_evidence', 'RL_product_evidence']].sum(axis=1)
+    epochs_df_L['normed_product_RL_evidence'] = epochs_df_L['RL_product_evidence']/epochs_df_L[['LR_product_evidence', 'RL_product_evidence']].sum(axis=1)
+
+    return epoch_accumulated_evidence, epoch_rate_dfs, epochs_df_L
 
 
 
@@ -74,7 +225,7 @@ def combine_rank_order_results(rank_order_results, global_replays, track_templat
     active_replay_epochs, ripple_rank_order_z_score_df, (active_LR_ripple_long_z_score, active_RL_ripple_long_z_score, active_LR_ripple_short_z_score, active_RL_ripple_short_z_score) = rank_order_results.get_aligned_events(global_replays.to_dataframe().copy(), is_laps=False)
 
     ## Add in the previous Z-score results from `ripple_rank_order_z_score_df`:
-    old_ripple_rank_order_z_score_df = deepcopy(ripple_rank_order_z_score_df).astype({'label': 'uint64'}).drop((['duration', 'end', 'stop', 'start']), axis=1, inplace=False) # ['stop', 'start']
+    old_ripple_rank_order_z_score_df = deepcopy(ripple_rank_order_z_score_df[['label', 'LR_Long_Z', 'RL_Long_Z', 'LR_Short_Z', 'RL_Short_Z']]).astype({'label': 'uint64'}) # ['stop', 'start']
     active_epochs_df = active_epochs_df.astype({'label': 'uint64'})
     active_epochs_df = active_epochs_df.merge(old_ripple_rank_order_z_score_df, left_on='label', right_on='label', how='left', suffixes=('', '_prev'))
     return active_replay_epochs, active_epochs_df, active_selected_spikes_df
