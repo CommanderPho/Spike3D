@@ -242,12 +242,26 @@ def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, t
     
 
 
+    Outputs:
+    
+    combined_variable_names: ['LR_Long_spearman', 'RL_Long_spearman', 'LR_Short_spearman', 'RL_Short_spearman', 'LR_Long_pearson', 'RL_Long_pearson', 'LR_Short_pearson', 'RL_Short_pearson']
+    combined_variable_z_score_column_names: ['LR_Long_spearman_Z', 'RL_Long_spearman_Z', 'LR_Short_spearman_Z', 'RL_Short_spearman_Z', 'LR_Long_pearson_Z', 'RL_Long_pearson_Z', 'LR_Short_pearson_Z', 'RL_Short_pearson_Z']
+    
+    
+    
+    Usage:
+    
     from PendingNotebookCode import pandas_df_based_correlation_computations
     
     output_active_epoch_computed_values, stacked_arrays = pandas_df_based_correlation_computations(selected_spikes_df)
 
     
+    
+    
     """
+    from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import Zscorer
+    
+
     ## Shuffle each map's aclus, takes `selected_spikes_df`
 
 
@@ -268,26 +282,44 @@ def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, t
     active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
     active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
 
+
+
+    ## Compute real values here:
+    epoch_id_grouped_selected_spikes_df =  active_selected_spikes_df.groupby('Probe_Epoch_id') # I can even compute this outside the loop?
+    spearman_correlations = epoch_id_grouped_selected_spikes_df.apply(lambda group: RankOrderAnalyses._subfn_calculate_correlations(group, method='spearman', enable_shuffle=False)).reset_index() # Reset index to make 'Probe_Epoch_id' a column
+    pearson_correlations = epoch_id_grouped_selected_spikes_df.apply(lambda group: RankOrderAnalyses._subfn_calculate_correlations(group, method='pearson', enable_shuffle=False)).reset_index() # Reset index to make 'Probe_Epoch_id' a column
+
+    real_stats_tuple = (spearman_correlations, pearson_correlations)
+
+    names0 = ['LR_Long_spearman', 'RL_Long_spearman', 'LR_Short_spearman', 'RL_Short_spearman']
+    dfs0 = [real_stats_tuple[0]] # [0] is just spearman_correlations
+    stacked_arrays0 = np.array([df[names0].values for df in dfs0])
+    names1 = ['LR_Long_pearson', 'RL_Long_pearson', 'LR_Short_pearson', 'RL_Short_pearson']
+    dfs1 = [real_stats_tuple[1]] # [1] is pearson_correlations
+    stacked_arrays1 = np.array([df[names1].values for df in dfs1])
+    real_stacked_arrays = np.squeeze(np.concatenate((stacked_arrays0, stacked_arrays1), axis=-1)[0,:,:]) # .shape: (412, 8) # (n_epochs, n_columns)
+    
+    ## Combined column names:
+    combined_variable_names = names0 + names1
+    
+
     # active_epochs = deepcopy(ripple_result_tuple.active_epochs)
 
-    ## PERFORM SHUFFLE HERE:
+    # ==================================================================================================================== #
+    # PERFORM SHUFFLE HERE:                                                                                                #
+    # ==================================================================================================================== #
     # On-the-fly shuffling mode using shuffle_helper:
     # epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies = build_shuffled_ids(list(long_LR_aclu_peak_map.keys()), num_shuffles=num_shuffles, seed=None) # .shape: ((num_shuffles, n_neurons), (num_shuffles, n_neurons))
 
     ## USES selected_spikes_df
     all_decoder_aclus_map_keys_list = [np.array(list(a_map.keys())) for a_map in (long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map)] # list of four elements
     all_shuffled_decoder_aclus_map_keys_list = [build_shuffled_ids(a_map_keys, num_shuffles=num_shuffles, seed=None)[0] for a_map_keys in all_decoder_aclus_map_keys_list] # [0] only gets the shuffled_aclus themselves, which are of shape .shape: ((num_shuffles, n_neurons[i]) where i is the decoder_index
-    # all_shuffled_decoder_aclus_map_keys_list[0]
 
     long_LR_epoch_specific_shuffled_aclus, long_RL_epoch_specific_shuffled_aclus, short_LR_epoch_specific_shuffled_aclus, short_RL_epoch_specific_shuffled_aclus = all_shuffled_decoder_aclus_map_keys_list
 
     ## Shuffle a single map, but will eventually need one for each of the four decoders::
     # epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies = build_shuffled_ids(list(long_LR_aclu_peak_map.keys()), num_shuffles=num_shuffles, seed=None) # .shape: ((num_shuffles, n_neurons), (num_shuffles, n_neurons))
 
-    # for i, (epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies) in enumerate(zip(epoch_specific_shuffled_aclus, epoch_specific_shuffled_indicies)):
-    # for epoch_specific_shuffled_aclus_tuple in zip(all_shuffled_decoder_aclus_map_keys_list):
-        
-    output_active_epochs_dfs = []
     output_active_epoch_computed_values = []
 
     for shuffle_IDX in np.arange(num_shuffles):
@@ -346,24 +378,42 @@ def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, t
 
     # output_active_epochs_dfs
 
-    ## Build the outputs:
+    ## Build the output `stacked_arrays`:
 
     # Convert each DataFrame to a NumPy array and stack them # shape of this array will be (n, m, p) where n is the number of DataFrames, m is the number of rows, and p is the number of columns in each DataFrame.
-
-    # output_active_epoch_computed_values[0][0].to_numpy()
-    # output_active_epoch_computed_values
-    # dfs = [pd.concat(a_tuple, axis='columns', join='inner') for a_tuple in output_active_epoch_computed_values]
     names0 = ['LR_Long_spearman', 'RL_Long_spearman', 'LR_Short_spearman', 'RL_Short_spearman']
     dfs0 = [a_tuple[0] for a_tuple in output_active_epoch_computed_values] # [0] is just spearman_correlations
     stacked_arrays0 = np.array([df[names0].values for df in dfs0])
-    # dfs = [a_tuple[1] for a_tuple in output_active_epoch_computed_values] # [0] is just spearman_correlations
     names1 = ['LR_Long_pearson', 'RL_Long_pearson', 'LR_Short_pearson', 'RL_Short_pearson']
-    dfs1 = [a_tuple[1] for a_tuple in output_active_epoch_computed_values] # [0] is just spearman_correlations
+    dfs1 = [a_tuple[1] for a_tuple in output_active_epoch_computed_values] # [1] is pearson_correlations
     stacked_arrays1 = np.array([df[names1].values for df in dfs1])
+    stacked_arrays = np.concatenate((stacked_arrays0, stacked_arrays1), axis=-1) # .shape: (100, 412, 8) # (n_shuffles, n_epochs, n_columns)
 
-    stacked_arrays = np.concatenate((stacked_arrays0, stacked_arrays1), axis=-1).shape # (100, 412, 8)
+    ## Drop any shuffle indicies where NaNs are returned for any of the stats values.
+    # stacked_arrays[~np.isnan(stacked_arrays).any(axis=0)]
+    is_valid_row = np.logical_not(np.isnan(stacked_arrays)).all(axis=(1,2))
+    n_valid_shuffles = np.sum(is_valid_row)
+    print(f'n_valid_shuffles: {n_valid_shuffles}')
+    valid_stacked_arrays = stacked_arrays[is_valid_row] ## Get only the rows where all elements along both axis (1, 2) are True    
 
-    return output_active_epoch_computed_values, stacked_arrays
+    # Need: valid_stacked_arrays, real_stacked_arrays, combined_variable_names
+    combined_epoch_stats_df: pd.DataFrame = pd.DataFrame(real_stacked_arrays, columns=combined_variable_names)
+    combined_variable_z_score_column_names = [f"{a_name}_Z" for a_name in combined_variable_names] # combined_variable_z_score_column_names: ['LR_Long_spearman_Z', 'RL_Long_spearman_Z', 'LR_Short_spearman_Z', 'RL_Short_spearman_Z', 'LR_Long_pearson_Z', 'RL_Long_pearson_Z', 'LR_Short_pearson_Z', 'RL_Short_pearson_Z']
+
+    ## Extract the stats values for each shuffle from `valid_stacked_arrays`:
+    n_epochs = np.shape(real_stacked_arrays)[0]
+    n_variables = np.shape(real_stacked_arrays)[1]
+
+    assert n_epochs == np.shape(valid_stacked_arrays)[-2]
+    assert n_variables == np.shape(valid_stacked_arrays)[-1]
+
+    for variable_IDX, a_column_name in enumerate(combined_variable_z_score_column_names):
+        z_scorer_list = [Zscorer.init_from_values(stats_corr_values=np.squeeze(valid_stacked_arrays[:, :, variable_IDX]), real_value=real_stacked_arrays[epoch_IDX, variable_IDX]) for epoch_IDX in np.arange(n_epochs)]
+        z_score_values = np.array([a_zscorer.z_score_value for a_zscorer in z_scorer_list])
+        combined_epoch_stats_df[a_column_name] = z_score_values
+
+
+    return combined_epoch_stats_df, (output_active_epoch_computed_values, valid_stacked_arrays, real_stacked_arrays, n_valid_shuffles)
 
 
 
