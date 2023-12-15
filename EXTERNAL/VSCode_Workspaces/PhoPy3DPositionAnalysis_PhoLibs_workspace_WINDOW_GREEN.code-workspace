@@ -176,7 +176,8 @@
 			"rebornix.toggle",
 			"amodio.restore-editors",
 			"buenon.scratchpads",
-			"geddski.macros"
+			"geddski.macros",
+			"ryuta46.multi-command"
 		]
 	}
 }
