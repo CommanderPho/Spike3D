@@ -236,18 +236,29 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import Zscorer, RankOrderResult, DirectionalRankOrderResult, RankOrderComputationsContainer, DirectionalRankOrderLikelihoods
 
 
-def pandas_df_based_correlation_computations():
+def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, track_templates, num_shuffles:int=100):
+    """ 
+    selected_spikes_df: pd.DataFrame - spikes dataframe containing only the first spike (the "selected one") for each cell within the periods of interest.
+    
+
+
+    from PendingNotebookCode import pandas_df_based_correlation_computations
+    
+    output_active_epoch_computed_values, stacked_arrays = pandas_df_based_correlation_computations(selected_spikes_df)
+
+    
+    """
     ## Shuffle each map's aclus, takes `selected_spikes_df`
 
 
     # LongShortStatsTuple: Tuple[Zscorer, Zscorer, float, float, bool]
 
-    num_shuffles = 100
+    
     rng = np.random.default_rng() # seed=13378 #TODO 2023-12-13 05:13: - [ ] DO NOT SET THE SEED! This makes the random permutation/shuffle the same every time!!!
     long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map = track_templates.get_decoder_aclu_peak_maps()
 
     ## Restrict to only the relevant columns, and Initialize the dataframe columns to np.nan:
-    active_selected_spikes_df: pd.DataFrame = deepcopy(selected_spikes_df[['t_rel_seconds', 'aclu', 'Probe_Epoch_id']]).sort_values(['Probe_Epoch_id', 't_rel_seconds', 'aclu']).astype({'Probe_Epoch_id': 'uint64'}) # Sort by columns: 'Probe_Epoch_id' (ascending), 't_rel_seconds' (ascending), 'aclu' (ascending)
+    active_selected_spikes_df: pd.DataFrame = deepcopy(selected_spikes_df[['t_rel_seconds', 'aclu', 'Probe_Epoch_id']]).sort_values(['Probe_Epoch_id', 't_rel_seconds', 'aclu']).astype({'Probe_Epoch_id': 'int'}) # Sort by columns: 'Probe_Epoch_id' (ascending), 't_rel_seconds' (ascending), 'aclu' (ascending)
     _pf_peak_x_column_names = ['LR_Long_pf_peak_x', 'RL_Long_pf_peak_x', 'LR_Short_pf_peak_x', 'RL_Short_pf_peak_x']
     active_selected_spikes_df[_pf_peak_x_column_names] = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan]], index=active_selected_spikes_df.index)
 
@@ -257,7 +268,7 @@ def pandas_df_based_correlation_computations():
     active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
     active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
 
-    active_epochs = deepcopy(ripple_result_tuple.active_epochs)
+    # active_epochs = deepcopy(ripple_result_tuple.active_epochs)
 
     ## PERFORM SHUFFLE HERE:
     # On-the-fly shuffling mode using shuffle_helper:
@@ -352,7 +363,7 @@ def pandas_df_based_correlation_computations():
 
     stacked_arrays = np.concatenate((stacked_arrays0, stacked_arrays1), axis=-1).shape # (100, 412, 8)
 
-    return output_active_epoch_computed_values
+    return output_active_epoch_computed_values, stacked_arrays
 
 
 
