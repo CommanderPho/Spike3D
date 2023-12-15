@@ -253,7 +253,7 @@ def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, t
     
     from PendingNotebookCode import pandas_df_based_correlation_computations
     
-    output_active_epoch_computed_values, stacked_arrays = pandas_df_based_correlation_computations(selected_spikes_df)
+    combined_epoch_stats_df, (output_active_epoch_computed_values, valid_stacked_arrays, real_stacked_arrays, n_valid_shuffles) = pandas_df_based_correlation_computations(selected_spikes_df, track_templates, num_shuffles=1000)
 
     
     
@@ -363,23 +363,9 @@ def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, t
         output_active_epoch_computed_values.append((spearman_correlations, pearson_correlations))
         # active_epochs_merged_correlations_df = spearman_correlations_reset.merge(pearson_correlations_reset, on='Probe_Epoch_id', how='left')
 
-        # # Merge with the active_epochs DataFrame
-        # active_epochs_df: pd.DataFrame = deepcopy(active_epochs)
-        # # Change column type to uint64 for column: 'label'
-        # active_epochs_df = active_epochs_df.astype({'label': 'uint64'})
-        # active_epochs_df = active_epochs_df.merge(spearman_correlations, left_on='label', right_on='Probe_Epoch_id', how='left', suffixes=('', '_spearman'))
-        # active_epochs_df = active_epochs_df.merge(pearson_correlations, left_on='label', right_on='Probe_Epoch_id', how='left', suffixes=('', '_pearson'))
-        # active_epochs_df.drop(['Probe_Epoch_id', 'Probe_Epoch_id_pearson'], axis=1, inplace=True) # Drop the extra 'Probe_Epoch_id' columns
-
-        # output_active_epochs_dfs.append(active_epochs_df)
         
-        # active_selected_spikes_df, active_epochs_df = RankOrderAnalyses.new_compute_correlations(selected_spikes_df=selected_spikes_df, active_epochs=active_epochs, track_templates=track_templates)
-        # active_epochs_df
 
-    # output_active_epochs_dfs
-
-    ## Build the output `stacked_arrays`:
-
+    # Build the output `stacked_arrays`: _________________________________________________________________________________ #
     # Convert each DataFrame to a NumPy array and stack them # shape of this array will be (n, m, p) where n is the number of DataFrames, m is the number of rows, and p is the number of columns in each DataFrame.
     names0 = ['LR_Long_spearman', 'RL_Long_spearman', 'LR_Short_spearman', 'RL_Short_spearman']
     dfs0 = [a_tuple[0] for a_tuple in output_active_epoch_computed_values] # [0] is just spearman_correlations
@@ -390,7 +376,6 @@ def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, t
     stacked_arrays = np.concatenate((stacked_arrays0, stacked_arrays1), axis=-1) # .shape: (100, 412, 8) # (n_shuffles, n_epochs, n_columns)
 
     ## Drop any shuffle indicies where NaNs are returned for any of the stats values.
-    # stacked_arrays[~np.isnan(stacked_arrays).any(axis=0)]
     is_valid_row = np.logical_not(np.isnan(stacked_arrays)).all(axis=(1,2))
     n_valid_shuffles = np.sum(is_valid_row)
     print(f'n_valid_shuffles: {n_valid_shuffles}')
@@ -412,6 +397,9 @@ def pandas_df_based_correlation_computations(selected_spikes_df: pd.DataFrame, t
         z_score_values = np.array([a_zscorer.z_score_value for a_zscorer in z_scorer_list])
         combined_epoch_stats_df[a_column_name] = z_score_values
 
+
+    print(f'combined_variable_names: {combined_variable_names}')
+    print(f'combined_variable_z_score_column_names: {combined_variable_z_score_column_names}')
 
     return combined_epoch_stats_df, (output_active_epoch_computed_values, valid_stacked_arrays, real_stacked_arrays, n_valid_shuffles)
 
