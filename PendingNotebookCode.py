@@ -168,69 +168,6 @@ def epoch_directionality_active_set_evidence(decoders_dict, epochs_df_L: pd.Data
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import RankOrderAnalyses, RankOrderResult, ShuffleHelper, Zscorer, LongShortStatsTuple, DirectionalRankOrderLikelihoods, DirectionalRankOrderResult, RankOrderComputationsContainer
 
-# def combine_rank_order_results(rank_order_results, global_replays, track_templates: "TrackTemplates"):
-#     # label_column_type: str = 'uint64'
-#     label_column_type: str = 'int'
-    
-#     ## Unpacks `rank_order_results`: 
-#     minimum_inclusion_fr_Hz: float = rank_order_results.minimum_inclusion_fr_Hz
-#     included_qclu_values: List[int] = rank_order_results.included_qclu_values
-#     ripple_result_tuple, laps_result_tuple = rank_order_results.ripple_most_likely_result_tuple, rank_order_results.laps_most_likely_result_tuple
-
-#     # global_replays = Epoch(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].replay))
-#     selected_spikes_df: pd.DataFrame = deepcopy(rank_order_results.LR_ripple.selected_spikes_df) #TODO 2023-12-13 01:32: - [ ] WARN: this is just the LR_ripple's selected_spikes_df, I might need to merge with RL_ripple's selected_spikes_df?? `ripple_result_tuple.active_epochs.label`
-#     active_epochs_df = deepcopy(ripple_result_tuple.active_epochs)
-#     active_selected_spikes_df, active_epochs_df = RankOrderAnalyses.new_compute_correlations(selected_spikes_df=selected_spikes_df, active_epochs=active_epochs_df, track_templates=track_templates)
-
-#     ## Add previously computed (using pre-2023-12-13 method) Spearman Raw results:
-#     # active_epochs_df.label.astype('uint64').map(lambda x: rank_order_results.LR_ripple.ranked_aclus_stats_dict[x]._asdict())
-#     _old_spearman_column_names = ['LR_Long_Old_Spearman', 'RL_Long_Old_Spearman', 'LR_Short_Old_Spearman', 'RL_Short_Old_Spearman']
-#     active_epochs_df[_old_spearman_column_names] = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan]], index=active_epochs_df.index)
-
-#     active_epochs_df['LR_Long_Old_Spearman'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_ripple.ranked_aclus_stats_dict[x].long_stats_z_scorer.real_value)
-#     active_epochs_df['RL_Long_Old_Spearman'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_ripple.ranked_aclus_stats_dict[x].long_stats_z_scorer.real_value)
-#     active_epochs_df['LR_Short_Old_Spearman'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_ripple.ranked_aclus_stats_dict[x].short_stats_z_scorer.real_value)
-#     active_epochs_df['RL_Short_Old_Spearman'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_ripple.ranked_aclus_stats_dict[x].short_stats_z_scorer.real_value)
-
-#     ## LARGE columns (lists of actually active number of cells, etc):
-#     active_epochs_df['LR_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-#     active_epochs_df['LR_Long_rel_num_cells'] = 0
-#     active_epochs_df['LR_Long_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.LR_ripple.extra_info_dict[x][1]))
-
-#     active_epochs_df['RL_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-#     active_epochs_df['RL_Long_rel_num_cells'] = 0
-#     active_epochs_df['RL_Long_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.RL_ripple.extra_info_dict[x][1]))
-#     ## Short
-#     active_epochs_df['LR_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-#     active_epochs_df['LR_Short_rel_num_cells'] = 0
-#     active_epochs_df['LR_Short_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.LR_ripple.extra_info_dict[x][1]))
-
-#     active_epochs_df['RL_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-#     active_epochs_df['RL_Short_rel_num_cells'] = 0
-#     active_epochs_df['RL_Short_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.RL_ripple.extra_info_dict[x][1]))
-
-#     # ['LR_Long_ActuallyIncludedAclus', 'RL_Long_ActuallyIncludedAclus', 'LR_Short_ActuallyIncludedAclus', 'RL_Short_ActuallyIncludedAclus']
-
-#     # active_epochs_df
-
-#     # adding back in `ripple_rank_order_z_score_df` ______________________________________________________________________ #
-#     ## #TODO 2023-12-13 10:51: - [ ] Not sure if I need this:
-
-#     ## Replays:
-    
-#     if isinstance(global_replays, pd.DataFrame):
-#         global_replays = Epoch(global_replays.epochs.get_valid_df())
-
-#     # get the aligned epochs and the z-scores aligned to them:
-#     active_replay_epochs, ripple_rank_order_z_score_df, (active_LR_ripple_long_z_score, active_RL_ripple_long_z_score, active_LR_ripple_short_z_score, active_RL_ripple_short_z_score) = rank_order_results.get_aligned_events(global_replays.to_dataframe().copy(), is_laps=False)
-
-#     ## Add in the previous Z-score results from `ripple_rank_order_z_score_df`:
-#     old_ripple_rank_order_z_score_df = deepcopy(ripple_rank_order_z_score_df[['label', 'LR_Long_Z', 'RL_Long_Z', 'LR_Short_Z', 'RL_Short_Z']]).astype({'label': label_column_type}) # ['stop', 'start']
-#     active_epochs_df = active_epochs_df.astype({'label': label_column_type})
-#     active_epochs_df = active_epochs_df.merge(old_ripple_rank_order_z_score_df, left_on='label', right_on='label', how='left', suffixes=('', '_prev'))
-#     return active_replay_epochs, active_epochs_df, active_selected_spikes_df
-
-
 from neuropy.utils.misc import build_shuffled_ids # pandas_df_based_correlation_computations
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import LongShortStatsTuple
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import Zscorer, RankOrderResult, DirectionalRankOrderResult, RankOrderComputationsContainer, DirectionalRankOrderLikelihoods
