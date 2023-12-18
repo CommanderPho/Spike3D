@@ -120,21 +120,6 @@ def epoch_directionality_active_set_evidence(decoders_dict, epochs_df: pd.DataFr
         # accumulated_evidence_df.columns = ['Accumulated_LR_rate', 'Accumulated_RL_rate'] # , 'Product_Accumulated_LR_rate', 'Product_Accumulated_RL_rate'
 
         accumulated_evidence_by_product: pd.Series = epoch_rate_df.product(axis=0)
-        
-        # # Update DataFrame with new columns
-        # accumulated_evidence = accumulated_evidence.assign(
-        #     Product_Accumulated_LR_rate=accumulated_evidence_by_product['Normed_LR_rate'],
-        #     Product_Accumulated_RL_rate=accumulated_evidence_by_product['Normed_RL_rate']
-        # )
-        
-        # # Create a DataFrame with both sum and product columns
-        # accumulated_evidence_df = pd.DataFrame({
-        #     'Accumulated_LR_rate': accumulated_evidence['Normed_LR_rate'],
-        #     'Accumulated_RL_rate': accumulated_evidence['Normed_RL_rate'],
-        #     'Product_Accumulated_LR_rate': epoch_rate_df['Normed_LR_rate'].product(),
-        #     'Product_Accumulated_RL_rate': epoch_rate_df['Normed_RL_rate'].product()
-        # }, index=[])
-
         accumulated_evidence = {
             'Sum_Accumulated_LR_rate': accumulated_evidence_by_sum['Normed_LR_rate'],
             'Sum_Accumulated_RL_rate': accumulated_evidence_by_sum['Normed_RL_rate'],
@@ -156,11 +141,12 @@ def epoch_directionality_active_set_evidence(decoders_dict, epochs_df: pd.DataFr
 
     for row in epochs_df.itertuples(name="EpochRow"):
         try:
+            ## This never seems to do anything anymore.
             active_unique_aclus = row.active_unique_aclus
 
         except (KeyError, AttributeError):    
             ## Make map exhaustive
-            either_direction_aclus = np.sort(np.union1d(row.LR_Long_ActuallyIncludedAclus, row.LR_Long_ActuallyIncludedAclus))
+            either_direction_aclus = np.sort(np.union1d(row.LR_Long_ActuallyIncludedAclus, row.RL_Long_ActuallyIncludedAclus)) #TODO 2023-12-18 16:56: - [ ] Note only uses 'LONG' to make decisions. I think SHORT are constrained to be equal, but this test should be explicitly performed.
             active_unique_aclus = either_direction_aclus
             # LR_Long_ActuallyIncludedAclus
             # RL_Long_ActuallyIncludedAclus
@@ -175,7 +161,7 @@ def epoch_directionality_active_set_evidence(decoders_dict, epochs_df: pd.DataFr
             epoch_LR_rates.append(LR_rate)
             epoch_RL_rates.append(RL_rate)
             
-            _norm_term = (LR_rate + RL_rate)
+            # _norm_term = (LR_rate + RL_rate)
             
             
         epoch_LR_rates = np.array(epoch_LR_rates)
