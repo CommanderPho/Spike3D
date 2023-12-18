@@ -15,7 +15,7 @@ from pyphocorehelpers.function_helpers import function_attributes
 # 2023-12-14 - Replay Direction Active Set FR Classification:                                                          #
 # ==================================================================================================================== #
 
-def add_num_cells_info(rank_order_results, active_epochs_df: pd.DataFrame, is_laps: bool = False):
+def add_active_aclus_info(rank_order_results, active_epochs_df: pd.DataFrame, is_laps: bool = False):
 	""" adds the columns about the number of cells in each epoch to the epochs_df """
 	label_column_type = 'int'
  
@@ -61,7 +61,7 @@ def add_num_cells_info(rank_order_results, active_epochs_df: pd.DataFrame, is_la
 
 
 @function_attributes(short_name=None, tags=['active_set', 'directional'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-12-14 13:40', related_items=[])
-def epoch_directionality_active_set_evidence(decoders_dict, epochs_df_L: pd.DataFrame):
+def epoch_directionality_active_set_evidence(decoders_dict, epochs_df: pd.DataFrame):
     """ A method I came up with Kamran as a super quick way of using the active set (of cells) to determine the likelihood that a given epoch belongs to a certain direction.
     Used to classify replays as LR/RL
     
@@ -154,7 +154,7 @@ def epoch_directionality_active_set_evidence(decoders_dict, epochs_df_L: pd.Data
     epoch_rate_dfs = {}
     epoch_accumulated_evidence = {}
 
-    for row in epochs_df_L.itertuples(name="EpochRow"):
+    for row in epochs_df.itertuples(name="EpochRow"):
         try:
             active_unique_aclus = row.active_unique_aclus
 
@@ -185,23 +185,23 @@ def epoch_directionality_active_set_evidence(decoders_dict, epochs_df_L: pd.Data
         accumulated_evidence, epoch_rate_df = _subfn_compute_evidence_for_epoch(epoch_rate_df)
 
         # Update the LR_evidence and RL_evidence columns in epochs_df_L
-        epochs_df_L.at[row.Index, 'LR_evidence'] = accumulated_evidence['Sum_Accumulated_LR_rate']
-        epochs_df_L.at[row.Index, 'RL_evidence'] = accumulated_evidence['Sum_Accumulated_RL_rate']
-        epochs_df_L.at[row.Index, 'LR_product_evidence'] = accumulated_evidence['Product_Accumulated_LR_rate']
-        epochs_df_L.at[row.Index, 'RL_product_evidence'] = accumulated_evidence['Product_Accumulated_RL_rate']
+        epochs_df.at[row.Index, 'LR_evidence'] = accumulated_evidence['Sum_Accumulated_LR_rate']
+        epochs_df.at[row.Index, 'RL_evidence'] = accumulated_evidence['Sum_Accumulated_RL_rate']
+        epochs_df.at[row.Index, 'LR_product_evidence'] = accumulated_evidence['Product_Accumulated_LR_rate']
+        epochs_df.at[row.Index, 'RL_product_evidence'] = accumulated_evidence['Product_Accumulated_RL_rate']
 
         ## add to the output dicts:
         epoch_rate_dfs[int(row.label)] = epoch_rate_df
         epoch_accumulated_evidence[int(row.label)] = accumulated_evidence
 
     
-    epochs_df_L['normed_LR_evidence'] = epochs_df_L['LR_evidence']/epochs_df_L[['LR_evidence', 'RL_evidence']].sum(axis=1)
-    epochs_df_L['normed_RL_evidence'] = epochs_df_L['RL_evidence']/epochs_df_L[['LR_evidence', 'RL_evidence']].sum(axis=1)
+    epochs_df['normed_LR_evidence'] = epochs_df['LR_evidence']/epochs_df[['LR_evidence', 'RL_evidence']].sum(axis=1)
+    epochs_df['normed_RL_evidence'] = epochs_df['RL_evidence']/epochs_df[['LR_evidence', 'RL_evidence']].sum(axis=1)
     
-    epochs_df_L['normed_product_LR_evidence'] = epochs_df_L['LR_product_evidence']/epochs_df_L[['LR_product_evidence', 'RL_product_evidence']].sum(axis=1)
-    epochs_df_L['normed_product_RL_evidence'] = epochs_df_L['RL_product_evidence']/epochs_df_L[['LR_product_evidence', 'RL_product_evidence']].sum(axis=1)
+    epochs_df['normed_product_LR_evidence'] = epochs_df['LR_product_evidence']/epochs_df[['LR_product_evidence', 'RL_product_evidence']].sum(axis=1)
+    epochs_df['normed_product_RL_evidence'] = epochs_df['RL_product_evidence']/epochs_df[['LR_product_evidence', 'RL_product_evidence']].sum(axis=1)
 
-    return epoch_accumulated_evidence, epoch_rate_dfs, epochs_df_L
+    return epoch_accumulated_evidence, epoch_rate_dfs, epochs_df
 
 
 # ==================================================================================================================== #
