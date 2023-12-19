@@ -132,50 +132,6 @@ class PyQtGraphCrosshairs:
 # 2023-12-14 - Replay Direction Active Set FR Classification:                                                          #
 # ==================================================================================================================== #
 
-def add_active_aclus_info(rank_order_results, active_epochs_df: pd.DataFrame, is_laps: bool = False):
-    """ adds the columns about the number of cells in each epoch to the epochs_df """
-    label_column_type = 'int'
- 
-    if is_laps:
-        # Laps:
-        ## LARGE columns (lists of actually active number of cells, etc):
-        active_epochs_df['LR_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_laps.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['LR_Long_rel_num_cells'] = 0
-        active_epochs_df['LR_Long_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.LR_laps.extra_info_dict[x][1]))
-
-        active_epochs_df['RL_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_laps.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['RL_Long_rel_num_cells'] = 0
-        active_epochs_df['RL_Long_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.RL_laps.extra_info_dict[x][1]))
-        ## Short
-        active_epochs_df['LR_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_laps.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['LR_Short_rel_num_cells'] = 0
-        active_epochs_df['LR_Short_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.LR_laps.extra_info_dict[x][1]))
-
-        active_epochs_df['RL_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_laps.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['RL_Short_rel_num_cells'] = 0
-        active_epochs_df['RL_Short_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.RL_laps.extra_info_dict[x][1]))
-
-    else:
-        # Ripples:
-        ## LARGE columns (lists of actually active number of cells, etc):
-        active_epochs_df['LR_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['LR_Long_rel_num_cells'] = 0
-        active_epochs_df['LR_Long_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.LR_ripple.extra_info_dict[x][1]))
-
-        active_epochs_df['RL_Long_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['RL_Long_rel_num_cells'] = 0
-        active_epochs_df['RL_Long_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.RL_ripple.extra_info_dict[x][1]))
-        ## Short
-        active_epochs_df['LR_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.LR_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['LR_Short_rel_num_cells'] = 0
-        active_epochs_df['LR_Short_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.LR_ripple.extra_info_dict[x][1]))
-
-        active_epochs_df['RL_Short_ActuallyIncludedAclus'] = active_epochs_df.label.astype(label_column_type).map(lambda x: rank_order_results.RL_ripple.extra_info_dict[x][1]) # corresponds to `template_epoch_actually_included_aclus`
-        active_epochs_df['RL_Short_rel_num_cells'] = 0
-        active_epochs_df['RL_Short_rel_num_cells'] = active_epochs_df.label.astype(label_column_type).map(lambda x: len(rank_order_results.RL_ripple.extra_info_dict[x][1]))
-
-    return active_epochs_df
-
 
 @function_attributes(short_name=None, tags=['active_set', 'directional'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-12-14 13:40', related_items=[])
 def epoch_directionality_active_set_evidence(decoders_dict, epochs_df: pd.DataFrame):
