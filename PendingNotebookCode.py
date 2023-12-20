@@ -10,10 +10,67 @@ import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 from pyphocorehelpers.function_helpers import function_attributes
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
-from collections import Counter
+from collections import Counter # debug_detect_repeated_values
+
+import scipy # pho_compute_rank_order
 
 
 class CurrTesting:
+    
+    def pho_compute_rank_order(track_templates, curr_epoch_spikes_df: pd.DataFrame):
+        """ 2023-12-20 - Actually working spearman rank-ordering!! 
+
+        Usage:
+            curr_epoch_spikes_df = deepcopy(active_plotter.get_active_epoch_spikes_df())[['t_rel_seconds', 'aclu', 'shank', 'cluster', 'qclu', 'maze_id', 'flat_spike_idx', 'Probe_Epoch_id']]
+            curr_epoch_spikes_df["spike_rank"] = curr_epoch_spikes_df["t_rel_seconds"].rank(method="average")
+            # Sort by column: 'aclu' (ascending)
+            curr_epoch_spikes_df = curr_epoch_spikes_df.sort_values(['aclu'])
+            curr_epoch_spikes_df
+
+        """
+        curr_epoch_spikes_df["spike_rank"] = curr_epoch_spikes_df["t_rel_seconds"].rank(method="average")
+        curr_epoch_spikes_df = curr_epoch_spikes_df.sort_values(['aclu'], inplace=False) # Sort by column: 'aclu' (ascending)
+
+        n_spikes = np.shape(curr_epoch_spikes_df)[0]
+        curr_epoch_spikes_aclus = deepcopy(curr_epoch_spikes_df.aclu.to_numpy())
+        curr_epoch_spikes_aclu_ranks = deepcopy(curr_epoch_spikes_df.spike_rank.to_numpy())
+        curr_epoch_spikes_aclu_rank_map = dict(zip(curr_epoch_spikes_aclus, curr_epoch_spikes_aclu_ranks))
+        n_unique_aclus = np.shape(curr_epoch_spikes_df.aclu.unique())[0]
+        assert n_spikes == n_unique_aclus, f"there is more than one spike in curr_epoch_spikes_df for an aclu! n_spikes: {n_spikes}, n_unique_aclus: {n_unique_aclus}"
+
+        # decoder_LR_pf_peak_ranks_list = [scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense') for a_decoder in (long_LR_decoder, short_LR_decoder)]
+        # decoder_RL_pf_peak_ranks_list = [scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense') for a_decoder in (long_RL_decoder, short_RL_decoder)]
+
+        # rank_method: str = "dense"
+        # rank_method: str = "average"
+
+        track_templates.rank_method = "average"
+        # decoder_rank_dict = {a_decoder_name:scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method=rank_method) for a_decoder_name, a_decoder in track_templates.get_decoders_dict().items()}
+        # decoder_aclu_peak_rank_dict_dict = {a_decoder_name:dict(zip(a_decoder.pf.ratemap.neuron_ids, scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method=rank_method))) for a_decoder_name, a_decoder in track_templates.get_decoders_dict().items()}
+        # decoder_aclu_peak_rank_dict_dict = {a_decoder_name:dict(zip(a_decoder.pf.ratemap.neuron_ids, scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense'))) for a_decoder_name, a_decoder in track_templates.decoder_peak_rank_list_dict.items()}
+
+        # decoder_rank_dict = track_templates.decoder_peak_rank_list_dict
+        decoder_aclu_peak_rank_dict_dict = track_templates.decoder_aclu_peak_rank_dict_dict
+
+
+        # decoder_aclu_peak_rank_dict_dict
+
+        template_spearman_real_results = {}
+        for a_decoder_name, a_decoder_aclu_peak_rank_dict in decoder_aclu_peak_rank_dict_dict.items():
+            # decoder_aclu_peak_rank_dict_dict['long_LR'].apply(lambda x: curr_epoch_spikes_aclus[x])
+
+            # template_corresponding_aclu_rank_list: the list of template ranks for each aclu present in the `curr_epoch_spikes_aclus`
+            template_corresponding_aclu_rank_list = np.array([a_decoder_aclu_peak_rank_dict.get(key, np.nan) for key in curr_epoch_spikes_aclus]) #  if key in decoder_aclu_peak_rank_dict_dict['long_LR']
+            curr_epoch_spikes_aclu_rank_list = np.array([curr_epoch_spikes_aclu_rank_map.get(key, np.nan) for key in curr_epoch_spikes_aclus])
+            n_missing_aclus = np.isnan(template_corresponding_aclu_rank_list).sum()
+            real_long_rank_stats = scipy.stats.spearmanr(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, nan_policy='omit')
+            # real_long_rank_stats = calculate_spearman_rank_correlation(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list)
+            # print(f"Spearman rank correlation coefficient: {correlation}")
+            template_spearman_real_results[a_decoder_name] = (*real_long_rank_stats, n_missing_aclus)
+        
+        return template_spearman_real_results
+
+
     def debug_detect_repeated_values(data, exceeding_count:int=1):
         """
         Identify and return a map of all repeated values in a list-like or NumPy array.
