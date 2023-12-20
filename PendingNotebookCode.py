@@ -14,10 +14,79 @@ from collections import Counter # debug_detect_repeated_values
 
 import scipy # pho_compute_rank_order
 
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import RankOrderAnalyses # for _compute_single_rank_order_shuffle
+
 
 class CurrTesting:
     
-    def calculate_spearman_rank_correlation(X, Y):
+    def _subfn_build_all_pf_peak_x_columns(track_templates, selected_spikes_df: pd.DataFrame):
+            """ 2023-12-20 - Candidate for moving into RankOrderComputations 
+            
+            """
+            # _NaN_Type = np.nan
+            _NaN_Type = pd.NA
+
+            # long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map = track_templates.get_decoder_aclu_peak_maps()
+            decoder_aclu_peak_map_dict = track_templates.get_decoder_aclu_peak_map_dict()
+
+            ## Restrict to only the relevant columns, and Initialize the dataframe columns to np.nan:
+            active_selected_spikes_df: pd.DataFrame = deepcopy(selected_spikes_df[['t_rel_seconds', 'aclu', 'Probe_Epoch_id']]).sort_values(['Probe_Epoch_id', 't_rel_seconds', 'aclu']).astype({'Probe_Epoch_id': 'int'}) # Sort by columns: 'Probe_Epoch_id' (ascending), 't_rel_seconds' (ascending), 'aclu' (ascending)
+            
+            # _pf_peak_x_column_names = ['LR_Long_pf_peak_x', 'RL_Long_pf_peak_x', 'LR_Short_pf_peak_x', 'RL_Short_pf_peak_x']
+            _pf_peak_x_column_names = [f'{a_decoder_name}_pf_peak_x' for a_decoder_name in track_templates.get_decoder_names()]
+            active_selected_spikes_df[_pf_peak_x_column_names] = pd.DataFrame([[_NaN_Type, _NaN_Type, _NaN_Type, _NaN_Type]], index=active_selected_spikes_df.index)
+
+            ## Normal:
+            # active_selected_spikes_df['LR_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_LR_aclu_peak_map)
+            # active_selected_spikes_df['RL_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_RL_aclu_peak_map)
+            # active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
+            # active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
+
+            for a_decoder_name, a_aclu_peak_map in decoder_aclu_peak_map_dict.items():
+                active_selected_spikes_df[f'{a_decoder_name}_pf_peak_x'] = active_selected_spikes_df.aclu.map(a_aclu_peak_map)
+
+            return active_selected_spikes_df
+    
+
+
+    def _compute_single_rank_order_shuffle(track_templates, selected_spikes_df: pd.DataFrame):
+        """ 2023-12-20 - Candidate for moving into RankOrderComputations 
+        
+        """
+        
+        
+        # _NaN_Type = np.nan
+        _NaN_Type = pd.NA
+
+        long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map = track_templates.get_decoder_aclu_peak_maps()
+        ## Restrict to only the relevant columns, and Initialize the dataframe columns to np.nan:
+        active_selected_spikes_df: pd.DataFrame = deepcopy(selected_spikes_df[['t_rel_seconds', 'aclu', 'Probe_Epoch_id']]).sort_values(['Probe_Epoch_id', 't_rel_seconds', 'aclu']).astype({'Probe_Epoch_id': 'int'}) # Sort by columns: 'Probe_Epoch_id' (ascending), 't_rel_seconds' (ascending), 'aclu' (ascending)
+        _pf_peak_x_column_names = ['LR_Long_pf_peak_x', 'RL_Long_pf_peak_x', 'LR_Short_pf_peak_x', 'RL_Short_pf_peak_x']
+        active_selected_spikes_df[_pf_peak_x_column_names] = pd.DataFrame([[_NaN_Type, _NaN_Type, _NaN_Type, _NaN_Type]], index=active_selected_spikes_df.index)
+
+        ## Normal:
+        active_selected_spikes_df['LR_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_LR_aclu_peak_map)
+        active_selected_spikes_df['RL_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_RL_aclu_peak_map)
+        active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
+        active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
+
+        #TODO 2023-12-18 13:20: - [ ] This assumes that `'Probe_Epoch_id'` is correct and consistent for both directions, yeah?
+
+        ## Compute real values here:
+        epoch_id_grouped_selected_spikes_df =  active_selected_spikes_df.groupby('Probe_Epoch_id') # I can even compute this outside the loop?
+        spearman_correlations = epoch_id_grouped_selected_spikes_df.apply(lambda group: RankOrderAnalyses._subfn_calculate_correlations(group, method='spearman', enable_shuffle=False)).reset_index() # Reset index to make 'Probe_Epoch_id' a column
+        pearson_correlations = epoch_id_grouped_selected_spikes_df.apply(lambda group: RankOrderAnalyses._subfn_calculate_correlations(group, method='pearson', enable_shuffle=False)).reset_index() # Reset index to make 'Probe_Epoch_id' a column
+
+        real_stats_df = pd.concat((spearman_correlations, pearson_correlations), axis='columns')
+        real_stats_df = real_stats_df.loc[:, ~real_stats_df.columns.duplicated()] # drop duplicated 'Probe_Epoch_id' column
+        # Change column type to uint64 for column: 'Probe_Epoch_id'
+        real_stats_df = real_stats_df.astype({'Probe_Epoch_id': 'uint64'})
+        # Rename column 'Probe_Epoch_id' to 'label'
+        real_stats_df = real_stats_df.rename(columns={'Probe_Epoch_id': 'label'})
+        return real_stats_df
+
+
+    def calculate_spearman_rank_correlation(X, Y, rank_method="average"):
         """
         Calculates the Spearman rank correlation coefficient between two columns of data,
         replicating MATLAB's tiedrank functionality with average rank for ties.
@@ -34,7 +103,7 @@ class CurrTesting:
         df = pd.DataFrame({"X": X, "Y": Y}).sort_values(by="Y")
 
         # Calculate the ranks for the second column with average rank for ties
-        df["rank"] = df["Y"].rank(method="average")
+        df["rank"] = df["Y"].rank(method=rank_method)
 
         # Calculate the Spearman rank correlation coefficient
         return df["rank"].corr(df["X"])
@@ -143,7 +212,9 @@ class CurrTesting:
             curr_epoch_spikes_aclu_rank_list = curr_epoch_spikes_aclu_ranks
             n_missing_aclus = np.isnan(template_corresponding_aclu_rank_list).sum()
             real_long_rank_stats = scipy.stats.spearmanr(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, nan_policy=stats_nan_policy)
-            # real_long_rank_stats = calculate_spearman_rank_correlation(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list)
+            print(f'real_long_rank_stats: {real_long_rank_stats}')
+            _alt_real_long_rank_stats = CurrTesting.calculate_spearman_rank_correlation(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, rank_method=rank_method)
+            print(f'_alt_real_long_rank_stats: {_alt_real_long_rank_stats}')
             # print(f"Spearman rank correlation coefficient: {correlation}")
             template_spearman_real_results[a_decoder_name] = (*real_long_rank_stats, n_missing_aclus)
         
