@@ -10,6 +10,26 @@ import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 from pyphocorehelpers.function_helpers import function_attributes
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
+from collections import Counter
+
+
+class CurrTesting:
+    def debug_detect_repeated_values(data):
+        """
+        Identify and return a map of all repeated values in a list-like or NumPy array.
+
+        Args:
+            data: Any list-like or NumPy array.
+
+        Returns:
+            A dictionary mapping each repeated value to its count.
+        """
+        if isinstance(data, np.ndarray):
+            data = data.flatten()
+        return Counter(data)
+
+
+
 
 # ==================================================================================================================== #
 # 2023-12-19 PyQtGraphCrosshairs                                                                                       #
