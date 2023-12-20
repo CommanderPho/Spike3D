@@ -14,19 +14,20 @@ from collections import Counter
 
 
 class CurrTesting:
-    def debug_detect_repeated_values(data):
+    def debug_detect_repeated_values(data, exceeding_count:int=1):
         """
         Identify and return a map of all repeated values in a list-like or NumPy array.
 
         Args:
             data: Any list-like or NumPy array.
-
+            min_repeat: Max number of times a value can be used before it is included (default: 1).
+            
         Returns:
             A dictionary mapping each repeated value to its count.
         """
         if isinstance(data, np.ndarray):
             data = data.flatten()
-        return Counter(data)
+        return {key: value for key, value in Counter(data).items() if value > exceeding_count}
 
 
 
