@@ -1,5 +1,5 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
-from typing import  List, Optional, Dict
+from typing import  List, Optional, Dict, Tuple
 import numpy as np
 import pandas as pd
 from matplotlib.colors import ListedColormap
@@ -17,7 +17,90 @@ import scipy # pho_compute_rank_order
 
 class CurrTesting:
     
-    def pho_compute_rank_order(track_templates, curr_epoch_spikes_df: pd.DataFrame):
+    def calculate_spearman_rank_correlation(X, Y):
+        """
+        Calculates the Spearman rank correlation coefficient between two columns of data,
+        replicating MATLAB's tiedrank functionality with average rank for ties.
+
+        Args:
+            X: A list or array containing the first column of data.
+            Y: A list or array containing the second column of data.
+
+        Returns:
+            The Spearman rank correlation coefficient between X and Y.
+        """
+
+        # Sort the data by the second column (Y)
+        df = pd.DataFrame({"X": X, "Y": Y}).sort_values(by="Y")
+
+        # Calculate the ranks for the second column with average rank for ties
+        df["rank"] = df["Y"].rank(method="average")
+
+        # Calculate the Spearman rank correlation coefficient
+        return df["rank"].corr(df["X"])
+
+
+    def compute_spearman_rank_order(spike_df, template_df):
+        """ 2023-12-20 by Bard
+        Computes the Spearman rank-order correlation between spike events and a template.
+
+        Args:
+            spike_df: A Pandas DataFrame containing the following columns:
+            - `t_rel_seconds`: The t_rel_seconds of each neural spike event.
+            - `aclu`: The ID of the cell that fired the spike.
+            template_df: A Pandas DataFrame containing the following column:
+            - `aclu`: The ID of the cell.
+            - `rank`: The rank of the cell in the template.
+
+        Returns:
+            A Pandas DataFrame with the following columns:
+            - `aclu`: The ID of the cell.
+            - `spearman_rho`: The Spearman rank-order correlation between the cell's spike times
+                and the template ranks.
+                
+        Usage:
+        
+            # Example usage
+
+            spike_df = pd.DataFrame(
+                {
+                    "t_rel_seconds": [10, 20, 30, 40, 50, 60],
+                    "aclu": [1, 2, 1, 3, 2, 1],
+                }
+            )
+            template_df = pd.DataFrame(
+                {
+                    "aclu": [1, 2, 3],
+                    "rank": [3, 1, 2],
+                }
+            )
+
+            spearman_rho_df = compute_spearman_rank_order(spike_df, template_df)
+
+            print(spearman_rho_df)
+
+
+        """
+
+        merged_df = spike_df.merge(template_df, on="aclu")
+        merged_df["spike_rank"] = merged_df["t_rel_seconds"].rank(method="dense")
+
+        grouped_df = merged_df.groupby("aclu")
+        
+        curr_rank_column_name: str = 'rank_long_LR' # "rank"
+        spearman_rho_df = grouped_df.apply(
+            lambda x: pd.Series(
+                {"spearman_rho": x["spike_rank"].corr(x[curr_rank_column_name], method="spearman")},
+                name=x.name,
+            )
+        )
+
+        return spearman_rho_df.reset_index()
+
+
+
+
+    def pho_compute_rank_order(track_templates, curr_epoch_spikes_df: pd.DataFrame, rank_method="average", stats_nan_policy='omit') -> Dict[str, Tuple]:
         """ 2023-12-20 - Actually working spearman rank-ordering!! 
 
         Usage:
@@ -28,13 +111,13 @@ class CurrTesting:
             curr_epoch_spikes_df
 
         """
-        curr_epoch_spikes_df["spike_rank"] = curr_epoch_spikes_df["t_rel_seconds"].rank(method="average")
-        curr_epoch_spikes_df = curr_epoch_spikes_df.sort_values(['aclu'], inplace=False) # Sort by column: 'aclu' (ascending)
+        curr_epoch_spikes_df["spike_rank"] = curr_epoch_spikes_df["t_rel_seconds"].rank(method=rank_method)
+        # curr_epoch_spikes_df = curr_epoch_spikes_df.sort_values(['aclu'], inplace=False) # Sort by column: 'aclu' (ascending)
 
         n_spikes = np.shape(curr_epoch_spikes_df)[0]
         curr_epoch_spikes_aclus = deepcopy(curr_epoch_spikes_df.aclu.to_numpy())
         curr_epoch_spikes_aclu_ranks = deepcopy(curr_epoch_spikes_df.spike_rank.to_numpy())
-        curr_epoch_spikes_aclu_rank_map = dict(zip(curr_epoch_spikes_aclus, curr_epoch_spikes_aclu_ranks))
+        # curr_epoch_spikes_aclu_rank_map = dict(zip(curr_epoch_spikes_aclus, curr_epoch_spikes_aclu_ranks)) # could build a map equiv to template versions
         n_unique_aclus = np.shape(curr_epoch_spikes_df.aclu.unique())[0]
         assert n_spikes == n_unique_aclus, f"there is more than one spike in curr_epoch_spikes_df for an aclu! n_spikes: {n_spikes}, n_unique_aclus: {n_unique_aclus}"
 
@@ -44,7 +127,7 @@ class CurrTesting:
         # rank_method: str = "dense"
         # rank_method: str = "average"
 
-        track_templates.rank_method = "average"
+        track_templates.rank_method = rank_method
         # decoder_rank_dict = {a_decoder_name:scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method=rank_method) for a_decoder_name, a_decoder in track_templates.get_decoders_dict().items()}
         # decoder_aclu_peak_rank_dict_dict = {a_decoder_name:dict(zip(a_decoder.pf.ratemap.neuron_ids, scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method=rank_method))) for a_decoder_name, a_decoder in track_templates.get_decoders_dict().items()}
         # decoder_aclu_peak_rank_dict_dict = {a_decoder_name:dict(zip(a_decoder.pf.ratemap.neuron_ids, scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense'))) for a_decoder_name, a_decoder in track_templates.decoder_peak_rank_list_dict.items()}
@@ -52,18 +135,14 @@ class CurrTesting:
         # decoder_rank_dict = track_templates.decoder_peak_rank_list_dict
         decoder_aclu_peak_rank_dict_dict = track_templates.decoder_aclu_peak_rank_dict_dict
 
-
-        # decoder_aclu_peak_rank_dict_dict
-
         template_spearman_real_results = {}
         for a_decoder_name, a_decoder_aclu_peak_rank_dict in decoder_aclu_peak_rank_dict_dict.items():
-            # decoder_aclu_peak_rank_dict_dict['long_LR'].apply(lambda x: curr_epoch_spikes_aclus[x])
-
             # template_corresponding_aclu_rank_list: the list of template ranks for each aclu present in the `curr_epoch_spikes_aclus`
             template_corresponding_aclu_rank_list = np.array([a_decoder_aclu_peak_rank_dict.get(key, np.nan) for key in curr_epoch_spikes_aclus]) #  if key in decoder_aclu_peak_rank_dict_dict['long_LR']
-            curr_epoch_spikes_aclu_rank_list = np.array([curr_epoch_spikes_aclu_rank_map.get(key, np.nan) for key in curr_epoch_spikes_aclus])
+            # curr_epoch_spikes_aclu_rank_list = np.array([curr_epoch_spikes_aclu_rank_map.get(key, np.nan) for key in curr_epoch_spikes_aclus])
+            curr_epoch_spikes_aclu_rank_list = curr_epoch_spikes_aclu_ranks
             n_missing_aclus = np.isnan(template_corresponding_aclu_rank_list).sum()
-            real_long_rank_stats = scipy.stats.spearmanr(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, nan_policy='omit')
+            real_long_rank_stats = scipy.stats.spearmanr(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, nan_policy=stats_nan_policy)
             # real_long_rank_stats = calculate_spearman_rank_correlation(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list)
             # print(f"Spearman rank correlation coefficient: {correlation}")
             template_spearman_real_results[a_decoder_name] = (*real_long_rank_stats, n_missing_aclus)
