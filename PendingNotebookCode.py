@@ -19,57 +19,43 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 
 class CurrTesting:
     
-    def _subfn_build_all_pf_peak_x_columns(track_templates, selected_spikes_df: pd.DataFrame):
-            """ 2023-12-20 - Candidate for moving into RankOrderComputations 
-            
-            """
-            # _NaN_Type = np.nan
-            _NaN_Type = pd.NA
-
-            # long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map = track_templates.get_decoder_aclu_peak_maps()
-            decoder_aclu_peak_map_dict = track_templates.get_decoder_aclu_peak_map_dict()
-
-            ## Restrict to only the relevant columns, and Initialize the dataframe columns to np.nan:
-            active_selected_spikes_df: pd.DataFrame = deepcopy(selected_spikes_df[['t_rel_seconds', 'aclu', 'Probe_Epoch_id']]).sort_values(['Probe_Epoch_id', 't_rel_seconds', 'aclu']).astype({'Probe_Epoch_id': 'int'}) # Sort by columns: 'Probe_Epoch_id' (ascending), 't_rel_seconds' (ascending), 'aclu' (ascending)
-            
-            # _pf_peak_x_column_names = ['LR_Long_pf_peak_x', 'RL_Long_pf_peak_x', 'LR_Short_pf_peak_x', 'RL_Short_pf_peak_x']
-            _pf_peak_x_column_names = [f'{a_decoder_name}_pf_peak_x' for a_decoder_name in track_templates.get_decoder_names()]
-            active_selected_spikes_df[_pf_peak_x_column_names] = pd.DataFrame([[_NaN_Type, _NaN_Type, _NaN_Type, _NaN_Type]], index=active_selected_spikes_df.index)
-
-            ## Normal:
-            # active_selected_spikes_df['LR_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_LR_aclu_peak_map)
-            # active_selected_spikes_df['RL_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_RL_aclu_peak_map)
-            # active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
-            # active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
-
-            for a_decoder_name, a_aclu_peak_map in decoder_aclu_peak_map_dict.items():
-                active_selected_spikes_df[f'{a_decoder_name}_pf_peak_x'] = active_selected_spikes_df.aclu.map(a_aclu_peak_map)
-
-            return active_selected_spikes_df
-    
-
-
-    def _compute_single_rank_order_shuffle(track_templates, selected_spikes_df: pd.DataFrame):
+    @classmethod
+    def _subfn_build_all_pf_peak_x_columns(cls, track_templates, selected_spikes_df: pd.DataFrame):
         """ 2023-12-20 - Candidate for moving into RankOrderComputations 
         
         """
-        
-        
         # _NaN_Type = np.nan
         _NaN_Type = pd.NA
 
-        long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map = track_templates.get_decoder_aclu_peak_maps()
+        # long_LR_aclu_peak_map, long_RL_aclu_peak_map, short_LR_aclu_peak_map, short_RL_aclu_peak_map = track_templates.get_decoder_aclu_peak_maps()
+        decoder_aclu_peak_map_dict = track_templates.get_decoder_aclu_peak_map_dict()
+
         ## Restrict to only the relevant columns, and Initialize the dataframe columns to np.nan:
         active_selected_spikes_df: pd.DataFrame = deepcopy(selected_spikes_df[['t_rel_seconds', 'aclu', 'Probe_Epoch_id']]).sort_values(['Probe_Epoch_id', 't_rel_seconds', 'aclu']).astype({'Probe_Epoch_id': 'int'}) # Sort by columns: 'Probe_Epoch_id' (ascending), 't_rel_seconds' (ascending), 'aclu' (ascending)
-        _pf_peak_x_column_names = ['LR_Long_pf_peak_x', 'RL_Long_pf_peak_x', 'LR_Short_pf_peak_x', 'RL_Short_pf_peak_x']
+        
+        # _pf_peak_x_column_names = ['LR_Long_pf_peak_x', 'RL_Long_pf_peak_x', 'LR_Short_pf_peak_x', 'RL_Short_pf_peak_x']
+        _pf_peak_x_column_names = [f'{a_decoder_name}_pf_peak_x' for a_decoder_name in track_templates.get_decoder_names()]
         active_selected_spikes_df[_pf_peak_x_column_names] = pd.DataFrame([[_NaN_Type, _NaN_Type, _NaN_Type, _NaN_Type]], index=active_selected_spikes_df.index)
 
         ## Normal:
-        active_selected_spikes_df['LR_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_LR_aclu_peak_map)
-        active_selected_spikes_df['RL_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_RL_aclu_peak_map)
-        active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
-        active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
+        # active_selected_spikes_df['LR_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_LR_aclu_peak_map)
+        # active_selected_spikes_df['RL_Long_pf_peak_x'] = active_selected_spikes_df.aclu.map(long_RL_aclu_peak_map)
+        # active_selected_spikes_df['LR_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_LR_aclu_peak_map)
+        # active_selected_spikes_df['RL_Short_pf_peak_x'] = active_selected_spikes_df.aclu.map(short_RL_aclu_peak_map)
 
+        for a_decoder_name, a_aclu_peak_map in decoder_aclu_peak_map_dict.items():
+            active_selected_spikes_df[f'{a_decoder_name}_pf_peak_x'] = active_selected_spikes_df.aclu.map(a_aclu_peak_map)
+
+        return active_selected_spikes_df
+    
+
+    @classmethod
+    def _compute_single_rank_order_shuffle(cls, track_templates, selected_spikes_df: pd.DataFrame):
+        """ 2023-12-20 - Candidate for moving into RankOrderComputations 
+        
+        """
+        active_selected_spikes_df = cls._subfn_build_all_pf_peak_x_columns(track_templates, selected_spikes_df=selected_spikes_df)
+        
         #TODO 2023-12-18 13:20: - [ ] This assumes that `'Probe_Epoch_id'` is correct and consistent for both directions, yeah?
 
         ## Compute real values here:
