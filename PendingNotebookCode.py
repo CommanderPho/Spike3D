@@ -63,8 +63,8 @@ class CurrTesting:
             n_missing_aclus = np.isnan(template_corresponding_aclu_rank_list).sum()
             real_long_rank_stats = scipy.stats.spearmanr(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, nan_policy=stats_nan_policy)
             print(f'real_long_rank_stats: {real_long_rank_stats}')
-            _alt_real_long_rank_stats = CurrTesting.calculate_spearman_rank_correlation(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, rank_method=rank_method)
-            print(f'_alt_real_long_rank_stats: {_alt_real_long_rank_stats}')
+            # _alt_real_long_rank_stats = CurrTesting.calculate_spearman_rank_correlation(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, rank_method=rank_method)
+            # print(f'_alt_real_long_rank_stats: {_alt_real_long_rank_stats}')
             # print(f"Spearman rank correlation coefficient: {correlation}")
             template_spearman_real_results[a_decoder_name] = (*real_long_rank_stats, n_missing_aclus)
         
