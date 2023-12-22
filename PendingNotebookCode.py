@@ -17,8 +17,98 @@ import scipy # pho_compute_rank_order
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import RankOrderAnalyses # for _compute_single_rank_order_shuffle
 
 
+# ==================================================================================================================== #
+# 2023-12-21 - Inversion Count Concept                                                                                 #
+# ==================================================================================================================== #
+
+class InversionCount:
+    """ 2023-12-21 - "Inversion Count" Quantification of Order (as an alternative to Spearman?
+
+        computes the number of swap operations required to sort the list `arr` 
+
+
+
+    # Example usage
+
+        from PendingNotebookCode import InversionCount
+        # list1 = [3, 1, 5, 2, 4]
+        list1 = [1, 2, 4, 3, 5] # 1
+        list1 = [1, 3, 4, 5, 2] # 3
+        num_swaps = count_swaps_to_sort(list1)
+        print("Number of swaps required:", num_swaps)
+
+        >>> Number of swaps required: 3
+
+
+
+    """
+    @classmethod
+    def merge_sort_and_count(cls, arr):
+        """ Inversion Count - computes the number of swap operations required to sort the list `arr` 
+        """
+        if len(arr) <= 1:
+            return arr, 0
+
+        mid = len(arr) // 2
+        left, count_left = cls.merge_sort_and_count(arr[:mid])
+        right, count_right = cls.merge_sort_and_count(arr[mid:])
+        merged, count_split = cls.merge_and_count(left, right)
+
+        return merged, (count_left + count_right + count_split)
+
+    @classmethod
+    def merge_and_count(cls, left, right):
+        """ Inversion Count """
+        merged = []
+        count = 0
+        i = j = 0
+
+        while i < len(left) and j < len(right):
+            if left[i] <= right[j]:
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                count += len(left) - i
+                j += 1
+
+        merged.extend(left[i:])
+        merged.extend(right[j:])
+        return merged, count
+
+    @classmethod
+    def count_swaps_to_sort(cls, arr):
+        _, swaps = cls.merge_sort_and_count(arr)
+        return swaps
+
+
+
 class CurrTesting:
     
+    # Pre-2023-21 ________________________________________________________________________________________________________ #
+
+    def _plot_directional_likelihoods_df(directional_likelihoods_df):
+        """ 2023-12-21 - Now 
+
+        """
+        df = deepcopy(directional_likelihoods_df)
+
+        fig = plt.figure(num='directional_likelihoods_df Matplotlib figure')
+        plt.plot(df.index, df["long_relative_direction_likelihoods"], label="Long Direction")
+        plt.plot(df.index, df["short_relative_direction_likelihoods"], label="Short Direction")
+
+        for i, idx in enumerate(df["long_best_direction_indices"]):
+            if idx == 0:
+                plt.annotate("↑", (df.index[i], df["long_relative_direction_likelihoods"][i]), textcoords="offset points", xytext=(0, 10))
+            elif idx == 1:
+                plt.annotate("↓", (df.index[i], df["long_relative_direction_likelihoods"][i]), textcoords="offset points", xytext=(0, -10))
+
+        plt.xlabel("Index")
+        plt.ylabel("Likelihood")
+        plt.legend()
+        plt.show()
+
+
     def pho_compute_rank_order(track_templates, curr_epoch_spikes_df: pd.DataFrame, rank_method="average", stats_nan_policy='omit') -> Dict[str, Tuple]:
         """ 2023-12-20 - Actually working spearman rank-ordering!! 
 
