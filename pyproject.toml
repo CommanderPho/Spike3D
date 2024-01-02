@@ -80,7 +80,6 @@ pyqode-core = {path = "../pyqode.core/dist/current.whl"}
 pyqode-python = {path = "../pyqode.python/dist/current.whl"}
 jupyter-dash = "^0.4.2"
 napari-animation = "^0.0.7"
-pylustrator = "^1.3.0"
 ipydatagrid = "^1.2.0"
 sidecar = "^0.7.0"
 glueviz = "^1.2.0"
@@ -118,52 +117,15 @@ ipykernel = "^6.21.2"
 jupyterlab = "^3.6.1"
 dvc = {version = "^2.45.1", extras = ["gdrive"]}
 cookiecutter = "^2.1.1"
-pylustrator = {path = "../pylustrator", develop=false}
-# pylustrator = "^1.3.0"
-# filprofiler = "^2023.3.1"
-# jedi-language-server = "^0.40.0"
-# python-lsp-server = "^1.7.1"
-# python-lsp-server = {extras = ["rope"], version = "^1.7.3"}
-# pylsp-rope = "^0.1.11"
-# pylustrator = {path = "../../ExternalTesting/pylustrator", develop=true} # pylustrator = "^1.3.0"
-# sphinx = "^6.1.3"
-# sphinx-autodoc-typehints = "^1.22"
-# psgdemos = "^1.12.1"
-# graphviz = "^0.20.1"
-# pydot = "^1.4.2"
-# pycallgraph2 = "^1.1.3"
-# pylint = "^2.16.2"
-# vulture = "^2.7" # Unused Code Cleanup - Independent from Codebase
-# coverage = "^7.2.3" # Unused Code Cleanup - Independent from Codebase
-# uncalled = "^0.1.6" # Unused Code Cleanup - Independent from Codebase
-# prospector = "^1.9.0"
-# pyflakes = "^3.0.1" # Unused Code Cleanup - Independent from Codebase
-# ipympl = "^0.9.3"
-# panel = "^0.14.4"
-# pretty-errors = "^1.2.25"
 
 [tool.poetry.group.remote.dependencies]
-neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
+neuropy = {path = "../NeuroPy", develop=true}
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-pylustrator = {path = "../pylustrator", develop=true}
 
 [tool.poetry.group.testing.dependencies]
 silx = "^1.1.2"
 ipywidgets = "^8.0.5"
-# 'python-language-server[yapf]'
-# pygwalker = "^0.1.6.1"
-# altair = "5.0.0rc1" #"^4.2.2"
-# plotly = "5.13.1"
-# nicegui = "^1.2.11"
-# streamsync = {extras = ["ds"], version = "^0.1.6"}
-# textual = {extras = ["dev"], version = "^0.24.1"} # gui tool
-# imagemetatag = {git = "https://github.com/CommanderPho/image-meta-tag"}
-# jupyterlab-visualpython = "^2.3.4"
-
-# [tool.poetry.group.analysis.dependencies]
-# statsmodels = {git = "https://github.com/statsmodels/statsmodels"}
-
 
 [tool.poetry.scripts]
 pull-changes = "scripts/unix/repos_pull_changes.sh"
