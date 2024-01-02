@@ -28,7 +28,7 @@ numexpr = "^2.8.4"
 scipy = "^1.10.1"
 dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
 pyqt5 = "^5.15.7"
-pyqt5-qt5 = ">=5.12.3,!=5.15.11" # ^5.15.2
+pyqt5-qt5 = "5.15.2" # ^5.15.2
 qtconsole = "^5.4.0"
 ipython = "^8.11.0"
 attrs = "^22.2.0"
@@ -118,14 +118,14 @@ jupyterlab = "^3.6.1"
 dvc = {version = "^2.45.1", extras = ["gdrive"]}
 cookiecutter = "^2.1.1"
 
+[tool.poetry.group.testing.dependencies]
+silx = "^1.1.2"
+ipywidgets = "^8.0.5"
+
 [tool.poetry.group.remote.dependencies]
 neuropy = {path = "../NeuroPy", develop=true}
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-
-[tool.poetry.group.testing.dependencies]
-silx = "^1.1.2"
-ipywidgets = "^8.0.5"
 
 [tool.poetry.scripts]
 pull-changes = "scripts/unix/repos_pull_changes.sh"
