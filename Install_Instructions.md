@@ -158,6 +158,17 @@ pip install PyQt6-tools
 
 
 
+python -m pip install -e C:\Users\pho\repos\NeuroPy
+python -m pip install -e C:\Users\pho\repos\pyPhoCoreHelpers
+python -m pip install -e C:\Users\pho\repos\pyPhoPlaceCellAnalysis
+
+
+# Install to new .venv_new:
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\NeuroPy
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis
+
+
 ---
 ## Creating New Modules
 
