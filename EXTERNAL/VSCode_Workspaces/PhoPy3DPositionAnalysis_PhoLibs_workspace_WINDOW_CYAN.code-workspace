@@ -76,7 +76,7 @@
 		"python.analysis.extraPaths": [],
 		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
 		"windowColors.🌈 BaseColor": "'whitesmoke'",
-		"python.languageServer": "Jedi"
+		"python.languageServer": "Pylance"
 	},
 	"tasks": {
 		"version": "2.0.0",

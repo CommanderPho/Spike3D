@@ -27,11 +27,12 @@
     "**/output",
     "**/docs",
     "**/data",
-    "**/templating"
+    "**/templating",
+    "**/.venv","**/.venv_new","**/.venv_raw",
   ],
 
   "ignore": [
-    "**/.venv",
+    "**/.venv","**/.venv_new","**/.venv_raw",
     "LibrariesExamples",
     "EXTERNAL",
     "scripts",
