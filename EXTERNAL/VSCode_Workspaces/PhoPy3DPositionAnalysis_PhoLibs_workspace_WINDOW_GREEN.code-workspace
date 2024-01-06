@@ -131,7 +131,8 @@
 		"qtForPython.rcc.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
 		"editor.lineNumbers": "off",
 		"editor.bracketPairColorization.independentColorPoolPerBracketType": false,
-		"editor.codeLens": false
+		"editor.codeLens": false,
+		"editor.autoClosingQuotes": "beforeWhitespace"
 	},
 	"tasks": {
 		"version": "2.0.0",
