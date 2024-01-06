@@ -107,6 +107,7 @@ statsmodels = "^0.14.0"
 pathos = "^0.2.9"
 jupyterhub = "^4.0.2"
 nbstripout = "^0.6.1"
+kaleido = "0.1.0.post1"
 
 
 [tool.poetry.group.dev.dependencies]
