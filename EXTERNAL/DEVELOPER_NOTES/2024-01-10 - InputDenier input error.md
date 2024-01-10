@@ -56,3 +56,8 @@ File <frozen importlib._bootstrap_external>:1239, in _recalculate(self)
 File <frozen importlib._bootstrap_external>:1235, in _get_parent_path(self)
 
 KeyError: 'pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions'
+
+
+---
+
+Note this occured on GreatLakes on the first import, and disappeared after running again.
