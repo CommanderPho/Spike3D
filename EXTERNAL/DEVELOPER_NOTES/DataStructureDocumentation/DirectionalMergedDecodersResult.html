@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>DOCS<DirectionalMergedDecodersResult></title>
+<style type="text/css">
+.ansi2html-content { display: inline; font-family: "Lucida Console", "Courier New", monospace; font-size: 11px; white-space: pre-wrap; word-wrap: break-word; }
+.body_foreground { color: #AAAAAA; }
+.body_background { background-color: #000000; }
+.inv_foreground { color: #000000; }
+.inv_background { background-color: #AAAAAA; }
+.ansi1 { font-weight: bold; }
+.ansi91 { color: #ff0000; }
+.ansi92 { color: #00ff00; }
+.ansi93 { color: #ffff00; }
+.ansi94 { color: #5c5cff; }
+</style>
+</head>
+<body class="body_foreground body_background" style="font-size: normal;" >
+<pre class="ansi2html-content">
+<span class="ansi1"></span><span class="ansi1 ansi91">DirectionalMergedDecodersResult</span> - printed by DocumentationFilePrinter on 2024-01-10
+===================================================================================================
+- <span class="ansi94">DirectionalMergedDecodersResult</span>: <span class="ansi92">pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.</span><span class="ansi1 ansi92">DirectionalMergedDecodersResult</span>
+	- <span class="ansi94">is_global</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+	- <span class="ansi94">all_directional_decoder_dict</span>: <span class="ansi92"></span><span class="ansi1 ansi92">dict</span>
+		- <span class="ansi94">long_LR</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">long_RL</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">short_LR</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">short_RL</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+	- <span class="ansi94">all_directional_pf1D_Decoder</span>: <span class="ansi92">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi92">BasePositionDecoder</span>
+		- <span class="ansi94">pf</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">neuron_IDXs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (68,)
+		- <span class="ansi94">neuron_IDs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (68,)
+		- <span class="ansi94">F</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (232, 68)
+		- <span class="ansi94">P_x</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (232, 1)
+		- <span class="ansi94">setup_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+		- <span class="ansi94">post_load_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+		- <span class="ansi94">debug_print</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+	- <span class="ansi94">long_directional_pf1D_Decoder</span>: <span class="ansi92">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi92">BasePositionDecoder</span>
+		- <span class="ansi94">pf</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">neuron_IDXs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (68,)
+		- <span class="ansi94">neuron_IDs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (68,)
+		- <span class="ansi94">F</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (116, 68)
+		- <span class="ansi94">P_x</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (116, 1)
+		- <span class="ansi94">setup_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+		- <span class="ansi94">post_load_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+		- <span class="ansi94">debug_print</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+	- <span class="ansi94">long_directional_decoder_dict</span>: <span class="ansi92"></span><span class="ansi1 ansi92">dict</span>
+		- <span class="ansi94">long_LR</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">long_RL</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+	- <span class="ansi94">short_directional_pf1D_Decoder</span>: <span class="ansi92">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi92">BasePositionDecoder</span>
+		- <span class="ansi94">pf</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">neuron_IDXs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (68,)
+		- <span class="ansi94">neuron_IDs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (68,)
+		- <span class="ansi94">F</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (116, 68)
+		- <span class="ansi94">P_x</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (116, 1)
+		- <span class="ansi94">setup_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+		- <span class="ansi94">post_load_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+		- <span class="ansi94">debug_print</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span>
+	- <span class="ansi94">short_directional_decoder_dict</span>: <span class="ansi92"></span><span class="ansi1 ansi92">dict</span>
+		- <span class="ansi94">short_LR</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+		- <span class="ansi94">short_RL</span>: <span class="ansi92">neuropy.analyses.</span><span class="ansi1 ansi92">PfND</span>
+	- <span class="ansi94">all_directional_laps_filter_epochs_decoder_result</span>: <span class="ansi92">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi92">DecodedFilterEpochsResult</span>
+		- <span class="ansi94">decoding_time_bin_size</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+		- <span class="ansi94">filter_epochs</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Epoch</span>
+		- <span class="ansi94">num_filter_epochs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+		- <span class="ansi94">most_likely_positions_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (88,)
+		- <span class="ansi94">p_x_given_n_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - 88
+		- <span class="ansi94">marginal_x_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (88, 2)
+		- <span class="ansi94">marginal_y_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (88, 2)
+		- <span class="ansi94">most_likely_position_indicies_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - 88
+		- <span class="ansi94">spkcount</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - 88
+		- <span class="ansi94">nbins</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (88,)
+		- <span class="ansi94">time_bin_containers</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (88,)
+		- <span class="ansi94">time_bin_edges</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (88,)
+		- <span class="ansi94">epoch_description_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (0,)
+	- <span class="ansi94">all_directional_ripple_filter_epochs_decoder_result</span>: <span class="ansi92">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi92">DecodedFilterEpochsResult</span>
+		- <span class="ansi94">decoding_time_bin_size</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span>
+		- <span class="ansi94">filter_epochs</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (707, 4)
+		- <span class="ansi94">num_filter_epochs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span>
+		- <span class="ansi94">most_likely_positions_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (707,)
+		- <span class="ansi94">p_x_given_n_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - 707
+		- <span class="ansi94">marginal_x_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (707, 2)
+		- <span class="ansi94">marginal_y_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (707, 2)
+		- <span class="ansi94">most_likely_position_indicies_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - 707
+		- <span class="ansi94">spkcount</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - 707
+		- <span class="ansi94">nbins</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (707,)
+		- <span class="ansi94">time_bin_containers</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (707,)
+		- <span class="ansi94">time_bin_edges</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (707,)
+		- <span class="ansi94">epoch_description_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (0,)
+	- <span class="ansi94">laps_directional_marginals_tuple</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - 4
+	- <span class="ansi94">laps_track_identity_marginals_tuple</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - 4
+	- <span class="ansi94">ripple_directional_marginals_tuple</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - 4
+	- <span class="ansi94">ripple_track_identity_marginals_tuple</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - 4
+
+</pre>
+</body>
+
+</html>
