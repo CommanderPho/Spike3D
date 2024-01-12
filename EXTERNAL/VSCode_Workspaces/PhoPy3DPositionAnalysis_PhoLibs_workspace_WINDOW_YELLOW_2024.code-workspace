@@ -62,6 +62,8 @@
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
+			"**/*.md": true,
+			"**/EXTERNAL/DEVELOPER_NOTES": true,
 			"**/EXTERNAL/TESTING/OLD": true
 		},
 		"files.watcherExclude": {
@@ -116,7 +118,6 @@
 				"regex": ".*/templating/.*"
 			}
 		],
-		"python.analysis.stubPath": "",
 		"python.analysis.enablePytestSupport": false,
 		"editor.fontSize": 11,
 		"colorTabs.statusBarBackground": false,

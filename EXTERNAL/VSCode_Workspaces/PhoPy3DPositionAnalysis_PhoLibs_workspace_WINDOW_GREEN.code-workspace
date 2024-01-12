@@ -39,7 +39,7 @@
 			"**/.git": true,
 			"**/.DS_Store": true
 		},
-		"python.analysis.logLevel": "Error",
+		"python.analysis.logLevel": "Trace",
 		"workbench.colorCustomizations": {
 			"editor.lineHighlightBackground": "#1073cf2d",
 			"editor.lineHighlightBorder": "#9fced11f",
@@ -132,7 +132,11 @@
 		"qtForPython.rcc.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
 		"editor.bracketPairColorization.independentColorPoolPerBracketType": false,
 		"editor.codeLens": false,
-		"editor.autoClosingQuotes": "beforeWhitespace"
+		"editor.autoClosingQuotes": "beforeWhitespace",
+		"python.analysis.exclude": [
+			"**/EXTERNAL",
+			"**/LibrariesExamples"
+		]
 	},
 	"tasks": {
 		"version": "2.0.0",
