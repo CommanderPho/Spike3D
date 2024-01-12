@@ -136,7 +136,11 @@
 		"python.analysis.exclude": [
 			"**/EXTERNAL",
 			"**/LibrariesExamples"
-		]
+		],
+		"python.venvPaths": [
+			"C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D"
+		],
+		// "python.ve"
 	},
 	"tasks": {
 		"version": "2.0.0",

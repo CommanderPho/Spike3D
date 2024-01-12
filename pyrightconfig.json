@@ -1,8 +1,8 @@
 {
   "include": [
-    "."
+    "PendingNotebookCode.py",
+    "scripts/setup_dependent_repos.py"
   ],
-  
   "exclude": [
     "**/.git", "**.svn", "**/.hg", "**/CVS", "**/*.asv",
     "**/node_modules",
@@ -21,14 +21,14 @@
     "**/dist",
     "**/build",
     "**/.idea",
-    "**/.venv_alt",
+    "**/output",
     "**/LibrariesExamples",
     "**/EXTERNAL",
     "**/output",
     "**/docs",
     "**/data",
     "**/templating",
-    "**/.venv","**/.venv_new","**/.venv_raw",
+    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw",
   ],
 
   "ignore": [
