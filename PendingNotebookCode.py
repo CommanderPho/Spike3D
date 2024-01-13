@@ -537,8 +537,11 @@ def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: Decoded
         if debug_print:
             print(f'curr_n_time_bins: {curr_n_time_bins}')
 
+
         ## Long Decoding:
         curr_long_epoch_p_x_given_n = a_long_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
+        print(f'np.shape(curr_long_epoch_p_x_given_n): {np.shape(curr_long_epoch_p_x_given_n)}')
+        
         weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n, method=method)
         epoch_long_weighted_corr_results.append(weighted_corr_result)
 
