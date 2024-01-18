@@ -163,7 +163,7 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     # percent_laps_direction_estimated_correctly: 0.5
     # percent_laps_estimated_correctly: 0.5
 
-
+    return a_directional_merged_decoders_result, result_laps_epochs_df
 
 
 
