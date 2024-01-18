@@ -32,6 +32,8 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     Makes a copy of the 'DirectionalMergedDecoders' result
     from PendingNotebookCode import _perform_variable_time_bin_lap_groud_truth_performance_testing    
 
+    Pre-refactor
+    
     """
     ## Copy the default result:
     directional_merged_decoders_result = curr_active_pipeline.global_computation_results.computed_data['DirectionalMergedDecoders']
