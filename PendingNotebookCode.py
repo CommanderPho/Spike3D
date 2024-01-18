@@ -26,9 +26,10 @@ from neuropy.utils.mixins.time_slicing import TimeColumnAliasesProtocol
 from neuropy.utils.mixins.binning_helpers import find_minimum_time_bin_duration
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalMergedDecodersResult
 
-def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_pipeline):
+def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_pipeline, desired_laps_decoding_time_bin_size: float = 0.5, desired_ripple_decoding_time_bin_size: float = 0.1):
     """ 2024-01-17 - Pending refactor from ReviewOfWork_2024-01-17.ipynb 
 
+    Makes a copy of the 'DirectionalMergedDecoders' result
     from PendingNotebookCode import _perform_variable_time_bin_lap_groud_truth_performance_testing    
 
     """
@@ -38,9 +39,6 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
 
     owning_pipeline_reference = curr_active_pipeline
     all_directional_pf1D_Decoder = alt_directional_merged_decoders_result.all_directional_pf1D_Decoder
-
-    desired_laps_decoding_time_bin_size: float = 0.5
-    desired_ripple_decoding_time_bin_size: float = 0.1
 
     # Inputs: all_directional_pf1D_Decoder, alt_directional_merged_decoders_result
 
