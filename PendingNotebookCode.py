@@ -18,6 +18,165 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 
 
 # ==================================================================================================================== #
+# 2024-01-17 - Lap performance validation                                                                              #
+# ==================================================================================================================== #
+from neuropy.analyses.placefields import PfND
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import BasePositionDecoder
+from neuropy.utils.mixins.time_slicing import TimeColumnAliasesProtocol
+from neuropy.utils.mixins.binning_helpers import find_minimum_time_bin_duration
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalMergedDecodersResult
+
+def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_pipeline):
+    """ 2024-01-17 - Pending refactor from ReviewOfWork_2024-01-17.ipynb 
+
+    from PendingNotebookCode import _perform_variable_time_bin_lap_groud_truth_performance_testing    
+
+    """
+    ## Copy the default result:
+    directional_merged_decoders_result = curr_active_pipeline.global_computation_results.computed_data['DirectionalMergedDecoders']
+    alt_directional_merged_decoders_result = deepcopy(directional_merged_decoders_result)
+
+    owning_pipeline_reference = curr_active_pipeline
+    all_directional_pf1D_Decoder = alt_directional_merged_decoders_result.all_directional_pf1D_Decoder
+
+    desired_laps_decoding_time_bin_size: float = 0.5
+    desired_ripple_decoding_time_bin_size: float = 0.1
+
+    # Inputs: all_directional_pf1D_Decoder, alt_directional_merged_decoders_result
+
+    # Modifies alt_directional_merged_decoders_result, a copy of the original result, with new timebins
+    long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
+    t_start, t_delta, t_end = curr_active_pipeline.find_LongShortDelta_times()
+
+    ## Decode Laps:
+    global_any_laps_epochs_obj = deepcopy(owning_pipeline_reference.computation_results[global_epoch_name].computation_config.pf_params.computation_epochs) # global_epoch_name='maze_any' (? same as global_epoch_name?)
+    min_possible_laps_time_bin_size: float = find_minimum_time_bin_duration(global_any_laps_epochs_obj.to_dataframe()['duration'].to_numpy())
+    laps_decoding_time_bin_size: float = min(desired_laps_decoding_time_bin_size, min_possible_laps_time_bin_size) # 10ms # 0.002
+
+    alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result = all_directional_pf1D_Decoder.decode_specific_epochs(spikes_df=deepcopy(owning_pipeline_reference.sess.spikes_df), filter_epochs=global_any_laps_epochs_obj, decoding_time_bin_size=laps_decoding_time_bin_size, debug_print=False)
+
+    ## Decode Ripples:        
+    global_replays = TimeColumnAliasesProtocol.renaming_synonym_columns_if_needed(deepcopy(owning_pipeline_reference.filtered_sessions[global_epoch_name].replay))
+    min_possible_time_bin_size: float = find_minimum_time_bin_duration(global_replays['duration'].to_numpy())
+    ripple_decoding_time_bin_size: float = min(desired_ripple_decoding_time_bin_size, min_possible_time_bin_size) # 10ms # 0.002
+    alt_directional_merged_decoders_result.all_directional_ripple_filter_epochs_decoder_result = all_directional_pf1D_Decoder.decode_specific_epochs(deepcopy(owning_pipeline_reference.sess.spikes_df), global_replays, decoding_time_bin_size=ripple_decoding_time_bin_size)
+
+    ## Post Compute Validations:
+    alt_directional_merged_decoders_result.perform_compute_marginals()
+
+
+    # global_any_laps_epochs_obj
+
+    from neuropy.core.session.dataSession import Laps
+
+    # takes 'laps_df' and 'result_laps_epochs_df' to add the ground_truth and the decoded posteriors:
+
+    # Ensure it has the 'lap_track' column
+    t_start, t_delta, t_end = owning_pipeline_reference.find_LongShortDelta_times()
+    laps_obj: Laps = curr_active_pipeline.sess.laps
+    laps_df = laps_obj.to_dataframe()
+    ## Compute the ground-truth information using the position information:
+    laps_df = Laps._update_dataframe_maze_id_if_needed(laps_df, t_start, t_delta, t_end) # 'maze_id'
+    # laps_df = Laps._compute_lap_dir_from_smoothed_velocity(laps_df, global_session=global_session)
+    laps_df = Laps._compute_lap_dir_from_smoothed_velocity(laps_df, global_session=curr_active_pipeline.sess) # 'is_LR_dir', global_session is missing the last two laps
+    laps_df
+
+
+    ## 2024-01-17 - Updates the `a_directional_merged_decoders_result.laps_epochs_df` with both the ground-truth values and the decoded predictions
+
+    ## Inputs: a_directional_merged_decoders_result, laps_df
+
+    a_directional_merged_decoders_result: DirectionalMergedDecodersResult = alt_directional_merged_decoders_result
+
+    ## Get the most likely direction/track from the decoded posteriors:
+    all_directional_laps_filter_epochs_decoder_result_value: DecodedFilterEpochsResult = a_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result
+    laps_directional_marginals, laps_directional_all_epoch_bins_marginal, laps_most_likely_direction_from_decoder, laps_is_most_likely_direction_LR_dir = a_directional_merged_decoders_result.laps_directional_marginals_tuple
+    laps_track_identity_marginals, laps_track_identity_all_epoch_bins_marginal, laps_most_likely_track_identity_from_decoder, laps_is_most_likely_track_identity_Long = a_directional_merged_decoders_result.laps_track_identity_marginals_tuple
+
+    # a_directional_merged_decoders_result.ripple_epochs_df
+    # a_directional_merged_decoders_result.laps_epochs_df
+    result_laps_epochs_df: pd.DataFrame = a_directional_merged_decoders_result.laps_epochs_df
+
+    ## Add the ground-truth results to the laps df:
+    # add the 'maze_id' groud-truth column in:
+    # result_laps_epochs_df['maze_id'] = laps_df['maze_id'] # this works despite the different size because of the index matching
+    # ## add the 'is_LR_dir' groud-truth column in:
+    # result_laps_epochs_df['is_LR_dir'] = laps_df['is_LR_dir'] # this works despite the different size because of the index matching
+
+    result_laps_epochs_df['maze_id'] = laps_df['maze_id'].to_numpy()[np.isin(laps_df['lap_id'], result_laps_epochs_df['lap_id'])] # this works despite the different size because of the index matching
+    ## add the 'is_LR_dir' groud-truth column in:
+    result_laps_epochs_df['is_LR_dir'] = laps_df['is_LR_dir'].to_numpy()[np.isin(laps_df['lap_id'], result_laps_epochs_df['lap_id'])] # this works despite the different size because of the index matching
+
+    ## Add the decoded results to the laps df:
+    result_laps_epochs_df['is_most_likely_track_identity_Long'] = laps_is_most_likely_track_identity_Long
+    result_laps_epochs_df['is_most_likely_direction_LR'] = laps_is_most_likely_direction_LR_dir
+    result_laps_epochs_df
+
+    # np.sum(result_laps_epochs_df['is_LR_dir'] == result_laps_epochs_df['lap_dir'])/np.shape(result_laps_epochs_df)[0]
+    np.sum(result_laps_epochs_df['is_LR_dir'] == result_laps_epochs_df['is_most_likely_direction_LR'])/np.shape(result_laps_epochs_df)[0]
+    laps_decoding_time_bin_size = alt_directional_merged_decoders_result.laps_decoding_time_bin_size
+    print(f'laps_decoding_time_bin_size: {laps_decoding_time_bin_size}')
+
+
+    ## Uses only 'result_laps_epochs_df'
+
+    def _check_result_laps_epochs_df_performance(result_laps_epochs_df: pd.DataFrame, debug_print=True):
+        """ 2024-01-17 - Validates the performance of the pseudo2D decoder posteriors using the laps data.
+        
+        """
+        # Check 'maze_id' decoding accuracy
+        n_laps = np.shape(result_laps_epochs_df)[0]
+        is_decoded_track_correct = (result_laps_epochs_df['maze_id'] == result_laps_epochs_df['is_most_likely_track_identity_Long'].apply(lambda x: 0 if x else 1))
+        percent_laps_track_identity_estimated_correctly = (np.sum(is_decoded_track_correct) / n_laps)
+        if debug_print:
+            print(f'percent_laps_track_identity_estimated_correctly: {percent_laps_track_identity_estimated_correctly}')
+        # Check 'is_LR_dir' decoding accuracy:
+        is_decoded_dir_correct = (result_laps_epochs_df['is_LR_dir'].apply(lambda x: 0 if x else 1) == result_laps_epochs_df['is_most_likely_direction_LR'].apply(lambda x: 0 if x else 1))
+        percent_laps_direction_estimated_correctly = (np.sum(is_decoded_dir_correct) / n_laps)
+        if debug_print:
+            print(f'percent_laps_direction_estimated_correctly: {percent_laps_direction_estimated_correctly}')
+
+        # Both should be correct
+        are_both_decoded_properties_correct = np.logical_and(is_decoded_track_correct, is_decoded_dir_correct)
+        percent_laps_estimated_correctly = (np.sum(are_both_decoded_properties_correct) / n_laps)
+        if debug_print:
+            print(f'percent_laps_estimated_correctly: {percent_laps_estimated_correctly}')
+
+        return (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly)
+
+
+    (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly) = _check_result_laps_epochs_df_performance(result_laps_epochs_df)
+
+    # laps_decoding_time_bin_size: 1.668
+    # percent_laps_track_identity_estimated_correctly: 0.9875
+    # percent_laps_direction_estimated_correctly: 0.5125
+    # percent_laps_estimated_correctly: 0.5
+
+
+    # laps_decoding_time_bin_size: 0.1
+    # percent_laps_track_identity_estimated_correctly: 0.9875
+    # percent_laps_direction_estimated_correctly: 0.4875
+    # percent_laps_estimated_correctly: 0.4875
+
+    # laps_decoding_time_bin_size: 0.5
+    # percent_laps_track_identity_estimated_correctly: 1.0
+    # percent_laps_direction_estimated_correctly: 0.5
+    # percent_laps_estimated_correctly: 0.5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ==================================================================================================================== #
 # 2023-12-21 - Inversion Count Concept                                                                                 #
 # ==================================================================================================================== #
 
