@@ -26,7 +26,7 @@ from neuropy.utils.mixins.time_slicing import TimeColumnAliasesProtocol
 from neuropy.utils.mixins.binning_helpers import find_minimum_time_bin_duration
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalMergedDecodersResult
 
-def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_pipeline, desired_laps_decoding_time_bin_size: float = 0.5, desired_ripple_decoding_time_bin_size: float = 0.1):
+def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_pipeline, desired_laps_decoding_time_bin_size: float = 0.5, desired_ripple_decoding_time_bin_size: float = 0.1, use_single_time_bin_per_epoch: bool=False):
     """ 2024-01-17 - Pending refactor from ReviewOfWork_2024-01-17.ipynb 
 
     Makes a copy of the 'DirectionalMergedDecoders' result
@@ -48,24 +48,28 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     long_epoch_name, short_epoch_name, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
     t_start, t_delta, t_end = curr_active_pipeline.find_LongShortDelta_times()
 
+    if use_single_time_bin_per_epoch:
+        print(f'WARNING: use_single_time_bin_per_epoch=True so time bin sizes will be ignored.')
+        
     ## Decode Laps:
     global_any_laps_epochs_obj = deepcopy(owning_pipeline_reference.computation_results[global_epoch_name].computation_config.pf_params.computation_epochs) # global_epoch_name='maze_any' (? same as global_epoch_name?)
     min_possible_laps_time_bin_size: float = find_minimum_time_bin_duration(global_any_laps_epochs_obj.to_dataframe()['duration'].to_numpy())
     laps_decoding_time_bin_size: float = min(desired_laps_decoding_time_bin_size, min_possible_laps_time_bin_size) # 10ms # 0.002
-
-    alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result = all_directional_pf1D_Decoder.decode_specific_epochs(spikes_df=deepcopy(owning_pipeline_reference.sess.spikes_df), filter_epochs=global_any_laps_epochs_obj, decoding_time_bin_size=laps_decoding_time_bin_size, debug_print=False)
+    if use_single_time_bin_per_epoch:
+        laps_decoding_time_bin_size = None
+    
+    alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result = all_directional_pf1D_Decoder.decode_specific_epochs(spikes_df=deepcopy(owning_pipeline_reference.sess.spikes_df), filter_epochs=global_any_laps_epochs_obj, decoding_time_bin_size=laps_decoding_time_bin_size, use_single_time_bin_per_epoch=use_single_time_bin_per_epoch, debug_print=False)
 
     ## Decode Ripples:        
     global_replays = TimeColumnAliasesProtocol.renaming_synonym_columns_if_needed(deepcopy(owning_pipeline_reference.filtered_sessions[global_epoch_name].replay))
     min_possible_time_bin_size: float = find_minimum_time_bin_duration(global_replays['duration'].to_numpy())
     ripple_decoding_time_bin_size: float = min(desired_ripple_decoding_time_bin_size, min_possible_time_bin_size) # 10ms # 0.002
-    alt_directional_merged_decoders_result.all_directional_ripple_filter_epochs_decoder_result = all_directional_pf1D_Decoder.decode_specific_epochs(deepcopy(owning_pipeline_reference.sess.spikes_df), global_replays, decoding_time_bin_size=ripple_decoding_time_bin_size)
-
+    if use_single_time_bin_per_epoch:
+        ripple_decoding_time_bin_size = None
+    alt_directional_merged_decoders_result.all_directional_ripple_filter_epochs_decoder_result = all_directional_pf1D_Decoder.decode_specific_epochs(deepcopy(owning_pipeline_reference.sess.spikes_df), global_replays, decoding_time_bin_size=ripple_decoding_time_bin_size, use_single_time_bin_per_epoch=use_single_time_bin_per_epoch)
+        
     ## Post Compute Validations:
     alt_directional_merged_decoders_result.perform_compute_marginals()
-
-
-    # global_any_laps_epochs_obj
 
     from neuropy.core.session.dataSession import Laps
 
@@ -79,9 +83,7 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     laps_df = Laps._update_dataframe_maze_id_if_needed(laps_df, t_start, t_delta, t_end) # 'maze_id'
     # laps_df = Laps._compute_lap_dir_from_smoothed_velocity(laps_df, global_session=global_session)
     laps_df = Laps._compute_lap_dir_from_smoothed_velocity(laps_df, global_session=curr_active_pipeline.sess) # 'is_LR_dir', global_session is missing the last two laps
-    laps_df
-
-
+    
     ## 2024-01-17 - Updates the `a_directional_merged_decoders_result.laps_epochs_df` with both the ground-truth values and the decoded predictions
 
     ## Inputs: a_directional_merged_decoders_result, laps_df
