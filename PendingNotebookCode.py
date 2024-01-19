@@ -35,9 +35,12 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     Pre-refactor
     
     """
+    from neuropy.core.session.dataSession import Laps
+    
+
     ## Copy the default result:
-    directional_merged_decoders_result = curr_active_pipeline.global_computation_results.computed_data['DirectionalMergedDecoders']
-    alt_directional_merged_decoders_result = deepcopy(directional_merged_decoders_result)
+    directional_merged_decoders_result: DirectionalMergedDecodersResult = curr_active_pipeline.global_computation_results.computed_data['DirectionalMergedDecoders']
+    alt_directional_merged_decoders_result: DirectionalMergedDecodersResult = deepcopy(directional_merged_decoders_result)
 
     owning_pipeline_reference = curr_active_pipeline
     all_directional_pf1D_Decoder = alt_directional_merged_decoders_result.all_directional_pf1D_Decoder
@@ -71,20 +74,6 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     ## Post Compute Validations:
     alt_directional_merged_decoders_result.perform_compute_marginals()
 
-    from neuropy.core.session.dataSession import Laps
-
-    # takes 'laps_df' and 'result_laps_epochs_df' to add the ground_truth and the decoded posteriors:
-
-    # Ensure it has the 'lap_track' column
-    t_start, t_delta, t_end = owning_pipeline_reference.find_LongShortDelta_times()
-    laps_obj: Laps = curr_active_pipeline.sess.laps
-    laps_df = laps_obj.to_dataframe()
-    ## Compute the ground-truth information using the position information:
-    laps_df = Laps._update_dataframe_maze_id_if_needed(laps_df, t_start, t_delta, t_end) # 'maze_id'
-    # laps_df = Laps._compute_lap_dir_from_smoothed_velocity(laps_df, global_session=global_session)
-    laps_df = Laps._compute_lap_dir_from_smoothed_velocity(laps_df, global_session=curr_active_pipeline.sess) # 'is_LR_dir', global_session is missing the last two laps
-    
-    ## 2024-01-17 - Updates the `a_directional_merged_decoders_result.laps_epochs_df` with both the ground-truth values and the decoded predictions
 
     ## Inputs: a_directional_merged_decoders_result, laps_df
 
@@ -99,12 +88,17 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     # a_directional_merged_decoders_result.laps_epochs_df
     result_laps_epochs_df: pd.DataFrame = a_directional_merged_decoders_result.laps_epochs_df
 
-    ## Add the ground-truth results to the laps df:
-    # add the 'maze_id' groud-truth column in:
-    # result_laps_epochs_df['maze_id'] = laps_df['maze_id'] # this works despite the different size because of the index matching
-    # ## add the 'is_LR_dir' groud-truth column in:
-    # result_laps_epochs_df['is_LR_dir'] = laps_df['is_LR_dir'] # this works despite the different size because of the index matching
+    # takes 'laps_df' and 'result_laps_epochs_df' to add the ground_truth and the decoded posteriors:
 
+    # Ensure it has the 'lap_track' column
+    ## Compute the ground-truth information using the position information:
+    # adds columns: ['maze_id', 'is_LR_dir']
+    t_start, t_delta, t_end = owning_pipeline_reference.find_LongShortDelta_times()
+    laps_obj: Laps = curr_active_pipeline.sess.laps
+    laps_df = laps_obj.to_dataframe()
+    laps_df: pd.DataFrame = Laps._update_dataframe_computed_vars(laps_df=laps_df, t_start=t_start, t_delta=t_delta, t_end=t_end, global_session=curr_active_pipeline.sess) # NOTE: .sess is used because global_session is missing the last two laps
+    
+    ## 2024-01-17 - Updates the `a_directional_merged_decoders_result.laps_epochs_df` with both the ground-truth values and the decoded predictions
     result_laps_epochs_df['maze_id'] = laps_df['maze_id'].to_numpy()[np.isin(laps_df['lap_id'], result_laps_epochs_df['lap_id'])] # this works despite the different size because of the index matching
     ## add the 'is_LR_dir' groud-truth column in:
     result_laps_epochs_df['is_LR_dir'] = laps_df['is_LR_dir'].to_numpy()[np.isin(laps_df['lap_id'], result_laps_epochs_df['lap_id'])] # this works despite the different size because of the index matching
@@ -112,10 +106,8 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     ## Add the decoded results to the laps df:
     result_laps_epochs_df['is_most_likely_track_identity_Long'] = laps_is_most_likely_track_identity_Long
     result_laps_epochs_df['is_most_likely_direction_LR'] = laps_is_most_likely_direction_LR_dir
-    result_laps_epochs_df
-
-    # np.sum(result_laps_epochs_df['is_LR_dir'] == result_laps_epochs_df['lap_dir'])/np.shape(result_laps_epochs_df)[0]
-    np.sum(result_laps_epochs_df['is_LR_dir'] == result_laps_epochs_df['is_most_likely_direction_LR'])/np.shape(result_laps_epochs_df)[0]
+    
+    # np.sum(result_laps_epochs_df['is_LR_dir'] == result_laps_epochs_df['is_most_likely_direction_LR'])/np.shape(result_laps_epochs_df)[0]
     laps_decoding_time_bin_size = alt_directional_merged_decoders_result.laps_decoding_time_bin_size
     print(f'laps_decoding_time_bin_size: {laps_decoding_time_bin_size}')
 
@@ -153,7 +145,6 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
     # percent_laps_track_identity_estimated_correctly: 0.9875
     # percent_laps_direction_estimated_correctly: 0.5125
     # percent_laps_estimated_correctly: 0.5
-
 
     # laps_decoding_time_bin_size: 0.1
     # percent_laps_track_identity_estimated_correctly: 0.9875
