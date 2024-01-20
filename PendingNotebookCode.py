@@ -21,21 +21,34 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 # 2024-01-19 - Marginals                                                                                               #
 # ==================================================================================================================== #
 
-def test_build_new_marginals_df(alt_directional_merged_decoders_result):
+# def test_build_new_marginals_df(alt_directional_merged_decoders_result):
+def test_build_new_marginals_df(a_decoder_result, a_track_identity_marginals):
     """ 2024-01-19 - Test marginals
 
-    """
-    a_new_result = alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result
+    from PendingNotebookCode import test_build_new_marginals_df
+    
     a_decoder_result = deepcopy(alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result)
-    alt_laps_track_identity_marginals, *_other_trash = alt_directional_merged_decoders_result.laps_directional_marginals_tuple
+    alt_active_track_identity_marginals, *_other_trash = alt_directional_merged_decoders_result.laps_directional_marginals_tuple
+    
+    laps_time_bin_marginals_df = test_build_new_marginals_df(a_decoder_result=deepcopy(alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result),
+								 a_track_identity_marginals=alt_directional_merged_decoders_result.laps_directional_marginals_tuple[0]
+							 )
+    laps_time_bin_marginals_df
 
+    ripple_time_bin_marginals_df = test_build_new_marginals_df(a_decoder_result=deepcopy(alt_directional_merged_decoders_result.all_directional_ripple_filter_epochs_decoder_result),
+                                                a_track_identity_marginals=alt_directional_merged_decoders_result.ripple_directional_marginals_tuple[0]
+                                            )
+    ripple_time_bin_marginals_df
+
+    """
+    
     flat_time_bin_centers_column = np.concatenate([curr_epoch_time_bin_container.centers for curr_epoch_time_bin_container in a_decoder_result.time_bin_containers])
     # np.shape(flat_time_bin_centers_column)
     # flat_time_bin_centers_column
 
     # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.nbins
 
-    num_total_flat_timebins = np.sum(a_new_result.nbins)
+    # num_total_flat_timebins = np.sum(a_decoder_result.nbins)
     # num_total_flat_timebins
     # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.nbins
     # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.time_bin_edges
@@ -43,7 +56,7 @@ def test_build_new_marginals_df(alt_directional_merged_decoders_result):
 
     # track_identity_marginals = deepcopy(laps_track_identity_marginals)
 
-    track_identity_marginals = deepcopy(alt_laps_track_identity_marginals)
+    track_identity_marginals = deepcopy(a_track_identity_marginals)
 
     n_epochs = len(track_identity_marginals)
     # n_epochs
@@ -59,11 +72,11 @@ def test_build_new_marginals_df(alt_directional_merged_decoders_result):
     # epoch_start_t_column = np.concatenate([np.full((an_epoch_time_bins, ), fill_value=i) for i, an_epoch_time_bins in enumerate(n_epoch_time_bins)])
 
     # print(f'np.shape(epoch_idx_column): {np.shape(epoch_idx_column)}')
-    laps_time_bin_marginals_df = pd.DataFrame(np.hstack((epoch_extracted_posteriors)).T, columns=['P_Long', 'P_Short'])
-    laps_time_bin_marginals_df['epoch_idx'] = epoch_idx_column
-    laps_time_bin_marginals_df['t_bin_center'] = flat_time_bin_centers_column
+    epoch_time_bin_marginals_df = pd.DataFrame(np.hstack((epoch_extracted_posteriors)).T, columns=['P_Long', 'P_Short'])
+    epoch_time_bin_marginals_df['epoch_idx'] = epoch_idx_column
+    epoch_time_bin_marginals_df['t_bin_center'] = flat_time_bin_centers_column
 
-    return laps_time_bin_marginals_df
+    return epoch_time_bin_marginals_df
 
 
 # ==================================================================================================================== #
