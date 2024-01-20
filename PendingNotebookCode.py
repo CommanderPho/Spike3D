@@ -18,6 +18,55 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 
 
 # ==================================================================================================================== #
+# 2024-01-19 - Marginals                                                                                               #
+# ==================================================================================================================== #
+
+def test_build_new_marginals_df(alt_directional_merged_decoders_result):
+    """ 2024-01-19 - Test marginals
+
+    """
+    a_new_result = alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result
+    a_decoder_result = deepcopy(alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result)
+    alt_laps_track_identity_marginals, *_other_trash = alt_directional_merged_decoders_result.laps_directional_marginals_tuple
+
+    flat_time_bin_centers_column = np.concatenate([curr_epoch_time_bin_container.centers for curr_epoch_time_bin_container in a_decoder_result.time_bin_containers])
+    # np.shape(flat_time_bin_centers_column)
+    # flat_time_bin_centers_column
+
+    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.nbins
+
+    num_total_flat_timebins = np.sum(a_new_result.nbins)
+    # num_total_flat_timebins
+    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.nbins
+    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.time_bin_edges
+    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.time_bin_containers[0].centers
+
+    # track_identity_marginals = deepcopy(laps_track_identity_marginals)
+
+    track_identity_marginals = deepcopy(alt_laps_track_identity_marginals)
+
+    n_epochs = len(track_identity_marginals)
+    # n_epochs
+
+    epoch_extracted_posteriors = [a_result['p_x_given_n'] for a_result in track_identity_marginals]
+    epoch_extracted_posterior_shapes = [np.shape(a_posterior) for a_posterior in epoch_extracted_posteriors]
+    # epoch_extracted_posterior_shapes
+    n_epoch_time_bins = [np.shape(a_posterior)[-1] for a_posterior in epoch_extracted_posteriors]
+    # n_epoch_time_bins
+    # epoch_extracted_posterior_shapes
+
+    epoch_idx_column = np.concatenate([np.full((an_epoch_time_bins, ), fill_value=i) for i, an_epoch_time_bins in enumerate(n_epoch_time_bins)])
+    # epoch_start_t_column = np.concatenate([np.full((an_epoch_time_bins, ), fill_value=i) for i, an_epoch_time_bins in enumerate(n_epoch_time_bins)])
+
+    # print(f'np.shape(epoch_idx_column): {np.shape(epoch_idx_column)}')
+    laps_time_bin_marginals_df = pd.DataFrame(np.hstack((epoch_extracted_posteriors)).T, columns=['P_Long', 'P_Short'])
+    laps_time_bin_marginals_df['epoch_idx'] = epoch_idx_column
+    laps_time_bin_marginals_df['t_bin_center'] = flat_time_bin_centers_column
+
+    return laps_time_bin_marginals_df
+
+
+# ==================================================================================================================== #
 # 2024-01-17 - Lap performance validation                                                                              #
 # ==================================================================================================================== #
 from neuropy.analyses.placefields import PfND
