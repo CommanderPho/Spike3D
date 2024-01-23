@@ -20,10 +20,12 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 # ==================================================================================================================== #
 # 2024-01-19 - Marginals                                                                                               #
 # ==================================================================================================================== #
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+
 
 # def test_build_new_marginals_df(alt_directional_merged_decoders_result):
-def test_build_new_marginals_df(a_decoder_result: DecodedFilterEpochsResult, a_track_identity_marginals):
-    """ 2024-01-19 - Test marginals
+def test_build_new_marginals_df(a_decoder_result: "DecodedFilterEpochsResult", a_track_identity_marginals):
+    """ 2024-01-19 - Refactored into `DirectionalMergedDecodersResult._build_multiple_per_time_bin_marginals()` on 2024-01-23 Test marginals
 
     from PendingNotebookCode import test_build_new_marginals_df
     
@@ -43,23 +45,9 @@ def test_build_new_marginals_df(a_decoder_result: DecodedFilterEpochsResult, a_t
     """
     
     flat_time_bin_centers_column = np.concatenate([curr_epoch_time_bin_container.centers for curr_epoch_time_bin_container in a_decoder_result.time_bin_containers])
-    # np.shape(flat_time_bin_centers_column)
-    # flat_time_bin_centers_column
-
-    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.nbins
-
-    # num_total_flat_timebins = np.sum(a_decoder_result.nbins)
-    # num_total_flat_timebins
-    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.nbins
-    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.time_bin_edges
-    # alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result.time_bin_containers[0].centers
-
-    # track_identity_marginals = deepcopy(laps_track_identity_marginals)
-
     track_identity_marginals = deepcopy(a_track_identity_marginals)
 
     n_epochs = len(track_identity_marginals)
-    # n_epochs
 
     epoch_extracted_posteriors = [a_result['p_x_given_n'] for a_result in track_identity_marginals]
     epoch_extracted_posterior_shapes = [np.shape(a_posterior) for a_posterior in epoch_extracted_posteriors]
@@ -77,6 +65,35 @@ def test_build_new_marginals_df(a_decoder_result: DecodedFilterEpochsResult, a_t
     epoch_time_bin_marginals_df['t_bin_center'] = flat_time_bin_centers_column
 
     return epoch_time_bin_marginals_df
+
+
+def _check_result_laps_epochs_df_performance(result_laps_epochs_df: pd.DataFrame, debug_print=True):
+    """ 2024-01-17 - Validates the performance of the pseudo2D decoder posteriors using the laps data.
+
+    from PendingNotebookCode import _check_result_laps_epochs_df_performance
+    (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly) = _check_result_laps_epochs_df_performance(result_laps_epochs_df)
+    
+    """
+    # Check 'maze_id' decoding accuracy
+    n_laps = np.shape(result_laps_epochs_df)[0]
+    is_decoded_track_correct = (result_laps_epochs_df['maze_id'] == result_laps_epochs_df['is_most_likely_track_identity_Long'].apply(lambda x: 0 if x else 1))
+    percent_laps_track_identity_estimated_correctly = (np.sum(is_decoded_track_correct) / n_laps)
+    if debug_print:
+        print(f'percent_laps_track_identity_estimated_correctly: {percent_laps_track_identity_estimated_correctly}')
+    # Check 'is_LR_dir' decoding accuracy:
+    is_decoded_dir_correct = (result_laps_epochs_df['is_LR_dir'].apply(lambda x: 0 if x else 1) == result_laps_epochs_df['is_most_likely_direction_LR'].apply(lambda x: 0 if x else 1))
+    percent_laps_direction_estimated_correctly = (np.sum(is_decoded_dir_correct) / n_laps)
+    if debug_print:
+        print(f'percent_laps_direction_estimated_correctly: {percent_laps_direction_estimated_correctly}')
+
+    # Both should be correct
+    are_both_decoded_properties_correct = np.logical_and(is_decoded_track_correct, is_decoded_dir_correct)
+    percent_laps_estimated_correctly = (np.sum(are_both_decoded_properties_correct) / n_laps)
+    if debug_print:
+        print(f'percent_laps_estimated_correctly: {percent_laps_estimated_correctly}')
+
+    return (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly)
+
 
 
 # ==================================================================================================================== #
@@ -177,30 +194,7 @@ def _perform_variable_time_bin_lap_groud_truth_performance_testing(curr_active_p
 
     ## Uses only 'result_laps_epochs_df'
 
-    def _check_result_laps_epochs_df_performance(result_laps_epochs_df: pd.DataFrame, debug_print=True):
-        """ 2024-01-17 - Validates the performance of the pseudo2D decoder posteriors using the laps data.
-        
-        """
-        # Check 'maze_id' decoding accuracy
-        n_laps = np.shape(result_laps_epochs_df)[0]
-        is_decoded_track_correct = (result_laps_epochs_df['maze_id'] == result_laps_epochs_df['is_most_likely_track_identity_Long'].apply(lambda x: 0 if x else 1))
-        percent_laps_track_identity_estimated_correctly = (np.sum(is_decoded_track_correct) / n_laps)
-        if debug_print:
-            print(f'percent_laps_track_identity_estimated_correctly: {percent_laps_track_identity_estimated_correctly}')
-        # Check 'is_LR_dir' decoding accuracy:
-        is_decoded_dir_correct = (result_laps_epochs_df['is_LR_dir'].apply(lambda x: 0 if x else 1) == result_laps_epochs_df['is_most_likely_direction_LR'].apply(lambda x: 0 if x else 1))
-        percent_laps_direction_estimated_correctly = (np.sum(is_decoded_dir_correct) / n_laps)
-        if debug_print:
-            print(f'percent_laps_direction_estimated_correctly: {percent_laps_direction_estimated_correctly}')
-
-        # Both should be correct
-        are_both_decoded_properties_correct = np.logical_and(is_decoded_track_correct, is_decoded_dir_correct)
-        percent_laps_estimated_correctly = (np.sum(are_both_decoded_properties_correct) / n_laps)
-        if debug_print:
-            print(f'percent_laps_estimated_correctly: {percent_laps_estimated_correctly}')
-
-        return (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly)
-
+    
 
     (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly) = _check_result_laps_epochs_df_performance(result_laps_epochs_df)
 
