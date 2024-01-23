@@ -67,35 +67,6 @@ def test_build_new_marginals_df(a_decoder_result: "DecodedFilterEpochsResult", a
     return epoch_time_bin_marginals_df
 
 
-def _check_result_laps_epochs_df_performance(result_laps_epochs_df: pd.DataFrame, debug_print=True):
-    """ 2024-01-17 - Validates the performance of the pseudo2D decoder posteriors using the laps data.
-
-    from PendingNotebookCode import _check_result_laps_epochs_df_performance
-    (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly) = _check_result_laps_epochs_df_performance(result_laps_epochs_df)
-    
-    """
-    # Check 'maze_id' decoding accuracy
-    n_laps = np.shape(result_laps_epochs_df)[0]
-    is_decoded_track_correct = (result_laps_epochs_df['maze_id'] == result_laps_epochs_df['is_most_likely_track_identity_Long'].apply(lambda x: 0 if x else 1))
-    percent_laps_track_identity_estimated_correctly = (np.sum(is_decoded_track_correct) / n_laps)
-    if debug_print:
-        print(f'percent_laps_track_identity_estimated_correctly: {percent_laps_track_identity_estimated_correctly}')
-    # Check 'is_LR_dir' decoding accuracy:
-    is_decoded_dir_correct = (result_laps_epochs_df['is_LR_dir'].apply(lambda x: 0 if x else 1) == result_laps_epochs_df['is_most_likely_direction_LR'].apply(lambda x: 0 if x else 1))
-    percent_laps_direction_estimated_correctly = (np.sum(is_decoded_dir_correct) / n_laps)
-    if debug_print:
-        print(f'percent_laps_direction_estimated_correctly: {percent_laps_direction_estimated_correctly}')
-
-    # Both should be correct
-    are_both_decoded_properties_correct = np.logical_and(is_decoded_track_correct, is_decoded_dir_correct)
-    percent_laps_estimated_correctly = (np.sum(are_both_decoded_properties_correct) / n_laps)
-    if debug_print:
-        print(f'percent_laps_estimated_correctly: {percent_laps_estimated_correctly}')
-
-    return (is_decoded_track_correct, is_decoded_dir_correct, are_both_decoded_properties_correct), (percent_laps_track_identity_estimated_correctly, percent_laps_direction_estimated_correctly, percent_laps_estimated_correctly)
-
-
-
 # ==================================================================================================================== #
 # 2024-01-17 - Lap performance validation                                                                              #
 # ==================================================================================================================== #
