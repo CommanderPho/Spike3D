@@ -23,50 +23,6 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
 
 
-# def test_build_new_marginals_df(alt_directional_merged_decoders_result):
-def test_build_new_marginals_df(a_decoder_result: "DecodedFilterEpochsResult", a_track_identity_marginals):
-    """ 2024-01-19 - Refactored into `DirectionalMergedDecodersResult._build_multiple_per_time_bin_marginals()` on 2024-01-23 Test marginals
-
-    from PendingNotebookCode import test_build_new_marginals_df
-    
-    a_decoder_result = deepcopy(alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result)
-    alt_active_track_identity_marginals, *_other_trash = alt_directional_merged_decoders_result.laps_directional_marginals_tuple
-    
-    laps_time_bin_marginals_df = test_build_new_marginals_df(a_decoder_result=deepcopy(alt_directional_merged_decoders_result.all_directional_laps_filter_epochs_decoder_result),
-								 a_track_identity_marginals=alt_directional_merged_decoders_result.laps_directional_marginals_tuple[0]
-							 )
-    laps_time_bin_marginals_df
-
-    ripple_time_bin_marginals_df = test_build_new_marginals_df(a_decoder_result=deepcopy(alt_directional_merged_decoders_result.all_directional_ripple_filter_epochs_decoder_result),
-                                                a_track_identity_marginals=alt_directional_merged_decoders_result.ripple_directional_marginals_tuple[0]
-                                            )
-    ripple_time_bin_marginals_df
-
-    """
-    
-    flat_time_bin_centers_column = np.concatenate([curr_epoch_time_bin_container.centers for curr_epoch_time_bin_container in a_decoder_result.time_bin_containers])
-    track_identity_marginals = deepcopy(a_track_identity_marginals)
-
-    n_epochs = len(track_identity_marginals)
-
-    epoch_extracted_posteriors = [a_result['p_x_given_n'] for a_result in track_identity_marginals]
-    epoch_extracted_posterior_shapes = [np.shape(a_posterior) for a_posterior in epoch_extracted_posteriors]
-    # epoch_extracted_posterior_shapes
-    n_epoch_time_bins = [np.shape(a_posterior)[-1] for a_posterior in epoch_extracted_posteriors]
-    # n_epoch_time_bins
-    # epoch_extracted_posterior_shapes
-
-    epoch_idx_column = np.concatenate([np.full((an_epoch_time_bins, ), fill_value=i) for i, an_epoch_time_bins in enumerate(n_epoch_time_bins)])
-    # epoch_start_t_column = np.concatenate([np.full((an_epoch_time_bins, ), fill_value=i) for i, an_epoch_time_bins in enumerate(n_epoch_time_bins)])
-
-    # print(f'np.shape(epoch_idx_column): {np.shape(epoch_idx_column)}')
-    epoch_time_bin_marginals_df = pd.DataFrame(np.hstack((epoch_extracted_posteriors)).T, columns=['P_Long', 'P_Short'])
-    epoch_time_bin_marginals_df['epoch_idx'] = epoch_idx_column
-    epoch_time_bin_marginals_df['t_bin_center'] = flat_time_bin_centers_column
-
-    return epoch_time_bin_marginals_df
-
-
 # ==================================================================================================================== #
 # 2024-01-17 - Lap performance validation                                                                              #
 # ==================================================================================================================== #
