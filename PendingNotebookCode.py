@@ -22,7 +22,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 # ==================================================================================================================== #
 
 # def test_build_new_marginals_df(alt_directional_merged_decoders_result):
-def test_build_new_marginals_df(a_decoder_result, a_track_identity_marginals):
+def test_build_new_marginals_df(a_decoder_result: DecodedFilterEpochsResult, a_track_identity_marginals):
     """ 2024-01-19 - Test marginals
 
     from PendingNotebookCode import test_build_new_marginals_df
