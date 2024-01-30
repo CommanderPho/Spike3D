@@ -108,6 +108,8 @@ pathos = "^0.2.9"
 jupyterhub = "^4.0.2"
 nbstripout = "^0.6.1"
 polars = {extras = ["connectorx", "fsspec", "numpy", "pandas", "pyarrow"], version = "^0.20.3"}
+dash-bootstrap-components = "^1.5.0"
+dash-mantine-components = "^0.12.1"
 
 
 [tool.poetry.group.dev.dependencies]
