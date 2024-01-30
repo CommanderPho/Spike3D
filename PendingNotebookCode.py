@@ -892,7 +892,7 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
 # 2023-05-02 - Factor out interactive matplotlib/pyqtgraph helper code (untested)                                      #
 # ==================================================================================================================== #
 import matplotlib
-from attrs import define, Factory
+from attrs import define, field, Factory
 
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class SelectionManager:
@@ -909,10 +909,10 @@ class SelectionManager:
         sm = SelectionManager(_curr_plots.axs)
 
     """
-    axes: list
-    is_selected: dict = Factory(dict)
-    fig: matplotlib.figure.Figure = None # Matplotlib.Figure
-    cid: int = None # Matplotlib.Figure
+    axes: list = field(default=Factory(list))
+    is_selected: dict = field(default=Factory(dict))
+    fig: Optional[matplotlib.figure.Figure] = field(default=None) # Matplotlib.Figure
+    cid: Optional[int] = field(default=None) # Matplotlib.Figure
 
     def __attrs_post_init__(self):
         # Get figure from first axes:
@@ -938,7 +938,7 @@ class SelectionManager:
         event.canvas.draw()
 
 
-from attrs import Factory
+
 
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class PaginatedSelectionManager:
@@ -962,10 +962,10 @@ class PaginatedSelectionManager:
         ui.mw.ui.paginator_controller_widget.jump_to_page.connect(on_page_change)
 
     """
-    axes: list
-    is_selected: dict = Factory(dict)
-    fig: matplotlib.figure.Figure = None # Matplotlib.Figure
-    callback_id: int = None # Matplotlib.Figure
+    axes: list = field(default=Factory(list))
+    is_selected: dict = field(default=Factory(dict))
+    fig: Optional[matplotlib.figure.Figure] = field(default=None) # Matplotlib.Figure
+    callback_id: Optional[int] = field(default=None) # Matplotlib.Figure
 
     def __attrs_post_init__(self):
         # Get figure from first axes:
