@@ -48,9 +48,9 @@
 			"notebook.focusedEditorBorder": "#f6ff00",
 			"notebook.inactiveFocusedCellBorder": "#ffff0063",
 			"titleBar.inactiveBackground": "#4b4b4b8e",
-			"tab.activeBorder": "#CE8948",
-			"statusBar.background": "#CE8948",
-			"statusBar.foreground": "#000000",
+			"tab.activeBorder": "#2E9341",
+			"statusBar.background": "#2E9341",
+			"statusBar.foreground": "#ffffff",
 			"tab.activeBackground": "#2E9341"
 		},
 		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
