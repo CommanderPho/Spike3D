@@ -150,7 +150,8 @@
 		"editor.lineNumbers": "on",
 		"editor.bracketPairColorization.independentColorPoolPerBracketType": false,
 		"editor.codeLens": false,
-		"editor.autoClosingQuotes": "beforeWhitespace"
+		"editor.autoClosingQuotes": "beforeWhitespace",
+		"editor.detectIndentation": false
 	},
 	"tasks": {
 		"version": "2.0.0",
