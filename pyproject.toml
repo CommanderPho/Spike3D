@@ -116,6 +116,7 @@ cookiecutter = "^2.5.0"
 napari-manual-transforms = "^0.0.3"
 affinder = "^0.3.2"
 maxlikespy = {git = "https://github.com/CommanderPho/maxlikespy"}
+mkdocs-matplotlib = "^0.10.1"
 
 
 [tool.poetry.group.dev.dependencies]
