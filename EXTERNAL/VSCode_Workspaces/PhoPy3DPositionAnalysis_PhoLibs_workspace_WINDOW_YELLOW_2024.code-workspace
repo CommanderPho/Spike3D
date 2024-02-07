@@ -169,7 +169,12 @@
 		"editor.bracketPairColorization.independentColorPoolPerBracketType": true,
 		"editor.codeLens": false,
 		"editor.autoClosingQuotes": "beforeWhitespace",
-		"editor.detectIndentation": false
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": true,
+		"editor.autoIndent": "keep",
+		"workbench.tree.renderIndentGuides": "always",
+        "editor.indentSize": "tabSize",
+        "editor.foldingStrategy": "indentation"
 	},
 	"tasks": {
 		"version": "2.0.0",
