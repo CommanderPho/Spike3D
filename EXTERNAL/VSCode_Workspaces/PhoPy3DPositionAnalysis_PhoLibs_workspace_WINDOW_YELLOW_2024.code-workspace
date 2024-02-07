@@ -39,6 +39,7 @@
 			"**/.DS_Store": true
 		},
 		"python.analysis.logLevel": "Error",
+		"editor.bracketPairColorization.enabled": true,
 		"workbench.colorCustomizations": {
 			"editor.lineHighlightBackground": "#1073cf2d",
 			"editor.lineHighlightBorder": "#9fced11f",
@@ -58,13 +59,30 @@
 			"titleBar.inactiveBackground": "#c7bf538e",
 			"tab.activeBorder": "#2F3C2E",
 			"statusBar.background": "#3c3c2e",
-			"statusBar.foreground": "#ffffff"
+			"statusBar.foreground": "#ffffff",
+			// "bracketPairColorizer.consecutivePairColors": [
+			// 	["(", ")", ["Gold", "DarkGoldenRod", "Chocolate", "SaddleBrown", "DarkKhaki", "GoldenRod", "Peru"]],
+			// 	["[", "]", ["LightSkyBlue", "DodgerBlue", "RoyalBlue", "MediumBlue", "Blue", "DarkBlue", "Navy"]],
+			// 	["{", "}", ["Orchid", "MediumOrchid", "DarkOrchid", "Purple", "Indigo", "BlueViolet", "DarkViolet"]],
+			// 	"Red"
+			// ],
+			"editorBracketHighlight.foreground1": "#5caeef",
+			// "editorBracketPairGuide.activeBackground1": "#ff0000",
+			// "editorBracketPairGuide.background1": "#ff0000",
+			"editorBracketHighlight.foreground2": "#dfb976",
+			"editorBracketHighlight.foreground3": "#c172d9",
+			"editorBracketHighlight.foreground4": "#4fb1bc",
+			"editorBracketHighlight.foreground5": "#97c26c",
+			"editorBracketHighlight.foreground6": "#abb2c0",
+			"editorBracketHighlight.unexpectedBracket.foreground": "#db6165",
 		},
 		"search.exclude": {
+			"./Spike3D/EXTERNAL/TESTING/OLD": true,
 			"**/.ipynb_checkpoints": true,
 			"**/*.md": true,
 			"**/EXTERNAL/DEVELOPER_NOTES": true,
-			"**/EXTERNAL/TESTING/OLD": true
+			"**/EXTERNAL/TESTING/OLD": true,
+			"**/output/*": true
 		},
 		"files.watcherExclude": {
 			"../../EXTERNAL/**": true,
@@ -148,7 +166,7 @@
 		"qtForPython.rcc.liveExecution.enabled": false,
 		"qtForPython.rcc.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
 		"editor.lineNumbers": "on",
-		"editor.bracketPairColorization.independentColorPoolPerBracketType": false,
+		"editor.bracketPairColorization.independentColorPoolPerBracketType": true,
 		"editor.codeLens": false,
 		"editor.autoClosingQuotes": "beforeWhitespace",
 		"editor.detectIndentation": false
