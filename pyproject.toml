@@ -118,6 +118,8 @@ affinder = "^0.3.2"
 maxlikespy = {git = "https://github.com/CommanderPho/maxlikespy"}
 mkdocs-matplotlib = "^0.10.1"
 mypy = "^1.8.0"
+pycorrelate = "^0.3"
+orange3 = "^3.36.2"
 
 
 [tool.poetry.group.dev.dependencies]
