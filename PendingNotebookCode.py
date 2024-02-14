@@ -627,7 +627,7 @@ def _add_maze_id_to_epochs(active_filter_epochs: Epoch, track_change_time: float
     return active_filter_epochs
 
 
-@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'epoch'], input_requires=[], output_provides=[], uses=['WeightedCorr'], used_by=['add_weighted_correlation_result'], creation_date='2023-10-19 07:54', related_items=[])
+@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'epoch', 'obsolite'], input_requires=[], output_provides=[], uses=['WeightedCorr'], used_by=['add_weighted_correlation_result'], creation_date='2023-10-19 07:54', related_items=[])
 def compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n, method='spearman') -> List[float]:
     """ computes the weighted_correlation for the epoch given the decoded posterior
 
@@ -663,7 +663,7 @@ def compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_e
 
 
 
-@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder'], input_requires=[], output_provides=[], uses=['compute_epoch_weighted_correlation'], used_by=[], creation_date='2023-10-19 07:54', related_items=[])
+@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'obsolite'], input_requires=[], output_provides=[], uses=['compute_epoch_weighted_correlation'], used_by=[], creation_date='2023-10-19 07:54', related_items=[])
 def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: DecodedFilterEpochsResult, a_short_decoder_result: DecodedFilterEpochsResult, method=('pearson', 'spearman'), debug_print = False):
     """ builds the weighted correlation for each epoch respective to the posteriors decoded by each decoder (long/short) """
     epoch_long_weighted_corr_results = []
