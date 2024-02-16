@@ -3,9 +3,9 @@
 See https://mkdocstrings.github.io/recipes/#automatic-code-reference-pages
 Requires
 
-poetry add mkdocs-gen-files mkdocs-literate-nav mkdocs-section-index
+poetry add mkdocs-gen-files mkdocs-literate-nav mkdocs-section-index mkdocs-matplotlib mkdocs-jupyter
 
-poetry add mkdocs-matplotlib 
+mkdocs-gen-files mkdocs-literate-nav mkdocs-section-index mkdocs-matplotlib mkdocs-jupyter
 """
 
 from pathlib import Path
