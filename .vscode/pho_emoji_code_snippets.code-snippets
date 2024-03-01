@@ -16,212 +16,212 @@
 	// 	"description": "Log output to console"
 	// }
 "green-circle 🟢": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-green-circle",
 	"body": ["🟢$1"]
 },
 "rainbow 🌈": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-rainbow",
 	"body": ["🌈$1"]
 },
 "yellow-construction 🚧": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-yellow-construction",
 	"body": ["🚧$1"]
 },
 "red-stop 🛑": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-red-stop",
 	"body": ["🛑$1"]
 },
 "yellow-warning ⚠️": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-yellow-warning",
 	"body": ["⚠️$1"]
 },
 "blue-diamond 🔷": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-blue-diamond",
 	"body": ["🔷$1"]
 },
 "orange-diamond 🔶": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-orange-diamond",
 	"body": ["🔶$1"]
 },
 "purple-diamond 🟪": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-purple-diamond",
 	"body": ["🟪$1"]
 },
 "emphasis-100 💯": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-emphasis-100",
 	"body": ["💯$1"]
 },
 "green-checkmark ✅": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-green-checkmark",
 	"body": ["✅$1"]
 },
 "green-X ❎": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-green-X",
 	"body": ["❎$1"]
 },
 "red-not-sign 🚫": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-red-not-sign",
 	"body": ["🚫$1"]
 },
 "red-X ❌": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-red-X",
 	"body": ["❌$1"]
 },
 "red-question-mark ❓": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-red-question-mark",
 	"body": ["❓$1"]
 },
 "white-question-mark-diamond ❔": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-white-question-mark-diamond",
 	"body": ["❔$1"]
 },
 "white-exclamation-mark ❕": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-white-exclamation-mark",
 	"body": ["❕$1"]
 },
 "red-exclamation-mark ❗": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-red-exclamation-mark",
 	"body": ["❗$1"]
 },
 "observation-microscope 🔬": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-observation-microscope",
 	"body": ["🔬$1"]
 },
 "reference-book 📚": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-reference-book",
 	"body": ["📚$1"]
 },
 "time-watch ⌚": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-time-watch",
 	"body": ["⌚$1"]
 },
 "emphasis-soon 🔜": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-emphasis-soon",
 	"body": ["🔜$1"]
 },
 "emphasis-top 🔝": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-emphasis-top",
 	"body": ["🔝$1"]
 },
 "visual-picture 🖼️": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-visual-picture",
 	"body": ["🖼️$1"]
 },
 "visual-palette 🎨": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-visual-palette",
 	"body": ["🎨$1"]
 },
 "visual-paintbrush 🖌️": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-visual-paintbrush",
 	"body": ["🖌️$1"]
 },
 "graph-line-chart 📈": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-graph-line-chart",
 	"body": ["📈$1"]
 },
 "graph-bar-chart 📊": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-graph-bar-chart",
 	"body": ["📊$1"]
 },
 "clipboard 📋": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-clipboard",
 	"body": ["📋$1"]
 },
 "note 📝": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-note",
 	"body": ["📝$1"]
 },
 "window 🪟": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-window",
 	"body": ["🪟$1"]
 },
 "safety-pin 🧷": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-safety-pin",
 	"body": ["🧷$1"]
 },
 "link 🔗": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-link",
 	"body": ["🔗$1"]
 },
 "chain ⛓️": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-chain",
 	"body": ["⛓️$1"]
 },
 "hook 🪝": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-hook",
 	"body": ["🪝$1"]
 },
 "thread 🧵": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-thread",
 	"body": ["🧵$1"]
 },
 "puzzle-piece 🧩": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-puzzle-piece",
 	"body": ["🧩$1"]
 },
 "loop 🔃": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-loop",
 	"body": ["🔃$1"]
 },
 "refresh 🔄": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-refresh",
 	"body": ["🔄$1"]
 },
 "pin-location-marker 📍": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-pin-location-marker",
 	"body": ["📍$1"]
 },
 "goal-target-bullseye 🎯": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-goal-target-bullseye",
 	"body": ["🎯$1"]
 },
 "pin-thumbtack 📌": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-pin-thumbtack",
 	"body": ["📌$1"]
 },
 "save-floppy 💾": {
-	"scope": "markdown,json,jsonc",
+	"scope": "markdown,json,jsonc,python", 
 	"prefix": "emo-save-floppy",
 	"body": ["💾$1"]
 },
