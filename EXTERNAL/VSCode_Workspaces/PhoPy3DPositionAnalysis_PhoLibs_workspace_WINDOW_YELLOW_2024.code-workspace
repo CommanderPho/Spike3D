@@ -215,7 +215,8 @@
 			"amodio.restore-editors",
 			"buenon.scratchpads",
 			"geddski.macros",
-			"ryuta46.multi-command"
+            "ryuta46.multi-command",
+            "jkearins.action-buttons-ext"
 		]
 	}
 }
