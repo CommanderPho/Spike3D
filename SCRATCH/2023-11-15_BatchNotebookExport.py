@@ -21,7 +21,7 @@ from attrs import define, field, Factory
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
 from pyphocorehelpers.function_helpers import function_attributes
-from pyphocorehelpers.print_helpers import CapturedException
+from pyphocorehelpers.exception_helpers import CapturedException
 
 # Jupyter interactivity:
 import ipywidgets as widgets
@@ -53,7 +53,7 @@ from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSe
 
 from pyphocorehelpers.Filesystem.path_helpers import set_posix_windows
 
-from pyphocorehelpers.print_helpers import CapturedException
+from pyphocorehelpers.exception_helpers import CapturedException
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import InstantaneousFiringRatesDataframeAccessor
 from pyphoplacecellanalysis.General.Batch.runBatch import PipelineCompletionResult, BatchSessionCompletionHandler
 
