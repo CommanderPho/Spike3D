@@ -2,3 +2,4 @@ outs:
 - md5: a01c7d3664a2116ae8c679dc80ff7386
   size: 156581956
   path: long_2D_projected_results_obj_decoder_direct_save_2023-04-06.pkl.npy
+  hash: md5
