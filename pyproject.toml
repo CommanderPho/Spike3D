@@ -116,6 +116,7 @@ jupyterhub = "^4.0.2"
 jupyter-bokeh = "^3.0.7"
 jupyter-book = "^0.15.1"
 jupyter-rfb = "^0.4.1"
+jaraco-clipboard = "^3.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
