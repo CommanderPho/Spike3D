@@ -4123,6 +4123,17 @@ files = [
 ]
 
 [[package]]
+name = "highlight-text"
+version = "0.2"
+description = "matplotlib functions to plot text with color highlighted substrings"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "highlight_text-0.2-py3-none-any.whl", hash = "sha256:fb1333628f500a0ff2c25af757511eb39034c1d19571994821b2e0f76d040f75"},
+    {file = "highlight_text-0.2.tar.gz", hash = "sha256:062d8f648fd474157367e435e37ef5c68cc58b1c8d0b006baab2e7c1c60bdc37"},
+]
+
+[[package]]
 name = "hmmlearn"
 version = "0.2.8"
 description = "Hidden Markov Models in Python with scikit-learn like API"
@@ -17935,4 +17946,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "4b3e54ae3851ae7fcb4ff7ac54d3331864963b57d4e45f4f69cafeb214036b30"
+content-hash = "85cb7e14a8a73e19b12a54722b152e025f65638f0f600a26d445c12c46481169"
