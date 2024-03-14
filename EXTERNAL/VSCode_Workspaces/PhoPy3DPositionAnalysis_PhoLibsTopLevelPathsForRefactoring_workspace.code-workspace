@@ -90,7 +90,8 @@
 		"recommendations": [
 			"hbenl.vscode-test-explorer",
 			"h5web.vscode-h5web",
-			"phohale.color-tabs-vscode-ext"
+			"phohale.color-tabs-vscode-ext",
+			"gerrnperl.outline-map"
 		]
 	},
 	"tasks": {
