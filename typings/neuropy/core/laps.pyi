@@ -54,12 +54,22 @@ class Laps(Epoch):
         laps_obj.update_maze_id_if_needed(t_start, t_delta, t_end)
         laps_df = laps_obj.to_dataframe()
         laps_df
-        
-        
+                
         """
         ...
     
     def update_lap_dir_from_smoothed_velocity(self, pos_input: Union[Position, DataSession]) -> None:
+        ...
+    
+    def adding_true_decoder_identifier(self, t_start: float, t_delta: float, t_end: float, labels_column_name: str = ...) -> pd.DataFrame:
+        """ adds the 'maze_id' column to the internal dataframe if needed.
+        t_start, t_delta, t_end = owning_pipeline_reference.find_LongShortDelta_times()
+        laps_obj: Laps = curr_active_pipeline.sess.laps
+        laps_obj.update_maze_id_if_needed(t_start, t_delta, t_end)
+        laps_df = laps_obj.to_dataframe()
+        laps_df
+                
+        """
         ...
     
     def filter_to_valid(self) -> Laps:

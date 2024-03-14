@@ -14,6 +14,7 @@ from neuropy.utils.mixins.HDF5_representable import HDFMixin
 
 module_logger = ...
 _REQUIRE_NEURON_TYPE_COLUMN: bool = ...
+_REQUIRE_FLAT_SPIKE_INDEX_COLUMN: bool = ...
 @pd.api.extensions.register_dataframe_accessor("spikes")
 class SpikesAccessor(TimeSlicedMixin):
     """ Part of the December 2021 Rewrite of the neuropy.core classes to be Pandas DataFrame based and easily manipulatable """
@@ -135,14 +136,21 @@ class SpikesAccessor(TimeSlicedMixin):
         """
         ...
     
-    def adding_epochs_identity_column(self, epochs_df: pd.DataFrame, epoch_id_key_name: str = ..., epoch_label_column_name=..., override_time_variable_name=..., no_interval_fill_value=...): # -> Any:
+    def adding_epochs_identity_column(self, epochs_df: pd.DataFrame, epoch_id_key_name: str = ..., epoch_label_column_name=..., override_time_variable_name=..., no_interval_fill_value=..., should_replace_existing_column=..., drop_non_epoch_spikes: bool = ...): # -> Any:
         """ Adds the arbitrary column with name epoch_id_key_name to the dataframe.
 
             spikes: curr_active_pipeline.sess.spikes_df
             adds column epoch_id_key_name to spikes df.
             
+            drop_non_epoch_spikes: if True, drops the spikes that don't have a matching epoch after these are determined.
+
             # Created Columns:
                 epoch_id_key_name
+
+            Usage:
+                active_spikes_df = active_spikes_df.spikes.adding_epochs_identity_column(epochs_df=active_epochs_df, epoch_id_key_name=epoch_id_key_name, epoch_label_column_name='label', override_time_variable_name='t_rel_seconds',
+                                                                                        no_interval_fill_value=no_interval_fill_value, should_replace_existing_column=True, drop_non_epoch_spikes=True)
+                                                                                        
 
         """
         ...

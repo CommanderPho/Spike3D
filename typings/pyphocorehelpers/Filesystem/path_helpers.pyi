@@ -79,7 +79,11 @@ def file_uri_from_path(a_path: Union[Path, str]) -> str:
     ...
 
 def quote_wrapped_string(a_str: str, quote_str: str = ...) -> str:
-    """ takes a a_str and returns it wrapped in literal quote characters specified by `quote_str`. Defaults to double quotes """
+    """ takes a a_str and returns it wrapped in literal quote characters specified by `quote_str`. Defaults to double quotes 
+
+    from pyphocorehelpers.Filesystem.path_helpers import quote_wrapped_string, unwrap_quote_wrapped_string
+
+    """
     ...
 
 def unwrap_quote_wrapped_string(a_quote_wrapped_str: str) -> str:
