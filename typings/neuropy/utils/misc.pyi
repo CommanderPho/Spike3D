@@ -7,6 +7,7 @@ import pandas as pd
 import abc
 from enum import Enum, unique
 from typing import Optional, Tuple
+from nptyping import NDArray
 from datetime import datetime
 
 class NonStringIterable(metaclass=abc.ABCMeta):
@@ -170,6 +171,19 @@ def split_array(arr: np.ndarray, sub_element_lengths: np.ndarray) -> list:
     """
     ...
 
+def numpyify_array(sequences) -> NDArray:
+    """
+    Convert a list of sequences to a list of NumPy arrays. If the sequence
+    is already a NumPy array, it is left as-is.
+
+    Usage:
+
+    from neuropy.utils.misc import numpyify_array
+
+    
+    """
+    ...
+
 def safe_pandas_get_group(dataframe_group, key):
     """ returns an empty dataframe if the key isn't found in the group.
     Usage:
@@ -191,7 +205,7 @@ def convert_dataframe_columns_to_datatype_if_possible(df: pd.DataFrame, datatype
     """
     ...
 
-def add_explicit_dataframe_columns_from_lookup_df(df, lookup_properties_map_df, join_column_name=...): # -> DataFrame[Any]:
+def add_explicit_dataframe_columns_from_lookup_df(df, lookup_properties_map_df: pd.DataFrame, join_column_name=...) -> pd.DataFrame:
     """ Uses a value (specified by `join_column_name`) in each row of `df` to lookup the appropriate values in `lookup_properties_map_df` to be explicitly added as columns to `df`
     df: a dataframe. Each row has a join_column_name value (e.g. 'aclu')
     
@@ -210,6 +224,18 @@ def add_explicit_dataframe_columns_from_lookup_df(df, lookup_properties_map_df, 
         curr_active_pipeline.sess.flattened_spiketrains._spikes_df = add_explicit_dataframe_columns_from_lookup_df(curr_active_pipeline.sess.spikes_df, curr_active_pipeline.sess.neurons._extended_neuron_properties_df)
         curr_active_pipeline.sess.spikes_df.sort_values(by=['t_seconds'], inplace=True) # Need to re-sort by timestamps once done
         curr_active_pipeline.sess.spikes_df
+
+    """
+    ...
+
+def adding_additional_df_columns(original_df: pd.DataFrame, additional_cols_df: pd.DataFrame) -> pd.DataFrame:
+    """ Adds the columns in `additional_cols_df` to `original_df`, horizontally concatenating them without considering either index.
+
+    Usage:
+        
+        from neuropy.utils.misc import adding_additional_df_columns
+
+        a_result.filter_epochs = adding_additional_df_columns(original_df=a_result.filter_epochs, additional_cols_df=_out_new_scores[a_name]) # update the filter_epochs with the new columns
 
     """
     ...

@@ -107,7 +107,7 @@ class IdentifyingContext(DiffableObject, SubsettableDictRepresentable):
     @classmethod
     def matching(cls, context_iterable: Union[Dict[IdentifyingContext, Any], List[IdentifyingContext]], criteria: Union[Dict[str, Any], IdentifyingContext]) -> Union[Dict[IdentifyingContext, Any], List[IdentifyingContext]]:
         """ 
-        Queries the iterable (either list of dict with IdentifyingContext as keys) and returns the values matching the criteria
+        Queries the iterable (either list or dict with IdentifyingContext as keys) and returns the values matching the criteria
         criteria={'animal': 'vvp01'}
         
         Usage:
@@ -164,6 +164,36 @@ class IdentifyingContext(DiffableObject, SubsettableDictRepresentable):
         """
         ...
     
+    @classmethod
+    def find_longest_common_context(cls, context_iterable: Union[Dict[IdentifyingContext, Any], List[IdentifyingContext]]) -> IdentifyingContext:
+        """ returns the context common to all entries in the provided iterable. 
+        """
+        ...
+    
+    @classmethod
+    def converting_to_relative_contexts(cls, common_context: IdentifyingContext, context_iterable: Union[Dict[IdentifyingContext, Any], List[IdentifyingContext]]): # -> list[Any] | dict[Any, Any]:
+        """ returns the iterable contexts relative to the provided common_context
+
+        Useage:
+            unique_values_dict = IdentifyingContext.find_unique_values(context_iterable)
+            non_leaf_unique_values = {k:v[0] for k, v in unique_values_dict.items() if len(v) == 1}
+            common_context = IdentifyingContext(**non_leaf_unique_values)
+        
+            common_context = find_longest_common_context(user_annotations)
+
+            common_context_user_annotations = converting_to_relative_contexts(common_context, user_annotations)
+            common_context_user_annotations
+
+        """
+        ...
+    
+    @classmethod
+    def resolve_key(cls, duplicate_ctxt: IdentifyingContext, name: str, value, collision_prefix: str, strategy: CollisionOutcome = ...): # -> str | None:
+        """ensures no collision between attributes occur, and if they do resolve them according to strategy. e.g. rename them with an identifying prefix
+        Returns the resolved key (str) or None.
+        """
+        ...
+    
     def add_context(self, collision_prefix: str, strategy: CollisionOutcome = ..., **additional_context_items): # -> Self:
         """ adds the additional_context_items to self 
         collision_prefix: only used when an attr name in additional_context_items already exists for this context and the values of that attr are different
@@ -178,17 +208,15 @@ class IdentifyingContext(DiffableObject, SubsettableDictRepresentable):
         """
         ...
     
-    @classmethod
-    def resolve_key(cls, duplicate_ctxt: IdentifyingContext, name: str, value, collision_prefix: str, strategy: CollisionOutcome = ...): # -> str | None:
-        """ensures no collision between attributes occur, and if they do resolve them according to strategy. e.g. rename them with an identifying prefix
-        Returns the resolved key (str) or None.
-        """
-        ...
-    
     def adding_context_if_missing(self, **additional_context_items) -> IdentifyingContext:
         ...
     
     def overwriting_context(self, **additional_context_items) -> IdentifyingContext:
+        ...
+    
+    def __add__(self, other) -> IdentifyingContext:
+        """ Allows adding contexts using the `+` operator
+        """
         ...
     
     def merging_context(self, collision_prefix: str, additional_context: IdentifyingContext) -> IdentifyingContext:
@@ -216,7 +244,7 @@ class IdentifyingContext(DiffableObject, SubsettableDictRepresentable):
         """
         ...
     
-    def get_initialization_code_string(self, subset_includelist=..., subset_excludelist=...) -> str:
+    def get_initialization_code_string(self, subset_includelist=..., subset_excludelist=..., class_name_override=...) -> str:
         """ returns the string that contains valid code to initialize a matching object. """
         ...
     
@@ -250,6 +278,10 @@ class IdentifyingContext(DiffableObject, SubsettableDictRepresentable):
     def subtracting(self, rhs) -> IdentifyingContext:
         ...
     
+    def __sub__(self, other) -> IdentifyingContext:
+        """ implements the `-` subtraction operator """
+        ...
+    
     @classmethod
     def subtract(cls, lhs, rhs): # -> Self:
         """ Returns the lhs less the keys that are in the rhs.
@@ -262,6 +294,12 @@ class IdentifyingContext(DiffableObject, SubsettableDictRepresentable):
         ...
     
     def __setstate__(self, state): # -> None:
+        ...
+    
+    def __enter__(self): # -> Self:
+        ...
+    
+    def __exit__(self, exc_type, exc_val, exc_tb): # -> None:
         ...
     
     @classmethod
