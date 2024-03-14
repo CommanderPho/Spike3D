@@ -28,6 +28,7 @@
 		"geddski.macros",
 		"zengfanfan.zeng-color-picker",
 		"phohale.color-tabs-vscode-ext",
-		"ryuta46.multi-command"
+		"ryuta46.multi-command",
+		"gerrnperl.outline-map"
 	]
 }
