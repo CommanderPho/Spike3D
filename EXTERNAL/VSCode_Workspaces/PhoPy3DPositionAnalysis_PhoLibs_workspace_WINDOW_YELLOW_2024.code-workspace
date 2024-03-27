@@ -216,7 +216,8 @@
 			"buenon.scratchpads",
 			"geddski.macros",
             "ryuta46.multi-command",
-            "jkearins.action-buttons-ext"
+            "jkearins.action-buttons-ext",
+            "codeandstuff.vscode-navigate-edit-history"
 		]
 	}
 }
