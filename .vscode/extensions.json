@@ -29,6 +29,7 @@
 		"zengfanfan.zeng-color-picker",
 		"phohale.color-tabs-vscode-ext",
 		"ryuta46.multi-command",
-		"gerrnperl.outline-map"
+        "gerrnperl.outline-map",
+        "codeandstuff.vscode-navigate-edit-history"
 	]
 }
