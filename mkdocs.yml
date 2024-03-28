@@ -1,5 +1,6 @@
 site_name: Spike3D Docs
 # theme: windmill
+theme: readthedocs
 plugins:
 - search
 - gen-files:
