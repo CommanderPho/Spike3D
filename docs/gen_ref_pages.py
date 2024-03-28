@@ -7,12 +7,19 @@ poetry add mkdocs-gen-files mkdocs-literate-nav mkdocs-section-index mkdocs-matp
 
 mkdocs-gen-files mkdocs-literate-nav mkdocs-section-index mkdocs-matplotlib mkdocs-jupyter
 """
-
+import os
+import sys
 from pathlib import Path
 
 import mkdocs_gen_files
 
 nav = mkdocs_gen_files.Nav()
+
+docs_dir = Path(os.path.dirname(os.path.abspath(__file__))) # /home/halechr/repos/Spike3D/docs
+print(f'docs_dir: {docs_dir}')
+root_dir = docs_dir.parent # Spike3D root repo dir
+
+
 
 for path in sorted(Path("src").rglob("*.py")):
     module_path = path.relative_to("src").with_suffix("")
