@@ -217,7 +217,12 @@
 			"geddski.macros",
             "ryuta46.multi-command",
             "jkearins.action-buttons-ext",
-            "codeandstuff.vscode-navigate-edit-history"
+            "codeandstuff.vscode-navigate-edit-history",
+            "phohale.custom-text-transform",
+            "vscode-icons-team.vscode-icons",
+            "johnw42.pathslasher",
+            "pkief.material-icon-theme",
+            "grimmer.vscode-back-forward-button"
 		]
 	}
 }
