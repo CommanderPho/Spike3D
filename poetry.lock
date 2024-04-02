@@ -15812,6 +15812,20 @@ files = [
 streamlit = ">=0.63"
 
 [[package]]
+name = "streamlit-tree-select"
+version = "0.0.5"
+description = "A simple and elegant checkbox tree for Streamlit."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "streamlit-tree-select-0.0.5.tar.gz", hash = "sha256:985f5d4c357c403723fd69d4c4fca38193e0f9105974ec36259c43d9e6b78044"},
+    {file = "streamlit_tree_select-0.0.5-py3-none-any.whl", hash = "sha256:9bfee4d9394fcb0b3e98801cca32f179c85f9f7fdf7005904bf88811f73db05c"},
+]
+
+[package.dependencies]
+streamlit = ">=0.63"
+
+[[package]]
 name = "streamlit-vertical-slider"
 version = "2.5.5"
 description = "Creates a customizable vertical slider"
@@ -17769,4 +17783,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "3bd786c6873611d56cdbe2180ab4508399fe855ae7a32ad7b48cc143053788ae"
+content-hash = "009d55f1294c16bae88f9cdc358f9c80199d3ff856d053dea19c4022ced6ccba"
