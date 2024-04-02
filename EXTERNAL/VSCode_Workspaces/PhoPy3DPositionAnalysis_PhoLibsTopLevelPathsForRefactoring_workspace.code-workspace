@@ -12,6 +12,9 @@
 		},
 		{
 			"path": "../../../pyPhoCoreHelpers"
+		},
+		{
+			"path": "../../../SCRIPTS"
 		}
 	],
 	"settings": {
