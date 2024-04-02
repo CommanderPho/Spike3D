@@ -28,6 +28,7 @@ import glob
 from helpers.poetry_helpers import PoetryHelpers, VersionType
 from helpers.source_code_helpers import did_file_hash_change # for finding .whl file after building binary repo
 from helpers.git_helpers import GitHelpers
+from helpers.export_subrepos import export_poetry_repo
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
@@ -78,10 +79,15 @@ def _process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_tom
         print(f'skipping build pyproject.toml for {repo_path}')
         final_pyproject_toml_path = 'pyproject.toml'
 
-    did_project_file_change = did_file_hash_change(final_pyproject_toml_path)
+    ## check if the hash of the pyproject.toml changed. If it did, the new hash is already written.
+    did_project_file_change: bool = did_file_hash_change(final_pyproject_toml_path)
     if not skip_lock:
         if did_project_file_change:
             os.system("poetry lock")
+            # output_requirements_file_path = Path(repo_path).joinpath('requirements.txt').resolve()
+            export_poetry_repo(repo_path, output_file_path='requirements.txt')
+            # os.system("poetry export --without-hashes --format=requirements.txt > requirements.txt") # export the requirements for pip once lock is complete
+            
         else:
             print(f'\t skipping lock for {repo_path} because project file did not change.')
     else:
@@ -89,6 +95,7 @@ def _process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_tom
 
     if enable_install:
         os.system("poetry install") # is this needed? I think it installs in that specific environment.
+
 
 
 def _process_binary_repo(repo_path, skip_building=False):
