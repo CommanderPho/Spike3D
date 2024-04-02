@@ -3166,14 +3166,16 @@ description = "Draw styled text in Matplotlib"
 optional = false
 python-versions = ">=3.6"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 matplotlib = ">=3.4"
 
 [package.source]
-type = "directory"
-url = "../flexitext"
+type = "git"
+url = "https://github.com/CommanderPho/flexitext.git"
+reference = "main"
+resolved_reference = "8cd274c8cb97fe6f32ca56b3c792ae97eb4cc521"
 
 [[package]]
 name = "flox"
@@ -7850,7 +7852,7 @@ develop = true
 
 [package.dependencies]
 dill = {version = "==0.3.5.1", extras = ["graph"]}
-flexitext = "^0.2.0"
+flexitext = {git = "https://github.com/CommanderPho/flexitext.git", rev = "main"}
 h5py = "^3.8.0"
 hdf5storage = "^0.1.19"
 hmmlearn = "^0.2.8"
@@ -7865,7 +7867,7 @@ pandas = ">=2.2.0,<3"
 panel = "^1.2.3"
 params = "^0.9.0"
 pingouin = "^0.5.3"
-portion = "^2.3.1"
+portion = {git = "https://github.com/CommanderPho/portion.git"}
 pynapple = "^0.3.1"
 python-benedict = "^0.28.3"
 scikit-learn = "^1.2.1"
@@ -9255,20 +9257,24 @@ xxhash = ["xxhash (>=1.4.3)"]
 
 [[package]]
 name = "portion"
-version = "2.4.2"
+version = "2.4.3"
 description = "Python data structure and operations for intervals"
 optional = false
-python-versions = "~= 3.7"
-files = [
-    {file = "portion-2.4.2-py3-none-any.whl", hash = "sha256:17f0388d7df3488313ac527d8da9542d2c1329dfefb8793a77ad2dfc97596051"},
-    {file = "portion-2.4.2.tar.gz", hash = "sha256:5289b40d98959b16b3f6927781678935d3df1b7c14947f5d7778e5e04dd9a065"},
-]
+python-versions = "~= 3.8"
+files = []
+develop = false
 
 [package.dependencies]
 sortedcontainers = ">=2.2,<3.0"
 
 [package.extras]
 test = ["black (>=21.8b)", "coverage (>=6.0,<7.0)", "pytest (>=7.0,<8.0)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/CommanderPho/portion.git"
+reference = "HEAD"
+resolved_reference = "d2497756daa215d4897b4cc0223b6fd5db8abcce"
 
 [[package]]
 name = "pox"
@@ -17763,4 +17769,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "e63f5ed9375a485b9829406fe4c991b22b919f829b9a6332393c83889d925ed9"
+content-hash = "3bd786c6873611d56cdbe2180ab4508399fe855ae7a32ad7b48cc143053788ae"

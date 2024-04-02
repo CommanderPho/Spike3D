@@ -43,7 +43,7 @@ beartype = "^0.14.0" # for strict type enforcement of function calls
 awkward = "^2.2.1" # for ragged-arrays, testing
 pyqt-checkbox-table-widget = "^0.0.14"
 patchworklib = "^0.6.1" # matplotlib figure layout/organization
-flexitext = {path = "../flexitext", develop=true} # Very good, used in several places to generate nice titles for the paper's plots
+flexitext = {git = "https://github.com/CommanderPho/flexitext.git", rev = "main"}
 adjusttext = "^0.8"
 seaborn-image = "^0.6.0"
 mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
