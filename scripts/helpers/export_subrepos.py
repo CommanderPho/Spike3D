@@ -20,7 +20,11 @@ external_child_repo_paths = [global_root_dir.joinpath(a_rel_path).resolve() for 
 
 
 def export_poetry_repo(repo_path, output_file_path="requirements.txt"):
-	""" Exports the child repo. """
+	""" Exports the child repo.
+     
+    from Spike3D.scripts.helpers.export_subrepos import export_poetry_repo
+     
+    """
 	print(f'=======> Processing Child Repo: `{repo_path}` ====]:')
 	assert repo_path.exists()
 	os.chdir(repo_path)
