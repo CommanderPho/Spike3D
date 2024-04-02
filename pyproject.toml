@@ -99,7 +99,6 @@ pyqt-builder = "^1.15.3"
 statsmodels = "^0.14.0"
 pathos = "^0.2.9"
 nbstripout = "^0.6.1"
-polars = {extras = ["connectorx", "fsspec", "numpy", "pandas", "pyarrow"], version = "^0.20.3"}
 dash-bootstrap-components = "^1.5.0"
 dash-mantine-components = "^0.12.1"
 dash = "^2.14.2"
