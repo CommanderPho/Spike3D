@@ -106,7 +106,7 @@ favicon==0.7.0 ; python_full_version >= "3.9.2" and python_full_version != "3.9.
 filelock==3.13.3 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 findpeaks==2.6.3 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 flask==3.0.2 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
-flexitext @ file:///C:/Users/pho/repos/Spike3DWorkEnv/flexitext ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
+flexitext @ git+https://github.com/CommanderPho/flexitext.git@8cd274c8cb97fe6f32ca56b3c792ae97eb4cc521 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 fonttools==4.50.0 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 fqdn==1.5.1 ; python_full_version >= "3.9.2" and python_version < "3.10" and python_full_version != "3.9.7"
 freetype-py==2.4.0 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
