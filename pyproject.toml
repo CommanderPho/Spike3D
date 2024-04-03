@@ -117,6 +117,10 @@ jaraco-clipboard = "^3.1.0"
 highlight-text = "^0.2"
 kaleido = "0.1.0"
 streamlit-tree-select = "^0.0.5"
+structlog = "^24.1.0"
+colorama = "^0.4.6"
+rich = "^13.7.1"
+better-exceptions = "^0.3.3"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
