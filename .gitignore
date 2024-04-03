@@ -120,12 +120,11 @@ alluvial_diagram_with_session.png
 .venv_alt
 .venv_raw
 .venv_new
+.venv_yellow
 EXTERNAL/Screenshots/Unsorted/BapunOpenField_Pf2D Refined.pdf
 EXTERNAL/Screenshots/Unsorted/BapunOpenField_Pf2D_Exports/BapunOpenField_Pf2D_pf2D.png
-
 SCRATCH/EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeline.log
 *.xmp
-
 *.gif
 EXTERNAL/Design/Icons/RemoteIcons.qrc
 EXTERNAL/Design/Icons/3d-plane-normal-x.png
