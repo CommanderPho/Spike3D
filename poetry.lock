@@ -269,7 +269,7 @@ files = []
 develop = false
 
 [package.extras]
-docs = ["sphinx", "sphinx-rtd-theme"]
+docs = ["sphinx", "sphinx_rtd_theme"]
 test = ["pytest", "pytest-cov"]
 
 [package.source]
@@ -12987,7 +12987,7 @@ description = "PyQt/PySide Source Code Editor Widget"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "current.whl", hash = "sha256:89feb316406ea4381fc02264ef8c9e46f41be348e8fb8ce9d53b4d22415b32e2"},
+    {file = "current.whl", hash = "sha256:4107af3bbb43a46350e394c1bb85a021640cb74a9848437a36fd62bcccb44255"},
 ]
 
 [package.dependencies]
@@ -13005,7 +13005,7 @@ description = "Adds python support to pyqode.core"
 optional = false
 python-versions = "*"
 files = [
-    {file = "current.whl", hash = "sha256:97644094fd22540a3f12338f01b1dbc0b6367244012b633cfac9f2a6bdfa725c"},
+    {file = "current.whl", hash = "sha256:01eeb948ab015365244caff3853b9a87ff72a4ee42f3877833a4d763fbcd1294"},
 ]
 
 [package.dependencies]
@@ -13208,7 +13208,6 @@ optional = false
 python-versions = ">=3.7"
 files = [
     {file = "PyQt5-5.15.10-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:93288d62ebd47b1933d80c27f5d43c7c435307b84d480af689cef2474e87e4c8"},
-    {file = "PyQt5-5.15.10-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:862cea3be95b4b0a2b9678003b3a18edf7bd5eafd673860f58820f246d4bf616"},
     {file = "PyQt5-5.15.10-cp37-abi3-manylinux_2_17_x86_64.whl", hash = "sha256:b89478d16d4118664ff58ed609e0a804d002703c9420118de7e4e70fa1cb5486"},
     {file = "PyQt5-5.15.10-cp37-abi3-win32.whl", hash = "sha256:ff99b4f91aa8eb60510d5889faad07116d3340041916e46c07d519f7cad344e1"},
     {file = "PyQt5-5.15.10-cp37-abi3-win_amd64.whl", hash = "sha256:501355f327e9a2c38db0428e1a236d25ebcb99304cd6e668c05d1188d514adec"},
