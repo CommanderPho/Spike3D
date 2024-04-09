@@ -318,27 +318,6 @@ _debug_print = False
 
 
 # ==================================================================================================================== #
-# Programmatic Attr Class Generation with attr.ib                                                                      #
-# ==================================================================================================================== #
-
-import attr
-import attrs
-
-def create_class_from_dict(class_name, input_dict):
-    """ 
-    TempGraphicsOutput = create_class_from_dict('TempGraphicsOutput', _out)
-    TempGraphicsOutput
-    """
-    attributes = {}
-    for key, value in input_dict.items():
-        attributes[key] = attr.ib(type=type(value), default=value) # , repr=False
-
-    return attrs.make_class(class_name, attributes)
-
-
-
-
-# ==================================================================================================================== #
 # 2023-11-14 - Transition Matrix                                                                                       #
 # ==================================================================================================================== #
 
