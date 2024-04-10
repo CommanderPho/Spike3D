@@ -122,6 +122,7 @@ colorama = "^0.4.6"
 rich = "^13.7.1"
 better-exceptions = "^0.3.3"
 pandas = "1.5.3"
+joblib = "^1.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pip = "^23.1"
