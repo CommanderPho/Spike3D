@@ -36,7 +36,11 @@
 			"**/*.7z": true,
 			"**/Spike3D/.venv/*": true,
 			"**/.git": true,
-			"**/.DS_Store": true
+			"**/.DS_Store": true,
+            "**/.dvc": true,
+            "**/.qt_for_python": true,
+            "**/.venv*": true,
+            "**/__pycache__": true,
 		},
 		"python.analysis.logLevel": "Error",
 		"editor.bracketPairColorization.enabled": true,
@@ -216,7 +220,13 @@
 			"buenon.scratchpads",
 			"geddski.macros",
             "ryuta46.multi-command",
-            "jkearins.action-buttons-ext"
+            "jkearins.action-buttons-ext",
+            "codeandstuff.vscode-navigate-edit-history",
+            "phohale.custom-text-transform",
+            "vscode-icons-team.vscode-icons",
+            "johnw42.pathslasher",
+            "pkief.material-icon-theme",
+            "grimmer.vscode-back-forward-button"
 		]
 	}
 }
