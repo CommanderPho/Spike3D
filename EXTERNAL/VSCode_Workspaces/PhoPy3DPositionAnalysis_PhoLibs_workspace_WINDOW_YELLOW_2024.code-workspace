@@ -222,7 +222,8 @@
             "vscode-icons-team.vscode-icons",
             "johnw42.pathslasher",
             "pkief.material-icon-theme",
-            "grimmer.vscode-back-forward-button"
+            "grimmer.vscode-back-forward-button",
+            "analytic-signal.preview-html"
 		]
 	}
 }
