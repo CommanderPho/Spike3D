@@ -125,7 +125,6 @@ pandas = "1.5.3"
 joblib = "^1.4.0"
 
 [tool.poetry.group.dev.dependencies]
-pip = "^23.1"
 ipython = "^8.9.0"
 viztracer = "^0.15.6"
 ipykernel = "^6.21.2"
