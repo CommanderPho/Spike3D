@@ -15,11 +15,15 @@
 		},
 		{
 			"path": "../../../SCRIPTS"
+		},
+		{
+			"path": "../../../../cloud/turbo/Data/Output/gen_scripts"
 		}
 	],
 	"settings": {
-		"python.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe", //"C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
-		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+		// "python.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe", //"C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
+		// "python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+		"python.defaultInterpreterPath": "/home/halechr/Library/VSCode/green/.venv_green/bin/python",
 		"jupyter.jupyterServerType": "local",
 		"files.exclude": {
 			"**/.classpath": true,
