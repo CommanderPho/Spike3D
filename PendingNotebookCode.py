@@ -1,4 +1,5 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
+from copy import deepcopy
 from pathlib import Path
 from typing import  List, Optional, Dict, Tuple
 import numpy as np
@@ -22,70 +23,6 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 # ==================================================================================================================== #
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
 
-
-# ==================================================================================================================== #
-# 2023-12-21 - Inversion Count Concept                                                                                 #
-# ==================================================================================================================== #
-
-class InversionCount:
-    """ 2023-12-21 - "Inversion Count" Quantification of Order (as an alternative to Spearman?
-
-        computes the number of swap operations required to sort the list `arr` 
-
-
-
-    # Example usage
-
-        from PendingNotebookCode import InversionCount
-        # list1 = [3, 1, 5, 2, 4]
-        list1 = [1, 2, 4, 3, 5] # 1
-        list1 = [1, 3, 4, 5, 2] # 3
-        num_swaps = count_swaps_to_sort(list1)
-        print("Number of swaps required:", num_swaps)
-
-        >>> Number of swaps required: 3
-
-
-
-    """
-    @classmethod
-    def merge_sort_and_count(cls, arr):
-        """ Inversion Count - computes the number of swap operations required to sort the list `arr` 
-        """
-        if len(arr) <= 1:
-            return arr, 0
-
-        mid = len(arr) // 2
-        left, count_left = cls.merge_sort_and_count(arr[:mid])
-        right, count_right = cls.merge_sort_and_count(arr[mid:])
-        merged, count_split = cls.merge_and_count(left, right)
-
-        return merged, (count_left + count_right + count_split)
-
-    @classmethod
-    def merge_and_count(cls, left, right):
-        """ Inversion Count """
-        merged = []
-        count = 0
-        i = j = 0
-
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                merged.append(left[i])
-                i += 1
-            else:
-                merged.append(right[j])
-                count += len(left) - i
-                j += 1
-
-        merged.extend(left[i:])
-        merged.extend(right[j:])
-        return merged, count
-
-    @classmethod
-    def count_swaps_to_sort(cls, arr):
-        _, swaps = cls.merge_sort_and_count(arr)
-        return swaps
 
 
 
@@ -185,120 +122,6 @@ class CurrTesting:
 
 
 
-# ==================================================================================================================== #
-# 2023-12-19 PyQtGraphCrosshairs                                                                                       #
-# ==================================================================================================================== #
-
-"""
-Demonstrates some customized mouse interaction by drawing a crosshair that follows 
-the mouse.
-"""
-
-from attrs import define, field
-import pyphoplacecellanalysis.External.pyqtgraph as pg
-
-@define(slots=False, repr=False)
-class PyQtGraphCrosshairs:
-    """ a class wrapper for the simple hover crosshairs shown in the pyqtgraph examples
-    
-    """
-    vLine: pg.InfiniteLine = field()
-    hLine: pg.InfiniteLine = field()
-    proxy: pg.SignalProxy = field(init=False) 
-    p1: pg.PlotItem = field(init=False)
-    label: Optional[pg.LabelItem] = field(init=False)
-        
-    @classmethod
-    def init_from_plot_item(cls, p1, a_label):
-        _obj = cls(vLine=pg.InfiniteLine(angle=90, movable=False), 
-             hLine=pg.InfiniteLine(angle=0, movable=False))
-        _obj.p1 = p1
-        _obj.label = a_label
-        # _obj.vLine = pg.InfiniteLine(angle=90, movable=False)
-        # _obj.hLine = pg.InfiniteLine(angle=0, movable=False)
-        p1.addItem(_obj.vLine, ignoreBounds=True)
-        p1.addItem(_obj.hLine, ignoreBounds=True)
-        _obj.proxy = pg.SignalProxy(p1.scene().sigMouseMoved, rateLimit=60, slot=_obj.mouseMoved)
-        return _obj
-  
-
-    def mouseMoved(self, evt):
-        """ captures `label` """
-        pos = evt[0]  ## using signal proxy turns original arguments into a tuple
-        vb = self.p1.vb
-        if self.p1.sceneBoundingRect().contains(pos):
-            mousePoint = vb.mapSceneToView(pos)
-            index = int(mousePoint.x())
-            if index > 0 and index < len(data1):
-                print(f"<span style='font-size: 12pt'>x=%0.1f,   <span style='color: red'>y1=%0.1f</span>,   <span style='color: green'>y2=%0.1f</span>" % (mousePoint.x(), data1[index], data2[index]))
-                if self.label is not None:
-                    self.label.setText("<span style='font-size: 12pt'>x=%0.1f,   <span style='color: red'>y1=%0.1f</span>,   <span style='color: green'>y2=%0.1f</span>" % (mousePoint.x(), data1[index], data2[index]))
-            self.vLine.setPos(mousePoint.x())
-            self.hLine.setPos(mousePoint.y())
-
-
-
-# #generate layout
-# app = pg.mkQApp("Crosshair Example")
-# win = pg.GraphicsLayoutWidget(show=True)
-# win.setWindowTitle('pyqtgraph example: crosshair')
-# label = pg.LabelItem(justify='right')
-# win.addItem(label)
-# p1 = win.addPlot(row=1, col=0)
-# # customize the averaged curve that can be activated from the context menu:
-# p1.avgPen = pg.mkPen('#FFFFFF')
-# p1.avgShadowPen = pg.mkPen('#8080DD', width=10)
-
-# p2 = win.addPlot(row=2, col=0)
-
-# region = pg.LinearRegionItem()
-# region.setZValue(10)
-# # Add the LinearRegionItem to the ViewBox, but tell the ViewBox to exclude this 
-# # item when doing auto-range calculations.
-# p2.addItem(region, ignoreBounds=True)
-
-# #pg.dbg()
-# p1.setAutoVisible(y=True)
-
-# #create numpy arrays
-# #make the numbers large to show that the range shows data from 10000 to all the way 0
-# data1 = 10000 + 15000 * pg.gaussianFilter(np.random.random(size=10000), 10) + 3000 * np.random.random(size=10000)
-# data2 = 15000 + 15000 * pg.gaussianFilter(np.random.random(size=10000), 10) + 3000 * np.random.random(size=10000)
-
-# p1.plot(data1, pen="r")
-# p1.plot(data2, pen="g")
-
-# p2d = p2.plot(data1, pen="w")
-# # bound the LinearRegionItem to the plotted data
-# region.setClipItem(p2d)
-
-# def update():
-#     region.setZValue(10)
-#     minX, maxX = region.getRegion()
-#     p1.setXRange(minX, maxX, padding=0)    
-
-# region.sigRegionChanged.connect(update)
-
-# def updateRegion(window, viewRange):
-#     rgn = viewRange[0]
-#     region.setRegion(rgn)
-
-# p1.sigRangeChanged.connect(updateRegion)
-
-# region.setRegion([1000, 2000])
-
-# #cross hair
-# vLine = pg.InfiniteLine(angle=90, movable=False)
-# hLine = pg.InfiniteLine(angle=0, movable=False)
-# p1.addItem(vLine, ignoreBounds=True)
-# p1.addItem(hLine, ignoreBounds=True)
-# vb = p1.vb
-
-# a_crosshairs = PyQtGraphCrosshairs.init_from_plot_item(p1=p1, a_label=label)
-
-# #p1.scene().sigMouseMoved.connect(mouseMoved)
-
-
 
 
 
@@ -316,76 +139,6 @@ should_force_recompute_placefields = True
 should_display_2D_plots = True
 _debug_print = False
 
-
-# ==================================================================================================================== #
-# 2023-11-14 - Transition Matrix                                                                                       #
-# ==================================================================================================================== #
-
-from copy import deepcopy
-import numpy as np
-from neuropy.utils.mixins.binning_helpers import transition_matrix
-
-
-class TransitionMatrixComputations:
-    """ 
-    from PendingNotebookCode import TransitionMatrixComputations
-    
-    # Visualization ______________________________________________________________________________________________________ #
-    from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow, LayoutScrollability
-    out = BasicBinnedImageRenderingWindow(binned_x_transition_matrix_higher_order_list[0], pf1D.xbin_labels, pf1D.xbin_labels, name='binned_x_transition_matrix', title="Transition Matrix for binned x (from, to)", variable_label='Transition Matrix', scrollability_mode=LayoutScrollability.NON_SCROLLABLE)
-    
-    
-    """
-    ### 1D Transition Matrix:
-
-    def _compute_position_transition_matrix(xbin_labels, binned_x: np.ndarray, n_powers:int=3):
-        """  1D Transition Matrix from binned positions (e.g. 'binned_x')
-
-            pf1D.xbin_labels # array([  1,   2,   3,   4,  ...)
-            pf1D.filtered_pos_df['binned_x'].to_numpy() # array([116, 115, 115, ...,  93,  93,  93], dtype=int64)
-            
-        Usage:
-        
-            # pf1D = deepcopy(curr_active_pipeline.computation_results['maze1'].computed_data['pf1D'])
-            pf1D = deepcopy(global_pf1D)
-            # pf1D = deepcopy(short_pf1D)
-            # pf1D = deepcopy(long_pf1D)
-            binned_x_transition_matrix_higher_order_list = TransitionMatrixComputations._compute_position_transition_matrix(pf1D.xbin_labels, pf1D.filtered_pos_df['binned_x'].to_numpy())
-
-        """
-        num_position_states = len(xbin_labels)
-        # binned_x = pos_1D.to_numpy()
-        binned_x_indicies = binned_x - 1
-        binned_x_transition_matrix = transition_matrix(deepcopy(binned_x_indicies), markov_order=1, max_state_index=num_position_states)
-        # binned_x_transition_matrix_higher_order_list = [binned_x_transition_matrix, transition_matrix(deepcopy(binned_x_indicies), markov_order=2, max_state_index=num_position_states), transition_matrix(deepcopy(binned_x_indicies), markov_order=3, max_state_index=num_position_states)]
-
-        binned_x_transition_matrix[np.isnan(binned_x_transition_matrix)] = 0.0
-        binned_x_transition_matrix_higher_order_list = [binned_x_transition_matrix] + [np.linalg.matrix_power(binned_x_transition_matrix, n) for n in np.arange(2, n_powers+1)]
-        # , np.linalg.matrix_power(binned_x_transition_matrix, 2), np.linalg.matrix_power(binned_x_transition_matrix, 3)
-        # binned_x_transition_matrix.shape # (64, 64)
-        return binned_x_transition_matrix_higher_order_list
-
-    def _build_decoded_positions_transition_matrix(active_one_step_decoder):
-        """ Compute the transition_matrix from the decoded positions 
-
-        TODO: make sure that separate events (e.g. separate replays) are not truncated creating erronious transitions
-
-        """
-        # active_time_window_variable = active_one_step_decoder.time_window_centers # get time window centers (n_time_window_centers,) # (4060,)
-        # active_most_likely_positions = active_one_step_decoder.most_likely_positions.T # (4060, 2) NOTE: the most_likely_positions for the active_one_step_decoder are tranposed compared to the active_two_step_decoder
-        # active_most_likely_positions = active_two_step_decoder.most_likely_positions # (2, 4060)
-        active_one_step_decoder.most_likely_position_flat_indicies
-        # active_most_likely_positions = active_one_step_decoder.revised_most_likely_positions.T
-        # active_most_likely_positions #.shape # (36246,)
-
-        most_likely_position_indicies = np.squeeze(np.array(np.unravel_index(active_one_step_decoder.most_likely_position_flat_indicies, active_one_step_decoder.original_position_data_shape))) # convert back to an array
-        most_likely_position_xbins = most_likely_position_indicies + 1 # add 1 to convert back to a bin label from an index
-        # most_likely_position_indicies # (1, 36246)
-
-        xbin_labels = np.arange(active_one_step_decoder.original_position_data_shape[0]) + 1
-
-        decoded_binned_x_transition_matrix_higher_order_list = TransitionMatrixComputations._compute_position_transition_matrix(xbin_labels, most_likely_position_indicies)
-        return decoded_binned_x_transition_matrix_higher_order_list, xbin_labels
 
 # ==================================================================================================================== #
 # 2023-10-31 - Debug Plotting for Directional Placefield Templates                                                     #
@@ -586,38 +339,6 @@ def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_pa
     AcrossSessionTables.write_table_to_files(all_sessions_joined_neruon_fri_df, global_data_root_parent_path=global_data_root_parent_path, output_basename=all_sessions_joined_neruon_fri_df_basename)
     print(f'>>\t done with {out_path}')
     return all_sessions_joined_neruon_fri_df, out_path
-
-
-
-
-
-
-
-#TODO 2023-08-10 16:50: - [ ] 
-
-
-
-from enum import Enum, auto
-from attrs import define
-
-@define(slots=False)
-class SwiftLikeEnum:
-    """ # can enums store associated data?
-    # some properties only make sense for certain enum values, like .
-    """
-    value: int
-    attribute: str
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}.{self.name}"
-
-class MyEnum(Enum):
-    CASE1 = SwiftLikeEnum(value=auto(), attribute="attribute1")
-    CASE2 = SwiftLikeEnum(value=auto(), attribute="attribute2")
-
-    @property
-    def attribute(self):
-        return self.value.attribute
 
 
 
@@ -921,8 +642,11 @@ def _compute_parameter_sweep(spikes_df, active_pos, all_param_sweep_options: dic
 
 # +
 
+@metadata_attributes(short_name=None, tags=['rank-order', 'spikes'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-02-16 00:00', related_items=[])
 class SpikesRankOrder:
-
+    """ Simple "weighted-center-of-mass" method of determing cell firing order in a timeseries
+    
+    """
     def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
         """ 
         Usage:
