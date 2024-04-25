@@ -1,0 +1,122 @@
+{
+	"folders": [
+		{
+			"name": "Spike3D",
+			"path": "../.."
+		},
+		{
+			"path": "../../../NeuroPy"
+		},
+		{
+			"path": "../../../pyPhoPlaceCellAnalysis"
+		},
+		{
+			"path": "../../../pyPhoCoreHelpers"
+		},
+		{
+			"path": "../../../SCRIPTS"
+		},
+		{
+			"path": "../../../../cloud/turbo/Data/Output/gen_scripts"
+		}
+	],
+	"settings": {
+		// "python.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe", //"C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
+		// "python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+		"python.defaultInterpreterPath": "/home/halechr/Library/VSCode/green/.venv_green/bin/python",
+		"jupyter.jupyterServerType": "local",
+		"files.exclude": {
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true,
+			"**/Spike3D/.venv/*": true
+		},
+		"python.analysis.logLevel": "Error",
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#a0a0a02d",
+			"editor.lineHighlightBorder": "#d19f9f1f",
+			"activityBar.background": "#414141",
+			"titleBar.activeBackground": "#161616",
+			"titleBar.activeForeground": "#ffffff",
+			"scrollbarSlider.background": "#fffb0057",
+			"scrollbarSlider.hoverBackground": "#fffb0082",
+			"scrollbarSlider.activeBackground": "#ccff00df",
+			"activityBar.inactiveForeground": "#ffffff3c",
+			"activityBar.foreground": "#ffffff",
+			"notebook.outputContainerBackgroundColor": "#395a3e50",
+			"notebook.outputContainerBorderColor": "#10ff10",
+			"notebook.focusedCellBorder": "#ffff00da",
+			"notebook.focusedEditorBorder": "#f6ff00",
+			"notebook.inactiveFocusedCellBorder": "#ffff0063",
+			"titleBar.inactiveBackground": "#4b4b4b8e",
+			"tab.activeBorder": "#2E9341",
+			"statusBar.background": "#2E9341",
+			"statusBar.foreground": "#ffffff",
+			"tab.activeBackground": "#2E9341"
+		},
+		// "qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimate/Lib/site-packages/qt5_applications/Qt/bin/uic.exe",
+		"qtForPython.uic.path": "C:/Users/pho/miniconda3/envs/phoviz_ultimasste/Scripts/pyuic5.exe",
+		"search.exclude": {
+			"**/.ipynb_checkpoints": true
+		},
+		"qtForPython.uic.args": [
+			"-o \"${fileDirname}${pathSeparator}Uic_AUTOGEN_${fileBasenameNoExtension}.py\"",
+			"--execute",
+			"--import-from \"pyphoplacecellanalysis.Resources\"",
+			"--resource-suffix \"\""
+		],
+		"qtForPython.rcc.args": [
+			"-o \"${fileDirname}${pathSeparator}${fileBasenameNoExtension}.py\""
+		],
+		"colorTabs.config": [
+			{
+				"regex": "Spike3D/scripts\\.*"
+			},
+			{
+				"regex": "Spike3D/LibrariesExamples/.*"
+			},
+			{
+				"regex": ".*/../../../NeuroPy/neuropy/**/*.py"
+			},
+			{
+				"regex": ".*/EXTERNAL/.*"
+			},
+			{
+				"regex": ".*/templating/.*"
+			}
+		],
+
+	},
+	"extensions": {
+		"recommendations": [
+			"hbenl.vscode-test-explorer",
+			"h5web.vscode-h5web",
+			"phohale.color-tabs-vscode-ext",
+			"gerrnperl.outline-map"
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Launch ViTables",
+				"type": "shell",
+				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables",
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			},
+		]
+	}
+}
