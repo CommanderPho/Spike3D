@@ -37,7 +37,7 @@ __date__ = "23/07/2019"
 from silx.gui import qt
 from silx.gui.plot.tools.roi import RegionOfInterestManager
 from silx.gui.plot.tools.roi import RegionOfInterestTableWidget
-from silx.gui.plot.items.roi import RectangleROI, PolygonROI, ArcROI
+from silx.gui.plot.items.roi import RectangleROI, PolygonROI, ArcROI, LineROI
 from silx.gui.plot import Plot2D
 from silx.gui.plot.CurvesROIWidget import ROI
 from silx.gui.plot.ROIStatsWidget import ROIStatsWidget
