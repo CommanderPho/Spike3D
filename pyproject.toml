@@ -124,6 +124,9 @@ better-exceptions = "^0.3.3"
 pandas = "1.5.3"
 joblib = "^1.4.0"
 mpldatacursor = "^0.7.1"
+fastdtw = "^0.3.4"
+lxml = {extras = ["html-clean"], version = "^5.2.1"}
+napari = "^0.4.19.post1"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
