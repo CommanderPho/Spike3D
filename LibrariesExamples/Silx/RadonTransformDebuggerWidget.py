@@ -222,13 +222,13 @@ class _RoiStatsDisplayExWindow(qt.QMainWindow):
         # create Dock widgets
         self._roisTabWidgetDockWidget = qt.QDockWidget(parent=self)
         self._roisTabWidgetDockWidget.setWidget(self._roisTabWidget)
-        self.addDockWidget(qt.Qt.BottomDockWidgetArea, self._roisTabWidgetDockWidget)
+        self.addDockWidget(qt.Qt.TopDockWidgetArea, self._roisTabWidgetDockWidget)
 
         # create Dock widgets
         self._roiStatsWindowDockWidget = qt.QDockWidget(parent=self)
         self._roiStatsWindowDockWidget.setWidget(self._statsWidget)
         # move the docker contain in the parent widget
-        self.addDockWidget(qt.Qt.BottomDockWidgetArea, self._statsWidget._docker)
+        # self.addDockWidget(qt.Qt.BottomDockWidgetArea, self._statsWidget._docker) # worthless. Just asks how to refresh
         self.addDockWidget(qt.Qt.BottomDockWidgetArea, self._roiStatsWindowDockWidget)
 
         # expose API
@@ -407,9 +407,13 @@ class RadonTransformDebugger:
         # end_point = (active_epoch_info_tuple.duration, (active_epoch_info_tuple.duration * active_epoch_info_tuple.velocity))
         # band_width = pos_bin_size * float(active_num_neighbors)
 
+        ## Get the values computed by the original Radon Transform computation that was saved out:
         start_point = [0.0, active_epoch_info_tuple.intercept]
         end_point = [active_epoch_info_tuple.duration, (active_epoch_info_tuple.duration * active_epoch_info_tuple.velocity)]
         band_width = self.pos_bin_size * float(active_num_neighbors)
+
+        print(f'position-frame line info:')
+        print(f'\tstart_point: {start_point},\t end_point: {end_point},\t band_width: {band_width}')
 
         ## convert time (x) coordinates:
         time_bin_size: float = float(self.result.decoding_time_bin_size)
@@ -420,8 +424,12 @@ class RadonTransformDebugger:
         ## convert from position (cm) units to y-bins:
         pos_bin_size: float = float(self.pos_bin_size) # passed directly
         start_point[1] = (start_point[1]/pos_bin_size)
-        # end_point[1] = (end_point[1]/pos_bin_size) # not sure about this one
+        end_point[1] = (end_point[1]/pos_bin_size) # not sure about this one
+        band_width = float(active_num_neighbors)
         
+        print(f'index-frame line info:')
+        print(f'\tstart_point: {start_point},\t end_point: {end_point},\t band_width: {band_width}')
+
         ## OUTPUTS: a_posterior, (start_point, end_point, band_width), (active_num_neighbors, active_neighbors_arr)
         # Initialize an instance of TransformDebugger using the variables as keyword arguments
         # transform_debug_instance = RadonDebugValue(a_posterior=a_posterior, start_point=start_point, end_point=end_point, band_width=band_width, active_num_neighbors=active_num_neighbors, active_neighbors_arr=active_neighbors_arr)
@@ -441,7 +449,8 @@ class RadonTransformDebugger:
         self.band_roi.setGeometry(begin=self.active_radon_values.start_point, end=self.active_radon_values.end_point, width=self.active_radon_values.band_width)
         self.band_roi.setName('RadonROI')
         # self.band_roi.BoundedMode
-        self.band_roi.setInteractionMode(self.band_roi.UnboundedMode)
+        self.band_roi.setInteractionMode(self.band_roi.BoundedMode)
+        # self.band_roi.setInteractionMode(self.band_roi.UnboundedMode)
         self.window = _RoiStatsDisplayExWindow()
         self.window.setRois(rois2D=(self.band_roi,))
 
