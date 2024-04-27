@@ -54,6 +54,42 @@ class RadonDebugValue:
     band_width: float = field()
     
     
+def compute_score(arr, y_line):
+    n_lines = 1
+    y_line = np.rint(y_line).astype("int") # round to nearest integer
+    
+    t = np.arange(arr.shape[1])
+    n_t = arr.shape[1]
+    # tmid = (nt + 1) / 2 - 1
+
+    pos = np.arange(arr.shape[0])
+    n_pos = len(pos)
+    # pmid = (npos + 1) / 2 - 1
+
+    # t_mat = np.tile(t, (n_lines, 1))
+    posterior = np.zeros((n_lines, n_t))
+
+    # if line falls outside of array in a given bin, replace that with median posterior value of that bin across all positions
+    t_out = np.where((y_line < 0) | (y_line > n_pos - 1))
+    t_in = np.where((y_line >= 0) & (y_line <= n_pos - 1))
+    posterior[t_out] = np.median(arr[:, t_out[1]], axis=0)
+    posterior[t_in] = arr[y_line[t_in], t_in[1]]
+
+    old_settings = np.seterr(all="ignore")
+    posterior_mean = np.nanmean(posterior, axis=1)
+    return posterior_mean
+
+
+def roi_radon_transform_score(arr):
+    """ a stats function that takes the ROI and returns the radon transform score """
+    # print(f'np.shape(arr): {np.shape(arr)}')
+    # return np.nanmean(arr, axis=1)
+    # print(f'np.sum(np.isnan(arr)): {np.sum(np.isnan(arr))}')
+    column_medians = np.nanmedian(arr, axis=0)
+    filled_arr = [arr[:,i].filled(column_medians[i]) for i in np.arange(np.shape(arr)[1])]
+    return np.nanmean(filled_arr)
+
+
 
 # decoder_laps_radon_transform_df_dict
 # │   ├── decoder_laps_radon_transform_df_dict: dict
@@ -76,15 +112,214 @@ class RadonDebugValue:
 # np.squeeze(a_radon_transform_output).shape
 # len(a_radon_transform_output)
 
-@define(slots=False)
+
+# ---------------------------------------------------------------------------- #
+#                            Widgets/Visual Classes                            #
+# ---------------------------------------------------------------------------- #
+import functools
+
+from silx.gui import qt
+from silx.gui.data.DataViewerFrame import DataViewerFrame
+from silx.gui.plot import PlotWindow, ImageView
+from silx.gui.plot.Profile import ProfileToolBar
+
+from silx.gui.plot.tools.roi import RegionOfInterestManager
+from silx.gui.plot.tools.roi import RegionOfInterestTableWidget
+from silx.gui.plot.tools.roi import RoiModeSelectorAction
+from silx.gui.plot.items.roi import RectangleROI, BandROI, LineROI
+from silx.gui.plot.items import LineMixIn, SymbolMixIn, FillMixIn
+from silx.gui.plot.actions import control as control_actions
+
+from silx.gui.plot.ROIStatsWidget import ROIStatsWidget
+from silx.gui.plot.StatsWidget import UpdateModeWidget
+from silx.gui.plot import Plot2D
+
+
+
+class AutoHideToolBar(qt.QToolBar):
+    """A toolbar which hide itself if no actions are visible"""
+
+    def actionEvent(self, event):
+        if event.type() == qt.QEvent.ActionChanged:
+            self._updateVisibility()
+        return qt.QToolBar.actionEvent(self, event)
+
+    def _updateVisibility(self):
+        visible = False
+        for action in self.actions():
+            if action.isVisible():
+                visible = True
+                break
+        self.setVisible(visible)
+
+class _RoiStatsWidget(qt.QMainWindow):
+    """
+    A widget used to display a table of stats for the ROIs
+    Associates ROIStatsWidget and UpdateModeWidget
+    """
+    def __init__(self, parent=None, plot=None, mode=None):
+        assert plot is not None
+        qt.QMainWindow.__init__(self, parent)
+        self._roiStatsWindow = ROIStatsWidget(plot=plot)
+        self.setCentralWidget(self._roiStatsWindow)
+
+        # update mode docker
+        self._updateModeControl = UpdateModeWidget(parent=self)
+        self._docker = qt.QDockWidget(parent=self)
+        self._docker.setWidget(self._updateModeControl)
+        self.addDockWidget(qt.Qt.TopDockWidgetArea, self._docker)
+        self.setWindowFlags(qt.Qt.Widget)
+
+        # connect signal / slot
+        self._updateModeControl.sigUpdateModeChanged.connect(self._roiStatsWindow._setUpdateMode)
+        callback = functools.partial(self._roiStatsWindow._updateAllStats, is_request=True)
+        self._updateModeControl.sigUpdateRequested.connect(callback)
+
+        # expose API
+        self.registerROI = self._roiStatsWindow.registerROI
+        self.setStats = self._roiStatsWindow.setStats
+        self.addItem = self._roiStatsWindow.addItem
+        self.removeItem = self._roiStatsWindow.removeItem
+        self.setUpdateMode = self._updateModeControl.setUpdateMode
+
+        # setup
+        self._updateModeControl.setUpdateMode('auto')
+
+
+class _RoiStatsDisplayExWindow(qt.QMainWindow):
+    """
+    Simple window to group the different statistics actors
+    """
+    def __init__(self, parent=None, mode=None):
+        qt.QMainWindow.__init__(self, parent)
+        self.plot = Plot2D()
+        self.plot.getDefaultColormap().setName('viridis')
+        self.plot.setKeepDataAspectRatio(True)
+
+        self.setCentralWidget(self.plot)
+
+        # 1D roi management
+        self._curveRoiWidget = self.plot.getCurvesRoiDockWidget().widget()
+        # hide last columns which are of no use now
+        # for index in (5, 6, 7, 8):
+        #     self._curveRoiWidget.roiTable.setColumnHidden(index, True)
+
+        # 2D - 3D roi manager
+        self._regionManager = RegionOfInterestManager(parent=self.plot)
+
+        # Create the table widget displaying
+        self._2DRoiWidget = RegionOfInterestTableWidget()
+        self._2DRoiWidget.setRegionOfInterestManager(self._regionManager)
+
+        # tabWidget for displaying the rois
+        self._roisTabWidget = qt.QTabWidget(parent=self)
+        if hasattr(self._roisTabWidget, 'setTabBarAutoHide'):
+            self._roisTabWidget.setTabBarAutoHide(True)
+
+        # widget for displaying stats results and update mode
+        self._statsWidget = _RoiStatsWidget(parent=self, plot=self.plot)
+
+        # create Dock widgets
+        self._roisTabWidgetDockWidget = qt.QDockWidget(parent=self)
+        self._roisTabWidgetDockWidget.setWidget(self._roisTabWidget)
+        self.addDockWidget(qt.Qt.BottomDockWidgetArea, self._roisTabWidgetDockWidget)
+
+        # create Dock widgets
+        self._roiStatsWindowDockWidget = qt.QDockWidget(parent=self)
+        self._roiStatsWindowDockWidget.setWidget(self._statsWidget)
+        # move the docker contain in the parent widget
+        self.addDockWidget(qt.Qt.BottomDockWidgetArea, self._statsWidget._docker)
+        self.addDockWidget(qt.Qt.BottomDockWidgetArea, self._roiStatsWindowDockWidget)
+
+        # expose API
+        self.setUpdateMode = self._statsWidget.setUpdateMode
+
+
+    def setRois(self, rois1D=None, rois2D=None):
+        rois1D = rois1D or ()
+        rois2D = rois2D or ()
+        self._curveRoiWidget.setRois(rois1D)
+        for roi1D in rois1D:
+            self._statsWidget.registerROI(roi1D)
+
+        for roi2D in rois2D:
+            self._regionManager.addRoi(roi2D)
+            self._statsWidget.registerROI(roi2D)
+
+        # update manage tab visibility
+        if len(rois2D) > 0:
+            self._roisTabWidget.addTab(self._2DRoiWidget, '2D roi(s)')
+        if len(rois1D) > 0:
+            self._roisTabWidget.addTab(self._curveRoiWidget, '1D roi(s)')
+
+    def setStats(self, stats):
+        self._statsWidget.setStats(stats=stats)
+
+    def addItem(self, item, roi):
+        self._statsWidget.addItem(roi=roi, plotItem=item)
+        
+
+# ==================================================================================================================== #
+# Main Conainer Object                                                                                                 #
+# ==================================================================================================================== #
+
+# Define a simple on_setattr hook
+# def always_capitalize(instance, attribute, new_value):
+#     if isinstance(new_value, str):
+#         return new_value.capitalize()
+#     return new_value
+        
+
+
+
+def on_set_active_decoder_name_changed(instance, attribute, new_value):
+    print(f'on_set_active_decoder_name_changed(new_value: {new_value})')
+    # if isinstance(new_value, str):
+    #     return new_value.capitalize()
+    is_valid_name: bool = new_value in instance.decoder_laps_filter_epochs_decoder_result_dict.keys()
+    if not is_valid_name:
+        print(f'\tname: "{new_value}" is not a valid decoder name. valid names: {list(instance.decoder_laps_filter_epochs_decoder_result_dict.keys())}. not changing')
+        return instance.active_decoder_name # return existing value to prevent update
+    
+    return new_value
+
+
+
+def on_set_active_epoch_idx_changed(instance, attribute, new_value):
+    print(f'on_set_epoch_idx_changed(new_value: {new_value})')
+    new_epoch_idx: int = int(new_value)
+    _ = instance.on_update_epoch_idx(active_epoch_idx=new_epoch_idx) ## change the index
+    instance.window.plot.addImage(instance.active_radon_values.a_posterior)
+    instance._perform_update_band_ROI(start_point=tuple(instance.active_radon_values.start_point), end_point=tuple(instance.active_radon_values.end_point), band_width=float(instance.active_radon_values.band_width))
+    print(f'\tdone.')
+    return new_value
+
+
+@define(slots=False, repr=False)
 class RadonTransformDebugger:
     """ interactive debugger """
     pos_bin_size: float = field()
     decoder_laps_filter_epochs_decoder_result_dict: Dict = field()
     decoder_laps_radon_transform_extras_dict: Dict = field()
     
-    active_decoder_name: str = field(default='long_LR')
-    active_epoch_idx: int = field(default=3)
+    active_decoder_name: str = field(default='long_LR') # , on_setattr=on_set_active_decoder_name_changed
+    _active_epoch_idx: int = field(default=3) # , on_setattr=on_set_active_epoch_idx_changed
+
+    window: _RoiStatsDisplayExWindow = field(default=None)
+    _band_roi: BandROI = field(default=None)
+
+
+    @property
+    def active_epoch_idx(self):
+        """The active_epoch_idx property."""
+        return self._active_epoch_idx
+    @active_epoch_idx.setter
+    def active_epoch_idx(self, value):
+        # value = on_set_active_epoch_idx_changed(self, None, new_value=value)
+        self._active_epoch_idx = value
+        # if self.window is not None:
+        #     self.update_GUI() # update the GUI, hopefuly it exists
+ 
 
     @property
     def result(self) -> DecodedFilterEpochsResult:
@@ -106,16 +341,28 @@ class RadonTransformDebugger:
     def neighbors_arr(self) -> NDArray:
         return  np.squeeze(deepcopy(self.decoder_laps_radon_transform_extras_dict[self.active_decoder_name]))[1]
     
+    @property
+    def stats_measures(self):
+        """define stats to display."""
+        return [
+            # ('sum', np.sum),
+            # ('mean', np.mean),
+            ('shape', np.shape),
+            ('score', roi_radon_transform_score),
+            ('prev_score', (lambda arr: self.active_radon_values.active_epoch_info_tuple.score)),
+            ('prev_shape', (lambda arr: np.shape(self.active_radon_values.active_neighbors_arr))),
+        ]
+
 
     @property
     def active_radon_values(self) -> RadonDebugValue:
         """ value for current index """
         # a_posterior, (start_point, end_point, band_width), (active_num_neighbors, active_neighbors_arr) = self.on_update_epoch_idx(active_epoch_idx=self.active_epoch_idx)
         # return RadonDebugValue(a_posterior=a_posterior, active_epoch_info_tuple=active_epoch_info_tuple, start_point=start_point, end_point=end_point, band_width=band_width, active_num_neighbors=active_num_neighbors, active_neighbors_arr=active_neighbors_arr)
-        return self.on_update_epoch_idx(active_epoch_idx=self.active_epoch_idx)
+        return self.update_epoch_idx(active_epoch_idx=self.active_epoch_idx)
             
 
-    def on_update_epoch_idx(self, active_epoch_idx: int):
+    def update_epoch_idx(self, active_epoch_idx: int):
         """ 
         Usage:
             a_posterior, (start_point, end_point, band_width), (active_num_neighbors, active_neighbors_arr) = on_update_epoch_idx(active_epoch_idx=5)
@@ -185,143 +432,63 @@ class RadonTransformDebugger:
                                 start_point=start_point, end_point=end_point, band_width=band_width)
     
 
+    def build_GUI(self):
+        ## Get the current data for this index:
+        # an_epoch_debug_value = self.on_update_epoch_idx(active_epoch_idx=5)
+
+        ## Build the BandROI:
+        self.band_roi = BandROI()
+        self.band_roi.setGeometry(begin=self.active_radon_values.start_point, end=self.active_radon_values.end_point, width=self.active_radon_values.band_width)
+        self.band_roi.setName('RadonROI')
+        # self.band_roi.BoundedMode
+        self.band_roi.setInteractionMode(self.band_roi.UnboundedMode)
+        self.window = _RoiStatsDisplayExWindow()
+        self.window.setRois(rois2D=(self.band_roi,))
+
+        # Create the thread that calls submitToQtMainThread
+        # updateThread = UpdateThread(window.plot)
+        # updateThread.start()  # Start updating the plot
+
+        # define some image and curve
+        self.window.plot.addImage(self.active_radon_values.a_posterior, legend='P_x_given_n')
+        # window.plot.addImage(numpy.random.random(10000).reshape(100, 100), legend='img2', origin=(0, 100))
+        self.window.setStats(self.stats_measures)
+
+        # add some couple (plotItem, roi) to be displayed by default
+        img1_item = self.window.plot.getImage('P_x_given_n')
+        self.window.addItem(item=img1_item, roi=self.band_roi)
+
+        update_mode: str = 'auto'
+        self.window.setUpdateMode(update_mode)
+
+        self.window.show()
+        # app.exec()
+        # updateThread.stop()  # Stop updating the plot
+
+    def _perform_update_band_ROI(self, start_point: Tuple[float, float], end_point: Tuple[float, float], band_width: float):
+        """ Call to update the band ROI: 
+        `_perform_update_band_ROI(start_point=tuple(start_point), end_point=tuple(end_point), band_width=float(band_width))`
+
+        captures: band_roi 
+        """
+        self.band_roi.setGeometry(begin=start_point, end=end_point, width=band_width)
+        # self.window.setRois()
+        # self.window.setRois(rois2D=(self.band_roi,))
 
 
+    def update_ROI(self):
+        print(f'update_ROI()\n\tactive_epoch_idx: {self.active_epoch_idx})')
+        self._perform_update_band_ROI(start_point=tuple(self.active_radon_values.start_point), end_point=tuple(self.active_radon_values.end_point), band_width=float(self.active_radon_values.band_width))
+        # img1_item = self.window.plot.getImage('P_x_given_n')
+        # self.window.addItem(item=img1_item, roi=self.band_roi)
+        print(f'\tdone.')
 
-# ---------------------------------------------------------------------------- #
-#                            Widgets/Visual Classes                            #
-# ---------------------------------------------------------------------------- #
 
-class AutoHideToolBar(qt.QToolBar):
-    """A toolbar which hide itself if no actions are visible"""
+    def update_GUI(self):
+        print(f'update_GUI()\n\tactive_epoch_idx: {self.active_epoch_idx})')
+        posterior_identifier_str: str = f"Posterior Epoch[{self.active_epoch_idx}]"
+        self.window.plot.addImage(self.active_radon_values.a_posterior, replace=True, resetzoom=True, copy=True, legend='P_x_given_n', ylabel=posterior_identifier_str)
+        self.update_ROI()
+        print(f'\tdone.')
 
-    def actionEvent(self, event):
-        if event.type() == qt.QEvent.ActionChanged:
-            self._updateVisibility()
-        return qt.QToolBar.actionEvent(self, event)
-
-    def _updateVisibility(self):
-        visible = False
-        for action in self.actions():
-            if action.isVisible():
-                visible = True
-                break
-        self.setVisible(visible)
-
-class _RoiStatsWidget(qt.QMainWindow):
-    """
-    A widget used to display a table of stats for the ROIs
-    Associates ROIStatsWidget and UpdateModeWidget
-    """
-    def __init__(self, parent=None, plot=None, mode=None):
-        assert plot is not None
-        qt.QMainWindow.__init__(self, parent)
-        self._roiStatsWindow = ROIStatsWidget(plot=plot)
-        self.setCentralWidget(self._roiStatsWindow)
-
-        # update mode docker
-        self._updateModeControl = UpdateModeWidget(parent=self)
-        self._docker = qt.QDockWidget(parent=self)
-        self._docker.setWidget(self._updateModeControl)
-        self.addDockWidget(qt.Qt.TopDockWidgetArea,
-                           self._docker)
-        self.setWindowFlags(qt.Qt.Widget)
-
-        # connect signal / slot
-        self._updateModeControl.sigUpdateModeChanged.connect(
-            self._roiStatsWindow._setUpdateMode)
-        callback = functools.partial(self._roiStatsWindow._updateAllStats,
-                                     is_request=True)
-        self._updateModeControl.sigUpdateRequested.connect(callback)
-
-        # expose API
-        self.registerROI = self._roiStatsWindow.registerROI
-        self.setStats = self._roiStatsWindow.setStats
-        self.addItem = self._roiStatsWindow.addItem
-        self.removeItem = self._roiStatsWindow.removeItem
-        self.setUpdateMode = self._updateModeControl.setUpdateMode
-
-        # setup
-        self._updateModeControl.setUpdateMode('auto')
-
-class _RoiStatsDisplayExWindow(qt.QMainWindow):
-    """
-    Simple window to group the different statistics actors
-    """
-    def __init__(self, parent=None, mode=None):
-        qt.QMainWindow.__init__(self, parent)
-        self.plot = Plot2D()
-        self.setCentralWidget(self.plot)
-
-        # 1D roi management
-        self._curveRoiWidget = self.plot.getCurvesRoiDockWidget().widget()
-        # hide last columns which are of no use now
-        # for index in (5, 6, 7, 8):
-        #     self._curveRoiWidget.roiTable.setColumnHidden(index, True)
-
-        # 2D - 3D roi manager
-        self._regionManager = RegionOfInterestManager(parent=self.plot)
-
-        # Create the table widget displaying
-        self._2DRoiWidget = RegionOfInterestTableWidget()
-        self._2DRoiWidget.setRegionOfInterestManager(self._regionManager)
-
-        # tabWidget for displaying the rois
-        self._roisTabWidget = qt.QTabWidget(parent=self)
-        if hasattr(self._roisTabWidget, 'setTabBarAutoHide'):
-            self._roisTabWidget.setTabBarAutoHide(True)
-
-        # widget for displaying stats results and update mode
-        self._statsWidget = _RoiStatsWidget(parent=self, plot=self.plot)
-
-        # create Dock widgets
-        self._roisTabWidgetDockWidget = qt.QDockWidget(parent=self)
-        self._roisTabWidgetDockWidget.setWidget(self._roisTabWidget)
-        self.addDockWidget(qt.Qt.RightDockWidgetArea,
-                           self._roisTabWidgetDockWidget)
-
-        # create Dock widgets
-        self._roiStatsWindowDockWidget = qt.QDockWidget(parent=self)
-        self._roiStatsWindowDockWidget.setWidget(self._statsWidget)
-        # move the docker contain in the parent widget
-        self.addDockWidget(qt.Qt.RightDockWidgetArea,
-                           self._statsWidget._docker)
-        self.addDockWidget(qt.Qt.BottomDockWidgetArea,
-                           self._roiStatsWindowDockWidget)
-
-        # expose API
-        self.setUpdateMode = self._statsWidget.setUpdateMode
-
-    def setRois(self, rois1D=None, rois2D=None):
-        rois1D = rois1D or ()
-        rois2D = rois2D or ()
-        self._curveRoiWidget.setRois(rois1D)
-        for roi1D in rois1D:
-            self._statsWidget.registerROI(roi1D)
-
-        for roi2D in rois2D:
-            self._regionManager.addRoi(roi2D)
-            self._statsWidget.registerROI(roi2D)
-
-        # update manage tab visibility
-        if len(rois2D) > 0:
-            self._roisTabWidget.addTab(self._2DRoiWidget, '2D roi(s)')
-        if len(rois1D) > 0:
-            self._roisTabWidget.addTab(self._curveRoiWidget, '1D roi(s)')
-
-    def setStats(self, stats):
-        self._statsWidget.setStats(stats=stats)
-
-    def addItem(self, item, roi):
-        self._statsWidget.addItem(roi=roi, plotItem=item)
-        
-
-def roi_radon_transform_score(arr):
-    """ a stats function that takes the ROI and returns the radon transform score """
-    # print(f'np.shape(arr): {np.shape(arr)}')
-    # return np.nanmean(arr, axis=1)
-    # print(f'np.sum(np.isnan(arr)): {np.sum(np.isnan(arr))}')
-    column_medians = np.nanmedian(arr, axis=0)
-    filled_arr = [arr[:,i].filled(column_medians[i]) for i in np.arange(np.shape(arr)[1])]
-    return np.nanmean(filled_arr)
 
