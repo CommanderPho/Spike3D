@@ -16,3 +16,6 @@ Virtual environment already activated: /home/halechr/Library/VSCode/green/.venv_
 
 
 jupyter labextension uninstall jupyterlab_apod
+
+
+voila.server_extension
