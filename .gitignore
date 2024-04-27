@@ -149,3 +149,4 @@ test_(ripple_all_scores_merged_df).csv
 SCRATCH/EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/2024-04-16/kdiba/15_display_long_short_laps.png
 .venv_teal
 LibrariesExamples/Silx/EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeline.log
+.venv_black
