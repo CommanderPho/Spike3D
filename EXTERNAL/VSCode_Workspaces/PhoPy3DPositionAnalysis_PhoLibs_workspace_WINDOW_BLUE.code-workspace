@@ -32,7 +32,7 @@
 			"**/.virtual_documents": true,
 			"**/.vscode": true,
 			"**/*.7z": true,
-			"**/Spike3D/.venv/*": true
+			"**/Spike3D/.venv/*": true, "**/.venv_black": true,"**/.venv_yellow": true,"**/.venv_teal": true, 
 		},
 		"python.analysis.logLevel": "Error",
 		"workbench.colorCustomizations": {

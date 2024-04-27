@@ -201,13 +201,13 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"sketchbuch.vsc-workspace-sidebar",
-			"salmonmode.activity-heatmap",
+			// "sketchbuch.vsc-workspace-sidebar",
+			// "salmonmode.activity-heatmap",
 			"ohyee.custom-button",
 			"orepor.color-tabs-vscode-ext",
-			"ryu1kn.partial-diff",
+			// "ryu1kn.partial-diff",
 			"rebornix.toggle",
-			"amodio.restore-editors",
+			// "amodio.restore-editors",
 			"buenon.scratchpads",
 			"geddski.macros",
             "ryuta46.multi-command",
