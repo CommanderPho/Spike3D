@@ -11,6 +11,8 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
+from neuropy.core.epoch import ensure_dataframe
+
 from silx.gui import qt
 from silx.gui.data.DataViewerFrame import DataViewerFrame
 from silx.gui.plot import PlotWindow, ImageView
@@ -276,9 +278,9 @@ def on_set_active_decoder_name_changed(instance, attribute, new_value):
     print(f'on_set_active_decoder_name_changed(new_value: {new_value})')
     # if isinstance(new_value, str):
     #     return new_value.capitalize()
-    is_valid_name: bool = new_value in instance.decoder_laps_filter_epochs_decoder_result_dict.keys()
+    is_valid_name: bool = new_value in instance.decoder_filter_epochs_decoder_result_dict.keys()
     if not is_valid_name:
-        print(f'\tname: "{new_value}" is not a valid decoder name. valid names: {list(instance.decoder_laps_filter_epochs_decoder_result_dict.keys())}. not changing')
+        print(f'\tname: "{new_value}" is not a valid decoder name. valid names: {list(instance.decoder_filter_epochs_decoder_result_dict.keys())}. not changing')
         return instance.active_decoder_name # return existing value to prevent update
     
     return new_value
@@ -299,8 +301,8 @@ def on_set_active_epoch_idx_changed(instance, attribute, new_value):
 class RadonTransformDebugger:
     """ interactive debugger """
     pos_bin_size: float = field()
-    decoder_laps_filter_epochs_decoder_result_dict: Dict = field()
-    decoder_laps_radon_transform_extras_dict: Dict = field()
+    decoder_filter_epochs_decoder_result_dict: Dict = field()
+    decoder_radon_transform_extras_dict: Dict = field()
     
     active_decoder_name: str = field(default='long_LR') # , on_setattr=on_set_active_decoder_name_changed
     _active_epoch_idx: int = field(default=3) # , on_setattr=on_set_active_epoch_idx_changed
@@ -326,11 +328,11 @@ class RadonTransformDebugger:
 
     @property
     def result(self) -> DecodedFilterEpochsResult:
-        return self.decoder_laps_filter_epochs_decoder_result_dict[self.active_decoder_name]
+        return self.decoder_filter_epochs_decoder_result_dict[self.active_decoder_name]
 
     @property
     def active_filter_epochs(self) -> pd.DataFrame:
-        return self.result.active_filter_epochs.to_dataframe()
+        return ensure_dataframe(self.result.active_filter_epochs)
 
     @property
     def time_bin_size(self) -> float:
@@ -338,11 +340,11 @@ class RadonTransformDebugger:
 
     @property
     def num_neighbours(self) -> NDArray:
-        return  np.squeeze(deepcopy(self.decoder_laps_radon_transform_extras_dict[self.active_decoder_name]))[0]
+        return  np.squeeze(deepcopy(self.decoder_radon_transform_extras_dict[self.active_decoder_name]))[0]
     
     @property
     def neighbors_arr(self) -> NDArray:
-        return  np.squeeze(deepcopy(self.decoder_laps_radon_transform_extras_dict[self.active_decoder_name]))[1]
+        return  np.squeeze(deepcopy(self.decoder_radon_transform_extras_dict[self.active_decoder_name]))[1]
     
     @property
     def stats_measures(self):
