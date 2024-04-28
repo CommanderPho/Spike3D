@@ -308,6 +308,9 @@ class RadonTransformDebugger:
     window: _RoiStatsDisplayExWindow = field(default=None)
     _band_roi: BandROI = field(default=None)
 
+    xbin: NDArray = field(default=None)
+    xbin_centers: NDArray = field(default=None)
+
 
     @property
     def active_epoch_idx(self):
@@ -362,7 +365,7 @@ class RadonTransformDebugger:
         return self.update_epoch_idx(active_epoch_idx=self.active_epoch_idx)
             
 
-    def update_epoch_idx(self, active_epoch_idx: int):
+    def update_epoch_idx(self, active_epoch_idx: int, debug_print=False):
         """ 
         Usage:
             a_posterior, (start_point, end_point, band_width), (active_num_neighbors, active_neighbors_arr) = on_update_epoch_idx(active_epoch_idx=5)
@@ -407,28 +410,94 @@ class RadonTransformDebugger:
         # end_point = (active_epoch_info_tuple.duration, (active_epoch_info_tuple.duration * active_epoch_info_tuple.velocity))
         # band_width = pos_bin_size * float(active_num_neighbors)
 
+        only_compute_current_active_epoch_time_bins: bool = True
+        
+
+        NP: int = [np.shape(p)[0] for p in self.result.p_x_given_n_list][0] # just get the first one, they're all the same
+        NT: NDArray = np.array([np.shape(p)[1] for p in self.result.p_x_given_n_list]) # These are all different, depends on the length of the epoch.
+        if only_compute_current_active_epoch_time_bins:
+            NT = NT[self.active_epoch_idx] # an int
+
+
+        if debug_print:
+            print(f'NP: {NP}, NT: {NT}')
+
+        # 1-indexed: this was what the author provided, but it seems to be 1-indexed.
+        # index_space_t_mid = ((NT + 1) / 2)
+        # index_space_x_mid = ((NP+1)/2)
+
+        # 0-indexed
+        index_space_t_mid = ((NT) / 2)
+        index_space_x_mid = ((NP)/2)
+
+        if debug_print:
+            print(f'index_space_t_mid: {index_space_t_mid}, index_space_x_mid: {index_space_x_mid}')
+
+
+        active_time_window_centers = deepcopy(self.result.time_window_centers[self.active_epoch_idx]) # will need this either way later
+
+        if only_compute_current_active_epoch_time_bins:
+            ## only active index's bin:    
+            real_space_t_mid = ((active_time_window_centers[0]+active_time_window_centers[-1]) / 2)
+        else:
+            ## all bins:
+            real_space_t_mid = np.array([((active_time_window_centers[0]+active_time_window_centers[-1]) / 2) for active_time_window_centers in self.result.time_window_centers])
+
+        real_space_x_mid = ((self.xbin[-1]+self.xbin[0])/2)
+
+
+        ## Conversion functions:
+        convert_real_space_x_to_index_space_ri = lambda x: (((x - real_space_x_mid)/self.pos_bin_size) + index_space_x_mid)
+
+        # ## WORKING NOW:
+        # convert_real_space_x_to_index_space_ri(dbgr.xbin)
+        # convert_real_space_x_to_index_space_ri(dbgr.xbin_centers)
+
+        convert_real_time_t_to_index_time_ci = lambda t: (((t - real_space_t_mid)/self.time_bin_size) + index_space_t_mid)
+
+        ## index space
+        
+
         ## Get the values computed by the original Radon Transform computation that was saved out:
-        start_point = [0.0, active_epoch_info_tuple.intercept]
-        end_point = [active_epoch_info_tuple.duration, (active_epoch_info_tuple.duration * active_epoch_info_tuple.velocity)]
+        # start_point = [0.0, active_epoch_info_tuple.intercept]
+        # end_point = [active_epoch_info_tuple.duration, (active_epoch_info_tuple.duration * active_epoch_info_tuple.velocity)]
+        # band_width = self.pos_bin_size * float(active_num_neighbors)
+
+        start_point = [active_time_window_centers[0], active_epoch_info_tuple.intercept]
+        end_point = [active_time_window_centers[-1], (active_epoch_info_tuple.intercept + (active_epoch_info_tuple.duration * active_epoch_info_tuple.velocity))]
         band_width = self.pos_bin_size * float(active_num_neighbors)
 
-        print(f'position-frame line info:')
-        print(f'\tstart_point: {start_point},\t end_point: {end_point},\t band_width: {band_width}')
+        ## REMAINING QUESTION: is `.intercept` calculated at the first time bin_center? Or the first time_bin_edge?
 
-        ## convert time (x) coordinates:
-        time_bin_size: float = float(self.result.decoding_time_bin_size)
-        start_point[0] = (start_point[0]/time_bin_size)
-        end_point[0] = (end_point[0]/time_bin_size)
-        # end_point[1] = (end_point[1]/time_bin_size) # not sure about this one
+        if debug_print:
+            print(f'position-frame line info:')
+            print(f'\tstart_point: {start_point},\t end_point: {end_point},\t band_width: {band_width}')
 
-        ## convert from position (cm) units to y-bins:
-        pos_bin_size: float = float(self.pos_bin_size) # passed directly
-        start_point[1] = (start_point[1]/pos_bin_size)
-        end_point[1] = (end_point[1]/pos_bin_size) # not sure about this one
-        band_width = float(active_num_neighbors)
-        
-        print(f'index-frame line info:')
-        print(f'\tstart_point: {start_point},\t end_point: {end_point},\t band_width: {band_width}')
+
+        ## Start converions:
+        start_point[0] = convert_real_time_t_to_index_time_ci(start_point[0]) # not right because `t` is supposed to be absolute times anchored in the middle of the time bins. I need active time windows
+        end_point[0] = convert_real_time_t_to_index_time_ci(end_point[0])
+
+        start_point[1] = convert_real_space_x_to_index_space_ri(start_point[1])
+        end_point[1] = convert_real_space_x_to_index_space_ri(end_point[1])
+
+        # band_width = float(active_num_neighbors)
+
+        # ## convert time (x) coordinates:
+        # time_bin_size: float = float(self.result.decoding_time_bin_size)
+        # start_point[0] = (start_point[0]/time_bin_size)
+        # end_point[0] = (end_point[0]/time_bin_size)
+        # # end_point[1] = (end_point[1]/time_bin_size) # not sure about this one
+
+        # ## convert from position (cm) units to y-bins:
+        # pos_bin_size: float = float(self.pos_bin_size) # passed directly
+        # start_point[1] = (start_point[1]/pos_bin_size)
+        # end_point[1] = (end_point[1]/pos_bin_size) # not sure about this one
+        # band_width = float(active_num_neighbors)
+
+        if debug_print:
+            print(f'index-frame line info:')
+            print(f'\tstart_point: {start_point},\t end_point: {end_point},\t band_width: {band_width}')
 
         ## OUTPUTS: a_posterior, (start_point, end_point, band_width), (active_num_neighbors, active_neighbors_arr)
         # Initialize an instance of TransformDebugger using the variables as keyword arguments
@@ -495,9 +564,16 @@ class RadonTransformDebugger:
 
     def update_GUI(self):
         print(f'update_GUI()\n\tactive_epoch_idx: {self.active_epoch_idx})')
-        posterior_identifier_str: str = f"Posterior Epoch[{self.active_epoch_idx}]"
-        self.window.plot.addImage(self.active_radon_values.a_posterior, replace=True, resetzoom=True, copy=True, legend='P_x_given_n', ylabel=posterior_identifier_str)
-        self.update_ROI()
+        # posterior_identifier_str: str = f"Posterior Epoch[{self.active_epoch_idx}]"
+        # self.window.plot.addImage(self.active_radon_values.a_posterior, replace=True, resetzoom=True, copy=True, legend='P_x_given_n', ylabel=posterior_identifier_str)
+
+        self.window.plot.clear()
+        self.build_GUI()
+        
+        # image = self.window.plot.getImage('P_x_given_n')  # Retrieve the image
+        # image.setData(self.active_radon_values.a_posterior)  # Update the displayed data
+
+        # self.update_ROI()
         print(f'\tdone.')
 
 
