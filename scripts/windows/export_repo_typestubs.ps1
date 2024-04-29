@@ -12,6 +12,7 @@ $directories = @(
     "$spike3DDirectory"
 )
 
+# "Remove-Item -Recurse -Force .\typings\", 
 $directory_pyright_generate_typestubs_commands = @(
     @("pyright --createstub neuropy"),
     @("pyright --createstub pyphocorehelpers"),
@@ -25,7 +26,8 @@ function Export-PyrightTypestubs {
         $directory = $directories[$i]
         $commands = $directory_pyright_generate_typestubs_commands[$i]
         Set-Location $directory
-        Write-Host "\t for $directory"
+        Write-Host "    for $directory"
+        Remove-Item -Recurse -Force  -ErrorAction SilentlyContinue "$directory\typings"
         foreach ($command in $commands) {
             Invoke-Expression $command
         }
