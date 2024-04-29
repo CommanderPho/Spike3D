@@ -28,11 +28,11 @@
     "**/docs",
     "**/data",
     "**/templating",
-    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw",
+    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white"
   ],
 
   "ignore": [
-    "**/.venv","**/.venv_new","**/.venv_raw",
+    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white"
     "LibrariesExamples",
     "EXTERNAL",
     "scripts",
