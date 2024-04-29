@@ -150,3 +150,5 @@ SCRATCH/EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/2024-04-16/kdiba
 .venv_teal
 LibrariesExamples/Silx/EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeline.log
 .venv_black
+.venv_green
+.venv_white
