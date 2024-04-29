@@ -2,7 +2,7 @@
 	"folders": [
 		{
 			"name": "Spike3D",
-			"path": "../../"
+			"path": "../.."
 		},
 		{
 			"name": "pyphocorehelpers",
@@ -43,25 +43,28 @@
 		"editor.bracketPairColorization.enabled": true,
 		"workbench.colorCustomizations": {
             "editor.lineHighlightBackground": "#1073cf2d",
-            "editor.lineHighlightBorder": "#9fced11f",
-            "activityBar.background": "#0c0c0c",
-            "titleBar.activeBackground": "#141414",
-            "titleBar.activeForeground": "#ffffff",
+            "editor.lineHighlightBorder": "#3b4b4c1f",
+            "activityBar.background": "#ffffff",
+            "titleBar.activeBackground": "#ffffff",
+            "titleBar.activeForeground": "#141414",
             "scrollbarSlider.background": "#4d4d4d57",
             "scrollbarSlider.hoverBackground": "#d6d6d682",
             "scrollbarSlider.activeBackground": "#dddddddf",
-            "activityBar.inactiveForeground": "#ffffff3c",
-            "activityBar.foreground": "#ffffff",
+            "activityBar.inactiveForeground": "#0c0c0c1c",
+            "activityBar.foreground": "#0c0c0c",
             "notebook.outputContainerBackgroundColor": "#395a3e50",
             "notebook.outputContainerBorderColor": "#ffffff",
             "notebook.focusedCellBorder": "#f3f3f3da",
             "notebook.focusedEditorBorder": "#f5f5f5",
             "notebook.inactiveFocusedCellBorder": "#ffff0063",
             "titleBar.inactiveBackground": "#cecece8e",
-            "tab.activeBorder": "#2F3C2E",
-            "statusBar.background": "#3c2e2e11",
-            "statusBar.foreground": "#ffffff",
-            "editorBracketHighlight.foreground1": "#5caeef",
+            "tab.activeBorder": "#ffffff",
+            "statusBar.background": "#ffffff",
+            "statusBar.foreground": "#3c2e2ee4",
+            "foreground": "#ffffff",
+            // "foreground": "#ff0000",
+            "statusBarItem.prominentForeground": "#ff0000",
+            "editorBracketHighlight.foreground1": "#ffffff",
             "editorBracketHighlight.foreground2": "#dfb976",
             "editorBracketHighlight.foreground3": "#c172d9",
             "editorBracketHighlight.foreground4": "#4fb1bc",
@@ -116,7 +119,7 @@
 			"**/docs": true,
 			"**/data": true,
 			"**/templating": true,
-			"**/.venv": true,"**/.venv_alt": true,"**/.venv_new": true,"**/.venv_raw": true, "**/.venv_black": true,"**/.venv_yellow": true,"**/.venv_teal": true,"**/.venv_green": true,"**/.venv_white": true, //"**/.venv_raw": true
+			"**/.venv": true,"**/.venv_alt": true,"**/.venv_new": true,"**/.venv_raw": true, "**/.venv_black": true,"**/.venv_yellow": true,"**/.venv_teal": true, //"**/.venv_raw": true
 			"**/EXTERNAL/TESTING/OLD": true
 		},
 		"qtForPython.uic.path": "K:\\FastSwap\\AppData\\VSCode\\yellow\\.venv_yellow\\Scripts\\python.exe",
