@@ -67,7 +67,24 @@
             "editorBracketHighlight.foreground4": "#4fb1bc",
             "editorBracketHighlight.foreground5": "#97c26c",
             "editorBracketHighlight.foreground6": "#abb2c0",
-            "editorBracketHighlight.unexpectedBracket.foreground": "#db6165"
+            "editorBracketHighlight.unexpectedBracket.foreground": "#db6165",
+            // active indent guides:
+            "editorIndentGuide.activeBackground1": "#ffee0086",
+            "editorIndentGuide.activeBackground2": "#3cff0086",
+            "editorIndentGuide.activeBackground3": "#75fff486",
+            "editorIndentGuide.activeBackground4": "#c2c6ff86",
+            "editorIndentGuide.activeBackground5": "#7a33ff86",
+            "editorIndentGuide.activeBackground6": "#ffebfd86",
+
+            // non-active indent guide colors
+            "editorIndentGuide.background1": "#0066ff42",
+            "editorIndentGuide.background2": "#00e5ff42",
+            "editorIndentGuide.background3": "#00e5ff42",
+            "editorIndentGuide.background4": "#00e5ff42",
+            "editorIndentGuide.background5": "#00e5ff42",
+            "editorIndentGuide.background6": "#00e5ff42"
+            
+
         },
 		"search.exclude": {
 			"./Spike3D/EXTERNAL/TESTING/OLD": true,
