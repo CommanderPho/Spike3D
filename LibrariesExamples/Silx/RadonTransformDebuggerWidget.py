@@ -45,7 +45,7 @@ from typing import Tuple, List
 @define(slots=False)
 class RadonDebugValue:
     """ Values for a single epoch. Class to hold debugging information for a transformation process """
-    a_posterior: float = field()
+    a_posterior: NDArray = field()
     active_epoch_info_tuple: Tuple = field()	
     active_num_neighbors: int = field()
     active_neighbors_arr: List = field()
