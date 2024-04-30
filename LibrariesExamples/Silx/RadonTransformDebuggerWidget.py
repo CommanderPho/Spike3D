@@ -38,22 +38,40 @@ Uses Silx
 """
 
 
-from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult, SingleEpochDecodedResult
 from attrs import define, field, Factory
 from typing import Tuple, List
 
 @define(slots=False)
 class RadonDebugValue:
     """ Values for a single epoch. Class to hold debugging information for a transformation process """
-    a_posterior: NDArray = field()
-    active_epoch_info_tuple: Tuple = field()	
-    active_num_neighbors: int = field()
-    active_neighbors_arr: List = field()
+    # p_x_given_n: NDArray = field()
+    # epoch_info_tuple: Tuple = field()	
 
+    active_decoded_epoch_container: SingleEpochDecodedResult = field()
 
-    start_point: Tuple[float, float] = field()
-    end_point: Tuple[float, float] = field()
-    band_width: float = field()
+    active_num_neighbors: int = field(default=None)
+    active_neighbors_arr: List = field(default=None)
+
+    start_point: Tuple[float, float] = field(default=None)
+    end_point: Tuple[float, float] = field(default=None)
+    band_width: float = field(default=None)
+
+    @property
+    def p_x_given_n(self) -> NDArray:
+        """The  p_x_given_n: NDArray property."""
+        return self.active_decoded_epoch_container.p_x_given_n
+    @p_x_given_n.setter
+    def  p_x_given_n(self, value):
+        self.active_decoded_epoch_container.p_x_given_n = value
+    
+    @property
+    def epoch_info_tuple(self) -> Tuple:
+        """The  p_x_given_n: NDArray property."""
+        return self.active_decoded_epoch_container.epoch_info_tuple
+    @epoch_info_tuple.setter
+    def  epoch_info_tuple(self, value):
+        self.active_decoded_epoch_container.epoch_info_tuple = value
     
     
 def compute_score(arr, y_line):
@@ -354,7 +372,7 @@ class RadonTransformDebugger:
             # ('mean', np.mean),
             ('shape', np.shape),
             ('score', roi_radon_transform_score),
-            ('prev_score', (lambda arr: self.active_radon_values.active_epoch_info_tuple.score)),
+            ('prev_score', (lambda arr: self.active_radon_values.epoch_info_tuple.score)),
             ('prev_shape', (lambda arr: np.shape(self.active_radon_values.active_neighbors_arr))),
         ]
 
@@ -376,6 +394,12 @@ class RadonTransformDebugger:
         ## ON UPDATE: active_epoch_idx
         self.active_epoch_idx = active_epoch_idx ## update the index
         
+
+        
+
+        
+
+
         ## INPUTS: pos_bin_size
         a_posterior = self.result.p_x_given_n_list[active_epoch_idx].copy()
 
@@ -505,10 +529,19 @@ class RadonTransformDebugger:
         # Initialize an instance of TransformDebugger using the variables as keyword arguments
         # transform_debug_instance = RadonDebugValue(a_posterior=a_posterior, start_point=start_point, end_point=end_point, band_width=band_width, active_num_neighbors=active_num_neighbors, active_neighbors_arr=active_neighbors_arr)
 
+
+        single_epoch_result: SingleEpochDecodedResult = self.result.get_result_for_epoch(active_epoch_idx=self.active_epoch_idx)
+
         # return a_posterior, active_epoch_info_tuple, (active_num_neighbors, active_neighbors_arr), (start_point, end_point, band_width)
-        return RadonDebugValue(a_posterior=a_posterior, active_epoch_info_tuple=active_epoch_info_tuple,
-                                active_num_neighbors=active_num_neighbors, active_neighbors_arr=active_neighbors_arr,
-                                start_point=start_point, end_point=end_point, band_width=band_width)
+        # return RadonDebugValue(p_x_given_n=a_posterior, epoch_info_tuple=active_epoch_info_tuple,
+        #                         active_num_neighbors=active_num_neighbors, active_neighbors_arr=active_neighbors_arr,
+        #                         start_point=start_point, end_point=end_point, band_width=band_width)
+    
+        ## upgrade to RadonDebugValue:
+        return RadonDebugValue(active_decoded_epoch_container=single_epoch_result,
+                            active_num_neighbors=active_num_neighbors, active_neighbors_arr=active_neighbors_arr,
+                            start_point=start_point, end_point=end_point, band_width=band_width)
+
     
 
     def build_GUI(self):
@@ -530,7 +563,7 @@ class RadonTransformDebugger:
         # updateThread.start()  # Start updating the plot
 
         # define some image and curve
-        self.window.plot.addImage(self.active_radon_values.a_posterior, legend='P_x_given_n')
+        self.window.plot.addImage(self.active_radon_values.p_x_given_n, legend='P_x_given_n')
         # window.plot.addImage(numpy.random.random(10000).reshape(100, 100), legend='img2', origin=(0, 100))
         self.window.setStats(self.stats_measures)
 

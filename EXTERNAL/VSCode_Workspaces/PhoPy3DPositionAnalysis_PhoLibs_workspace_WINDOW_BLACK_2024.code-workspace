@@ -244,7 +244,8 @@
             "analytic-signal.preview-html",
             "file-icons.file-icons",
             "iket0731.symbol-navigate-back",
-            "hipdotmedia.hipdot-vs-code-url-scheme-grabber"
+            "hipdotmedia.hipdot-vs-code-url-scheme-grabber",
+            "eytankrief.wormhole"
 		]
 	}
 }
