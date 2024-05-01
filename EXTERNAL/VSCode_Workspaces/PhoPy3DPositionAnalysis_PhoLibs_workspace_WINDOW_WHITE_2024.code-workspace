@@ -50,7 +50,7 @@
             "scrollbarSlider.background": "#4d4d4d57",
             "scrollbarSlider.hoverBackground": "#d6d6d682",
             "scrollbarSlider.activeBackground": "#dddddddf",
-            "activityBar.inactiveForeground": "#0c0c0c1c",
+            "activityBar.inactiveForeground": "#0c0c0c93",
             "activityBar.foreground": "#0c0c0c",
             "notebook.outputContainerBackgroundColor": "#395a3e50",
             "notebook.outputContainerBorderColor": "#ffffff",
