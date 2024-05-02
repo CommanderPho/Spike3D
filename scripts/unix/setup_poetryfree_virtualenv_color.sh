@@ -8,8 +8,17 @@ fi
 
 echo "Creating a new virtual-env with colorFolderColorName: $colorFolderColorName"
 
+# env_create_parent="$HOME/Library"
+env_create_parent="/scratch/kdiba_root/kdiba1/halechr/Library" # scratch disk
+# /tmpssd/
+
+echo "env_create_parent: $env_create_parent"
+mkdir -p "$env_create_parent"
+
+
+
 envName=".venv_$colorFolderColorName"
-fullEnvParentPath="$HOME/Library/VSCode/$colorFolderColorName"
+fullEnvParentPath="$env_create_parent/VSCode/$colorFolderColorName"
 fullEnvPath="$fullEnvParentPath/$envName"
 fullActivateScriptPath="$fullEnvPath/bin/activate"
 fullPythonPath="$fullEnvPath/bin/python"
@@ -24,8 +33,13 @@ mkdir -p "$fullEnvParentPath"
 cd "$fullEnvParentPath"
 
 # Use pyenv to set local Python version and create a virtual environment
-pyenv local 3.9.13
-pyenv exec virtualenv "$envName"
+# pyenv local 3.9.13
+# pyenv exec virtualenv "$envName"
+## requires pyenv, not present on GL
+# pyenv local 3.9.13
+# pyenv exec virtualenv $envName
+
+python -m virtualenv "$envName"
 deactivate 2>/dev/null || true
 source "$fullActivateScriptPath"
 
