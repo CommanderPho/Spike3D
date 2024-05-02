@@ -39,8 +39,10 @@ cd "$fullEnvParentPath"
 # pyenv local 3.9.13
 # pyenv exec virtualenv $envName
 
+deactivate
 python -m virtualenv "$envName"
-deactivate 2>/dev/null || true
+# deactivate 2>/dev/null || true
+deactivate
 source "$fullActivateScriptPath"
 
 spike3d_repo_path="$HOME/repos/Spike3D"
