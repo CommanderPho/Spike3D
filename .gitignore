@@ -152,3 +152,5 @@ LibrariesExamples/Silx/EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeli
 .venv_black
 .venv_green
 .venv_white
+.venv_yellow
+.venv_yellow
