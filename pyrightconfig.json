@@ -32,11 +32,11 @@
   ],
 
   "ignore": [
-    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white"
+    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white",
     "LibrariesExamples",
     "EXTERNAL",
     "scripts",
-    "templating",
+    "templating"
   ],
 
   "defineConstant": {
@@ -49,7 +49,7 @@
   "reportMissingImports": true,
   "reportMissingTypeStubs": false,
 
-  "pythonVersion": "3.9",
+  "pythonVersion": "3.9"
 //   "pythonPlatform": "Linux",
 //   "executionEnvironments": [
 //     {
