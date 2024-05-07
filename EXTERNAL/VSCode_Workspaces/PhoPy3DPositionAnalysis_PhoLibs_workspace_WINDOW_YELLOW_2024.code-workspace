@@ -57,10 +57,58 @@
             "notebook.focusedCellBorder": "#ffff00da",
             "notebook.focusedEditorBorder": "#f6ff00",
             "notebook.inactiveFocusedCellBorder": "#ffff0063",
+            // "notebook.editorBackground": "#ffe6002c",
+            
             "titleBar.inactiveBackground": "#c7bf538e",
             "tab.activeBorder": "#2F3C2E",
             "statusBar.background": "#3c3c2e",
             "statusBar.foreground": "#ffffff",
+
+
+            // "editorPane.background": "#1f1f1f",
+            // "editorRuler.foreground": "#5a5a5a",
+
+            "window.activeBorder": "#fffb00",
+            "window.inactiveBorder": "#fffb0018",
+        
+            "sideBar.dropBackground": "#53595d80",
+            "sideBySideEditor.horizontalBorder": "#ffffff17",
+            "sideBySideEditor.verticalBorder": "#ffffff17",
+            
+            "profileBadge.background": "#4d4d4d",
+            "profileBadge.foreground": "#ffee00",
+
+            "editorGroup.border": "#ffee0017",
+            "editorGroupHeader.tabsBackground": "#ffd9002d",
+            "editorGroupHeader.tabsBorder": "#3f3600",
+
+            "tab.activeBackground": "#413700",
+            // "tab.activeBorder": "#2F3C2E",
+            "tab.activeBorderTop": "#ffc400",
+            "tab.activeForeground": "#ffffff",
+            "tab.border": "#606b00",
+            "tab.hoverBackground": "#302f00",
+            "tab.inactiveBackground": "#181818",
+            "tab.inactiveForeground": "#9d9d9d",
+            "tab.lastPinnedBorder": "#cccccc33",
+            "tab.unfocusedActiveBorder": "#1f1f1f",
+            "tab.unfocusedActiveBorderTop": "#2b2b2b",
+            "tab.unfocusedHoverBackground": "#1f1f1f",
+            // extras
+            "tab.activeModifiedBorder": "#abcc33",
+            "tab.inactiveModifiedBorder": "#c2cc3380",
+            "tab.unfocusedActiveBackground": "#1f1f1f",
+            "tab.unfocusedActiveForeground": "#ffffff80",
+            "tab.unfocusedActiveModifiedBorder": "#ccc23380",
+            "tab.unfocusedInactiveBackground": "#181818",
+            "tab.unfocusedInactiveForeground": "#9d9d9d80",
+            "tab.unfocusedInactiveModifiedBorder": "#3399cc40",
+            //"tab.hoverBorder": null,
+            //"tab.hoverForeground": null,
+            //"tab.unfocusedHoverBorder": null,
+            //"tab.unfocusedHoverForeground": null,
+            
+
             "editorBracketHighlight.foreground1": "#5caeef",
             "editorBracketHighlight.foreground2": "#dfb976",
             "editorBracketHighlight.foreground3": "#c172d9",
