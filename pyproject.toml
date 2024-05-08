@@ -44,7 +44,7 @@ awkward = "^2.2.1" # for ragged-arrays, testing
 pyqt-checkbox-table-widget = "^0.0.14"
 patchworklib = "^0.6.1" # matplotlib figure layout/organization
 flexitext = {git = "https://github.com/CommanderPho/flexitext.git", rev = "main"}
-adjusttext = "^0.8"
+adjusttext = "^1.1.1"
 seaborn-image = "^0.6.0"
 mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
 matplotlib-aximgcache = "^0.1.0"

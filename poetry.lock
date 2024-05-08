@@ -13,18 +13,19 @@ files = [
 
 [[package]]
 name = "adjusttext"
-version = "0.8"
+version = "1.1.1"
 description = "Iteratively adjust text position in matplotlib plots to minimize overlaps"
 optional = false
 python-versions = "*"
 files = [
-    {file = "adjustText-0.8-py3-none-any.whl", hash = "sha256:6da99f9d739c496f79346753a3fcadb6354d8d09699cde112fed46cfb837d271"},
-    {file = "adjustText-0.8.tar.gz", hash = "sha256:bb0682bb53abb626d6afc9c1db108ccb67f2c35ddc8d20ac6a802c756c07ee17"},
+    {file = "adjustText-1.1.1-py3-none-any.whl", hash = "sha256:ad2285f4239cd6c172508d772b026a133806deed9779977dfbeadcf233454938"},
+    {file = "adjustText-1.1.1.tar.gz", hash = "sha256:e2c0975ef2c642478e60f4c03c5e9afbdeda7764336907ef69a9205bfa2d9896"},
 ]
 
 [package.dependencies]
 matplotlib = "*"
 numpy = "*"
+scipy = "*"
 
 [[package]]
 name = "aiofiles"
@@ -17769,4 +17770,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "0819c55af3cd13531fd1152c1600c57da6dc04318184a79417485ef81c924f73"
+content-hash = "edb053760bd823cb4afa0494c5671569e8ef7da77236834458d5503993667554"
