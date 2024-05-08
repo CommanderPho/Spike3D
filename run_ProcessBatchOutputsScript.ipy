@@ -299,12 +299,17 @@ def _build_slurm_calls(slurm_scripts):
 
 
 output_slurm_run_scripts = output_slurm_scripts['run']
-output_slurm_figs_scripts = output_slurm_scripts['figs']
+output_slurm_figs_scripts = output_slurm_scripts.get('figs', None)
+print(f'\n RUN:')
+_build_slurm_calls(slurm_scripts=output_slurm_run_scripts)
+if output_slurm_figs_scripts is not None:
+	print(f'\n FIGS:')
+	_build_slurm_calls(slurm_scripts=output_slurm_figs_scripts)
 
-if active_phase['should_perform_figure_generation_to_file']:
-    _build_slurm_calls(slurm_scripts=output_slurm_figs_scripts)
-else:
-    _build_slurm_calls(slurm_scripts=output_slurm_run_scripts)
+# if active_phase['should_perform_figure_generation_to_file']:
+#     _build_slurm_calls(slurm_scripts=output_slurm_figs_scripts)
+# else:
+#     _build_slurm_calls(slurm_scripts=output_slurm_run_scripts)
 
 
 # %%bash -s "$bash_script"
