@@ -14054,6 +14054,19 @@ docs = ["matplotlib", "sphinx-astropy"]
 test = ["matplotlib", "pytest-astropy", "pytest-cov"]
 
 [[package]]
+name = "rdp"
+version = "0.8"
+description = "Pure Python implementation of the Ramer-Douglas-Peucker algorithm"
+optional = false
+python-versions = "*"
+files = [
+    {file = "rdp-0.8.tar.gz", hash = "sha256:19ec92f0803587891a00b439441e5e23fc9410500983f02941e4cf9ac3113e4b"},
+]
+
+[package.dependencies]
+numpy = "*"
+
+[[package]]
 name = "referencing"
 version = "0.35.0"
 description = "JSON Referencing + Python"
@@ -17770,4 +17783,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "edb053760bd823cb4afa0494c5671569e8ef7da77236834458d5503993667554"
+content-hash = "cd4d497ae5c82a57fad8dcc690fcd63977815ea0a9d408f9d58d8e4d4642a705"
