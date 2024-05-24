@@ -155,3 +155,5 @@ LibrariesExamples/Silx/EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeli
 .venv_yellow
 .venv_yellow
 SCRATCH/posterior_mask.edf
+SCRATCH/EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/**/*.png
+SCRATCH/laps.png
