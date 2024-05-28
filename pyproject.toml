@@ -128,6 +128,7 @@ fastdtw = "^0.3.4"
 lxml = {extras = ["html-clean"], version = "^5.2.1"}
 napari = "^0.4.19.post1"
 rdp = "^0.8"
+watchdog = "^4.0.1"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
