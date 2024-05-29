@@ -10,5 +10,6 @@
 # xfce4-terminal --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis'
 # xfce4-terminal --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D'
 
-## Good plot command:
+## Launches all tabs in a single terminal:
 xfce4-terminal --window --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --tab --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers' --tab --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis' --tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D'
+
