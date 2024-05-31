@@ -3,27 +3,28 @@
 # Commands to run in each repo
 cmd_git_ops='git pull; git status; exec bash'
 
+# Geometry for the first terminal (e.g., 90 columns wide by 30 lines tall)
+geometry1="90x30+0+0"
+
 # Launch all tabs in a single terminal and run the commands
 xfce4-terminal \
 --window \
+--geometry=$geometry1 \
 --tab --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --command="bash -c '$cmd_git_ops'" \
 --tab --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers' --command="bash -c '$cmd_git_ops'" \
 --tab --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis' --command="bash -c '$cmd_git_ops'" \
 --tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D' --command="bash -c '$cmd_git_ops'" &
 
-# Ensure the JupyterLab window opens immediately
-sleep 1
-
 # Launch Visual Studio Code separately
 /home/halechr/bin/VSCode-linux-x64/bin/code &
 
-# Wait a bit to make sure the VS Code command does not interfere with the terminal launch
-sleep 1
+# Geometry for the Jupyter terminal (e.g., 90 columns wide by 30 lines tall, offset by 100 pixels to the right and down)
+geometry2="90x30+100+100"
 
 # Launch a second xfce4-terminal window and execute the JupyterLab launch script
 xfce4-terminal \
 --window \
+--geometry=$geometry2 \
 --title='Jupyter Lab' \
 --working-directory='/home/halechr/repos' \
 --command="bash /home/halechr/repos/scripts/unix/launch_jupyter_lab_with_remote_access.sh" &
-
