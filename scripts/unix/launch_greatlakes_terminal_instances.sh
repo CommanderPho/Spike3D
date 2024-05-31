@@ -1,22 +1,16 @@
 #!/bin/bash
 
-# xfce4-terminal --initial-title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --tab 
-# xfce4-terminal --initial-title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers'
-# xfce4-terminal --initial-title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis'
-# xfce4-terminal --initial-title='Spike3D' --working-directory='/home/halechr/repos/Spike3D'
+# Commands to run in each repo
+cmd_git_ops='git pull; git status; exec bash'
 
-# xfce4-terminal --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --tab 
-# xfce4-terminal --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers'
-# xfce4-terminal --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis'
-# xfce4-terminal --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D'
+# Launch all tabs in a single terminal and run the commands
+xfce4-terminal \
+--window \
+--tab --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --command="bash -c '$cmd_git_ops'" \
+--tab --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers' --command="bash -c '$cmd_git_ops'" \
+--tab --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis' --command="bash -c '$cmd_git_ops'" \
+--tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D' --command="bash -c '$cmd_git_ops'"
 
-## Launches all tabs in a single terminal:
-# xfce4-terminal --window --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --tab --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers' --tab --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis' --tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D'
+# Launch Visual Studio Code separately
+/home/halechr/bin/VSCode-linux-x64/bin/code &
 
-#!/bin/bash
-
-# Launches all tabs in a single terminal and runs git pull followed by git status in each tab
-xfce4-terminal --window --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' -e 'bash -c "git pull && git status; exec bash"' \
---tab --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers' -e 'bash -c "git pull && git status; exec bash"' \
---tab --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis' -e 'bash -c "git pull && git status; exec bash"' \
---tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D' -e 'bash -c "git pull && git status; exec bash"'
