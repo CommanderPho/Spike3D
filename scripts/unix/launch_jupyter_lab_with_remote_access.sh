@@ -11,3 +11,4 @@ source $VENV_PATH/bin/activate
 
 
 jupyter-lab --no-browser --port=8889 --NotebookApp.ip='0.0.0.0' --NotebookApp.allow_origin='*'
+
