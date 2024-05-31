@@ -1,0 +1,281 @@
+import os
+import sys
+import platform
+from copy import deepcopy
+from typing import List, Dict, Optional, Union, Callable
+from pathlib import Path
+import pathlib
+import numpy as np
+import pandas as pd
+import tables as tb
+from copy import deepcopy
+from datetime import datetime, timedelta
+from attrs import define, field, Factory
+
+# # required to enable non-blocking interaction:
+# %gui qt5 ## TODO 2024-01-18 - this causes kernel to crash when running notebook remotely via VSCode's ssh remote
+
+## Pho's Custom Libraries:
+from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
+from pyphocorehelpers.function_helpers import function_attributes
+from pyphocorehelpers.exception_helpers import CapturedException
+
+# Jupyter interactivity:
+import ipywidgets as widgets
+from IPython.display import display
+from pyphocorehelpers.gui.Jupyter.JupyterButtonRowWidget import JupyterButtonRowWidget
+from pyphocorehelpers.gui.Jupyter.simple_widgets import code_block_widget
+
+# pyPhoPlaceCellAnalysis:
+# NeuroPy (Diba Lab Python Repo) Loading
+from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
+from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
+from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
+from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
+from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
+from neuropy.utils.matplotlib_helpers import matplotlib_configuration_update
+
+## For computation parameters:
+from neuropy.utils.result_context import IdentifyingContext
+from neuropy.core.session.Formats.BaseDataSessionFormats import find_local_session_paths
+from neuropy.core import Epoch
+
+from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
+import pyphoplacecellanalysis.General.Batch.runBatch
+from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SavingOptions
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme
+
+from neuropy.core.user_annotations import UserAnnotationsManager
+from pyphoplacecellanalysis.General.Batch.runBatch import SessionBatchProgress
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionsResults, AcrossSessionTables, AcrossSessionsVisualizations
+
+from pyphocorehelpers.Filesystem.path_helpers import set_posix_windows
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_vscode_workspace, build_windows_powershell_run_script
+
+from pyphocorehelpers.exception_helpers import CapturedException
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import InstantaneousFiringRatesDataframeAccessor
+from pyphoplacecellanalysis.General.Batch.runBatch import PipelineCompletionResult, BatchSessionCompletionHandler
+
+from pyphocorehelpers.Filesystem.metadata_helpers import FilesystemMetadata, get_file_metadata
+from pyphocorehelpers.Filesystem.path_helpers import discover_data_files, generate_copydict, copy_movedict, copy_file, save_copydict_to_text_file, read_copydict_from_text_file, invert_filedict
+from pyphoplacecellanalysis.General.Batch.runBatch import get_file_str_if_file_exists
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import check_output_h5_files, copy_files_in_filelist_to_dest
+from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder, BackupMethods
+
+from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import batch_perform_all_plots, BatchPhoJonathanFiguresHelper
+from pyphoplacecellanalysis.SpecificResults.PhoDiba2023Paper import PAPER_FIGURE_figure_1_add_replay_epoch_rasters, PAPER_FIGURE_figure_1_full, PAPER_FIGURE_figure_3, main_complete_figure_generations
+
+from neuropy.core.neuron_identities import NeuronIdentityDataframeAccessor
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import build_merged_neuron_firing_rate_indicies
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalPlacefieldGlobalComputationFunctions, DirectionalLapsHelpers
+from pyphocorehelpers.gui.Jupyter.simple_widgets import fullwidth_path_widget
+
+import inspect
+from jinja2 import Template
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, curr_runtime_context_header_template, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, compute_and_export_marginals_dfs_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, reload_exported_kdiba_session_position_info_mat_completion_function, compute_and_export_session_wcorr_shuffles_completion_function
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
+
+BATCH_DATE_TO_USE = '2024-05-31_GL' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = '2024-05-31_Lab' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = '2024-05-31_Apogee' # used for filenames throught the notebook
+
+# scripts_output_path = Path('/home/halechr/cloud/turbo/Data/Output/gen_scripts/').resolve() # Greatlakes
+# scripts_output_path = Path('output/gen_scripts/').resolve() # Apogee
+# # scripts_output_path = Path('/home/halechr/FastData/gen_scripts/').resolve() # Lab
+# assert scripts_output_path.exists()
+known_scripts_output_paths = [Path(v).resolve() for v in ['/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
+scripts_output_path = find_first_extant_path(known_scripts_output_paths)
+assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
+# fullwidth_path_widget(scripts_output_path, file_name_label='Scripts Output Path:')
+print(f'scripts_output_path: {scripts_output_path}')
+
+collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
+collected_outputs_path.mkdir(exist_ok=True)
+assert collected_outputs_path.exists()
+print(f'collected_outputs_path: {collected_outputs_path}')
+
+
+# Get the generated code for user-contributed functions:
+phase_any_run_custom_user_completion_functions_dict = {
+# "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-05-28 6am
+# "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
+# "compute_and_export_marginals_dfs_completion_function": compute_and_export_marginals_dfs_completion_function, # ran 2024-05-28 6am
+# "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
+# 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-05-28 6am
+# 'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-05-28 6am
+# 'reload_exported_kdiba_session_position_info_mat_completion_function': reload_exported_kdiba_session_position_info_mat_completion_function,
+# 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-05-28 3am
+    'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+}
+
+
+
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts, display_generated_scripts_ipywidget
+
+# Hardcoded included_session_contexts:
+included_session_contexts = [
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # Other file
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), # 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), # Other tab
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'),
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-09_17-29-30'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'),
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), #
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_19-28-0'),
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'),
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), #
+]
+
+## Setup Functions:
+force_recompute_override_computations_includelist = []
+# force_recompute_override_computations_includelist = ['directional_decoders_evaluate_epochs',]
+# force_recompute_override_computations_includelist = ['split_to_directional_laps','merged_directional_placefields','directional_decoders_evaluate_epochs','directional_decoders_epoch_heuristic_scoring']
+# force_recompute_override_computations_includelist = ['directional_decoders_evaluate_epochs','directional_decoders_epoch_heuristic_scoring']
+# force_recompute_override_computations_includelist = ['split_to_directional_laps','merged_directional_placefields']
+# force_recompute_override_computations_includelist = ['long_short_decoding_analyses', 'long_short_fr_indicies_analyses', 'short_long_pf_overlap_analyses', 'long_short_post_decoding',]
+# force_recompute_override_computations_includelist = ['wcorr_shuffle_analysis','trial_by_trial_metrics']
+
+extra_extended_computations_include_includelist = [
+	'wcorr_shuffle_analysis'
+]
+
+custom_phase_extended_computations_include_includelist=['lap_direction_determination', 'pf_computation', 'pfdt_computation', 'firing_rate_trends',
+	# 'pf_dt_sequential_surprise',
+	'extended_stats',
+	'long_short_decoding_analyses', 'jonathan_firing_rate_analysis', 'long_short_fr_indicies_analyses', 'short_long_pf_overlap_analyses', 'long_short_post_decoding', 
+	# 'ratemap_peaks_prominence2d', # optional but hopefully computed
+	'long_short_inst_spike_rate_groups',
+	# 'long_short_endcap_analysis',
+	# 'spike_burst_detection',
+	'split_to_directional_laps',
+	'merged_directional_placefields',
+	'rank_order_shuffle_analysis',
+	# 'directional_train_test_split',
+	# 'directional_decoders_decode_continuous', # optional but hopefully computed
+	'directional_decoders_evaluate_epochs',
+	# 'directional_decoders_epoch_heuristic_scoring',
+    'wcorr_shuffle_analysis',
+    'trial_by_trial_metrics',
+]
+
+
+active_global_batch_result_filename = f'global_batch_result_{BATCH_DATE_TO_USE}.pkl'
+
+debug_print = False
+known_global_data_root_parent_paths = [Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/media/halechr/MAX/Data'), Path(r'W:/Data'), Path(r'/home/halechr/FastData'), Path(r'/Volumes/MoverNew/data')] # Path(r'/home/halechr/cloud/turbo/Data'), , Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/home/halechr/turbo/Data'), 
+global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
+assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
+good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
+
+## Different run configurations:
+
+# active_phase = ProcessingScriptPhases.clean_run
+# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.final_run
+# active_phase = ProcessingScriptPhases.figure_run
+
+custom_user_completion_functions_dict = active_phase.get_custom_user_completion_functions_dict(extra_run_functions=phase_any_run_custom_user_completion_functions_dict)
+custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict)
+active_phase_dict = active_phase.get_run_configuration(custom_user_completion_function_template_code=custom_user_completion_function_template_code, extra_extended_computations_include_includelist=extra_extended_computations_include_includelist)
+
+## Completely replace with custom functions:
+if custom_phase_extended_computations_include_includelist is not None:
+	print(f'WARNING: custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist} is provided so only these extended_computation_fns will be used (overwritting the phase defaults!).')
+	active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
+
+
+## Build Slurm Scripts:
+session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context:a_session_folder.path for a_session_folder in good_session_concrete_folders}
+batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=included_session_contexts,
+                                                                                        output_directory=scripts_output_path, use_separate_run_directories=True,
+                                                                                        # should_freeze_pipeline_updates=False, 
+                                                                                        # create_slurm_scripts=True, should_create_vscode_workspace=True,
+                                                                                        # extended_computations_include_includelist=extended_computations_include_includelist,
+                                                                                        force_recompute_override_computations_includelist=force_recompute_override_computations_includelist, # ['split_to_directional_laps', 'rank_order_shuffle_analysis'],
+                                                                                        # should_perform_figure_generation_to_file=False,
+                                                                                        # batch_session_completion_handler_kwargs=dict(enable_hdf5_output=False),
+                                                                                        # custom_user_completion_functions=custom_user_completion_functions,
+                                                                                        # custom_user_completion_function_template_code=custom_user_completion_function_template_code,
+                                                                                        # should_force_reload_all=True,
+                                                                                        # should_force_reload_all=False,
+                                                                                        **active_phase_dict
+                                                                                    )
+
+
+# batch_scripts_collection.included_session_contexts, output_python_scripts, output_slurm_scripts
+
+output_python_scripts = batch_scripts_collection.output_python_scripts
+output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
+vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
+if vscode_workspace_path is not None:
+    display(fullwidth_path_widget(vscode_workspace_path, file_name_label='vscode_workspace_path:'))
+
+computation_script_paths = [x[0] for x in output_python_scripts]
+generate_figures_script_paths = [x[1] for x in output_python_scripts]
+print(f'generate_figures_script_paths: {generate_figures_script_paths}')
+_out_widget = display_generated_scripts_ipywidget(batch_scripts_collection.included_session_contexts, output_python_scripts)
+display(_out_widget)
+# Maximum number of parallel script executions
+max_parallel_executions = 1
+# List of your script paths
+# if active_phase.value == ProcessingScriptPhases.figure_run:
+if active_phase.is_figure_phase:
+    print(f'fig mode!')
+    script_paths = generate_figures_script_paths
+else:
+	script_paths = computation_script_paths
+
+if (platform.system() == 'Windows'):
+    powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name='run_scripts')
+    # print(f'powershell_script_path: {powershell_script_path}')
+    display(fullwidth_path_widget(powershell_script_path, file_name_label='powershell_script_path:'))
+
+
+    if active_phase_dict['should_perform_figure_generation_to_file']:
+        powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name='run_figure_scripts')
+        display(fullwidth_path_widget(powershell_figures_script_path, file_name_label='powershell_figures_script_path:'))
+
+
+if (platform.system() != 'Windows'):
+    ## Linux Only: Slurm Scripts
+    # sbatch_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts])
+    sbatch_run_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts['run']])
+    sbatch_figs_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts['figs']])
+
+    if active_phase.is_figure_phase:
+        # print(sbatch_figs_start_slurm_scripts)
+        initial_code = sbatch_figs_start_slurm_scripts + '\n'
+    else:
+        # print(sbatch_run_start_slurm_scripts)
+        initial_code = sbatch_run_start_slurm_scripts + '\n'
+
+    # Create and display the code block widget
+    slurm_code_block = code_block_widget(initial_code, label="Python Code:")
+
+
+
+# Batch 1
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_pin01_one_11-02_17-46-44/run_kdiba_pin01_one_11-02_17-46-44.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_pin01_one_11-02_19-28-0/run_kdiba_pin01_one_11-02_19-28-0.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_pin01_one_11-03_12-3-25/run_kdiba_pin01_one_11-03_12-3-25.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_pin01_one_fet11-01_12-58-54/run_kdiba_pin01_one_fet11-01_12-58-54.sh'
+
+# Batch 2:
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_vvp01_one_2006-4-09_17-29-30/run_kdiba_vvp01_one_2006-4-09_17-29-30.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_vvp01_one_2006-4-10_12-25-50/run_kdiba_vvp01_one_2006-4-10_12-25-50.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_vvp01_two_2006-4-09_16-40-54/run_kdiba_vvp01_two_2006-4-09_16-40-54.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_vvp01_two_2006-4-10_12-58-3/run_kdiba_vvp01_two_2006-4-10_12-58-3.sh'
+
+# Batch 3
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_gor01_one_2006-6-08_14-26-15/run_kdiba_gor01_one_2006-6-08_14-26-15.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_gor01_one_2006-6-09_1-22-43/run_kdiba_gor01_one_2006-6-09_1-22-43.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-07_16-40-19/run_kdiba_gor01_two_2006-6-07_16-40-19.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-08_21-16-25/run_kdiba_gor01_two_2006-6-08_21-16-25.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-09_22-24-40/run_kdiba_gor01_two_2006-6-09_22-24-40.sh'
+# sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-12_16-53-46/run_kdiba_gor01_two_2006-6-12_16-53-46.sh'
