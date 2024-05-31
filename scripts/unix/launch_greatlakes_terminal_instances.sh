@@ -9,7 +9,7 @@ xfce4-terminal \
 --tab --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --command="bash -c '$cmd_git_ops'" \
 --tab --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers' --command="bash -c '$cmd_git_ops'" \
 --tab --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis' --command="bash -c '$cmd_git_ops'" \
---tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D' --command="bash -c '$cmd_git_ops'"
+--tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D' --command="bash -c '$cmd_git_ops'" &
 
 # Launch Visual Studio Code separately
 /home/halechr/bin/VSCode-linux-x64/bin/code &
