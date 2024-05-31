@@ -14,3 +14,9 @@ xfce4-terminal \
 # Launch Visual Studio Code separately
 /home/halechr/bin/VSCode-linux-x64/bin/code &
 
+# Launch a second xfce4-terminal window and execute the JupyterLab launch script
+xfce4-terminal \
+--window \
+--title='Jupyter Lab' \
+--working-directory='/home/halechr/repos/Spike3D' \
+--command="/home/halechr/repos/Spike3D/scripts/unix/launch_jupyter_lab_with_remote_access.sh" &
