@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.2.0"
+version = "0.3.0"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"
@@ -177,4 +177,4 @@ setup_dependent_repos = 'scripts/setup_dependent_repos.py' # 'scripts.console:ru
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
+package-mode = false
