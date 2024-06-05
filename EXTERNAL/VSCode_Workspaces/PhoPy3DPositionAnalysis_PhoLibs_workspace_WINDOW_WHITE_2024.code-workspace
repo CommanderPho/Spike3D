@@ -42,8 +42,7 @@
 		"python.analysis.logLevel": "Error",
 		"editor.bracketPairColorization.enabled": true,
 		"workbench.colorCustomizations": {
-            "editor.lineHighlightBackground": "#1073cf2d",
-            "editor.lineHighlightBorder": "#3b4b4c1f",
+
             "activityBar.background": "#ffffff",
             "titleBar.activeBackground": "#ffffff",
             "titleBar.activeForeground": "#141414",
@@ -63,6 +62,33 @@
             "statusBar.foreground": "#3c2e2ee4",
             "foreground": "#ffffff",
             // "foreground": "#ff0000",
+
+
+            // "numberedBookmarks.lineBackground": "#007700",
+            "editor.lineHighlightBackground": "#4f4f4f44",
+            "editor.lineHighlightBorder": "#ffffffaf",
+            "editor.selectionBackground": "#e788ff5e", //Currently SELECTED text
+            "editor.selectionHighlightBackground": "#ff00005b", //Same content as selection
+            "editor.findMatchBackground": "#bb00cca8", //Current SEARCH MATCH
+            "editor.findMatchHighlightBackground": "#ff003ca1", //Other SEARCH MATCHES          
+            // "editor.foreground": "#d4d4d4",
+            // "editor.inactiveSelectionBackground": "#3a3d41",
+            
+            // "editor.wordHighlightBorder": "#00ff0075",
+            // "editor.findMatchHighlightBorder": "#00ff0075"
+
+            // "editor.lineHighlightBackground": "#<color1>",
+            // "editor.selectionBackground": "#<color2>",
+            // "editor.selectionHighlightBackground": "#<color3>",
+            // "editor.wordHighlightBackground": "#<color4>",
+            // "editorCursor.foreground": "#<color5>",
+
+            // editor.lineHighlightBackground - when you click on a line this is the color the line background will be.
+            // "editor.selectionBackground" - The background of the word you have selected with your cursor.
+            // "editor.selectionHighlightBackground" - This is the background of selections elsewhere in the file which matches the word you have selected with your cursor. Think of a variable named foo and it's used all over a file. You then select one 'foo' with your cursor, and all the other 'foo' on the page will be of the color specified in this variable.
+            // "editor.wordHighlightBackground" - This is the color of selected text if the default highlight word on click does not take effect. I've only seen this value make a difference if you click on a word that does not auto-select.
+            // editorCursor.foreground - this is the color of your cursor.            
+
             "statusBarItem.prominentForeground": "#ff0000",
             "editorBracketHighlight.foreground1": "#ffffff",
             "editorBracketHighlight.foreground2": "#dfb976",
