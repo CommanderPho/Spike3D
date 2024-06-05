@@ -133,6 +133,7 @@ kaleido = [
     {platform = "win32", version = "0.1.0.post1"}
 ]
 watchdog = "^4.0.1"
+poetry-plugin-export = "^1.8.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
