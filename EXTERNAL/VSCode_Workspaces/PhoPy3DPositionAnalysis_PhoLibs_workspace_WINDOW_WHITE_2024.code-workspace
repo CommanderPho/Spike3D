@@ -43,8 +43,15 @@
 		"editor.bracketPairColorization.enabled": true,
 		"workbench.colorCustomizations": {
 
-            "activityBar.background": "#ffffff",
-            "titleBar.activeBackground": "#ffffff",
+            "activityBar.background": "#ebebeb",
+            // "activityBarTop.activeBackground": "#ff0000",
+            // "activityBarTop.activeBorder": "#ff0000",
+            // "activityBarBadge.foreground": "#ff0000",
+            // "activityBarBadge.background": "#ff0000",
+            // "activityBar.activeFocusBorder": "#ff0000",
+            // "activityBarTop.foreground": "#ff0000",
+
+            "titleBar.activeBackground": "#fffffff0",
             "titleBar.activeForeground": "#141414",
             "scrollbarSlider.background": "#4d4d4d57",
             "scrollbarSlider.hoverBackground": "#d6d6d682",
