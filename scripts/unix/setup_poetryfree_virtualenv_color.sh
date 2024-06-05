@@ -8,8 +8,8 @@ fi
 
 echo "Creating a new virtual-env with colorFolderColorName: $colorFolderColorName"
 
-# env_create_parent="$HOME/Library"
-env_create_parent="/scratch/kdiba_root/kdiba1/halechr/Library" # scratch disk
+env_create_parent="$HOME/Library"
+# env_create_parent="/scratch/kdiba_root/kdiba1/halechr/Library" # scratch disk
 # /tmpssd/
 
 echo "env_create_parent: $env_create_parent"
@@ -33,7 +33,7 @@ mkdir -p "$fullEnvParentPath"
 cd "$fullEnvParentPath"
 
 # Use pyenv to set local Python version and create a virtual environment
-# pyenv local 3.9.13
+pyenv local 3.9.19
 # pyenv exec virtualenv "$envName"
 ## requires pyenv, not present on GL
 # pyenv local 3.9.13
