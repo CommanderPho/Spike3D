@@ -1282,6 +1282,7 @@ def _normalize_flat_relative_entropy_infs(flat_relative_entropy_results):
 
 from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow # required for display_all_eloy_pf_density_measures_results
 
+@function_attributes(short_name=None, tags=['peak_prominence', 'eloy', 'density', 'pf'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2022-08-18 00:00', related_items=[])
 def display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results):
     """ 
     Usage:
