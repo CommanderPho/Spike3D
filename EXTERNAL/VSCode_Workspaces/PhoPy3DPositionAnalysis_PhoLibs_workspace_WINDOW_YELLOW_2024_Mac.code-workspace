@@ -161,7 +161,8 @@
 		"editor.autoIndent": "keep",
 		"workbench.tree.renderIndentGuides": "always",
         "editor.indentSize": "tabSize",
-        "editor.foldingStrategy": "indentation"
+        "editor.foldingStrategy": "indentation",
+        "problems.visibility": false
 	},
 	"tasks": {
 		"version": "2.0.0",
