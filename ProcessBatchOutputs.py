@@ -53,7 +53,6 @@ from pyphocorehelpers.Filesystem.path_helpers import set_posix_windows
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_vscode_workspace, build_windows_powershell_run_script
 
 from pyphocorehelpers.exception_helpers import CapturedException
-from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import InstantaneousFiringRatesDataframeAccessor
 from pyphoplacecellanalysis.General.Batch.runBatch import PipelineCompletionResult, BatchSessionCompletionHandler
 
 from pyphocorehelpers.Filesystem.metadata_helpers import FilesystemMetadata, get_file_metadata
