@@ -116,11 +116,12 @@
 			"**/docs": true,
 			"**/data": true,
 			"**/templating": true,
-			"**/.venv": true,"**/.venv_alt": true,"**/.venv_new": true,"**/.venv_raw": true, "**/.venv_black": true,"**/.venv_yellow": true,"**/.venv_teal": true,"**/.venv_green": true,"**/.venv_white": true, //"**/.venv_raw": true
+			"**/.venv": true,"**/.venv_alt": true,"**/.venv_new": true,"**/.venv_raw": true, "**/.venv_black": true,"**/.venv_yellow": true,"**/.venv_teal": true,"**/.venv_green": true,"**/.venv_*": true, //"**/.venv_raw": true
 			"**/EXTERNAL/TESTING/OLD": true
 		},
 		"qtForPython.uic.path": "K:\\FastSwap\\AppData\\VSCode\\yellow\\.venv_yellow\\Scripts\\python.exe",
 		"python.autoComplete.extraPaths": [
+
 
 		],
 		"git.ignoreLimitWarning": true,
