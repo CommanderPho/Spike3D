@@ -134,6 +134,7 @@ kaleido = [
 ]
 watchdog = "^4.0.1"
 poetry-plugin-export = "^1.8.0"
+solara = {extras = ["assets"], version = "^1.33.0"}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
