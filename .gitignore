@@ -161,3 +161,5 @@ test.hdf
 .venv_white
 .venv_yellow
 .venv_black
+.venv_white
+.venv_gray
