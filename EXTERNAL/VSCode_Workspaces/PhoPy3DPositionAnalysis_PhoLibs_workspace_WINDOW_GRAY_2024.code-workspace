@@ -6,11 +6,11 @@
 		},
 		{
 			"name": "pyphocorehelpers",
-			"path": "../../../pyPhoCoreHelpers"
+			"path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
 		},
 		{
 			"name": "pyphoplacecellanalysis",
-			"path": "../../../pyPhoPlaceCellAnalysis"
+			"path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
 		},
 		{
 			"name": "neuropy",
