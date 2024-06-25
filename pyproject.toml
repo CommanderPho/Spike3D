@@ -107,7 +107,7 @@ maxlikespy = {git = "https://github.com/CommanderPho/maxlikespy"}
 mkdocs-matplotlib = "^0.10.1"
 pycorrelate = "^0.3"
 orange3 = "^3.36.2"
-napari-animation = "^0.0.7"
+napari-animation = "^0.0.8"
 napari-hdf5-netcdf-viewer = "^0.1.1"
 napari-plot-profile = "^0.2.2"
 jupyterhub = "^4.0.2"
