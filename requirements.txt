@@ -321,7 +321,7 @@ perspective-python==2.10.0 ; python_full_version >= "3.9.2" and python_full_vers
 pexpect==4.9.0 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 pillow==9.5.0 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 pint==0.23 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
-pip==24.0 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
+pip==24.1 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 pkginfo==1.11.0 ; python_full_version >= "3.9.2" and python_version < "3.10" and python_full_version != "3.9.7"
 platformdirs==4.2.1 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
 plotly==5.21.0 ; python_full_version >= "3.9.2" and python_full_version != "3.9.7" and python_version < "3.10"
