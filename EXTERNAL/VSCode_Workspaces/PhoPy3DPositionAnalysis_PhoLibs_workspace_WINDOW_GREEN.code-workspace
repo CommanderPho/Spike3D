@@ -27,17 +27,21 @@
 		"jupyter.debugJustMyCode": true,
 		"files.exclude": {
 			"**/.classpath": true,
+			"**/.DS_Store": true,
 			"**/.factorypath": true,
+			"**/.git": true,
 			"**/.ipynb_checkpoints": true,
 			"**/.project": true,
 			"**/.settings": true,
 			"**/.spyproject": true,
+			"**/.venv_black": true,
+			"**/.venv_teal": true,
+			"**/.venv_yellow": true,
+			"**/.venv*": true,
+			"**/.venv/*": true,
 			"**/.virtual_documents": true,
 			"**/.vscode": true,
-			"**/*.7z": true,
-			"**/Spike3D/.venv/*": true, "**/.venv_black": true,"**/.venv_yellow": true,"**/.venv_teal": true, 
-			"**/.git": true,
-			"**/.DS_Store": true
+			"**/*.7z": true
 		},
 		"python.analysis.logLevel": "Trace",
 		"workbench.colorCustomizations": {
@@ -140,6 +144,10 @@
 		"python.venvPaths": [
 			"C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D"
 		],
+		"explorer.excludeGitIgnore": true,
+		"workbench.editor.enablePreview": true,
+		"editor.codeActionWidget.includeNearbyQuickFixes": false,
+		"editor.dragAndDrop": false,
 		// "python.ve"
 	},
 	"tasks": {
