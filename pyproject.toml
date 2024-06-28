@@ -135,6 +135,12 @@ kaleido = [
 watchdog = "^4.0.1"
 poetry-plugin-export = "^1.8.0"
 solara = {extras = ["assets"], version = "^1.33.0"}
+bottleneck = "^1.4.0"
+numbagg = "^0.8.1"
+flox = "^0.9.8"
+opt-einsum = "^3.3.0"
+zarr = "^2.18.2"
+fsspec = "^2024.6.1"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
