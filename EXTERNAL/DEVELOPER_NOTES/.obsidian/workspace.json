@@ -25,24 +25,14 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DataStructureDocumentation/BasePositionDecoder.md",
+                "file": "WindowHierarchy.md",
                 "mode": "source",
                 "source": false
               }
             }
-          },
-          {
-            "id": "1f2f45d3eb0df4f1",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.4.16"
-              }
-            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -108,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DataStructureDocumentation/BasePositionDecoder.md",
+                "file": "WindowHierarchy.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -125,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "DataStructureDocumentation/BasePositionDecoder.md",
+                "file": "WindowHierarchy.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -148,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DataStructureDocumentation/BasePositionDecoder.md"
+                "file": "WindowHierarchy.md"
               }
             }
           },
@@ -158,7 +148,9 @@
             "state": {
               "type": "all-properties",
               "state": {
-                "sortOrder": "frequency"
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
               }
             }
           }
@@ -179,14 +171,15 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1f2f45d3eb0df4f1",
+  "active": "1073da690e4e418d",
   "lastOpenFiles": [
+    "DataStructureDocumentation/add_renderables_menu.md",
+    "DataStructureDocumentation/BasePositionDecoder.md",
     "VSCode Idea - copy structure of class (for referencing).md",
     "DataStructureDocumentation/BayesianPlacemapPositionDecoder.md",
     "PoetryEnvironments/PoetryEnvironmentExamples.md",
     "DataStructureDocumentation/SurpriseAnalysisResult.md",
     "jupyter-lab-debugging.md",
-    "DataStructureDocumentation/BasePositionDecoder.md",
     "DataStructureDocumentation/ComputationResult.md",
     "2023-08-10 - Output Files and Exports.md",
     "Untitled-4.md",
