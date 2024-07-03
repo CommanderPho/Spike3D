@@ -66,9 +66,9 @@ else {
 
     # Full-path:
     & "$envName\Scripts\python" -m pip install -r "C:\Users\pho\repos\Spike3DWorkEnv\Spike3D\requirements.txt"
-    & "$envName\Scripts\python" -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\NeuroPy
-    & "$envName\Scripts\python" -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers
-    & "$envName\Scripts\python" -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis
+    & "$envName\Scripts\python" -m pip install -e "C:\Users\pho\repos\Spike3DWorkEnv\NeuroPy"
+    & "$envName\Scripts\python" -m pip install -e "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers"
+    & "$envName\Scripts\python" -m pip install -e "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis"
 
     # Link the new env as a symlink:
     $new_env_spike3D_folder_target="$spike3d_repo_path\$envName"
