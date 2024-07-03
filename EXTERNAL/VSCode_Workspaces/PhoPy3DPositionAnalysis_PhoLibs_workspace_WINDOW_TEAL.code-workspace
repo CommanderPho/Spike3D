@@ -116,28 +116,21 @@
 	},
 	"extensions": {
 		"recommendations": [
-			// "sketchbuch.vsc-workspace-sidebar",
-			// "salmonmode.activity-heatmap",
 			"ohyee.custom-button",
-			// "orepor.color-tabs-vscode-ext",
-			// "ryu1kn.partial-diff",
 			"rebornix.toggle",
-			// "amodio.restore-editors",
 			"buenon.scratchpads",
 			"geddski.macros",
-            "ryuta46.multi-command",
-            "jkearins.action-buttons-ext",
-            "codeandstuff.vscode-navigate-edit-history",
-            "phohale.custom-text-transform",
-            "phohale.pho-pyqt-class-generator",
-            "vscode-icons-team.vscode-icons",
-            "johnw42.pathslasher",
-            "pkief.material-icon-theme",
-            "grimmer.vscode-back-forward-button",
-            // "analytic-signal.preview-html",
-            "file-icons.file-icons",
-            "iket0731.symbol-navigate-back",
-            "hipdotmedia.hipdot-vs-code-url-scheme-grabber"
+			"ryuta46.multi-command",
+			"jkearins.action-buttons-ext",
+			"codeandstuff.vscode-navigate-edit-history",
+			"phohale.custom-text-transform",
+			"phohale.pho-pyqt-class-generator",
+			"vscode-icons-team.vscode-icons",
+			"johnw42.pathslasher",
+			"pkief.material-icon-theme",
+			"grimmer.vscode-back-forward-button",
+			"iket0731.symbol-navigate-back",
+			"hipdotmedia.hipdot-vs-code-url-scheme-grabber"
 		]
 	}
 }
