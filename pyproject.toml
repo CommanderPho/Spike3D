@@ -86,7 +86,6 @@ xarray = {extras = ["complete"], version = "^2023.9.0"}
 h5netcdf = "^1.2.0"
 xarray-datatree = "^0.0.12"
 opencv-python = "^4.8.0.76"
-ipykernel = "^6.25.2"
 pip = "^24.0"
 streamlit = "^1.27.1"
 streamlit-extras = "^0.3.2"
@@ -141,11 +140,11 @@ flox = "^0.9.8"
 opt-einsum = "^3.3.0"
 zarr = "^2.18.2"
 fsspec = "^2024.6.1"
+ipykernel = "^6.29.5"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
 viztracer = "^0.15.6"
-ipykernel = "^6.21.2"
 jupyterlab = "^3.6.1"
 dvc = {version = "^2.45.1", extras = ["gdrive"]}
 cookiecutter = "^2.5.0"
