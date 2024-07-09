@@ -232,9 +232,9 @@ figure_run = dict(should_perform_figure_generation_to_file=True, should_force_re
 active_phase = figure_run
 
 if (platform.system() == 'Windows'):
-    active_phase.update(dict(create_slurm_scripts=False, should_create_vscode_workspace=True))
+    active_phase.update(dict(create_non_slurm_bash_scripts=False, create_slurm_scripts=False, should_create_vscode_workspace=True))
 else:
-    active_phase.update(dict(create_slurm_scripts=True, should_create_vscode_workspace=False))
+    active_phase.update(dict(create_non_slurm_bash_scripts=True, create_slurm_scripts=True, should_create_vscode_workspace=False))
 
 
 ## Build Slurm Scripts:
