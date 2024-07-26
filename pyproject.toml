@@ -141,6 +141,7 @@ opt-einsum = "^3.3.0"
 zarr = "^2.18.2"
 fsspec = "^2024.6.1"
 ipykernel = "^6.29.5"
+numpy-stl = "^3.1.1"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"

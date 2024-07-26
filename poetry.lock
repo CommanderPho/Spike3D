@@ -8398,6 +8398,21 @@ dev = ["numba", "pandas", "pytest"]
 fast = ["numba"]
 
 [[package]]
+name = "numpy-stl"
+version = "3.1.1"
+description = "Library to make reading, writing and modifying both binary and ascii STL files easy."
+optional = false
+python-versions = ">3.6.0"
+files = [
+    {file = "numpy-stl-3.1.1.tar.gz", hash = "sha256:f78eea62c80938bf53ea914fa5b6c92f448f0eab5609e0e5a737dde039404334"},
+    {file = "numpy_stl-3.1.1-py3-none-any.whl", hash = "sha256:b0b7f4455c29d26d3dc0eed894f5b17c64e4019b056d0060be48f93680f6e6d3"},
+]
+
+[package.dependencies]
+numpy = "*"
+python-utils = ">=3.4.5"
+
+[[package]]
 name = "numpydoc"
 version = "1.7.0"
 description = "Sphinx extension to support docstrings in Numpy format"
@@ -18380,4 +18395,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "f3f348c66c9fbcdbb8a9762535dbdb6819e4d3c504ac041c3612f4d10dfc6fdb"
+content-hash = "38924725c189b6fa22c9d5560e60668965bf9468b77c1736658f728a8ad39d55"
