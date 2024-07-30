@@ -2,3 +2,4 @@
 neuropy = {path = "../NeuroPy", develop=true}
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
+silx = {path = "../silx", develop=true}
