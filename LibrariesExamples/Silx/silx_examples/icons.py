@@ -26,7 +26,6 @@
 """
 Display icons available in silx.
 """
-
 import functools
 import os.path
 
@@ -128,6 +127,19 @@ class IconPreview(qt.QMainWindow):
         icons = filter(lambda x: not silx.resources.is_dir("gui/icons/%s/00.png" % x), icons)
         return icons
 
+    # def copyIconToClipboard(self, icon):
+    #     clipboard = qt.QApplication.clipboard()
+    #     print(f'icon_name')
+    #     clipboard.setPixmap(icon.pixmap(32, 32))
+    
+    def copyIconNameToClipboard(self, icon_name):
+        icon_path: str = "gui/icons/" + icon_name
+        print(f'icon_name: "{icon_name}"')
+        print(f'icon_path: "{icon_path}"')
+        # clipboard = qt.QApplication.clipboard()
+        # clipboard.setText(clipboard)
+        
+        
     def createIconPanel(self, parent):
         panel = qt.QWidget(parent)
         layout = qt.QGridLayout()
@@ -165,6 +177,8 @@ class IconPreview(qt.QMainWindow):
             tool.setIconSize(qt.QSize(32, 32))
             layout.addWidget(tool, col, line)
             self.tools.append(tool)
+            # tool.clicked.connect(functools.partial(self.copyIconToClipboard, icon))
+            tool.clicked.connect(functools.partial(self.copyIconNameToClipboard, icon_name))
 
         return panel
 
