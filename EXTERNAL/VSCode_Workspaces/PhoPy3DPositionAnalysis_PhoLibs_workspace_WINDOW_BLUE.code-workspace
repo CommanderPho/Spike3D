@@ -19,7 +19,7 @@
 	],
 	"settings": {
 		"python.analysis.gotoDefinitionInStringLiteral": true,
-		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv_new\\Scripts\\python.exe",
+		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 		"jupyter.askForKernelRestart": true,
 		"jupyter.debugJustMyCode": true,
 		"files.exclude": {
@@ -75,7 +75,15 @@
 		"favorites.storageFilePath": "../.favorites.json",
 		"python.analysis.extraPaths": [],
 		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
-		"windowColors.🌈 BaseColor": "'whitesmoke'"
+		"windowColors.🌈 BaseColor": "'whitesmoke'",
+		"pyqt-integration.pyrcc.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
+		"pyqt-integration.pyuic.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
+		"pyqt-integration.pylupdate.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pylupdate5.exe",
+		// "pyqt-integration.pyuic.compile.filepath": "Ui_${ui_name}.py",
+		// "pyqt-integration.pyuic.compile.filepath": "${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
+		"pyqt-integration.pyuic.compile.filepath": "Uic_AUTOGEN_${ui_name}.py",
+		"pyqt-integration.pyuic.compile.addOptions": "--import-from \"pyphoplacecellanalysis.Resources\"",
+		"python.experiments.enabled": false,
 	},
 	"tasks": {
 		"version": "2.0.0",
