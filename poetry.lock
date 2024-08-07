@@ -1277,6 +1277,23 @@ six = "*"
 swagger-spec-validator = ">=2.0.1"
 
 [[package]]
+name = "brokenaxes"
+version = "0.6.1"
+description = "Create broken axes"
+optional = false
+python-versions = "*"
+files = [
+    {file = "brokenaxes-0.6.1-py3-none-any.whl", hash = "sha256:b3904ca611273ef8fd47ac39c2ed70d87ea5a3c1748a0897d4932a55ec8c0ebd"},
+    {file = "brokenaxes-0.6.1.tar.gz", hash = "sha256:04223f3585a4056f627cc0a3237a6518a9f741e4b88b2ad1243256ad332a343e"},
+]
+
+[package.dependencies]
+matplotlib = ">3.6"
+
+[package.extras]
+test = ["pytest (>=6.0)", "pytest-cov", "pytest-mpl"]
+
+[[package]]
 name = "build"
 version = "1.2.1"
 description = "A simple, correct Python build frontend"
@@ -8043,6 +8060,12 @@ files = [
     {file = "networkx-3.2.1-py3-none-any.whl", hash = "sha256:f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2"},
     {file = "networkx-3.2.1.tar.gz", hash = "sha256:9f1bb5cf3409bf324e0a722c20bdb4c20ee39bf1c30ce8ae499c8502b0b5e0c6"},
 ]
+
+[package.dependencies]
+matplotlib = {version = ">=3.5", optional = true, markers = "extra == \"default\""}
+numpy = {version = ">=1.22", optional = true, markers = "extra == \"default\""}
+pandas = {version = ">=1.4", optional = true, markers = "extra == \"default\""}
+scipy = {version = ">=1.9,<1.11.0 || >1.11.0,<1.11.1 || >1.11.1", optional = true, markers = "extra == \"default\""}
 
 [package.extras]
 default = ["matplotlib (>=3.5)", "numpy (>=1.22)", "pandas (>=1.4)", "scipy (>=1.9,!=1.11.0,!=1.11.1)"]
@@ -18394,4 +18417,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "38924725c189b6fa22c9d5560e60668965bf9468b77c1736658f728a8ad39d55"
+content-hash = "5fa2507c6610d1c04d64a0c5e380a1fd906578015fb0695a49587896eefc7a3b"
