@@ -164,3 +164,4 @@ test.hdf
 cell_execution_log.json
 .venv_*
 _cell_execution_log_*.json
+.env
