@@ -142,7 +142,6 @@ ipykernel = "^6.29.5"
 numpy-stl = "^3.1.1"
 brokenaxes = "^0.6.1"
 networkx = {version = "3.2.1", extras = ["default"]}
-fiftyone = {extras = ["desktop"], version = "^0.24.1"}
 opencv-contrib-python = "^4.10.0.84"
 python-dotenv = "^1.0.1"
 silx = {extras = ["full"], version = "^2.1.0"}
