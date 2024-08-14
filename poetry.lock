@@ -2358,49 +2358,6 @@ files = [
 dev = ["black", "coveralls", "mypy", "pylint", "pytest (>=5)", "pytest-cov"]
 
 [[package]]
-name = "darwin-fiftyone"
-version = "1.1.16"
-description = "Integration between V7 Darwin and Voxel51"
-optional = false
-python-versions = "*"
-files = [
-    {file = "darwin_fiftyone-1.1.16-py3-none-any.whl", hash = "sha256:b90765a1d6bea3ac3b3bba7a80bc99a4f0a839b21a24d75fb2728658e5a61e11"},
-    {file = "darwin_fiftyone-1.1.16.tar.gz", hash = "sha256:2be665cd3df910658f9ee177ab6d072b3a2141054bfae66f4657c2ff20db8731"},
-]
-
-[package.dependencies]
-darwin-py = "*"
-fiftyone = "*"
-
-[[package]]
-name = "darwin-py"
-version = "0.7.14"
-description = "Library and command line interface for darwin.v7labs.com"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "darwin-py-0.7.14.tar.gz", hash = "sha256:2543af31373feebc34a615007cb9d802f57dad0bc1bbb45d6c579331e1f28021"},
-]
-
-[package.dependencies]
-argcomplete = "*"
-dataclasses = "*"
-deprecation = "*"
-humanize = "*"
-jsonschema = "*"
-numpy = "*"
-pillow = "*"
-pydantic = "*"
-pyyaml = ">=5.1"
-requests = "*"
-rich = "*"
-upolygon = "0.1.6"
-
-[package.extras]
-ml = ["sklearn", "torch", "torchvision"]
-test = ["pytest", "pytest-describe", "responses", "sklearn"]
-
-[[package]]
 name = "dash"
 version = "2.16.1"
 description = "A Python framework for building reactive web-apps. Developed by Plotly."
@@ -2532,17 +2489,6 @@ distributed = ["distributed (==2024.2.1)"]
 test = ["pandas[test]", "pre-commit", "pytest", "pytest-cov", "pytest-rerunfailures", "pytest-timeout", "pytest-xdist"]
 
 [[package]]
-name = "dataclasses"
-version = "0.6"
-description = "A backport of the dataclasses module for Python 3.6"
-optional = false
-python-versions = "*"
-files = [
-    {file = "dataclasses-0.6-py3-none-any.whl", hash = "sha256:454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f"},
-    {file = "dataclasses-0.6.tar.gz", hash = "sha256:6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"},
-]
-
-[[package]]
 name = "debugpy"
 version = "1.8.1"
 description = "An implementation of the Debug Adapter Protocol for Python"
@@ -2650,20 +2596,6 @@ wrapt = ">=1.10,<2"
 
 [package.extras]
 dev = ["PyTest", "PyTest-Cov", "bump2version (<1)", "sphinx (<2)", "tox"]
-
-[[package]]
-name = "deprecation"
-version = "2.1.0"
-description = "A library to handle automated deprecations"
-optional = false
-python-versions = "*"
-files = [
-    {file = "deprecation-2.1.0-py2.py3-none-any.whl", hash = "sha256:a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a"},
-    {file = "deprecation-2.1.0.tar.gz", hash = "sha256:72b3bde64e5d778694b0cf68178aed03d15e15477116add3fb773e581f9518ff"},
-]
-
-[package.dependencies]
-packaging = "*"
 
 [[package]]
 name = "desert"
@@ -18067,29 +17999,6 @@ files = [
 httpx = ">=0.10.0"
 
 [[package]]
-name = "upolygon"
-version = "0.1.6"
-description = "Collection of fast polygon operations for DL"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "upolygon-0.1.6-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:921f90aa15647525ac663263caf4e95482994becd3c2e032a18e20ae199eec39"},
-    {file = "upolygon-0.1.6-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:e7456774d1866d4ae7a633378a77a7d3628b3d68e6ee0a0c4702c5e51daf9ce6"},
-    {file = "upolygon-0.1.6-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:0ce36438425d98e69e4937c7a3edc63539dfade0a038a5befc81e5cbbd154903"},
-    {file = "upolygon-0.1.6-cp36-cp36m-win_amd64.whl", hash = "sha256:9a9afc9b646699657528f39fab79e2166e698e899942fa3aa898f9edf3247467"},
-    {file = "upolygon-0.1.6-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:5eaef5a0051390fc64faf1dafc36caa70d658deae8b60d397e9e17187664af58"},
-    {file = "upolygon-0.1.6-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:66ab0a816287ee821d5f82515f6c31ef93de81c4dbc58265a65a8e28ee87a667"},
-    {file = "upolygon-0.1.6-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:d9acfa2defa872b9068f9b565b30321992ff5134ad66b9adf7a747f75a9e9cff"},
-    {file = "upolygon-0.1.6-cp37-cp37m-win_amd64.whl", hash = "sha256:8203144391eba29042d452bc84365d501359a7bc7d2e9dee3e78cf84798f8e32"},
-    {file = "upolygon-0.1.6-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:2874c142191c1980fa949ef1ccc2f62dc90255a6721e2322323e4d5659a4f6ea"},
-    {file = "upolygon-0.1.6-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:d487d72290c3bd405b1480e1773748dd91e4a84f56a000d149b369e16e93cc13"},
-    {file = "upolygon-0.1.6-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:273890111325ddee1a09a821a478084dfc857446d7a067475ff93dd319238858"},
-    {file = "upolygon-0.1.6-cp38-cp38-win_amd64.whl", hash = "sha256:f46399b9476bb8f617efc316d5c1fda3df975ddfdcd4653174b4312e2d96504f"},
-    {file = "upolygon-0.1.6-cp39-cp39-win_amd64.whl", hash = "sha256:02686e5f116ea999f2c0b023b3e36a303bf9194c16d5a22bed0624faeb97cd85"},
-    {file = "upolygon-0.1.6.tar.gz", hash = "sha256:de148c107daf068b169c95491b4bd1b80137e53cb0eb965a539ba85097c39e97"},
-]
-
-[[package]]
 name = "uri-template"
 version = "1.3.0"
 description = "RFC 6570 URI Template Processor"
@@ -19615,4 +19524,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "a8be17f720f8940ff059d8e0b0ddab00641d717df1c2b8de5798eb054403e26a"
+content-hash = "aff342cd4abb2203498359f09b3277d218f6fc78bddf816d66656503820b9f46"

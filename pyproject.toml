@@ -147,7 +147,6 @@ networkx = {version = "3.2.1", extras = ["default"]}
 fiftyone = "^0.24.1"
 opencv-contrib-python = "^4.10.0.84"
 python-dotenv = "^1.0.1"
-darwin-fiftyone = "^1.1.16"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
