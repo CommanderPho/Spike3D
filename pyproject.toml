@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.3.0"
+version = "0.3.1"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"
@@ -71,7 +71,6 @@ tqdm = "^4.65.1"
 jinja2 = "3.0.3"
 psutil = "^5.9.5"
 plotly = "^5.16.1"
-silx = {extras = ["full"], version = "^2.1.0"}
 ipygany = "^0.5.0"
 pyqode-core = {path = "../pyqode.core/dist/current.whl"}
 pyqode-python = {path = "../pyqode.python/dist/current.whl"}
@@ -105,7 +104,6 @@ ruptures = "^1.1.9"
 maxlikespy = {git = "https://github.com/CommanderPho/maxlikespy"}
 mkdocs-matplotlib = "^0.10.1"
 pycorrelate = "^0.3"
-orange3 = "^3.36.2"
 napari-animation = "^0.0.8"
 napari-hdf5-netcdf-viewer = "^0.1.1"
 napari-plot-profile = "^0.2.2"
@@ -144,9 +142,10 @@ ipykernel = "^6.29.5"
 numpy-stl = "^3.1.1"
 brokenaxes = "^0.6.1"
 networkx = {version = "3.2.1", extras = ["default"]}
-fiftyone = "^0.24.1"
+fiftyone = {extras = ["desktop"], version = "^0.24.1"}
 opencv-contrib-python = "^4.10.0.84"
 python-dotenv = "^1.0.1"
+silx = {extras = ["full"], version = "^2.1.0"}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
@@ -168,6 +167,8 @@ ipywidgets = "^8.0.5"
 neuropy = {path = "../NeuroPy", develop=true}
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
+
+
 
 [tool.poetry.scripts]
 pull-changes = "scripts/unix/repos_pull_changes.sh"
