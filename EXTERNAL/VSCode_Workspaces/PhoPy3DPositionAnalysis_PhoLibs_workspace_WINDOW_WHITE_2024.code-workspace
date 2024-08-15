@@ -130,8 +130,8 @@
 
 
             // "numberedBookmarks.lineBackground": "#007700",
-            "editor.lineHighlightBackground": "#4f4f4f44",
-            "editor.lineHighlightBorder": "#ffffffaf",
+            "editor.lineHighlightBackground": "#4f4f4f18",
+            "editor.lineHighlightBorder": "#ffffff52",
             "editor.selectionBackground": "#e788ff5e", //Currently SELECTED text
             "editor.selectionHighlightBackground": "#ff00005b", //Same content as selection
             "editor.findMatchBackground": "#bb00cca8", //Current SEARCH MATCH
