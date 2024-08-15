@@ -165,3 +165,5 @@ cell_execution_log.json
 .venv_*
 _cell_execution_log_*.json
 .env
+output/Exports/2024-08-01_array_as_image/*
+
