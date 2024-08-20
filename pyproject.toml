@@ -148,6 +148,7 @@ silx = {extras = ["full"], version = "^2.1.0"}
 fiftyone = {extras = ["desktop"], version = "^0.24.1"}
 scikit-learn = "^1.5.1"
 scikit-image = "^0.24.0"
+pho-jupyter-preview-widget = {path = "../pho_jupyter_preview_widget", develop = true}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
