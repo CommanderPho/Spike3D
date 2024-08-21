@@ -17,8 +17,10 @@
 			"path": "../../../NeuroPy/neuropy"
 		},
 		{
-			// "path": "../../../../cloud/turbo/Data/Output/gen_scripts"
 			"path": "../../output/gen_scripts"
+		},
+		{
+			"path": "../../../pho_jupyter_preview_widget/pho_jupyter_preview_widget"
 		}
 	],
 	"settings": {
