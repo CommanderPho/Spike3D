@@ -15267,6 +15267,52 @@ files = [
 ]
 
 [[package]]
+name = "rbeast"
+version = "0.1.21"
+description = "Bayesian changepoint detection and time series decomposition"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "Rbeast-0.1.21-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:8430de27bdafc356ca7c2f1fb922136d636e44d2b7b5c3c7d7450f376e2753f2"},
+    {file = "Rbeast-0.1.21-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:5a359aba024932ca2bb39bd2ea955c33e22593a22e5696b2af45778be1308bb3"},
+    {file = "Rbeast-0.1.21-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5d6068208215068b288cd0925ae5992c0f58fd97eb198a324a65f4c49079f0d2"},
+    {file = "Rbeast-0.1.21-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b97a0f53e06214e165fff0e70fdf90745c43f13ebbdc572fb70f837b355f482b"},
+    {file = "Rbeast-0.1.21-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:d026ac17d05c0107dac7710b6a7efadd778e2a8fce32e081f8bf520e1e4758d0"},
+    {file = "Rbeast-0.1.21-cp310-cp310-win_amd64.whl", hash = "sha256:de77c70743605d8d38d48ccbd193fe7918fb54cc576cb60ff6380d88eef6893a"},
+    {file = "Rbeast-0.1.21-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:133d519e12152fc33a7dd9d619177283c2c9aa7aba3792fef36a392e8334b6e5"},
+    {file = "Rbeast-0.1.21-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:01218191430196e0f758b1ecde0f1ac982e29ad45cb83587a053cb7f9a313dce"},
+    {file = "Rbeast-0.1.21-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0a604757f26b0992817a2ba1daacf6d3bf991710a15b3ae93e4140db2d7d8693"},
+    {file = "Rbeast-0.1.21-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:da0eaa4a33a5ab3671baa1b033977e955b57fbf7b502195d16c8ce5a1a12a00f"},
+    {file = "Rbeast-0.1.21-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:c6ddf42da162c1272ce0ef6423324631aa5bd62a999f924c0556a38eae7d7e70"},
+    {file = "Rbeast-0.1.21-cp311-cp311-win_amd64.whl", hash = "sha256:670d779dd9768914946caf57fe0f1408bde21de467fed275afb50597d699f886"},
+    {file = "Rbeast-0.1.21-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:9a553f92fcabfebe26dd45cb18b006376cbe38388827fcf0062e68ff7de38dd6"},
+    {file = "Rbeast-0.1.21-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f5f1f573214a4b7e7f129d68edcf286ce84733975d169847f22c32c37e27a1f8"},
+    {file = "Rbeast-0.1.21-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:74417aa576f5867fbbee2306a1b25e1cfdd32f2488d610bf2f8dc84a3688b78d"},
+    {file = "Rbeast-0.1.21-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0b170d9623bc330ab87890b2459a66e65b97e9fab0bac85323c369006de320d6"},
+    {file = "Rbeast-0.1.21-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:7bd8e694fcbe06ed519db62f3943c476a7b7c2fa68f107486835f9526ec5efd0"},
+    {file = "Rbeast-0.1.21-cp312-cp312-win_amd64.whl", hash = "sha256:cad93e7903b82253680b9c77d5cbc99f74a37b536d786ae2031b90a4fec3d54f"},
+    {file = "Rbeast-0.1.21-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:c8dc6405a08ce9534379189cddf07d7efa8c366b1650ba257b1325cf5689c43c"},
+    {file = "Rbeast-0.1.21-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0a5999d85d065f1de673885d82ec145f34d6c19776ca4286fde815b7f64d05c0"},
+    {file = "Rbeast-0.1.21-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8be7cfe32c2fbf4917c45a0f1c2716bced08759fa6a966458bac975b18610275"},
+    {file = "Rbeast-0.1.21-cp37-cp37m-win_amd64.whl", hash = "sha256:a2f928147ec7b2737ff2b803dfc84ea7510ccddbab4573c59bafa64fbe3d32e7"},
+    {file = "Rbeast-0.1.21-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:739ef912b8b64752c932617bef250ba96410746645436bd593c263730be448ce"},
+    {file = "Rbeast-0.1.21-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:5cff5fe21af1f6473ee6cf78d1737ab5b512c1bf85efe1f070ef7acafcd673db"},
+    {file = "Rbeast-0.1.21-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:17b80a70a6568723499ea87956f26a5135a5d3b6efd3c2d9aa7b12094b1f1495"},
+    {file = "Rbeast-0.1.21-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:25bb8130ba63348c9de066cdc20e7643ed02fbca726f6114a4d584d68eaa7342"},
+    {file = "Rbeast-0.1.21-cp38-cp38-win_amd64.whl", hash = "sha256:3998c1bec595312e0995f561b7df3274561f0db4776b712290a3ad69a1f9b37a"},
+    {file = "Rbeast-0.1.21-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:520d0f07d15c1de4ace8d9b0d534fe03230614cb63bc73c818bdc03dcf5c379e"},
+    {file = "Rbeast-0.1.21-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:4ae658e52fc0eb8c72f7b6ee4ba424a3b3dfc1d0354e3e09d9d1f5c4e9f52737"},
+    {file = "Rbeast-0.1.21-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:01bebb4235fab5ed7fa18a30133d9d854cd089af380aabe14996d4f1740c1f2d"},
+    {file = "Rbeast-0.1.21-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9ef4024e24bc6c122095330114fd13c9b81e2e8ecad78ce433a6c9b9ac526609"},
+    {file = "Rbeast-0.1.21-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:747183662d17a6b0b91b109d0ae7e71a88e020d1fa8c4a2a51909a1cb0b69ae5"},
+    {file = "Rbeast-0.1.21-cp39-cp39-win_amd64.whl", hash = "sha256:80c664fd5a9da380fba1d448eaa8682ae12eaae3119398dba5d25386f013c029"},
+    {file = "Rbeast-0.1.21.tar.gz", hash = "sha256:381751a7de325047d84b96ee2d4c041df9d7371aa33529076853ba38f797007f"},
+]
+
+[package.dependencies]
+numpy = ">=1.10.0"
+
+[[package]]
 name = "rdp"
 version = "0.8"
 description = "Pure Python implementation of the Ramer-Douglas-Peucker algorithm"
@@ -19482,4 +19528,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "e3d52b7f936576ec42bc884b86d06e141210c195e89c6136716092471e5b151c"
+content-hash = "6f4a9a18df242634eebf96fa616e3a1dadd45df4f63210ee4a0d4ec4a6382c25"
