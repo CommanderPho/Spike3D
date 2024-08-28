@@ -171,7 +171,8 @@ ipywidgets = "^8.0.5"
 neuropy = {path = "../NeuroPy", develop=true}
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-
+silx = {path = "../silx", develop=true, extras = ["full"]}
+#silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=true, extras = ["full"]} # , version = "^2.1.0"
 
 
 [tool.poetry.scripts]
