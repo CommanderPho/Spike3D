@@ -18,13 +18,13 @@ xfce4-terminal \
 # Launch Visual Studio Code separately
 /home/halechr/bin/VSCode-linux-x64/bin/code &
 
-# Geometry for the Jupyter terminal (e.g., 90 columns wide by 30 lines tall, offset by 100 pixels to the right and down)
-geometry2="90x30+100+100"
+# # Geometry for the Jupyter terminal (e.g., 90 columns wide by 30 lines tall, offset by 100 pixels to the right and down)
+# geometry2="90x30+100+100"
 
-# Launch a second xfce4-terminal window and execute the JupyterLab launch script
-xfce4-terminal \
---window \
---geometry=$geometry2 \
---title='Jupyter Lab' \
---working-directory='/home/halechr/repos' \
---command="bash /home/halechr/repos/scripts/unix/launch_jupyter_lab_with_remote_access.sh" &
+# # Launch a second xfce4-terminal window and execute the JupyterLab launch script
+# xfce4-terminal \
+# --window \
+# --geometry=$geometry2 \
+# --title='Jupyter Lab' \
+# --working-directory='/home/halechr/repos' \
+# --command="bash /home/halechr/repos/scripts/unix/launch_jupyter_lab_with_remote_access.sh" &
