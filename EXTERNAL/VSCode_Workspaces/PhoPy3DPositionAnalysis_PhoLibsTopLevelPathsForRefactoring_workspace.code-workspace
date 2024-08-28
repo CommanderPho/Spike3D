@@ -18,6 +18,9 @@
 		},
 		{
 			"path": "../../../../cloud/turbo/Data/Output/gen_scripts"
+		},
+		{
+			"path": "../../../flexitext"
 		}
 	],
 	"settings": {
