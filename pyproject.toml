@@ -146,8 +146,8 @@ opencv-contrib-python = "^4.10.0.84"
 python-dotenv = "^1.0.1"
 silx = {extras = ["full"], version = "^2.1.0"}
 fiftyone = {extras = ["desktop"], version = "^0.24.1"}
-scikit-learn = "^1.5.1"
-scikit-image = "^0.24.0"
+scikit-learn = "^1.5"
+scikit-image = "^0.24"
 pho-jupyter-preview-widget = {path = "../pho_jupyter_preview_widget", develop = true}
 rbeast = "^0.1.21"
 
