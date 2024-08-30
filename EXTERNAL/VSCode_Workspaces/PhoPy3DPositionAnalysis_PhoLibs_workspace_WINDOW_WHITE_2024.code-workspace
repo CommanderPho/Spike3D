@@ -65,6 +65,7 @@
             "loadNpmCommands": true
         },
         "custom-text-transform.transforms": [
+        
             {
                 "name": "Variable list into Python dictionary",
                 "function": "const variableList = input.split(',').map(varName => varName.trim()); return '{' + variableList.map(varName => `'${varName}':${varName}`).join(', ') + '}';"
