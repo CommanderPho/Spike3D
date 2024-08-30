@@ -144,12 +144,12 @@ brokenaxes = "^0.6.1"
 networkx = {version = "3.2.1", extras = ["default"]}
 opencv-contrib-python = "^4.10.0.84"
 python-dotenv = "^1.0.1"
-silx = {path = "../silx", develop=true, extras = ["full"]}
 #fiftyone = {extras = ["desktop"], version = "^0.24.1"}
 scikit-learn = "^1.5"
 scikit-image = "^0.24"
 pho-jupyter-preview-widget = {path = "../pho_jupyter_preview_widget", develop = true}
 #rbeast = "^0.1.21"
+virtualenv = "^20.26.3"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
@@ -171,8 +171,7 @@ ipywidgets = "^8.0.5"
 neuropy = {path = "../NeuroPy", develop=true}
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-# silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=true, extras = ["full"]} # , version = "^2.1.0"
-silx = {path = "../silx", develop=true, extras = ["full"]}
+
 
 
 
