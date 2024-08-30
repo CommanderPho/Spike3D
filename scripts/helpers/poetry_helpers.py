@@ -8,8 +8,11 @@ import glob
 
 # from pyphocorehelpers.Filesystem.path_helpers import copy_recursive
 
-from helpers.path_helpers import copy_recursive
-from helpers.source_code_helpers import replace_text_in_file # for finding .whl file after building binary repo
+# from helpers.path_helpers import copy_recursive
+# from helpers.source_code_helpers import replace_text_in_file # for finding .whl file after building binary repo
+
+from path_helpers import copy_recursive
+from source_code_helpers import replace_text_in_file # for finding .whl file after building binary repo
 
 
 
@@ -117,6 +120,25 @@ class PoetryHelpers:
     def backup_poetry_env(cls):
         """ backs up the current poetry environment to a zip file and returns the path of the file. """
         raise NotImplementedError
+
+    @classmethod
+    def export_poetry_repo(cls, repo_path, output_file_path="requirements.txt"):
+        """ Exports the child repo.
+        
+        from Spike3D.scripts.helpers.export_subrepos import export_poetry_repo
+        
+        PoetryHelpers.export_poetry_repo(
+        """
+        if not isinstance(repo_path, Path):
+            repo_path = Path(repo_path).resolve()
+        print(f'=======> Processing Child Repo: `{repo_path}` ====]:')
+        assert repo_path.exists()
+        os.chdir(repo_path)
+        export_command = f'poetry export --without-hashes --format=requirements.txt > "{output_file_path}"'
+        print(f'\texport_command: {export_command}')
+        os.system(export_command) # run this to install the kernel for the poetry environment
+        print(f'----------------------------------------------------------------------------------- done.\n')
+
 
     @classmethod
     def duplicate_poetry_env(cls):
