@@ -8,6 +8,7 @@ from matplotlib.colors import ListedColormap
 import pyvista as pv
 import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 
+from pyphocorehelpers.programming_helpers import metadata_attributes
 from pyphocorehelpers.function_helpers import function_attributes
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
 
@@ -16,6 +17,7 @@ from collections import Counter # debug_detect_repeated_values
 import scipy # pho_compute_rank_order
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import RankOrderAnalyses # for _compute_single_rank_order_shuffle
+
 
 
 # ==================================================================================================================== #
@@ -304,7 +306,7 @@ def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: Decoded
 # ==================================================================================================================== #
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionTables
 
-def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE):
+def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE, included_session_contexts):
     """ captures a lot of stuff still, don't remember what. 
     
     Usage:    
@@ -321,7 +323,7 @@ def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_pa
     # Rootfolder mode:
     # joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
 
-    # Subfolder mode:
+    # Subfolder mode: PosixPath('/nfs/turbo/umms-kdiba/Data/2024-09-02/kdiba-gor01-one-2006-6-08_14-26-15_joined_neruon_fri_df.pkl')
     # joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
 
     # Both mode:
