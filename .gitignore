@@ -167,3 +167,4 @@ _cell_execution_log_*.json
 .env
 output/Exports/2024-08-01_array_as_image/*
 **/output/_temp_individual_posteriors/**/*.png
+EXTERNAL/PhoDibaPaper2024Book/_build
