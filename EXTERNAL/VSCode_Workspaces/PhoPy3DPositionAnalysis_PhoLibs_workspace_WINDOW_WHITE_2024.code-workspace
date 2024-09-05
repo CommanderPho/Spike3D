@@ -338,7 +338,8 @@
             "grimmer.vscode-back-forward-button",
             "analytic-signal.preview-html",
             "iket0731.symbol-navigate-back",
-            "hipdotmedia.hipdot-vs-code-url-scheme-grabber"
+            "hipdotmedia.hipdot-vs-code-url-scheme-grabber",
+            "ms-toolsai.vscode-jupyter-cell-tags"
         ]
 	}
 }
