@@ -165,6 +165,7 @@ libcst = "^1.1.0"
 black = "^24.2.0"
 ghp-import = "^2.1.0"
 jupyter-cache = "^1.0.0"
+jupytext = "^1.16.4"
 
 
 [tool.poetry.group.testing.dependencies]
