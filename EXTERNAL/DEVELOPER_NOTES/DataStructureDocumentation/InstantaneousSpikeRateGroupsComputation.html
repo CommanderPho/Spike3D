@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>DOCS<InstantaneousSpikeRateGroupsComputation></title>
+<style type="text/css">
+.ansi2html-content { display: inline; font-family: "Lucida Console", "Courier New", monospace; font-size: 11px; white-space: pre-wrap; word-wrap: break-word; }
+.body_foreground { color: #AAAAAA; }
+.body_background { background-color: #000000; }
+.inv_foreground { color: #000000; }
+.inv_background { background-color: #AAAAAA; }
+.ansi1 { font-weight: bold; }
+.ansi91 { color: #ff0000; }
+.ansi92 { color: #00ff00; }
+.ansi93 { color: #ffff00; }
+.ansi94 { color: #5c5cff; }
+</style>
+</head>
+<body class="body_foreground body_background" style="font-size: normal;" >
+<pre class="ansi2html-content">
+<span class="ansi1"></span><span class="ansi1 ansi91">InstantaneousSpikeRateGroupsComputation</span> - printed by DocumentationFilePrinter on 2024-09-10
+===================================================================================================
+- <span class="ansi94">InstantaneousSpikeRateGroupsComputation</span>: <span class="ansi92">pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.</span><span class="ansi1 ansi92">InstantaneousSpikeRateGroupsComputation</span><span class="ansi93"> = InstantaneousSpikeRateGroupsComputation(instantaneous_time_bin_size_seconds=0.01, active_identifying_session_ctx=IdentifyingContext&lt;('kdiba', 11)&gt;, LxC_aclus=array(['a0s0_109', 'a0s1_3', 'a0s1_29', 'a0s1_103', 'a0s3_90', 'a0s4_91',&lt;br&gt;       'a0s4_95', 'a1s1_23', 'a1s2_25', 'a...</span>
+	- <span class="ansi94">instantaneous_time_bin_size_seconds</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 0.01</span>
+	- <span class="ansi94">active_identifying_session_ctx</span>: <span class="ansi92">neuropy.utils.</span><span class="ansi1 ansi92">IdentifyingContext</span><span class="ansi93"> = kdiba_11</span>
+	- <span class="ansi94">LxC_aclus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span><span class="ansi93"> = ['a0s0_109' 'a0s1_3' 'a0s1_29' 'a0s1_103' 'a0s3_90' 'a0s4_91' 'a0s4_95'&lt;br&gt; 'a1s1_23' 'a1s2_25' 'a1s3_14' 'a1s3_30' 'a1s3_32' 'a2s0_8' 'a2s0_27'&lt;br&gt; 'a2s1_27']</span> - (15,)
+	- <span class="ansi94">SxC_aclus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span><span class="ansi93"> = ['a0s0_23' 'a0s0_4' 'a0s0_58' 'a0s1_55' 'a0s2_3' 'a0s2_19' 'a0s3_8'&lt;br&gt; 'a1s0_41' 'a1s1_29' 'a2s0_17']</span> - (10,)
+	- <span class="ansi94">Fig2_Replay_FR</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [SingleBarResult(mean=8.333837784304242, std=5.639481725313297, values=array([ 1.60725633,  9.9282129 ,  8.60379837, 12.62408435,  1.9947114 ,&lt;br&gt;        7.93004317, 14.51353798, 13.00945012,  2.75132607, 19.63948603,&lt;br&gt;        6.05175417,  8.66172197, 15.0151873 ,  2.6769965...</span> - (4,)
+	- <span class="ansi94">Fig2_Laps_FR</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [SingleBarResult(mean=57.10688136117427, std=13.781579260022415, values=array([39.61295556, 67.61062375, 49.08388892, 71.03713898, 39.42866491,&lt;br&gt;       56.68941287, 82.88981379, 45.88695345, 67.37847854, 61.70989737,&lt;br&gt;       51.43737256, 54.81508441, 79.2576333 , 52.539145...</span> - (4,)
+	- <span class="ansi94">LxC_ReplayDeltaMinus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">LxC_ReplayDeltaPlus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">SxC_ReplayDeltaMinus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">SxC_ReplayDeltaPlus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">LxC_ThetaDeltaMinus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">LxC_ThetaDeltaPlus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">SxC_ThetaDeltaMinus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">SxC_ThetaDeltaPlus</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">all_incl_endPlatforms_InstSpikeRateTrends_df</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">LxC_scatter_props</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+	- <span class="ansi94">SxC_scatter_props</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+
+</pre>
+</body>
+
+</html>
