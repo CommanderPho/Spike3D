@@ -312,6 +312,9 @@ def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_pa
     Usage:    
         # BATCH_DATE_TO_USE = '2023-10-05_NewParameters'
         BATCH_DATE_TO_USE = '2023-10-07'
+
+        from PendingNotebookCode import build_and_merge_all_sessions_joined_neruon_fri_df
+
         all_sessions_joined_neruon_fri_df, out_path = build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE)
 
 
