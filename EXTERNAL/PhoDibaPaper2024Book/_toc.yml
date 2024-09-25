@@ -9,3 +9,4 @@ chapters:
 - file: notebooks
 - file: neptune_result_fetching
 - file: markdown-notebooks
+- file: log_files_browser
