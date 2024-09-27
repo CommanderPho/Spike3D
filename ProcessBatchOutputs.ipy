@@ -307,9 +307,9 @@ if (platform.system() != 'Windows'):
 
 	if (active_phase.is_figure_phase or also_show_figure_script_outputs and (len(sbatch_figs_start_slurm_scripts)>0)):
 		print("Figures:")
-		print(sbatch_run_start_slurm_scripts)
+		print(sbatch_figs_start_slurm_scripts)
 		print(f'\n\n')
-		copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
+		copy_to_clipboard(sbatch_figs_start_slurm_scripts, message_print=True)
 		
 
 
