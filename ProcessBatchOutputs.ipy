@@ -98,8 +98,8 @@ def execute_code_block(code_block: str) -> None:
         print(f"Error executing command: {e}")
 
 
-# enable_auto_code_block_execution: bool = True
-enable_auto_code_block_execution: bool = False
+enable_auto_code_block_execution: bool = True
+# enable_auto_code_block_execution: bool = False
 
 
 BATCH_DAY_DATE: str = '2024-09-27'
@@ -170,11 +170,11 @@ included_session_contexts = [
 
 
 ## Setup Functions:
-force_recompute_override_computations_includelist = []
+# force_recompute_override_computations_includelist = []
 # force_recompute_override_computations_includelist = ['directional_decoders_evaluate_epochs',]
 # force_recompute_override_computations_includelist = ['split_to_directional_laps','merged_directional_placefields','directional_decoders_evaluate_epochs','directional_decoders_epoch_heuristic_scoring']
 # force_recompute_override_computations_includelist = ['directional_decoders_evaluate_epochs','directional_decoders_epoch_heuristic_scoring']
-# force_recompute_override_computations_includelist = ['lap_direction_determination', 'split_to_directional_laps', 'pf_computation', 'pfdt_computation','firing_rate_trends','merged_directional_placefields','rank_order_shuffle_analysis',]
+force_recompute_override_computations_includelist = ['lap_direction_determination', 'split_to_directional_laps', 'pf_computation', 'pfdt_computation','firing_rate_trends','merged_directional_placefields','rank_order_shuffle_analysis','directional_decoders_evaluate_epochs']
 # force_recompute_override_computations_includelist = ['firing_rate_trends', 'extended_stats', 'long_short_decoding_analyses', 'jonathan_firing_rate_analysis', 'long_short_fr_indicies_analyses', 'short_long_pf_overlap_analyses', 'long_short_post_decoding', ]
 # force_recompute_override_computations_includelist = ['rank_order_shuffle_analysis','wcorr_shuffle_analysis','trial_by_trial_metrics']
 
