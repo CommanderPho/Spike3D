@@ -46,7 +46,7 @@ from neuropy.core.session.Formats.BaseDataSessionFormats import find_local_sessi
 from neuropy.core import Epoch
 
 from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
-
+from pyphocorehelpers.programming_helpers import copy_to_clipboard
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
 import pyphoplacecellanalysis.General.Batch.runBatch
@@ -282,11 +282,11 @@ if (platform.system() == 'Windows'):
 
 	print(f'\n\n')
 
-# Function to perform the copy to clipboard action
-def perform_copy_to_clipboard(code_to_copy: str):
-	payload = f"navigator.clipboard.writeText(`{code_to_copy}`)"
-	js_command = f"eval({payload})"
-	display(widgets.HTML(value=f'<img src onerror="{js_command}">'))
+# # Function to perform the copy to clipboard action
+# def perform_copy_to_clipboard(code_to_copy: str):
+# 	payload = f"navigator.clipboard.writeText(`{code_to_copy}`)"
+# 	js_command = f"eval({payload})"
+# 	display(widgets.HTML(value=f'<img src onerror="{js_command}">'))
 
 # Function to execute code in terminal
 # def perform_execute(b):
@@ -303,15 +303,14 @@ if (platform.system() != 'Windows'):
 		print("RunMain:")
 		print(sbatch_run_start_slurm_scripts)
 		print(f'\n\n')
-		perform_copy_to_clipboard(sbatch_run_start_slurm_scripts)
+		copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
 
 	if (active_phase.is_figure_phase or also_show_figure_script_outputs and (len(sbatch_figs_start_slurm_scripts)>0)):
 		print("Figures:")
 		print(sbatch_run_start_slurm_scripts)
 		print(f'\n\n')
-		perform_copy_to_clipboard(sbatch_run_start_slurm_scripts)
+		copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
 		
-
 
 
 # Batch 1
