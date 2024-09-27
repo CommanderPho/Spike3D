@@ -75,3 +75,8 @@ else
     echo "$envName" >> "$spike3d_repo_path/.gitignore"
     echo "Completed successfully! done."
 fi
+
+# fullPythonPath="/home/halechr/Library/VSCode/green/.venv_green/bin/python"
+# '/home/halechr/Library/VSCode/green/.venv_green/bin/python'
+# '/home/halechr/Library/VSCode/green/.venv_green/bin/activate'
+# source /home/halechr/Library/VSCode/green/.venv_green/bin/activate
