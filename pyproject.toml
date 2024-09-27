@@ -84,7 +84,6 @@ vaex = "^4.17.0"
 xarray = {extras = ["complete"], version = "^2023.9.0"}
 h5netcdf = "^1.2.0"
 xarray-datatree = "^0.0.12"
-opencv-python = "^4.8.0.76"
 pip = "^24.0"
 streamlit = "^1.27.1"
 streamlit-extras = "^0.3.2"
@@ -142,7 +141,6 @@ ipykernel = "^6.29.5"
 numpy-stl = "^3.1.1"
 brokenaxes = "^0.6.1"
 networkx = {version = "3.2.1", extras = ["default"]}
-opencv-contrib-python = "^4.10.0.84"
 python-dotenv = "^1.0.1"
 #fiftyone = {extras = ["desktop"], version = "^0.24.1"}
 scikit-learn = "^1.5"
