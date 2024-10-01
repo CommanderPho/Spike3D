@@ -282,7 +282,7 @@
 		"colorTabs.tabBorder": true,
 		"debug.focusWindowOnBreak": false,
 		"remote.downloadExtensionsLocally": false,
-		"debug.autoExpandLazyVariables": false,
+		"debug.autoExpandLazyVariables": "off",
 		"debug.console.acceptSuggestionOnEnter": "on",
 		"debug.console.fontSize": 12,
 		"debug.toolBarLocation": "floating",
