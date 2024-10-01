@@ -174,3 +174,4 @@ EXTERNAL/PhoDibaPaper2024Book/FIGURES
 viridis_colorbar.png
 *.log
 data/neptune/commander.pho/PhoDibaLongShortUpdated/figs
+**/data/commander.pho/PhoDibaLongShortUpdated/figs/*.png
