@@ -176,3 +176,4 @@ viridis_colorbar.png
 **/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs
 **/data/commander.pho/PhoDibaLongShortUpdated/figs/*.png
 **/data/commander.pho/PhoDibaLongShortUpdated/figs/**/*.png
+.venv_black
