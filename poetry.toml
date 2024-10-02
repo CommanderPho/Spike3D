@@ -1,7 +1,7 @@
 [virtualenvs]
 in-project = true
-create = true
+create = false
 prefer-active-python = false
 
 [virtualenvs.options]
-always-copy = true
+always-copy = false
