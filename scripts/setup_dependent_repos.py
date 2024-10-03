@@ -31,7 +31,7 @@ import glob
 from helpers.poetry_helpers import PoetryHelpers, VersionType
 from helpers.source_code_helpers import did_file_hash_change # for finding .whl file after building binary repo
 from helpers.git_helpers import GitHelpers
-from helpers.export_subrepos import export_poetry_repo
+from pyphocorehelpers.scripts.export_subrepos import export_poetry_repo
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
