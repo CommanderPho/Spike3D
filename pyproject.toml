@@ -23,7 +23,7 @@ hdf5plugin = "^4.1.1"
 mplcursors = "^0.5.2"
 pyqt-custom-titlebar-window = "^0.0.50"
 pyqt5custom = "^1.0.1"
-matplotlib = "^3.7.0"
+matplotlib = "3.8.4"
 numexpr = "^2.8.4"
 scipy = "^1.10.1"
 dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
