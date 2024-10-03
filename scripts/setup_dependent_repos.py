@@ -18,9 +18,12 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 2. Run `poetry lock; poetry install`
 """
 import os
+import sys
 from pathlib import Path
 from datetime import datetime
 import argparse
+
+sys.path.append(os.path.join(os.path.dirname(__file__), 'helpers'))
 
 import glob
 
