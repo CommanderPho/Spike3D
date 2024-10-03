@@ -201,32 +201,6 @@ def _recover_samples_per_sec_from_laps_df(global_laps_df, time_start_column_name
 from neuropy.core import Epoch
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
 
-@function_attributes(short_name=None, tags=['maze', 'maze_id', 'epochs', 'column'], input_requires=[], output_provides=[], uses=['Epoch'], used_by=[], creation_date='2023-10-19 08:01', related_items=[])
-def _add_maze_id_to_epochs(active_filter_epochs: Epoch, track_change_time: float):
-    """ adds a 'maze_id' columns to the `active_filter_epochs`'s internal dataframe.
-    
-     Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
-
-        Usage:
-     
-        # Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:
-        track_change_time = short_session.t_start
-        active_filter_epochs: Epoch = long_results_obj.active_filter_epochs ## no copy
-        active_filter_epochs = _add_maze_id_to_epochs(active_filter_epochs, track_change_time)
-        active_filter_epochs
-
-    """
-    active_filter_epochs._df['maze_id'] = np.nan
-    long_active_filter_epochs = active_filter_epochs.time_slice(None, track_change_time)
-    active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, long_active_filter_epochs.labels), 'maze_id'] = 0
-
-    short_active_filter_epochs = active_filter_epochs.time_slice(track_change_time, None)
-    active_filter_epochs._df.loc[np.isin(active_filter_epochs.labels, short_active_filter_epochs.labels), 'maze_id'] = 1
-    active_filter_epochs._df = active_filter_epochs._df.astype({'maze_id': 'int8'}) # Change column type to int8 for column: 'maze_id'
-
-    return active_filter_epochs
-
-
 @function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'epoch', 'obsolite'], input_requires=[], output_provides=[], uses=['WeightedCorr'], used_by=['add_weighted_correlation_result'], creation_date='2023-10-19 07:54', related_items=[])
 def compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n, method='spearman') -> List[float]:
     """ computes the weighted_correlation for the epoch given the decoded posterior
