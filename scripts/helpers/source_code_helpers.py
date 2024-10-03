@@ -109,10 +109,10 @@ def did_file_hash_change(file_path) -> bool:
 
         # Compare the new hash value with the previous hash value
         if new_hash_value == old_hash_value:
-            print('The file has not changed since the last run')
+            print('The file has *NOT* changed since the last run')
             did_file_change = False
         else:
-            print('The file has changed since the last run')
+            print('The file *has* changed since the last run')
             did_file_change = True
     else:
         # No previous hash value file exists:
