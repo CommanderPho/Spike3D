@@ -215,6 +215,10 @@
 			"reloadButton": "↻",
 			"loadNpmCommands": true
 		},
+		"[python]": {
+			"editor.suggest.showFiles": false
+		},
+		"editor.suggest.showFiles": false,
 		// "python.ve"
 	},
 	"tasks": {
