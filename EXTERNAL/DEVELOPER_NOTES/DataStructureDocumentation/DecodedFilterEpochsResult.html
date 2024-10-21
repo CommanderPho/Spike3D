@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>DOCS<DecodedFilterEpochsResult></title>
+<style type="text/css">
+.ansi2html-content { display: inline; font-family: "Lucida Console", "Courier New", monospace; font-size: 11px; white-space: pre-wrap; word-wrap: break-word; }
+.body_foreground { color: #AAAAAA; }
+.body_background { background-color: #000000; }
+.inv_foreground { color: #000000; }
+.inv_background { background-color: #AAAAAA; }
+.ansi1 { font-weight: bold; }
+.ansi91 { color: #ff0000; }
+.ansi92 { color: #00ff00; }
+.ansi93 { color: #ffff00; }
+.ansi94 { color: #5c5cff; }
+</style>
+</head>
+<body class="body_foreground body_background" style="font-size: normal;" >
+<pre class="ansi2html-content">
+<span class="ansi1"></span><span class="ansi1 ansi91">DecodedFilterEpochsResult</span> - printed by DocumentationFilePrinter on 2024-10-09
+===================================================================================================
+- <span class="ansi94">DecodedFilterEpochsResult</span>: <span class="ansi92">pyphoplacecellanalysis.Analysis.Decoder.</span><span class="ansi1 ansi92">DecodedFilterEpochsResult</span><span class="ansi93"> = DecodedFilterEpochsResult(decoding_time_bin_size: float,&lt;br&gt;	filter_epochs: neuropy.core.epoch.Epoch,&lt;br&gt;	num_filter_epochs: int,&lt;br&gt;	most_likely_positions_list: list | shape (n_epochs),&lt;br&gt;	p_x_given_n_list: list | shape (n_epochs),&lt;br&gt;	marginal_x_list: list | shape (n_epochs...</span>
+	- <span class="ansi94">decoding_time_bin_size</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 0.25</span>
+	- <span class="ansi94">filter_epochs</span>: <span class="ansi92">neuropy.core.</span><span class="ansi1 ansi92">Epoch</span><span class="ansi93"> = 72 epochs&lt;br&gt;array([[36.5591, 45.6019],&lt;br&gt;       [85.8049, 87.9762],&lt;br&gt;       [111.467, 114.043],&lt;br&gt;       [145.699, 147.808],&lt;br&gt;       [186.28, 189.583],&lt;br&gt;       [231.757, 238.233],&lt;br&gt;       [270.13, 273.231],&lt;br&gt;       [276.797, 278.608],&lt;br&gt;       [279.403, 280.638],...</span>
+		- <span class="ansi94">_filename</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+		- <span class="ansi94">_metadata</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+		- <span class="ansi94">_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (72, 13)
+	- <span class="ansi94">num_filter_epochs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span><span class="ansi93"> = 72</span>
+	- <span class="ansi94">most_likely_positions_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [array([229.024, 225.297, 229.024, 42.6681, 221.569, 214.115, 206.661, 199.207, 202.934, 199.207, 199.207, 195.48, 191.753, 199.207, 195.48, 199.207, 199.207, 195.48, 195.48, 195.48, 195.48, 38.9409, 195.48, 195.48, 195.48, 38.9409, 46.3952, 42.6681, 46.3952, 72.485, 53.8494, ...</span> - (72,)
+	- <span class="ansi94">p_x_given_n_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [array([[0.00194452, 0.0711918, 0.0129891, ..., 4.01752e-07, 0.0149062, 0.000961832],&lt;br&gt;       [0.0160619, 0.0848087, 0.0154081, ..., 6.04212e-05, 0.0742755, 0.0148143],&lt;br&gt;       [0.0431017, 0.0539355, 0.0119535, ..., 0.0065126, 0.206039, 0.142877],&lt;br&gt;       ...,&lt;br&gt;       ...</span> - 72
+	- <span class="ansi94">marginal_x_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [DynamicContainer({'p_x_given_n': array([[0.00194452, 0.0711918, 0.0129891, ..., 4.01752e-07, 0.0149062, 0.000961832],&lt;br&gt;       [0.0160619, 0.0848087, 0.0154081, ..., 6.04212e-05, 0.0742755, 0.0148143],&lt;br&gt;       [0.0431017, 0.0539355, 0.0119535, ..., 0.0065126, 0.206039, 0.1...</span> - (72, 2)
+	- <span class="ansi94">marginal_y_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, ...</span> - (72,)
+	- <span class="ansi94">most_likely_position_indicies_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [array([[51, 50, 51,  1, 49, 47, 45, 43, 44, 43, 43, 42, 41, 43, 42, 43, 43, 42, 42, 42, 42,  0, 42, 42, 42,  0,  2,  1,  2,  9,  4,  2,  0,  4,  2,  3]], dtype=int64), array([[55, 43, 42, 42, 42, 39, 43, 23]], dtype=int64), array([[49, 43, 20, 41, 29, 23, 23, 22, 10,  7]], dt...</span> - 72
+	- <span class="ansi94">spkcount</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],&lt;br&gt;       [2, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2],&lt;br&gt;       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0...</span> - 72
+	- <span class="ansi94">nbins</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span><span class="ansi93"> = [36  8 10  8 13 25 12  7  4 24  8 29 13  5  6 13  8 28 22 25 16 18 16 23  5  7 19 17 31 24 16 31 20 14 16 24 24 24  4 19 30 18 29 22 25 28 11 12  5 14 27 11 28 18 20 13 12 17  7 17 23 23 24 23 11 15 26 17 21 16 11  8]</span> - (72,)
+	- <span class="ansi94">time_bin_containers</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [&lt;neuropy.utils.mixins.binning_helpers.BinningContainer object at 0x0000024A2C7F5BB0&gt;, &lt;neuropy.utils.mixins.binning_helpers.BinningContainer object at 0x0000024A2C7F5F70&gt;, &lt;neuropy.utils.mixins.binning_helpers.BinningContainer object at 0x0000024A2C7FD370&gt;, &lt;neuropy.utils.mix...</span> - (72,)
+	- <span class="ansi94">time_bin_edges</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [array([36.5591, 36.8091, 37.0591, 37.3091, 37.5591, 37.8091, 38.0591, 38.3091, 38.5591, 38.8091, 39.0591, 39.3091, 39.5591, 39.8091, 40.0591, 40.3091, 40.5591, 40.8091, 41.0591, 41.3091, 41.5591, 41.8091, 42.0591, 42.3091, 42.5591, 42.8091, 43.0591, 43.3091, 43.5591, 43.8091,...</span> - (72,)
+	- <span class="ansi94">epoch_description_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span><span class="ansi93"> = ['Epoch[0]' 'Epoch[1]' 'Epoch[2]' 'Epoch[3]' 'Epoch[4]' 'Epoch[5]' 'Epoch[6]' 'Epoch[7]' 'Epoch[8]' 'Epoch[9]' 'Epoch[10]' 'Epoch[11]' 'Epoch[12]' 'Epoch[13]' 'Epoch[14]' 'Epoch[15]' 'Epoch[16]' 'Epoch[17]' 'Epoch[18]' 'Epoch[19]' 'Epoch[20]' 'Epoch[21]' 'Epoch[22]' 'Epoch[23]...</span> - (72,)
+
+</pre>
+</body>
+
+</html>
