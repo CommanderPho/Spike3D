@@ -69,7 +69,7 @@ ipytree = "^0.2.2"
 tqdm = "^4.65.1"
 jinja2 = "3.0.3"
 psutil = "^5.9.5"
-plotly = "^5.16.1"
+plotly = "^5.24.1"
 ipygany = "^0.5.0"
 pyqode-core = {path = "../pyqode.core/dist/current.whl"}
 pyqode-python = {path = "../pyqode.python/dist/current.whl"}
@@ -150,6 +150,8 @@ virtualenv = "^20.26.3"
 jupyter-book = "^1.0.2"
 opencv-contrib-python = "^4.10.0.84"
 pdf2image = "^1.17.0"
+cython = "^3.0.11"
+silx = {path = "C:/Users/pho/repos/Spike3DWorkEnv/silx/dist/silx-2.1.1a0-py3-none-any.whl", extras = ["full"]}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
@@ -166,7 +168,6 @@ ghp-import = "^2.1.0"
 jupyter-cache = "^1.0.0"
 jupytext = "^1.16.4"
 
-
 [tool.poetry.group.testing.dependencies]
 ipywidgets = "^8.0.5"
 
@@ -174,18 +175,11 @@ ipywidgets = "^8.0.5"
 neuropy = {path = "../NeuroPy", develop=true}
 pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
 pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=true, extras = ["full"]} # , version = "^2.1.0"
-#silx = {path = "../silx", develop=true, extras = ["full"]}
-
-
-
-
 
 [tool.poetry.scripts]
 pull-changes = "scripts/unix/repos_pull_changes.sh"
 launch-jupyter-remote = "scripts/unix/launch_jupyter_lab_with_remote_access.sh"
 setup_dependent_repos = 'scripts/setup_dependent_repos.py' # 'scripts.console:run'
-
 
 # [tool.vulture]
 # exclude = [] # "*file*.py", "dir/"
@@ -196,8 +190,6 @@ setup_dependent_repos = 'scripts/setup_dependent_repos.py' # 'scripts.console:ru
 # paths = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis", "../Spike3D"]
 # sort_by_size = true
 # verbose = true
-
-
 
 [build-system]
 requires = ["poetry-core"]
