@@ -178,3 +178,4 @@ viridis_colorbar.png
 **/data/commander.pho/PhoDibaLongShortUpdated/figs/**/*.png
 .venv_black
 data/programmatic_display_function_image_paths.csv
+parameters.hdf5

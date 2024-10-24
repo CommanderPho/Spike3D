@@ -1,0 +1,21 @@
+DecodedFilterEpochsResult - printed by print_keys_if_possible on 2024-10-09
+===================================================================================================
+
+
+    DecodedFilterEpochsResult: pyphoplacecellanalysis.Analysis.Decoder.reconstruction.DecodedFilterEpochsResult  = DecodedFilterEpochsResult(decoding_time_bin_size: float,<br>	filter_epochs: neuropy.core.epoch.Epoch,<br>	num_filter_epochs: int,<br>	most_likely_positions_list: list | shape (n_epochs),<br>	p_x_given_n_list: list | shape (n_epochs),<br>	marginal_x_list: list | shape (n_epochs...
+	│   ├── decoding_time_bin_size: float  = 0.25
+	│   ├── filter_epochs: neuropy.core.epoch.Epoch  = 72 epochs<br>array([[36.5591, 45.6019],<br>       [85.8049, 87.9762],<br>       [111.467, 114.043],<br>       [145.699, 147.808],<br>       [186.28, 189.583],<br>       [231.757, 238.233],<br>       [270.13, 273.231],<br>       [276.797, 278.608],<br>       [279.403, 280.638],...
+		│   ├── _filename: NoneType  = None
+		│   ├── _metadata: NoneType  = None
+		│   ├── _df: pandas.core.frame.DataFrame (children omitted) - (72, 13)
+	│   ├── num_filter_epochs: int  = 72
+	│   ├── most_likely_positions_list: list  = [array([229.024, 225.297, 229.024, 42.6681, 221.569, 214.115, 206.661, 199.207, 202.934, 199.207, 199.207, 195.48, 191.753, 199.207, 195.48, 199.207, 199.207, 195.48, 195.48, 195.48, 195.48, 38.9409, 195.48, 195.48, 195.48, 38.9409, 46.3952, 42.6681, 46.3952, 72.485, 53.8494, ... - (72,)
+	│   ├── p_x_given_n_list: list  = [array([[0.00194452, 0.0711918, 0.0129891, ..., 4.01752e-07, 0.0149062, 0.000961832],<br>       [0.0160619, 0.0848087, 0.0154081, ..., 6.04212e-05, 0.0742755, 0.0148143],<br>       [0.0431017, 0.0539355, 0.0119535, ..., 0.0065126, 0.206039, 0.142877],<br>       ...,<br>       ... - 72
+	│   ├── marginal_x_list: list  = [DynamicContainer({'p_x_given_n': array([[0.00194452, 0.0711918, 0.0129891, ..., 4.01752e-07, 0.0149062, 0.000961832],<br>       [0.0160619, 0.0848087, 0.0154081, ..., 6.04212e-05, 0.0742755, 0.0148143],<br>       [0.0431017, 0.0539355, 0.0119535, ..., 0.0065126, 0.206039, 0.1... - (72, 2)
+	│   ├── marginal_y_list: list  = [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, ... - (72,)
+	│   ├── most_likely_position_indicies_list: list  = [array([[51, 50, 51,  1, 49, 47, 45, 43, 44, 43, 43, 42, 41, 43, 42, 43, 43, 42, 42, 42, 42,  0, 42, 42, 42,  0,  2,  1,  2,  9,  4,  2,  0,  4,  2,  3]], dtype=int64), array([[55, 43, 42, 42, 42, 39, 43, 23]], dtype=int64), array([[49, 43, 20, 41, 29, 23, 23, 22, 10,  7]], dt... - 72
+	│   ├── spkcount: list  = [array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],<br>       [2, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2],<br>       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0... - 72
+	│   ├── nbins: numpy.ndarray  = [36  8 10  8 13 25 12  7  4 24  8 29 13  5  6 13  8 28 22 25 16 18 16 23  5  7 19 17 31 24 16 31 20 14 16 24 24 24  4 19 30 18 29 22 25 28 11 12  5 14 27 11 28 18 20 13 12 17  7 17 23 23 24 23 11 15 26 17 21 16 11  8] - (72,)
+	│   ├── time_bin_containers: list  = [<neuropy.utils.mixins.binning_helpers.BinningContainer object at 0x0000024A2C7F5BB0>, <neuropy.utils.mixins.binning_helpers.BinningContainer object at 0x0000024A2C7F5F70>, <neuropy.utils.mixins.binning_helpers.BinningContainer object at 0x0000024A2C7FD370>, <neuropy.utils.mix... - (72,)
+	│   ├── time_bin_edges: list  = [array([36.5591, 36.8091, 37.0591, 37.3091, 37.5591, 37.8091, 38.0591, 38.3091, 38.5591, 38.8091, 39.0591, 39.3091, 39.5591, 39.8091, 40.0591, 40.3091, 40.5591, 40.8091, 41.0591, 41.3091, 41.5591, 41.8091, 42.0591, 42.3091, 42.5591, 42.8091, 43.0591, 43.3091, 43.5591, 43.8091,... - (72,)
+	│   ├── epoch_description_list: numpy.ndarray  = ['Epoch[0]' 'Epoch[1]' 'Epoch[2]' 'Epoch[3]' 'Epoch[4]' 'Epoch[5]' 'Epoch[6]' 'Epoch[7]' 'Epoch[8]' 'Epoch[9]' 'Epoch[10]' 'Epoch[11]' 'Epoch[12]' 'Epoch[13]' 'Epoch[14]' 'Epoch[15]' 'Epoch[16]' 'Epoch[17]' 'Epoch[18]' 'Epoch[19]' 'Epoch[20]' 'Epoch[21]' 'Epoch[22]' 'Epoch[23]... - (72,)
