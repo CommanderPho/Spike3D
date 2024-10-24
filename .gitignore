@@ -179,3 +179,4 @@ viridis_colorbar.png
 .venv_black
 data/programmatic_display_function_image_paths.csv
 parameters.hdf5
+data/test_pipeline_params_*.h5
