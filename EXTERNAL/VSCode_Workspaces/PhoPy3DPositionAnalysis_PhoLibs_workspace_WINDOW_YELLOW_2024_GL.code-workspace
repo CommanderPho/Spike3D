@@ -99,7 +99,8 @@
 			"hbenl.vscode-test-explorer",
 			"h5web.vscode-h5web",
 			"phohale.color-tabs-vscode-ext",
-			"gerrnperl.outline-map"
+			"gerrnperl.outline-map",
+			"phohale.pho-vscode-jupyter-cell-tags"
 		]
 	},
 	"tasks": {
