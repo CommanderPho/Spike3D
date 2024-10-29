@@ -25,6 +25,7 @@
         "pkief.material-icon-theme",
         "grimmer.vscode-back-forward-button",
         "analytic-signal.preview-html",
-        "ms-toolsai.vscode-jupyter-cell-tags"
+		"ms-toolsai.vscode-jupyter-cell-tags",
+		"phohale.pho-vscode-jupyter-cell-tags"
     ]
 }
