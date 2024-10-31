@@ -8,7 +8,7 @@ PROJECT_DIR="/home/halechr/repos/Spike3D"
 SCRIPT_PULL="/home/halechr/repos/Spike3D/scripts/unix/repos_pull_changes.sh"
 JUPYTER_PORT=8889
 JUPYTER_LOG="$PROJECT_DIR/jupyter.log"  # Absolute path
-CLIPBOARD_CMD="clip"  # Assuming 'clip' alias is set to xclip
+CLIPBOARD_CMD="xclip"  # Assuming 'clip' alias is set to xclip
 TIMEOUT=60  # seconds to wait for Jupyter to start
 
 # Function to copy text to clipboard
