@@ -3,8 +3,8 @@
 # Commands to run in each repo
 cmd_git_ops='git pull; git status; exec bash'
 
-# Geometry for the first terminal (e.g., 90 columns wide by 30 lines tall)
-geometry1="90x30+0+0"
+# Geometry for the first terminal (e.g., 130 columns wide by 30 lines tall)
+geometry1="1300x30+0+0"
 
 # Launch all tabs in a single terminal and run the commands
 xfce4-terminal \
