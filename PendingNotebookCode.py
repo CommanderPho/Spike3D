@@ -22,64 +22,6 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiCo
 
 
 # ==================================================================================================================== #
-# 2024-11-01 - Cell First Firing - Cell's first firing -- during PBE, theta, or resting?                                                                                      #
-# ==================================================================================================================== #
-
-def compute_cell_first_firings(curr_active_pipeline):
-    """ 
-
-    """
-    from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import get_proper_global_spikes_df
-
-
-    _, _, global_epoch_name = curr_active_pipeline.find_LongShortGlobal_epoch_names()
-    long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    # Get existing laps from session:
-    long_laps, short_laps, global_laps = [curr_active_pipeline.filtered_sessions[an_epoch_name].laps.as_epoch_obj() for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    long_replays, short_replays, global_replays = [Epoch(curr_active_pipeline.filtered_sessions[an_epoch_name].replay.epochs.get_valid_df()) for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-    long_PBEs, short_PBEs, global_PBEs = [curr_active_pipeline.filtered_sessions[an_epoch_name].pbe for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]]
-
-    global_epoch = curr_active_pipeline.filtered_epochs[global_epoch_name]
-    t_start, t_end = global_epoch.start_end_times
-
-    running_epochs = ensure_dataframe(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].laps.as_epoch_obj()))
-    pbe_epochs = ensure_dataframe(deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].pbe)) ## less selective than replay, which has cell participation and other requirements
-    all_epoch = ensure_dataframe(deepcopy(global_session.epochs))
-
-
-    global_spikes_df: pd.DataFrame = deepcopy(get_proper_global_spikes_df(curr_active_pipeline)).drop(columns=['neuron_type'], inplace=False) ## already has columns ['lap', 'maze_id', 'PBE_id'
-    # global_spikes_df: pd.DataFrame = deepcopy(curr_active_pipeline.filtered_sessions[global_epoch_name].spikes_df).drop(columns=['neuron_type'], inplace=False) ## already has columns ['lap', 'maze_id', 'PBE_id'
-    # global_spikes_df
-
-
-    ## find earliest spike for each cell
-    # Performed 1 aggregation grouped on column: 'aclu'
-    earliest_spike_df = global_spikes_df.groupby(['aclu']).agg(t_rel_seconds_idxmin=('t_rel_seconds', 'idxmin'), t_rel_seconds_min=('t_rel_seconds', 'min')).reset_index() # 't_rel_seconds_idxmin', 't_rel_seconds_min'
-
-    # earliest_spike_df['t_rel_seconds_idxmin']
-
-    # earliest_spike_df['t_rel_seconds_min']
-    # global_spikes_df.iloc[earliest_spike_df['t_rel_seconds_idxmin']]
-
-    first_aclu_spike_records_df: pd.DataFrame = global_spikes_df[np.isin(global_spikes_df['t_rel_seconds'], earliest_spike_df['t_rel_seconds_min'].values)]
-    # first_aclu_spike_records_df.aclu.unique()
-
-    first_aclu_spike_records_df
-
-
-    ## Check whether the first
-    first_aclu_spike_records_df['is_theta']
-
-    first_aclu_spike_records_df['is_ripple']
-
-    # running_epochs
-    # pbe_epochs
-    # all_epoch
-
-    return first_aclu_spike_records_df
-
-
-# ==================================================================================================================== #
 # 2024-01-19 - Marginals                                                                                               #
 # ==================================================================================================================== #
 from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
