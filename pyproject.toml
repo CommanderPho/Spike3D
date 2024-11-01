@@ -151,7 +151,7 @@ jupyter-book = "^1.0.2"
 opencv-contrib-python = "^4.10.0.84"
 pdf2image = "^1.17.0"
 cython = "^3.0.11"
-silx = {path = "C:/Users/pho/repos/Spike3DWorkEnv/silx/dist/silx-2.1.1a0-py3-none-any.whl", extras = ["full"]}
+silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=true, extras = ["full"]}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
