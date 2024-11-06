@@ -180,6 +180,8 @@ pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 pull-changes = "scripts/unix/repos_pull_changes.sh"
 launch-jupyter-remote = "scripts/unix/launch_jupyter_lab_with_remote_access.sh"
 setup_dependent_repos = 'scripts/setup_dependent_repos.py' # 'scripts.console:run'
+rebuild_typestubs_and_requirements = 'scripts/windows/export_requirements_and_create_typestubs.ps1' 
+
 
 # [tool.vulture]
 # exclude = [] # "*file*.py", "dir/"
