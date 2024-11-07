@@ -152,7 +152,6 @@
 			"C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D"
 		],
 		"explorer.excludeGitIgnore": true,
-		"workbench.editor.enablePreview": true,
 		"editor.codeActionWidget.includeNearbyQuickFixes": false,
 		"editor.dragAndDrop": false,
 		"actionButtons": {
@@ -219,6 +218,7 @@
 			"editor.suggest.showFiles": false
 		},
 		"editor.suggest.showFiles": false,
+		"workbench.editor.enablePreview": false,
 		// "python.ve"
 	},
 	"tasks": {
