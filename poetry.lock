@@ -4814,6 +4814,20 @@ docs = ["jupyterlab (>=3)", "nbsphinx", "sphinx"]
 test = ["nbval", "pytest", "pytest-cov"]
 
 [[package]]
+name = "ipyflex"
+version = "0.3.1"
+description = "Jupyter Widget Flex Layout"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "ipyflex-0.3.1-py3-none-any.whl", hash = "sha256:4a146f5c3a132a53b72f90940eb39153cb21130e8a50c3de25a03b3e55e4d91a"},
+    {file = "ipyflex-0.3.1.tar.gz", hash = "sha256:cdafb7f24f84b8175e0a91277b0fba997dda198fb445fb06b3ae812fc3e7a78b"},
+]
+
+[package.dependencies]
+ipywidgets = ">=8,<9"
+
+[[package]]
 name = "ipygany"
 version = "0.5.0"
 description = "Scientific Visualization in Jupyter"
@@ -18998,4 +19012,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "b8da048bec555a02c1b74b95edca4ffb77cec7fafc1a398293b6dac77b4e8a9e"
+content-hash = "cf8df554791c076979912ab66f2fb8c20c74582c9176b85ac1e3190fb2c88768"
