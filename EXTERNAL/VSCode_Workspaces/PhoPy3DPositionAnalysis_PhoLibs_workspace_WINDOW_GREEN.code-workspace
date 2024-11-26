@@ -207,7 +207,13 @@
 					"useVsCodeApi": false,
 					"command": "jupyter-book build EXTERNAL/PhoDibaPaper2024Book; C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/scripts/open_generated_jupyter_book_docs.py"
 				},
-
+				{
+					"name": "JupyterBook Build",
+					"tooltip": "Build the JupyterBook project",
+					"color": "#ed9600",
+					"useVsCodeApi": false,
+					"command": "jupyter-book build EXTERNAL/PhoDibaPaper2024Book; C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/scripts/open_generated_jupyter_book_docs.py"
+				},
 
 			],
 			"defaultColor": "grey",
