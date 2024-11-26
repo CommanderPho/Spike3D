@@ -110,7 +110,7 @@
 			{
 				"label": "Launch ViTables",
 				"type": "shell",
-				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables",
+				"command": "${workspaceFolder}/.venv/bin/python -m vitables",
 				"problemMatcher": [],
 				"presentation": {
 					"echo": false,
