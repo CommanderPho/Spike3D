@@ -65,7 +65,8 @@
 			"titleBar.inactiveBackground": "#53c7628e",
 			"tab.activeBorder": "#2F3C2E",
 			"statusBar.background": "#2F3C2E",
-			"statusBar.foreground": "#ffffff"
+			"statusBar.foreground": "#ffffff",
+			"sideBarSectionHeader.border": "#cecece" // Replace with your desired color code
 		},
 		"search.exclude": {
 			"**/.ipynb_checkpoints": true,
