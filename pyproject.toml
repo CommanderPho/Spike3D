@@ -14,7 +14,7 @@ loguru = "^0.6.0" # required for mpl-multitab
 pyopengl = "^3.1.6"
 qtawesome = "^1.2.2"
 wrapt = "1.11.2"
-mpl-multitab = {git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "v0.1.0"} # poetry add git+https://github.com/CommanderPho/mpl-multitab.git
+mpl-multitab = {git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat"} # poetry add git+https://github.com/CommanderPho/mpl-multitab.git
 ansi2html = {git = "https://github.com/CommanderPho/ansi2html.git", rev = "main"} # poetry add git+https://github.com/CommanderPho/ansi2html.git
 vedo = {git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working"} # poetry add git+https://github.com/CommanderPho/vedo.git#release/pho-working
 pybursts = {git = "https://github.com/CommanderPho/pybursts.git", rev = "master"}
@@ -150,7 +150,7 @@ jupyter-book = "^1.0.2"
 opencv-contrib-python = "^4.10.0.84"
 pdf2image = "^1.17.0"
 cython = "^3.0.11"
-silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=false, extras = ["full"]}
+silx = {path = "../silx/dist/current.whl"}
 ipyflex = "^0.3.1"
 
 [tool.poetry.group.dev.dependencies]

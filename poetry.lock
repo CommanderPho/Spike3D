@@ -7477,22 +7477,19 @@ sty = ["black", "isort"]
 test = ["PyQt5", "nbval", "pandas", "pytest", "pytest-mpl", "requests", "scipy", "xarray"]
 
 [[package]]
-name = "mpl_multitab"
-version = "1.0.1"
+name = "mpl-multitab"
+version = "0.0.1"
 description = "Tabbed figure manager for matplotlib using pyQt"
 optional = false
 python-versions = ">=3.8"
 files = []
 develop = false
 
-[package.extras]
-tests = ["pytest", "pytest-qt"]
-
 [package.source]
 type = "git"
 url = "https://github.com/CommanderPho/mpl-multitab.git"
-reference = "v0.1.0"
-resolved_reference = "bf9cba798cc89f62e83418ab509feb4074622314"
+reference = "pho_compat"
+resolved_reference = "0b02d2a616e39e5bac10797228fedb71bd8b8fc8"
 
 [[package]]
 name = "mpl-scatter-density"
@@ -13990,51 +13987,6 @@ pyobjc-core = ">=10.3.2"
 pyobjc-framework-Cocoa = ">=10.3.2"
 
 [[package]]
-name = "pyopencl"
-version = "2024.3"
-description = "Python wrapper for OpenCL"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "pyopencl-2024.3-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:0bd68724e6a2be0c59265a50f33731283ffe43aa46e9fc377cc966519c0a5e5a"},
-    {file = "pyopencl-2024.3-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:528b3e832bebb098aa64f51f9901e32292a5751eac57e946fe059f8b97d87182"},
-    {file = "pyopencl-2024.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:88220873f2603288578b663a9dfac79e0bab6951dd06b3580ad756c739e7cbac"},
-    {file = "pyopencl-2024.3-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:c5a1cbcfc86feeeb3335d960579130710d8a72881d31f534e1193d87f4867372"},
-    {file = "pyopencl-2024.3-cp310-cp310-win_amd64.whl", hash = "sha256:b4d47c23094df06d9d30aceb6b37d2df44cac18a0c78af43418cb141db2c8ff3"},
-    {file = "pyopencl-2024.3-cp311-cp311-macosx_10_14_x86_64.whl", hash = "sha256:66a69879968c872e74fbbb8ff9f88cf51761146e1b2c5eef98743e14e3f58254"},
-    {file = "pyopencl-2024.3-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:933b3be2e6145b8182e2706ed9586f5757a4f32bb48fb9a854e05c22e1fe7bab"},
-    {file = "pyopencl-2024.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1c05b833d0036b9ce10ccbadd0936c678eb050dbe575566d1be23d1a35d08ff1"},
-    {file = "pyopencl-2024.3-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:7a032add510dd74e57d43211ea3555b2ca51205db69306e7097f0deba3036e04"},
-    {file = "pyopencl-2024.3-cp311-cp311-win_amd64.whl", hash = "sha256:e0a2b9ce59044762a81b9dda626bd5f3a190ae1370e74cb8306972867113b0be"},
-    {file = "pyopencl-2024.3-cp312-cp312-macosx_10_14_x86_64.whl", hash = "sha256:2b3b950adcfe979ed9ad4373b3d0690b4b40c1a6fa711f1be1c33aebe3ceb163"},
-    {file = "pyopencl-2024.3-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:92db9997ebb1845d2c83f232dc10381cbabf01791061bd470949d0f48eb2124c"},
-    {file = "pyopencl-2024.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7ff5badff3e274878034976d06cde70ac0cbef367239a14f1c461dad126adbf2"},
-    {file = "pyopencl-2024.3-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:873af3af4477a93c1cd640dcf7e55f53c6e5a8477ea86f1b4cc56171a6b56cc7"},
-    {file = "pyopencl-2024.3-cp312-cp312-win_amd64.whl", hash = "sha256:9371b4ce4e4598c9098b3feca161a75d30c79ff4f508529dbb7f43b05b6aea22"},
-    {file = "pyopencl-2024.3-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:c3d5d38a02b7467daa072fff4eac96362fe37deff2a08db3e34a6e31969d28f9"},
-    {file = "pyopencl-2024.3-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:14d5e5bf92fac091754496af1e4d79f3f3e6d8d01e0621fe69ebadd90cafbe78"},
-    {file = "pyopencl-2024.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9c1e9802afd684dc26c5115d43ac5b7480d162b613fb47e26b1ca428491579f0"},
-    {file = "pyopencl-2024.3-cp38-cp38-musllinux_1_2_x86_64.whl", hash = "sha256:89387f155e00e9f33c10c5b0a02d87f3c12ac6734e01eb50f1a9bce51535488e"},
-    {file = "pyopencl-2024.3-cp38-cp38-win_amd64.whl", hash = "sha256:4bb650880906c0116b55c122fedd7046e22132174aa277f2fe4314a8687ca8fb"},
-    {file = "pyopencl-2024.3-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:daaeaab79dea272bc6cf55f0bad1d81ec9ef113fdbb2fcbb04bd0af53da74477"},
-    {file = "pyopencl-2024.3-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:e88761f19d177a71e2764037d349af5eed754ada67a5b230258e09a4c8dafa86"},
-    {file = "pyopencl-2024.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1fd5606d4e27e9c5a9b7b97b3f29150b95dfc280a0d977d44bd490fcc5ca8406"},
-    {file = "pyopencl-2024.3-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:8d7d4cc5d55058281daf9153b12a76ad9f1241f43af406c17d1a596e386f8ab6"},
-    {file = "pyopencl-2024.3-cp39-cp39-win_amd64.whl", hash = "sha256:89d1152520aa268182b56ba7c6b510ccbbf93bc9f7aadd6e7005fce6f1561024"},
-    {file = "pyopencl-2024.3.tar.gz", hash = "sha256:d5d08de9b0a6d85695caba1769aceae4e7661f06951c507bd1ce8fb7a89e2413"},
-]
-
-[package.dependencies]
-numpy = "*"
-platformdirs = ">=2.2"
-pytools = ">=2024.1.5"
-
-[package.extras]
-oclgrind = ["oclgrind-binary-distribution (>=18.3)"]
-pocl = ["pocl-binary-distribution (>=1.2)"]
-test = ["mako", "mypy", "pylint", "pytest (>=7)", "ruff"]
-
-[[package]]
 name = "pyopengl"
 version = "3.1.7"
 description = "Standard OpenGL bindings for Python"
@@ -14719,26 +14671,6 @@ docstring_parser = {version = ">=0.7", optional = true, markers = "extra == \"nu
 
 [package.extras]
 numpy-style = ["docstring_parser (>=0.7)"]
-
-[[package]]
-name = "pytools"
-version = "2024.1.14"
-description = "A collection of tools for Python"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "pytools-2024.1.14-py3-none-any.whl", hash = "sha256:f70c549cdab36e4d31a48a88ce8d969af24816482d73b10012dcac42ce9425e8"},
-    {file = "pytools-2024.1.14.tar.gz", hash = "sha256:39e5bbaf81fa432e688b82dd0980212d18f97b23e51a8c7afe7592249fe40ab1"},
-]
-
-[package.dependencies]
-platformdirs = ">=2.2"
-typing-extensions = {version = ">=4", markers = "python_version < \"3.13\""}
-
-[package.extras]
-numpy = ["numpy (>=1.6)"]
-siphash = ["siphash24 (>=1.6)"]
-test = ["mypy", "pytest", "ruff"]
 
 [[package]]
 name = "pytz"
@@ -16285,35 +16217,24 @@ version = "2.1.1a0"
 description = "Software library for X-ray data analysis"
 optional = false
 python-versions = ">=3.8"
-files = []
-develop = true
+files = [
+    {file = "current.whl", hash = "sha256:67d348e5ecfa5bc7d7f814a599c1227328c24529ba6d545702e7483256cc5e84"},
+]
 
 [package.dependencies]
 fabio = ">=0.9"
 h5py = "*"
-hdf5plugin = {version = "*", optional = true, markers = "extra == \"full\""}
-Mako = {version = "*", optional = true, markers = "extra == \"full\""}
-matplotlib = {version = ">=3.1.0", optional = true, markers = "extra == \"full\""}
 numpy = "*"
 packaging = "*"
-Pillow = {version = "*", optional = true, markers = "extra == \"full\""}
-pyopencl = {version = "*", optional = true, markers = "extra == \"full\""}
-PyOpenGL = {version = "*", optional = true, markers = "extra == \"full\""}
-PyQt5 = {version = "*", optional = true, markers = "extra == \"full\""}
-python-dateutil = {version = "*", optional = true, markers = "extra == \"full\""}
-qtconsole = {version = "*", optional = true, markers = "extra == \"full\""}
-scipy = {version = "*", optional = true, markers = "extra == \"full\""}
 
 [package.extras]
-doc = ["nbsphinx", "pandoc", "pillow", "pydata_sphinx_theme", "sphinx", "sphinx-autodoc-typehints", "sphinx-design"]
+doc = ["nbsphinx", "pandoc", "pillow", "pydata-sphinx-theme", "sphinx", "sphinx-autodoc-typehints", "sphinx-design"]
 full = ["Mako", "Pillow", "PyOpenGL", "PyQt5", "hdf5plugin", "matplotlib (>=3.1.0)", "pyopencl", "python-dateutil", "qtconsole", "scipy"]
 test = ["bitshuffle", "pooch", "pytest (>=6.0)", "pytest-mock", "pytest-xvfb", "scipy (>=1.10)"]
 
 [package.source]
-type = "git"
-url = "https://github.com/CommanderPho/silx.git"
-reference = "develop"
-resolved_reference = "886b2473c86fb6945f5da976458340cd692de61d"
+type = "file"
+url = "../silx/dist/silx-2.1.1a0-cp39-cp39-win_amd64.whl"
 
 [[package]]
 name = "simplejson"
@@ -19518,4 +19439,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "58dd9225e6640f373f8cbd117783bed298415ec103693028bc136369ee8f66a1"
+content-hash = "6f28c69e4671554a47e403467663b454dd449e5232170b8e430527e4d727f8f9"
