@@ -7363,19 +7363,22 @@ sty = ["black", "isort"]
 test = ["PyQt5", "nbval", "pandas", "pytest", "pytest-mpl", "requests", "scipy", "xarray"]
 
 [[package]]
-name = "mpl-multitab"
-version = "0.0.1"
+name = "mpl_multitab"
+version = "1.0.1"
 description = "Tabbed figure manager for matplotlib using pyQt"
 optional = false
 python-versions = ">=3.8"
 files = []
 develop = false
 
+[package.extras]
+tests = ["pytest", "pytest-qt"]
+
 [package.source]
 type = "git"
 url = "https://github.com/CommanderPho/mpl-multitab.git"
 reference = "main"
-resolved_reference = "0b02d2a616e39e5bac10797228fedb71bd8b8fc8"
+resolved_reference = "e7d4936c3d89b607f605b27ad946ec2760c50777"
 
 [[package]]
 name = "mpl-scatter-density"
