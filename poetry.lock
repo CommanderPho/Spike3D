@@ -9483,27 +9483,6 @@ files = [
 ptyprocess = ">=0.5"
 
 [[package]]
-name = "pho-jupyter-preview-widget"
-version = "0.1.0"
-description = ""
-optional = false
-python-versions = "^3.9"
-files = []
-develop = true
-
-[package.dependencies]
-ipykernel = "^6.29.5"
-ipywidgets = "^8.1.3"
-pandas = "^1.5.3"
-
-[package.extras]
-notebook = []
-
-[package.source]
-type = "directory"
-url = "../pho_jupyter_preview_widget"
-
-[[package]]
 name = "phonenumbers"
 version = "8.13.46"
 description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
@@ -19010,4 +18989,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "cf8df554791c076979912ab66f2fb8c20c74582c9176b85ac1e3190fb2c88768"
+content-hash = "b1d077c3ee88560a999e9658bc7ad12738710a38dc011e769556f0c16bce1a43"
