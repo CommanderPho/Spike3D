@@ -14,7 +14,7 @@ loguru = "^0.6.0" # required for mpl-multitab
 pyopengl = "^3.1.6"
 qtawesome = "^1.2.2"
 wrapt = "1.11.2"
-mpl-multitab = {git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "main"} # poetry add git+https://github.com/CommanderPho/mpl-multitab.git
+mpl-multitab = {git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "v0.1.0"} # poetry add git+https://github.com/CommanderPho/mpl-multitab.git
 ansi2html = {git = "https://github.com/CommanderPho/ansi2html.git", rev = "main"} # poetry add git+https://github.com/CommanderPho/ansi2html.git
 vedo = {git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working"} # poetry add git+https://github.com/CommanderPho/vedo.git#release/pho-working
 pybursts = {git = "https://github.com/CommanderPho/pybursts.git", rev = "master"}
