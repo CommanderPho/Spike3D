@@ -175,6 +175,10 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enab
 
     print(f'----------------------------------------------------------------------------------- done.\n')
 
+
+# ==================================================================================================================== #
+# Main Function                                                                                                        #
+# ==================================================================================================================== #
 def main():
 
     if args.release:
@@ -202,8 +206,8 @@ def main():
     poetry_repo_tuples = list(zip(dependent_repos_paths, dependent_repos_urls, [False]*len(dependent_repos_paths), [False, True, True]))
 
 
-    external_dependent_repos = ["../pyqode.core", "../pyqode.python"]
-    external_dependent_binary_repo_urls = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git"]
+    external_dependent_repos = ["../pyqode.core", "../pyqode.python", "../silx"]
+    external_dependent_binary_repo_urls = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git", "https://github.com/CommanderPho/silx.git"]
     external_dependent_repo_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in external_dependent_repos]
     binary_repo_tuples = list(zip(external_dependent_repo_paths, external_dependent_binary_repo_urls, [True]*len(external_dependent_repo_paths), [False]*len(external_dependent_repo_paths)))
 
