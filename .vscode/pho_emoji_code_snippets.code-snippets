@@ -225,13 +225,24 @@
 	"prefix": "emo-save-floppy",
 	"body": ["💾$1"]
 },
+"organize-sort 🗃": {
+	"scope": "markdown,json,jsonc,python", 
+	"prefix": "emo-sort-cabinet",
+	"body": ["🗃$1"]
+},
+"find-flashlight 🔦": {
+	"scope": "markdown,json,jsonc,python", 
+	"prefix": "emo-find-flashlight",
+	"body": ["🔦$1"]
+},
+"find-magnify-glass 🔍": {
+	"scope": "markdown,json,jsonc,python", 
+	"prefix": "emo-magnify-glass",
+	"body": ["🔍$1"]
+},
 
 
-
-
-
-
-// 💯👁️‍🗨️
+// 💯👁️‍🗨️ 
 // 🔜🔝
 // ✅❎🚫❌
 // ❓❔❕❗
@@ -243,5 +254,8 @@
 // 🧷🔗⛓️🪝🧵🧩🔃🔄
 // 📍🎯📌
 // 💾
+// 🔦 🗃🗳🗄🔍🔎
+// 🧼🩻🩹
+// 🕳🪤
 
 }
