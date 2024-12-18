@@ -166,6 +166,8 @@ black = "^24.2.0"
 ghp-import = "^2.1.0"
 jupyter-cache = "^1.0.0"
 jupytext = "^1.16.4"
+qt_style_sheet_inspector = {git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master"}
+pyqtinspect = "^0.3.6"
 
 [tool.poetry.group.testing.dependencies]
 ipywidgets = "^8.0.5"

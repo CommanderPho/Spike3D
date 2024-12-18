@@ -14400,6 +14400,22 @@ files = [
 numpy = ">=1.22.0"
 
 [[package]]
+name = "pyqtinspect"
+version = "0.3.6"
+description = "To inspect PyQt/PySide program elements like Chrome's element inspector"
+optional = false
+python-versions = "<4,>=3.7"
+files = [
+    {file = "PyQtInspect-0.3.6-py3-none-any.whl", hash = "sha256:34b92f95a66bac017302db36f948fecbd244207d041b293457b320c0cf72fc35"},
+    {file = "pyqtinspect-0.3.6.tar.gz", hash = "sha256:7ba6bcb4312bdea20b17b8f7c6caaf65fbf3c8ef6d03b5784f8e43115dc0be9c"},
+]
+
+[package.dependencies]
+psutil = "*"
+PyQt5 = "*"
+wingrab = {version = "*", markers = "platform_system == \"Windows\""}
+
+[[package]]
 name = "pyside6"
 version = "6.8.1"
 description = "Python bindings for the Qt cross-platform application and UI framework"
@@ -14959,6 +14975,21 @@ qtpy = ">=2"
 develop = ["qtsass", "watchdog"]
 docs = ["sphinx", "sphinx-rtd-theme"]
 example = ["pyqt5", "pyside2"]
+
+[[package]]
+name = "qt_style_sheet_inspector"
+version = "0.1.0"
+description = "A inspector widget to view and modify style sheet of a Qt app in runtime."
+optional = false
+python-versions = "*"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/CommanderPho/qt_style_sheet_inspector.git"
+reference = "master"
+resolved_reference = "2d6e9ae2378d125c4299f758e666b00cf81504af"
 
 [[package]]
 name = "qtawesome"
@@ -18763,6 +18794,17 @@ files = [
 dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 
 [[package]]
+name = "wingrab"
+version = "0.0.2"
+description = "WinGrab: A simple tool to get the PID of the window under the cursor."
+optional = false
+python-versions = "<4,>=3.7"
+files = [
+    {file = "WinGrab-0.0.2-py3-none-any.whl", hash = "sha256:e0f517bb8fa17cf9fe147bfb62a5fbb657fc703d3f85edc99fe4ef72df7d29ff"},
+    {file = "wingrab-0.0.2.tar.gz", hash = "sha256:383177b663f15903c9188cd0dbb3f5d7514b315cf2a5b4035779557db7d84daf"},
+]
+
+[[package]]
 name = "wordcloud"
 version = "1.9.4"
 description = "A little word cloud generator"
@@ -19363,4 +19405,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "6feb2b72aa7fbfdffc0a581b6c8fb1bc0a1b555496c16da948bc7e71ca5cb463"
+content-hash = "f95ef47f6bc8af5271959f1b2d801a483cd705a48b6867adca6431d3f595dd65"
