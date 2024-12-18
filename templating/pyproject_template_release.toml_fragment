@@ -3,3 +3,4 @@ pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"
 neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git"} # , rev = "main", extras = ["acceleration"]
 pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", develop=true}
 silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=true, extras = ["full"]} # , version = "^2.1.0"
+pyqtinspect = "^0.3.6"

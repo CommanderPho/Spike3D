@@ -151,6 +151,7 @@ opencv-contrib-python = "^4.10.0.84"
 pdf2image = "^1.17.0"
 cython = "^3.0.11"
 ipyflex = "^0.3.1"
+pyqtinspect = {path = "../PyQtInspect-Open", develop = true}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
@@ -167,7 +168,6 @@ ghp-import = "^2.1.0"
 jupyter-cache = "^1.0.0"
 jupytext = "^1.16.4"
 qt_style_sheet_inspector = {git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master"}
-pyqtinspect = "^0.3.6"
 
 [tool.poetry.group.testing.dependencies]
 ipywidgets = "^8.0.5"

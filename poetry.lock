@@ -14400,20 +14400,22 @@ files = [
 numpy = ">=1.22.0"
 
 [[package]]
-name = "pyqtinspect"
-version = "0.3.6"
+name = "PyQtInspect"
+version = "0.3.7"
 description = "To inspect PyQt/PySide program elements like Chrome's element inspector"
 optional = false
-python-versions = "<4,>=3.7"
-files = [
-    {file = "PyQtInspect-0.3.6-py3-none-any.whl", hash = "sha256:34b92f95a66bac017302db36f948fecbd244207d041b293457b320c0cf72fc35"},
-    {file = "pyqtinspect-0.3.6.tar.gz", hash = "sha256:7ba6bcb4312bdea20b17b8f7c6caaf65fbf3c8ef6d03b5784f8e43115dc0be9c"},
-]
+python-versions = ">=3.7, <4"
+files = []
+develop = true
 
 [package.dependencies]
 psutil = "*"
 PyQt5 = "*"
 wingrab = {version = "*", markers = "platform_system == \"Windows\""}
+
+[package.source]
+type = "directory"
+url = "../PyQtInspect-Open"
 
 [[package]]
 name = "pyside6"
@@ -19405,4 +19407,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "f95ef47f6bc8af5271959f1b2d801a483cd705a48b6867adca6431d3f595dd65"
+content-hash = "6876dde3ed5ec54bed338425cefb45581fa947769417e172c44242c990d315dd"

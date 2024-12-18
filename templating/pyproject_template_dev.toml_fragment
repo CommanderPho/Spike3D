@@ -7,3 +7,6 @@ silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", devel
 #silx = {path = "../silx/dist/current.whl"}
 silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=false, extras = ["full"]}
 #pho-jupyter-preview-widget = {path = "../pho_jupyter_preview_widget", develop = true}
+#pyqtinspect = {git = "https://github.com/CommanderPho/PyQtInspect-Open.git", develop=true}
+#pyqtinspect = {git = "https://github.com/CommanderPho/PyQtInspect-Open.git", develop=true}
+pyqtinspect = {path = "../PyQtInspect-Open", develop = true} #poetry add --editable ..\PyQtInspect-Open
