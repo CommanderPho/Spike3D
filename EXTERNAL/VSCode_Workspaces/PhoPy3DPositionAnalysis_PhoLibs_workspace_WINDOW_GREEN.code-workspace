@@ -209,11 +209,11 @@
 					"command": "jupyter-book build EXTERNAL/PhoDibaPaper2024Book; C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/scripts/open_generated_jupyter_book_docs.py"
 				},
 				{
-					"name": "JupyterBook Build",
-					"tooltip": "Build the JupyterBook project",
-					"color": "#ed9600",
+					"name": "standalone spike_raster_window Launch",
+					"tooltip": "Launch standalone spike_raster_window",
+					"color": "#aaed78",
 					"useVsCodeApi": false,
-					"command": "jupyter-book build EXTERNAL/PhoDibaPaper2024Book; C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/scripts/open_generated_jupyter_book_docs.py"
+					"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
 				},
 
 			],
@@ -249,10 +249,23 @@
 				"type": "shell",
 				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
 				"args": [
-						"-m",
-						"vitables",
-						"$VITABLES_FILE_PATH"
+					"-m",
+					"vitables",
+					"$VITABLES_FILE_PATH"
 				],
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			},
+			{
+				"label": "Launch standalone spike_raster_window",
+				"type": "shell",
+				"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py",
 				"problemMatcher": [],
 				"presentation": {
 					"echo": false,
