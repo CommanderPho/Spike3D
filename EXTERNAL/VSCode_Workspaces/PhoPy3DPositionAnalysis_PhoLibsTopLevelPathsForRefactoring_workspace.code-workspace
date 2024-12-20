@@ -94,6 +94,7 @@
 				"regex": ".*/templating/.*"
 			}
 		],
+		"editor.scrollbar.scrollByPage": true,
 
 	},
 	"extensions": {
