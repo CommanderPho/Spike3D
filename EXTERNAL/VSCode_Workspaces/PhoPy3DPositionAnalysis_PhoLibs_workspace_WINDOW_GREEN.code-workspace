@@ -156,7 +156,6 @@
 		"editor.codeActionWidget.includeNearbyQuickFixes": false,
 		"editor.dragAndDrop": false,
 		"actionButtons": {
-
 			"commands": [
 				{
 					"name": "Back",
