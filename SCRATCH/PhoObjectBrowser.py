@@ -5,6 +5,9 @@ from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex, QVariant
 from PyQt5.QtWidgets import QTreeView, QApplication
 import sys
 import inspect
+from pyphocorehelpers.assertion_helpers import Assert
+from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import loadData
+from pyphocorehelpers.Filesystem.path_helpers import set_posix_windows
 
 @define
 class ObjectTreeModel(QAbstractItemModel):
@@ -79,9 +82,39 @@ class ObjectBrowser(QTreeView):
 
 ## Testing
 if __name__ == "__main__":
-    test_file_path = Path(r'W:\Data\KDIBA\gor01\one\2006-6-09_1-22-43\output\global_computation_results.pkl')
-    assert test_file_path.exists()
-    any_python_object = dill.load(test_file_path)
+    debug_print: bool = True
+    pkl_path = Path(r'W:\Data\KDIBA\gor01\one\2006-6-09_1-22-43\output\global_computation_results.pkl')
+    
+    # pkl_path = Path('W:/Data/KDIBA/gor01/one/2006-6-09_1-22-43/loadedSessPickle.pkl')
+    Assert.path_exists(pkl_path)
+    
+    print(f'pkl_path: {pkl_path}')
+    
+    def _try_load_global_batch_result():
+        if debug_print:
+            print(f'pkl_path: {pkl_path}')
+        # try to load an existing batch result:
+        try:
+            curr_active_pipeline = loadData(pkl_path, debug_print=debug_print)
+            
+        except NotImplementedError:
+            # Fixes issue with pickled POSIX_PATH on windows for path.                    
+            with set_posix_windows():
+                curr_active_pipeline = loadData(pkl_path, debug_print=debug_print) # Fails this time if it still throws an error
+
+        except (FileNotFoundError, TypeError):
+            # loading failed
+            print(f'Failure loading {pkl_path}.')
+            curr_active_pipeline = None
+            
+        return curr_active_pipeline
+    
+    any_python_object = _try_load_global_batch_result()
+    assert any_python_object is not None
+    print(f'loaded `curr_active_pipeline`, building Spike3DRasterWindowWidget...')
+
+
+    # any_python_object = dill.load(pkl_path)
 
     app = QApplication(sys.argv)
     root_object = any_python_object # Replace with the object you want to browse
