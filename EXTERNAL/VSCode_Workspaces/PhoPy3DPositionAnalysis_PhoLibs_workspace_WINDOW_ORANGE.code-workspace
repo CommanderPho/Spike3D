@@ -219,6 +219,13 @@
 					"command": "workbench.action.toggleDevTools"
 				},
 				{
+					"name": "PyQtPlot Examples",
+					"tooltip": "Launch PyQtPlot Examples GUI Window",
+					"color": "#f4e5ff",
+					"useVsCodeApi": false,
+					"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/LibrariesExamples/PyQtPlot/PyQtPlot_EXAMPLES.py"
+				},
+				{
 					"name": "ViTables Launch",
 					"tooltip": "Launch ViTables pytables GUI (HDF5, etc)",
 					"color": "#ffed78",
