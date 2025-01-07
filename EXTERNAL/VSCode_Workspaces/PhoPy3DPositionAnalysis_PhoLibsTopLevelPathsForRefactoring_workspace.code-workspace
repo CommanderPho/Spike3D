@@ -167,7 +167,8 @@
 			"h5web.vscode-h5web",
 			"phohale.color-tabs-vscode-ext",
 			"gerrnperl.outline-map",
-			"noname.editor-tab-resizer"
+			"noname.editor-tab-resizer",
+			"adamerose.better-outline"
 		]
 	},
 	"tasks": {
