@@ -251,6 +251,26 @@
 			"defaultColor": "grey",
 			"reloadButton": "↻",
 			"loadNpmCommands": true
-		}
+		},
+		"qtForPython.uic.path": "K:\\FastSwap\\AppData\\VSCode\\yellow\\.venv_yellow\\Scripts\\python.exe",
+		"qtForPython.uic.liveExecution.enabled": false,
+		"qtForPython.uic.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
+			"--import-from",
+			"pyphoplacecellanalysis.Resources",
+			"--resource-suffix=\"\""
+		],
+		"qtForPython.rcc.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
+		"qtForPython.rcc.liveExecution.enabled": false,
+		"qtForPython.rcc.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
+		],
+		"pyqt-integration.pyuic.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
+		"pyqt-integration.pyuic.compile.addOptions": "-o ${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py --import-from pyphoplacecellanalysis.Resources --resource-suffix=\"\"",
+		"pyqt-integration.pyrcc.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5",
+		"pyqt-integration.pylupdate.cmd": "pylupdate5"
+
 	}
 }
