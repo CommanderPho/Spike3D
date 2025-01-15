@@ -169,6 +169,9 @@ ghp-import = "^2.1.0"
 jupyter-cache = "^1.0.0"
 jupytext = "^1.16.4"
 qt_style_sheet_inspector = {git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master"}
+objgraph = "^3.6.2"
+pympler = "^1.1"
+memory-profiler = "^0.61.0"
 
 [tool.poetry.group.testing.dependencies]
 ipywidgets = "^8.0.5"

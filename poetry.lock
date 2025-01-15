@@ -10912,6 +10912,20 @@ pyyaml = "*"
 extra = ["pygments (>=2.12)"]
 
 [[package]]
+name = "pympler"
+version = "1.1"
+description = "A development tool to measure, monitor and analyze the memory behavior of Python objects."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "Pympler-1.1-py3-none-any.whl", hash = "sha256:5b223d6027d0619584116a0cbc28e8d2e378f7a79c1e5e024f9ff3b673c58506"},
+    {file = "pympler-1.1.tar.gz", hash = "sha256:1eaa867cb8992c218430f1708fdaccda53df064144d1c5656b1e6f1ee6000424"},
+]
+
+[package.dependencies]
+pywin32 = {version = ">=226", markers = "platform_system == \"Windows\""}
+
+[[package]]
 name = "pynapple"
 version = "0.3.6"
 description = "PYthon Neural Analysis Package Pour Laboratoires d’Excellence"
@@ -19433,4 +19447,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "487891303609ab6be4fe0730133645defbcba3ad00f953933b8136bc6f8e11f4"
+content-hash = "cf58bfb5ebde20aff25e0d30f9ba292d4904d73a16dddd024da109db6eb85e5b"
