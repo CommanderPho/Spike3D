@@ -1,0 +1,118 @@
+{
+	"name": "MemoryError",
+	"message": "Unable to allocate 4.62 MiB for an array with shape (80, 76, 199) and data type int32",
+	"stack": "---------------------------------------------------------------------------
+MemoryError                               Traceback (most recent call last)
+Cell In[8], line 3
+      1 fail_on_exception = True
+----> 3 newly_computed_values = batch_extended_computations(curr_active_pipeline, include_includelist=extended_computations_include_includelist, include_global_functions=True, fail_on_exception=fail_on_exception, progress_print=True,
+      4                                                     force_recompute=force_recompute_global, force_recompute_override_computations_includelist=force_recompute_override_computations_includelist, debug_print=False)
+      5 if (len(newly_computed_values) > 0):
+      6     print(f'newly_computed_values: {newly_computed_values}.')
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Batch\\NonInteractiveProcessing.py:483, in batch_extended_computations(curr_active_pipeline, include_includelist, included_computation_filter_names, include_global_functions, fail_on_exception, progress_print, debug_print, force_recompute, force_recompute_override_computations_includelist, computation_kwargs_dict, dry_run)
+    481 for a_computation_filter_name in included_computation_filter_names:
+    482 \tif not dry_run:
+--> 483 \t\tnewly_computed_values += _comp_specifier.try_computation_if_needed(curr_active_pipeline, computation_filter_name=a_computation_filter_name, on_already_computed_fn=_subfn_on_already_computed, fail_on_exception=fail_on_exception, progress_print=progress_print, debug_print=debug_print, force_recompute=force_recompute)
+    484 \telse:
+    485 \t\tprint(f'dry-run: {_comp_specifier.short_name}, computation_filter_name={a_computation_filter_name}, force_recompute={force_recompute}')
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\SpecificComputationValidation.py:232, in SpecificComputationValidator.try_computation_if_needed(self, curr_active_pipeline, computation_filter_name, **kwargs)
+    231 def try_computation_if_needed(self, curr_active_pipeline, computation_filter_name:str, **kwargs):
+--> 232     return self._perform_try_computation_if_needed(self, curr_active_pipeline, computation_filter_name=computation_filter_name, **kwargs)
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Model\\SpecificComputationValidation.py:401, in SpecificComputationValidator._perform_try_computation_if_needed(cls, comp_specifier, curr_active_pipeline, computation_filter_name, on_already_computed_fn, fail_on_exception, progress_print, debug_print, force_recompute)
+    399 # When this fails due to unwrapping from the load, add `, computation_kwargs_list=[{'perform_cache_load': False}]` as an argument to the `perform_specific_computation` call below
+    400 try:
+--> 401     curr_active_pipeline.perform_specific_computation(computation_functions_name_includelist=[comp_specifier.computation_fn_name], computation_kwargs_list=[comp_specifier.computation_fn_kwargs], fail_on_exception=True, debug_print=False) # fail_on_exception MUST be True or error handling is all messed up 
+    402     if progress_print or debug_print:
+    403         print(f'\\t done.')
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\Computation.py:1643, in PipelineWithComputedPipelineStageMixin.perform_specific_computation(self, active_computation_params, enabled_filter_names, computation_functions_name_includelist, computation_kwargs_list, fail_on_exception, debug_print)
+   1636 \"\"\" perform a specific computation (specified in computation_functions_name_includelist) in a minimally destructive manner using the previously recomputed results:
+   1637 Passthrough wrapper to self.stage.perform_specific_computation(...) with the same arguments.
+   1638 
+   1639 Updates:
+   1640     curr_active_pipeline.computation_results
+   1641 \"\"\"
+   1642 # self.stage is of type ComputedPipelineStage
+-> 1643 return self.stage.perform_specific_computation(active_computation_params=active_computation_params, enabled_filter_names=enabled_filter_names, computation_functions_name_includelist=computation_functions_name_includelist, computation_kwargs_list=computation_kwargs_list, fail_on_exception=fail_on_exception, debug_print=debug_print)
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\Computation.py:829, in ComputedPipelineStage.perform_specific_computation(self, active_computation_params, enabled_filter_names, computation_functions_name_includelist, computation_kwargs_list, fail_on_exception, debug_print, progress_logger_callback, enable_parallel)
+    827                 self.active_configs[a_select_config_name].computation_config = curr_active_computation_params
+    828             previous_computation_result = self.computation_results[a_select_config_name]
+--> 829             self.computation_results[a_select_config_name] = self.run_specific_computations_single_context(previous_computation_result, computation_functions_name_includelist=computation_functions_name_includelist, computation_kwargs_list=computation_kwargs_list, are_global=False, fail_on_exception=fail_on_exception, debug_print=debug_print, progress_logger_callback=progress_logger_callback)
+    830 else:
+    831     ## enable_parallel == True
+    832     import concurrent.futures ## used for optional paralell computations in `perform_specific_computation`
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\Computation.py:373, in ComputedPipelineStage.run_specific_computations_single_context(self, previous_computation_result, computation_functions_name_includelist, computation_kwargs_list, fail_on_exception, progress_logger_callback, are_global, debug_print)
+    371     progress_logger_callback(f'\\trun_specific_computations_single_context(including only {len(active_computation_functions)} out of {len(self.registered_computation_function_names)} registered computation functions): active_computation_functions: {active_computation_functions}...')
+    372 # Perform the computations:
+--> 373 return ComputedPipelineStage._execute_computation_functions(active_computation_functions, previous_computation_result=previous_computation_result, computation_kwargs_list=computation_kwargs_list, fail_on_exception=fail_on_exception, progress_logger_callback=progress_logger_callback, are_global=are_global, debug_print=debug_print)
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\Computation.py:1002, in ComputedPipelineStage._execute_computation_functions(active_computation_functions, previous_computation_result, computation_kwargs_list, fail_on_exception, progress_logger_callback, are_global, debug_print)
+   1000 if progress_logger_callback is not None:
+   1001     progress_logger_callback(f'Executing [{i}/{total_num_funcs}]: {f}')
+-> 1002 previous_computation_result = f(previous_computation_result, **computation_kwargs_list[i]) # call the function `f` directly here
+   1003 # Log the computation copmlete time:
+   1004 computation_times[computation_times_key_fn(f)] = datetime.now()
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\ComputationFunctions\\PlacefieldComputations.py:79, in PlacefieldComputations._perform_time_dependent_placefield_computation(computation_result, debug_print)
+     67     return prev_output_result
+     68 \"\"\" 
+     69 Access via:
+     70 ['pf1D_dt']
+   (...)
+     77     active_pf_2D
+     78 \"\"\"
+---> 79 return _initial_time_dependent_placefield_computation(computation_result.sess, computation_result.computation_config.pf_params, computation_result)
+
+File ~\\repos\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Pipeline\\Stages\\ComputationFunctions\\PlacefieldComputations.py:66, in PlacefieldComputations._perform_time_dependent_placefield_computation.<locals>._initial_time_dependent_placefield_computation(active_session, pf_computation_config, prev_output_result)
+     65 def _initial_time_dependent_placefield_computation(active_session, pf_computation_config, prev_output_result: ComputationResult):
+---> 66     prev_output_result.computed_data['pf1D_dt'], prev_output_result.computed_data['pf2D_dt'] = perform_compute_time_dependent_placefields(active_session.spikes_df, active_session.position, pf_computation_config, None, None, included_epochs=pf_computation_config.computation_epochs, should_force_recompute_placefields=True)
+     67     return prev_output_result
+
+File ~\\repos\\Spike3DWorkEnv\\NeuroPy\
+europy\\analyses\\time_dependent_placefields.py:1148, in perform_compute_time_dependent_placefields(active_session_spikes_df, active_pos, computation_config, active_epoch_placefields1D, active_epoch_placefields2D, included_epochs, should_force_recompute_placefields)
+   1146     print('Recomputing active_epoch_time_dependent_placefields2D...', end=' ')
+   1147     spikes_df = deepcopy(active_session_spikes_df).spikes.sliced_by_neuron_type('PYRAMIDAL') # Only use PYRAMIDAL neurons
+-> 1148     active_epoch_placefields2D = PfND_TimeDependent.from_config_values(spikes_df, deepcopy(active_pos), epochs=included_epochs,
+   1149                                     speed_thresh=computation_config.speed_thresh, frate_thresh=computation_config.frate_thresh,
+   1150                                     grid_bin=computation_config.grid_bin, grid_bin_bounds=computation_config.grid_bin_bounds, smooth=computation_config.smooth)
+   1152     print('\\t done.')
+   1153 else:
+
+File ~\\repos\\Spike3DWorkEnv\\NeuroPy\
+europy\\analyses\\time_dependent_placefields.py:296, in PfND_TimeDependent.from_config_values(cls, spikes_df, position, epochs, frate_thresh, speed_thresh, grid_bin, grid_bin_bounds, smooth, setup_on_init, compute_on_init)
+    293 @classmethod
+    294 def from_config_values(cls, spikes_df: pd.DataFrame, position: Position, epochs: Epoch = None, frate_thresh=1, speed_thresh=5, grid_bin=(1,1), grid_bin_bounds=None, smooth=(1,1), setup_on_init:bool=True, compute_on_init:bool=True):
+    295     \"\"\" initialize from the explicitly listed arguments instead of a specified config. \"\"\"
+--> 296     return cls(spikes_df=spikes_df, position=position, epochs=epochs,
+    297         config=PlacefieldComputationParameters(speed_thresh=speed_thresh, grid_bin=grid_bin, grid_bin_bounds=grid_bin_bounds, smooth=smooth, frate_thresh=frate_thresh),
+    298         setup_on_init=setup_on_init, compute_on_init=compute_on_init, position_srate=position.sampling_rate, historical_snapshots={}, last_t=np.finfo('float').max)
+
+File <attrs generated init neuropy.analyses.time_dependent_placefields.PfND_TimeDependent>:28, in __init__(self, spikes_df, position, epochs, config, position_srate, setup_on_init, compute_on_init, save_intermediate_spikes_maps, included_thresh_neurons_indx, peak_frate_filter_function, ratemap, ratemap_spiketrains, ratemap_spiketrains_pos, filtered_pos_df, filtered_spikes_df, ndim, xbin, ybin, bin_info, last_t, historical_snapshots, fragile_linear_neuron_IDXs, n_fragile_linear_neuron_IDXs)
+     26 self.fragile_linear_neuron_IDXs = fragile_linear_neuron_IDXs
+     27 self.n_fragile_linear_neuron_IDXs = n_fragile_linear_neuron_IDXs
+---> 28 self.__attrs_post_init__()
+
+File ~\\repos\\Spike3DWorkEnv\\NeuroPy\
+europy\\analyses\\time_dependent_placefields.py:286, in PfND_TimeDependent.__attrs_post_init__(self)
+    283     if 'binned_y' not in self._filtered_spikes_df:
+    284         self._filtered_spikes_df['binned_y'] = pd.cut(self._filtered_spikes_df['y'].to_numpy(), bins=self.ybin, include_lowest=True, labels=self.ybin_labels)
+--> 286 self._setup_time_varying()
+    287 if self.compute_on_init:
+    288     # Ignore self.compute() for time varying
+    289     pass
+
+File ~\\repos\\Spike3DWorkEnv\\NeuroPy\
+europy\\analyses\\time_dependent_placefields.py:330, in PfND_TimeDependent._setup_time_varying(self)
+    326     self._reset_after_neuron_index_update()
+    328 dims_coord_tuple = self.dims_coord_tuple
+--> 330 self.curr_spikes_maps_matrix = np.zeros((self.n_fragile_linear_neuron_IDXs, *dims_coord_tuple), dtype=int) # create an initially zero occupancy map
+    331 self.curr_smoothed_spikes_maps_matrix = None
+    332 self.curr_num_pos_samples_occupancy_map = np.zeros(dims_coord_tuple, dtype=int) # create an initially zero occupancy map
+
+MemoryError: Unable to allocate 4.62 MiB for an array with shape (80, 76, 199) and data type int32"
+}
