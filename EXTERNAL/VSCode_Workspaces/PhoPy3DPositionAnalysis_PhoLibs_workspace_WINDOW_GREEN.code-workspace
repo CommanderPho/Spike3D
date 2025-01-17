@@ -18,9 +18,6 @@
 		},
 		{
 			"path": "../../output/gen_scripts"
-		},
-		{
-			"path": "../../../pho_jupyter_preview_widget/pho_jupyter_preview_widget"
 		}
 	],
 	"settings": {
