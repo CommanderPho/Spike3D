@@ -27,6 +27,7 @@
     "phohale.pho-vscode-jupyter-cell-tags",
     "noname.editor-tab-resizer",
     "adamerose.better-outline",
-    "sourcegraph.cody-ai"
+    "sourcegraph.cody-ai",
+    "ionide.discoverpanel"
     ]
 }
