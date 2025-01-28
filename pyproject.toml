@@ -160,7 +160,7 @@ silx = "^2.2.0"
 ipython = "^8.9.0"
 viztracer = "^0.15.6"
 jupyterlab = "^3.6.1"
-dvc = {version = "^2.45.1", extras = ["gdrive"]}
+dvc = {version = "^3.59.0", extras = ["gdrive"]}
 cookiecutter = "^2.5.0"
 monkeytype = "^23.3.0"
 pyannotate = "^1.2.0"
