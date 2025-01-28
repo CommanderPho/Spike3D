@@ -144,13 +144,20 @@
 					"useVsCodeApi": false,
 					"command": "jupyter-book build EXTERNAL/PhoDibaPaper2024Book; C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/scripts/open_generated_jupyter_book_docs.py"
 				},
-				{
-					"name": "standalone spike_raster_window Launch",
-					"tooltip": "Launch standalone spike_raster_window",
-					"color": "#aaed78",
-					"useVsCodeApi": false,
-					"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
-				},
+                {
+                    "name": "standalone spike_raster_window Launch",
+                    "tooltip": "Launch standalone spike_raster_window",
+                    "color": "#aaed78",
+                    "useVsCodeApi": false,
+                    "command": "${workspaceFolder}/.venv/bin/python -m PyQtInspect --direct --qt-support=pyqt5 --file ${workspaceFolder}/../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
+                },
+                // {
+                //     "name": "standalone spike_raster_window Launch",
+                //     "tooltip": "Launch standalone spike_raster_window",
+                //     "color": "#aaed78",
+                //     "useVsCodeApi": false,
+                //     "command": "${workspaceFolder}/.venv/bin/python -m PyQtInspect --direct --qt-support=pyqt5 --file ${workspaceFolder}/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
+                // },
 
 			],
 			"defaultColor": "grey",
