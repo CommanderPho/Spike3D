@@ -208,7 +208,13 @@
 					"useVsCodeApi": false,
 					"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
 				},
-
+				{
+					"name": "⇥ Convert to File Spaces",
+					"color": "white",
+					"tooltip": "Convert tabs to spaces in the current file",
+					"useVsCodeApi": true,
+					"command": "editor.action.indentationToSpaces"
+				},
 			],
 			"defaultColor": "grey",
 			"reloadButton": "↻",
