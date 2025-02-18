@@ -240,8 +240,14 @@
 	"prefix": "emo-magnify-glass",
 	"body": ["🔍$1"]
 },
+"anchors ⚓": {
+	"scope": "markdown,json,jsonc,python", 
+	"prefix": "emo-anchor",
+	"body": ["⚓$1"]
+},
 
 
+// ⚓
 // 💯👁️‍🗨️ 
 // 🔜🔝
 // ✅❎🚫❌
