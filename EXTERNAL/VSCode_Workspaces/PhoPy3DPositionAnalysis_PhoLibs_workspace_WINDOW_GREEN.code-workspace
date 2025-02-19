@@ -292,7 +292,8 @@
 			"kaiwood.center-editor-window",
 			"suhay.vscode-editor-group-minimizer",
 			"stella100np.editor-pockets",
-			"ionide.discoverpanel"
+			"ionide.discoverpanel",
+			"hoovercj.vscode-dimmer"
 		]
 	}
 }
