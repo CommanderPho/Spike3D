@@ -225,6 +225,8 @@
 		},
 		"editor.suggest.showFiles": false,
 		"workbench.editor.enablePreview": false,
+		"scratchpads.filePrefix": "scratch_",
+		"scratchpads.scratchpadsFolder": "C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/DEVELOPER_NOTES/UnsortedErrorLogs",
 		// "python.ve"
 	},
 	"tasks": {
@@ -293,7 +295,6 @@
 			"suhay.vscode-editor-group-minimizer",
 			"stella100np.editor-pockets",
 			"ionide.discoverpanel",
-			"hoovercj.vscode-dimmer"
 			"astallinger.sourcetrail"
 		]
 	}
