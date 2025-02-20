@@ -29,7 +29,7 @@
     "**/data",
     "**/templating",
     "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white","**/.venv_*",
-	"**/._cell_execution_logs"
+  	"**/._cell_execution_logs", "**/scratchpads"
   ],
 
   "ignore": [
@@ -38,7 +38,7 @@
     "EXTERNAL",
     "scripts",
     "templating",
-	"**/._cell_execution_logs"
+  	"**/._cell_execution_logs", "**/scratchpads"
   ],
 
   "defineConstant": {
