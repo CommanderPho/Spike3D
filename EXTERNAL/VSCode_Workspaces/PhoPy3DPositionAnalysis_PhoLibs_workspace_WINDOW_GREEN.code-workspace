@@ -295,7 +295,8 @@
 			"suhay.vscode-editor-group-minimizer",
 			"stella100np.editor-pockets",
 			"ionide.discoverpanel",
-			"astallinger.sourcetrail"
+            "astallinger.sourcetrail",
+            "phohale.pho-vs-code-url-scheme-grabber"
 		]
 	}
 }
