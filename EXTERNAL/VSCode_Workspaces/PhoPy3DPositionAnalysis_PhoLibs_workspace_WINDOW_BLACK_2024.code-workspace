@@ -1,25 +1,22 @@
 {
 	"folders": [
-		{
-			"name": "Spike3D",
-			"path": "../../"
-		},
-		{
-			"name": "pyphocorehelpers",
-			"path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
-		},
-		{
-			"name": "pyphoplacecellanalysis",
-			"path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
-		},
-		{
-			"name": "neuropy",
-			"path": "../../../NeuroPy/neuropy"
-		},
-		{
-			"path": "../../../../cloud/turbo/Data/Output/gen_scripts"
-		}
-	],
+        {
+            "name": "Spike3D",
+            "path": "../../"
+        },
+        {
+            "name": "pyphocorehelpers",
+            "path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
+        },
+        {
+            "name": "pyphoplacecellanalysis",
+            "path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+        },
+        {
+            "name": "neuropy",
+            "path": "../../../NeuroPy/neuropy"
+        }
+    ],
 	"settings": {
 		"python.analysis.gotoDefinitionInStringLiteral": true,
 		"jupyter.askForKernelRestart": true,

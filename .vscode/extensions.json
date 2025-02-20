@@ -28,6 +28,7 @@
     "noname.editor-tab-resizer",
     "adamerose.better-outline",
     "sourcegraph.cody-ai",
-    "ionide.discoverpanel"
+    "ionide.discoverpanel",
+    "phohale.pho-vs-code-url-scheme-grabber"
     ]
 }
