@@ -1,8 +1,8 @@
 # %%
 %config IPCompleter.use_jedi = False
 %pdb off
-%load_ext autoreload
-%autoreload 3
+# %load_ext autoreload
+# %autoreload 3
 import os
 import sys
 import platform
@@ -22,14 +22,9 @@ from attrs import define, field, Factory
 
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
-from pyphocorehelpers.function_helpers import function_attributes
-from pyphocorehelpers.exception_helpers import CapturedException
 
 # Jupyter interactivity:
-import ipywidgets as widgets
 from IPython.display import display
-from pyphocorehelpers.gui.Jupyter.JupyterButtonRowWidget import JupyterButtonRowWidget
-from pyphocorehelpers.gui.Jupyter.simple_widgets import code_block_widget
 
 # pyPhoPlaceCellAnalysis:
 # NeuroPy (Diba Lab Python Repo) Loading
@@ -38,14 +33,12 @@ from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDa
 from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
 from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
 from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
-from neuropy.utils.matplotlib_helpers import matplotlib_configuration_update
 
 ## For computation parameters:
 from neuropy.utils.result_context import IdentifyingContext
 from neuropy.core.session.Formats.BaseDataSessionFormats import find_local_session_paths
 from neuropy.core import Epoch
 
-from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
 from pyphocorehelpers.programming_helpers import copy_to_clipboard
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
@@ -57,11 +50,8 @@ from neuropy.core.user_annotations import UserAnnotationsManager
 from pyphoplacecellanalysis.General.Batch.runBatch import SessionBatchProgress
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionsResults, AcrossSessionTables, AcrossSessionsVisualizations
 
-from pyphocorehelpers.Filesystem.path_helpers import set_posix_windows
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_vscode_workspace, build_windows_powershell_run_script
 
-from pyphocorehelpers.exception_helpers import CapturedException
-from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import InstantaneousFiringRatesDataframeAccessor
 from pyphoplacecellanalysis.General.Batch.runBatch import PipelineCompletionResult, BatchSessionCompletionHandler
 
 from pyphocorehelpers.Filesystem.metadata_helpers import FilesystemMetadata, get_file_metadata
@@ -70,13 +60,7 @@ from pyphoplacecellanalysis.General.Batch.runBatch import get_file_str_if_file_e
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import check_output_h5_files, copy_files_in_filelist_to_dest
 from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder, BackupMethods
 
-from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import batch_perform_all_plots, BatchPhoJonathanFiguresHelper
-from pyphoplacecellanalysis.SpecificResults.PhoDiba2023Paper import PAPER_FIGURE_figure_1_add_replay_epoch_rasters, PAPER_FIGURE_figure_1_full, PAPER_FIGURE_figure_3, main_complete_figure_generations
-
-from neuropy.core.neuron_identities import NeuronIdentityDataframeAccessor
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.LongShortTrackComputations import build_merged_neuron_firing_rate_indicies
-from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalPlacefieldGlobalComputationFunctions, DirectionalLapsHelpers
-from pyphocorehelpers.gui.Jupyter.simple_widgets import fullwidth_path_widget, filesystem_path_folder_contents_widget
+# from pyphocorehelpers.gui.Jupyter.simple_widgets import fullwidth_path_widget, filesystem_path_folder_contents_widget
 
 import inspect
 from jinja2 import Template
@@ -85,7 +69,6 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
-from pyphoplacecellanalysis.SpecificResults.PendingNotebookCode import _add_cell_remapping_category
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
 
 
@@ -337,17 +320,17 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
 # Last-Chance Overrides                                                                                                #
 # ==================================================================================================================== #
 # # Interactive Debugging in Notebooks:
-# active_phase_dict.update(dict(should_use_neptune_logging=False, should_create_vscode_workspace=True, should_use_file_redirected_output_logging=False, 
+# active_phase_dict.update(dict(should_use_neptune_logging=False, should_create_vscode_workspace=True, 
 # 	should_freeze_pipeline_updates=True,
 # ))
 
 # ## No custom suffix!
-# active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=False, should_use_neptune_logging=False, should_generate_run_notebooks=True, should_create_vscode_workspace=True, should_use_file_redirected_output_logging=False, create_slurm_scripts=True,
+# active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=False, should_use_neptune_logging=False, should_generate_run_notebooks=True, should_create_vscode_workspace=True, create_slurm_scripts=True,
 # ))
 
 
 # Custom Job Suffix that will not interfere with running jobs ________________________________________________________ #
-active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True, should_use_file_redirected_output_logging=True,
+active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
 ))
 
 
@@ -355,7 +338,7 @@ active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_upda
 # {'ripple_decoding_time_bin_size': 0.058}
 
 ## Non-interactive batch computation in scripts
-# active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False, should_use_file_redirected_output_logging=True))
+# active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
 
 # END ________________________________________________________________________________________________________________ #
 
@@ -391,14 +374,12 @@ output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
 vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
 
 if vscode_workspace_path is not None:
-	display(fullwidth_path_widget(vscode_workspace_path, file_name_label='vscode_workspace_path:'))
+	print(f"vscode_workspace_path:: {vscode_workspace_path}")
 
 print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
 computation_script_paths = [x[0] for x in output_python_scripts]
 generate_figures_script_paths = [x[1] for x in output_python_scripts]
 print(f'generate_figures_script_paths: {generate_figures_script_paths}')
-# _out_widget = display_generated_scripts_ipywidget(batch_scripts_collection.included_session_contexts, output_python_scripts)
-# display(_out_widget)
 
 # %%
 ## INPUTS: active_phase, output_slurm_scripts, computation_script_paths, generate_figures_script_paths
