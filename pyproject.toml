@@ -155,6 +155,8 @@ pyqtinspect = {path = "../PyQtInspect-Open", develop = true}
 pho-jupyter-preview-widget = {path = "../pho_jupyter_preview_widget"}
 neo = "0.13.2"
 silx = "^2.2.0"
+ipyevents = "^2.0.2"
+mayavi = "^4.8.2"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
