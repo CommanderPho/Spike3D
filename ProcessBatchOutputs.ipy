@@ -167,7 +167,7 @@ force_recompute_override_computations_includelist = []
 
 extra_extended_computations_include_includelist = [
     # 'wcorr_shuffle_analysis'
-    'non_PBE_epochs_results',
+    # 'non_PBE_epochs_results',
 ]
 
 custom_phase_extended_computations_include_includelist = None
@@ -293,7 +293,7 @@ active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
     'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': False},
     'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz':minimum_inclusion_fr_Hz, 'included_qclu_values':included_qclu_values},
     'perform_wcorr_shuffle_analysis': dict(num_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=True),
-    'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size = 0.020, frame_divide_bin_size = 5.0, training_data_portion = 5.0/6.0,
+    'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size = 0.025, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
                                 compute_1D=True, compute_2D=True,
                                 drop_previous_result_and_compute_fresh=False, skip_training_test_split = True),
 }
