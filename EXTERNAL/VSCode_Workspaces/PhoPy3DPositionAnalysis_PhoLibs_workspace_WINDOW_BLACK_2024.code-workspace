@@ -241,7 +241,8 @@
             "file-icons.file-icons",
             "iket0731.symbol-navigate-back",
             "hipdotmedia.hipdot-vs-code-url-scheme-grabber",
-            "eytankrief.wormhole"
+            "eytankrief.wormhole",
+            "josh-walters.vscode-ext-import-export"
 		]
 	}
 }
