@@ -29,6 +29,7 @@
     "adamerose.better-outline",
     "sourcegraph.cody-ai",
     "ionide.discoverpanel",
-    "phohale.pho-vs-code-url-scheme-grabber"
+    "phohale.pho-vs-code-url-scheme-grabber",
+    "josh-walters.vscode-ext-import-export"
     ]
 }
