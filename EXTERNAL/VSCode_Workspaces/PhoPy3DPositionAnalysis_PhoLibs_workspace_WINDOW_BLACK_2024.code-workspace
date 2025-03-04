@@ -181,7 +181,18 @@
 		"editor.autoIndent": "keep",
 		"workbench.tree.renderIndentGuides": "always",
         "editor.indentSize": "tabSize",
-        "editor.foldingStrategy": "indentation"
+        "editor.foldingStrategy": "indentation",
+        "cody.autocomplete.languages": {
+            "python": false,
+            "jupyter": false,
+            "*": false
+        },
+        "notebook.find.filters": {
+            "markupSource": true,
+            "markupPreview": false,
+            "codeSource": true,
+            "codeOutput": false
+        },
 	},
 	"tasks": {
 		"version": "2.0.0",
