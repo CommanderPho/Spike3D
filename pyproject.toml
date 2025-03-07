@@ -206,3 +206,8 @@ rebuild_typestubs_and_requirements = 'scripts/windows/export_requirements_and_cr
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 package-mode = false
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+poetry-plugin-shell = ">=1.0.1"
+

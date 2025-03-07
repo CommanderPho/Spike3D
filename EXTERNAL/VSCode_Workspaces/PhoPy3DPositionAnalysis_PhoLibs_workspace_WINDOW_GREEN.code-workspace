@@ -227,6 +227,12 @@
 		"workbench.editor.enablePreview": false,
 		"scratchpads.filePrefix": "scratch_",
 		"scratchpads.scratchpadsFolder": "C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/DEVELOPER_NOTES/UnsortedErrorLogs",
+		"notebook.find.filters": {
+			"markupSource": true,
+			"markupPreview": false,
+			"codeSource": true,
+			"codeOutput": false
+		},
 		// "python.ve"
 	},
 	"tasks": {
