@@ -2,7 +2,6 @@
 	"recommendations": [
         "huynh-quang-phuc.create-file-from-template",
         "bradzacher.vscode-copy-filename",
-        "kawamataryo.copy-python-dotted-path",
         "kdcro101.favorites",
         "phohale.pho-pyqt-class-generator",
         "edgardmessias.clipboard-manager",
@@ -29,6 +28,7 @@
     "sourcegraph.cody-ai",
     "ionide.discoverpanel",
     "phohale.pho-vs-code-url-scheme-grabber",
-    "josh-walters.vscode-ext-import-export"
+    "josh-walters.vscode-ext-import-export",
+    "kawamataryo.copy-python-dotted-path"
     ]
 }

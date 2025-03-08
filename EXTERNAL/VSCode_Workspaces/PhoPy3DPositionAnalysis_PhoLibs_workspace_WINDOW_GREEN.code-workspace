@@ -302,7 +302,8 @@
 			"stella100np.editor-pockets",
 			"ionide.discoverpanel",
             "astallinger.sourcetrail",
-            "phohale.pho-vs-code-url-scheme-grabber"
+			"phohale.pho-vs-code-url-scheme-grabber",
+			"kawamataryo.copy-python-dotted-path"
 		]
 	}
 }
