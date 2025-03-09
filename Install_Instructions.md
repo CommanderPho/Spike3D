@@ -237,3 +237,15 @@ mamba env update -n <your-env> --file environment.yml
 
 
 mamba env update -n mamba_ultimate --file "C:\Users\pho\Desktop\Anaconda Environments Full Backup 2022-11-04\pho_ultimate.yaml"
+
+
+
+## #TODO 2025-03-08 21:47: - [ ] Custom Jupyter Kernel to Spike3D Poetry VEnv 
+
+```
+(spike3d-py3.9) PS C:\Users\pho\repos\Spike3DWorkEnv\Spike3D> ipython kernel install --user --name=spike3d-global-poetry
+Installed kernelspec spike3d-global-poetry in C:\Users\pho\AppData\Roaming\jupyter\kernels\spike3d-global-poetry
+
+
+ipython kernel install --user --name=spike3d-global-poetry
+```
