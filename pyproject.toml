@@ -63,7 +63,6 @@ hvplot = "^0.8.4"
 pyviz-comms = "^2.3.2"
 objexplore = "^1.6.3"
 hdf5storage = "^0.1.19"
-vitables = "^3.0.2"
 h5glance = "^0.8.1"
 ipytree = "^0.2.2"
 tqdm = "^4.65.1"
@@ -157,6 +156,7 @@ neo = "0.13.2"
 silx = "^2.2.0"
 ipyevents = "^2.0.2"
 mayavi = "^4.8.2"
+vitables = {version = "3.0.3", extras = ["pyqt5"]}
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"

@@ -20365,6 +20365,7 @@ files = [
 ]
 
 [package.dependencies]
+pyqt5 = {version = ">=5.5.1", optional = true, markers = "extra == \"pyqt5\""}
 qtpy = ">=2.2"
 setuptools = ">=65.0"
 tables = ">=3.0"
@@ -21531,4 +21532,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-content-hash = "e2a303a8df958d8da016085167628fec893304cbea51f699d826f4670116724b"
+content-hash = "7a3cd3807388e0f87c2eb0939b3dbc3ad30e05b57ecb885e86f09e0916a542bf"
