@@ -29,6 +29,7 @@
     "ionide.discoverpanel",
     "phohale.pho-vs-code-url-scheme-grabber",
     "josh-walters.vscode-ext-import-export",
-    "kawamataryo.copy-python-dotted-path"
+    "kawamataryo.copy-python-dotted-path",
+    "phohale.version-status-bar"
     ]
 }
