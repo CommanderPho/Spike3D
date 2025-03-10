@@ -172,7 +172,8 @@
 			"phohale.color-tabs-vscode-ext",
 			"gerrnperl.outline-map",
 			"noname.editor-tab-resizer",
-			"adamerose.better-outline"
+			"adamerose.better-outline",
+			"phohale.version-status-bar"
 		]
 	},
 	"tasks": {
