@@ -288,7 +288,7 @@ job_suffix = f"{job_suffix}_tbin_25ms"
 
 
 # END ________________________________________________________________________________________________________________ #
-print(f'job_suffix: {job_suffix}')
+
 active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
     'merged_directional_placefields': {'laps_decoding_time_bin_size': laps_decoding_time_bin_size, 'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size},
     'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': False},
@@ -340,7 +340,7 @@ if phase_job_suffix is not None:
     job_suffix = f"{job_suffix}_{phase_job_suffix}" ## append phase to end of job_suffix
 active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
 ))
-
+print(f'job_suffix: "{job_suffix}"')
 
 # #TODO 2024-11-20 07:12: - [ ] Run with this, I hardcoded the parameter change for now
 # {'ripple_decoding_time_bin_size': 0.058}
