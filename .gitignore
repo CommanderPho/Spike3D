@@ -388,3 +388,13 @@ EXTERNAL/DEVELOPER_NOTES/UnsortedErrorLogs/scratchpads
 EXTERNAL/VSCode_Extensions/2025-02-25_Lab_Black
 EXTERNAL/VSCode_Extensions/2025-02-25_Lab_Green_BROKEN.json
 .venv_2025
+data/figure2.png
+data/figure-image.png
+data/figure-image_test.png
+data/high_percentile_filtered_PBEs_P_Short_scatter.png
+data/P_Short_10_2_2_Across Sessions all_scores_ripple_df - all_sessions_all_scores_ripple_df - PBE Per Epoch - None - 'P_Short' (10 Sessions) - 2 Time Bin Sizes_PBE_per_epoch_scatter+hist_pre-post-delta_P_Short.png
+data/P_Short_10_2_2_Across Sessions all_scores_ripple_df - allScores - PBE Per Epoch - None - 'P_Short' (10 Sessions) - 2 Time Bin Sizes_PBE_per_epoch_scatter+hist_pre-post-delta_P_Short.png
+data/split_by_animal_figure.png
+data/2024-12-24 - P_Short_10_2_2_Across Sessions all_scores_ripple_df - allScores - PBE Per Epoch - None - 'P_Short' (10 Sessions) - 2 Time Bin Sizes_PBE_per_epoch_scatter+hist_pre-post-delta_P_Short.png
+*.0-standalone_all_shuffles_wcorr_array
+*.0-standalone_wcorr_ripple_shuffle_data_only_1026
