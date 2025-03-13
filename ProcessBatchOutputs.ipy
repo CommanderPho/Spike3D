@@ -159,7 +159,7 @@ included_session_contexts = [
 
 ## Setup Functions:
 force_recompute_override_computations_includelist = []
-# force_recompute_override_computations_includelist = ['directional_decoders_evaluate_epochs',]
+# force_recompute_override_computations_includelist = ['non_PBE_epochs_results',]
 # force_recompute_override_computations_includelist = ['split_to_directional_laps','merged_directional_placefields','directional_decoders_evaluate_epochs','directional_decoders_epoch_heuristic_scoring']
 # force_recompute_override_computations_includelist = ['directional_decoders_evaluate_epochs','directional_decoders_epoch_heuristic_scoring']
 # force_recompute_override_computations_includelist = ['lap_direction_determination', 'split_to_directional_laps', 'pf_computation', 'pfdt_computation','firing_rate_trends','merged_directional_placefields','rank_order_shuffle_analysis','directional_decoders_evaluate_epochs']
@@ -168,6 +168,7 @@ force_recompute_override_computations_includelist = []
 
 extra_extended_computations_include_includelist = [
     # 'wcorr_shuffle_analysis'
+    # 'non_PBE_epochs_results',
     # 'non_PBE_epochs_results',
 ]
 
