@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spike3d"
-version = "0.3.2"
+version = "0.4.0"
 description = "Primary 3D Analysis Package"
 authors = ["Pho Hale <halechr@umich.edu>"]
 readme = "README.md"
@@ -39,7 +39,6 @@ param = "^1.13.0"
 pyflakes = "^3.0.1" # required for code editor
 neptune = "^1.2.0"
 nptyping = {extras = ["complete"], version = "^2.5.0"} # allows specifying Numpy and Pandas types and shapes
-beartype = "^0.14.0" # for strict type enforcement of function calls
 awkward = "^2.2.1" # for ragged-arrays, testing
 pyqt-checkbox-table-widget = "^0.0.14"
 patchworklib = "^0.6.1" # matplotlib figure layout/organization
@@ -156,7 +155,8 @@ neo = "0.13.2"
 silx = "^2.2.0"
 ipyevents = "^2.0.2"
 mayavi = "^4.8.2"
-vitables = {version = "3.0.3", extras = ["pyqt5"]}
+vitables = "3.0.2"
+pyjson5 = "^1.6.8"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.9.0"
