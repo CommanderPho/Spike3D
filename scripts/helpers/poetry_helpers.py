@@ -11,8 +11,8 @@ import glob
 # from helpers.path_helpers import copy_recursive
 # from helpers.source_code_helpers import replace_text_in_file # for finding .whl file after building binary repo
 
-from path_helpers import copy_recursive
-from source_code_helpers import replace_text_in_file # for finding .whl file after building binary repo
+# from path_helpers import copy_recursive
+from .source_code_helpers import replace_text_in_file # for finding .whl file after building binary repo
 
 
 
@@ -71,7 +71,8 @@ class PoetryHelpers:
     from scripts.helpers.poetry_helpers import PoetryHelpers, VersionType
 
     """
-    def build_pyproject_toml_file(repo_path, is_release=False, pyproject_final_file_name = 'pyproject.toml', debug_print=False):
+    @classmethod
+    def build_pyproject_toml_file(cls, repo_path, is_release=False, pyproject_final_file_name = 'pyproject.toml', debug_print=False):
         """ Builds the complete final pyproject.toml file from the pyproject_template.toml_template for the current version (release or dev)
 
         from Spike3D.scripts.setup_dependent_repos import build_pyproject_toml_file
