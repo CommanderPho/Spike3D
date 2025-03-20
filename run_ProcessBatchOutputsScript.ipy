@@ -81,7 +81,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
 
 
-BATCH_DATE_TO_USE = '2024-12-18_GL' # used for filenames throught the notebook
+BATCH_DATE_TO_USE = '2024-12-20_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = '2024-12-18_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = '2024-12-18_Apogee' # used for filenames throught the notebook
 
