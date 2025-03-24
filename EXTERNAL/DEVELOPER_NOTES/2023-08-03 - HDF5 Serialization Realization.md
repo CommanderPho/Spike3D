@@ -25,7 +25,7 @@ and write it out in `to_hdf()` which will allow serializing the batch run's resu
 
 
 [/home/halechr/repos/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/General/Batch/runBatch.py:495](vscode://file/home/halechr/repos/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/General/Batch/runBatch.py:495)
-
+```python
 @classmethod
     def build_batch_lap_replay_counts_df(cls, global_batch_run: BatchRun):
         """ Adds detected laps/replays to the batch_progress_df. returns lap_replay_counts_df """
@@ -42,7 +42,7 @@ and write it out in `to_hdf()` which will allow serializing the batch run's resu
                 
 
 
-
+```
 
 # IMPORTANT
 
