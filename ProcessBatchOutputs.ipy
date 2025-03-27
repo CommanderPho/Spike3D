@@ -86,7 +86,7 @@ def execute_code_block(code_block: str) -> None:
 enable_auto_code_block_execution: bool = False
 
 
-BATCH_DAY_DATE: str = '2025-03-26'
+BATCH_DAY_DATE: str = '2025-03-27'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -227,7 +227,7 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-active_phase_dict['should_freeze_pipeline_updates'] = False 
+active_phase_dict['should_freeze_pipeline_updates'] = False
 # active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
 # active_phase_dict['should_create_vscode_workspace'] = True
 
@@ -294,9 +294,9 @@ active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
     'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': False},
     'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz':minimum_inclusion_fr_Hz, 'included_qclu_values':included_qclu_values},
     'perform_wcorr_shuffle_analysis': dict(num_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=True),
-    'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size = 0.025, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
+    'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
                                 compute_1D=True, compute_2D=True,
-                                drop_previous_result_and_compute_fresh=True, skip_training_test_split = True),
+                                drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
 }
 # active_phase_dict['force_recompute_override_computations_includelist'] = list(active_phase_dict.get('force_recompute_override_computation_kwargs_dict', {}).keys())
 
@@ -354,9 +354,6 @@ print(f'job_suffix: "{job_suffix}"')
 # ==================================================================================================================== #
 # BEGIN MAIN SCRIPT BODY                                                                                               #
 # ==================================================================================================================== #
-
-
-
 
 ## Build Slurm Scripts:
 session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context:a_session_folder.path for a_session_folder in good_session_concrete_folders}
