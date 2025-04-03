@@ -16,7 +16,9 @@
                 "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "PoetryEnvironmentExamples"
             }
           },
           {
@@ -25,10 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "WindowHierarchy.md",
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "PoetryEnvironmentExamples"
             }
           }
         ],
@@ -51,8 +55,11 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
-              }
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
@@ -67,7 +74,9 @@
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
@@ -75,7 +84,9 @@
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           }
         ]
@@ -98,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "WindowHierarchy.md",
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,7 +117,9 @@
                 "searchQuery": "",
                 "backlinkCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for PoetryEnvironmentExamples"
             }
           },
           {
@@ -115,10 +128,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "WindowHierarchy.md",
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from PoetryEnvironmentExamples"
             }
           },
           {
@@ -128,8 +143,12 @@
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true
-              }
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
             }
           },
           {
@@ -138,8 +157,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "WindowHierarchy.md"
-              }
+                "file": "PoetryEnvironments/PoetryEnvironmentExamples.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of PoetryEnvironmentExamples"
             }
           },
           {
@@ -151,7 +175,9 @@
                 "sortOrder": "frequency",
                 "showSearch": false,
                 "searchQuery": ""
-              }
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
             }
           }
         ]
@@ -173,17 +199,25 @@
   },
   "active": "1073da690e4e418d",
   "lastOpenFiles": [
+    "Spike3DDevDocsBook/markdown-notebooks.md",
+    "Spike3DDevDocsBook/markdown.md",
+    "Spike3DDevDocsBook/logo.png",
+    "Spike3DDevDocsBook/intro.md",
+    "2023-02-22-pyqode install.md",
+    "2023-08-03 - HDF5 Serialization Realization.md",
+    "2023-08-10 - Output Files and Exports.md",
+    "DirectionalLaps.md",
+    "jupyter-lab-debugging.md",
+    "multiprocessing_macOS_pickle_nmap.md",
+    "VSCode Idea - copy structure of class (for referencing).md",
+    "WindowHierarchy.md",
     "DataStructureDocumentation/add_renderables_menu.md",
     "DataStructureDocumentation/BasePositionDecoder.md",
-    "VSCode Idea - copy structure of class (for referencing).md",
     "DataStructureDocumentation/BayesianPlacemapPositionDecoder.md",
     "PoetryEnvironments/PoetryEnvironmentExamples.md",
     "DataStructureDocumentation/SurpriseAnalysisResult.md",
-    "jupyter-lab-debugging.md",
     "DataStructureDocumentation/ComputationResult.md",
-    "2023-08-10 - Output Files and Exports.md",
     "Untitled-4.md",
-    "2023-08-03 - HDF5 Serialization Realization.md",
     "PhoInitialRepoSetupNotes2022.md"
   ]
 }
