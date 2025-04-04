@@ -86,9 +86,9 @@ def execute_code_block(code_block: str) -> None:
 enable_auto_code_block_execution: bool = False
 
 
-BATCH_DAY_DATE: str = '2025-04-03'
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DAY_DATE: str = '2025-04-04'
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
@@ -139,8 +139,8 @@ phase_any_run_custom_user_completion_functions_dict = {
 # Hardcoded included_session_contexts:
 included_session_contexts = [
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-07_11-26-53'), # OK
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # 2025-04-03 18:59 EXCLUDE
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # 2025-04-03 18:59 EXCLUDE
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # 2025-04-03 18:59 EXCLUDE
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # 2025-04-03 18:59 EXCLUDE
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), # 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'),
@@ -206,8 +206,8 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ACTIVE PHASE                                                                                                         #
 # ==================================================================================================================== #
 
-active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.clean_run
+active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
@@ -270,20 +270,22 @@ num_shuffles = 1024
 drop_previous_result_and_compute_fresh = True
 
 # laps_decoding_time_bin_size = None
-laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.025
+laps_decoding_time_bin_size = 0.050
 
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
-ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.025
+ripple_decoding_time_bin_size = 0.050
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 # job_suffix='tbin_25ms'
 
 
 # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
-job_suffix = f"{job_suffix}_tbin_25ms"
-# job_suffix = f"{job_suffix}_tbin_50ms"
+# job_suffix = f"{job_suffix}_tbin_25ms"
+job_suffix = f"{job_suffix}_tbin_50ms"
 
 
 
@@ -319,6 +321,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
         save_hdf=False, allow_append_to_session_h5_file=False,
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0, # Heuristic settings
         ),
+    'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
 }
 
 # ==================================================================================================================== #
