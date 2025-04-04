@@ -150,6 +150,7 @@
 		"editor.codeActionWidget.includeNearbyQuickFixes": false,
 		"editor.dragAndDrop": false,
 		"actionButtons": {
+
 			"commands": [
 				{
 					"name": "Back",
@@ -195,6 +196,14 @@
 					"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables"
 				},
 				{
+					"name": "PyQtGraph Examples",
+					"tooltip": "Launch PyQtGraph examples browser",
+					"color": "#d4e6ec",
+					"useVsCodeApi": false,
+					// "command": "cd C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+					"command": "cd ${workspaceFolder} && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+				},
+				{
 					"name": "JupyterBook Build",
 					"tooltip": "Build the JupyterBook project",
 					"color": "#ed9600",
@@ -233,6 +242,9 @@
 			"codeSource": true,
 			"codeOutput": false
 		},
+		"custom-button.buttons": [
+
+],
 		// "python.ve"
 	},
 	"tasks": {
