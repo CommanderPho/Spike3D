@@ -86,7 +86,7 @@ def execute_code_block(code_block: str) -> None:
 enable_auto_code_block_execution: bool = False
 
 
-BATCH_DAY_DATE: str = '2025-04-04'
+BATCH_DAY_DATE: str = '2025-04-05'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -127,7 +127,7 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
     # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
-    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+    'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
 	'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
@@ -238,11 +238,11 @@ active_phase_dict['should_freeze_pipeline_updates'] = False
 # ==================================================================================================================== #
 # Custom Suffix and overrides                                                                                          #
 # ==================================================================================================================== #
-# '_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2]' ___________________________________________________________ #
-active_phase_dict['override_custom_pickle_suffix'] = '_withNormalComputedReplays-qclu_[1, 2]-frateThresh_5.0'
-included_qclu_values = [1,2]
-minimum_inclusion_fr_Hz = 5.0
-job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_5.0" ## ends up being something like # job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_5.0_tbin_25ms"
+# # '_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2]' ___________________________________________________________ #
+# active_phase_dict['override_custom_pickle_suffix'] = '_withNormalComputedReplays-qclu_[1, 2]-frateThresh_5.0'
+# included_qclu_values = [1,2]
+# minimum_inclusion_fr_Hz = 5.0
+# job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_5.0" ## ends up being something like # job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_5.0_tbin_25ms"
 
 
 # # # "_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2, 4, 6, 7, 9]" _______________________________________________ #
@@ -257,11 +257,11 @@ job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_5.0" ## ends up be
 # minimum_inclusion_fr_Hz = 5.0
 # job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_5.0"
 
-# # # "_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
-# active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_5.0"
-# included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
-# minimum_inclusion_fr_Hz = 5.0
-# job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
+# # "_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
+active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_5.0"
+included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
+minimum_inclusion_fr_Hz = 5.0
+job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
 
 # ==================================================================================================================== #
 # Common:                                                                                                              #
@@ -297,7 +297,7 @@ active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
     'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz':minimum_inclusion_fr_Hz, 'included_qclu_values':included_qclu_values},
     'perform_wcorr_shuffle_analysis': dict(num_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=True),
     'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
-                                compute_1D=True, compute_2D=True,
+                                compute_1D=True, compute_2D=False,
                                 drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
 }
 # active_phase_dict['force_recompute_override_computations_includelist'] = list(active_phase_dict.get('force_recompute_override_computation_kwargs_dict', {}).keys())
