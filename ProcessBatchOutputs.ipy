@@ -86,7 +86,7 @@ def execute_code_block(code_block: str) -> None:
 enable_auto_code_block_execution: bool = False
 
 
-BATCH_DAY_DATE: str = '2025-04-05'
+BATCH_DAY_DATE: str = '2025-04-06'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -271,21 +271,21 @@ drop_previous_result_and_compute_fresh = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
-# laps_decoding_time_bin_size = 0.025
-laps_decoding_time_bin_size = 0.050
+laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.050
 
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
-# ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.050
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 # job_suffix='tbin_25ms'
 
 
 # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
-# job_suffix = f"{job_suffix}_tbin_25ms"
-job_suffix = f"{job_suffix}_tbin_50ms"
+job_suffix = f"{job_suffix}_tbin_25ms"
+# job_suffix = f"{job_suffix}_tbin_50ms"
 
 
 
