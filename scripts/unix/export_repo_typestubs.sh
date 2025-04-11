@@ -4,9 +4,9 @@
 
 # Define directories
 # spike3DDirectory=$(dirname $(dirname "$BASH_SOURCE"))
-spike3DDirectory='/home/halechr/repos/Spike3D'
+spike3DDirectory='$HOME/repos/Spike3D'
 
-# repoParentDirectory='/home/halechr/repos/'
+# repoParentDirectory='$HOME/repos/'
 repoParentDirectory=$(dirname "$spike3DDirectory")
 
 directories=(

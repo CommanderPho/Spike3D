@@ -10,13 +10,13 @@ geometry1="1300x30+0+0"
 xfce4-terminal \
 --window \
 --geometry=$geometry1 \
---tab --title='Neuropy' --working-directory='/home/halechr/repos/NeuroPy' --command="bash -c '$cmd_git_ops'" \
---tab --title='pyPhoCoreHelpers' --working-directory='/home/halechr/repos/pyPhoCoreHelpers' --command="bash -c '$cmd_git_ops'" \
---tab --title='pyPhoPlaceCellAnalysis' --working-directory='/home/halechr/repos/pyPhoPlaceCellAnalysis' --command="bash -c '$cmd_git_ops'" \
---tab --title='Spike3D' --working-directory='/home/halechr/repos/Spike3D' --command="bash -c '$cmd_git_ops'" &
+--tab --title='Neuropy' --working-directory='$HOME/repos/NeuroPy' --command="bash -c '$cmd_git_ops'" \
+--tab --title='pyPhoCoreHelpers' --working-directory='$HOME/repos/pyPhoCoreHelpers' --command="bash -c '$cmd_git_ops'" \
+--tab --title='pyPhoPlaceCellAnalysis' --working-directory='$HOME/repos/pyPhoPlaceCellAnalysis' --command="bash -c '$cmd_git_ops'" \
+--tab --title='Spike3D' --working-directory='$HOME/repos/Spike3D' --command="bash -c '$cmd_git_ops'" &
 
 # Launch Visual Studio Code separately
-/home/halechr/bin/VSCode-linux-x64/bin/code &
+$HOME/bin/VSCode-linux-x64/bin/code &
 
 # # Geometry for the Jupyter terminal (e.g., 90 columns wide by 30 lines tall, offset by 100 pixels to the right and down)
 # geometry2="90x30+100+100"
@@ -26,5 +26,5 @@ xfce4-terminal \
 # --window \
 # --geometry=$geometry2 \
 # --title='Jupyter Lab' \
-# --working-directory='/home/halechr/repos' \
-# --command="bash /home/halechr/repos/scripts/unix/launch_jupyter_lab_with_remote_access.sh" &
+# --working-directory='$HOME/repos' \
+# --command="bash $HOME/repos/scripts/unix/launch_jupyter_lab_with_remote_access.sh" &
