@@ -4,8 +4,8 @@
 set -e
 
 # Variables
-PROJECT_DIR="/home/halechr/repos/Spike3D"
-SCRIPT_PULL="/home/halechr/repos/Spike3D/scripts/unix/repos_pull_changes.sh"
+PROJECT_DIR="$HOME/repos/Spike3D"
+SCRIPT_PULL="$HOME/repos/Spike3D/scripts/unix/repos_pull_changes.sh"
 JUPYTER_PORT=8889
 JUPYTER_LOG="$PROJECT_DIR/jupyter.log"  # Absolute path
 CLIPBOARD_CMD="xclip"  # Assuming 'clip' alias is set to xclip
@@ -30,8 +30,8 @@ fi
 
 # Get the path to the Poetry virtual environment
 VENV_PATH=$(poetry env info --path)
-# VENV_PATH="/home/halechr/Library/VSCode/green/.venv_green"
-# /home/halechr/Library/VSCode/green/.venv_green/bin/python
+# VENV_PATH="$HOME/Library/VSCode/green/.venv_green"
+# $HOME/Library/VSCode/green/.venv_green/bin/python
 # Source the activate script of the virtual environment
 # source $VENV_PATH/bin/activate
 
