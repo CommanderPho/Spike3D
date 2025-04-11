@@ -201,7 +201,8 @@
 					"color": "#d4e6ec",
 					"useVsCodeApi": false,
 					// "command": "cd C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
-					"command": "cd ${workspaceFolder} && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+					"command": "poetry run python \"LibrariesExamples${/}PyQtPlot${/}PyQtPlot_EXAMPLES.py\""
+					// "command": "cd ${workspaceFolder:Spike3D} && poetry run python \"LibrariesExamples${/}PyQtPlot${/}PyQtPlot_EXAMPLES.py\""
 				},
 				{
 					"name": "JupyterBook Build",
@@ -293,7 +294,25 @@
 					"panel": "shared",
 					"showReuseMessage": false
 				}
-			}
+			},
+			{
+				"label": "Launch PyQtGraph Examples",
+				"type": "shell",
+				"command": "cd ${workspaceFolder:Spike3D} && poetry run python \"LibrariesExamples${/}PyQtPlot${/}PyQtPlot_EXAMPLES.py\"",
+				"args": [
+					// "-m",
+					// "vitables",
+					// "$VITABLES_FILE_PATH"
+				],
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			},
 		]
 	},
 	"extensions": {
