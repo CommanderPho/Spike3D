@@ -86,7 +86,7 @@ def execute_code_block(code_block: str) -> None:
 enable_auto_code_block_execution: bool = False
 
 
-BATCH_DAY_DATE: str = '2025-04-08'
+BATCH_DAY_DATE: str = '2025-04-14'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -299,6 +299,7 @@ active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
     'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
                                 compute_1D=True, compute_2D=False,
                                 drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
+    'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
 }
 # active_phase_dict['force_recompute_override_computations_includelist'] = list(active_phase_dict.get('force_recompute_override_computation_kwargs_dict', {}).keys())
 
