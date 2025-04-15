@@ -1,3 +1,30 @@
+## Updated 2025-04-15 - UV Environment install
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv python install 3.9
+
+git clone --single-branch --branch working-with-UV --recurse-submodules https://github.com/CommanderPho/Spike3DWorkEnv.git
+
+```
+
+```
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+
+----
+
+## Updating
+```bash
+git submodule update --recursive --remote
+
+```
+
+
+-----------------------
+
 ## Updated 2023-02-06 Poetry Environment Install
 
 
