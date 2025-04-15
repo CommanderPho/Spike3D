@@ -207,7 +207,3 @@ maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
 pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget" }
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-

@@ -11251,7 +11251,7 @@ wheels = [
 [[package]]
 name = "spike3d"
 version = "0.4.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "adjusttext" },
     { name = "ansi2html" },
