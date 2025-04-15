@@ -5,7 +5,6 @@ pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
 silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=true, extras = ["full"]} # , version = "^2.1.0"
 #silx = {path = "../silx", develop=true, extras = ["full"]}
 #silx = {path = "../silx/dist/current.whl"}
-silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=false, extras = ["full"]}
 #pho-jupyter-preview-widget = {path = "../pho_jupyter_preview_widget", develop = true}
 #pyqtinspect = {git = "https://github.com/CommanderPho/PyQtInspect-Open.git", develop=true}
 #pyqtinspect = {git = "https://github.com/CommanderPho/PyQtInspect-Open.git", develop=true}
