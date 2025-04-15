@@ -147,7 +147,6 @@ dependencies = [
     "neo==0.13.2",
     "silx>=2.2.0,<3",
     "ipyevents>=2.0.2,<3",
-    "mayavi>=4.8.2,<5",
     "vitables==3.0.2",
     "pyjson5>=1.6.8,<2",
 ]
@@ -187,11 +186,7 @@ remote = [
 ]
 
 [tool.uv]
-default-groups = [
-    "dev",
-    "testing",
-    "remote",
-]
+default-groups = "all"
 
 [tool.uv.sources]
 qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }

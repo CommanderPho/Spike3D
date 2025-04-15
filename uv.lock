@@ -275,18 +275,6 @@ wheels = [
 ]
 
 [[package]]
-name = "apptools"
-version = "5.3.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "traits" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/43/a7/89f4e1c5e2b374aa5b8c7c61ccaf036c0fd97eaa898ce1fb71bb7e27ac85/apptools-5.3.0.tar.gz", hash = "sha256:30580bf62a0d5dd616edd5e2b9958227633f35cb557c6860452a56809e6bd567", size = 184762 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/4b/b9/76eb3757aad7a4ea9c5a9f0788b50ff0741df8dd45ed548650f5d60df5cc/apptools-5.3.0-py3-none-any.whl", hash = "sha256:d2a4ca30b66f7ba813a0f2489f34b0f3c1f7fe0ff7a3df0d7e87b8b3a569e7bd", size = 230006 },
-]
-
-[[package]]
 name = "argon2-cffi"
 version = "23.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1904,22 +1892,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ea/8d/a7121ffe5f402dc015277d2d31eb82d2187334503a011c18f2e78ecbb9b2/entrypoints-0.4.tar.gz", hash = "sha256:b706eddaa9218a19ebcd67b56818f05bb27589b1ca9e8d797b74affad4ccacd4", size = 13974 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/35/a8/365059bbcd4572cbc41de17fd5b682be5868b218c3c5479071865cab9078/entrypoints-0.4-py3-none-any.whl", hash = "sha256:f174b5ff827504fd3cd97cc3f8649f3693f51538c7e4bdf3ef002c8429d42f9f", size = 5294 },
-]
-
-[[package]]
-name = "envisage"
-version = "7.0.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "apptools" },
-    { name = "pyface" },
-    { name = "setuptools" },
-    { name = "traits" },
-    { name = "traitsui" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/df/0a321fed1f9b212461cbb71c595044d6d308b33a4a6fd770c44eb4afbcbc/envisage-7.0.3.tar.gz", hash = "sha256:f7b1af88bf3a8fff2a9ac6e36bb48dea9929e3f612204cfe94aed62b0316c9e3", size = 167716 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/31/f5/e055a233389dda363d172694e6a347873a1dc54107c0170bc6cf9909e21f/envisage-7.0.3-py3-none-any.whl", hash = "sha256:b931db6cca3132f02e46eb4dc0994a98ea2786d0250e7b8ad946d7b2f9813a7c", size = 268898 },
 ]
 
 [[package]]
@@ -4377,23 +4349,6 @@ wheels = [
 name = "maxlikespy"
 version = "0.1"
 source = { git = "https://github.com/CommanderPho/maxlikespy#8d15f9e24465777b8d24e9dcc3a3ccbe9fae6242" }
-
-[[package]]
-name = "mayavi"
-version = "4.8.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "apptools" },
-    { name = "envisage" },
-    { name = "numpy" },
-    { name = "packaging" },
-    { name = "pyface" },
-    { name = "pygments" },
-    { name = "traits" },
-    { name = "traitsui" },
-    { name = "vtk" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ee/49/f6038f0539e11e52d389f161e5ad78212d5680d9a9725b18d108562db124/mayavi-4.8.2.tar.gz", hash = "sha256:b10fe9145f21c48e4902f0e746b3603b3cb694d11456515a46820f21a0a74229", size = 7100132 }
 
 [[package]]
 name = "mdit-py-plugins"
@@ -6885,19 +6840,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/98/32/02fe8bf940d8ce2cc482c48056ccc6b64628f622a56fa773810199637fa8/pyerfa-2.0.1.5-pp39-pypy39_pp73-macosx_10_15_x86_64.whl", hash = "sha256:4991dee680ff36c87911d8faa4c7d1aa6278ad9b5e0d16158cf22fa7d74ba25c", size = 321082 },
     { url = "https://files.pythonhosted.org/packages/11/9e/ee706b5fc5b5a72e31283f66e68730abf802469bbc373ff0d05e68d7e2df/pyerfa-2.0.1.5-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:690e258294202c86f479e78e80fd235cd27bd717f7f60062fccc3dbd6ef0b1a9", size = 343943 },
     { url = "https://files.pythonhosted.org/packages/51/89/278ac94f86b6850f0ccee99839103375b665ccf99cb5085515deed4ab2d6/pyerfa-2.0.1.5-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:171ce9676a448a7eb555f03aa19ad5c749dbced1ce4f9923e4d93443c4a9c612", size = 349515 },
-]
-
-[[package]]
-name = "pyface"
-version = "8.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "importlib-metadata" },
-    { name = "traits" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0d/eb/69bbe2ff61ebe978b46d76cba33cc5a4ad3940528cfed322ddbb3843a5b1/pyface-8.0.0.tar.gz", hash = "sha256:7e13618347b7a648ed20cdbd4fd1a51648f5010291f35e4e0ff1bf70a720cbf8", size = 7793450 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/44/cc3b77aadd047d52625eb8f7361e6b34f114100d95706f0716dc4dde1f99/pyface-8.0.0-py3-none-any.whl", hash = "sha256:f636ffd4b9271767b9c06f67f0b407e04cf79f1ff2b6717a8a106233c48b9cc0", size = 1307345 },
 ]
 
 [[package]]
@@ -11309,7 +11251,6 @@ dependencies = [
     { name = "matplotlib-aximgcache" },
     { name = "matplotlib-extract" },
     { name = "maxlikespy" },
-    { name = "mayavi" },
     { name = "memory-profiler" },
     { name = "mkdocs-matplotlib" },
     { name = "mknotebooks" },
@@ -11488,7 +11429,6 @@ requires-dist = [
     { name = "matplotlib-aximgcache", specifier = ">=0.1.0,<0.2" },
     { name = "matplotlib-extract", specifier = ">=0.1.2,<0.2" },
     { name = "maxlikespy", git = "https://github.com/CommanderPho/maxlikespy" },
-    { name = "mayavi", specifier = ">=4.8.2,<5" },
     { name = "memory-profiler", specifier = ">=0.61.0,<0.62" },
     { name = "mkdocs-matplotlib", specifier = ">=0.10.1,<0.11" },
     { name = "mknotebooks", specifier = ">=0.7.1,<0.8" },
@@ -12147,35 +12087,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/eb/79/72064e6a701c2183016abbbfedaba506d81e30e232a68c9f0d6f6fcd1574/traitlets-5.14.3.tar.gz", hash = "sha256:9ed0579d3502c94b4b3732ac120375cda96f923114522847de4b3bb98b96b6b7", size = 161621 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl", hash = "sha256:b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f", size = 85359 },
-]
-
-[[package]]
-name = "traits"
-version = "7.0.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9e/ba/33e199bfae748e802f68a857035fb003089c176897bf43e2cf38ff167740/traits-7.0.2.tar.gz", hash = "sha256:a563515809cb3911975de5a54209855f0b6fdb7ca6912a5e81de26529f70428c", size = 9534785 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/45/91/8183d2ce4de375218e8482dd508ac852e56f94edc49890e35cdd6b82a251/traits-7.0.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:11d9d4f99fb7f510df5e3f067bace8b19c1ea3fd273c4d155cc010997715a44c", size = 5034421 },
-    { url = "https://files.pythonhosted.org/packages/87/e9/d2f05dae7f78b5206432e8018ec28f25ab09f9eb826d5ca537c9c35e019e/traits-7.0.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:deb5f683f54cf09137b08995a117a7d0b00f226547d5b9859d92ff26885cb713", size = 5034836 },
-    { url = "https://files.pythonhosted.org/packages/0a/c0/fa8da70da8eb98fdb44b853059878ff69c7b694d3e8dc0ba781905485ff8/traits-7.0.2-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c58a683194c1c967cd5204edd93dce7cc5319f922f33ab4b27ab0c6d261b12e0", size = 5109238 },
-    { url = "https://files.pythonhosted.org/packages/9c/c6/2aeaa3932beca13026974feb4bc3d3375c27ef6aba8b1ae0d406e73fd8f0/traits-7.0.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5ea99f83f9d6f3587960f662fea15c50afb00dd69b2ad21803fdfeed3cf89897", size = 5120727 },
-    { url = "https://files.pythonhosted.org/packages/c7/7f/4ec59a6d0151cfc947f4867f90f2bd0d46ba6b011c05c2273359c8a34349/traits-7.0.2-cp39-cp39-musllinux_1_2_i686.whl", hash = "sha256:1e3cf677b09951d1bd3b96addb3676c5b0a1ec374c1a8ef104965ce32607351e", size = 5108506 },
-    { url = "https://files.pythonhosted.org/packages/55/7a/066ec397f4491ab33d2d0f9c4c7d94c419180ca4e6ffbe19f7173fe1922e/traits-7.0.2-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:1c56862c76405bd40ac1cb9436bd360a3c06fea5c483fe8ce51ea913f7457724", size = 5116702 },
-    { url = "https://files.pythonhosted.org/packages/48/2d/5a9fbe5057f97df5c2ba4d5a2b2dae0e3e935a4f11275a86dd0c784476ca/traits-7.0.2-cp39-cp39-win32.whl", hash = "sha256:f17ac7813e09f3059c7701886c3aa6ee416f5cfa8f8e9411c72e32c4141c7fec", size = 5033826 },
-    { url = "https://files.pythonhosted.org/packages/c8/2b/4264f2f619efdaaa90550daf17eb77c2535be9498f501077b02c1a5b63e3/traits-7.0.2-cp39-cp39-win_amd64.whl", hash = "sha256:e24190821d6034372b4bd535b499f4257416cac56a91f3ecbe88ccb13ddc4677", size = 5036290 },
-]
-
-[[package]]
-name = "traitsui"
-version = "8.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyface" },
-    { name = "traits" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/ce/f8f3d97659822cac8ff6b80b4636161126d3a13a86a8c0d407498611d506/traitsui-8.0.0.tar.gz", hash = "sha256:901b9d1cbc45513e00a7397677b098441b28774b688f30a159bad4801bf40364", size = 6774847 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/c7/c96fcb966c1c61fbf2b58219cfa394d2c7160f31c9f4728402ead8f9a17c/traitsui-8.0.0-py3-none-any.whl", hash = "sha256:0e09c0965a8de12dd05e0b4bbdae31bdd576fa551fdaaf2f4e13ac4aa51980ee", size = 1524098 },
 ]
 
 [[package]]
