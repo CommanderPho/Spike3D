@@ -1,213 +1,213 @@
-[tool.poetry]
+[project]
 name = "spike3d"
 version = "0.4.0"
 description = "Primary 3D Analysis Package"
-authors = ["Pho Hale <halechr@umich.edu>"]
+authors = [{ name = "Pho Hale", email = "halechr@umich.edu" }]
+requires-python = ">=3.9,<3.10"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">=3.9.2,<3.9.7 || >3.9.7,<3.10"
-numba = "^0.56.4"
-pyvista = "^0.36.1"
-pyvistaqt = "^0.9.0"
-loguru = "^0.6.0" # required for mpl-multitab
-pyopengl = "^3.1.6"
-qtawesome = "^1.2.2"
-wrapt = "1.11.2"
-mpl-multitab = {git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat"} # poetry add git+https://github.com/CommanderPho/mpl-multitab.git
-ansi2html = {git = "https://github.com/CommanderPho/ansi2html.git", rev = "main"} # poetry add git+https://github.com/CommanderPho/ansi2html.git
-vedo = {git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working"} # poetry add git+https://github.com/CommanderPho/vedo.git#release/pho-working
-pybursts = {git = "https://github.com/CommanderPho/pybursts.git", rev = "master"}
-qdarkstyle = "^3.1"
-hdf5plugin = "^4.1.1"
-mplcursors = "^0.5.2"
-pyqt-custom-titlebar-window = "^0.0.50"
-pyqt5custom = "^1.0.1"
-matplotlib = "3.8.4"
-numexpr = "^2.8.4"
-scipy = "^1.10.1"
-dill = {version="==0.3.5.1", extras=["graph"]} #objgraph diagnostic tool
-pyqt5 = "^5.15.7"
-pyqt5-qt5 = "5.15.2" # ^5.15.2
-qtconsole = "^5.4.0"
-ipython = "^8.11.0"
-attrs = "^22.2.0"
-cattrs = "^23.1.2"
-pillow = "^9.4.0"
-seaborn = {extras = ["stats"], version = "^0.12.2"}
-param = "^1.13.0"
-pyflakes = "^3.0.1" # required for code editor
-neptune = "^1.2.0"
-nptyping = {extras = ["complete"], version = "^2.5.0"} # allows specifying Numpy and Pandas types and shapes
-awkward = "^2.2.1" # for ragged-arrays, testing
-pyqt-checkbox-table-widget = "^0.0.14"
-patchworklib = "^0.6.1" # matplotlib figure layout/organization
-flexitext = {git = "https://github.com/CommanderPho/flexitext.git", rev = "main"}
-adjusttext = "^1.1.1"
-seaborn-image = "^0.6.0"
-mpl-interactions = {extras = ["jupyter"], version = "^0.23.1"}
-matplotlib-aximgcache = "^0.1.0"
-matplotlib-extract = "^0.1.2"
-click-man = "^0.4.1"
-tikzplotlib = "^0.10.1"
-mpl-sizes = "^0.0.2"
-lovelyplots = "^0.0.26"
-mknotebooks = "^0.7.1"
-python-markdown-math = "^0.8"
-desert = "^2022.9.22"
-cairosvg = "^2.7.0"
-pyqt5singleton = "^0.1"
-tables = "^3.8.0"
-hvplot = "^0.8.4"
-pyviz-comms = "^2.3.2"
-objexplore = "^1.6.3"
-hdf5storage = "^0.1.19"
-h5glance = "^0.8.1"
-ipytree = "^0.2.2"
-tqdm = "^4.65.1"
-jinja2 = "3.0.3"
-psutil = "^5.9.5"
-plotly = "^5.24.1"
-ipygany = "^0.5.0"
-pyqode-core = {path = "../pyqode.core/dist/current.whl"}
-pyqode-python = {path = "../pyqode.python/dist/current.whl"}
-jupyter-dash = "^0.4.2"
-ipydatagrid = "^1.2.0"
-sidecar = "^0.7.0"
-glueviz = "^1.2.0"
-perspective-python = "^2.5.1"
-memory-profiler = "^0.61.0"
-vaex = "^4.17.0"
-xarray = {extras = ["complete"], version = "^2023.9.0"}
-h5netcdf = "^1.2.0"
-xarray-datatree = "^0.0.12"
-pip = "^24.0"
-streamlit = "^1.27.1"
-streamlit-extras = "^0.3.2"
-regex = "^2023.10.3"
-panel = "^1.2.3"
-params = "^0.9.0"
-findpeaks = "^2.5.4"
-qtvoila = "^2.1.0"
-pyqt-builder = "^1.15.3"
-statsmodels = "^0.14.0"
-pathos = "^0.2.9"
-nbstripout = "^0.6.1"
-dash-bootstrap-components = "^1.5.0"
-dash-mantine-components = "^0.12.1"
-dash = "^2.14.2"
-ruptures = "^1.1.9"
-maxlikespy = {git = "https://github.com/CommanderPho/maxlikespy"}
-mkdocs-matplotlib = "^0.10.1"
-pycorrelate = "^0.3"
-napari-animation = "^0.0.8"
-napari-hdf5-netcdf-viewer = "^0.1.1"
-napari-plot-profile = "^0.2.2"
-jupyterhub = "^4.0.2"
-jupyter-bokeh = "^3.0.7"
-jupyter-rfb = "^0.4.1"
-jaraco-clipboard = "^3.1.0"
-highlight-text = "^0.2"
-streamlit-tree-select = "^0.0.5"
-structlog = "^24.1.0"
-colorama = "^0.4.6"
-rich = "^13.7.1"
-better-exceptions = "^0.3.3"
-pandas = "1.5.3"
-joblib = "^1.4.0"
-mpldatacursor = "^0.7.1"
-fastdtw = "^0.3.4"
-lxml = {extras = ["html-clean"], version = "^5.2.1"}
-napari = "^0.4.19.post1"
-rdp = "^0.8"
-kaleido = [
-    {platform = "darwin", version = "0.1.0"},
-    {platform = "linux", version = "0.1.0"},
-    {platform = "win32", version = "0.1.0.post1"}
+dependencies = [
+    "numba>=0.56.4,<0.57",
+    "pyvista>=0.36.1,<0.37",
+    "pyvistaqt>=0.9.0,<0.10",
+    "loguru>=0.6.0,<0.7",
+    "pyopengl>=3.1.6,<4",
+    "qtawesome>=1.2.2,<2",
+    "wrapt==1.11.2",
+    "mpl-multitab",
+    "ansi2html",
+    "vedo",
+    "pybursts",
+    "qdarkstyle~=3.1",
+    "hdf5plugin>=4.1.1,<5",
+    "mplcursors>=0.5.2,<0.6",
+    "pyqt-custom-titlebar-window>=0.0.50,<0.0.51",
+    "pyqt5custom>=1.0.1,<2",
+    "matplotlib==3.8.4",
+    "numexpr>=2.8.4,<3",
+    "scipy>=1.10.1,<2",
+    "dill[graph]==0.3.5.1",
+    "pyqt5>=5.15.7,<6",
+    "pyqt5-qt5==5.15.2",
+    "qtconsole>=5.4.0,<6",
+    "ipython>=8.11.0,<9",
+    "attrs>=22.2.0,<23",
+    "cattrs>=23.1.2,<24",
+    "pillow>=9.4.0,<10",
+    "seaborn[stats]>=0.12.2,<0.13",
+    "param>=1.13.0,<2",
+    "pyflakes>=3.0.1,<4",
+    "neptune>=1.2.0,<2",
+    "nptyping[complete]>=2.5.0,<3",
+    "awkward>=2.2.1,<3",
+    "pyqt-checkbox-table-widget>=0.0.14,<0.0.15",
+    "patchworklib>=0.6.1,<0.7",
+    "flexitext",
+    "adjusttext>=1.1.1,<2",
+    "seaborn-image>=0.6.0,<0.7",
+    "mpl-interactions[jupyter]>=0.23.1,<0.24",
+    "matplotlib-aximgcache>=0.1.0,<0.2",
+    "matplotlib-extract>=0.1.2,<0.2",
+    "click-man>=0.4.1,<0.5",
+    "tikzplotlib>=0.10.1,<0.11",
+    "mpl-sizes>=0.0.2,<0.0.3",
+    "lovelyplots>=0.0.26,<0.0.27",
+    "mknotebooks>=0.7.1,<0.8",
+    "python-markdown-math>=0.8,<0.9",
+    "desert>=2022.9.22,<2023",
+    "cairosvg>=2.7.0,<3",
+    "pyqt5singleton>=0.1,<0.2",
+    "tables>=3.8.0,<4",
+    "hvplot>=0.8.4,<0.9",
+    "pyviz-comms>=2.3.2,<3",
+    "objexplore>=1.6.3,<2",
+    "hdf5storage>=0.1.19,<0.2",
+    "h5glance>=0.8.1,<0.9",
+    "ipytree>=0.2.2,<0.3",
+    "tqdm>=4.65.1,<5",
+    "jinja2==3.0.3",
+    "psutil>=5.9.5,<6",
+    "plotly>=5.24.1,<6",
+    "ipygany>=0.5.0,<0.6",
+    "jupyter-dash>=0.4.2,<0.5",
+    "ipydatagrid>=1.2.0,<2",
+    "sidecar>=0.7.0,<0.8",
+    "glueviz>=1.2.0,<2",
+    "perspective-python>=2.5.1,<3",
+    "memory-profiler>=0.61.0,<0.62",
+    "vaex>=4.17.0,<5",
+    "xarray[complete]>=2023.9.0,<2024",
+    "h5netcdf>=1.2.0,<2",
+    "xarray-datatree>=0.0.12,<0.0.13",
+    "pip~=24.0",
+    "streamlit>=1.27.1,<2",
+    "streamlit-extras>=0.3.2,<0.4",
+    "regex>=2023.10.3,<2024",
+    "panel>=1.2.3,<2",
+    "params>=0.9.0,<0.10",
+    "findpeaks>=2.5.4,<3",
+    "qtvoila>=2.1.0,<3",
+    "pyqt-builder>=1.15.3,<2",
+    "statsmodels>=0.14.0,<0.15",
+    "pathos>=0.2.9,<0.3",
+    "nbstripout>=0.6.1,<0.7",
+    "dash-bootstrap-components>=1.5.0,<2",
+    "dash-mantine-components>=0.12.1,<0.13",
+    "dash>=2.14.2,<3",
+    "ruptures>=1.1.9,<2",
+    "maxlikespy",
+    "mkdocs-matplotlib>=0.10.1,<0.11",
+    "pycorrelate>=0.3,<0.4",
+    "napari-animation>=0.0.8,<0.0.9",
+    "napari-hdf5-netcdf-viewer>=0.1.1,<0.2",
+    "napari-plot-profile>=0.2.2,<0.3",
+    "jupyterhub>=4.0.2,<5",
+    "jupyter-bokeh>=3.0.7,<4",
+    "jupyter-rfb>=0.4.1,<0.5",
+    "jaraco-clipboard>=3.1.0,<4",
+    "highlight-text>=0.2,<0.3",
+    "streamlit-tree-select>=0.0.5,<0.0.6",
+    "structlog>=24.1.0,<25",
+    "colorama>=0.4.6,<0.5",
+    "rich>=13.7.1,<14",
+    "better-exceptions>=0.3.3,<0.4",
+    "pandas==1.5.3",
+    "joblib>=1.4.0,<2",
+    "mpldatacursor>=0.7.1,<0.8",
+    "fastdtw>=0.3.4,<0.4",
+    "lxml[html-clean]>=5.2.1,<6",
+    "napari>=0.4.19.post1,<0.5",
+    "rdp>=0.8,<0.9",
+    "kaleido==0.1.0 ; sys_platform == 'darwin'",
+    "kaleido==0.1.0 ; sys_platform == 'linux'",
+    "kaleido==0.1.0.post1 ; sys_platform == 'win32'",
+    "watchdog>=4.0.1,<5",
+    "poetry-plugin-export>=1.8.0,<2",
+    "solara[assets]>=1.33.0,<2",
+    "bottleneck>=1.4.0,<2",
+    "numbagg>=0.8.1,<0.9",
+    "flox>=0.9.8,<0.10",
+    "opt-einsum>=3.3.0,<4",
+    "zarr>=2.18.2,<3",
+    "fsspec>=2024.6.1,<2025",
+    "ipykernel>=6.29.5,<7",
+    "numpy-stl>=3.1.1,<4",
+    "brokenaxes>=0.6.1,<0.7",
+    "networkx[default]==3.2.1",
+    "python-dotenv>=1.0.1,<2",
+    "scikit-learn~=1.5",
+    "scikit-image>=0.24,<0.25",
+    "virtualenv>=20.26.3,<21",
+    "jupyter-book>=1.0.2,<2",
+    "opencv-contrib-python>=4.10.0.84,<5",
+    "pdf2image>=1.17.0,<2",
+    "cython>=3.0.11,<4",
+    "ipyflex>=0.3.1,<0.4",
+    "pyqtinspect",
+    "pho-jupyter-preview-widget",
+    "neo==0.13.2",
+    "silx>=2.2.0,<3",
+    "ipyevents>=2.0.2,<3",
+    "mayavi>=4.8.2,<5",
+    "vitables==3.0.2",
+    "pyjson5>=1.6.8,<2",
 ]
-watchdog = "^4.0.1"
-poetry-plugin-export = "^1.8.0"
-solara = {extras = ["assets"], version = "^1.33.0"}
-bottleneck = "^1.4.0"
-numbagg = "^0.8.1"
-flox = "^0.9.8"
-opt-einsum = "^3.3.0"
-zarr = "^2.18.2"
-fsspec = "^2024.6.1"
-ipykernel = "^6.29.5"
-numpy-stl = "^3.1.1"
-brokenaxes = "^0.6.1"
-networkx = {version = "3.2.1", extras = ["default"]}
-python-dotenv = "^1.0.1"
-#fiftyone = {extras = ["desktop"], version = "^0.24.1"}
-scikit-learn = "^1.5"
-scikit-image = "^0.24"
-#rbeast = "^0.1.21"
-virtualenv = "^20.26.3"
-jupyter-book = "^1.0.2"
-opencv-contrib-python = "^4.10.0.84"
-pdf2image = "^1.17.0"
-cython = "^3.0.11"
-ipyflex = "^0.3.1"
-pyqtinspect = {path = "../PyQtInspect-Open", develop = true}
-pho-jupyter-preview-widget = {path = "../pho_jupyter_preview_widget"}
-neo = "0.13.2"
-silx = "^2.2.0"
-ipyevents = "^2.0.2"
-mayavi = "^4.8.2"
-vitables = "3.0.2"
-pyjson5 = "^1.6.8"
 
-[tool.poetry.group.dev.dependencies]
-ipython = "^8.9.0"
-viztracer = "^0.15.6"
-jupyterlab = "^3.6.1"
-dvc = {version = "^3.59.0", extras = ["gdrive"]}
-cookiecutter = "^2.5.0"
-monkeytype = "^23.3.0"
-pyannotate = "^1.2.0"
-mypy = "^1.8.0"
-libcst = "^1.1.0"
-black = "^24.2.0"
-ghp-import = "^2.1.0"
-jupyter-cache = "^1.0.0"
-jupytext = "^1.16.4"
-qt_style_sheet_inspector = {git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master"}
-objgraph = "^3.6.2"
-pympler = "^1.1"
-memory-profiler = "^0.61.0"
-pyright = "^1.1.396"
-
-[tool.poetry.group.testing.dependencies]
-ipywidgets = "^8.0.5"
-
-[tool.poetry.group.remote.dependencies]
-neuropy = {path = "../NeuroPy", develop=true}
-pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
-pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-
-[tool.poetry.scripts]
+[project.scripts]
 pull-changes = "scripts/unix/repos_pull_changes.sh"
 launch-jupyter-remote = "scripts/unix/launch_jupyter_lab_with_remote_access.sh"
-setup_dependent_repos = 'scripts/setup_dependent_repos.py' # 'scripts.console:run'
-rebuild_typestubs_and_requirements = 'scripts/windows/export_requirements_and_create_typestubs.ps1' 
+setup_dependent_repos = "scripts/setup_dependent_repos.py"
+rebuild_typestubs_and_requirements = "scripts/windows/export_requirements_and_create_typestubs.ps1"
 
-# [tool.vulture]
-# exclude = [] # "*file*.py", "dir/"
-# ignore_decorators = [] # "@app.route", "@require_*"
-# ignore_names = [] # "visit_*", "do_*"
-# make_whitelist = true
-# min_confidence = 80
-# paths = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalysis", "../Spike3D"]
-# sort_by_size = true
-# verbose = true
+[dependency-groups]
+dev = [
+    "ipython>=8.9.0,<9",
+    "viztracer>=0.15.6,<0.16",
+    "jupyterlab>=3.6.1,<4",
+    "dvc[gdrive]>=3.59.0,<4",
+    "cookiecutter>=2.5.0,<3",
+    "monkeytype>=23.3.0,<24",
+    "pyannotate>=1.2.0,<2",
+    "mypy>=1.8.0,<2",
+    "libcst>=1.1.0,<2",
+    "black>=24.2.0,<25",
+    "ghp-import>=2.1.0,<3",
+    "jupyter-cache>=1.0.0,<2",
+    "jupytext>=1.16.4,<2",
+    "qt_style_sheet_inspector",
+    "objgraph>=3.6.2,<4",
+    "pympler~=1.1",
+    "memory-profiler>=0.61.0,<0.62",
+    "pyright>=1.1.396,<2",
+]
+testing = ["ipywidgets>=8.0.5,<9"]
+remote = [
+    "neuropy",
+    "pyphocorehelpers",
+    "pyphoplacecellanalysis",
+]
+
+[tool.uv]
+default-groups = [
+    "dev",
+    "testing",
+    "remote",
+]
+
+[tool.uv.sources]
+qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
+neuropy = { path = "../NeuroPy", editable = true }
+pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable = true }
+pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable = true }
+mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
+ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main" }
+vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
+pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
+flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
+maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
+pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
+pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget" }
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-package-mode = false
-
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.8"
-poetry-plugin-shell = ">=1.0.1"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 

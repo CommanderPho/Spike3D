@@ -1,25 +1,31 @@
 {
 	"folders": [
-        {
-            "name": "Spike3D",
-            "path": "../../."
-        },
-        {
-            "path": "../../../NeuroPy"
-        },
-        {
-            "path": "../../../pyPhoPlaceCellAnalysis"
-        },
-        {
-            "path": "../../../pyPhoCoreHelpers"
-        },
-        {
-            "path": "../../../SCRIPTS"
-        },
-        {
-            "path": "../../../../cloud/turbo/Data/Output/gen_scripts"
-        }
-    ],
+		{
+			"name": "Spike3D",
+			"path": "../../."
+		},
+		{
+			"path": "../../../NeuroPy"
+		},
+		{
+			"path": "../../../pyPhoPlaceCellAnalysis"
+		},
+		{
+			"path": "../../../pyPhoCoreHelpers"
+		},
+		{
+			"path": "../../../SCRIPTS"
+		},
+		{
+			"path": "../../../../cloud/turbo/Data/Output/gen_scripts"
+		},
+		{
+			"path": "../../../pyqode.core"
+		},
+		{
+			"path": "../../../pyqode.python"
+		}
+	],
 	"settings": {
 		// "python.pythonPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe", //"C:\\Users\\pho\\miniconda3\\envs\\phoviz_ultimate\\python.exe",
 		"python.defaultInterpreterPath": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
