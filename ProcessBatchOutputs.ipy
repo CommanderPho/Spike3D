@@ -351,7 +351,7 @@ print(f'job_suffix: "{job_suffix}"')
 # {'ripple_decoding_time_bin_size': 0.058}
 
 ## Non-interactive batch computation in scripts
-# active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
+active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
 
 # END ________________________________________________________________________________________________________________ #
 
