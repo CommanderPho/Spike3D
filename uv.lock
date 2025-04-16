@@ -6119,21 +6119,34 @@ wheels = [
 
 [[package]]
 name = "pho-jupyter-preview-widget"
-version = "0.1.0"
+version = "0.3.0"
 source = { directory = "../pho_jupyter_preview_widget" }
 dependencies = [
     { name = "ipykernel" },
     { name = "ipywidgets" },
+    { name = "jinja2" },
+    { name = "matplotlib" },
+    { name = "nptyping", extra = ["complete"] },
+    { name = "numpy" },
     { name = "pandas" },
+    { name = "pyphocorehelpers" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "ipykernel", specifier = ">=6.29.5,<7.0.0" },
-    { name = "ipywidgets", specifier = ">=8.1.3,<9.0.0" },
-    { name = "pandas", specifier = ">=1.5.3,<2.0.0" },
+    { name = "ipykernel", specifier = ">=6.29.5,<7" },
+    { name = "ipywidgets", specifier = ">=8.1.3,<9" },
+    { name = "jinja2", specifier = "==3.0.3" },
+    { name = "matplotlib", specifier = ">=3.8.4,<4" },
+    { name = "nptyping", extras = ["complete"], specifier = ">=2.5.0,<3" },
+    { name = "numpy", specifier = "~=1.20" },
+    { name = "pandas", specifier = ">=1.5.3,<2" },
+    { name = "pyphocorehelpers", editable = "../pyPhoCoreHelpers" },
 ]
 provides-extras = ["notebook"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "notebook", specifier = ">=7.2.1,<8" }]
 
 [[package]]
 name = "phonenumbers"
@@ -9410,6 +9423,7 @@ dependencies = [
     { name = "pyopengl-accelerate" },
     { name = "pyqt-builder" },
     { name = "pyqt5-qt5" },
+    { name = "qtawesome" },
     { name = "qtmodern" },
     { name = "scikit-learn" },
     { name = "setuptools" },
@@ -9445,6 +9459,7 @@ requires-dist = [
     { name = "pyopengl-accelerate", specifier = ">=3.1.6,<4" },
     { name = "pyqt-builder", specifier = ">=1.15.3,<2" },
     { name = "pyqt5-qt5", specifier = "==5.15.2" },
+    { name = "qtawesome", specifier = ">=1.4.0" },
     { name = "qtmodern", specifier = ">=0.2.0,<0.3" },
     { name = "scikit-learn", specifier = "~=1.5" },
     { name = "setuptools", specifier = ">=78.1.0" },
