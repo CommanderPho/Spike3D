@@ -204,7 +204,9 @@
 					"color": "#d4e6ec",
 					"useVsCodeApi": false,
 					// "command": "cd C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
-					"command": "poetry run python \"LibrariesExamples${/}PyQtPlot${/}PyQtPlot_EXAMPLES.py\""
+					// "command": "poetry run python \"LibrariesExamples${/}PyQtPlot${/}PyQtPlot_EXAMPLES.py\""
+					"command": "uv run --active python \"LibrariesExamples${/}PyQtPlot${/}PyQtPlot_EXAMPLES.py\""
+
 					// "command": "cd ${workspaceFolder:Spike3D} && poetry run python \"LibrariesExamples${/}PyQtPlot${/}PyQtPlot_EXAMPLES.py\""
 				},
 				{
