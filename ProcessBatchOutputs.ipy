@@ -120,14 +120,14 @@ phase_any_run_custom_user_completion_functions_dict = {
     # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
     # 'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
-    'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+    # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
     # # 'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
     # # 'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
     # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
     # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
-    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+    'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
 	'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
@@ -139,8 +139,8 @@ phase_any_run_custom_user_completion_functions_dict = {
 # Hardcoded included_session_contexts:
 included_session_contexts = [
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-07_11-26-53'), # OK
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # 2025-04-03 18:59 EXCLUDE
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # 2025-04-03 18:59 EXCLUDE
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # 2025-04-03 18:59 EXCLUDE
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # 2025-04-03 18:59 EXCLUDE
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), # 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'),
@@ -170,7 +170,7 @@ force_recompute_override_computations_includelist = []
 extra_extended_computations_include_includelist = [
     # 'wcorr_shuffle_analysis'
     # 'non_PBE_epochs_results',
-    'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
+    # 'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
 ]
 
 custom_phase_extended_computations_include_includelist = None
@@ -208,8 +208,8 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-active_phase = ProcessingScriptPhases.continued_run
-# active_phase = ProcessingScriptPhases.final_run
+# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
