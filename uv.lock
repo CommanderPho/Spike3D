@@ -6852,6 +6852,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pyfunctional"
+version = "1.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "dill" },
+    { name = "tabulate" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/81/1a/091aac943deb917cc4644442a39f12b52b0c3457356bfad177fadcce7de4/pyfunctional-1.5.0.tar.gz", hash = "sha256:e184f3d7167e5822b227c95292c3557cf59edf258b1f06a08c8e82991de98769", size = 107912 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2d/cb/9bbf9d88d200ff3aeca9fc4b83e1906bdd1c3db202b228769d02b16a7947/pyfunctional-1.5.0-py3-none-any.whl", hash = "sha256:dfee0f4110f4167801bb12f8d497230793392f694655103b794460daefbebf2b", size = 53080 },
+]
+
+[[package]]
 name = "pygit2"
 version = "1.15.1"
 source = { registry = "https://pypi.org/simple" }
@@ -10819,6 +10832,21 @@ wheels = [
 ]
 
 [[package]]
+name = "sklearn-utils"
+version = "0.0.15"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "pyfunctional" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
+    { name = "seaborn" },
+    { name = "statsmodels" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fa/90/513bad627e9e8b76760d1d6d4e917641f96e6d384494226abb378940f125/sklearn_utils-0.0.15.tar.gz", hash = "sha256:075b822d3780a062456777d71e10cfbc92565786d943745671271ef7d29d00c9", size = 26002 }
+
+[[package]]
 name = "smmap"
 version = "5.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -11325,6 +11353,7 @@ dependencies = [
     { name = "seaborn-image" },
     { name = "sidecar" },
     { name = "silx" },
+    { name = "sklearn-utils" },
     { name = "solara", extra = ["assets"] },
     { name = "statsmodels" },
     { name = "streamlit" },
@@ -11502,6 +11531,7 @@ requires-dist = [
     { name = "seaborn-image", specifier = ">=0.6.0,<0.7" },
     { name = "sidecar", specifier = ">=0.7.0,<0.8" },
     { name = "silx", specifier = ">=2.2.0,<3" },
+    { name = "sklearn-utils", specifier = ">=0.0.15" },
     { name = "solara", extras = ["assets"], specifier = ">=1.33.0,<2" },
     { name = "statsmodels", specifier = ">=0.14.0,<0.15" },
     { name = "streamlit", specifier = ">=1.27.1,<2" },
