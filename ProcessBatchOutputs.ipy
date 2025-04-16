@@ -66,7 +66,7 @@ import inspect
 from jinja2 import Template
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, curr_runtime_context_header_template, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
@@ -131,6 +131,7 @@ phase_any_run_custom_user_completion_functions_dict = {
     'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
 	'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
 }
 
 # %%
@@ -324,6 +325,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0, # Heuristic settings
         ),
     'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
+    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
 }
 
 # ==================================================================================================================== #
