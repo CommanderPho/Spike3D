@@ -268,7 +268,7 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
 # Common:                                                                                                              #
 # ==================================================================================================================== #
 num_shuffles = 1024
-drop_previous_result_and_compute_fresh = True
+drop_previous_result_and_compute_fresh = False
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
