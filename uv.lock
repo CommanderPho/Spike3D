@@ -5412,6 +5412,7 @@ dependencies = [
     { name = "scipy" },
     { name = "seaborn" },
     { name = "sphinx-autodoc-typehints" },
+    { name = "typing-extensions" },
     { name = "urllib3" },
     { name = "vitables" },
 ]
@@ -5446,6 +5447,7 @@ requires-dist = [
     { name = "seaborn", specifier = ">=0.12.2,<0.13" },
     { name = "sphinx-autodoc-typehints", specifier = ">=2.0.0,<3" },
     { name = "tqdm", marker = "extra == 'gui'", specifier = ">=4.64.1,<5" },
+    { name = "typing-extensions", specifier = ">=4.12.2" },
     { name = "urllib3", specifier = "==1.26.18" },
     { name = "vitables", specifier = ">=3.0.2,<4" },
 ]
