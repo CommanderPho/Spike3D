@@ -126,7 +126,7 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
-    'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+    # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
@@ -209,9 +209,9 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
-active_phase = ProcessingScriptPhases.figure_run
+# active_phase = ProcessingScriptPhases.figure_run
 
 
 # END ________________________________________________________________________________________________________________ #
@@ -353,7 +353,7 @@ print(f'job_suffix: "{job_suffix}"')
 # {'ripple_decoding_time_bin_size': 0.058}
 
 ## Non-interactive batch computation in scripts
-active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
+# active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
 
 # END ________________________________________________________________________________________________________________ #
 
