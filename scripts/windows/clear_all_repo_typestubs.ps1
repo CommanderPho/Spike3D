@@ -13,12 +13,6 @@ $directories = @(
 )
 
 # "Remove-Item -Recurse -Force .\typings\", 
-$directory_pyright_generate_typestubs_commands = @(
-    @("pyright --createstub neuropy"),
-    @("pyright --createstub pyphocorehelpers"),
-    @("pyright --createstub pyphoplacecellanalysis"),
-    @("poetry shell", "pyright --createstub neuropy", "pyright --createstub pyphocorehelpers", "pyright --createstub pyphoplacecellanalysis")
-)
 
 function Clear-PyrightTypestubs {
     Write-Host "Clearing (Deleting) all existing typestubs..."
@@ -32,19 +26,4 @@ function Clear-PyrightTypestubs {
 }
 
 
-function Export-PyrightTypestubs {
-    Write-Host "Exporting typestubs using PyRight..."
-    for ($i = 0; $i -lt $directories.Length; $i++) {
-        $directory = $directories[$i]
-        $commands = $directory_pyright_generate_typestubs_commands[$i]
-        Set-Location $directory
-        Write-Host "    for $directory"
-        Remove-Item -Recurse -Force  -ErrorAction SilentlyContinue "$directory\typings"
-        foreach ($command in $commands) {
-            Invoke-Expression $command
-        }
-        Write-Host "done."
-    }
-}
-
-Export-PyrightTypestubs
+Clear-PyrightTypestubs

@@ -150,6 +150,8 @@ dependencies = [
     "vitables==3.0.2",
     "pyjson5>=1.6.8,<2",
     "sklearn-utils>=0.0.15",
+    "wheel>=0.45.1",
+    "setuptools>=78.1.0",
 ]
 
 [project.scripts]
