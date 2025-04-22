@@ -86,7 +86,7 @@ def execute_code_block(code_block: str) -> None:
 enable_auto_code_block_execution: bool = False
 
 
-BATCH_DAY_DATE: str = '2025-04-18'
+BATCH_DAY_DATE: str = '2025-04-22'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -209,8 +209,8 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-active_phase = ProcessingScriptPhases.continued_run
-# active_phase = ProcessingScriptPhases.final_run
+# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
@@ -251,8 +251,8 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
 # Common:                                                                                                              #
 # ==================================================================================================================== #
 num_shuffles = 1024
-drop_previous_result_and_compute_fresh = False
-# drop_previous_result_and_compute_fresh = True
+# drop_previous_result_and_compute_fresh = False
+drop_previous_result_and_compute_fresh = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
