@@ -24,6 +24,9 @@
 		},
 		{
 			"path": "../../../pyqode.python"
+		},
+		{
+			"path": "../../../pho_jupyter_preview_widget"
 		}
 	],
 	"settings": {

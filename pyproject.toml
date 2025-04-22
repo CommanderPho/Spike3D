@@ -142,7 +142,6 @@ dependencies = [
     "cython>=3.0.11,<4",
     "ipyflex>=0.3.1,<0.4",
     "pyqtinspect",
-    "pho-jupyter-preview-widget",
     "neo==0.13.2",
     "silx>=2.2.0,<3",
     "ipyevents>=2.0.2,<3",
@@ -151,6 +150,7 @@ dependencies = [
     "sklearn-utils>=0.0.15",
     "wheel>=0.45.1",
     "setuptools>=78.1.0",
+    "pho_jupyter_preview_widget",
 ]
 
 [project.scripts]
@@ -202,4 +202,4 @@ pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
-pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget", editable=true }
+pho_jupyter_preview_widget = { path = "../pho_jupyter_preview_widget", editable=true }

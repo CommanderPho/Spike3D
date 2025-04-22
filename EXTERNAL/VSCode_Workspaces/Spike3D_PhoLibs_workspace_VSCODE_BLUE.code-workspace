@@ -225,7 +225,17 @@
             "markupPreview": false,
             "codeSource": true,
             "codeOutput": false
-        }
+        },
+        "phoVersionSelector.customInstallationPaths": [
+            "C:\\Users\\pho\\bin\\Versions\\VSCode\\VSCode-win32-x64-1.98.2",
+            "C:\\Users\\pho\\bin\\Versions\\VSCode\\VSCode-win32-x64-1.99.0-insider",
+            "K:\\FastSwap\\AppData\\VSCode\\green\\bin\\VSCode",
+            "K:\\FastSwap\\AppData\\VSCode\\blue\\bin\\VSCode",
+            "K:\\FastSwap\\AppData\\VSCode\\orange\\bin\\VSCode",
+            "K:\\FastSwap\\AppData\\VSCode\\teal\\bin\\VSCode",
+            "K:\\FastSwap\\AppData\\VSCode\\red\\bin\\VSCode",
+            "K:\\FastSwap\\AppData\\VSCode\\yellow\\bin\\VSCode"
+        ],
     },
     "tasks": {
         "version": "2.0.0",
