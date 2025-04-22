@@ -202,5 +202,4 @@ pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
-pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget" }
-
+pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget", editable=true }

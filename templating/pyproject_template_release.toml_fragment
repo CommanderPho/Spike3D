@@ -2,7 +2,7 @@
 qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
 neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git", rev = "feature/safe-advance"}
 pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"}
-pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", develop=true}
+pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", editable=true}
 mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
 ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main" }
 vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
@@ -10,5 +10,5 @@ pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = "^0.3.6"
-silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", develop=true, extras = ["full"]}
-
+silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", editable=true, extras = ["full"]}
+pho-jupyter-preview-widget = { git = "https://github.com/CommanderPho/pho_jupyter_preview_widget.git", rev="master", editable=true}

@@ -11,3 +11,4 @@ flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable=false }
 silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", editable=true, extras = ["full"]}
+pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget" }
