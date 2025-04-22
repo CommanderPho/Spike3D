@@ -121,7 +121,6 @@ dependencies = [
     "kaleido==0.1.0 ; sys_platform == 'linux'",
     "kaleido==0.1.0.post1 ; sys_platform == 'win32'",
     "watchdog>=4.0.1,<5",
-    "poetry-plugin-export>=1.8.0,<2",
     "solara[assets]>=1.33.0,<2",
     "bottleneck>=1.4.0,<2",
     "numbagg>=0.8.1,<0.9",
