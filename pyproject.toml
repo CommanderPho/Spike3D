@@ -151,6 +151,9 @@ dependencies = [
     "wheel>=0.45.1",
     "setuptools>=78.1.0",
     "pho_jupyter_preview_widget",
+    "pygwalker>=0.4.9.15",
+    "ipylab>=1.0.0",
+    "ipywidgets>=8.1.6",
 ]
 
 [project.scripts]
