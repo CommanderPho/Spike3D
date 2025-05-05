@@ -308,7 +308,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0, # Heuristic settings
         ),
     'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
-    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
+    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_context_marginal_overlaying_measured_position']),
 }
 
 # ==================================================================================================================== #
