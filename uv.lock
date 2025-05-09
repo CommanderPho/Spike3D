@@ -6087,7 +6087,7 @@ wheels = [
 
 [[package]]
 name = "pho-jupyter-preview-widget"
-version = "0.4.0"
+version = "0.3.1"
 source = { editable = "../pho_jupyter_preview_widget" }
 dependencies = [
     { name = "ipykernel" },
@@ -6117,9 +6117,6 @@ requires-dist = [
     { name = "wheel", specifier = ">=0.45.1" },
 ]
 provides-extras = ["notebook", "dev"]
-
-[package.metadata.requires-dev]
-dev = [{ name = "dask", specifier = ">=2024.8.0" }]
 
 [[package]]
 name = "phonenumbers"
@@ -11277,6 +11274,7 @@ dependencies = [
     { name = "tqdm" },
     { name = "vaex" },
     { name = "vedo" },
+    { name = "venn" },
     { name = "virtualenv" },
     { name = "vitables" },
     { name = "watchdog" },
@@ -11459,6 +11457,7 @@ requires-dist = [
     { name = "tqdm", specifier = ">=4.65.1,<5" },
     { name = "vaex", specifier = ">=4.17.0,<5" },
     { name = "vedo", git = "https://github.com/CommanderPho/vedo.git?rev=release%2Fpho-working" },
+    { name = "venn", specifier = ">=0.1.3" },
     { name = "virtualenv", specifier = ">=20.26.3,<21" },
     { name = "vitables", specifier = "==3.0.2" },
     { name = "watchdog", specifier = ">=4.0.1,<5" },
@@ -12387,6 +12386,15 @@ dependencies = [
     { name = "numpy" },
     { name = "vtk" },
 ]
+
+[[package]]
+name = "venn"
+version = "0.1.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/04/84/f80b26b286ed899a71ea5350f17416e67201081bafae8058c98c00e09577/venn-0.1.3.tar.gz", hash = "sha256:1a30f9bc0a28806a6214bba3623a04fea498119c19e22a9d293b31e561aa2091", size = 19870 }
 
 [[package]]
 name = "vine"
