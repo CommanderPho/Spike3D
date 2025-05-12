@@ -6087,7 +6087,7 @@ wheels = [
 
 [[package]]
 name = "pho-jupyter-preview-widget"
-version = "0.3.1"
+version = "0.4.0"
 source = { editable = "../pho_jupyter_preview_widget" }
 dependencies = [
     { name = "ipykernel" },
@@ -6117,6 +6117,9 @@ requires-dist = [
     { name = "wheel", specifier = ">=0.45.1" },
 ]
 provides-extras = ["notebook", "dev"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "dask", specifier = ">=2024.8.0" }]
 
 [[package]]
 name = "phonenumbers"
