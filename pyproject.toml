@@ -149,7 +149,6 @@ dependencies = [
     "sklearn-utils>=0.0.15",
     "wheel>=0.45.1",
     "setuptools>=78.1.0",
-    "pho_jupyter_preview_widget",
     "pygwalker>=0.4.9.15",
     "ipylab>=1.0.0",
     "ipywidgets>=8.1.6",
@@ -204,4 +203,3 @@ vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-wo
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
-pho_jupyter_preview_widget = { path = "../pho_jupyter_preview_widget", editable=true }

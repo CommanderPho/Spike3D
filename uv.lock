@@ -1,19 +1,13 @@
 version = 1
 revision = 1
-requires-python = "==3.9.*"
+requires-python = ">=3.9.8, <3.10"
 resolution-markers = [
-    "python_full_version > '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version > '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version > '3.9' and sys_platform == 'win32'",
-    "python_full_version <= '3.9' and sys_platform == 'win32'",
-    "python_full_version > '3.9' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version <= '3.9' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+    "platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "platform_machine != 'arm64' and sys_platform == 'darwin'",
+    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "sys_platform == 'win32'",
+    "sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
 ]
 
 [[package]]
@@ -3885,14 +3879,10 @@ name = "kaleido"
 version = "0.1.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version > '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version > '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "platform_machine != 'arm64' and sys_platform == 'darwin'",
+    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "platform_machine != 'aarch64' and sys_platform == 'linux'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/22/f1/8069e549e88b74e28337acb8f5062f90da76734f81222a848be1f960de64/kaleido-0.1.0-py2.py3-none-macosx_10_10_x86_64.whl", hash = "sha256:6a73cd4a69609490f7e13e43e77724d254aef28b062babad120b32e6f32968c2", size = 69489943 },
@@ -3905,8 +3895,7 @@ name = "kaleido"
 version = "0.1.0.post1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version > '3.9' and sys_platform == 'win32'",
-    "python_full_version <= '3.9' and sys_platform == 'win32'",
+    "sys_platform == 'win32'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1e/82/153cdbaf2df0ad39198108063be111b105c46d60e9d0335e668d6af69a6b/kaleido-0.1.0.post1-py2.py3-none-win32.whl", hash = "sha256:636aedcd89f359f54687b4fe331776a7224f7c31c27d03230e4e13c7cf4cb66a", size = 53233834 },
@@ -4327,11 +4316,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/ff/16/a564e2c97652e95b5
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/9e/22930e3deb2c374f47c6633aff9f6f379f8c421ab868fff3b4f85eac8b8a/matplotlib_scalebar-0.8.1-py2.py3-none-any.whl", hash = "sha256:a8a2f361d4c2d576d087df3092ed95cac2f708f8b40d5d2bb992bd190e740b3a", size = 17686 },
 ]
-
-[[package]]
-name = "maxlikespy"
-version = "0.1"
-source = { git = "https://github.com/CommanderPho/maxlikespy#8d15f9e24465777b8d24e9dcc3a3ccbe9fae6242" }
 
 [[package]]
 name = "mdit-py-plugins"
@@ -5624,40 +5608,11 @@ wheels = [
 
 [[package]]
 name = "numpy-stl"
-version = "3.1.2"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version <= '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and sys_platform == 'win32'",
-    "python_full_version <= '3.9' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-dependencies = [
-    { name = "numpy", marker = "python_full_version <= '3.9'" },
-    { name = "python-utils", marker = "python_full_version <= '3.9'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c2/7a/89fab400cf50cbb95d3b332617797d0a753d866355d51fc0fcfcdc6da8f5/numpy_stl-3.1.2.tar.gz", hash = "sha256:72b46950dfa3642df1c7b873cfa78a548533724b907478c567db42fdf57ee3d2", size = 821613 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/a1/4b6e01765f1709483b54ad2241ad5d0c5cfb2dc62800acde8ea26fde43c8/numpy_stl-3.1.2-py3-none-any.whl", hash = "sha256:a55288340c837378bf44753a1c595c6823312995acda97f27ed04db4ff1d25f3", size = 20039 },
-]
-
-[[package]]
-name = "numpy-stl"
 version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version > '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version > '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version > '3.9' and sys_platform == 'win32'",
-    "python_full_version > '3.9' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
 dependencies = [
-    { name = "numpy", marker = "python_full_version > '3.9'" },
-    { name = "python-utils", marker = "python_full_version > '3.9'" },
+    { name = "numpy" },
+    { name = "python-utils" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/cb/80/96366d1b69223d4ca55fca30f158096df169b00aa6b4dd963025980e7ede/numpy_stl-3.2.0.tar.gz", hash = "sha256:5a20c3f79cddaa0abc6a4b99f5486aceed4f88152f29b19a57acc844e183fd4d", size = 824382 }
 wheels = [
@@ -6084,42 +6039,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9e/c3/059298687310d527a58bb01f3b1965787ee3b40dce76752eda8b44e9a2c5/pexpect-4.9.0-py2.py3-none-any.whl", hash = "sha256:7236d1e080e4936be2dc3e326cec0af72acf9212a7e1d060210e70a47e253523", size = 63772 },
 ]
-
-[[package]]
-name = "pho-jupyter-preview-widget"
-version = "0.4.0"
-source = { editable = "../pho_jupyter_preview_widget" }
-dependencies = [
-    { name = "ipykernel" },
-    { name = "ipywidgets" },
-    { name = "jinja2" },
-    { name = "matplotlib" },
-    { name = "nptyping", extra = ["complete"] },
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "pyphocorehelpers" },
-    { name = "setuptools" },
-    { name = "wheel" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "ipykernel", specifier = ">=6.29.5,<7" },
-    { name = "ipywidgets", specifier = ">=8.1.3,<9" },
-    { name = "jinja2", specifier = "==3.0.3" },
-    { name = "matplotlib", specifier = ">=3.8.4,<4" },
-    { name = "notebook", marker = "extra == 'dev'", specifier = ">=7.2.1,<8" },
-    { name = "nptyping", extras = ["complete"], specifier = ">=2.5.0,<3" },
-    { name = "numpy", specifier = "~=1.20" },
-    { name = "pandas", specifier = ">=1.5.3,<2" },
-    { name = "pyphocorehelpers", editable = "../pyPhoCoreHelpers" },
-    { name = "setuptools", specifier = ">=79.0.0" },
-    { name = "wheel", specifier = ">=0.45.1" },
-]
-provides-extras = ["notebook", "dev"]
-
-[package.metadata.requires-dev]
-dev = [{ name = "dask", specifier = ">=2024.8.0" }]
 
 [[package]]
 name = "phonenumbers"
@@ -11191,7 +11110,6 @@ dependencies = [
     { name = "matplotlib" },
     { name = "matplotlib-aximgcache" },
     { name = "matplotlib-extract" },
-    { name = "maxlikespy" },
     { name = "memory-profiler" },
     { name = "mkdocs-matplotlib" },
     { name = "mknotebooks" },
@@ -11212,8 +11130,7 @@ dependencies = [
     { name = "numba" },
     { name = "numbagg" },
     { name = "numexpr" },
-    { name = "numpy-stl", version = "3.1.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version <= '3.9'" },
-    { name = "numpy-stl", version = "3.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version > '3.9'" },
+    { name = "numpy-stl" },
     { name = "objexplore" },
     { name = "opencv-contrib-python" },
     { name = "opt-einsum" },
@@ -11225,7 +11142,6 @@ dependencies = [
     { name = "pathos" },
     { name = "pdf2image" },
     { name = "perspective-python" },
-    { name = "pho-jupyter-preview-widget" },
     { name = "pillow" },
     { name = "pip" },
     { name = "plotly" },
@@ -11375,7 +11291,6 @@ requires-dist = [
     { name = "matplotlib", specifier = "==3.8.4" },
     { name = "matplotlib-aximgcache", specifier = ">=0.1.0,<0.2" },
     { name = "matplotlib-extract", specifier = ">=0.1.2,<0.2" },
-    { name = "maxlikespy", git = "https://github.com/CommanderPho/maxlikespy" },
     { name = "memory-profiler", specifier = ">=0.61.0,<0.62" },
     { name = "mkdocs-matplotlib", specifier = ">=0.10.1,<0.11" },
     { name = "mknotebooks", specifier = ">=0.7.1,<0.8" },
@@ -11408,7 +11323,6 @@ requires-dist = [
     { name = "pathos", specifier = ">=0.2.9,<0.3" },
     { name = "pdf2image", specifier = ">=1.17.0,<2" },
     { name = "perspective-python", specifier = ">=2.5.1,<3" },
-    { name = "pho-jupyter-preview-widget", editable = "../pho_jupyter_preview_widget" },
     { name = "pillow", specifier = ">=9.4.0,<10" },
     { name = "pip", specifier = "~=24.0" },
     { name = "plotly", specifier = ">=5.24.1,<6" },
