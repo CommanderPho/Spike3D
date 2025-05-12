@@ -94,7 +94,6 @@ dependencies = [
     "dash-mantine-components>=0.12.1,<0.13",
     "dash>=2.14.2,<3",
     "ruptures>=1.1.9,<2",
-    "maxlikespy",
     "mkdocs-matplotlib>=0.10.1,<0.11",
     "pycorrelate>=0.3,<0.4",
     "napari-animation>=0.0.8,<0.0.9",
@@ -204,6 +203,5 @@ ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main
 vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
-maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
 pho_jupyter_preview_widget = { path = "../pho_jupyter_preview_widget", editable=true }
