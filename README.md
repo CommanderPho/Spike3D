@@ -57,3 +57,13 @@ Package operations: 0 installs, 1 update, 27 removals
 PS C:\Users\pho\repos\Spike3DWorkEnv\Spike3D> 
 
 ```
+
+## 2025-05-12
+```
+
+uv add git+https://github.com/CommanderPho/pho_jupyter_preview_widget --tag v4.0.0
+
+
+uv add ../pho_jupyter_preview_widget/dist/pho_jupyter_preview_widget-0.4.0-py3-none-any.whl
+
+```
