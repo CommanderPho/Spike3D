@@ -15,9 +15,6 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy/neuropy"
-        },
-        {
-            "path": "../../../pho_jupyter_preview_widget"
         }
     ],
     "settings": {
