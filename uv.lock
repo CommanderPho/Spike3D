@@ -6042,8 +6042,8 @@ wheels = [
 
 [[package]]
 name = "pho-jupyter-preview-widget"
-version = "0.4.0"
-source = { path = "../pho_jupyter_preview_widget/dist/pho_jupyter_preview_widget-0.4.0-py3-none-any.whl" }
+version = "1.0.6"
+source = { editable = "../pho_jupyter_preview_widget" }
 dependencies = [
     { name = "ipykernel" },
     { name = "ipywidgets" },
@@ -6053,28 +6053,19 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyphocorehelpers" },
-    { name = "setuptools" },
-    { name = "wheel" },
-]
-wheels = [
-    { filename = "pho_jupyter_preview_widget-0.4.0-py3-none-any.whl", hash = "sha256:b96c173548f8411218d97189c12ed720bd34963f1a5407b5931f53ce4d38b7b8" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "ipykernel", specifier = ">=6.29.5,<7" },
-    { name = "ipywidgets", specifier = ">=8.1.3,<9" },
+    { name = "ipykernel", specifier = ">=6.29.5,<7.0.0" },
+    { name = "ipywidgets", specifier = ">=8.1.3,<9.0.0" },
     { name = "jinja2", specifier = "==3.0.3" },
-    { name = "matplotlib", specifier = ">=3.8.4,<4" },
-    { name = "notebook", marker = "extra == 'dev'", specifier = ">=7.2.1,<8" },
-    { name = "nptyping", extras = ["complete"], specifier = ">=2.5.0,<3" },
-    { name = "numpy", specifier = "~=1.20" },
-    { name = "pandas", specifier = ">=1.5.3,<2" },
-    { name = "pyphocorehelpers" },
-    { name = "setuptools", specifier = ">=79.0.0" },
-    { name = "wheel", specifier = ">=0.45.1" },
+    { name = "matplotlib", specifier = ">=3.8.4,<4.0.0" },
+    { name = "nptyping", extras = ["complete"], specifier = ">=2.5.0,<3.0.0" },
+    { name = "numpy", specifier = ">=1.20,<2.0" },
+    { name = "pandas", specifier = ">=1.5.3,<2.0.0" },
+    { name = "pyphocorehelpers", directory = "../pyPhoCoreHelpers" },
 ]
-provides-extras = ["dev", "notebook"]
 
 [[package]]
 name = "phonenumbers"
@@ -11360,7 +11351,7 @@ requires-dist = [
     { name = "pathos", specifier = ">=0.2.9,<0.3" },
     { name = "pdf2image", specifier = ">=1.17.0,<2" },
     { name = "perspective-python", specifier = ">=2.5.1,<3" },
-    { name = "pho-jupyter-preview-widget", path = "../pho_jupyter_preview_widget/dist/pho_jupyter_preview_widget-0.4.0-py3-none-any.whl" },
+    { name = "pho-jupyter-preview-widget", editable = "../pho_jupyter_preview_widget" },
     { name = "pillow", specifier = ">=9.4.0,<10" },
     { name = "pip", specifier = "~=24.0" },
     { name = "plotly", specifier = ">=5.24.1,<6" },

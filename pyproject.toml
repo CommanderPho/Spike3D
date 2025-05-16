@@ -204,4 +204,4 @@ vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-wo
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
-pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget/dist/pho_jupyter_preview_widget-0.4.0-py3-none-any.whl" }
+pho-jupyter-preview-widget = { path = "../pho_jupyter_preview_widget", editable = true }
