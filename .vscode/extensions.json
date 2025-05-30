@@ -29,6 +29,7 @@
     "phohale.pho-vs-code-url-scheme-grabber",
     "josh-walters.vscode-ext-import-export",
     "kawamataryo.copy-python-dotted-path",
-    "phohale.version-status-bar"
+    "phohale.version-status-bar",
+    "phohale.properpythonpasting"
     ]
 }
