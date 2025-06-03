@@ -6,7 +6,7 @@
 
 # Default values
 REPO_PATH="$HOME/repos/Spike3D"
-UV_ENV_PATH=".UV_venv"
+UV_ENV_PATH=".venv"
 DEFAULT_COMMAND="ipython"
 
 # Parse command line arguments
