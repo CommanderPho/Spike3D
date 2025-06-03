@@ -10,10 +10,9 @@ geometry1="1300x30+0+0"
 xfce4-terminal \
 --window \
 --geometry=$geometry1 \
---tab --title='Neuropy' --working-directory='$HOME/repos/NeuroPy' --command="bash -c '$cmd_git_ops'" \
---tab --title='pyPhoCoreHelpers' --working-directory='$HOME/repos/pyPhoCoreHelpers' --command="bash -c '$cmd_git_ops'" \
---tab --title='pyPhoPlaceCellAnalysis' --working-directory='$HOME/repos/pyPhoPlaceCellAnalysis' --command="bash -c '$cmd_git_ops'" \
 --tab --title='Spike3D' --working-directory='$HOME/repos/Spike3D' --command="bash -c '$cmd_git_ops'" &
+--tab --title='Spike3D UV' --working-directory='$HOME/repos/Spike3D' --command="bash -c '$cmd_git_ops; source .UV_venv/bin/activate; ipython ProcessBatchOutputs_qclus1246789_Only.ipy'" &
+
 
 # Launch Visual Studio Code separately
 $HOME/bin/VSCode-linux-x64/bin/code &
