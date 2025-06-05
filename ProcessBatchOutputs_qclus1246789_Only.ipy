@@ -85,8 +85,7 @@ def execute_code_block(code_block: str) -> None:
 # enable_auto_code_block_execution: bool = True
 enable_auto_code_block_execution: bool = False
 
-
-BATCH_DAY_DATE: str = '2025-06-04'
+BATCH_DAY_DATE: str = '2025-06-05'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -114,21 +113,21 @@ print(f'collected_outputs_path: {collected_outputs_path}')
 # Get the generated code for user-contributed functions:
 # phase_any_run_custom_user_completion_functions_dict = None
 phase_any_run_custom_user_completion_functions_dict = {
-    # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
-    # "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
+    'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
+    "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
 # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
     # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
-    # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
+    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
-    # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
-    # 'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
-    # 'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
+    'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+    'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+    'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
     'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
     'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
     'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
-    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
-    # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
+    'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+    'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
 	'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
@@ -273,7 +272,6 @@ job_suffix = f"{job_suffix}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_50ms"
 
 
-
 # END ________________________________________________________________________________________________________________ #
 
 active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
@@ -298,10 +296,10 @@ active_phase_dict['override_parameters_flat_keypaths_dict'] = {'rank_order_shuff
 active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': dict(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size, num_wcorr_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
     # 'backup_previous_session_files_completion_function': dict(desired_suffix='Pre2024-11-21'),
-    # 'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
-    # 'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=False, with_data_name=None),
+    'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
+    'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=None, custom_all_param_sweep_options=None, additional_session_context=None),
-    # 'compute_and_export_session_trial_by_trial_performance_completion_function': dict(active_laps_decoding_time_bin_size=0.25),
+    'compute_and_export_session_trial_by_trial_performance_completion_function': dict(active_laps_decoding_time_bin_size=ripple_decoding_time_bin_size),
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': dict(ripple_decoding_time_bin_size_override=ripple_decoding_time_bin_size, laps_decoding_time_bin_size_override=laps_decoding_time_bin_size,
         needs_recompute_heuristics=True, force_recompute_all_decoding=True,
         save_hdf=False, allow_append_to_session_h5_file=False,
