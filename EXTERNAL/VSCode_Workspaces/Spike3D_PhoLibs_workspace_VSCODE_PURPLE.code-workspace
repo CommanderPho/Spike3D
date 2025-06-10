@@ -15,6 +15,9 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy/neuropy"
+        },
+        {
+            "path": "../../../PyJSONCanvas"
         }
     ],
     "settings": {
