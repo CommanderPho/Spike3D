@@ -17,7 +17,7 @@ $directory_pyright_generate_typestubs_commands = @(
     @("pyright --createstub neuropy"),
     @("pyright --createstub pyphocorehelpers"),
     @("pyright --createstub pyphoplacecellanalysis"),
-    @("poetry shell", "pyright --createstub neuropy", "pyright --createstub pyphocorehelpers", "pyright --createstub pyphoplacecellanalysis")
+    @(".\.venv_UV\Scripts\activate.ps1", "pyright --createstub neuropy", "pyright --createstub pyphocorehelpers", "pyright --createstub pyphoplacecellanalysis")
 )
 
 function Clear-PyrightTypestubs {
