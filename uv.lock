@@ -9245,6 +9245,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pypdf"
+version = "5.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7b/42/fbc37af367b20fa6c53da81b1780025f6046a0fac8cbf0663a17e743b033/pypdf-5.7.0.tar.gz", hash = "sha256:68c92f2e1aae878bab1150e74447f31ab3848b1c0a6f8becae9f0b1904460b6f", size = 5026120 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/73/9f/78d096ef795a813fa0e1cb9b33fa574b205f2b563d9c1e9366c854cf0364/pypdf-5.7.0-py3-none-any.whl", hash = "sha256:203379453439f5b68b7a1cd43cdf4c5f7a02b84810cefa7f93a47b350aaaba48", size = 305524 },
+]
+
+[[package]]
 name = "pyperclip"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -9660,7 +9672,7 @@ wheels = [
 
 [[package]]
 name = "pyqtinspect"
-version = "0.3.6"
+version = "0.3.7"
 source = { directory = "../PyQtInspect-Open" }
 dependencies = [
     { name = "psutil" },
@@ -11192,6 +11204,7 @@ dependencies = [
     { name = "pygwalker" },
     { name = "pyjson5" },
     { name = "pyopengl" },
+    { name = "pypdf" },
     { name = "pyqt-builder" },
     { name = "pyqt-checkbox-table-widget" },
     { name = "pyqt-custom-titlebar-window" },
@@ -11374,6 +11387,7 @@ requires-dist = [
     { name = "pygwalker", specifier = ">=0.4.9.15" },
     { name = "pyjson5", specifier = ">=1.6.8,<2" },
     { name = "pyopengl", specifier = ">=3.1.6,<4" },
+    { name = "pypdf", specifier = ">=5.7.0" },
     { name = "pyqt-builder", specifier = ">=1.15.3,<2" },
     { name = "pyqt-checkbox-table-widget", specifier = ">=0.0.14,<0.0.15" },
     { name = "pyqt-custom-titlebar-window", specifier = ">=0.0.50,<0.0.51" },
