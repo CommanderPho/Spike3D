@@ -377,8 +377,9 @@ def process_all_phases(
 
 # %%
 # Configuration parameters
-BATCH_DAY_DATE: str = '2025-07-01'
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL'  # used for filenames throughout the notebook
+BATCH_DAY_DATE: str = '2025-07-09'
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL'  # used for filenames throughout the notebook
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee'  # used for filenames throughout the notebook
 
 # Get the generated code for user-contributed functions:
 phase_any_run_custom_user_completion_functions_dict = {
