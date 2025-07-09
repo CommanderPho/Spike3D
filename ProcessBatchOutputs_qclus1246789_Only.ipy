@@ -123,7 +123,7 @@ phase_any_run_custom_user_completion_functions_dict = {
 #     'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
 #     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
     # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
-    'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
+    # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
     # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
@@ -311,7 +311,8 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
 phase_job_suffix: str = active_phase_dict.pop('phase_job_suffix', None)
 if phase_job_suffix is not None:
     job_suffix = f"{job_suffix}_{phase_job_suffix}" ## append phase to end of job_suffix
-active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
+active_phase_dict.update(dict(job_suffix=job_suffix,
+                               should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
 ))
 print(f'job_suffix: "{job_suffix}"')
 
