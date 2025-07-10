@@ -215,18 +215,18 @@ active_phase_dict['should_freeze_pipeline_updates'] = False
 # Custom Suffix and overrides                                                                                          #
 # ==================================================================================================================== #
 
-# # # "_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
-# active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_5.0"
-# included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
-# minimum_inclusion_fr_Hz = 5.0
-# job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
-
-
-# # "_withNormalComputedReplays-frateThresh_2.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
-active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0"
+# # "_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
+active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_5.0"
 included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
-minimum_inclusion_fr_Hz = 2.0
-job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
+minimum_inclusion_fr_Hz = 5.0
+job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
+
+
+# # # "_withNormalComputedReplays-frateThresh_2.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
+# active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0"
+# included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
+# minimum_inclusion_fr_Hz = 2.0
+# job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 
 
 # ==================================================================================================================== #
