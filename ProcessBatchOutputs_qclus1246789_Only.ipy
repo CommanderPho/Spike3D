@@ -183,8 +183,8 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-active_phase = ProcessingScriptPhases.continued_run
-# active_phase = ProcessingScriptPhases.final_run
+# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
