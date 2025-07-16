@@ -138,21 +138,18 @@ phase_any_run_custom_user_completion_functions_dict = {
 
 # Hardcoded included_session_contexts:
 included_session_contexts = [ 
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # #TODO 2025-07-16 15:57: - [ ] Finished
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # #TODO 2025-07-16 15:57: - [ ] Finished
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), # #TODO 2025-07-16 17:35: - [ ] Finished Wave2
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), # #TODO 2025-07-16 17:35: - [ ] Finished Wave2
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), # #TODO 2025-07-16 17:35: - [ ] Finished Wave2
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), # #TODO 2025-07-16 17:35: - [ ] Finished Wave2
-    
-    # # #TODO 2025-07-16 15:29: - [ ] Apogee - did clean run with these
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'), ## INCLUDE
-    
-    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'),
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'), #TODO 2025-07-16 17:47 - FINISHED Wave4
-    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'),
-    # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), #
-    # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'),
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), # 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), # 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), # 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), # 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'), #
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'), #
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'),
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), #
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'),
 ]
 ## Known Bad Sessions
 # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-07_11-26-53'), # OK -- NOT OKAY, has only 1 Short Lap in each direction
@@ -186,8 +183,8 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ACTIVE PHASE                                                                                                         #
 # ==================================================================================================================== #
 
-active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.clean_run
+active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
