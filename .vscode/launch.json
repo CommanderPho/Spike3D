@@ -7,7 +7,7 @@
 
 		{
 			"name": "Python: Current File",
-			"type": "python",
+			"type": "debugpy", // "python",
 			"request": "launch",
 			"program": "${file}",
 			"console": "integratedTerminal",
