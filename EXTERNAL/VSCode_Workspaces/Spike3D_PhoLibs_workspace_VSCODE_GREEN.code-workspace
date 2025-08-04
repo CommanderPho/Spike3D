@@ -299,7 +299,8 @@
             "ionide.discoverpanel",
             "astallinger.sourcetrail",
             "phohale.pho-vs-code-url-scheme-grabber",
-            "kawamataryo.copy-python-dotted-path"
+            "kawamataryo.copy-python-dotted-path",
+            "rooveterinaryinc.roo-cline"
         ]
     }
 }
