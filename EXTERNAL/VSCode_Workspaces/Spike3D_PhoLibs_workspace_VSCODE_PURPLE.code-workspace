@@ -270,7 +270,14 @@
             "markupPreview": false,
             "codeSource": true,
             "codeOutput": false
-        }
+        },
+        "cursorpyright.analysis.exclude": [
+            "**/EXTERNAL",
+            "**/LibrariesExamples"
+        ],
+        "cursorpyright.analysis.extraPaths": [],
+        "cursorpyright.analysis.logLevel": "Trace",
+        "cursorpyright.analysis.stubPath": ""
     },
     "tasks": {
         "version": "2.0.0",
