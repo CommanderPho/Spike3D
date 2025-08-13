@@ -248,14 +248,14 @@ drop_previous_result_and_compute_fresh = False
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.025
-laps_decoding_time_bin_size = 0.050
-# laps_decoding_time_bin_size = 0.060
+# laps_decoding_time_bin_size = 0.050
+laps_decoding_time_bin_size = 0.060
 
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
 # ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
-# ripple_decoding_time_bin_size = 0.060
+# ripple_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.060
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 # job_suffix='tbin_25ms'
@@ -263,8 +263,8 @@ ripple_decoding_time_bin_size = 0.050
 
 # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_25ms"
-job_suffix = f"{job_suffix}_tbin_50ms"
-# job_suffix = f"{job_suffix}_tbin_60ms"
+# job_suffix = f"{job_suffix}_tbin_50ms"
+job_suffix = f"{job_suffix}_tbin_60ms"
 
 
 # END ________________________________________________________________________________________________________________ #
