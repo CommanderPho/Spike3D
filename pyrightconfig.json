@@ -1,8 +1,8 @@
 {
   "include": [
-    "."
+    "PendingNotebookCode.py",
+    "scripts/setup_dependent_repos.py"
   ],
-  
   "exclude": [
     "**/.git", "**.svn", "**/.hg", "**/CVS", "**/*.asv",
     "**/node_modules",
@@ -21,21 +21,24 @@
     "**/dist",
     "**/build",
     "**/.idea",
-    "**/.venv_alt",
+    "**/output",
     "**/LibrariesExamples",
     "**/EXTERNAL",
     "**/output",
     "**/docs",
     "**/data",
-    "**/templating"
+    "**/templating",
+    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white","**/.venv_UV","**/.venv_*",
+  	"**/._cell_execution_logs", "**/scratchpads"
   ],
 
   "ignore": [
-    "**/.venv",
+    "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white","**/.venv_UV","**/.venv_*",
     "LibrariesExamples",
     "EXTERNAL",
     "scripts",
-    "templating"
+    "templating",
+  	"**/._cell_execution_logs", "**/scratchpads"
   ],
 
   "defineConstant": {
@@ -48,7 +51,7 @@
   "reportMissingImports": true,
   "reportMissingTypeStubs": false,
 
-  "pythonVersion": "3.9",
+  "pythonVersion": "3.9"
 //   "pythonPlatform": "Linux",
 //   "executionEnvironments": [
 //     {

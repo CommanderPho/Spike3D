@@ -1,0 +1,95 @@
+included includelist is specified: ['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation', '_perform_position_decoding_computation', '_perform_firing_rate_trends_computation', '_perform_pf_find_ratemap_peaks_computation', '_perform_time_dependent_pf_sequential_surprise_computation_perform_two_step_position_decoding_computation'], so only performing these extended computations.
+Running batch_evaluate_required_computations(...) with global_epoch_name: "maze_any"
+	 encountered error while validating (is_post_recompute: False):
+	Validation exception: 'extended_stats'
+Traceback (most recent call last):
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Model\SpecificComputationValidation.py", line 307, in _subfn_try_validate
+    _is_valid = comp_specifier.validate_computation_test(curr_active_pipeline, computation_filter_name=computation_filter_name) # passed the validation
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Pipeline\Stages\ComputationFunctions\ExtendedStats.py", line 60, in <lambda>
+    validate_computation_test=lambda curr_active_pipeline, computation_filter_name='maze': (curr_active_pipeline.computation_results[computation_filter_name].computed_data['extended_stats']['time_binned_position_df']), is_global=False)
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers\src\pyphocorehelpers\DataStructure\dynamic_parameters.py", line 35, in __getitem__
+    return self._mapping[key] #@IgnoreException
+KeyError: 'extended_stats'
+
+.
+	 encountered error while validating (is_post_recompute: False):
+	Validation exception: 'pf1D_dt'
+Traceback (most recent call last):
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Model\SpecificComputationValidation.py", line 307, in _subfn_try_validate
+    _is_valid = comp_specifier.validate_computation_test(curr_active_pipeline, computation_filter_name=computation_filter_name) # passed the validation
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Pipeline\Stages\ComputationFunctions\PlacefieldComputations.py", line 54, in <lambda>
+    validate_computation_test=lambda curr_active_pipeline, computation_filter_name='maze': (curr_active_pipeline.computation_results[computation_filter_name].computed_data['pf1D_dt'], curr_active_pipeline.computation_results[computation_filter_name].computed_data['pf2D_dt']))
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers\src\pyphocorehelpers\DataStructure\dynamic_parameters.py", line 35, in __getitem__
+    return self._mapping[key] #@IgnoreException
+KeyError: 'pf1D_dt'
+
+.
+WARNING: after checking all_comp_specifiers found the functions: {'_perform_pf_find_ratemap_peaks_computation': False, '_perform_time_dependent_pf_sequential_surprise_computation_perform_two_step_position_decoding_computation': False} still remain! Are they correct and do they have proper validator decorators?
+done with all batch_evaluate_required_computations(...).
+Post-load global computations: needs_computation_output_dict: ['extended_stats', 'pfdt_computation']
+
+
+
+
+
+
+
+
+
+
+
+
+
+===>|> for filtered_session with filter named "maze1_odd": Performing run_specific_computations_single_context(..., computation_functions_name_includelist=['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation', '_perform_position_decoding_computation', '_perform_firing_rate_trends_computation', '_perform_pf_find_ratemap_peaks_computation', '_perform_time_dependent_pf_sequential_surprise_computation_perform_two_step_position_decoding_computation'])...
+WARNING: .run_specific_computations_single_context(...): not_found_computation_functions_names: ['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation', '_perform_position_decoding_computation', '_perform_firing_rate_trends_computation', '_perform_pf_find_ratemap_peaks_computation', '_perform_time_dependent_pf_sequential_surprise_computation_perform_two_step_position_decoding_computation']! (found 5/7 [<function PlacefieldComputations._perform_baseline_placefield_computation at 0x000001995730EDC0>, <function DefaultComputationFunctions._perform_position_decoding_computation at 0x000001995730E550>, <function ExtendedStatsComputations._perform_extended_statistics_computation at 0x00000199573209D0>, <function SpikeAnalysisComputations._perform_firing_rate_trends_computation at 0x0000019957898670>, <function PlacefieldComputations._perform_time_dependent_placefield_computation at 0x000001995730EF70>]). These will be skipped.
+	WARNING: .run_specific_computations_single_context(...): not_found_computation_functions_names: ['_perform_baseline_placefield_computation', '_perform_time_dependent_placefield_computation', '_perform_extended_statistics_computation', '_perform_position_decoding_computation', '_perform_firing_rate_trends_computation', '_perform_pf_find_ratemap_peaks_computation', '_perform_time_dependent_pf_sequential_surprise_computation_perform_two_step_position_decoding_computation']! (found 5/7 [<function PlacefieldComputations._perform_baseline_placefield_computation at 0x000001995730EDC0>, <function DefaultComputationFunctions._perform_position_decoding_computation at 0x000001995730E550>, <function ExtendedStatsComputations._perform_extended_statistics_computation at 0x00000199573209D0>, <function SpikeAnalysisComputations._perform_firing_rate_trends_computation at 0x0000019957898670>, <function PlacefieldComputations._perform_time_dependent_placefield_computation at 0x000001995730EF70>]). These will be skipped.
+	run_specific_computations_single_context(including only 5 out of 16 registered computation functions): active_computation_functions: [<function PlacefieldComputations._perform_baseline_placefield_computation at 0x000001995730EDC0>, <function DefaultComputationFunctions._perform_position_decoding_computation at 0x000001995730E550>, <function ExtendedStatsComputations._perform_extended_statistics_computation at 0x00000199573209D0>, <function SpikeAnalysisComputations._perform_firing_rate_trends_computation at 0x0000019957898670>, <function PlacefieldComputations._perform_time_dependent_placefield_computation at 0x000001995730EF70>]...
+Performing _execute_computation_functions(...) with 5 registered_computation_functions...
+Executing [0/5]: <function PlacefieldComputations._perform_baseline_placefield_computation at 0x000001995730EDC0>
+Unexpected exception formatting exception. Falling back to standard exception
+Traceback (most recent call last):
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\interactiveshell.py", line 3550, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "C:\Users\pho\AppData\Local\Temp\ipykernel_31568\590774492.py", line 1, in <module>
+    curr_active_pipeline.perform_specific_computation(computation_functions_name_includelist=computation_functions_name_includelist, computation_kwargs_list=None, enabled_filter_names=None, fail_on_exception=True, debug_print=False)
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Pipeline\Stages\Computation.py", line 2040, in perform_specific_computation
+    if (not is_dry_run):
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Pipeline\Stages\Computation.py", line 907, in perform_specific_computation
+    progress_logger_callback = print
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Pipeline\Stages\Computation.py", line 425, in run_specific_computations_single_context
+  File "C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis\General\Pipeline\Stages\Computation.py", line 1171, in _execute_computation_functions
+    previous_computation_result = f(previous_computation_result, **computation_kwargs_list[i]) # call the function `f` directly here
+TypeError: pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.PlacefieldComputations.PlacefieldComputations._perform_baseline_placefield_computation() argument after ** must be a mapping, not NoneType
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\interactiveshell.py", line 2144, in showtraceback
+    stb = self.InteractiveTB.structured_traceback(
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\ultratb.py", line 1435, in structured_traceback
+    return FormattedTB.structured_traceback(
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\ultratb.py", line 1326, in structured_traceback
+    return VerboseTB.structured_traceback(
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\ultratb.py", line 1173, in structured_traceback
+    formatted_exception = self.format_exception_as_a_whole(etype, evalue, etb, number_of_lines_of_context,
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\ultratb.py", line 1088, in format_exception_as_a_whole
+    frames.append(self.format_record(record))
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\ultratb.py", line 970, in format_record
+    frame_info.lines, Colors, self.has_colors, lvals
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\IPython\core\ultratb.py", line 792, in lines
+    return self._sd.lines
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\stack_data\utils.py", line 145, in cached_property_wrapper
+    value = obj.__dict__[self.func.__name__] = self.func(obj)
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\stack_data\core.py", line 734, in lines
+    pieces = self.included_pieces
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\stack_data\utils.py", line 145, in cached_property_wrapper
+    value = obj.__dict__[self.func.__name__] = self.func(obj)
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\stack_data\core.py", line 681, in included_pieces
+    pos = scope_pieces.index(self.executing_piece)
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\stack_data\utils.py", line 145, in cached_property_wrapper
+    value = obj.__dict__[self.func.__name__] = self.func(obj)
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\stack_data\core.py", line 660, in executing_piece
+    return only(
+  File "c:\Users\pho\repos\Spike3DWorkEnv\Spike3D\.venv\lib\site-packages\executing\executing.py", line 116, in only
+    raise NotOneValueFound('Expected one value, found 0')
+executing.executing.NotOneValueFound: Expected one value, found 0

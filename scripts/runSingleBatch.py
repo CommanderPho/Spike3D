@@ -6,8 +6,11 @@ import pandas as pd
 
 ## Pho's Custom Libraries:
 from neuropy.utils.result_context import IdentifyingContext
-from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SessionBatchProgress, main
-from pyphoplacecellanalysis.General.Batch.AcrossSessionResults import AcrossSessionsResults, AcrossSessionsVisualizations
+from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, \
+    SessionBatchProgress, main
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.BatchCompletionHandler import \
+    BatchSessionCompletionHandler, BatchComputationProcessOptions
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionsResults, AcrossSessionsVisualizations
 
 def run_main(active_result_suffix, num_processes, should_force_reload_all, should_perform_figure_generation_to_file, debug_print):
     """ run main function to perform batch processing. """

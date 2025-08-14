@@ -1,0 +1,108 @@
+"settings": {
+    "actionButtons": {
+        "commands": [
+            {
+                "name": "Back",
+                "color": "white",
+                "useVsCodeApi": true,
+                "command": "workbench.action.navigateBack"
+            },
+            {
+                "name": "Forward",
+                "color": "white",
+                "useVsCodeApi": true,
+                "command": "workbench.action.navigateForward"
+            },
+            {
+                "name": "Toggle Cell Output Scrolling",
+                "color": "orange",
+                "useVsCodeApi": true,
+                "command": "notebook.cell.toggleOutputScrolling"
+            },
+            {
+                "name": "Restart Python Language Server",
+                "color": "#00FF00",
+                "useVsCodeApi": true,
+                "command": "python.analysis.restartLanguageServer"
+            },
+            // {
+            //     "name": "Toggle line numbers",
+            //     "color": "#00FF00",
+            //     "useVsCodeApi": true,
+            //     "command": "python.analysis.restartLanguageServer"
+            // },
+            {
+                "name": "VSCode Dev Consoler",
+                "color": "#99CCFF",
+                "useVsCodeApi": true,
+                "command": "workbench.action.toggleDevTools"
+            },
+        ],
+        "defaultColor": "grey",
+        "reloadButton": "↻",
+        "loadNpmCommands": true
+    },
+    "custom-text-transform.transforms": [
+        {
+            "name": "Variable list into Python dictionary",
+            "function": "const variableList = input.split(',').map(varName => varName.trim()); return '{' + variableList.map(varName => `'${varName}':${varName}`).join(', ') + '}';"
+        },
+        {
+            "name": "Variable list into kwargs",
+            "function": "const variableList = input.split(',').map(varName => varName.trim()); return variableList.map(varName => `${varName}=${varName}`).join(', ');"
+        },
+        {
+            "name": "Function definition into classdef method definition",
+            "function": "const lines = input.trim().split('\\n'); const funcName = lines[0].trim().split(' ')[1].split('(')[0]; const args = lines[0].trim().split('(')[1].split(')')[0].split(',').map(arg => arg.trim()); const body = lines.slice(1, -1).join('\\n'); return `def ${funcName}(self, ${args.join(', ')}):${body ? '\\n' + body : ''}`;"
+        },
+        {
+            "name": "Python function definition to kwargs call",
+            "function": "return input.replace(/def\\s+(\\w+)\\(([^)]*)\\):[\\s\\S]*/, (_, fnName, params) => fnName + '(' + params.replace(/\\w+\\s*(?:\\:[^=,]+)?\\s*(=\\s*[^,]+)?/g, (p) => p.trim().split('=')[0].trim() + '=' + p.trim().split('=')[0].trim()).split(',').join(', ') + ')');"
+        },
+    ],
+
+
+    // Color Customizations
+
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBackground": "#1073cf2d",
+        "editor.lineHighlightBorder": "#9fced11f",
+        "activityBar.background": "#3D234B",
+        "titleBar.activeBackground": "#56306A",
+        "titleBar.activeForeground": "#FCFBFD",
+        "scrollbarSlider.background": "#fffb0057", // Add a brighter and more visually distinct scrollbar to keep track of where I am in the file
+        "scrollbarSlider.hoverBackground": "#fffb0082",
+        "scrollbarSlider.activeBackground": "#ccff00df", // When clicked on, the slider should be even brighter
+        "activityBar.inactiveForeground": "#ffffff3c", // Drastically improves the ability to notice the currently selected item, if any.
+        "activityBar.foreground": "#ffffff",
+        "notebook.outputContainerBackgroundColor": "#395a3e50", //"#a5c2aa50"
+        "notebook.outputContainerBorderColor": "#10ff10",
+        "notebook.focusedCellBorder": "#ffff00da",
+        "notebook.focusedEditorBorder": "#f6ff00",
+        // "notebook.focusedCellBackground": "#ff0000",
+        "notebook.inactiveFocusedCellBorder": "#ffff0063",
+        // "editorBracketPairGuide.activeBackground1": "#ff0000",
+        // "bracketPairColorizer.consecutivePairColors": [
+        // 		["(", ")", ["Gold", "DarkGoldenRod", "Chocolate", "SaddleBrown", "DarkKhaki", "GoldenRod", "Peru"]],
+        // 		["[", "]", ["LightSkyBlue", "DodgerBlue", "RoyalBlue", "MediumBlue", "Blue", "DarkBlue", "Navy"]],
+        // 		["{", "}", ["Orchid", "MediumOrchid", "DarkOrchid", "Purple", "Indigo", "BlueViolet", "DarkViolet"]],
+        // 		"Red"
+        // 	]
+
+        "editorIndentGuide.activeBackground1": "#ffee0086",
+        "editorIndentGuide.activeBackground2": "#3cff0086",
+        "editorIndentGuide.activeBackground3": "#75fff486",
+        "editorIndentGuide.activeBackground4": "#c2c6ff86",
+        "editorIndentGuide.activeBackground5": "#7a33ff86",
+        "editorIndentGuide.activeBackground6": "#ffebfd86",
+
+        // non-active indent guide colors
+        "editorIndentGuide.background1": "#0066ff42",
+        "editorIndentGuide.background2": "#00e5ff42",
+        "editorIndentGuide.background3": "#00e5ff42",
+        "editorIndentGuide.background4": "#00e5ff42",
+        "editorIndentGuide.background5": "#00e5ff42",
+        "editorIndentGuide.background6": "#00e5ff42"
+    },
+
+}

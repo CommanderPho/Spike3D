@@ -1,0 +1,309 @@
+{
+    "folders": [
+        {
+            "name": "Spike3D",
+            "path": "../../"
+        },
+        {
+            "name": "pyphocorehelpers",
+            "path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
+        },
+        {
+            "name": "pyphoplacecellanalysis",
+            "path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+        },
+        {
+            "name": "neuropy",
+            "path": "../../../NeuroPy/neuropy"
+        }
+    ],
+    "settings": {
+        "python.analysis.gotoDefinitionInStringLiteral": true,
+        "jupyter.askForKernelRestart": true,
+        "jupyter.debugJustMyCode": true,
+        "files.exclude": {
+            "**/.classpath": true,
+            "**/.DS_Store": true,
+            "**/.factorypath": true,
+            "**/.git": true,
+            "**/.ipynb_checkpoints": true,
+            "**/.project": true,
+            "**/.settings": true,
+            "**/.spyproject": true,
+            "**/.venv_black": true,
+            "**/.venv_teal": true,
+            "**/.venv_yellow": true,
+            "**/.venv*": true,
+            "**/.venv/*": true,
+            "**/.virtual_documents": true,
+            "**/.vscode": true,
+            "**/*.7z": true
+        },
+        "python.analysis.logLevel": "Trace",
+        "workbench.colorCustomizations": {
+            "activityBar.background": "#ebebeb",
+            "titleBar.activeBackground": "#fffffff0",
+            "titleBar.activeForeground": "#141414",
+            "scrollbarSlider.background": "#4d4d4d57",
+            "scrollbarSlider.hoverBackground": "#d6d6d682",
+            "scrollbarSlider.activeBackground": "#dddddddf",
+            "activityBar.inactiveForeground": "#0c0c0c93",
+            "activityBar.foreground": "#0c0c0c",
+            "notebook.outputContainerBackgroundColor": "#395a3e50",
+            "notebook.outputContainerBorderColor": "#ffffff",
+            "notebook.focusedCellBorder": "#f3f3f3da",
+            "notebook.focusedEditorBorder": "#f5f5f5",
+            "notebook.inactiveFocusedCellBorder": "#ffff0063",
+            "titleBar.inactiveBackground": "#cecece8e",
+            "tab.activeBorder": "#ffffff",
+            "statusBar.background": "#ffffff",
+            "statusBar.foreground": "#3c2e2ee4",
+            "foreground": "#ffffff",
+            "editor.lineHighlightBackground": "#4f4f4f44",
+            "editor.lineHighlightBorder": "#ffffffaf",
+            "editor.selectionBackground": "#e788ff5e",
+            "editor.selectionHighlightBackground": "#ff00005b",
+            "editor.findMatchBackground": "#bb00cca8",
+            "editor.findMatchHighlightBackground": "#ff003ca1"
+        },
+        "search.exclude": {
+            "**/.ipynb_checkpoints": true,
+            "**/EXTERNAL/TESTING/OLD": true
+        },
+        "files.watcherExclude": {
+            "**/.git/objects/**": true,
+            "**/.ipynb_checkpoints": true,
+            "../../EXTERNAL/**": true,
+            "../../EXTERNAL/VSCode_Workspaces": false,
+            "**/EXTERNAL/TESTING/OLD": true
+        },
+        "qtForPython.uic.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
+        "python.autoComplete.extraPaths": [],
+        "git.ignoreLimitWarning": true,
+        "qtForPython.uic.options": [
+            "-o",
+            "${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
+            "--import-from",
+            "pyphoplacecellanalysis.Resources",
+            "--resource-suffix=\"\""
+        ],
+        "qtForPython.rcc.options": [
+            "-o",
+            "${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
+        ],
+        "pyqt-integration.pyuic.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
+        "pyqt-integration.pyuic.compile.addOptions": "-o ${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py --import-from pyphoplacecellanalysis.Resources --resource-suffix=\"\"",
+        "pyqt-integration.pyrcc.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
+        "pyqt-integration.pylupdate.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pylupdate5.exe",
+        "pyqt-integration.pyuic.compile.filepath": "Uic_AUTOGEN_${ui_name}.py",
+        "favorites.sortDirection": "DESC",
+        "python.analysis.extraPaths": [],
+        "dashboard.windowColors.\u00f0\u0178\u0152\u02c6 BaseColor": "'whitesmoke'",
+        "windowColors.\u00f0\u0178\u0152\u02c6 BaseColor": "'whitesmoke'",
+        "favorites.storageFilePath": "../.favorites.json",
+        "qtForPython.uic.liveExecution.enabled": false,
+        "notebook.cellToolbarVisibility": "hover",
+        "notebook.diff.ignoreOutputs": true,
+        "bookmarks.label.suggestion": "dontUse",
+        "colorTabs.config": [
+            {
+                "regex": "pyphoplacecellanalysis/External/pyqtgraph/.*"
+            },
+            {
+                "regex": "Spike3D/LibrariesExamples\\.*"
+            },
+            {
+                "regex": ".*/../../../NeuroPy/neuropy/**/*.py"
+            },
+            {
+                "regex": ".*/EXTERNAL/.*"
+            },
+            {
+                "regex": ".*/templating/.*"
+            }
+        ],
+        "python.analysis.stubPath": "",
+        "python.analysis.enablePytestSupport": false,
+        "editor.fontSize": 11,
+        "colorTabs.statusBarBackground": false,
+        "colorTabs.tabBorder": true,
+        "debug.focusWindowOnBreak": false,
+        "remote.downloadExtensionsLocally": false,
+        "debug.console.acceptSuggestionOnEnter": "on",
+        "debug.console.fontSize": 12,
+        "debug.toolBarLocation": "floating",
+        "qtForPython.rcc.liveExecution.enabled": false,
+        "qtForPython.rcc.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
+        "editor.bracketPairColorization.independentColorPoolPerBracketType": false,
+        "editor.codeLens": false,
+        "editor.autoClosingQuotes": "beforeWhitespace",
+        "python.analysis.exclude": [
+            "**/EXTERNAL",
+            "**/LibrariesExamples"
+        ],
+        "python.venvPaths": [
+            "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D"
+        ],
+        "explorer.excludeGitIgnore": true,
+        "editor.codeActionWidget.includeNearbyQuickFixes": false,
+        "editor.dragAndDrop": false,
+        "actionButtons": {
+            "commands": [
+                {
+                    "name": "Back",
+                    "color": "white",
+                    "useVsCodeApi": true,
+                    "command": "workbench.action.navigateBack"
+                },
+                {
+                    "name": "Forward",
+                    "color": "white",
+                    "useVsCodeApi": true,
+                    "command": "workbench.action.navigateForward"
+                },
+                {
+                    "name": "Toggle Cell Output Scrolling",
+                    "color": "orange",
+                    "useVsCodeApi": true,
+                    "command": "notebook.cell.toggleOutputScrolling"
+                },
+                {
+                    "name": "Restart Python Language Server",
+                    "color": "#00FF00",
+                    "useVsCodeApi": true,
+                    "command": "python.analysis.restartLanguageServer"
+                },
+                {
+                    "name": "VSCode Dev Consoler",
+                    "color": "#99CCFF",
+                    "useVsCodeApi": true,
+                    "command": "workbench.action.toggleDevTools"
+                },
+                {
+                    "name": "PyQtGraph Examples",
+                    "tooltip": "Launch PyQtGraph examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+                },
+                {
+                    "name": "ViTables Launch",
+                    "tooltip": "Launch ViTables pytables GUI (HDF5, etc)",
+                    "color": "#ffed78",
+                    "useVsCodeApi": false,
+                    "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables"
+                },
+                {
+                    "name": "JupyterBook Build",
+                    "tooltip": "Build the JupyterBook project",
+                    "color": "#ed9600",
+                    "useVsCodeApi": false,
+                    "command": "jupyter-book build EXTERNAL/PhoDibaPaper2024Book; C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/scripts/open_generated_jupyter_book_docs.py"
+                },
+                {
+                    "name": "standalone spike_raster_window Launch",
+                    "tooltip": "Launch standalone spike_raster_window",
+                    "color": "#aaed78",
+                    "useVsCodeApi": false,
+                    "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
+                },
+                {
+                    "name": "\u00e2\u2021\u00a5 Convert to File Spaces",
+                    "color": "white",
+                    "tooltip": "Convert tabs to spaces in the current file",
+                    "useVsCodeApi": true,
+                    "command": "editor.action.indentationToSpaces"
+                }
+            ],
+            "defaultColor": "grey",
+            "reloadButton": "\u00e2\u2020\u00bb",
+            "loadNpmCommands": true
+        },
+        "[python]": {
+            "editor.suggest.showFiles": false
+        },
+        "editor.suggest.showFiles": false,
+        "workbench.editor.enablePreview": false,
+        "workbench.sash.size": 9,
+        "workbench.sash.hoverDelay": 120,
+        "scratchpads.filePrefix": "scratch_",
+        "scratchpads.scratchpadsFolder": "C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/DEVELOPER_NOTES/UnsortedErrorLogs",
+        "notebook.find.filters": {
+            "markupSource": true,
+            "markupPreview": false,
+            "codeSource": true,
+            "codeOutput": false
+        }
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Launch ViTables",
+                "type": "shell",
+                "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables",
+                "problemMatcher": [],
+                "presentation": {
+                    "echo": false,
+                    "focus": false,
+                    "reveal": "silent",
+                    "panel": "shared",
+                    "showReuseMessage": false
+                }
+            },
+            {
+                "label": "Launch ViTables with selected file path (TODO)",
+                "type": "shell",
+                "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+                "args": [
+                    "-m",
+                    "vitables",
+                    "$VITABLES_FILE_PATH"
+                ],
+                "problemMatcher": [],
+                "presentation": {
+                    "echo": false,
+                    "focus": false,
+                    "reveal": "silent",
+                    "panel": "shared",
+                    "showReuseMessage": false
+                }
+            },
+            {
+                "label": "Launch standalone spike_raster_window",
+                "type": "shell",
+                "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py",
+                "problemMatcher": [],
+                "presentation": {
+                    "echo": false,
+                    "focus": false,
+                    "reveal": "silent",
+                    "panel": "shared",
+                    "showReuseMessage": false
+                }
+            }
+        ]
+    },
+    "extensions": {
+        "recommendations": [
+            "sketchbuch.vsc-workspace-sidebar",
+            "salmonmode.activity-heatmap",
+            "ohyee.custom-button",
+            "orepor.color-tabs-vscode-ext",
+            "ryu1kn.partial-diff",
+            "rebornix.toggle",
+            "amodio.restore-editors",
+            "buenon.scratchpads",
+            "geddski.macros",
+            "ryuta46.multi-command",
+            "microhobby.vscode-resizer",
+            "kaiwood.center-editor-window",
+            "suhay.vscode-editor-group-minimizer",
+            "stella100np.editor-pockets",
+            "ionide.discoverpanel",
+            "astallinger.sourcetrail",
+            "phohale.pho-vs-code-url-scheme-grabber",
+            "kawamataryo.copy-python-dotted-path"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+/* Make the content area full width */
+.content-wrapper {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove padding around the main content area */
+.main-content {
+    padding: 0;
+}
+
+/* Remove the maximum width constraint on the page container */
+.bd-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+}

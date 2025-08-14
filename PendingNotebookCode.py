@@ -1,51 +1,324 @@
 ## This file serves as overflow from active Jupyter-lab notebooks, to eventually be refactored.
 from copy import deepcopy
-from typing import Any, List
-from matplotlib.colors import ListedColormap
 from pathlib import Path
+from typing import  List, Optional, Dict, Tuple
+from neuropy.core.epoch import ensure_dataframe
 import numpy as np
 import pandas as pd
+from matplotlib.colors import ListedColormap
 import pyvista as pv
 import pyvistaqt as pvqt # conda install -c conda-forge pyvistaqt
 
+from pyphocorehelpers.programming_helpers import metadata_attributes
 from pyphocorehelpers.function_helpers import function_attributes
-from pyphoplacecellanalysis.General.Configs.DynamicConfigs import PlottingConfig, InteractivePlaceCellConfig
 # from pyphoplacecellanalysis.PhoPositionalData.analysis.interactive_placeCell_config import print_subsession_neuron_differences
-from neuropy.core.neuron_identities import PlotStringBrevityModeEnum # for display_all_pf_2D_pyqtgraph_binned_image_rendering
-from pyphocorehelpers.gui.PhoUIContainer import PhoUIContainer
+
+from collections import Counter # debug_detect_repeated_values
+
+import scipy # pho_compute_rank_order
+
+from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.RankOrderComputations import RankOrderAnalyses # for _compute_single_rank_order_shuffle
+
+
+
+# ==================================================================================================================== #
+# 2024-01-19 - Marginals                                                                                               #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+
+
+
+
+class CurrTesting:
+    
+    # Pre-2023-21 ________________________________________________________________________________________________________ #
+
+    def _plot_directional_likelihoods_df(directional_likelihoods_df):
+        """ 2023-12-21 - Now 
+
+        """
+        df = deepcopy(directional_likelihoods_df)
+
+        fig = plt.figure(num='directional_likelihoods_df Matplotlib figure')
+        plt.plot(df.index, df["long_relative_direction_likelihoods"], label="Long Direction")
+        plt.plot(df.index, df["short_relative_direction_likelihoods"], label="Short Direction")
+
+        for i, idx in enumerate(df["long_best_direction_indices"]):
+            if idx == 0:
+                plt.annotate("↑", (df.index[i], df["long_relative_direction_likelihoods"][i]), textcoords="offset points", xytext=(0, 10))
+            elif idx == 1:
+                plt.annotate("↓", (df.index[i], df["long_relative_direction_likelihoods"][i]), textcoords="offset points", xytext=(0, -10))
+
+        plt.xlabel("Index")
+        plt.ylabel("Likelihood")
+        plt.legend()
+        plt.show()
+
+
+    def pho_compute_rank_order(track_templates, curr_epoch_spikes_df: pd.DataFrame, rank_method="average", stats_nan_policy='omit') -> Dict[str, Tuple]:
+        """ 2023-12-20 - Actually working spearman rank-ordering!! 
+
+        Usage:
+            curr_epoch_spikes_df = deepcopy(active_plotter.get_active_epoch_spikes_df())[['t_rel_seconds', 'aclu', 'shank', 'cluster', 'qclu', 'maze_id', 'flat_spike_idx', 'Probe_Epoch_id']]
+            curr_epoch_spikes_df["spike_rank"] = curr_epoch_spikes_df["t_rel_seconds"].rank(method="average")
+            # Sort by column: 'aclu' (ascending)
+            curr_epoch_spikes_df = curr_epoch_spikes_df.sort_values(['aclu'])
+            curr_epoch_spikes_df
+
+        """
+        curr_epoch_spikes_df["spike_rank"] = curr_epoch_spikes_df["t_rel_seconds"].rank(method=rank_method)
+        # curr_epoch_spikes_df = curr_epoch_spikes_df.sort_values(['aclu'], inplace=False) # Sort by column: 'aclu' (ascending)
+
+        n_spikes = np.shape(curr_epoch_spikes_df)[0]
+        curr_epoch_spikes_aclus = deepcopy(curr_epoch_spikes_df.aclu.to_numpy())
+        curr_epoch_spikes_aclu_ranks = deepcopy(curr_epoch_spikes_df.spike_rank.to_numpy())
+        # curr_epoch_spikes_aclu_rank_map = dict(zip(curr_epoch_spikes_aclus, curr_epoch_spikes_aclu_ranks)) # could build a map equiv to template versions
+        n_unique_aclus = np.shape(curr_epoch_spikes_df.aclu.unique())[0]
+        assert n_spikes == n_unique_aclus, f"there is more than one spike in curr_epoch_spikes_df for an aclu! n_spikes: {n_spikes}, n_unique_aclus: {n_unique_aclus}"
+
+        # decoder_LR_pf_peak_ranks_list = [scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense') for a_decoder in (long_LR_decoder, short_LR_decoder)]
+        # decoder_RL_pf_peak_ranks_list = [scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense') for a_decoder in (long_RL_decoder, short_RL_decoder)]
+
+        # rank_method: str = "dense"
+        # rank_method: str = "average"
+
+        track_templates.rank_method = rank_method
+        # decoder_rank_dict = {a_decoder_name:scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method=rank_method) for a_decoder_name, a_decoder in track_templates.get_decoders_dict().items()}
+        # decoder_aclu_peak_rank_dict_dict = {a_decoder_name:dict(zip(a_decoder.pf.ratemap.neuron_ids, scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method=rank_method))) for a_decoder_name, a_decoder in track_templates.get_decoders_dict().items()}
+        # decoder_aclu_peak_rank_dict_dict = {a_decoder_name:dict(zip(a_decoder.pf.ratemap.neuron_ids, scipy.stats.rankdata(a_decoder.pf.ratemap.peak_tuning_curve_center_of_masses, method='dense'))) for a_decoder_name, a_decoder in track_templates.decoder_peak_rank_list_dict.items()}
+
+        # decoder_rank_dict = track_templates.decoder_peak_rank_list_dict
+        decoder_aclu_peak_rank_dict_dict = track_templates.decoder_aclu_peak_rank_dict_dict
+
+        template_spearman_real_results = {}
+        for a_decoder_name, a_decoder_aclu_peak_rank_dict in decoder_aclu_peak_rank_dict_dict.items():
+            # template_corresponding_aclu_rank_list: the list of template ranks for each aclu present in the `curr_epoch_spikes_aclus`
+            template_corresponding_aclu_rank_list = np.array([a_decoder_aclu_peak_rank_dict.get(key, np.nan) for key in curr_epoch_spikes_aclus]) #  if key in decoder_aclu_peak_rank_dict_dict['long_LR']
+            # curr_epoch_spikes_aclu_rank_list = np.array([curr_epoch_spikes_aclu_rank_map.get(key, np.nan) for key in curr_epoch_spikes_aclus])
+            curr_epoch_spikes_aclu_rank_list = curr_epoch_spikes_aclu_ranks
+            n_missing_aclus = np.isnan(template_corresponding_aclu_rank_list).sum()
+            real_long_rank_stats = scipy.stats.spearmanr(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, nan_policy=stats_nan_policy)
+            print(f'real_long_rank_stats: {real_long_rank_stats}')
+            # _alt_real_long_rank_stats = CurrTesting.calculate_spearman_rank_correlation(curr_epoch_spikes_aclu_rank_list, template_corresponding_aclu_rank_list, rank_method=rank_method)
+            # print(f'_alt_real_long_rank_stats: {_alt_real_long_rank_stats}')
+            # print(f"Spearman rank correlation coefficient: {correlation}")
+            template_spearman_real_results[a_decoder_name] = (*real_long_rank_stats, n_missing_aclus)
+        
+        return template_spearman_real_results
+
+
+    def debug_detect_repeated_values(data, exceeding_count:int=1):
+        """
+        Identify and return a map of all repeated values in a list-like or NumPy array.
+
+        Args:
+            data: Any list-like or NumPy array.
+            min_repeat: Max number of times a value can be used before it is included (default: 1).
+            
+        Returns:
+            A dictionary mapping each repeated value to its count.
+        """
+        if isinstance(data, np.ndarray):
+            data = data.flatten()
+        return {key: value for key, value in Counter(data).items() if value > exceeding_count}
+
+
+
+
+
+
+
+
+
+# ==================================================================================================================== #
+# OLD                                                                                                                  #
+# ==================================================================================================================== #
+
+
 
 ## Laps Stuff:
-from neuropy.core.epoch import NamedTimerange
 
 should_force_recompute_placefields = True
 should_display_2D_plots = True
 _debug_print = False
 
-#TODO 2023-08-10 16:50: - [ ] 
+
+# ==================================================================================================================== #
+# 2023-10-31 - Debug Plotting for Directional Placefield Templates                                                     #
+# ==================================================================================================================== #
+
+# from pyphoplacecellanalysis.SpecificResults.PhoDiba2023Paper import build_shared_sorted_neuronIDs
+# from pyphoplacecellanalysis.Pho2D.matplotlib.visualize_heatmap import visualize_heatmap_pyqtgraph
+
+# ratemap = long_pf1D.ratemap
+# included_unit_neuron_IDs = EITHER_subset.track_exclusive_aclus
+# rediculous_final_sorted_all_included_neuron_ID, rediculous_final_sorted_all_included_pfmap = build_shared_sorted_neuronIDs(ratemap, included_unit_neuron_IDs, sort_ind=new_all_aclus_sort_indicies.copy())
+
+# heatmap_pf1D_win, heatmap_pf1D_img = visualize_heatmap_pyqtgraph(rediculous_final_sorted_all_included_pfmap, show_yticks=False, title=f"pf1D Sorted Visualization", defer_show=True)
+# active_curves_sorted = long_pf1D.ratemap.normalized_tuning_curves[is_included][included_new_all_aclus_sort_indicies]
+# heatmap_pf1D_win, heatmap_pf1D_img = visualize_heatmap_pyqtgraph(active_curves_sorted, show_yticks=False, title=f"pf1D Sorted Visualization", defer_show=True)
+
+# _out = visualize_heatmap_pyqtgraph(np.vstack([odd_shuffle_helper.long_pf_peak_ranks, odd_shuffle_helper.short_pf_peak_ranks, even_shuffle_helper.long_pf_peak_ranks, even_shuffle_helper.short_pf_peak_ranks]), show_value_labels=True, show_xticks=True, show_yticks=True, show_colorbar=False)
 
 
 
-from enum import Enum, auto
-from attrs import define, field
+from scipy import stats # _recover_samples_per_sec_from_laps_df
 
-@define(slots=False)
-class SwiftLikeEnum:
-    """ # can enums store associated data?
-	# some properties only make sense for certain enum values, like .
+def _recover_samples_per_sec_from_laps_df(global_laps_df, time_start_column_name='start_t_rel_seconds', time_stop_column_name='end_t_rel_seconds',
+            extra_indexed_column_start_column_name='start_position_index', extra_indexed_column_stop_column_name='end_position_index') -> float:
+    """ Recovers the index/Denoting with λ(Θ) the probability that a neuron be active in a given room, the null hypothesis was therefore that all neurons could be assigned the same value λ (which would depend on Θ)time relation for the specified index columns by computing both the time duration and the number of indicies spanned by a given epoch.
+
+    returns the `mode_samples_per_sec` corresponding to that column.
+
+    ASSUMES REGULAR SAMPLEING!
+
+    Usage:
+
+        global_laps_df = global_laps.to_dataframe()
+        position_mode_samples_per_sec = _recover_samples_per_sec_from_laps_df(global_laps_df, time_start_column_name='start_t_rel_seconds', time_stop_column_name='end_t_rel_seconds',
+                    extra_indexed_column_start_column_name='start_position_index', extra_indexed_column_stop_column_name='end_position_index')
+
+        position_mode_samples_per_sec # 29.956350269267112
+
+
+     """
+    duration_sec = global_laps_df[time_stop_column_name] - global_laps_df[time_start_column_name]
+    num_position_samples = global_laps_df[extra_indexed_column_stop_column_name] - global_laps_df[extra_indexed_column_start_column_name]
+    samples_per_sec = (num_position_samples/duration_sec).to_numpy()
+    mode_samples_per_sec = stats.mode(samples_per_sec)[0] # take the mode of all the epochs
+    return mode_samples_per_sec
+
+
+
+# ==================================================================================================================== #
+# 2023-10-26 - Directional Placefields to generate four templates                                                      #
+# ==================================================================================================================== #
+# from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import DirectionalLapsHelpers
+
+
+# ==================================================================================================================== #
+# 2023-10-19 Weighted Correlation                                                                                      #
+# ==================================================================================================================== #
+from neuropy.core import Epoch
+from pyphoplacecellanalysis.Analysis.Decoder.reconstruction import DecodedFilterEpochsResult
+
+@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'epoch', 'obsolite'], input_requires=[], output_provides=[], uses=['WeightedCorr'], used_by=['add_weighted_correlation_result'], creation_date='2023-10-19 07:54', related_items=[])
+def compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n, method='spearman') -> List[float]:
+    """ computes the weighted_correlation for the epoch given the decoded posterior
+
+    # FLATTEN for WeightedCorr calculation, filling as appropriate:
+    X, Y are vectors
+    W is a matrix containing the posteriors
+    
     """
-    value: int
-    attribute: str
+    from neuropy.utils.external.WeightedCorr import WeightedCorr
+    
+    n_xbins = len(xbin_centers)
+    curr_n_time_bins = len(curr_time_bins)
+    curr_flat_length = int(float(curr_n_time_bins) * float(n_xbins))
+    
+    X = np.repeat(curr_time_bins, n_xbins)
+    Y = np.tile(xbin_centers, curr_n_time_bins)
+    assert np.shape(X) == np.shape(Y)
+    W = np.reshape(curr_long_epoch_p_x_given_n, newshape=curr_flat_length, order='F') # order='F' means take the first axis (xbins) as changing the fastest
+    assert np.allclose(curr_long_epoch_p_x_given_n[:,1], W[n_xbins:n_xbins+n_xbins]) # compare the lienarlly-index second timestamp with the 2D-indexed version to ensure flattening was done correctly.
+    data_df = pd.DataFrame({'x':X, 'y':Y, 'w':W})
+    
+    weighted_corr_results = []
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}.{self.name}"
+    if isinstance(method, str):
+        # wrap in single element list:
+        method = (method, )
+        
+    a_weighted_corr_obj = WeightedCorr(xyw=data_df[['x', 'y', 'w']])
+    for a_method in method:
+        weighted_corr_results.append(a_weighted_corr_obj(method=a_method)) # append the scalar
 
-class MyEnum(Enum):
-    CASE1 = SwiftLikeEnum(value=auto(), attribute="attribute1")
-    CASE2 = SwiftLikeEnum(value=auto(), attribute="attribute2")
+    return weighted_corr_results
 
-    @property
-    def attribute(self):
-        return self.value.attribute
+
+
+@function_attributes(short_name=None, tags=['weighted_correlation', 'decoder', 'obsolite'], input_requires=[], output_provides=[], uses=['compute_epoch_weighted_correlation'], used_by=[], creation_date='2023-10-19 07:54', related_items=[])
+def add_weighted_correlation_result(xbin_centers, a_long_decoder_result: DecodedFilterEpochsResult, a_short_decoder_result: DecodedFilterEpochsResult, method=('pearson', 'spearman'), debug_print = False):
+    """ builds the weighted correlation for each epoch respective to the posteriors decoded by each decoder (long/short) """
+    epoch_long_weighted_corr_results = []
+    epoch_short_weighted_corr_results = []
+
+    for decoded_epoch_idx in np.arange(a_long_decoder_result.num_filter_epochs):
+        # decoded_epoch_idx:int = 0
+        curr_epoch_time_bin_container = a_long_decoder_result.time_bin_containers[decoded_epoch_idx]
+        curr_time_bins = curr_epoch_time_bin_container.centers
+        curr_n_time_bins = len(curr_time_bins)
+        if debug_print:
+            print(f'curr_n_time_bins: {curr_n_time_bins}')
+
+
+        ## Long Decoding:
+        curr_long_epoch_p_x_given_n = a_long_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
+        print(f'np.shape(curr_long_epoch_p_x_given_n): {np.shape(curr_long_epoch_p_x_given_n)}')
+        
+        weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_long_epoch_p_x_given_n, method=method)
+        epoch_long_weighted_corr_results.append(weighted_corr_result)
+
+        ## Short Decoding:
+        curr_short_epoch_p_x_given_n = a_short_decoder_result.p_x_given_n_list[decoded_epoch_idx] # .shape: (239, 5) - (n_x_bins, n_epoch_time_bins)
+        weighted_corr_result = compute_epoch_weighted_correlation(xbin_centers, curr_time_bins, curr_short_epoch_p_x_given_n, method=method)
+        epoch_short_weighted_corr_results.append(weighted_corr_result)
+
+    # ## Build separate result dataframe:
+    # epoch_weighted_corr_results_df = pd.DataFrame({'weighted_corr_LONG': np.array(epoch_long_weighted_corr_results), 'weighted_corr_SHORT': np.array(epoch_short_weighted_corr_results)})
+    # epoch_weighted_corr_results_df
+
+    return np.array(epoch_long_weighted_corr_results), np.array(epoch_short_weighted_corr_results)
+    
+    
+
+
+
+
+# ==================================================================================================================== #
+# 2023-10-11                                                                                                           #
+# ==================================================================================================================== #
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionTables
+
+def build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE, included_session_contexts):
+    """ captures a lot of stuff still, don't remember what. 
+    
+    Usage:    
+        # BATCH_DATE_TO_USE = '2023-10-05_NewParameters'
+        BATCH_DATE_TO_USE = '2023-10-07'
+
+        from PendingNotebookCode import build_and_merge_all_sessions_joined_neruon_fri_df
+
+        all_sessions_joined_neruon_fri_df, out_path = build_and_merge_all_sessions_joined_neruon_fri_df(global_data_root_parent_path, BATCH_DATE_TO_USE)
+
+
+    TODO: seems like it should probably go into AcrossSessionResults or AcrossSessionTables
+    
+    """
+
+
+    # Rootfolder mode:
+    # joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+
+    # Subfolder mode: PosixPath('/nfs/turbo/umms-kdiba/Data/2024-09-02/kdiba-gor01-one-2006-6-08_14-26-15_joined_neruon_fri_df.pkl')
+    # joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+
+    # Both mode:
+    joined_neruon_fri_df_file_paths = [global_data_root_parent_path.joinpath(BATCH_DATE_TO_USE, f'{BATCH_DATE_TO_USE}_{a_ctxt.get_description(separator="-", include_property_names=False)}_joined_neruon_fri_df.pkl') for a_ctxt in included_session_contexts]
+    joined_neruon_fri_df_file_paths = [a_path for a_path in joined_neruon_fri_df_file_paths if a_path.exists()] # only get the paths that exist
+
+    data_frames = [AcrossSessionTables.load_table_from_file(global_data_root_parent_path=a_path.parent, output_filename=a_path.name) for a_path in joined_neruon_fri_df_file_paths]
+    # data_frames = [df for df in data_frames if df is not None] # remove empty results
+    print(f'joined_neruon_fri_df: concatenating dataframes from {len(data_frames)}')
+    all_sessions_joined_neruon_fri_df = pd.concat(data_frames, ignore_index=True)
+
+    ## Finally save out the combined result:
+    all_sessions_joined_neruon_fri_df_basename = f'{BATCH_DATE_TO_USE}_MERGED_joined_neruon_fri_df'
+    out_path = global_data_root_parent_path.joinpath(all_sessions_joined_neruon_fri_df_basename).resolve()
+    AcrossSessionTables.write_table_to_files(all_sessions_joined_neruon_fri_df, global_data_root_parent_path=global_data_root_parent_path, output_basename=all_sessions_joined_neruon_fri_df_basename)
+    print(f'>>\t done with {out_path}')
+    return all_sessions_joined_neruon_fri_df, out_path
 
 
 
@@ -102,7 +375,6 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
 
     if enable_interactive_bounds_selection:
         # Interactive grid_bin_bounds selector (optional):
-        import matplotlib.pyplot as plt
         from neuropy.utils.matplotlib_helpers import add_rectangular_selector
         # Show an interactive rectangular selection for the occupancy:
         fig, ax = curr_active_pipeline.computation_results['maze'].computed_data.pf2D.plot_occupancy()
@@ -117,7 +389,8 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
     # refined_grid_bin_bounds = ((24.12, 259.80), (130.00, 150.09))
     # temp_comp_params = PlacefieldComputationParameters(speed_thresh=4)
     # temp_comp_params.pf_params.speed_thresh = 10 # 4.0 cm/sec
-    temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
+    # temp_comp_params.pf_params.grid_bin = (2, 2) # (2cm x 2cm)
+    temp_comp_params.pf_params.grid_bin = (1.5, 1.5) # (1.5cm x 1.5cm)
     temp_comp_params.pf_params.grid_bin_bounds = final_grid_bin_bounds # same bounds for all
     # temp_comp_params.pf_params.smooth = (0.0, 0.0) # No smoothing
     # temp_comp_params.pf_params.frate_thresh = 1 # Minimum for non-smoothed peak is 1Hz
@@ -165,7 +438,7 @@ def _update_computation_configs_with_laps_and_shared_grid_bins(curr_active_pipel
 # 2023-05-02 - Factor out interactive matplotlib/pyqtgraph helper code (untested)                                      #
 # ==================================================================================================================== #
 import matplotlib
-from attrs import define, Factory
+from attrs import define, field, Factory
 
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class SelectionManager:
@@ -182,10 +455,10 @@ class SelectionManager:
         sm = SelectionManager(_curr_plots.axs)
 
     """
-    axes: list
-    is_selected: dict = Factory(dict)
-    fig: matplotlib.figure.Figure = None # Matplotlib.Figure
-    cid: int = None # Matplotlib.Figure
+    axes: list = field(default=Factory(list))
+    is_selected: dict = field(default=Factory(dict))
+    fig: Optional[matplotlib.figure.Figure] = field(default=None) # Matplotlib.Figure
+    cid: Optional[int] = field(default=None) # Matplotlib.Figure
 
     def __attrs_post_init__(self):
         # Get figure from first axes:
@@ -211,7 +484,7 @@ class SelectionManager:
         event.canvas.draw()
 
 
-from attrs import Factory
+
 
 @define(slots=True, eq=False) #eq=False enables hashing by object identity
 class PaginatedSelectionManager:
@@ -235,10 +508,10 @@ class PaginatedSelectionManager:
         ui.mw.ui.paginator_controller_widget.jump_to_page.connect(on_page_change)
 
     """
-    axes: list
-    is_selected: dict = Factory(dict)
-    fig: matplotlib.figure.Figure = None # Matplotlib.Figure
-    callback_id: int = None # Matplotlib.Figure
+    axes: list = field(default=Factory(list))
+    is_selected: dict = field(default=Factory(dict))
+    fig: Optional[matplotlib.figure.Figure] = field(default=None) # Matplotlib.Figure
+    callback_id: Optional[int] = field(default=None) # Matplotlib.Figure
 
     def __attrs_post_init__(self):
         # Get figure from first axes:
@@ -295,7 +568,6 @@ class PaginatedSelectionManager:
 # ==================================================================================================================== #
 ## Create a diagnostic plot that plots a stack of the three curves used for computations in the given epoch:
 
-from attrs import define, Factory
 import pyphoplacecellanalysis.External.pyqtgraph as pg
 
 
@@ -314,8 +586,6 @@ def _scramble_curve(pf: np.ndarray, roll_num_bins:int = 10, method='circ'):
 # ==================================================================================================================== #
 # 2023-03-09 - Parameter Sweeping                                                                                      #
 # ==================================================================================================================== #
-
-from neuropy.analyses.placefields import PfND
 
 def _compute_parameter_sweep(spikes_df, active_pos, all_param_sweep_options: dict) -> dict:
     """ Computes the PfNDs for all the swept parameters (combinations of grid_bin, smooth, etc)
@@ -352,90 +622,96 @@ def _compute_parameter_sweep(spikes_df, active_pos, all_param_sweep_options: dic
 
 # +
 
-
-def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
-    """ 
-    Usage:
-        from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
-
-        active_sess = curr_active_pipeline.filtered_sessions['maze']
-        active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
-        active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
-
-        spike_trimmed_active_epochs, _extra_outputs = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
-        epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
-"""
-    from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+@metadata_attributes(short_name=None, tags=['rank-order', 'spikes'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2023-02-16 00:00', related_items=[])
+class SpikesRankOrder:
+    """ Simple "weighted-center-of-mass" method of determing cell firing order in a timeseries
     
-    # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
-    active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1) # uses new add_epochs_id_identity
-
-    # Get all aclus and epoch_idxs used throughout the entire spikes_df:
-    all_aclus = active_spikes_df['aclu'].unique()
-    all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
-
-    # first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spikes
-    first_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spikes
-    # rank the aclu values by their first t value in each Probe_Epoch_id
-    ranked_aclus = first_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
-    # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
-    ranked_aclus_dict = {}
-    for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
-        if epoch_id not in ranked_aclus_dict:
-            ranked_aclus_dict[epoch_id] = {}
-        ranked_aclus_dict[epoch_id][aclu] = rank
-    # ranked_aclus_dict
-    return ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus
-
-# -
-
-
-# +
-
-def compute_rankordered_stats(epoch_ranked_aclus_dict):
-    """ Spearman rank-order tests:
-        
-    WARNING, from documentation: Although calculation of the p-value does not make strong assumptions about the distributions underlying the samples, it is only accurate for very large samples (>500 observations). For smaller sample sizes, consider a permutation test (see Examples section below).
-
-    Usage: 
-        
-        epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = compute_rankordered_stats(epoch_ranked_aclus_dict)
-
     """
-    import scipy.stats
-    
-    epoch_ranked_aclus_stats_dict = {epoch_id:scipy.stats.spearmanr(np.array(list(rank_dict.keys())), np.array(list(rank_dict.values()))) for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
-    # epoch_ranked_aclus_stats_dict
+    def compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs):
+        """ 
+        Usage:
+            from neuropy.utils.efficient_interval_search import filter_epochs_by_num_active_units
 
-    # Spearman statistic (correlation) values:
-    epoch_ranked_aclus_stats_corr_values = np.array([np.abs(rank_stats.statistic) for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
-    outside_epochs_ranked_aclus_stats_corr_value = epoch_ranked_aclus_stats_corr_values[0]
-    epoch_ranked_aclus_stats_corr_values = epoch_ranked_aclus_stats_corr_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+            active_sess = curr_active_pipeline.filtered_sessions['maze']
+            active_epochs = active_sess.perform_compute_estimated_replay_epochs(min_epoch_included_duration=None, max_epoch_included_duration=None, maximum_speed_thresh=None) # filter on nothing basically
+            active_spikes_df = active_sess.spikes_df.spikes.sliced_by_neuron_type('pyr') # only look at pyramidal cells
 
-    # Spearman p-values:
-    epoch_ranked_aclus_stats_p_values = np.array([rank_stats.pvalue for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
-    outside_epochs_ranked_aclus_stats_p_value = epoch_ranked_aclus_stats_p_values[0]
-    epoch_ranked_aclus_stats_p_values = epoch_ranked_aclus_stats_p_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+            spike_trimmed_active_epochs, _extra_outputs = filter_epochs_by_num_active_units(active_spikes_df, active_epochs, min_inclusion_fr_active_thresh=2.0, min_num_unique_aclu_inclusions=1)
+            epoch_ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus = compute_rankordered_spikes_during_epochs(active_spikes_df, active_epochs)
+    """
+        from neuropy.utils.mixins.time_slicing import add_epochs_id_identity
+        
+        # add the active_epoch's id to each spike in active_spikes_df to make filtering and grouping easier and more efficient:
+        active_spikes_df = add_epochs_id_identity(active_spikes_df, epochs_df=active_epochs.to_dataframe(), epoch_id_key_name='Probe_Epoch_id', epoch_label_column_name=None, override_time_variable_name='t_rel_seconds', no_interval_fill_value=-1) # uses new add_epochs_id_identity
 
-    return epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value)
+        # Get all aclus and epoch_idxs used throughout the entire spikes_df:
+        all_aclus = active_spikes_df['aclu'].unique()
+        all_probe_epoch_ids = active_spikes_df['Probe_Epoch_id'].unique()
+
+        selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].first() # first spikes
+        # selected_spikes = active_spikes_df.groupby(['Probe_Epoch_id', 'aclu'])[active_spikes_df.spikes.time_variable_name].median() # median spikes
+        
+        
+        # rank the aclu values by their first t value in each Probe_Epoch_id
+        ranked_aclus = selected_spikes.groupby('Probe_Epoch_id').rank(method='dense') # resolve ties in ranking by assigning the same rank to each and then incrimenting for the next item
+        # create a nested dictionary of {Probe_Epoch_id: {aclu: rank}} from the ranked_aclu values
+        ranked_aclus_dict = {}
+        for (epoch_id, aclu), rank in zip(ranked_aclus.index, ranked_aclus):
+            if epoch_id not in ranked_aclus_dict:
+                ranked_aclus_dict[epoch_id] = {}
+            ranked_aclus_dict[epoch_id][aclu] = rank
+        # ranked_aclus_dict
+        return ranked_aclus_dict, active_spikes_df, all_probe_epoch_ids, all_aclus
+
+    # -
 
 
-# # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
-# # ### 2023-02-16 TODO: try to overcome issue with small sample sizes mentioned above by performing the permutation test:
+    # +
 
-# # +
-# # def statistic(x):  # permute only `x`
-# #     return scipy.stats.spearmanr(x, y).statistic
-# # res_exact = scipy.stats.permutation_test((x,), statistic, permutation_type='pairings')
-# res_asymptotic = scipy.stats.spearmanr(x, y)
-# res_exact.pvalue, res_asymptotic.pvalue  # asymptotic pvalue is too low
+    def compute_rankordered_stats(epoch_ranked_aclus_dict):
+        """ Spearman rank-order tests:
+            
+        WARNING, from documentation: Although calculation of the p-value does not make strong assumptions about the distributions underlying the samples, it is only accurate for very large samples (>500 observations). For smaller sample sizes, consider a permutation test (see Examples section below).
 
-# # scipy.stats.permutation_test((x,), (lambda x: scipy.stats.spearmanr(x, y).statistic), permutation_type='pairings')
+        Usage: 
+            
+            epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value) = compute_rankordered_stats(epoch_ranked_aclus_dict)
 
-# ## Compute the exact value using permutations:
-# # epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.keys())),), (lambda x: scipy.stats.spearmanr(x, np.array(list(rank_dict.values()))).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
-# epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.values())),), (lambda y: scipy.stats.spearmanr(np.array(list(rank_dict.keys())), y).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()} # ValueError: each sample in `data` must contain two or more observations along `axis`.
-# epoch_ranked_aclus_stats_exact_dict
+        """
+        import scipy.stats
+        
+        epoch_ranked_aclus_stats_dict = {epoch_id:scipy.stats.spearmanr(np.array(list(rank_dict.keys())), np.array(list(rank_dict.values()))) for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+        # epoch_ranked_aclus_stats_dict
+
+        # Spearman statistic (correlation) values:
+        epoch_ranked_aclus_stats_corr_values = np.array([np.abs(rank_stats.statistic) for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+        outside_epochs_ranked_aclus_stats_corr_value = epoch_ranked_aclus_stats_corr_values[0]
+        epoch_ranked_aclus_stats_corr_values = epoch_ranked_aclus_stats_corr_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+        # Spearman p-values:
+        epoch_ranked_aclus_stats_p_values = np.array([rank_stats.pvalue for epoch_id, rank_stats in epoch_ranked_aclus_stats_dict.items()])
+        outside_epochs_ranked_aclus_stats_p_value = epoch_ranked_aclus_stats_p_values[0]
+        epoch_ranked_aclus_stats_p_values = epoch_ranked_aclus_stats_p_values[1:] # drop the first value corresponding to the -1 index. Now they correspond only to valid epoch_ids
+
+        return epoch_ranked_aclus_stats_corr_values, epoch_ranked_aclus_stats_p_values, (outside_epochs_ranked_aclus_stats_corr_value, outside_epochs_ranked_aclus_stats_p_value)
+
+
+    # # + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+    # # ### 2023-02-16 TODO: try to overcome issue with small sample sizes mentioned above by performing the permutation test:
+
+    # # +
+    # # def statistic(x):  # permute only `x`
+    # #     return scipy.stats.spearmanr(x, y).statistic
+    # # res_exact = scipy.stats.permutation_test((x,), statistic, permutation_type='pairings')
+    # res_asymptotic = scipy.stats.spearmanr(x, y)
+    # res_exact.pvalue, res_asymptotic.pvalue  # asymptotic pvalue is too low
+
+    # # scipy.stats.permutation_test((x,), (lambda x: scipy.stats.spearmanr(x, y).statistic), permutation_type='pairings')
+
+    # ## Compute the exact value using permutations:
+    # # epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.keys())),), (lambda x: scipy.stats.spearmanr(x, np.array(list(rank_dict.values()))).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()}
+    # epoch_ranked_aclus_stats_exact_dict = {epoch_id:scipy.stats.permutation_test((np.array(list(rank_dict.values())),), (lambda y: scipy.stats.spearmanr(np.array(list(rank_dict.keys())), y).statistic), permutation_type='pairings') for epoch_id, rank_dict in epoch_ranked_aclus_dict.items()} # ValueError: each sample in `data` must contain two or more observations along `axis`.
+    # epoch_ranked_aclus_stats_exact_dict
 
 
 
@@ -986,6 +1262,7 @@ def _normalize_flat_relative_entropy_infs(flat_relative_entropy_results):
 
 from pyphoplacecellanalysis.GUI.PyQtPlot.BinnedImageRenderingWindow import BasicBinnedImageRenderingWindow # required for display_all_eloy_pf_density_measures_results
 
+@function_attributes(short_name=None, tags=['peak_prominence', 'eloy', 'density', 'pf'], input_requires=[], output_provides=[], uses=[], used_by=[], creation_date='2022-08-18 00:00', related_items=[])
 def display_all_eloy_pf_density_measures_results(active_pf_2D, active_eloy_analysis, active_simpler_pf_densities_analysis, active_peak_prominence_2d_results):
     """ 
     Usage:
@@ -1069,7 +1346,7 @@ def _build_docked_pf_2D_figures_widget(active_pf_2D_figures, should_nest_figures
     min_height = 500
     if extant_dockAreaWidget is None:
         created_new_main_widget = True
-        active_containing_dockAreaWidget, app = DockAreaWrapper._build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
+        active_containing_dockAreaWidget, app = DockAreaWrapper.build_default_dockAreaWindow(title='active_pf_2D_figures', defer_show=False)
     else:
         created_new_main_widget = False
         active_containing_dockAreaWidget = extant_dockAreaWidget
@@ -1515,7 +1792,7 @@ def old_timesynchronized_plotter_testing():
 
 
     # CELL ==================================================================================================================== #
-    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.Render3DTimeCurvesBaseGridMixin import BaseGrid3DTimeCurvesHelper, Render3DTimeCurvesBaseGridMixin
+    from pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.TimeCurves.Render3DTimeCurvesBaseGridMixin import BaseGrid3DTimeCurvesHelper
 
 
     # CELL ==================================================================================================================== #

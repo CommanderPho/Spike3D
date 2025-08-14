@@ -1,0 +1,36 @@
+{
+	"folders": [
+		
+		{
+			"path": "logs/merged",
+			"name": "merged"
+		},
+		
+		{
+			"path": "logs",
+			"name": "logs"
+		}
+		
+	],
+	"settings": {
+		"files.exclude": {
+			"**/OLD/": true,
+			"**/*.ico": true,
+			"**/*.sh": true,
+			"**/*.ps1": true,
+			"**/*.cmd": true,
+		},
+		"actionButtons": {
+			"commands": [
+			],
+			"defaultColor": "white",
+			"reloadButton": "reload",
+			"loadNpmCommands": false
+		},
+	},
+	"extensions": {
+		"recommendations": [
+			"jkearins.action-buttons-ext"
+		]
+	},
+}

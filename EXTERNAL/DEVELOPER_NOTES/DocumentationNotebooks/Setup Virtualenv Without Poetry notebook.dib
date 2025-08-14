@@ -1,0 +1,40 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"pwsh","items":[{"name":"csharp","languageName":"C#","aliases":["c#","cs"]},{"name":"fsharp","languageName":"F#","aliases":["f#","fs"]},{"name":"html","languageName":"HTML"},{"name":"http","languageName":"HTTP"},{"name":"javascript","languageName":"JavaScript","aliases":["js"]},{"name":"mermaid","languageName":"Mermaid"},{"name":"pwsh","languageName":"pwsh"},{"name":"value"}]}}
+
+#!pwsh
+
+pyenv exec python -m ensurepip --default-pip
+pyenv exec python -m pip install --upgrade pip
+pyenv exec python -m pip install virtualenv
+
+#!markdown
+
+### Create new virtual environment (here named `.venv_new`)
+
+#!pwsh
+
+cd ~/repos/Spike3DWorkEnv/Spike3D
+pyenv exec virtualenv .venv_new
+
+#!markdown
+
+### Activate the new environment and ensure pip is installed and up-to-date, finally install `requirements.txt`
+
+#!pwsh
+
+deactivate
+.venv_new\Scripts\activate
+.venv_new\Scripts\python -m ensurepip --default-pip 
+.venv_new\Scripts\python -m pip install --upgrade pip
+.venv_new\Scripts\python -m pip install -r requirements.txt
+
+#!markdown
+
+### Install extra requirements
+
+#!pwsh
+
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\NeuroPy
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis

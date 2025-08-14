@@ -1,3 +1,30 @@
+## Updated 2025-04-15 - UV Environment install
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv python install 3.9
+
+git clone --single-branch --branch working-with-UV --recurse-submodules https://github.com/CommanderPho/Spike3DWorkEnv.git
+
+```
+
+```
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+
+----
+
+## Updating
+```bash
+git submodule update --recursive --remote
+
+```
+
+
+-----------------------
+
 ## Updated 2023-02-06 Poetry Environment Install
 
 
@@ -22,8 +49,41 @@ curl -sSL https://install.python-poetry.org | python3 -
 
 
 #### Windows:
+##### General Helpers:
+See current version of a given command (e.g. `poetry`)
+```powershell
+Get-Command poetry | Select-Object -ExpandProperty Definition
+```
+
+
 ##### Install Chocolatey:
-1. Open a CMD.exe Administrator Instance and paste the following:
+1. Open a Powershell terminal and do the following:
+
+```
+# Install `scoop`
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+# Install pipx via scoop
+scoop install pipx
+pipx ensurepath
+
+# Install poetry via pipx
+pipx install poetry
+pipx inject poetry poetry-plugin-shell
+
+```
+2. Check that the installed poetry is the one being referenced
+```
+Get-Command poetry | Select-Object -ExpandProperty Definition
+```
+3. #TODO 2025-04-07 17:06: - [ ] Fix
+
+
+
+--------------------------- Pre 2025-04-07 ---------------------------
+
+1 (alt-OLD). Open a CMD.exe Administrator Instance and paste the following:
 ```bash
 @REM Install Chocolatey
 @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
@@ -36,6 +96,13 @@ refreshEnv
 pyenv install 3.9.13
 pyenv shell 3.9.13
 pyenv local 3.9.13 @REM this sets the new install to be the local Python version (in the directory where this command is ran)
+
+
+
+
+pipx install poetry
+pipx inject poetry poetry-plugin-shell
+
 
 @REM Install Poetry
 curl -sSL https://install.python-poetry.org | python3 - @REM get poetry and install it
@@ -158,6 +225,17 @@ pip install PyQt6-tools
 
 
 
+python -m pip install -e C:\Users\pho\repos\NeuroPy
+python -m pip install -e C:\Users\pho\repos\pyPhoCoreHelpers
+python -m pip install -e C:\Users\pho\repos\pyPhoPlaceCellAnalysis
+
+
+# Install to new .venv_new:
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\NeuroPy
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers
+.venv_new\Scripts\python -m pip install -e C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis
+
+
 ---
 ## Creating New Modules
 
@@ -226,3 +304,15 @@ mamba env update -n <your-env> --file environment.yml
 
 
 mamba env update -n mamba_ultimate --file "C:\Users\pho\Desktop\Anaconda Environments Full Backup 2022-11-04\pho_ultimate.yaml"
+
+
+
+## #TODO 2025-03-08 21:47: - [ ] Custom Jupyter Kernel to Spike3D Poetry VEnv 
+
+```
+(spike3d-py3.9) PS C:\Users\pho\repos\Spike3DWorkEnv\Spike3D> ipython kernel install --user --name=spike3d-global-poetry
+Installed kernelspec spike3d-global-poetry in C:\Users\pho\AppData\Roaming\jupyter\kernels\spike3d-global-poetry
+
+
+ipython kernel install --user --name=spike3d-global-poetry
+```

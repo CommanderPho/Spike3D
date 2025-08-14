@@ -1,5 +1,14 @@
-[tool.poetry.group.remote.dependencies]
-neuropy = {path = "../NeuroPy", develop=true} # , extras = ["acceleration"]
-pyphocorehelpers = {path = "../pyPhoCoreHelpers", develop=true}
-pyphoplacecellanalysis = {path = "../pyPhoPlaceCellAnalysis", develop=true}
-pylustrator = {path = "../pylustrator", develop=true}
+[tool.uv.sources]
+qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
+neuropy = { path = "../NeuroPy", editable=true }
+pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable=true }
+pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable=true }
+mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
+ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main" }
+vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
+pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
+flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
+maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
+pyqtinspect = { path = "../PyQtInspect-Open", editable=false }
+silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", editable=true, extras = ["full"]}
+pho_jupyter_preview_widget = { path = "../pho_jupyter_preview_widget", editable=true }

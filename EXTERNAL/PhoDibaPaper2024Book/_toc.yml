@@ -1,0 +1,12 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+chapters:
+- file: markdown
+- file: PhoDibaPaper2024
+- file: notebooks
+- file: neptune_result_fetching
+- file: markdown-notebooks
+- file: log_files_browser

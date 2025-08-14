@@ -18,16 +18,20 @@ dependent_repos = ["../NeuroPy", "../pyPhoCoreHelpers", "../pyPhoPlaceCellAnalys
 2. Run `poetry lock; poetry install`
 """
 import os
+import sys
 from pathlib import Path
 from datetime import datetime
 import argparse
 
+sys.path.append(os.path.join(os.path.dirname(__file__), 'helpers'))
+
 import glob
 
-from helpers.poetry_helpers import build_pyproject_toml_file
+
+from helpers.poetry_helpers import PoetryHelpers, VersionType
 from helpers.source_code_helpers import did_file_hash_change # for finding .whl file after building binary repo
 from helpers.git_helpers import GitHelpers
-from helpers.poetry_helpers import install_ipython_kernel
+from pyphocorehelpers.scripts.export_subrepos import export_poetry_repo
 
 # Get command line input arguments:
 parser = argparse.ArgumentParser()
@@ -73,15 +77,20 @@ def _reset_local_changes(repo_path):
 def _process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_toml=True, skip_lock=False, enable_install=False):
     ## Build final pyproj.toml file
     if enable_build_pyproject_toml:
-        final_pyproject_toml_path = build_pyproject_toml_file(repo_path, is_release=is_release, pyproject_final_file_name = 'pyproject.toml')
+        final_pyproject_toml_path = PoetryHelpers.build_pyproject_toml_file(repo_path, is_release=is_release, pyproject_final_file_name = 'pyproject.toml')
     else:
         print(f'skipping build pyproject.toml for {repo_path}')
         final_pyproject_toml_path = 'pyproject.toml'
 
-    did_project_file_change = did_file_hash_change(final_pyproject_toml_path)
+    ## check if the hash of the pyproject.toml changed. If it did, the new hash is already written.
+    did_project_file_change: bool = did_file_hash_change(final_pyproject_toml_path)
     if not skip_lock:
         if did_project_file_change:
             os.system("poetry lock")
+            # output_requirements_file_path = Path(repo_path).joinpath('requirements.txt').resolve()
+            export_poetry_repo(repo_path, output_file_path='requirements.txt')
+            # os.system("poetry export --without-hashes --format=requirements.txt > requirements.txt") # export the requirements for pip once lock is complete
+            
         else:
             print(f'\t skipping lock for {repo_path} because project file did not change.')
     else:
@@ -89,6 +98,7 @@ def _process_poetry_repo(repo_path, is_release=False, enable_build_pyproject_tom
 
     if enable_install:
         os.system("poetry install") # is this needed? I think it installs in that specific environment.
+
 
 
 def _process_binary_repo(repo_path, skip_building=False):
@@ -165,6 +175,10 @@ def setup_repo(repo_path, repo_url, is_binary_repo=False, is_release=False, enab
 
     print(f'----------------------------------------------------------------------------------- done.\n')
 
+
+# ==================================================================================================================== #
+# Main Function                                                                                                        #
+# ==================================================================================================================== #
 def main():
 
     if args.release:
@@ -192,8 +206,8 @@ def main():
     poetry_repo_tuples = list(zip(dependent_repos_paths, dependent_repos_urls, [False]*len(dependent_repos_paths), [False, True, True]))
 
 
-    external_dependent_repos = ["../pyqode.core", "../pyqode.python"]
-    external_dependent_binary_repo_urls = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git"]
+    external_dependent_repos = ["../pyqode.core", "../pyqode.python", "../silx"]
+    external_dependent_binary_repo_urls = ["https://github.com/CommanderPho/pyqode.core.git", "https://github.com/CommanderPho/pyqode.python.git", "https://github.com/CommanderPho/silx.git"]
     external_dependent_repo_paths = [root_dir.joinpath(a_rel_path).resolve() for a_rel_path in external_dependent_repos]
     binary_repo_tuples = list(zip(external_dependent_repo_paths, external_dependent_binary_repo_urls, [True]*len(external_dependent_repo_paths), [False]*len(external_dependent_repo_paths)))
 
@@ -207,8 +221,7 @@ def main():
     _process_poetry_repo(root_dir, is_release=is_release, enable_build_pyproject_toml=True, skip_lock=skip_lock_for_child_repos, enable_install=False)
     # os.system("poetry install --all-extras") # is this needed? I think it installs in that specific environment.
     print(f'done with all.')
-
-    install_ipython_kernel(kernel_name="spike3d-poetry") # run this to install the kernel for the poetry environment
+    PoetryHelpers.install_ipython_kernel(kernel_name="spike3d-poetry") # run this to install the kernel for the poetry environment
     os.system("poetry run ipython kernel install --user --name=spike3d-poetry") # run this to install the kernel for the poetry environment
 
 if __name__ == '__main__':

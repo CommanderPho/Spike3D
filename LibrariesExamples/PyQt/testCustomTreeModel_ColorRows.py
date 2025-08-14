@@ -6,8 +6,10 @@ from PyQt5.QtCore import Qt, QVariant
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QStyledItemDelegate, QColorDialog
 
-from PyQt5.QtGui import QBrush, QColor
+from PyQt5.QtGui import QBrush, QColor, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeView, QVBoxLayout, QWidget, QStyleFactory
+
+from pyphoplacecellanalysis.External import pyqtgraph
 
 class CustomDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
@@ -201,10 +203,13 @@ class TreeModel(QAbstractItemModel):
     def setup_model_data(self, data, parent=None):
         parent_item = self.root_item if parent is None else parent
 
-        for name, visibility, color in data:
+        # for name, visibility, color in data:
+        for name, row_dict in data.items():
+            visibility = row_dict['visibility']
+            color = row_dict['color']
             item_data = {'name': name, 'visibility': visibility, 'color': color}
             item = TreeItem(item_data, parent_item)
-            parent_item.add_child(item)
+            parent_item.appendChild(item)
 
 
 

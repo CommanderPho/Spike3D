@@ -1,0 +1,124 @@
+{
+	"folders": [
+		{
+			"name": "Spike3D",
+			"path": "../../"
+		},
+		{
+			"name": "pyphocorehelpers",
+			"path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
+		},
+		{
+			"name": "pyphoplacecellanalysis",
+			"path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+		},
+		{
+			"name": "neuropy",
+			"path": "../../../NeuroPy/neuropy"
+		}
+	],
+	"settings": {
+		"python.analysis.gotoDefinitionInStringLiteral": true,
+		"python.defaultInterpreterPath": "K:\\FastSwap\\AppData\\VSCode\\red\\.venv_red\\Scripts\\python.exe",
+		"files.exclude": {
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true,
+			"**/Spike3D/.venv/*": true, "**/.venv_black": true,"**/.venv_yellow": true,"**/.venv_teal": true,
+		},
+		"python.analysis.logLevel": "Error",
+		"workbench.colorCustomizations": {
+			"editor.lineHighlightBackground": "#cf10102d",
+			"editor.lineHighlightBorder": "#d19f9f1f",
+			"activityBar.background": "#4b2323",
+			"titleBar.activeBackground": "#c75353",
+			"titleBar.activeForeground": "#000000",
+			"scrollbarSlider.background": "#fffb0057",
+			"scrollbarSlider.hoverBackground": "#fffb0082",
+			"scrollbarSlider.activeBackground": "#ccff00df",
+			"activityBar.inactiveForeground": "#ffffff3c",
+			"activityBar.foreground": "#ffffff",
+			"notebook.outputContainerBackgroundColor": "#395a3e50",
+			"notebook.outputContainerBorderColor": "#10ff10",
+			"notebook.focusedCellBorder": "#ffff00da",
+			"notebook.focusedEditorBorder": "#f6ff00",
+			"notebook.inactiveFocusedCellBorder": "#ffff0063",
+			"titleBar.inactiveBackground": "#c753538e",
+			"statusBar.background": "#3c2e2e",
+			"statusBar.border": "#ff0000",
+			// "statusBarItem.activeBackground": "#ff0000",
+			"statusBar.debuggingBackground": "#d41e1e91",
+			// "statusBar.debuggingForeground": "#ff0000",
+			"statusBar.foreground": "#ffffff"
+		},
+		"notebook.find.scope": {
+			"markupSource": true,
+			"markupPreview": true,
+			"codeSource": true,
+			"codeOutput": false
+		},
+		"search.exclude": {
+			"**/.ipynb_checkpoints": true,
+			"**/EXTERNAL/TESTING/OLD": true
+		},
+		"qtForPython.uic.path": "C:\\Users\\pho\\miniconda3\\envs\\PyQt6\\Scripts\\pyuic5.exe",
+		"python.autoComplete.extraPaths": [],
+		"git.ignoreLimitWarning": true,
+		"qtForPython.uic.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
+			"--import-from",
+			"pyphoplacecellanalysis.Resources",
+			"--resource-suffix=\"\""
+		],
+		"qtForPython.rcc.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
+		],
+		"favorites.sortDirection": "DESC",
+		"favorites.storageFilePath": "../.favorites.json",
+		"python.analysis.extraPaths": [],
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Launch ViTables",
+				"type": "shell",
+				"command": "K:\\FastSwap\\AppData\\VSCode\\red\\.venv_red\\Scripts\\python.exe -m vitables",
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			},
+			{
+				"label": "Launch ViTables with selected file path (TODO)",
+				"type": "shell",
+				"command": "K:\\FastSwap\\AppData\\VSCode\\red\\.venv_red\\Scripts\\python.exe",
+				"args": [
+						"-m",
+						"vitables",
+						"$VITABLES_FILE_PATH"
+				],
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			}
+		]
+	}
+}

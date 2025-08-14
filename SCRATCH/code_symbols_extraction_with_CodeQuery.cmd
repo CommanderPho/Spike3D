@@ -16,6 +16,11 @@ ctags -R --languages=python C:\Users\pho\repos\Spike3DWorkEnv\NeuroPy\neuropy C:
 pycscope -R C:\Users\pho\repos\Spike3DWorkEnv\NeuroPy\neuropy C:\Users\pho\repos\Spike3DWorkEnv\pyPhoCoreHelpers\src\pyphocorehelpers C:\Users\pho\repos\Spike3DWorkEnv\pyPhoPlaceCellAnalysis\src\pyphoplacecellanalysis C:\Users\pho\repos\Spike3DWorkEnv\Spike3D -f SCRIPTS\pycscope.out
 
 
+## On Linux:
+find . -iname "*.py" > ./cscope.files
+
+## On Windows:
+dir /b/a/s *.py    > cscope.files
 
 
 Search 

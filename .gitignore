@@ -1,3 +1,4 @@
+SCRATCH/_temp_parsed_paths_df.csv
 .ipynb_checkpoints
 Environment/GreatLakes/viz3d
 data/RoyMaze1/positionAnalysis.mat
@@ -84,7 +85,6 @@ EXTERNAL/Design/Icons/SplitLayers/SVG/Spike3D LogoText_SPIKE.svg
 .vscode/bookmarks.json
 iframe_figures
 bayes_decoder_test_data.npz
-
 .autoversion
 marginal_posterior_x.npy
 node_modules/.yarn-integrity
@@ -118,8 +118,296 @@ alluvial_diagram.png
 alluvial_diagram_with_session.png
 .venv
 .venv_alt
+.venv_raw
+.venv_new
+.venv_yellow
 EXTERNAL/Screenshots/Unsorted/BapunOpenField_Pf2D Refined.pdf
 EXTERNAL/Screenshots/Unsorted/BapunOpenField_Pf2D_Exports/BapunOpenField_Pf2D_pf2D.png
-
 SCRATCH/EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeline.log
 *.xmp
+*.gif
+EXTERNAL/Design/Icons/RemoteIcons.qrc
+EXTERNAL/Design/Icons/3d-plane-normal-x.png
+EXTERNAL/Design/Icons/silx
+position_laps_plot.png
+workspaceState.state.json
+ReviewOfWork_2023-12-13.ipynb (active_epochs_df) .csv
+ReviewOfWork_2023-12-15.ipynb (ripple_combined_epoch_stats_df).csv
+ReviewOfWork_2023-12-15.ipynb (laps_combined_epoch_stats_df).csv
+ReviewOfWork_2023-12-15.ipynb (ripple_combined_epoch_stats_df)_11pm.csv
+ReviewOfWork_2023-12-19.ipynb (ripple_combined_epoch_stats_df).csv
+test_ripple.png
+.directory
+EXTERNAL/Screenshots/Other Features/SingleMergedPseudo2D.svg
+EXTERNAL/Screenshots/Other Features/MergedPseudo2D
+data/ReviewOfWork_2024-02-06.ipynb (decoder_aclu_peak_location_df_merged).csv
+typings
+test_(ripple_all_scores_merged_df).csv
+13-Sessions_laps_marginal.html
+SCRATCH/EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/2024-04-16/kdiba/15_display_long_short_laps.png
+.venv_teal
+LibrariesExamples/Silx/EXTERNAL/TESTING/Logging/debug_com.PhoHale.Spike3D.pipeline.log
+SCRATCH/posterior_mask.edf
+SCRATCH/EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/**/*.png
+SCRATCH/laps.png
+test.hdf
+.venv_white
+.venv_yellow
+.venv_black
+.venv_white
+.venv_gray
+.venv_green
+.venv_orange
+.vscode/bookmark_x.json
+.venv_teal
+cell_execution_log.json
+.venv_*
+_cell_execution_log_*.json
+.env
+output/Exports/2024-08-01_array_as_image/*
+**/output/_temp_individual_posteriors/**/*.png
+EXTERNAL/PhoDibaPaper2024Book/_build
+EXTERNAL/PhoDibaPaper2024Book/EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting/2024-09-04
+EXTERNAL/PhoDibaPaper2024Book/EXTERNAL
+EXTERNAL/PhoDibaPaper2024Book/FIGURES
+viridis_colorbar.png
+*.log
+**/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs
+**/data/commander.pho/PhoDibaLongShortUpdated/figs/*.png
+**/data/commander.pho/PhoDibaLongShortUpdated/figs/**/*.png
+.venv_black
+data/programmatic_display_function_image_paths.csv
+parameters.hdf5
+data/test_pipeline_params_*.h5
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-12_15-55-31/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_17-46-44/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-03_12-3-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+data/logs_workspace.code-workspace
+data/figs/gor01_one_2006-6-08_14-26-15/_display_grid_bin_bounds_validation.png
+data/figs/gor01_one_2006-6-08_14-26-15/bidir_track_remap-Track Remapping.png
+data/figs/gor01_one_2006-6-08_14-26-15/display_long_short_laps.png
+data/figs/gor01_one_2006-6-08_14-26-15/display_short_long_pf1D_comparison-long.png
+data/figs/gor01_one_2006-6-08_14-26-15/display_short_long_pf1D_comparison-short.png
+data/figs/gor01_one_2006-6-09_1-22-43/_display_grid_bin_bounds_validation.png
+data/figs/gor01_one_2006-6-09_1-22-43/bidir_track_remap-Track Remapping.png
+data/figs/gor01_one_2006-6-09_1-22-43/display_long_short_laps.png
+data/figs/gor01_one_2006-6-09_1-22-43/display_short_long_pf1D_comparison-long.png
+data/figs/gor01_one_2006-6-09_1-22-43/display_short_long_pf1D_comparison-short.png
+data/figs/gor01_one_2006-6-12_15-55-31/_display_grid_bin_bounds_validation.png
+data/figs/gor01_one_2006-6-12_15-55-31/bidir_track_remap-Track Remapping.png
+data/figs/gor01_one_2006-6-12_15-55-31/display_long_short_laps.png
+data/figs/gor01_one_2006-6-12_15-55-31/display_short_long_pf1D_comparison-long.png
+data/figs/gor01_one_2006-6-12_15-55-31/display_short_long_pf1D_comparison-short.png
+data/figs/gor01_two_2006-6-07_16-40-19/_display_grid_bin_bounds_validation.png
+data/figs/gor01_two_2006-6-07_16-40-19/bidir_track_remap-Track Remapping.png
+data/figs/gor01_two_2006-6-07_16-40-19/display_long_short_laps.png
+data/figs/gor01_two_2006-6-07_16-40-19/display_short_long_pf1D_comparison-long.png
+data/figs/gor01_two_2006-6-07_16-40-19/display_short_long_pf1D_comparison-short.png
+data/figs/gor01_two_2006-6-12_16-53-46/_display_grid_bin_bounds_validation.png
+data/figs/gor01_two_2006-6-12_16-53-46/bidir_track_remap-Track Remapping.png
+data/figs/gor01_two_2006-6-12_16-53-46/display_long_short_laps.png
+data/figs/gor01_two_2006-6-12_16-53-46/display_short_long_pf1D_comparison-long.png
+data/figs/gor01_two_2006-6-12_16-53-46/display_short_long_pf1D_comparison-short.png
+data/figs/pin01_one_11-03_12-3-25/_display_grid_bin_bounds_validation.png
+data/figs/pin01_one_11-03_12-3-25/bidir_track_remap-Track Remapping.png
+data/figs/pin01_one_11-03_12-3-25/display_long_short_laps.png
+data/figs/pin01_one_11-03_12-3-25/display_short_long_pf1D_comparison-long.png
+data/figs/pin01_one_11-03_12-3-25/display_short_long_pf1D_comparison-short.png
+data/figs/pin01_one_fet11-01_12-58-54/_display_grid_bin_bounds_validation.png
+data/figs/pin01_one_fet11-01_12-58-54/bidir_track_remap-Track Remapping.png
+data/figs/pin01_one_fet11-01_12-58-54/display_long_short_laps.png
+data/figs/pin01_one_fet11-01_12-58-54/display_short_long_pf1D_comparison-long.png
+data/figs/pin01_one_fet11-01_12-58-54/display_short_long_pf1D_comparison-short.png
+data/figs/vvp01_one_2006-4-09_17-29-30/_display_grid_bin_bounds_validation.png
+data/figs/vvp01_one_2006-4-09_17-29-30/bidir_track_remap-Track Remapping.png
+data/figs/vvp01_one_2006-4-09_17-29-30/display_long_short_laps.png
+data/figs/vvp01_one_2006-4-09_17-29-30/display_short_long_pf1D_comparison-long.png
+data/figs/vvp01_one_2006-4-09_17-29-30/display_short_long_pf1D_comparison-short.png
+data/figs/vvp01_one_2006-4-10_12-25-50/_display_grid_bin_bounds_validation.png
+data/figs/vvp01_one_2006-4-10_12-25-50/bidir_track_remap-Track Remapping.png
+data/figs/vvp01_one_2006-4-10_12-25-50/display_long_short_laps.png
+data/figs/vvp01_one_2006-4-10_12-25-50/display_short_long_pf1D_comparison-long.png
+data/figs/vvp01_one_2006-4-10_12-25-50/display_short_long_pf1D_comparison-short.png
+data/figs/vvp01_two_2006-4-09_16-40-54/_display_grid_bin_bounds_validation.png
+data/figs/vvp01_two_2006-4-09_16-40-54/bidir_track_remap-Track Remapping.png
+data/figs/vvp01_two_2006-4-09_16-40-54/display_long_short_laps.png
+data/figs/vvp01_two_2006-4-09_16-40-54/display_short_long_pf1D_comparison-long.png
+data/figs/vvp01_two_2006-4-09_16-40-54/display_short_long_pf1D_comparison-short.png
+data/figs/vvp01_two_2006-4-10_12-58-3/_display_grid_bin_bounds_validation.png
+data/figs/vvp01_two_2006-4-10_12-58-3/bidir_track_remap-Track Remapping.png
+data/figs/vvp01_two_2006-4-10_12-58-3/display_long_short_laps.png
+data/figs/vvp01_two_2006-4-10_12-58-3/display_short_long_pf1D_comparison-long.png
+data/figs/vvp01_two_2006-4-10_12-58-3/display_short_long_pf1D_comparison-short.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-12_15-55-31/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_17-46-44/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-03_12-3-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-12_15-55-31/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_17-46-44/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-03_12-3-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-12_15-55-31/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_17-46-44/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-03_12-3-25/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/display_long_short_laps.png
+**/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+data/figs/**/*.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-07_11-26-53/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-08_14-26-15/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-09_1-22-43/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_one_2006-6-12_15-55-31/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-07_16-40-19/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-08_21-16-25/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-09_22-24-40/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/gor01_two_2006-6-12_16-53-46/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_17-46-44/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-02_19-28-0/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_11-03_12-3-25/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/pin01_one_fet11-01_12-58-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-09_17-29-30/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_one_2006-4-10_12-25-50/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-09_16-40-54/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/display_long_short_laps.png
+EXTERNAL/PhoDibaPaper2024Book/C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/PhoDibaPaper2024Book/data/neptune/commander.pho/PhoDibaLongShortUpdated/figs/vvp01_two_2006-4-10_12-58-3/plot_all_epoch_bins_marginal_predictions-Laps all_epoch_binned Marginals.png
+data/neptune/figs/*
+243_22562_220-pycharm-support-libs
+poetry.lock.2025-01-22_backup
+EXTERNAL/DEVELOPER_NOTES/UnsortedErrorLogs/scratchpads
+EXTERNAL/VSCode_Extensions/2025-02-25_Lab_Black
+EXTERNAL/VSCode_Extensions/2025-02-25_Lab_Green_BROKEN.json
+.venv_2025
+data/figure2.png
+data/figure-image.png
+data/figure-image_test.png
+data/high_percentile_filtered_PBEs_P_Short_scatter.png
+data/P_Short_10_2_2_Across Sessions all_scores_ripple_df - all_sessions_all_scores_ripple_df - PBE Per Epoch - None - 'P_Short' (10 Sessions) - 2 Time Bin Sizes_PBE_per_epoch_scatter+hist_pre-post-delta_P_Short.png
+data/P_Short_10_2_2_Across Sessions all_scores_ripple_df - allScores - PBE Per Epoch - None - 'P_Short' (10 Sessions) - 2 Time Bin Sizes_PBE_per_epoch_scatter+hist_pre-post-delta_P_Short.png
+data/split_by_animal_figure.png
+data/2024-12-24 - P_Short_10_2_2_Across Sessions all_scores_ripple_df - allScores - PBE Per Epoch - None - 'P_Short' (10 Sessions) - 2 Time Bin Sizes_PBE_per_epoch_scatter+hist_pre-post-delta_P_Short.png
+*.0-standalone_all_shuffles_wcorr_array
+*.0-standalone_wcorr_ripple_shuffle_data_only_1026
+poetry_venv_2025-03-20.zip
+data/FAT_df_result_CSVs
+EXTERNAL/DEVELOPER_NOTES/Pasted image 20250408175159.png
+data/*_a_new_fully_generic_result.h5
+ReviewOfWork_2025-04-14_2025-04-14T17-38-12-676Z_tags_export.json
+data/my_figure.png
+data/2025-06-30_Apogee_withNormalComputedReplays-qclu_\[1, 2, 4, 6, 7, 8, 9]-frateThresh_5.0_0.hdf
+data/timeline_exported.pdf
+data/timeline_exported_pyqtgraph.pdf
+data/timeline_exported_stack.pdf
+data/trial_to_trial_reliability.png
+data/trial_to_trial_reliability.svg
+main_graphics_layout_widget.png

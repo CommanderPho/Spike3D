@@ -1,0 +1,706 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>DOCS<SpikeRaster2D></title>
+<style type="text/css">
+.ansi2html-content { display: inline; font-family: "Lucida Console", "Courier New", monospace; font-size: 11px; white-space: pre-wrap; word-wrap: break-word; }
+.body_foreground { color: #AAAAAA; }
+.body_background { background-color: #000000; }
+.inv_foreground { color: #000000; }
+.inv_background { background-color: #AAAAAA; }
+.ansi1 { font-weight: bold; }
+.ansi91 { color: #ff0000; }
+.ansi92 { color: #00ff00; }
+.ansi93 { color: #ffff00; }
+.ansi94 { color: #5c5cff; }
+</style>
+</head>
+<body class="body_foreground body_background" style="font-size: normal;" >
+<pre class="ansi2html-content">
+<span class="ansi1"></span><span class="ansi1 ansi91">SpikeRaster2D</span> - printed by DocumentationFilePrinter on 2024-07-01
+===================================================================================================
+- <span class="ansi94">SpikeRaster2D</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.</span><span class="ansi1 ansi92">Spike2DRaster</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.SpikeRasterWidgets.Spike2DRaster.Spike2DRaster object at 0x00000272E9AC38B0&gt;</span>
+	- <span class="ansi94">_logger</span>: <span class="ansi92"></span><span class="ansi1 ansi92">Logger</span><span class="ansi93"> (children omitted)</span> - OMITTED TYPE WITH NO SHAPE
+	- <span class="ansi94">params</span>: <span class="ansi92">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi92">VisualizationParameters</span>
+		- <span class="ansi94">name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = </span>
+		- <span class="ansi94">wantsRenderWindowControls</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+		- <span class="ansi94">wantsPlaybackControls</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+		- <span class="ansi94">side_bin_margins</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 0.0</span>
+		- <span class="ansi94">center_mode</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = starting_at_zero</span>
+		- <span class="ansi94">bin_position_mode</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = bin_center</span>
+		- <span class="ansi94">temporal_zoom_factor</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 1.0</span>
+		- <span class="ansi94">neuron_qcolors</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (103,)
+		- <span class="ansi94">neuron_qcolors_map</span>: <span class="ansi92"></span><span class="ansi1 ansi92">OrderedDict</span>
+			- <span class="ansi94">0</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A720B0&gt;</span>
+			- <span class="ansi94">1</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72120&gt;</span>
+			- <span class="ansi94">2</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72190&gt;</span>
+			- <span class="ansi94">3</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72200&gt;</span>
+			- <span class="ansi94">4</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72270&gt;</span>
+			- <span class="ansi94">5</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A722E0&gt;</span>
+			- <span class="ansi94">6</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72350&gt;</span>
+			- <span class="ansi94">7</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A723C0&gt;</span>
+			- <span class="ansi94">8</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72430&gt;</span>
+			- <span class="ansi94">9</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A724A0&gt;</span>
+			- <span class="ansi94">10</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72510&gt;</span>
+			- <span class="ansi94">11</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72580&gt;</span>
+			- <span class="ansi94">12</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A725F0&gt;</span>
+			- <span class="ansi94">13</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72660&gt;</span>
+			- <span class="ansi94">14</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A726D0&gt;</span>
+			- <span class="ansi94">15</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72740&gt;</span>
+			- <span class="ansi94">16</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A727B0&gt;</span>
+			- <span class="ansi94">17</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72820&gt;</span>
+			- <span class="ansi94">18</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72890&gt;</span>
+			- <span class="ansi94">19</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72900&gt;</span>
+			- <span class="ansi94">20</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72970&gt;</span>
+			- <span class="ansi94">21</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A729E0&gt;</span>
+			- <span class="ansi94">22</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72A50&gt;</span>
+			- <span class="ansi94">23</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72AC0&gt;</span>
+			- <span class="ansi94">24</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72B30&gt;</span>
+			- <span class="ansi94">25</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72BA0&gt;</span>
+			- <span class="ansi94">26</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72C10&gt;</span>
+			- <span class="ansi94">27</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72C80&gt;</span>
+			- <span class="ansi94">28</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72CF0&gt;</span>
+			- <span class="ansi94">29</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72D60&gt;</span>
+			- <span class="ansi94">30</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72DD0&gt;</span>
+			- <span class="ansi94">31</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72E40&gt;</span>
+			- <span class="ansi94">32</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72EB0&gt;</span>
+			- <span class="ansi94">33</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72F20&gt;</span>
+			- <span class="ansi94">34</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424A72F90&gt;</span>
+			- <span class="ansi94">35</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34040&gt;</span>
+			- <span class="ansi94">36</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E340B0&gt;</span>
+			- <span class="ansi94">37</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34120&gt;</span>
+			- <span class="ansi94">38</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34190&gt;</span>
+			- <span class="ansi94">39</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34200&gt;</span>
+			- <span class="ansi94">40</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34270&gt;</span>
+			- <span class="ansi94">41</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E342E0&gt;</span>
+			- <span class="ansi94">42</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34350&gt;</span>
+			- <span class="ansi94">43</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E343C0&gt;</span>
+			- <span class="ansi94">44</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34430&gt;</span>
+			- <span class="ansi94">45</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E344A0&gt;</span>
+			- <span class="ansi94">46</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34510&gt;</span>
+			- <span class="ansi94">47</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34580&gt;</span>
+			- <span class="ansi94">48</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E345F0&gt;</span>
+			- <span class="ansi94">49</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34660&gt;</span>
+			- <span class="ansi94">50</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E346D0&gt;</span>
+			- <span class="ansi94">51</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34740&gt;</span>
+			- <span class="ansi94">52</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E347B0&gt;</span>
+			- <span class="ansi94">53</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34820&gt;</span>
+			- <span class="ansi94">54</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34890&gt;</span>
+			- <span class="ansi94">55</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34900&gt;</span>
+			- <span class="ansi94">56</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34970&gt;</span>
+			- <span class="ansi94">57</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E349E0&gt;</span>
+			- <span class="ansi94">58</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34A50&gt;</span>
+			- <span class="ansi94">59</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34AC0&gt;</span>
+			- <span class="ansi94">60</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34B30&gt;</span>
+			- <span class="ansi94">61</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34BA0&gt;</span>
+			- <span class="ansi94">62</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34C10&gt;</span>
+			- <span class="ansi94">63</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34C80&gt;</span>
+			- <span class="ansi94">64</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34CF0&gt;</span>
+			- <span class="ansi94">65</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34D60&gt;</span>
+			- <span class="ansi94">66</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34DD0&gt;</span>
+			- <span class="ansi94">67</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34E40&gt;</span>
+			- <span class="ansi94">68</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34EB0&gt;</span>
+			- <span class="ansi94">69</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34F20&gt;</span>
+			- <span class="ansi94">70</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E34F90&gt;</span>
+			- <span class="ansi94">71</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25040&gt;</span>
+			- <span class="ansi94">72</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E250B0&gt;</span>
+			- <span class="ansi94">73</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25120&gt;</span>
+			- <span class="ansi94">74</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25190&gt;</span>
+			- <span class="ansi94">75</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25200&gt;</span>
+			- <span class="ansi94">76</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25270&gt;</span>
+			- <span class="ansi94">77</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E252E0&gt;</span>
+			- <span class="ansi94">78</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25350&gt;</span>
+			- <span class="ansi94">79</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E253C0&gt;</span>
+			- <span class="ansi94">80</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25430&gt;</span>
+			- <span class="ansi94">81</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E254A0&gt;</span>
+			- <span class="ansi94">82</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25510&gt;</span>
+			- <span class="ansi94">83</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25580&gt;</span>
+			- <span class="ansi94">84</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E255F0&gt;</span>
+			- <span class="ansi94">85</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25660&gt;</span>
+			- <span class="ansi94">86</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E256D0&gt;</span>
+			- <span class="ansi94">87</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25740&gt;</span>
+			- <span class="ansi94">88</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E257B0&gt;</span>
+			- <span class="ansi94">89</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25820&gt;</span>
+			- <span class="ansi94">90</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25890&gt;</span>
+			- <span class="ansi94">91</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25900&gt;</span>
+			- <span class="ansi94">92</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25970&gt;</span>
+			- <span class="ansi94">93</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E259E0&gt;</span>
+			- <span class="ansi94">94</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25A50&gt;</span>
+			- <span class="ansi94">95</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25AC0&gt;</span>
+			- <span class="ansi94">96</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25B30&gt;</span>
+			- <span class="ansi94">97</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25BA0&gt;</span>
+			- <span class="ansi94">98</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25C10&gt;</span>
+			- <span class="ansi94">99</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25C80&gt;</span>
+			- <span class="ansi94">100</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25CF0&gt;</span>
+			- <span class="ansi94">101</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25D60&gt;</span>
+			- <span class="ansi94">102</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QColor</span><span class="ansi93"> = &lt;PyQt5.QtGui.QColor object at 0x0000027424E25DD0&gt;</span>
+		- <span class="ansi94">neuron_colors</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (4, 103)
+		- <span class="ansi94">neuron_colors_hex</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (103,)
+		- <span class="ansi94">time_curves_datasource</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.Datasources.</span><span class="ansi1 ansi92">CurveDatasource</span>
+			- <span class="ansi94">custom_datasource_name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = default_plot_datasource</span>
+			- <span class="ansi94">_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (52056, 4)
+			- <span class="ansi94">_data_series_specs</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.</span><span class="ansi1 ansi92">RenderDataseries</span>
+				- <span class="ansi94">direct_spatial_data_series_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+				- <span class="ansi94">data_series_pre_spatial_list</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (3,)
+				- <span class="ansi94">data_series_pre_spatial_to_spatial_mappings</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (3,)
+		- <span class="ansi94">config_items</span>: <span class="ansi92"></span><span class="ansi1 ansi92">IndexedOrderedDict</span>
+			- <span class="ansi94">2</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">3</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">4</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">5</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">6</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">7</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">8</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">9</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">10</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">11</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">12</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">13</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">14</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">15</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">16</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">17</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">18</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">19</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">20</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">21</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">22</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">23</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">24</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">25</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">26</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">27</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">28</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">29</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">30</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">31</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">32</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">33</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">34</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">35</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">36</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">37</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">38</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">39</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">40</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">41</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">42</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">43</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">44</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">45</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">46</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">47</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">48</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">49</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">50</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">51</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">52</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">53</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">54</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">55</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">56</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">57</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">58</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">59</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">60</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">61</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">62</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">63</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">64</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">65</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">66</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">67</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">68</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">69</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">70</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">71</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">72</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">73</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">74</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">75</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">76</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">77</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">78</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">79</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">80</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">81</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">82</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">83</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">84</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">85</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">86</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">87</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">88</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">89</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">90</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">91</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">92</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">93</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">94</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">95</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">96</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">97</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">98</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">99</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">100</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">101</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">102</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">103</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+			- <span class="ansi94">104</span>: <span class="ansi92"></span><span class="ansi1 ansi92">tuple</span> - (5,)
+		- <span class="ansi94">main_graphics_active_window_container_layout_rowspan</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span><span class="ansi93"> = 1</span>
+		- <span class="ansi94">main_graphics_plot_widget_rowspan</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int</span><span class="ansi93"> = 3</span>
+		- <span class="ansi94">time_curves_no_update</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+		- <span class="ansi94">time_curves_z_normalization_mode</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = None</span>
+		- <span class="ansi94">time_curves_enable_baseline_grid</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+		- <span class="ansi94">time_curves_baseline_grid_color</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = White</span>
+		- <span class="ansi94">time_curves_baseline_grid_alpha</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 0.5</span>
+		- <span class="ansi94">time_curves_z_baseline</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 5.0</span>
+		- <span class="ansi94">time_curves_z_scaling_max</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 10.0</span>
+		- <span class="ansi94">time_curves_main_alpha</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 0.5</span>
+	- <span class="ansi94">_spikes_window</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.</span><span class="ansi1 ansi92">SpikesDataframeWindow</span>
+		- <span class="ansi94">dataSource</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.Datasources.</span><span class="ansi1 ansi92">SpikesDataframeDatasource</span>
+			- <span class="ansi94">custom_datasource_name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = default_spikes_datasource</span>
+			- <span class="ansi94">_df</span>: <span class="ansi92">pandas.core.</span><span class="ansi1 ansi92">DataFrame</span><span class="ansi93"> (children omitted)</span> - (868636, 28)
+		- <span class="ansi94">timeWindow</span>: <span class="ansi92">pyphoplacecellanalysis.General.Model.</span><span class="ansi1 ansi92">TimeWindow</span><span class="ansi93"> = &lt;TimeWindow: {'_window_duration': 2.2115133629971524, '_active_window_start_time': 439.3154051504098, 'animationThread': None};&gt;</span>
+			- <span class="ansi94">_window_duration</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 2.2115133629971524</span>
+			- <span class="ansi94">_active_window_start_time</span>: <span class="ansi92"></span><span class="ansi1 ansi92">float</span><span class="ansi93"> = 439.3154051504098</span>
+			- <span class="ansi94">animationThread</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+		- <span class="ansi94">_time_window_duration_connection</span>: <span class="ansi92">PyQt5.QtCore.</span><span class="ansi1 ansi92">Connection</span><span class="ansi93"> = &lt;PyQt5.QtCore.QMetaObject.Connection object at 0x00000273655C4EB0&gt;</span>
+		- <span class="ansi94">_time_window_changed_connection</span>: <span class="ansi92">PyQt5.QtCore.</span><span class="ansi1 ansi92">Connection</span><span class="ansi93"> = &lt;PyQt5.QtCore.QMetaObject.Connection object at 0x00000273655C4AC0&gt;</span>
+	- <span class="ansi94">applicationName</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = Spike Raster Window - kdiba|gor01|one|2006-6-09_1-22-43|maze_any|any|display_spike_rasters_window</span>
+	- <span class="ansi94">enable_debug_print</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+	- <span class="ansi94">enable_debug_widgets</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+	- <span class="ansi94">enable_overwrite_invalid_fragile_linear_neuron_IDXs</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+	- <span class="ansi94">enable_show_on_init</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+	- <span class="ansi94">cell_id_to_fragile_linear_neuron_IDX_map</span>: <span class="ansi92"></span><span class="ansi1 ansi92">OrderedDict</span>
+		- <span class="ansi94">2</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 0</span>
+		- <span class="ansi94">3</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 1</span>
+		- <span class="ansi94">4</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 2</span>
+		- <span class="ansi94">5</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 3</span>
+		- <span class="ansi94">6</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 4</span>
+		- <span class="ansi94">7</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 5</span>
+		- <span class="ansi94">8</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 6</span>
+		- <span class="ansi94">9</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 7</span>
+		- <span class="ansi94">10</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 8</span>
+		- <span class="ansi94">11</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 9</span>
+		- <span class="ansi94">12</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 10</span>
+		- <span class="ansi94">13</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 11</span>
+		- <span class="ansi94">14</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 12</span>
+		- <span class="ansi94">15</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 13</span>
+		- <span class="ansi94">16</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 14</span>
+		- <span class="ansi94">17</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 15</span>
+		- <span class="ansi94">18</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 16</span>
+		- <span class="ansi94">19</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 17</span>
+		- <span class="ansi94">20</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 18</span>
+		- <span class="ansi94">21</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 19</span>
+		- <span class="ansi94">22</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 20</span>
+		- <span class="ansi94">23</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 21</span>
+		- <span class="ansi94">24</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 22</span>
+		- <span class="ansi94">25</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 23</span>
+		- <span class="ansi94">26</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 24</span>
+		- <span class="ansi94">27</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 25</span>
+		- <span class="ansi94">28</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 26</span>
+		- <span class="ansi94">29</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 27</span>
+		- <span class="ansi94">30</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 28</span>
+		- <span class="ansi94">31</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 29</span>
+		- <span class="ansi94">32</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 30</span>
+		- <span class="ansi94">33</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 31</span>
+		- <span class="ansi94">34</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 32</span>
+		- <span class="ansi94">35</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 33</span>
+		- <span class="ansi94">36</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 34</span>
+		- <span class="ansi94">37</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 35</span>
+		- <span class="ansi94">38</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 36</span>
+		- <span class="ansi94">39</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 37</span>
+		- <span class="ansi94">40</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 38</span>
+		- <span class="ansi94">41</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 39</span>
+		- <span class="ansi94">42</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 40</span>
+		- <span class="ansi94">43</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 41</span>
+		- <span class="ansi94">44</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 42</span>
+		- <span class="ansi94">45</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 43</span>
+		- <span class="ansi94">46</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 44</span>
+		- <span class="ansi94">47</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 45</span>
+		- <span class="ansi94">48</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 46</span>
+		- <span class="ansi94">49</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 47</span>
+		- <span class="ansi94">50</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 48</span>
+		- <span class="ansi94">51</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 49</span>
+		- <span class="ansi94">52</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 50</span>
+		- <span class="ansi94">53</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 51</span>
+		- <span class="ansi94">54</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 52</span>
+		- <span class="ansi94">55</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 53</span>
+		- <span class="ansi94">56</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 54</span>
+		- <span class="ansi94">57</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 55</span>
+		- <span class="ansi94">58</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 56</span>
+		- <span class="ansi94">59</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 57</span>
+		- <span class="ansi94">60</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 58</span>
+		- <span class="ansi94">61</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 59</span>
+		- <span class="ansi94">62</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 60</span>
+		- <span class="ansi94">63</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 61</span>
+		- <span class="ansi94">64</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 62</span>
+		- <span class="ansi94">65</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 63</span>
+		- <span class="ansi94">66</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 64</span>
+		- <span class="ansi94">67</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 65</span>
+		- <span class="ansi94">68</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 66</span>
+		- <span class="ansi94">69</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 67</span>
+		- <span class="ansi94">70</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 68</span>
+		- <span class="ansi94">71</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 69</span>
+		- <span class="ansi94">72</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 70</span>
+		- <span class="ansi94">73</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 71</span>
+		- <span class="ansi94">74</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 72</span>
+		- <span class="ansi94">75</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 73</span>
+		- <span class="ansi94">76</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 74</span>
+		- <span class="ansi94">77</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 75</span>
+		- <span class="ansi94">78</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 76</span>
+		- <span class="ansi94">79</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 77</span>
+		- <span class="ansi94">80</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 78</span>
+		- <span class="ansi94">81</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 79</span>
+		- <span class="ansi94">82</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 80</span>
+		- <span class="ansi94">83</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 81</span>
+		- <span class="ansi94">84</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 82</span>
+		- <span class="ansi94">85</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 83</span>
+		- <span class="ansi94">86</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 84</span>
+		- <span class="ansi94">87</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 85</span>
+		- <span class="ansi94">88</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 86</span>
+		- <span class="ansi94">89</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 87</span>
+		- <span class="ansi94">90</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 88</span>
+		- <span class="ansi94">91</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 89</span>
+		- <span class="ansi94">92</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 90</span>
+		- <span class="ansi94">93</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 91</span>
+		- <span class="ansi94">94</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 92</span>
+		- <span class="ansi94">95</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 93</span>
+		- <span class="ansi94">96</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 94</span>
+		- <span class="ansi94">97</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 95</span>
+		- <span class="ansi94">98</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 96</span>
+		- <span class="ansi94">99</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 97</span>
+		- <span class="ansi94">100</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 98</span>
+		- <span class="ansi94">101</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 99</span>
+		- <span class="ansi94">102</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 100</span>
+		- <span class="ansi94">103</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 101</span>
+		- <span class="ansi94">104</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 102</span>
+	- <span class="ansi94">fragile_linear_neuron_IDX_to_cell_id_map</span>: <span class="ansi92"></span><span class="ansi1 ansi92">OrderedDict</span>
+		- <span class="ansi94">0</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 2</span>
+		- <span class="ansi94">1</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 3</span>
+		- <span class="ansi94">2</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 4</span>
+		- <span class="ansi94">3</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 5</span>
+		- <span class="ansi94">4</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 6</span>
+		- <span class="ansi94">5</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 7</span>
+		- <span class="ansi94">6</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 8</span>
+		- <span class="ansi94">7</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 9</span>
+		- <span class="ansi94">8</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 10</span>
+		- <span class="ansi94">9</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 11</span>
+		- <span class="ansi94">10</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 12</span>
+		- <span class="ansi94">11</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 13</span>
+		- <span class="ansi94">12</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 14</span>
+		- <span class="ansi94">13</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 15</span>
+		- <span class="ansi94">14</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 16</span>
+		- <span class="ansi94">15</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 17</span>
+		- <span class="ansi94">16</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 18</span>
+		- <span class="ansi94">17</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 19</span>
+		- <span class="ansi94">18</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 20</span>
+		- <span class="ansi94">19</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 21</span>
+		- <span class="ansi94">20</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 22</span>
+		- <span class="ansi94">21</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 23</span>
+		- <span class="ansi94">22</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 24</span>
+		- <span class="ansi94">23</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 25</span>
+		- <span class="ansi94">24</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 26</span>
+		- <span class="ansi94">25</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 27</span>
+		- <span class="ansi94">26</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 28</span>
+		- <span class="ansi94">27</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 29</span>
+		- <span class="ansi94">28</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 30</span>
+		- <span class="ansi94">29</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 31</span>
+		- <span class="ansi94">30</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 32</span>
+		- <span class="ansi94">31</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 33</span>
+		- <span class="ansi94">32</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 34</span>
+		- <span class="ansi94">33</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 35</span>
+		- <span class="ansi94">34</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 36</span>
+		- <span class="ansi94">35</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 37</span>
+		- <span class="ansi94">36</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 38</span>
+		- <span class="ansi94">37</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 39</span>
+		- <span class="ansi94">38</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 40</span>
+		- <span class="ansi94">39</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 41</span>
+		- <span class="ansi94">40</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 42</span>
+		- <span class="ansi94">41</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 43</span>
+		- <span class="ansi94">42</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 44</span>
+		- <span class="ansi94">43</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 45</span>
+		- <span class="ansi94">44</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 46</span>
+		- <span class="ansi94">45</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 47</span>
+		- <span class="ansi94">46</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 48</span>
+		- <span class="ansi94">47</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 49</span>
+		- <span class="ansi94">48</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 50</span>
+		- <span class="ansi94">49</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 51</span>
+		- <span class="ansi94">50</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 52</span>
+		- <span class="ansi94">51</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 53</span>
+		- <span class="ansi94">52</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 54</span>
+		- <span class="ansi94">53</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 55</span>
+		- <span class="ansi94">54</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 56</span>
+		- <span class="ansi94">55</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 57</span>
+		- <span class="ansi94">56</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 58</span>
+		- <span class="ansi94">57</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 59</span>
+		- <span class="ansi94">58</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 60</span>
+		- <span class="ansi94">59</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 61</span>
+		- <span class="ansi94">60</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 62</span>
+		- <span class="ansi94">61</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 63</span>
+		- <span class="ansi94">62</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 64</span>
+		- <span class="ansi94">63</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 65</span>
+		- <span class="ansi94">64</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 66</span>
+		- <span class="ansi94">65</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 67</span>
+		- <span class="ansi94">66</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 68</span>
+		- <span class="ansi94">67</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 69</span>
+		- <span class="ansi94">68</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 70</span>
+		- <span class="ansi94">69</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 71</span>
+		- <span class="ansi94">70</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 72</span>
+		- <span class="ansi94">71</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 73</span>
+		- <span class="ansi94">72</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 74</span>
+		- <span class="ansi94">73</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 75</span>
+		- <span class="ansi94">74</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 76</span>
+		- <span class="ansi94">75</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 77</span>
+		- <span class="ansi94">76</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 78</span>
+		- <span class="ansi94">77</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 79</span>
+		- <span class="ansi94">78</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 80</span>
+		- <span class="ansi94">79</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 81</span>
+		- <span class="ansi94">80</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 82</span>
+		- <span class="ansi94">81</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 83</span>
+		- <span class="ansi94">82</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 84</span>
+		- <span class="ansi94">83</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 85</span>
+		- <span class="ansi94">84</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 86</span>
+		- <span class="ansi94">85</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 87</span>
+		- <span class="ansi94">86</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 88</span>
+		- <span class="ansi94">87</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 89</span>
+		- <span class="ansi94">88</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 90</span>
+		- <span class="ansi94">89</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 91</span>
+		- <span class="ansi94">90</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 92</span>
+		- <span class="ansi94">91</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 93</span>
+		- <span class="ansi94">92</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 94</span>
+		- <span class="ansi94">93</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 95</span>
+		- <span class="ansi94">94</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 96</span>
+		- <span class="ansi94">95</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 97</span>
+		- <span class="ansi94">96</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 98</span>
+		- <span class="ansi94">97</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 99</span>
+		- <span class="ansi94">98</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 100</span>
+		- <span class="ansi94">99</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 101</span>
+		- <span class="ansi94">100</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 102</span>
+		- <span class="ansi94">101</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 103</span>
+		- <span class="ansi94">102</span>: <span class="ansi92"></span><span class="ansi1 ansi92">int32</span><span class="ansi93"> = 104</span>
+	- <span class="ansi94">_unit_sort_order</span>: <span class="ansi92"></span><span class="ansi1 ansi92">ndarray</span> - (103,)
+	- <span class="ansi94">plots</span>: <span class="ansi92">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi92">RenderPlots</span>
+		- <span class="ansi94">name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = Spike Raster Window - kdiba|gor01|one|2006-6-09_1-22-43|maze_any|any|display_spike_rasters_window</span>
+		- <span class="ansi94">context</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+		- <span class="ansi94">rendered_epochs</span>: <span class="ansi92">pyphocorehelpers.DataStructure.</span><span class="ansi1 ansi92">RenderPlots</span>
+			- <span class="ansi94">name</span>: <span class="ansi92"></span><span class="ansi1 ansi92">str</span><span class="ansi93"> = EpochRenderingMixin</span>
+			- <span class="ansi94">context</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+			- <span class="ansi94">SessionEpochs</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x00000274419E5430&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (2, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027334E51900&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x00000274419E5040&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (2, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027334E51660&gt;</span>
+			- <span class="ansi94">Laps</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x00000274419B6700&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (84, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x00000273325B09E0&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x00000274419B61F0&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (84, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027332587B30&gt;</span>
+			- <span class="ansi94">PBEs</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002741EB22820&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (423, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x000002732338B890&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002741EB22F70&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (423, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027AD2C68120&gt;</span>
+			- <span class="ansi94">Ripples</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002741EB22E50&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (8559, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x000002731AE8BCF0&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002741EB22160&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (8559, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x00000273220B3510&gt;</span>
+			- <span class="ansi94">Replays</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x00000274419B6A60&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (412, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027446EE7740&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x00000274419B65E0&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (412, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x000002731AE945F0&gt;</span>
+			- <span class="ansi94">initial_loaded</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x00000272520F1430&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (770, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x00000273132AEDD0&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002741EB2DAF0&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (770, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x000002731AF6EAC0&gt;</span>
+			- <span class="ansi94">normal_computed</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002729F0D0F70&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (412, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027321DE5970&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x0000027334E34790&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (412, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x000002731AF84820&gt;</span>
+			- <span class="ansi94">diba_quiescent_method_replay_epochs</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002741EB2D1F0&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (360, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027321DB0900&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x000002741EB2D9D0&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (360, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027321DCF970&gt;</span>
+			- <span class="ansi94">diba_evt_file</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.Mixins.RenderTimeEpochs.</span><span class="ansi1 ansi92">RenderedEpochsItemsContainer</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x000002721542A310&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x0000027334E34550&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x00000271FE11E900; to 'ViewBox' at 0x000002721542A4C0&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (156, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x0000027321DDE4A0&gt;</span>
+				- <span class="ansi94">&lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>: <span class="ansi92">pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.</span><span class="ansi1 ansi92">IntervalRectsItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.GUI.PyQtPlot.Widgets.GraphicsObjects.IntervalRectsItem.IntervalRectsItem object at 0x0000027334E34040&gt;</span>
+					- <span class="ansi94">menu</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_GraphicsObject__inform_view_on_changes</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = True</span>
+					- <span class="ansi94">_pixelVectorCache</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span><span class="ansi93"> = [None, None]</span> - (2,)
+					- <span class="ansi94">_viewWidget</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">_viewBox</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_connectedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">weakref</span><span class="ansi93"> = &lt;weakref at 0x000002731B219810; to 'ViewBox' at 0x00000273D3D3BC10&gt;</span>
+					- <span class="ansi94">_exportOpts</span>: <span class="ansi92"></span><span class="ansi1 ansi92">bool</span><span class="ansi93"> = False</span>
+					- <span class="ansi94">_cachedView</span>: <span class="ansi92"></span><span class="ansi1 ansi92">NoneType</span><span class="ansi93"> = None</span>
+					- <span class="ansi94">data</span>: <span class="ansi92"></span><span class="ansi1 ansi92">list</span> - (156, 6)
+					- <span class="ansi94">picture</span>: <span class="ansi92">PyQt5.</span><span class="ansi1 ansi92">QPicture</span><span class="ansi93"> = &lt;PyQt5.QtGui.QPicture object at 0x000002731AEE8F20&gt;</span>
+		- <span class="ansi94">main_plot_widget</span>: <span class="ansi92">pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.</span><span class="ansi1 ansi92">PlotItem</span><span class="ansi93"> = &lt;pyphoplacecellanalysis.External.pyqtgraph.graphicsItems.PlotItem.PlotItem.PlotItem object at 0x00000273D3D3BE50&gt;</span>
+Unhandled exception for outer block: 'list' object is not callable
+Unhandled exception for outer block: 'list' object is not callable
+Unhandled exception for outer block: 'list' object is not callable
+
+</pre>
+</body>
+
+</html>

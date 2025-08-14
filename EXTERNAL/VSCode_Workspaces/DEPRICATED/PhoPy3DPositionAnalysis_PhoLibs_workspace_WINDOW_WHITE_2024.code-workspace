@@ -1,0 +1,358 @@
+{
+	"folders": [
+        {
+            "name": "Spike3D",
+            "path": "../.."
+        },
+        {
+            "name": "pyphocorehelpers",
+            "path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
+        },
+        {
+            "name": "pyphoplacecellanalysis",
+            "path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+        },
+        {
+            "name": "neuropy",
+            "path": "../../../NeuroPy/neuropy"
+        },
+        {
+            "path": "../../../pho_jupyter_preview_widget"
+        }
+    ],
+	"settings": {
+            "actionButtons": {
+            "commands": [
+                {
+                    "name": "Back",
+                    "color": "white",
+                    "useVsCodeApi": true,
+                    "command": "workbench.action.navigateBack"
+                },
+                {
+                    "name": "Forward",
+                    "color": "white",
+                    "useVsCodeApi": true,
+                    "command": "workbench.action.navigateForward"
+                },
+                {
+                    "name": "Toggle Cell Output Scrolling",
+                    "color": "orange",
+                    "useVsCodeApi": true,
+                    "command": "notebook.cell.toggleOutputScrolling"
+                },
+                {
+                    "name": "Restart Python Language Server",
+                    "color": "#00FF00",
+                    "useVsCodeApi": true,
+                    "command": "python.analysis.restartLanguageServer"
+                },
+                // {
+                //     "name": "Toggle line numbers",
+                //     "color": "#00FF00",
+                //     "useVsCodeApi": true,
+                //     "command": "python.analysis.restartLanguageServer"
+                // },
+                {
+                    "name": "VSCode Dev Consoler",
+                    "color": "#99CCFF",
+                    "useVsCodeApi": true,
+                    "command": "workbench.action.toggleDevTools"
+                },
+                {
+					"name": "ViTables Launch",
+					"tooltip": "Launch ViTables pytables GUI (HDF5, etc)",
+					"color": "#ffed78",
+					"useVsCodeApi": false,
+					"command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables"
+				},
+				{
+					"name": "JupyterBook Build",
+					"tooltip": "Build the JupyterBook project",
+					"color": "#ed9600",
+					"useVsCodeApi": false,
+					"command": "jupyter-book build EXTERNAL/PhoDibaPaper2024Book; C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe c:/Users/pho/repos/Spike3DWorkEnv/Spike3D/scripts/open_generated_jupyter_book_docs.py"
+				},
+            ],
+            "defaultColor": "grey",
+            "reloadButton": "↻",
+            "loadNpmCommands": true
+        },
+        "custom-text-transform.transforms": [
+        
+            {
+                "name": "Variable list into Python dictionary",
+                "function": "const variableList = input.split(',').map(varName => varName.trim()); return '{' + variableList.map(varName => `'${varName}':${varName}`).join(', ') + '}';"
+            },
+            {
+                "name": "Variable list into kwargs",
+                "function": "const variableList = input.split(',').map(varName => varName.trim()); return variableList.map(varName => `${varName}=${varName}`).join(', ');"
+            },
+            {
+                "name": "Function definition into classdef method definition",
+                "function": "const lines = input.trim().split('\\n'); const funcName = lines[0].trim().split(' ')[1].split('(')[0]; const args = lines[0].trim().split('(')[1].split(')')[0].split(',').map(arg => arg.trim()); const body = lines.slice(1, -1).join('\\n'); return `def ${funcName}(self, ${args.join(', ')}):${body ? '\\n' + body : ''}`;"
+            },
+            {
+                "name": "Python function definition to kwargs call",
+                "function": "return input.replace(/def\\s+(\\w+)\\(([^)]*)\\):[\\s\\S]*/, (_, fnName, params) => fnName + '(' + params.replace(/\\w+\\s*(?:\\:[^=,]+)?\\s*(=\\s*[^,]+)?/g, (p) => p.trim().split('=')[0].trim() + '=' + p.trim().split('=')[0].trim()).split(',').join(', ') + ')');"
+            },
+        ],
+		"python.analysis.gotoDefinitionInStringLiteral": true,
+		"jupyter.askForKernelRestart": true,
+		"jupyter.debugJustMyCode": true,
+		"files.exclude": {
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.ipynb_checkpoints": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/.vscode": true,
+			"**/*.7z": true,
+			"**/Spike3D/.venv/*": true,
+            "**/.venv_*": true,
+			"**/.git": true,
+			"**/.DS_Store": true
+		},
+		"python.analysis.logLevel": "Error",
+		"editor.bracketPairColorization.enabled": true,
+		"workbench.colorCustomizations": {
+
+            "activityBar.background": "#ebebeb",
+            // "activityBarTop.activeBackground": "#ff0000",
+            // "activityBarTop.activeBorder": "#ff0000",
+            // "activityBarBadge.foreground": "#ff0000",
+            // "activityBarBadge.background": "#ff0000",
+            // "activityBar.activeFocusBorder": "#ff0000",
+            // "activityBarTop.foreground": "#ff0000",
+
+            "titleBar.activeBackground": "#fffffff0",
+            "titleBar.activeForeground": "#141414",
+            "scrollbarSlider.background": "#4d4d4d57",
+            "scrollbarSlider.hoverBackground": "#d6d6d682",
+            "scrollbarSlider.activeBackground": "#dddddddf",
+            "activityBar.inactiveForeground": "#0c0c0c93",
+            "activityBar.foreground": "#0c0c0c",
+            "notebook.outputContainerBackgroundColor": "#395a3e50",
+            "notebook.outputContainerBorderColor": "#ffffff",
+            "notebook.focusedCellBorder": "#f3f3f3da",
+            "notebook.focusedEditorBorder": "#f5f5f5",
+            "notebook.inactiveFocusedCellBorder": "#ffff0063",
+            "titleBar.inactiveBackground": "#cecece8e",
+            "tab.activeBorder": "#ffffff",
+            "statusBar.background": "#ffffff",
+            "statusBar.foreground": "#3c2e2ee4",
+            "foreground": "#ffffff",
+            // "foreground": "#ff0000",
+
+
+            // "numberedBookmarks.lineBackground": "#007700",
+            "editor.lineHighlightBackground": "#4f4f4f18",
+            "editor.lineHighlightBorder": "#ffffff52",
+            "editor.selectionBackground": "#e788ff5e", //Currently SELECTED text
+            "editor.selectionHighlightBackground": "#ff00005b", //Same content as selection
+            "editor.findMatchBackground": "#bb00cca8", //Current SEARCH MATCH
+            "editor.findMatchHighlightBackground": "#ff003ca1", //Other SEARCH MATCHES          
+            // "editor.foreground": "#d4d4d4",
+            // "editor.inactiveSelectionBackground": "#3a3d41",
+            
+            // "editor.wordHighlightBorder": "#00ff0075",
+            // "editor.findMatchHighlightBorder": "#00ff0075"
+
+            // "editor.lineHighlightBackground": "#<color1>",
+            // "editor.selectionBackground": "#<color2>",
+            // "editor.selectionHighlightBackground": "#<color3>",
+            // "editor.wordHighlightBackground": "#<color4>",
+            // "editorCursor.foreground": "#<color5>",
+
+            // editor.lineHighlightBackground - when you click on a line this is the color the line background will be.
+            // "editor.selectionBackground" - The background of the word you have selected with your cursor.
+            // "editor.selectionHighlightBackground" - This is the background of selections elsewhere in the file which matches the word you have selected with your cursor. Think of a variable named foo and it's used all over a file. You then select one 'foo' with your cursor, and all the other 'foo' on the page will be of the color specified in this variable.
+            // "editor.wordHighlightBackground" - This is the color of selected text if the default highlight word on click does not take effect. I've only seen this value make a difference if you click on a word that does not auto-select.
+            // editorCursor.foreground - this is the color of your cursor.            
+
+            "statusBarItem.prominentForeground": "#ff0000",
+            "editorBracketHighlight.foreground1": "#ffffff",
+            "editorBracketHighlight.foreground2": "#dfb976",
+            "editorBracketHighlight.foreground3": "#c172d9",
+            "editorBracketHighlight.foreground4": "#4fb1bc",
+            "editorBracketHighlight.foreground5": "#97c26c",
+            "editorBracketHighlight.foreground6": "#abb2c0",
+            "editorBracketHighlight.unexpectedBracket.foreground": "#db6165",
+            // active indent guides:
+            "editorIndentGuide.activeBackground1": "#ffee0086",
+            "editorIndentGuide.activeBackground2": "#3cff0086",
+            "editorIndentGuide.activeBackground3": "#75fff486",
+            "editorIndentGuide.activeBackground4": "#c2c6ff86",
+            "editorIndentGuide.activeBackground5": "#7a33ff86",
+            "editorIndentGuide.activeBackground6": "#ffebfd86",
+
+            // non-active indent guide colors
+            "editorIndentGuide.background1": "#0066ff42",
+            "editorIndentGuide.background2": "#00e5ff42",
+            "editorIndentGuide.background3": "#00e5ff42",
+            "editorIndentGuide.background4": "#00e5ff42",
+            "editorIndentGuide.background5": "#00e5ff42",
+            "editorIndentGuide.background6": "#00e5ff42"
+            
+
+        },
+		"search.exclude": {
+			"./Spike3D/EXTERNAL/TESTING/OLD": true,
+			"**/.ipynb_checkpoints": true,
+			"**/*.md": true,
+			"**/EXTERNAL/DEVELOPER_NOTES": true,
+			"**/EXTERNAL/TESTING/OLD": true,
+			"**/output/*": true,
+            "**/.venv_*": true,
+		},
+		"files.watcherExclude": {
+			"../../EXTERNAL/**": true,
+			"../../EXTERNAL/VSCode_Workspaces": false,
+			"**/.git/objects/**": true,
+			"**/.ipynb_checkpoints": true,
+			"**/EXTERNAL": true,
+			"**/.git": true, "**.svn": true, "**/.hg": true, "**/CVS": true, "**/*.asv": true,
+			"**/node_modules": true,
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.spyproject": true,
+			"**/.virtual_documents": true,
+			"**/dist": true,
+			"**/build": true,
+			"**/.idea": true,
+			"**/LibrariesExamples": true,
+			"**/output": true,
+			"**/docs": true,
+			"**/data": true,
+			"**/templating": true,
+			"**/.venv": true,"**/.venv_alt": true,"**/.venv_new": true,"**/.venv_raw": true, "**/.venv_*": true,
+			"**/EXTERNAL/TESTING/OLD": true
+		},
+		"qtForPython.uic.path": "K:\\FastSwap\\AppData\\VSCode\\yellow\\.venv_yellow\\Scripts\\python.exe",
+		"python.autoComplete.extraPaths": [
+
+		],
+		"git.ignoreLimitWarning": true,
+		"qtForPython.uic.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
+			"--import-from",
+			"pyphoplacecellanalysis.Resources",
+			"--resource-suffix=\"\""
+		],
+		"qtForPython.rcc.options": [
+			"-o",
+			"${resourceDirname}${pathSeparator}${resourceBasenameNoExtension}.py"
+		],
+		"pyqt-integration.pyuic.cmd": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
+		"pyqt-integration.pyuic.compile.addOptions": "-o ${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py --import-from pyphoplacecellanalysis.Resources --resource-suffix=\"\"",
+		"favorites.sortDirection": "DESC",
+		"python.analysis.extraPaths": [],
+		"dashboard.windowColors.🌈 BaseColor": "'whitesmoke'",
+		"windowColors.🌈 BaseColor": "'whitesmoke'",
+		"favorites.storageFilePath": "../.favorites.json",
+		"qtForPython.uic.liveExecution.enabled": false,
+		"notebook.cellToolbarVisibility": "hover",
+		"notebook.diff.ignoreOutputs": true,
+		"bookmarks.label.suggestion": "dontUse",
+		"colorTabs.config": [
+			{
+				"regex": "pyphoplacecellanalysis/External/pyqtgraph/.*"
+			},
+			{
+				"regex": "Spike3D/LibrariesExamples\\.*"
+			},
+			{
+				"regex": ".*/../../../NeuroPy/neuropy/**/*.py"
+			},
+			{
+				"regex": ".*/EXTERNAL/.*"
+			},
+			{
+				"regex": ".*/templating/.*"
+			}
+		],
+		"python.analysis.enablePytestSupport": false,
+		"editor.fontSize": 11,
+		"colorTabs.statusBarBackground": false,
+		"colorTabs.tabBorder": true,
+		"debug.focusWindowOnBreak": false,
+        "remote.downloadExtensionsLocally": false,
+		"debug.console.acceptSuggestionOnEnter": "on",
+		"debug.console.fontSize": 12,
+		"debug.toolBarLocation": "floating",
+		"qtForPython.rcc.liveExecution.enabled": false,
+		"qtForPython.rcc.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyrcc5.exe",
+		"editor.lineNumbers": "on",
+		"editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+		"editor.codeLens": false,
+		"editor.autoClosingQuotes": "beforeWhitespace",
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": true,
+		"editor.autoIndent": "keep",
+		"workbench.tree.renderIndentGuides": "always",
+        "editor.indentSize": "tabSize",
+        "editor.foldingStrategy": "indentation",
+        "powershell.cwd": "Spike3D"
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Launch ViTables",
+				"type": "shell",
+				"command": "K:\\FastSwap\\AppData\\VSCode\\yellow\\.venv_yellow\\Scripts\\python.exe -m vitables",
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			},
+			{
+				"label": "Launch ViTables with selected file path (TODO)",
+				"type": "shell",
+				"command": "K:\\FastSwap\\AppData\\VSCode\\yellow\\.venv_yellow\\Scripts\\python.exe",
+				"args": [
+						"-m",
+						"vitables",
+						"$VITABLES_FILE_PATH"
+				],
+				"problemMatcher": [],
+				"presentation": {
+					"echo": false,
+					"focus": false,
+					"reveal": "silent",
+					"panel": "shared",
+					"showReuseMessage": false
+				}
+			}
+		]
+	},
+	"extensions": {
+		"recommendations": [
+            "ohyee.custom-button",
+            "rebornix.toggle",
+            "buenon.scratchpads",
+            "geddski.macros",
+            "ryuta46.multi-command",
+            "jkearins.action-buttons-ext",
+            "codeandstuff.vscode-navigate-edit-history",
+            "phohale.custom-text-transform",
+            "vscode-icons-team.vscode-icons",
+            "johnw42.pathslasher",
+            "pkief.material-icon-theme",
+            "grimmer.vscode-back-forward-button",
+            "analytic-signal.preview-html",
+            "iket0731.symbol-navigate-back",
+            "hipdotmedia.hipdot-vs-code-url-scheme-grabber",
+            "ms-toolsai.vscode-jupyter-cell-tags"
+        ]
+	}
+}
