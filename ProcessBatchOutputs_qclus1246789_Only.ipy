@@ -85,7 +85,7 @@ def execute_code_block(code_block: str) -> None:
 # enable_auto_code_block_execution: bool = True
 enable_auto_code_block_execution: bool = False
 
-BATCH_DAY_DATE: str = '2025-08-20'
+BATCH_DAY_DATE: str = '2025-08-21'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -184,9 +184,9 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
-active_phase = ProcessingScriptPhases.figure_run
+# active_phase = ProcessingScriptPhases.figure_run
 
 
 # END ________________________________________________________________________________________________________________ #
@@ -307,8 +307,10 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
     'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=True, debug_print=True),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
-    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_placefield_stable_formation_time_distribution',
-                                                                                                                        '_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay',
+    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
+                                                                                                                        # '_display_placefield_stable_formation_time_distribution',
+                                                                                                                        # '_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', 
+                                                                                                                        '_display_measured_vs_decoded_occupancy_distributions',
                                                                                                                         ]), # ['_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay']                                                    
 }
 
