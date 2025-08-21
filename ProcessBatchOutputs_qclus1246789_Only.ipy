@@ -85,7 +85,7 @@ def execute_code_block(code_block: str) -> None:
 # enable_auto_code_block_execution: bool = True
 enable_auto_code_block_execution: bool = False
 
-BATCH_DAY_DATE: str = '2025-08-19'
+BATCH_DAY_DATE: str = '2025-08-20'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -111,27 +111,27 @@ print(f'collected_outputs_path: {collected_outputs_path}')
 
 # %%
 # Get the generated code for user-contributed functions:
-# phase_any_run_custom_user_completion_functions_dict = None
-phase_any_run_custom_user_completion_functions_dict = {
-#     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
-# #     "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
-# # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
-# #     # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
+phase_any_run_custom_user_completion_functions_dict = None
+# phase_any_run_custom_user_completion_functions_dict = {
+# #     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
+# # #     "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
+# # # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
+# # #     # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
 # #     'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
-# #     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
-#     # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
-# #     'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
-# #     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
-    # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
-    # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
+#     # 'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
+# #     # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+# # #     'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+# # #     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
+#     # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
+#     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
 #     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
-    # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
-    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
-#     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
-# #     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
-    'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
-}
+#     # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+#     'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+# #     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
+# # #     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
+#     # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+#     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+# }
 
 # %%
 
@@ -185,8 +185,8 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 
 # active_phase = ProcessingScriptPhases.clean_run
 # active_phase = ProcessingScriptPhases.continued_run
-active_phase = ProcessingScriptPhases.final_run
-# active_phase = ProcessingScriptPhases.figure_run
+# active_phase = ProcessingScriptPhases.final_run
+active_phase = ProcessingScriptPhases.figure_run
 
 
 # END ________________________________________________________________________________________________________________ #
@@ -204,8 +204,8 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-active_phase_dict['should_freeze_pipeline_updates'] = False
-# active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
+# active_phase_dict['should_freeze_pipeline_updates'] = False
+active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
 # active_phase_dict['should_create_vscode_workspace'] = True
 
 # ## Default non-overriden for custom suffix:
@@ -308,7 +308,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=True, debug_print=True),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_placefield_stable_formation_time_distribution',
-                                                                                                                        # '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay',
+                                                                                                                        '_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay',
                                                                                                                         ]), # ['_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay']                                                    
 }
 
