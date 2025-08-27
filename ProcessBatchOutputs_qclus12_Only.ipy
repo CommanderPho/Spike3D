@@ -86,7 +86,7 @@ def execute_code_block(code_block: str) -> None:
 enable_auto_code_block_execution: bool = False
 
 
-BATCH_DAY_DATE: str = '2025-08-26'
+BATCH_DAY_DATE: str = '2025-08-27'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -147,8 +147,8 @@ included_session_contexts = [
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), # 2025-07-17 03:03 DONE with 'ProcessingScriptPhases.continued_run' #   2025-07-17 02:23 DEFER- still finishing 'ProcessingScriptPhases.continued_run'
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'), #
     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'),
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'), #
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), # 2025-08-22 - Decided that this session is bad. The context decoder returns short for nearly all non-lap period pre-delta, and additionally there aren't many replays. #
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), #
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'),
 ]
@@ -246,7 +246,7 @@ job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_2.0"
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-num_shuffles = 1024
+num_shuffles = 256
 drop_previous_result_and_compute_fresh = False
 # drop_previous_result_and_compute_fresh = True
 
