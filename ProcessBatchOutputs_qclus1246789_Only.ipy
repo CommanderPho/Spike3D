@@ -130,7 +130,7 @@ phase_any_run_custom_user_completion_functions_dict = {
 #     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
 # #     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-    # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
 }
 
 # %%
@@ -185,8 +185,8 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
-active_phase = ProcessingScriptPhases.final_run
+active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
@@ -253,10 +253,11 @@ drop_previous_result_and_compute_fresh = False
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
-laps_decoding_time_bin_size = 0.250
+# laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
-# laps_decoding_time_bin_size = 1.75
+# laps_decoding_time_bin_size = 1.5
+laps_decoding_time_bin_size = 1.75
 
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'

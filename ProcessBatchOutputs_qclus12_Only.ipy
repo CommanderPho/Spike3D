@@ -226,8 +226,8 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-active_phase_dict['should_freeze_pipeline_updates'] = False
-# active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
+# active_phase_dict['should_freeze_pipeline_updates'] = False
+active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
 # active_phase_dict['should_create_vscode_workspace'] = True
 
 # ## Default non-overriden for custom suffix:
@@ -254,8 +254,8 @@ drop_previous_result_and_compute_fresh = False
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
-laps_decoding_time_bin_size = 0.250
-# laps_decoding_time_bin_size = 0.500
+# laps_decoding_time_bin_size = 0.250
+laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
 # laps_decoding_time_bin_size = 1.75
 
