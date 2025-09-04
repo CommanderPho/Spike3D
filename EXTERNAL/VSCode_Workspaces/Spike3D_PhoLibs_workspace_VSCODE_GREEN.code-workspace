@@ -135,7 +135,8 @@
         "editor.autoClosingQuotes": "beforeWhitespace",
         "python.analysis.exclude": [
             "**/EXTERNAL",
-            "**/LibrariesExamples"
+            "**/LibrariesExamples", 
+            "**/.venv*",
         ],
         "python.venvPaths": [
             "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D"
