@@ -185,9 +185,9 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
-active_phase = ProcessingScriptPhases.figure_run
+# active_phase = ProcessingScriptPhases.figure_run
 
 
 # END ________________________________________________________________________________________________________________ #
@@ -323,9 +323,9 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
                                                                                                                         # '_display_directional_merged_pf_decoded_stacked_epoch_slices', 
                                                                                                                         # '_display_decoded_trackID_marginal_hairy_position', 
                                                                                                                         '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', 
-                                                                                                                        # '_display_measured_vs_decoded_occupancy_distributions',
+                                                                                                                        '_display_measured_vs_decoded_occupancy_distributions',
                                                                                                                         # '_display_trial_to_trial_reliability',
-                                                                                                                        # '_render_export_all_time_tracks',
+                                                                                                                        '_render_export_all_time_tracks',
                                                                                                                         ]), # ['_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay']                                                    
 }
 
