@@ -185,9 +185,9 @@ good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_fol
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
-# active_phase = ProcessingScriptPhases.figure_run
+active_phase = ProcessingScriptPhases.figure_run
 
 
 # END ________________________________________________________________________________________________________________ #
@@ -205,8 +205,8 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-# active_phase_dict['should_freeze_pipeline_updates'] = False
-active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
+active_phase_dict['should_freeze_pipeline_updates'] = False
+# active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
 # active_phase_dict['should_create_vscode_workspace'] = True
 
 # ## Default non-overriden for custom suffix:
@@ -245,8 +245,8 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-# num_shuffles: int = 1024
-num_shuffles: int = 128
+num_shuffles: int = 1024
+# num_shuffles: int = 128
 drop_previous_result_and_compute_fresh = False
 # drop_previous_result_and_compute_fresh: bool = True
 
