@@ -3,10 +3,10 @@ name = "spike3d"
 version = "0.4.0"
 description = "Primary 3D Analysis Package"
 authors = [{ name = "Pho Hale", email = "halechr@umich.edu" }]
-requires-python = ">=3.9.8,<3.10"
+requires-python = ">=3.9,<3.12"
 readme = "README.md"
 dependencies = [
-    "numba>=0.56.4,<0.57",
+    "numba>=0.60.0",
     "pyvista>=0.36.1,<0.37",
     "pyvistaqt>=0.9.0,<0.10",
     "loguru>=0.6.0,<0.7",
@@ -140,7 +140,6 @@ dependencies = [
     "pdf2image>=1.17.0,<2",
     "cython>=3.0.11,<4",
     "ipyflex>=0.3.1,<0.4",
-    "pyqtinspect",
     "neo==0.13.2",
     "silx>=2.2.0,<3",
     "ipyevents>=2.0.2,<3",
@@ -198,7 +197,7 @@ default-groups = "all"
 
 [tool.uv.sources]
 qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
-neuropy = { path = "../NeuroPy", editable = true }
+neuropy = { git = "https://github.com/CommanderPho/NeuroPy.git", rev = "feature/safe-advance" }
 pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable = true }
 pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable = true }
 mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
@@ -206,7 +205,10 @@ ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main
 vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
-pyqtinspect = { path = "../PyQtInspect-Open", editable = false }
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
