@@ -1,12 +1,12 @@
 [project]
 name = "spike3d"
-version = "0.4.0"
+version = "0.4.4"
 description = "Primary 3D Analysis Package"
 authors = [{ name = "Pho Hale", email = "halechr@umich.edu" }]
 requires-python = ">=3.9,<3.12"
 readme = "README.md"
 dependencies = [
-    "numba>=0.60.0",
+    "numba>=0.56.4,<0.57",
     "pyvista>=0.36.1,<0.37",
     "pyvistaqt>=0.9.0,<0.10",
     "loguru>=0.6.0,<0.7",
@@ -156,6 +156,9 @@ dependencies = [
     "pypdf>=5.7.0",
     "viztracer>=0.15.6",
     "umap-learn>=0.5.9.post2",
+    "neuropy",
+    "pyphocorehelpers",
+    "pyphoplacecellanalysis",
 ]
 
 [project.scripts]
@@ -186,10 +189,6 @@ dev = [
     "pyright>=1.1.396,<2",
 ]
 testing = ["ipywidgets>=8.0.5,<9"]
-remote = [
-    "pyphocorehelpers",
-    "pyphoplacecellanalysis",
-]
 
 [tool.uv]
 default-groups = "all"
