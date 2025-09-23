@@ -7293,7 +7293,7 @@ default = [
 
 [[package]]
 name = "neuropy"
-version = "0.2.2"
+version = "0.2.4"
 source = { editable = "../NeuroPy" }
 dependencies = [
     { name = "cupy-cuda12x" },
@@ -11909,7 +11909,7 @@ wheels = [
 
 [[package]]
 name = "pyphocorehelpers"
-version = "0.4.2"
+version = "0.4.4"
 source = { editable = "../pyPhoCoreHelpers" }
 dependencies = [
     { name = "ansi2html" },
@@ -11969,7 +11969,7 @@ viz = [
 
 [[package]]
 name = "pyphoplacecellanalysis"
-version = "0.3.0"
+version = "0.3.4"
 source = { editable = "../pyPhoPlaceCellAnalysis" }
 dependencies = [
     { name = "attrs" },
@@ -14220,7 +14220,7 @@ wheels = [
 
 [[package]]
 name = "spike3d"
-version = "0.4.0"
+version = "0.4.4"
 source = { virtual = "." }
 dependencies = [
     { name = "adjusttext" },
