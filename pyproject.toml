@@ -155,6 +155,7 @@ dependencies = [
     "importlib-resources>=6.5.2",
     "pypdf>=5.7.0",
     "viztracer>=0.15.6",
+    "umap-learn>=0.5.9.post2",
 ]
 
 [project.scripts]
@@ -186,10 +187,8 @@ dev = [
 ]
 testing = ["ipywidgets>=8.0.5,<9"]
 remote = [
+    "pyphocorehelpers",
     "pyphoplacecellanalysis",
-]
-experimental = [
-    "movement",
 ]
 
 [tool.uv]
@@ -197,7 +196,7 @@ default-groups = "all"
 
 [tool.uv.sources]
 qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
-neuropy = { path = "../NeuroPy", editable=true }
+neuropy = { path = "../NeuroPy", editable = true }
 pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable = true }
 pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable = true }
 mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
