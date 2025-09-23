@@ -155,7 +155,6 @@ dependencies = [
     "importlib-resources>=6.5.2",
     "pypdf>=5.7.0",
     "viztracer>=0.15.6",
-    "umap-learn>=0.5.9.post2",
 ]
 
 [project.scripts]
@@ -187,9 +186,10 @@ dev = [
 ]
 testing = ["ipywidgets>=8.0.5,<9"]
 remote = [
-    "neuropy",
-    "pyphocorehelpers",
     "pyphoplacecellanalysis",
+]
+experimental = [
+    "movement",
 ]
 
 [tool.uv]
@@ -197,7 +197,7 @@ default-groups = "all"
 
 [tool.uv.sources]
 qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
-neuropy = { git = "https://github.com/CommanderPho/NeuroPy.git", rev = "feature/safe-advance" }
+neuropy = { path = "../NeuroPy", editable=true }
 pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable = true }
 pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable = true }
 mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
@@ -209,6 +209,3 @@ flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
