@@ -7293,7 +7293,7 @@ default = [
 
 [[package]]
 name = "neuropy"
-version = "0.2.4"
+version = "0.2.5"
 source = { editable = "../NeuroPy" }
 dependencies = [
     { name = "cupy-cuda12x" },
@@ -11909,7 +11909,7 @@ wheels = [
 
 [[package]]
 name = "pyphocorehelpers"
-version = "0.4.4"
+version = "0.4.5"
 source = { editable = "../pyPhoCoreHelpers" }
 dependencies = [
     { name = "ansi2html" },
@@ -11969,7 +11969,7 @@ viz = [
 
 [[package]]
 name = "pyphoplacecellanalysis"
-version = "0.3.4"
+version = "0.3.5"
 source = { editable = "../pyPhoPlaceCellAnalysis" }
 dependencies = [
     { name = "attrs" },
@@ -14407,6 +14407,7 @@ dev = [
     { name = "pyright" },
     { name = "qt-style-sheet-inspector" },
     { name = "viztracer" },
+    { name = "vulture" },
 ]
 testing = [
     { name = "ipywidgets" },
@@ -14589,6 +14590,7 @@ dev = [
     { name = "pyright", specifier = ">=1.1.396,<2" },
     { name = "qt-style-sheet-inspector", git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git?rev=master" },
     { name = "viztracer", specifier = ">=0.15.6,<0.16" },
+    { name = "vulture", specifier = ">=2.14" },
 ]
 testing = [{ name = "ipywidgets", specifier = ">=8.0.5,<9" }]
 
@@ -15937,6 +15939,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/01/ce/9ed27847f12075940924a6908e3ee83870d1b7a8d6a7ea37501f0effbd5e/vtk-9.0.3-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:ed175f2f63e9790c76be0a1724e045ebe78d5fd81c2ed5e08bfe77fba87e002a", size = 44904855, upload-time = "2021-07-03T02:07:45.962Z" },
     { url = "https://files.pythonhosted.org/packages/be/7c/a0d5323018eb5f2a7f75fdb7908d96a48f1c3a956d1bc6b13da8efd000b8/vtk-9.0.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1eabc70d588636bfc3bc9d5ea37cb467a1d4cdc37d634bc7c7aa336b1e7651b4", size = 59507898, upload-time = "2021-07-03T02:08:09.797Z" },
     { url = "https://files.pythonhosted.org/packages/69/27/bce392e75c9b04cce9bf9d53f5562973236b424f2f44aed76ca52512c553/vtk-9.0.3-cp39-cp39-win_amd64.whl", hash = "sha256:e63e6fb62599cadbfc88e638e21ed679af78fb6a9467eb72f33ce274b0aa1de1", size = 33673929, upload-time = "2021-07-03T02:08:25.249Z" },
+]
+
+[[package]]
+name = "vulture"
+version = "2.14"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8e/25/925f35db758a0f9199113aaf61d703de891676b082bd7cf73ea01d6000f7/vulture-2.14.tar.gz", hash = "sha256:cb8277902a1138deeab796ec5bef7076a6e0248ca3607a3f3dee0b6d9e9b8415", size = 58823, upload-time = "2024-12-08T17:39:43.319Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/56/0cc15b8ff2613c1d5c3dc1f3f576ede1c43868c1bc2e5ccaa2d4bcd7974d/vulture-2.14-py2.py3-none-any.whl", hash = "sha256:d9a90dba89607489548a49d557f8bac8112bd25d3cbc8aeef23e860811bd5ed9", size = 28915, upload-time = "2024-12-08T17:39:40.573Z" },
 ]
 
 [[package]]
