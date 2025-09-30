@@ -66,4 +66,16 @@ uv add git+https://github.com/CommanderPho/pho_jupyter_preview_widget --tag v4.0
 
 uv add ../pho_jupyter_preview_widget/dist/pho_jupyter_preview_widget-0.4.0-py3-none-any.whl
 
+
+git clone -b feature/safe-advance https://github.com/CommanderPho/NeuroPy.git
+git clone -b develop https://github.com/CommanderPho/pyPhoCoreHelpers.git
+git clone -b develop https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git
+
+
+
+neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git", rev = "feature/safe-advance"}
+pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git"}
+pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", editable=true}
+
+
 ```
