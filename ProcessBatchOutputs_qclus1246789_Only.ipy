@@ -114,7 +114,7 @@ print(f'collected_outputs_path: {collected_outputs_path}')
 # phase_any_run_custom_user_completion_functions_dict = None
 phase_any_run_custom_user_completion_functions_dict = {
     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
-    # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+    'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
 # #     "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
 # # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
 # #     # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
@@ -123,14 +123,14 @@ phase_any_run_custom_user_completion_functions_dict = {
 # #     'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
 # #     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
     'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
-    # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
+    'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
     'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
-    # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+    'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
 }
 
 # %%
@@ -251,10 +251,10 @@ num_shuffles: int = 1024
 drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
-laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
-# laps_decoding_time_bin_size = 0.075
+laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -264,20 +264,20 @@ laps_decoding_time_bin_size = 0.025
 
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
-ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.060
-# ripple_decoding_time_bin_size = 0.075
+ripple_decoding_time_bin_size = 0.075
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 # job_suffix='tbin_25ms'
 
 
 # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
-job_suffix = f"{job_suffix}_tbin_25ms"
+# job_suffix = f"{job_suffix}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_50ms"
 # job_suffix = f"{job_suffix}_tbin_60ms"
-# job_suffix = f"{job_suffix}_tbin_75ms"
+job_suffix = f"{job_suffix}_tbin_75ms"
 
 # END ________________________________________________________________________________________________________________ #
 
