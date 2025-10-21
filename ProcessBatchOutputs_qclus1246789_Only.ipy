@@ -135,14 +135,14 @@ print(f'collected_outputs_path: {collected_outputs_path}')
 
 phase_any_run_custom_user_completion_functions_dict = {
     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
-    'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
-# #     "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
+    # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+    "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
 # # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
 # #     # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
     'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
 # #     'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
-# #     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
+    'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
     'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
     'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
@@ -150,7 +150,7 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
-    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+    'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
     'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
 }
 
