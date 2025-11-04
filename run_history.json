@@ -1,0 +1,210 @@
+[
+  {
+    "EndTime": "10/28/2025 8:19:57 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_one_2006-6-08_14-26-15\\run_kdiba_gor01_one_2006-6-08_14-26-15__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "Duration": "00:02:14.3927308",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_gor01_one_2006-6-08_14-26-15__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_gor01_one_2006-6-08_14-26-15",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_one_2006-6-08_14-26-15\\debug_2025-10-28_20-10-54.Apogee.kdiba.gor01.one.2006-6-08_14-26-15._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:19:54.602215",
+      "session_basedir": "L:/Data/KDIBA/gor01/one/2006-6-08_14-26-15"
+    },
+    "StartTime": "10/28/2025 8:17:43 PM"
+  },
+  {
+    "EndTime": "10/28/2025 8:22:10 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_one_2006-6-09_1-22-43\\run_kdiba_gor01_one_2006-6-09_1-22-43__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "StartTime": "10/28/2025 8:19:58 PM",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_gor01_one_2006-6-09_1-22-43__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_gor01_one_2006-6-09_1-22-43",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_one_2006-6-09_1-22-43\\debug_2025-10-28_20-10-11.Apogee.kdiba.gor01.one.2006-6-09_1-22-43._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:22:07.664410",
+      "session_basedir": "L:/Data/KDIBA/gor01/one/2006-6-09_1-22-43"
+    },
+    "Duration": "00:02:12.0849395"
+  },
+  {
+    "EndTime": "10/28/2025 8:23:11 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_one_2006-6-12_15-55-31\\run_kdiba_gor01_one_2006-6-12_15-55-31__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "StartTime": "10/28/2025 8:22:13 PM",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_gor01_one_2006-6-12_15-55-31__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_gor01_one_2006-6-12_15-55-31",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_one_2006-6-12_15-55-31\\debug_2025-10-28_20-10-26.Apogee.kdiba.gor01.one.2006-6-12_15-55-31._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:23:09.934436",
+      "session_basedir": "L:/Data/KDIBA/gor01/one/2006-6-12_15-55-31"
+    },
+    "Duration": "00:00:58.0577953"
+  },
+  {
+    "EndTime": "10/28/2025 8:25:13 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-07_16-40-19\\run_kdiba_gor01_two_2006-6-07_16-40-19__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "Duration": "00:01:59.4355737",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_gor01_two_2006-6-07_16-40-19__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_gor01_two_2006-6-07_16-40-19",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-07_16-40-19\\debug_2025-10-28_20-10-24.Apogee.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:25:10.026269",
+      "session_basedir": "L:/Data/KDIBA/gor01/two/2006-6-07_16-40-19"
+    },
+    "StartTime": "10/28/2025 8:23:13 PM"
+  },
+  {
+    "EndTime": "10/28/2025 8:26:39 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-08_21-16-25\\run_kdiba_gor01_two_2006-6-08_21-16-25__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "Duration": "00:01:25.5994044",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_gor01_two_2006-6-08_21-16-25__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_gor01_two_2006-6-08_21-16-25",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-08_21-16-25\\debug_2025-10-28_20-10-26.Apogee.kdiba.gor01.two.2006-6-08_21-16-25._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:26:37.290682",
+      "session_basedir": "L:/Data/KDIBA/gor01/two/2006-6-08_21-16-25"
+    },
+    "StartTime": "10/28/2025 8:25:13 PM"
+  },
+  {
+    "EndTime": "10/28/2025 8:29:09 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-09_22-24-40\\run_kdiba_gor01_two_2006-6-09_22-24-40__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "StartTime": "10/28/2025 8:26:41 PM",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_gor01_two_2006-6-09_22-24-40__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_gor01_two_2006-6-09_22-24-40",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-09_22-24-40\\debug_2025-10-28_20-10-51.Apogee.kdiba.gor01.two.2006-6-09_22-24-40._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:29:05.493959",
+      "session_basedir": "L:/Data/KDIBA/gor01/two/2006-6-09_22-24-40"
+    },
+    "Duration": "00:02:28.1129807"
+  },
+  {
+    "EndTime": "10/28/2025 8:30:01 PM",
+    "StartTime": "10/28/2025 8:29:11 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-12_16-53-46\\run_kdiba_gor01_two_2006-6-12_16-53-46__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_gor01_two_2006-6-12_16-53-46__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_gor01_two_2006-6-12_16-53-46",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_gor01_two_2006-6-12_16-53-46\\debug_2025-10-28_20-10-24.Apogee.kdiba.gor01.two.2006-6-12_16-53-46._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:29:59.643770",
+      "session_basedir": "L:/Data/KDIBA/gor01/two/2006-6-12_16-53-46"
+    },
+    "Duration": "00:00:50.1770265"
+  },
+  {
+    "EndTime": "10/28/2025 8:30:59 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_one_2006-4-10_12-25-50\\run_kdiba_vvp01_one_2006-4-10_12-25-50__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "Duration": "00:00:57.6331060",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_vvp01_one_2006-4-10_12-25-50__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_vvp01_one_2006-4-10_12-25-50",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_one_2006-4-10_12-25-50\\debug_2025-10-28_20-10-12.Apogee.kdiba.vvp01.one.2006-4-10_12-25-50._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:30:58.130233",
+      "session_basedir": "L:/Data/KDIBA/vvp01/one/2006-4-10_12-25-50"
+    },
+    "StartTime": "10/28/2025 8:30:02 PM"
+  },
+  {
+    "EndTime": "10/28/2025 8:32:06 PM",
+    "StartTime": "10/28/2025 8:31:02 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-09_16-40-54\\run_kdiba_vvp01_two_2006-4-09_16-40-54__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_vvp01_two_2006-4-09_16-40-54__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_vvp01_two_2006-4-09_16-40-54",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-09_16-40-54\\debug_2025-10-28_20-10-13.Apogee.kdiba.vvp01.two.2006-4-09_16-40-54._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:32:04.887483",
+      "session_basedir": "L:/Data/KDIBA/vvp01/two/2006-4-09_16-40-54"
+    },
+    "Duration": "00:01:04.4124542"
+  },
+  {
+    "EndTime": "10/28/2025 8:33:07 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-10_12-58-3\\run_kdiba_vvp01_two_2006-4-10_12-58-3__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "Duration": "00:00:59.2963875",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_vvp01_two_2006-4-10_12-58-3__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_vvp01_two_2006-4-10_12-58-3",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-10_12-58-3\\debug_2025-10-28_20-10-19.Apogee.kdiba.vvp01.two.2006-4-10_12-58-3._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:33:05.971793",
+      "session_basedir": "L:/Data/KDIBA/vvp01/two/2006-4-10_12-58-3"
+    },
+    "StartTime": "10/28/2025 8:32:08 PM"
+  },
+  {
+    "EndTime": "10/28/2025 8:33:33 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-10_12-58-3\\run_kdiba_vvp01_two_2006-4-10_12-58-3__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "Duration": "00:00:24.6757909",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_vvp01_two_2006-4-10_12-58-3__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_vvp01_two_2006-4-10_12-58-3",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-10_12-58-3\\debug_2025-10-28_20-10-19.Apogee.kdiba.vvp01.two.2006-4-10_12-58-3._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:33:31.514398",
+      "session_basedir": "L:/Data/KDIBA/vvp01/two/2006-4-10_12-58-3"
+    },
+    "StartTime": "10/28/2025 8:33:08 PM"
+  },
+  {
+    "EndTime": "10/28/2025 8:34:37 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_pin01_one_fet11-01_12-58-54\\run_kdiba_pin01_one_fet11-01_12-58-54__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "Duration": "00:01:01.4353414",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_pin01_one_fet11-01_12-58-54__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_pin01_one_fet11-01_12-58-54",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_pin01_one_fet11-01_12-58-54\\debug_2025-10-28_20-10-46.Apogee.kdiba.pin01.one.fet11-01_12-58-54._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:34:35.411735",
+      "session_basedir": "L:/Data/KDIBA/pin01/one/fet11-01_12-58-54"
+    },
+    "StartTime": "10/28/2025 8:33:35 PM"
+  },
+  {
+    "EndTime": "10/28/2025 8:36:08 PM",
+    "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_pin01_one_11-02_17-46-44\\run_kdiba_pin01_one_11-02_17-46-44__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.py",
+    "StartTime": "10/28/2025 8:34:38 PM",
+    "PythonStatus": {
+      "status": "SessionBatchProgress.COMPLETED",
+      "session_complete_identifier": "kdiba_pin01_one_11-02_17-46-44__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "session_context": "kdiba_pin01_one_11-02_17-46-44",
+      "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued",
+      "errors": null,
+      "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_pin01_one_11-02_17-46-44\\debug_2025-10-28_20-10-54.Apogee.kdiba.pin01.one.11-02_17-46-44._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Continued.log",
+      "completion_time": "2025-10-28 20:36:05.770546",
+      "session_basedir": "L:/Data/KDIBA/pin01/one/11-02_17-46-44"
+    },
+    "Duration": "00:01:29.6009770"
+  }
+]

@@ -89,7 +89,7 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import loadData, sav
 ## For computation parameters:
 from neuropy.analyses.placefields import PlacefieldComputationParameters
 from neuropy.utils.dynamic_container import DynamicContainer,
-from neuropy.utils.mixins.dict_representable import override_dict, overriding_dict_with, get_dict_subset
+from neuropy.utils.mixins.indexing_helpers import get_dict_subset, override_dict, overriding_dict_with, overriding_dict_with, get_dict_subset
 from neuropy.utils.position_util import compute_position_grid_size
 
 ## Test Matplotlib plotting:
