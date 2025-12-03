@@ -15,18 +15,6 @@
 		},
 		{
 			"path": "../../../SCRIPTS"
-		},
-		{
-			"path": "../../../../cloud/turbo/Data/Output/gen_scripts"
-		},
-		{
-			"path": "../../../pyqode.core"
-		},
-		{
-			"path": "../../../pyqode.python"
-		},
-		{
-			"path": "../../../pho_jupyter_preview_widget"
 		}
 	],
 	"settings": {
@@ -181,6 +169,7 @@
 			"reloadButton": "↻",
 			"loadNpmCommands": true
 		},
+		"cursorpyright.analysis.logLevel": "Error",
 	},
 	"extensions": {
 		"recommendations": [
@@ -189,7 +178,8 @@
 			"phohale.color-tabs-vscode-ext",
 			"noname.editor-tab-resizer",
 			"adamerose.better-outline",
-			"phohale.version-status-bar"
+			"phohale.version-status-bar",
+			"danielbayley.custom-app-icons"
 		]
 	},
 	"tasks": {

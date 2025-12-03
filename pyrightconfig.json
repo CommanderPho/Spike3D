@@ -29,7 +29,8 @@
     "**/data",
     "**/templating",
     "**/.venv","**/.venv_alt","**/.venv_new","**/.venv_raw", "**/.venv_black","**/.venv_yellow","**/.venv_teal","**/.venv_green","**/.venv_white","**/.venv_UV","**/.venv_*",
-  	"**/._cell_execution_logs", "**/scratchpads"
+  	"**/._cell_execution_logs", "**/scratchpads",
+    "**/site-packages/**",
   ],
 
   "ignore": [

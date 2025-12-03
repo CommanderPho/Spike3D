@@ -191,6 +191,7 @@
         "editor.codeActionWidget.includeNearbyQuickFixes": false,
         "editor.dragAndDrop": false,
         "actionButtons": {
+
             "commands": [
                 {
                     "name": "Back",
@@ -234,7 +235,7 @@
                     "tooltip": "Launch ViTables pytables GUI (HDF5, etc)",
                     "color": "#ffed78",
                     "useVsCodeApi": false,
-                    "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables"
+                    "command": "cd ${workspaceFolder} && uv run python -m vitables"
                 },
                 {
                     "name": "JupyterBook Build",
@@ -248,7 +249,7 @@
                     "tooltip": "Launch standalone spike_raster_window",
                     "color": "#aaed78",
                     "useVsCodeApi": false,
-                    "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
+                    "command": "cd ${workspaceFolder} && uv run python -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
                 },
                 {
                     "name": "\u00e2\u2021\u00a5 Convert to File Spaces",

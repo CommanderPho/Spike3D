@@ -159,7 +159,14 @@ dependencies = [
     "neuropy",
     "pyphocorehelpers",
     "pyphoplacecellanalysis",
-    #"pyqtinspect ; sys_platform == 'win32'",
+    "traja[all]>=25.0.1",
+    "mkdocs>=1.6.1",
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-jupyter>=0.24.8",
+    "mkdocs-literate-nav>=0.6.2",
+    "mkdocs-section-index>=0.3.10",
+    "mkdocstrings>=0.24.3",
+    "shapely>=2.0.7",
 ]
 
 [project.scripts]
@@ -190,6 +197,7 @@ dev = [
     "pyright>=1.1.396,<2",
     "vulture>=2.14",
     "pylustrator",
+    "pyqtinspect>=0.4.0",
 ]
 testing = ["ipywidgets>=8.0.5,<9"]
 
@@ -207,8 +215,7 @@ vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-wo
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 pylustrator = { git = "https://github.com/CommanderPho/pylustrator.git" }
-#pyqtinspect = { path = "../../EmotivEpoc/OfficialEmotivSoftwareReverseEngineer/EXTERNAL/repos/PyQtInspect-Open", editable = true }
-
+pyqtinspect = { git = "https://github.com/CommanderPho/PyQtInspect-Open.git" }
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}

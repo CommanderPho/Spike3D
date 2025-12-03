@@ -30,6 +30,7 @@
     "josh-walters.vscode-ext-import-export",
     "kawamataryo.copy-python-dotted-path",
     "phohale.version-status-bar",
-    "phohale.properpythonpasting"
+    "phohale.properpythonpasting",
+    "danielbayley.custom-app-icons"
     ]
 }
