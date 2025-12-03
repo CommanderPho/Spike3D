@@ -417,3 +417,9 @@ data/all_timeline_tracks_exported_stack.pdf
 .specstory
 EXTERNAL/PhoDibaPaper2024Book/rotated_figure.svg
 .groupedtimelineinclude
+EXTERNAL/PhoDibaPaper2024Book/2025-11-20_Apogee_cutoff_date-2025-10-02_ALL_GOOD_csv_files_list.csv
+*_pos_df.csv
+output.pdf
+test.csv
+*_widget_*.png
+data/*_tracks_exported_stack.pdf
