@@ -159,7 +159,7 @@ dependencies = [
     "neuropy",
     "pyphocorehelpers",
     "pyphoplacecellanalysis",
-    "pyqtinspect",
+    #"pyqtinspect ; sys_platform == 'win32'",
 ]
 
 [project.scripts]
@@ -206,8 +206,9 @@ ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main
 vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
-pyqtinspect = { path = "../../EmotivEpoc/OfficialEmotivSoftwareReverseEngineer/EXTERNAL/repos/PyQtInspect-Open", editable = true }
 pylustrator = { git = "https://github.com/CommanderPho/pylustrator.git" }
+#pyqtinspect = { path = "../../EmotivEpoc/OfficialEmotivSoftwareReverseEngineer/EXTERNAL/repos/PyQtInspect-Open", editable = true }
+
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
