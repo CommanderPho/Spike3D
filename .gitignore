@@ -423,3 +423,4 @@ output.pdf
 test.csv
 *_widget_*.png
 data/*_tracks_exported_stack.pdf
+max_across_all_prev_epochs_per_pos_frame.npy
