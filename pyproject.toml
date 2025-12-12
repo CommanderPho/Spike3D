@@ -167,6 +167,9 @@ dependencies = [
     "mkdocs-section-index>=0.3.10",
     "mkdocstrings>=0.24.3",
     "shapely>=2.0.7",
+    "pymanopt>=2.2.1",
+    "autograd>=1.8.0",
+    "pot>=0.9.6.post1",
 ]
 
 [project.scripts]
