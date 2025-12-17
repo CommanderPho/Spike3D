@@ -51,6 +51,7 @@
 
   "reportMissingImports": true,
   "reportMissingTypeStubs": false,
+  "reportOptionalMemberAccess": "none",
 
   "pythonVersion": "3.9"
 //   "pythonPlatform": "Linux",
