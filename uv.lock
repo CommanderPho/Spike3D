@@ -1500,6 +1500,68 @@ wheels = [
 ]
 
 [[package]]
+name = "cachecontrol"
+version = "0.14.3"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine != 'arm64' and sys_platform == 'darwin'",
+    "python_full_version <= '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "python_full_version <= '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
+    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "python_full_version <= '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version <= '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "python_full_version > '3.9' and python_full_version < '3.10' and sys_platform == 'win32'",
+    "python_full_version <= '3.9' and sys_platform == 'win32'",
+    "python_full_version > '3.9' and python_full_version < '3.10' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+    "python_full_version <= '3.9' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+]
+dependencies = [
+    { name = "msgpack", marker = "python_full_version < '3.10'" },
+    { name = "requests", marker = "python_full_version < '3.10'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/58/3a/0cbeb04ea57d2493f3ec5a069a117ab467f85e4a10017c6d854ddcbff104/cachecontrol-0.14.3.tar.gz", hash = "sha256:73e7efec4b06b20d9267b441c1f733664f989fb8688391b670ca812d70795d11", size = 28985, upload-time = "2025-04-30T16:45:06.135Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/4c/800b0607b00b3fd20f1087f80ab53d6b4d005515b0f773e4831e37cfa83f/cachecontrol-0.14.3-py3-none-any.whl", hash = "sha256:b35e44a3113f17d2a31c1e6b27b9de6d4405f84ae51baa8c1d3cc5b633010cae", size = 21802, upload-time = "2025-04-30T16:45:03.863Z" },
+]
+
+[package.optional-dependencies]
+filecache = [
+    { name = "filelock", marker = "python_full_version < '3.10'" },
+]
+
+[[package]]
+name = "cachecontrol"
+version = "0.14.4"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.11' and sys_platform == 'darwin'",
+    "python_full_version == '3.10.*' and sys_platform == 'darwin'",
+    "python_full_version >= '3.11' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.11' and platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "python_full_version == '3.10.*' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version == '3.10.*' and platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.11' and sys_platform == 'win32'",
+    "python_full_version == '3.10.*' and sys_platform == 'win32'",
+    "python_full_version >= '3.11' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+    "python_full_version == '3.10.*' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+]
+dependencies = [
+    { name = "msgpack", marker = "python_full_version >= '3.10'" },
+    { name = "requests", marker = "python_full_version >= '3.10'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2d/f6/c972b32d80760fb79d6b9eeb0b3010a46b89c0b23cf6329417ff7886cd22/cachecontrol-0.14.4.tar.gz", hash = "sha256:e6220afafa4c22a47dd0badb319f84475d79108100d04e26e8542ef7d3ab05a1", size = 16150, upload-time = "2025-11-14T04:32:13.138Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ef/79/c45f2d53efe6ada1110cf6f9fca095e4ff47a0454444aefdde6ac4789179/cachecontrol-0.14.4-py3-none-any.whl", hash = "sha256:b7ac014ff72ee199b5f8af1de29d60239954f223e948196fa3d84adaffc71d2b", size = 22247, upload-time = "2025-11-14T04:32:11.733Z" },
+]
+
+[package.optional-dependencies]
+filecache = [
+    { name = "filelock", marker = "python_full_version >= '3.10'" },
+]
+
+[[package]]
 name = "cachetools"
 version = "5.5.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1928,6 +1990,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/4c/13/7d740c5849255756bc17888787313b61fd38a0a8304fc4f073dfc46122aa/comm-0.2.3.tar.gz", hash = "sha256:2dc8048c10962d55d7ad693be1e7045d891b7ce8d999c97963a5e3e99c055971", size = 6319, upload-time = "2025-07-25T14:02:04.452Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/97/891a0971e1e4a8c5d2b20bbe0e524dc04548d2307fee33cdeba148fd4fc7/comm-0.2.3-py3-none-any.whl", hash = "sha256:c615d91d75f7f04f095b30d1c1711babd43bdc6419c1be9886a85f2f4e489417", size = 7294, upload-time = "2025-07-25T14:02:02.896Z" },
+]
+
+[[package]]
+name = "configargparse"
+version = "1.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/4d/6c9ef746dfcc2a32e26f3860bb4a011c008c392b83eabdfb598d1a8bbe5d/configargparse-1.7.1.tar.gz", hash = "sha256:79c2ddae836a1e5914b71d58e4b9adbd9f7779d4e6351a637b7d2d9b6c46d3d9", size = 43958, upload-time = "2025-05-23T14:26:17.369Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/28/d28211d29bcc3620b1fece85a65ce5bb22f18670a03cd28ea4b75ede270c/configargparse-1.7.1-py3-none-any.whl", hash = "sha256:8b586a31f9d873abd1ca527ffbe58863c99f36d896e2829779803125e83be4b6", size = 25607, upload-time = "2025-05-23T14:26:15.923Z" },
 ]
 
 [[package]]
@@ -5767,6 +5838,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8a/36/89c483ebdbc7144231fd8bc35c5586bd5f91f8ab106b3a7ffa1947fc466c/LovelyPlots-0.0.26.tar.gz", hash = "sha256:36b1e19c49863d7a5e18bff39e58d458a56ab4ea3c1c2b086992ec36a4fa80e1", size = 8263, upload-time = "2022-07-27T23:11:37.479Z" }
 
 [[package]]
+name = "lunr"
+version = "0.8.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/43/e9/b3dee02312eaa2a1b3212b6e20a90a81adba489b404d4f0ffbbe8258b761/lunr-0.8.0.tar.gz", hash = "sha256:b46cf5059578d277a14bfc901bb3d5666d013bf73c035331ac0222fdac358228", size = 1147598, upload-time = "2025-03-08T13:31:40.907Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/8b/bf975fabd26195915ebdf3e4252baa936f1863bcd9eb49598b705638f5d5/lunr-0.8.0-py3-none-any.whl", hash = "sha256:a2bc4e08dbb35b32723006bf2edbe6dc1f4f4b95955eea0d23165a184d276ce8", size = 35211, upload-time = "2025-03-08T13:31:38.657Z" },
+]
+
+[[package]]
 name = "lxml"
 version = "5.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -9256,6 +9336,28 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a1/ca/40e14e196864a0f61a92abb14d09b3d3da98f94ccb03b49cf51688140dab/pydeck-0.9.1.tar.gz", hash = "sha256:f74475ae637951d63f2ee58326757f8d4f9cd9f2a457cf42950715003e2cb605", size = 3832240, upload-time = "2024-05-10T15:36:21.153Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl", hash = "sha256:b3f75ba0d273fc917094fa61224f3f6076ca8752b93d46faf3bcfd9f9d59b038", size = 6900403, upload-time = "2024-05-10T15:36:17.36Z" },
+]
+
+[[package]]
+name = "pydoctor"
+version = "25.10.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "cachecontrol", version = "0.14.3", source = { registry = "https://pypi.org/simple" }, extra = ["filecache"], marker = "python_full_version < '3.10'" },
+    { name = "cachecontrol", version = "0.14.4", source = { registry = "https://pypi.org/simple" }, extra = ["filecache"], marker = "python_full_version >= '3.10'" },
+    { name = "configargparse" },
+    { name = "docutils" },
+    { name = "lunr" },
+    { name = "platformdirs" },
+    { name = "requests" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "twisted" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ce/26/4b49eab9203a0f6939711f6a62a06c04d6e11fbf01e7b2cd9f9dece97686/pydoctor-25.10.1.tar.gz", hash = "sha256:489ec8b96f1e477df8f1892e2c7990836f32481a633ed13abb5e24a3488c83fb", size = 981473, upload-time = "2025-09-29T22:06:49.712Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2e/ae/1ae23968390bfd71678c1cd752e66a9823e2fe45ba34a6740f76e84011ab/pydoctor-25.10.1-py3-none-any.whl", hash = "sha256:2aa85f8d64e11c065d71a2317b82724a58361173d945290509367681665bdc7c", size = 1637603, upload-time = "2025-09-29T22:06:47.349Z" },
 ]
 
 [[package]]
@@ -14596,6 +14698,7 @@ dependencies = [
     { name = "psutil" },
     { name = "pybursts" },
     { name = "pycorrelate" },
+    { name = "pydoctor" },
     { name = "pyflakes" },
     { name = "pygwalker" },
     { name = "pyjson5" },
@@ -14798,6 +14901,7 @@ requires-dist = [
     { name = "psutil", specifier = ">=5.9.5,<6" },
     { name = "pybursts", git = "https://github.com/CommanderPho/pybursts.git?rev=master" },
     { name = "pycorrelate", specifier = ">=0.3,<0.4" },
+    { name = "pydoctor", specifier = ">=25.10.1" },
     { name = "pyflakes", specifier = ">=3.0.1,<4" },
     { name = "pygwalker", specifier = ">=0.4.9.15" },
     { name = "pyjson5", specifier = ">=1.6.8,<2" },

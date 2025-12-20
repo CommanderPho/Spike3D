@@ -170,6 +170,7 @@ dependencies = [
     "pymanopt>=2.2.1",
     "autograd>=1.8.0",
     "pot>=0.9.6.post1",
+    "pydoctor>=25.10.1",
 ]
 
 [project.scripts]
@@ -209,7 +210,6 @@ default-groups = "all"
 
 [tool.uv.sources]
 qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
-neuropy = { path = "../NeuroPy", editable = true }
 pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable = true }
 pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable = true }
 mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
@@ -219,6 +219,7 @@ pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 pylustrator = { git = "https://github.com/CommanderPho/pylustrator.git" }
 pyqtinspect = { git = "https://github.com/CommanderPho/PyQtInspect-Open.git" }
+neuropy = { path = "../NeuroPy", editable = true }
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
