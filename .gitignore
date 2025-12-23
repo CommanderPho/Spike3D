@@ -425,3 +425,4 @@ test.csv
 data/*_tracks_exported_stack.pdf
 max_across_all_prev_epochs_per_pos_frame.npy
 non_local_PBE_non_moving_epochs_df.csv
+scripts/library_analysis.csv
