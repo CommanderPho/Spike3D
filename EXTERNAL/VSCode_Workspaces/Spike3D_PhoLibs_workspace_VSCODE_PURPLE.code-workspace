@@ -22,6 +22,7 @@
         "jupyter.askForKernelRestart": true,
         "jupyter.debugJustMyCode": true,
         "files.exclude": {
+            "\"**/.mypy_cache": true,
             "**/.classpath": true,
             "**/.DS_Store": true,
             "**/.factorypath": true,
