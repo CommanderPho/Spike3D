@@ -171,6 +171,13 @@ dependencies = [
     "autograd>=1.8.0",
     "pot>=0.9.6.post1",
     "pydoctor>=25.10.1",
+    "gputools>=0.2.16",
+    "spimagine>=0.2.6",
+    "pyopencl>=2025.1",
+    "scikit-tensor-py3>=0.2.1",
+    "datoviz>=0.3.2",
+    "datashader>=0.17.0",
+    "ipyvtklink>=0.2.2",
 ]
 
 [project.scripts]
