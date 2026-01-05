@@ -12627,7 +12627,7 @@ requires-dist = [
     { name = "opencv-contrib-python", specifier = ">=4.10.0.84,<5" },
     { name = "pandas", specifier = "==1.5.3" },
     { name = "panel", specifier = ">=1.2.3,<2" },
-    { name = "param", specifier = ">=1.12.3,<2" },
+    { name = "param", specifier = ">=1.12.3,<3" },
     { name = "params", specifier = ">=0.9.0,<0.10" },
     { name = "pip", specifier = "~=24.0" },
     { name = "pybursts", git = "https://github.com/CommanderPho/pybursts.git?rev=master" },
