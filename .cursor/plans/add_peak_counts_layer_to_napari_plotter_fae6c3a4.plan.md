@@ -51,4 +51,3 @@ Add a new method `add_peak_counts_layer` to the `DecodedTrajectoryNapariPlotter`
 1. **Shape Broadcasting**: The `peak_counts.raw` is 2D `(n_xbins, n_ybins)`, but needs to be 4D `(num_epochs, max_num_time_bins, n_xbins, n_ybins)` to match the posterior volume structure. Use `np.broadcast_to` or `np.tile` to expand dimensions.
 2. **Coordinate Alignment**: Verify that the `xbin_centers` and `ybin_centers` from the `PosteriorPeaksPeakProminence2dResult` match those in the plotter, or handle mismatches appropriately.
 3. **Layer Configuration**: Use a different colormap (e.g., 'plasma' or 'inferno') and potentially different blending mode to distinguish from the posterior layer.
-4. **Error Handling**: Check that `self.viewer` exists (or create one if needed), and that `self.posterior_volume` has been built.

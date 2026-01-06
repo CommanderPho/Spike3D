@@ -83,7 +83,3 @@ The method currently:
 
 - **Store Reference**: Store `peak_prominence_result` as an instance attribute or in the callback closure so it can be accessed when sliders change
 - **Shape Type**: Use `shape_type='path'` or `shape_type='polygon'` for Napari shapes layer
-- **Coordinate System**: Ensure contours use the same coordinate system as the posterior volume (xbin_centers, ybin_centers)
-- **Performance**: Only update shapes when epoch or time_bin actually changes (check current values before updating)
-
-### Files to Modify
