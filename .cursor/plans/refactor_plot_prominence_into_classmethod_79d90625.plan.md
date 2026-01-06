@@ -12,17 +12,17 @@ todos:
       - add-classmethod
   - id: update-internal-usages
     content: Update all internal references in peak_prominence2d.py (docstring example and bottom-of-file demo) to call PeakPromenenceDisplay.plot_Prominence instead of the standalone function.
-    status: in_progress
+    status: completed
     dependencies:
       - add-classmethod
   - id: update-eloy-usage
     content: Update EloyAnalysis.py to import PeakPromenenceDisplay and call its plot_Prominence classmethod instead of importing/calling the standalone function.
-    status: pending
+    status: completed
     dependencies:
       - add-classmethod
   - id: verify-and-style-check
     content: Run linters/tests as appropriate to verify there are no import or runtime issues and that style (single-line function signatures where possible) is preserved.
-    status: pending
+    status: completed
     dependencies:
       - add-classmethod
       - wrap-legacy-function
@@ -50,6 +50,3 @@ todos:
 ### 4. Update external usage in Eloy analysis display code
 
 - **Change import**: In [`pyphoplacecellanalysis/General/Pipeline/Stages/DisplayFunctions/EloyAnalysis.py`](pyphoplacecellanalysis/General/Pipeline/Stages/DisplayFunctions/EloyAnalysis.py), replace `from pyphoplacecellanalysis.External.peak_prominence2d import plot_Prominence` with an import of `PeakPromenenceDisplay`.
-- **Update call sites**: In `_display_pf_peak_prominence2d_default_quadrant_plots`’s nested `_plot_prominence_peaks` helper, change the call from `plot_Prominence(...)` to `PeakPromenenceDisplay.plot_Prominence(...)`, preserving all arguments and return handling.
-
-### 5. Style and verification
