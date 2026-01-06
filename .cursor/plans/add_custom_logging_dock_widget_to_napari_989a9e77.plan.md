@@ -92,4 +92,3 @@ All operations must fail gracefully:
 
 1. Define `CustomLoggingWidget` class (can reuse/adapt `LogViewer` from codebase)
 2. Add `custom_logging_widget` field to class definition
-3. Add `add_custom_logging_dock()` method with comprehensive error handling

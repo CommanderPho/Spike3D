@@ -53,5 +53,3 @@ Modify the `_on_current_step_change` function in the `build_ui` method to:
 - The recursion is safe because on the second event trigger (from our update), the epoch won't have changed, so the reset logic won't execute again
 
 ### Notes
-
-- The time_bin axis is at index 1 in the dims.range array (original axis order: epoch=0, time_bin=1, xbin=2, ybin=3)
