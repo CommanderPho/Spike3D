@@ -118,6 +118,7 @@
         "qtForPython.uic.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
         "python.autoComplete.extraPaths": [],
         "git.ignoreLimitWarning": true,
+        "git.enabled": false,
         "qtForPython.uic.options": [
             "-o",
             "${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
@@ -350,7 +351,17 @@
             "phohale.pho-vs-code-url-scheme-grabber",
             "kawamataryo.copy-python-dotted-path",
             "toughtype.pydance",
-            "gediminaszlatkus.ctags-companion"
+            "gediminaszlatkus.ctags-companion",
+            "fabiospampinato.vscode-highlight",
+            "waylongleon.navigation-history",
+            "mohanrajoria.clip-vault",
+            "seanho.daily-git-progress",
+            "thoughtphotography.cursor-indexing-limiter",
+            "ambitiouscoder.function-name-search",
+            "codeque.codeque",
+            "joshskidmore2025.keycheat",
+            "ast-grep.ast-grep-vscode",
+            "phil294.search-plusplus"
         ]
     }
 }
