@@ -226,6 +226,13 @@
                     "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
                 },
                 {
+                    "name": "Silx Examples",
+                    "tooltip": "Launch Silx examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/Silx/Silx_EXAMPLES.py\""
+                },
+                {
                     "name": "ViTables Launch",
                     "tooltip": "Launch ViTables pytables GUI (HDF5, etc)",
                     "color": "#ffed78",

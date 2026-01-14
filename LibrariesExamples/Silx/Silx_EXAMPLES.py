@@ -7,6 +7,89 @@ from silx.gui import qt
 import sys
 import subprocess
 from pathlib import Path
+import re
+
+
+class PythonSyntaxHighlighter(qt.QSyntaxHighlighter):
+    """Syntax highlighter for Python code"""
+    
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        # Define text formats
+        keyword_format = qt.QTextCharFormat()
+        keyword_format.setForeground(qt.QColor(86, 156, 214))  # Blue
+        keyword_format.setFontWeight(700)  # Bold weight
+        
+        string_format = qt.QTextCharFormat()
+        string_format.setForeground(qt.QColor(206, 145, 120))  # Orange/brown
+        
+        comment_format = qt.QTextCharFormat()
+        comment_format.setForeground(qt.QColor(106, 153, 85))  # Green
+        comment_format.setFontItalic(True)
+        
+        function_format = qt.QTextCharFormat()
+        function_format.setForeground(qt.QColor(220, 220, 170))  # Yellow/beige
+        function_format.setFontWeight(700)  # Bold weight
+        
+        number_format = qt.QTextCharFormat()
+        number_format.setForeground(qt.QColor(181, 206, 168))  # Light green
+        
+        class_format = qt.QTextCharFormat()
+        class_format.setForeground(qt.QColor(78, 201, 176))  # Cyan
+        class_format.setFontWeight(700)  # Bold weight
+        
+        # Python keywords
+        keywords = [
+            'and', 'as', 'assert', 'break', 'class', 'continue', 'def',
+            'del', 'elif', 'else', 'except', 'False', 'finally', 'for',
+            'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'None',
+            'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'True',
+            'try', 'while', 'with', 'yield'
+        ]
+        
+        # Build highlighting rules
+        self.highlighting_rules = []
+        
+        # Keywords
+        for keyword in keywords:
+            pattern = qt.QRegExp(r'\b' + keyword + r'\b')
+            self.highlighting_rules.append((pattern, keyword_format))
+        
+        # Strings (single and triple quotes)
+        string_patterns = [
+            qt.QRegExp(r'"[^"\\]*(\\.[^"\\]*)*"'),  # Double quotes
+            qt.QRegExp(r"'[^'\\]*(\\.[^'\\]*)*'"),  # Single quotes
+            qt.QRegExp(r'"""[^"]*"""'),  # Triple double quotes
+            qt.QRegExp(r"'''[^']*'''"),  # Triple single quotes
+        ]
+        for pattern in string_patterns:
+            self.highlighting_rules.append((pattern, string_format))
+        
+        # Comments
+        comment_pattern = qt.QRegExp(r'#.*')
+        self.highlighting_rules.append((comment_pattern, comment_format))
+        
+        # Function definitions
+        function_pattern = qt.QRegExp(r'\bdef\s+(\w+)\s*\(')
+        self.highlighting_rules.append((function_pattern, function_format))
+        
+        # Class definitions
+        class_pattern = qt.QRegExp(r'\bclass\s+(\w+)')
+        self.highlighting_rules.append((class_pattern, class_format))
+        
+        # Numbers
+        number_pattern = qt.QRegExp(r'\b\d+\.?\d*\b')
+        self.highlighting_rules.append((number_pattern, number_format))
+    
+    def highlightBlock(self, text):
+        """Apply highlighting rules to a block of text"""
+        for pattern, format in self.highlighting_rules:
+            index = pattern.indexIn(text)
+            while index >= 0:
+                length = pattern.matchedLength()
+                self.setFormat(index, length, format)
+                index = pattern.indexIn(text, index + length)
 
 
 class SilxExampleBrowser(qt.QMainWindow):
@@ -131,6 +214,10 @@ class SilxExampleBrowser(qt.QMainWindow):
         self.code_preview = qt.QPlainTextEdit()
         self.code_preview.setReadOnly(True)
         self.code_preview.setFont(qt.QFont("Consolas", 9) if sys.platform == "win32" else qt.QFont("Monospace", 9))
+        
+        # Add syntax highlighting
+        self.highlighter = PythonSyntaxHighlighter(self.code_preview.document())
+        
         right_layout.addWidget(self.code_preview)
         
         main_layout.addWidget(right_panel, stretch=1)
