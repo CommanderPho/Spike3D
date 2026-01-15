@@ -1,22 +1,22 @@
 {
     "folders": [
-        {
-            "name": "Spike3D",
-            "path": "../../"
-        },
-        {
-            "name": "pyphocorehelpers",
-            "path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
-        },
-        {
-            "name": "pyphoplacecellanalysis",
-            "path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
-        },
-        {
-            "name": "neuropy",
-            "path": "../../../NeuroPy/neuropy"
-        }
-    ],
+		{
+			"name": "Spike3D",
+			"path": "../.."
+		},
+		{
+			"name": "pyphocorehelpers",
+			"path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
+		},
+		{
+			"name": "pyphoplacecellanalysis",
+			"path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+		},
+		{
+			"name": "neuropy",
+			"path": "../../../NeuroPy/neuropy"
+		}
+	],
     "settings": {
         "python.analysis.gotoDefinitionInStringLiteral": true,
         "jupyter.askForKernelRestart": true,
@@ -102,7 +102,25 @@
             "editorIndentGuide.activeBackground3": "#f475ff86",
             "editorIndentGuide.activeBackground4": "#c2c6ff86",
             "editorIndentGuide.activeBackground5": "#7a33ff86",
-            "editorIndentGuide.activeBackground6": "#ffebfd86"
+            "editorIndentGuide.activeBackground6": "#ffebfd86",
+            "sash.hoverBorder":"#007fd4",
+
+            // "titleBar.activeBackground": "#66409baf",
+            "titleBar.activeForeground": "#ffffff", // var(--vscode-titleBar-activeForeground)
+
+            // "editorActionList.background": "#c300ff",
+            // "editorActionList.focusBackground": "#04395e",
+            // "editorActionList.focusForeground": "#ff00b3",
+            // "editorActionList.foreground": "#cccccc",
+
+            // "actionButton.background": "#ff0000",
+            // "actionButton.hoverBackground": "#ff5555",
+            // "button.background": "#00ff00",
+            // "button.hoverBackground": "#55ff55",
+            // "editorActionList.foreground": "#c300ff",
+
+
+
         },
         "search.exclude": {
             "**/.ipynb_checkpoints": true,
@@ -118,7 +136,7 @@
         "qtForPython.uic.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
         "python.autoComplete.extraPaths": [],
         "git.ignoreLimitWarning": true,
-        "git.enabled": false,
+        "git.enabled": true,
         "qtForPython.uic.options": [
             "-o",
             "${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
@@ -226,6 +244,13 @@
                     "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
                 },
                 {
+                    "name": "Silx Examples",
+                    "tooltip": "Launch Silx examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/Silx/Silx_EXAMPLES.py\""
+                },
+                {
                     "name": "ViTables Launch",
                     "tooltip": "Launch ViTables pytables GUI (HDF5, etc)",
                     "color": "#ffed78",
@@ -289,6 +314,8 @@
             "ms-toolsai.datawrangler",
             "phohale.version-status-bar",
         ],
+        "git.autofetch": true,
+        "github.showAvatar": false,
     },
     "tasks": {
         "version": "2.0.0",

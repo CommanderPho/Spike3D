@@ -192,6 +192,7 @@
         "editor.dragAndDrop": false,
         "actionButtons": {
 
+
             "commands": [
                 {
                     "name": "Back",
@@ -229,6 +230,13 @@
                     "color": "#d4e6ec",
                     "useVsCodeApi": false,
                     "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+                },
+                {
+                    "name": "Silx Examples",
+                    "tooltip": "Launch Silx examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/Silx/Silx_EXAMPLES.py\""
                 },
                 {
                     "name": "ViTables Launch",
@@ -277,7 +285,76 @@
             "markupPreview": false,
             "codeSource": true,
             "codeOutput": false
-        }
+        },
+        "highlight.regexes": {
+            "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *TODO(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
+                "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+                "decorations": [
+                    {
+                        "overviewRulerColor": "#ffcc00",
+                        "backgroundColor": "#ffcc00",
+                        "color": "#1f1f1f",
+                        "fontWeight": "bold"
+                    },
+                    {
+                        "backgroundColor": "#ffcc00",
+                        "color": "#1f1f1f"
+                    }
+                ]
+            },
+            "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:FIXME|FIX|BUG|UGLY|DEBUG|HACK)(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
+                "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+                "decorations": [
+                    {
+                        "overviewRulerColor": "#cc0000",
+                        "backgroundColor": "#cc0000",
+                        "color": "#1f1f1f",
+                        "fontWeight": "bold"
+                    },
+                    {
+                        "backgroundColor": "#cc0000",
+                        "color": "#1f1f1f"
+                    }
+                ]
+            },
+            "@metadata_attributes\\([^)]*\\)": {
+                "filterFileRegex": "\\.py$",
+                "decorations": [
+                    {
+                        "overviewRulerColor": "#00aa55",
+                        "backgroundColor": "#0ecf6f",
+                        "opacity": "0.9",
+                        "color": "#181818",
+                        "fontWeight": "bold",
+                        "isWholeLine": true,
+                        "borderColor": "#1b1b1b",
+                        "borderStyle": "border",
+                        "borderWidth": "2",
+                    },
+                    {
+                        "backgroundColor": "#00aaff",
+                        "opacity": "50%",
+                        "color": "#1f1f1f"
+                    }
+                ]
+            },
+            "@function_attributes\\([^)]*\\)": {
+                "filterFileRegex": "\\.py$",
+                "decorations": [
+                    {
+                        "overviewRulerColor": "#00ff88",
+                        "backgroundColor": "#00ff88",
+                        "color": "#1f1f1f",
+                        "fontWeight": "bold"
+                    },
+                    {
+                        "backgroundColor": "#00ff88",
+                        "color": "#1f1f1f"
+                    }
+                ]
+            }
+        },
+        "highlight.enabled": true,
     },
     "tasks": {
         "version": "2.0.0",
@@ -347,7 +424,8 @@
             "ionide.discoverpanel",
             "astallinger.sourcetrail",
             "phohale.pho-vs-code-url-scheme-grabber",
-            "kawamataryo.copy-python-dotted-path"
+            "kawamataryo.copy-python-dotted-path",
+            "fabiospampinato.vscode-highlight"
         ]
     }
 }
