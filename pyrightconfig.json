@@ -1,13 +1,11 @@
 {
-  "include": [
-    "PendingNotebookCode.py",
-    "scripts/setup_dependent_repos.py"
-  ],
   "exclude":  [
     "**/EXTERNAL", "**/__pycache__", "**/.vincent", "**/.venv_new", "**/data", "**/.venv", "**/.venv_alt", "**/.venv_green", "**/.classpath", "**/.factorypath", "**/.ipynb_checkpoints", "**/CVS", "**/.venv_*", "**.svn", "**/.venv_UV", "**/dist", "**/.virtual_documents", "**/.mypy_cache", "**/.idea", "**/*.asv", "**/.git", "**/.spyproject", "**/docs", "**/.venv_black", "**/.project", "**/.venv_teal", "**/.venv_white", "**/scratchpads", "**/node_modules", "**/.dvc", "**/._cell_execution_logs", "**/build", "**/LibrariesExamples", "**/.settings", "**/.venv_raw", "**/.vscode", "**/templating", "**/.hg", "**/.venv_yellow", "**/site-packages/**", "**/output",
+    "**/SCRATCH",
   ],
   "ignore":  [
     "**/.vincent", "**/.data", "**/.venv_new", "**/docs_sphinx", "**/.venv", "**/.venv_alt", "**/.ruff_cache, **/.mypy_cache", "**/.venv_green", "templating", "scripts", "**/.venv_*", "**/.venv_UV", "**/.mypy_cache", "**/.idea", "**/docs", "**/.venv_black", "EXTERNAL", "**/pyphoplacecellanalysis/External", "**/.venv_teal", "**/.venv_white", "**/scratchpads", "**/.conda", "**/._cell_execution_logs", "**/uv/python*", "LibrariesExamples", "**/.venv_raw", "**/site", "src/oldstuff", "**/.venv_yellow", "**/output",
+    "**/SCRATCH",
   ],
   "defineConstant": {
     "DEBUG": true
