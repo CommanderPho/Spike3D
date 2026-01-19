@@ -3,9 +3,12 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
+# Get the script's directory and calculate project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
 # Variables
-PROJECT_DIR="$HOME/repos/Spike3D"
-SCRIPT_PULL="$HOME/repos/Spike3D/scripts/unix/repos_pull_changes.sh"
+SCRIPT_PULL="$PROJECT_DIR/scripts/unix/repos_pull_changes.sh"
 JUPYTER_PORT=8889
 JUPYTER_LOG="$PROJECT_DIR/jupyter.log"  # Absolute path
 CLIPBOARD_CMD="xclip"  # Assuming 'clip' alias is set to xclip
@@ -21,23 +24,16 @@ copy_to_clipboard() {
 echo "Navigating to project directory: $PROJECT_DIR"
 cd "$PROJECT_DIR" || { echo "Failed to navigate to $PROJECT_DIR"; exit 1; }
 
-# Ensure Poetry is available (optional but recommended)
-if ! command -v poetry &> /dev/null
+# Ensure UV is available
+if ! command -v uv &> /dev/null
 then
-    echo "Poetry could not be found. Please install Poetry first."
+    echo "UV could not be found. Please install UV first."
     exit 1
 fi
 
-# Get the path to the Poetry virtual environment
-VENV_PATH=$(poetry env info --path)
-# VENV_PATH="$HOME/Library/VSCode/green/.venv_green"
-# $HOME/Library/VSCode/green/.venv_green/bin/python
-# Source the activate script of the virtual environment
-# source $VENV_PATH/bin/activate
-
 # Start Jupyter Lab in the background, redirecting output to a log file
 echo "Starting Jupyter Lab..."
-poetry run jupyter-lab --no-browser --port="$JUPYTER_PORT" --NotebookApp.ip='0.0.0.0' --NotebookApp.allow_origin='*' > "$JUPYTER_LOG" 2>&1 &
+uv run jupyter-lab --no-browser --port="$JUPYTER_PORT" --NotebookApp.ip='0.0.0.0' --NotebookApp.allow_origin='*' > "$JUPYTER_LOG" 2>&1 &
 JUPYTER_PID=$!
 echo "Jupyter Lab PID: $JUPYTER_PID"
 
