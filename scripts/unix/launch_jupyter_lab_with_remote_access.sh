@@ -33,7 +33,8 @@ fi
 
 # Start Jupyter Lab in the background, redirecting output to a log file
 echo "Starting Jupyter Lab..."
-uv run jupyter-lab --no-browser --port="$JUPYTER_PORT" --NotebookApp.ip='0.0.0.0' --NotebookApp.allow_origin='*' > "$JUPYTER_LOG" 2>&1 &
+# uv run jupyter-lab --no-browser --port="$JUPYTER_PORT" --NotebookApp.ip='0.0.0.0' --NotebookApp.allow_origin='*' > "$JUPYTER_LOG" 2>&1 &
+uv run jupyter-lab --no-browser --port="$JUPYTER_PORT" --ServerApp.ip='0.0.0.0' --ServerApp.allow_origin='*' --ServerApp.disable_check_xsrf=True > "$JUPYTER_LOG" 2>&1 &
 JUPYTER_PID=$!
 echo "Jupyter Lab PID: $JUPYTER_PID"
 

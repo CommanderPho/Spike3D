@@ -55,7 +55,8 @@ try {
             # Use -ErrorAction SilentlyContinue to handle file lock issues
             $logContent = Get-Content $JUPYTER_LOG -Raw -ErrorAction SilentlyContinue
             if ($logContent) {
-                $match = [regex]::Match($logContent, "http://127\.0\.0\.1:$JUPYTER_PORT/lab\?token=\w+")
+                # Match any port number (Jupyter may use a different port if requested one is in use)
+                $match = [regex]::Match($logContent, "http://127\.0\.0\.1:\d+/lab\?token=\w+")
                 if ($match.Success) {
                     $URL = $match.Value
                     Write-Host "Jupyter Lab URL found: $URL"
