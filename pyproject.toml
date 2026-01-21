@@ -85,7 +85,7 @@ dependencies = [
     "panel>=1.2.3,<2",
     "params>=0.9.0,<0.10",
     "findpeaks>=2.5.4,<3",
-    "qtvoila>=2.1.0,<3",
+    "qtvoila>=2.1.0,<3 ; sys_platform != 'linux'",
     "pyqt-builder>=1.15.3,<2",
     "statsmodels>=0.14.0,<0.15",
     "pathos>=0.2.9,<0.3",
