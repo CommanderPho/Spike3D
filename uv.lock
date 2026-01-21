@@ -7586,6 +7586,7 @@ dependencies = [
     { name = "pingouin" },
     { name = "portion" },
     { name = "python-benedict" },
+    { name = "rdp" },
     { name = "scikit-learn", version = "1.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "scikit-learn", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "scikit-posthocs" },
@@ -7623,6 +7624,7 @@ requires-dist = [
     { name = "pingouin", specifier = ">=0.5.3,<0.6" },
     { name = "portion", git = "https://github.com/CommanderPho/portion.git" },
     { name = "python-benedict", specifier = ">=0.28.3,<0.29" },
+    { name = "rdp", specifier = ">=0.8" },
     { name = "scikit-learn", specifier = ">=1.2.1,<2" },
     { name = "scikit-posthocs", specifier = ">=0.7.0,<0.8" },
     { name = "scipy", specifier = "~=1.6" },
@@ -15345,6 +15347,7 @@ dev = [
     { name = "vulture", specifier = ">=2.14" },
 ]
 testing = [{ name = "ipywidgets", specifier = ">=8.0.5,<9" }]
+trial = []
 
 [[package]]
 name = "spimagine"

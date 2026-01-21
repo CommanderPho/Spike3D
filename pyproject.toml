@@ -211,6 +211,7 @@ dev = [
     "pyqtinspect>=0.4.0",
 ]
 testing = ["ipywidgets>=8.0.5,<9"]
+trial = []
 
 [tool.uv]
 default-groups = "all"
