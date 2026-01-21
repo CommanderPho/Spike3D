@@ -1,0 +1,35 @@
+---
+description: Docstring examples should not use doctest format (no >>> prefixes)
+globs: **/*.py
+alwaysApply: false
+---
+
+# Docstring Examples Format
+
+Usage examples in docstrings should **never** use doctest format (with `>>> ` prefixes). Examples should be written as plain Python code that can be directly copy-pasted into notebooks or scripts.
+
+## ❌ BAD - Doctest Format
+
+```python
+Examples
+--------
+>>> position_df = ...  # DataFrame with ['x', 'y'] columns
+>>> mask = simplify_position_trajectory(position_df, epsilon=0.5)
+>>> simplified_df = position_df.loc[mask]
+```
+
+## ✅ GOOD - Plain Python Code
+
+```python
+Examples
+--------
+position_df = ...  # DataFrame with ['x', 'y'] columns
+mask = simplify_position_trajectory(position_df, epsilon=0.5)
+simplified_df = position_df.loc[mask]
+```
+
+## Rationale
+
+- Doctest format (`>>> `) is inconvenient for copy-pasting examples into notebooks
+- Plain Python code is more readable and immediately usable
+- Examples should be easy to copy-paste without manual editing
