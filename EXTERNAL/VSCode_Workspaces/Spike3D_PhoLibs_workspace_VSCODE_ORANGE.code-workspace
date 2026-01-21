@@ -355,6 +355,7 @@
             }
         },
         "highlight.enabled": true,
+        "pieces.cloudCapabilities": "Blended",
     },
     "tasks": {
         "version": "2.0.0",
