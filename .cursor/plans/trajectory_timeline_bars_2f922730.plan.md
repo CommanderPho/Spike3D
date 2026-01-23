@@ -121,4 +121,3 @@ After the main view camera setup (around line 7040):
 - Current epoch boundary: bright vertical line (white or yellow)
 - Trajectory ticks: vertical lines with same HSV color as corresponding trajectory
 - Add axis labels showing time values at key positions
-
