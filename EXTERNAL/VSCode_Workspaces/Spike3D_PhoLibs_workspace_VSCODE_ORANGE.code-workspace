@@ -287,75 +287,85 @@
             "codeOutput": false
         },
         "highlight.regexes": {
-            "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *TODO(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
-                "filterFileRegex": ".*(?<!CHANGELOG.md)$",
-                "decorations": [
-                    {
-                        "overviewRulerColor": "#ffcc00",
-                        "backgroundColor": "#ffcc00",
-                        "color": "#1f1f1f",
-                        "fontWeight": "bold"
-                    },
-                    {
-                        "backgroundColor": "#ffcc00",
-                        "color": "#1f1f1f"
-                    }
-                ]
-            },
-            "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:FIXME|FIX|BUG|UGLY|DEBUG|HACK)(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
-                "filterFileRegex": ".*(?<!CHANGELOG.md)$",
-                "decorations": [
-                    {
-                        "overviewRulerColor": "#cc0000",
-                        "backgroundColor": "#cc0000",
-                        "color": "#1f1f1f",
-                        "fontWeight": "bold"
-                    },
-                    {
-                        "backgroundColor": "#cc0000",
-                        "color": "#1f1f1f"
-                    }
-                ]
-            },
-            "@metadata_attributes\\([^)]*\\)": {
-                "filterFileRegex": "\\.py$",
-                "decorations": [
-                    {
-                        "overviewRulerColor": "#00aa55",
-                        "backgroundColor": "#0ecf6f",
-                        "opacity": "0.9",
-                        "color": "#181818",
-                        "fontWeight": "bold",
-                        "isWholeLine": true,
-                        "borderColor": "#1b1b1b",
-                        "borderStyle": "border",
-                        "borderWidth": "2",
-                    },
-                    {
-                        "backgroundColor": "#00aaff",
-                        "opacity": "50%",
-                        "color": "#1f1f1f"
-                    }
-                ]
-            },
-            "@function_attributes\\([^)]*\\)": {
-                "filterFileRegex": "\\.py$",
-                "decorations": [
-                    {
-                        "overviewRulerColor": "#00ff88",
-                        "backgroundColor": "#00ff88",
-                        "color": "#1f1f1f",
-                        "fontWeight": "bold"
-                    },
-                    {
-                        "backgroundColor": "#00ff88",
-                        "color": "#1f1f1f"
-                    }
-                ]
-            }
+
+            // "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *TODO(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
+            //     "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+            //     "decorations": [
+            //         {
+            //             "overviewRulerColor": "#ffcc00",
+            //             "backgroundColor": "rgba(100, 50, 150, 0.7)", //"#ffcc00",
+            //             "color": "#1f1f1f",
+            //             "fontWeight": "bold"
+            //         },
+            //         {
+            //             "backgroundColor": "rgba(255, 204, 0, 0.5)", //"#ffcc00",
+            //             "color": "#1f1f1f"
+            //         }
+            //     ]
+            // },
+
+            // "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:FIXME|FIX|BUG|UGLY|DEBUG|HACK)(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
+            //     "filterFileRegex": ".*(?<!CHANGELOG.md)$",
+            //     "decorations": [
+            //         {
+            //             "overviewRulerColor": "#cc0000",
+            //             "backgroundColor": "rgba(100, 50, 150, 0.7)", //"#cc000022",
+            //             "color": "#1f1f1f",
+            //             "fontWeight": "bold"
+            //         },
+            //         {
+            //             "backgroundColor": "rgba(100, 50, 150, 0.7)", // "#cc000022",
+            //             "color": "#1f1f1f"
+            //         }
+            //     ]
+            // },
+
+            // "@metadata_attributes\\([^)]*\\)": {
+            //     "filterFileRegex": "\\.py$",
+            //     "decorations": [
+            //         {
+            //             "overviewRulerColor": "#00aa55",
+            //             "backgroundColor": "#0ecf6f",
+            //             "opacity": "0.9",
+            //             "color": "#181818",
+            //             "fontWeight": "bold",
+            //             "isWholeLine": true,
+            //             "borderColor": "#1b1b1b",
+            //             "borderStyle": "border",
+            //             "borderWidth": "2",
+            //         },
+            //         {
+            //             "backgroundColor": "#00aaff",
+            //             "opacity": "50%",
+            //             "color": "#1f1f1f"
+            //         }
+            //     ]
+            // },
+
+            // "@function_attributes\\([^)]*\\)": {
+            //     "filterFileRegex": "\\.py$",
+            //     "decorations": [
+            //         {
+            //             "overviewRulerColor": "#00ff88",
+            //             "backgroundColor": "#00ff8844",
+            //             "color": "#1f1f1f",
+            //             "fontWeight": "bold",
+            //             "borderColor": "#ffcc00",
+            //             "borderWidth": "0 0 0 3px",
+            //             "borderStyle": "solid",
+            //         },
+            //         {
+            //             "color": "#ffcc00",
+            //             "fontWeight": "bold"
+            //             // "backgroundColor": "#00ff88",
+            //             // "color": "#1f1f1f"
+            //         }
+            //     ]
+            // }
         },
         "highlight.enabled": true,
         "pieces.cloudCapabilities": "Blended",
+        "highlight.debugging": false,
     },
     "tasks": {
         "version": "2.0.0",
