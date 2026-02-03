@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+
+User requires function signatures to be on a single line when possible, rather than split across multiple lines. This applies to all projects and all function/method definitions.
+
+Preferred format:
+    def parse_video_folder(cls, folder_path: Path, video_extensions: List[str] = ['.mp4', '.avi']) -> pd.DataFrame:
+
+Not preferred (multi-line):
+    def parse_video_folder(
+        cls,
+        folder_path: Path,
+        video_extensions: List[str] = ['.mp4', '.avi']
+    ) -> pd.DataFrame:
+
+Only split function signatures across multiple lines when absolutely necessary due to length constraints.

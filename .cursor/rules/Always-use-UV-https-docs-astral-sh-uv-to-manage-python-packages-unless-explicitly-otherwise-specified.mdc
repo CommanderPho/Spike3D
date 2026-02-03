@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+Always use `UV` (https://docs.astral.sh/uv) to manage python packages unless explicitly otherwise specified. By default, packages/environments should be setup by doing `uv sync --all-extras` by default. Do not resort to using `uv pip ...` unless absolutely necissary, and then ask for conformation before proceeding. Packages should be added by doing `uv add <package_name>`.

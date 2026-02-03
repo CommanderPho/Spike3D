@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+User prefers two blank lines between python class methods for readibility

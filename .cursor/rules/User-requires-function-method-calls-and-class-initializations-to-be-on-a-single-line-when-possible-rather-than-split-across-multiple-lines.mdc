@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+
+User requires function/method calls and class initializations to be on a single line when possible, rather than split across multiple lines. This applies to all projects and all function/method definitions.
+
+Preferred format:
+    datasource = MotionTrackDatasource(motion_df=time_series_df, intervals_df=intervals_df, custom_datasource_name=f"MOTION_{stream_name}", max_points_per_second=10.0, enable_downsampling=True, normalization_mode_dict=modality_channels_normalization_mode_dict.get('MOTION'))
+
+Not preferred (multi-line):
+    datasource = MotionTrackDatasource(
+        motion_df=time_series_df,
+        intervals_df=intervals_df,
+        custom_datasource_name=f"MOTION_{stream_name}",
+        max_points_per_second=10.0,
+        enable_downsampling=True,
+        normalization_mode_dict=modality_channels_normalization_mode_dict.get('MOTION'),
+    )
