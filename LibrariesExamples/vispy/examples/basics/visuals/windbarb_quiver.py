@@ -17,8 +17,7 @@ from vispy.visuals.transforms import NullTransform
 
 class Canvas(app.Canvas):
     def __init__(self):
-        app.Canvas.__init__(self, title="Windbarb plot", keys="interactive",
-                            size=(830, 430))
+        app.Canvas.__init__(self, title="Windbarb plot", keys="interactive", size=(830, 430))
 
         self.windbarb_length = 25
         self.grid_spacing = 50
@@ -61,6 +60,7 @@ class Canvas(app.Canvas):
 
         self.grid_coords = np.array(coords)
 
+
     def on_resize(self, event):
         self.generate_grid()
         self.rotate_arrows(np.array(self.last_mouse))
@@ -69,9 +69,9 @@ class Canvas(app.Canvas):
         self.context.set_viewport(*vp)
         self.visual.transforms.configure(canvas=self, viewport=vp)
 
+
     def rotate_arrows(self, point_towards):
-        direction_vectors = (self.grid_coords - point_towards).astype(
-            np.float32)
+        direction_vectors = (self.grid_coords - point_towards).astype(np.float32)
         direction_vectors[:] /= 10
         direction_vectors[:, 1] *= -1
 
@@ -81,9 +81,11 @@ class Canvas(app.Canvas):
             size=self.windbarb_length,
         )
 
+
     def on_mouse_move(self, event):
         self.last_mouse = event.pos
         self.rotate_arrows(np.array(event.pos))
+
 
     def on_draw(self, event):
         self.context.clear(color='white')
