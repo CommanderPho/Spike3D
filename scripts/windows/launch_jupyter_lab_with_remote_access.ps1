@@ -9,6 +9,7 @@ $PROJECT_DIR = Split-Path -Parent (Split-Path -Parent $SCRIPT_DIR)
 $JUPYTER_PORT = 8889
 $JUPYTER_LOG = Join-Path $PROJECT_DIR "jupyter.log"  # Absolute path
 $TIMEOUT = 60  # seconds to wait for Jupyter to start
+$PRINT_JUPYTER_LOG = $true  # stream JUPYTER_LOG contents to console by default
 
 # Function to copy text to clipboard
 function Copy-ToClipboard {
@@ -26,36 +27,34 @@ if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-# Initialize cleanup variables
-$jupyterProcess = $null
-$job = $null
+# Process handle for cleanup (kill process tree on exit)
+$proc = $null
+$script:shutdownRequested = $false
+
+# Ctrl+C: request shutdown so wait loop exits and finally runs (process tree kill)
+try {
+    [Console]::CancelKeyPress.Add({
+        param($sender, $e)
+        $script:shutdownRequested = $true
+        $e.Cancel = $true
+    })
+} catch { }
 
 try {
-    # Start Jupyter Lab in the background, redirecting output to a log file
+    # Start Jupyter Lab in a child process with stdout/stderr redirected to log
     Write-Host "Starting Jupyter Lab..."
-    
-    # Use Start-Job to run in background with output redirection
-    # This allows both stdout and stderr to be redirected to the same file
-    $job = Start-Job -ScriptBlock {
-        param($projectDir, $port, $logFile)
-        Set-Location $projectDir
-        & uv run jupyter-lab --no-browser --port=$port --NotebookApp.ip='0.0.0.0' --NotebookApp.allow_origin='*' *> $logFile
-    } -ArgumentList $PROJECT_DIR, $JUPYTER_PORT, $JUPYTER_LOG
-    
-    Write-Host "Jupyter Lab started (Job ID: $($job.Id))"
-    
-    # Wait until Jupyter Lab is ready by checking the log file for the URL
+    $childCmd = "Set-Location '$PROJECT_DIR'; uv run jupyter-lab --no-browser --port=$JUPYTER_PORT --ServerApp.ip='0.0.0.0' --ServerApp.allow_origin='*' --ServerApp.disable_check_xsrf=True *> '$JUPYTER_LOG'"
+    $proc = Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile", "-Command", $childCmd -WorkingDirectory $PROJECT_DIR -NoNewWindow -PassThru
+    Write-Host "Jupyter Lab started (PID: $($proc.Id))"
+
+    # Poll log file until URL appears or timeout
     Write-Host "Waiting for Jupyter Lab to start and generate the URL..."
     $URL = ""
     $START_TIME = Get-Date
-    
     while ($true) {
         if (Test-Path $JUPYTER_LOG) {
-            # Attempt to extract the URL
-            # Use -ErrorAction SilentlyContinue to handle file lock issues
             $logContent = Get-Content $JUPYTER_LOG -Raw -ErrorAction SilentlyContinue
             if ($logContent) {
-                # Match any port number (Jupyter may use a different port if requested one is in use)
                 $match = [regex]::Match($logContent, "http://127\.0\.0\.1:\d+/lab\?token=\w+")
                 if ($match.Success) {
                     $URL = $match.Value
@@ -64,9 +63,7 @@ try {
                 }
             }
         }
-        
-        $CURRENT_TIME = Get-Date
-        $ELAPSED = ($CURRENT_TIME - $START_TIME).TotalSeconds
+        $ELAPSED = (Get-Date - $START_TIME).TotalSeconds
         if ($ELAPSED -ge $TIMEOUT) {
             Write-Host "Timed out waiting for Jupyter Lab to start."
             Write-Host "Checking Jupyter Log for errors:"
@@ -75,11 +72,10 @@ try {
             }
             exit 1
         }
-        
         Start-Sleep -Seconds 2
     }
-    
-    # Copy the URL to the clipboard
+
+    # Copy URL to clipboard and print
     if ($URL) {
         Write-Host "Copying Jupyter URL to clipboard..."
         Copy-ToClipboard -text $URL
@@ -88,27 +84,28 @@ try {
         Write-Host "Failed to retrieve Jupyter Lab URL."
         exit 1
     }
-    
-    # Optionally, open the URL in the default browser
-    # Uncomment the following line if you want to automatically open the browser
-    # Start-Process $URL
-    
     Write-Host "Jupyter Lab is running. Access it at: $URL"
-    
-    # Keep the script running to maintain Jupyter Lab
-    # Wait for the job to complete
-    Wait-Job $job | Out-Null
-    Receive-Job $job | Out-Null
-    
+
+    # Wait loop: keep running and optionally stream new log lines to console
+    $lastLineCount = 0
+    while (-not $proc.HasExited -and -not $script:shutdownRequested) {
+        if ($PRINT_JUPYTER_LOG -and (Test-Path $JUPYTER_LOG)) {
+            $lines = @(Get-Content $JUPYTER_LOG -ErrorAction SilentlyContinue)
+            if ($lines.Count -gt $lastLineCount) {
+                $newLines = $lines[$lastLineCount..($lines.Count - 1)]
+                foreach ($line in $newLines) { Write-Host $line }
+                $lastLineCount = $lines.Count
+            }
+        }
+        Start-Sleep -Milliseconds 300
+    }
 } finally {
-    # Function to gracefully terminate Jupyter Lab on script exit
-    if ($job) {
-        Write-Host "Shutting down Jupyter Lab (Job ID: $($job.Id))..."
+    if ($proc -and -not $proc.HasExited) {
+        Write-Host "Shutting down Jupyter Lab (PID: $($proc.Id))..."
         try {
-            Stop-Job $job -ErrorAction SilentlyContinue
-            Remove-Job $job -Force -ErrorAction SilentlyContinue
+            & taskkill /PID $proc.Id /T /F 2>$null
         } catch {
-            Write-Host "Error shutting down Jupyter Lab job: $_"
+            Write-Host "Error shutting down Jupyter Lab: $_"
         }
     }
 }
