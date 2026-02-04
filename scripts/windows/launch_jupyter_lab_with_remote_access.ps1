@@ -55,7 +55,7 @@ try {
         if (Test-Path $JUPYTER_LOG) {
             $logContent = Get-Content $JUPYTER_LOG -Raw -ErrorAction SilentlyContinue
             if ($logContent) {
-                $match = [regex]::Match($logContent, "http://127\.0\.0\.1:\d+/lab\?token=\w+")
+                $match = [regex]::Match($logContent, 'http://127\.0\.0\.1:\d+/lab\?token=\w+')
                 if ($match.Success) {
                     $URL = $match.Value
                     Write-Host "Jupyter Lab URL found: $URL"
@@ -63,7 +63,7 @@ try {
                 }
             }
         }
-        $ELAPSED = (Get-Date - $START_TIME).TotalSeconds
+        $ELAPSED = ((Get-Date) - $START_TIME).TotalSeconds
         if ($ELAPSED -ge $TIMEOUT) {
             Write-Host "Timed out waiting for Jupyter Lab to start."
             Write-Host "Checking Jupyter Log for errors:"
@@ -100,10 +100,12 @@ try {
         Start-Sleep -Milliseconds 300
     }
 } finally {
-    if ($proc -and -not $proc.HasExited) {
-        Write-Host "Shutting down Jupyter Lab (PID: $($proc.Id))..."
+    if ($proc) {
         try {
-            & taskkill /PID $proc.Id /T /F 2>$null
+            if (-not $proc.HasExited) {
+                Write-Host "Shutting down Jupyter Lab (PID: $($proc.Id))..."
+                & taskkill /PID $proc.Id /T /F 2>$null | Out-Null
+            }
         } catch {
             Write-Host "Error shutting down Jupyter Lab: $_"
         }
