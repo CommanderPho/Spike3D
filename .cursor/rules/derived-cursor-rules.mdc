@@ -1,0 +1,68 @@
+---
+description: AI rules derived by SpecStory from the project AI interaction history
+globs: *
+---
+
+## PROJECT OVERVIEW
+
+This document defines the rules, coding standards, workflow guidelines, references, documentation structures, and best practices for this project. It serves as a living document that evolves with the project.
+
+## CODE STYLE
+
+*   Follow PEP 8 guidelines for Python code.
+*   Use descriptive variable and function names.
+*   Keep functions short and focused.
+*   Add comments to explain complex logic.
+
+## FOLDER ORGANIZATION
+
+*   Project root: Contains core files, configuration, and documentation.
+*   `src`: Source code.
+*   `tests`: Unit and integration tests.
+*   `data`: Data files (e.g., datasets, models).
+*   `docs`: Project documentation.
+
+## TECH STACK
+
+*   Python 3.x
+*   NumPy
+*   Vispy
+
+## PROJECT-SPECIFIC STANDARDS
+
+*   When working with Vispy, prioritize modularity and decoupling of components.
+*   The `render_contours` method in `@pyphoplacecellanalysis/Pho2D/vispy/vispy_helpers.py` must not be coupled to `self` or any of the views. It should be able to take a list of binary numpy arrays (2D masks) and render the contours with a specified color or color mapping. The refactored `render_contours` method should accept explicit arguments: `masks`, `x_bounds`, `y_bounds`, `color`/`colors`/`cmap`, and optionally `parents` (sequence of `vispy.scene.Node`).
+    *   It should use the helper functions `contours_from_masks` and `create_contour_line_visuals` defined in the same file.
+    *   Add support for filling in the contour line with a translucent fill that defaults to the same color as the contour line in `@pyphoplacecellanalysis/Pho2D/vispy/vispy_helpers.py:155-292`.
+        *   The `create_contour_line_visuals` function should return a tuple of `(lines, polygons)` so polygons can be cleared. The call sites should extend the contour lists with both polygons and lines.
+
+## WORKFLOW & RELEASE RULES
+
+*   Use Git for version control.
+*   Create pull requests for all code changes.
+*   All pull requests must be reviewed before merging.
+*   Follow semantic versioning for releases.
+
+## REFERENCE EXAMPLES
+
+(This section is currently empty, but will be populated with code examples as the project evolves.)
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+
+*   Use docstrings to document all functions and classes.
+*   Maintain up-to-date README files in each directory.
+*   Use a consistent documentation style.
+
+## DEBUGGING
+
+*   Use a debugger to step through code and inspect variables.
+*   Write unit tests to catch errors early.
+*   Use logging to track down issues in production.
+
+## FINAL DOs AND DON'Ts
+
+*   **DO** write clean, readable code.
+*   **DO** follow the established coding standards.
+*   **DO** write unit tests for all code.
+*   **DON'T** commit code without review.
+*   **DON'T** introduce unnecessary complexity.
