@@ -211,7 +211,11 @@ dev = [
     "pyqtinspect>=0.4.0",
 ]
 testing = ["ipywidgets>=8.0.5,<9"]
-trial = []
+trial = [
+    "pygwalker>=0.4.9.15",
+    "runcell>=0.1.14",
+    "traja>=25.0.1",
+]
 
 [tool.uv]
 default-groups = "all"
