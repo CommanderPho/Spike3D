@@ -175,7 +175,6 @@ dependencies = [
     "spimagine>=0.2.6",
     "pyopencl>=2025.1",
     "scikit-tensor-py3>=0.2.1",
-    "datoviz>=0.3.2",
     "datashader>=0.17.0",
     "ipyvtklink>=0.2.2",
 ]
