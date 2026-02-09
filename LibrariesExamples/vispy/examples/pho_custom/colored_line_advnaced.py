@@ -132,7 +132,7 @@ def _example_with_heading_color():
 
     scene_parent = view.scene
     if scene_parent is not None:
-        line = create_heading_rainbow_line(pos=pos, parent=scene_parent, line_width=3.0, order=10)
+        line = create_heading_rainbow_line(pos=pos, parent=scene_parent, line_width=1.0, order=10)
         line.set_gl_state('translucent', depth_test=False)
 
 
