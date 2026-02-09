@@ -455,7 +455,9 @@
             "astallinger.sourcetrail",
             "phohale.pho-vs-code-url-scheme-grabber",
             "kawamataryo.copy-python-dotted-path",
-            "fabiospampinato.vscode-highlight"
+            "fabiospampinato.vscode-highlight",
+            "prasadgk.pythoncodelens",
+            "yimmas.jupyter-enhancements"
         ]
     }
 }
