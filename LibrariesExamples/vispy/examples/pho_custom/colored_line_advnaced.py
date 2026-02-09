@@ -91,6 +91,8 @@ def _example_with_colormap(custom_cmap: Colormap):
 
 def _example_with_heading_color():
     """Example: draw a path colored by heading (0°=red, ROYGBIV, 359°=violet). Run with: python -c \"from pyphoplacecellanalysis.Pho2D.vispy.vispy_helpers import example_heading_rainbow_line; example_heading_rainbow_line()\"."""
+    from pyphoplacecellanalysis.Pho2D.vispy.position_heading_angle import CompassLegendItem
+    
     # from pyphoplacecellanalysis.Pho2D.vispy.vispy_helpers import create_heading_rainbow_line
 
     # vertex positions of data to draw
@@ -145,14 +147,18 @@ def _example_with_heading_color():
         fig.title = "headings_deg_pos"
         plotwidget.plot(headings_deg_pos, title="headings_deg_pos")
         # plotwidget.colorbar(position="top", cmap="autumn")
-        legend_pos, legend_headings_deg, legend_t = VispyHelpers.generate_angular_shading_legend(x_center=(0, 0), radius=20)
+        # legend_pos, legend_headings_deg, legend_t = VispyHelpers.generate_angular_shading_legend(x_center=(0, 0), radius=20)
         scene_parent = view_a.scene
         if scene_parent is not None:
-            legend_line, legend_data_dict = VispyHelpers.create_heading_rainbow_line(pos=legend_pos, headings_deg=legend_headings_deg, parent=scene_parent, line_width=4, order=11)
-            legend_line.set_gl_state('translucent', depth_test=False)
+            # legend_line, legend_data_dict = VispyHelpers.create_heading_rainbow_line(pos=legend_pos, headings_deg=legend_headings_deg, parent=scene_parent, line_width=4, order=11)
+            # legend_line.set_gl_state('translucent', depth_test=False)
+            
+            legend_out = CompassLegendItem(view=view_a)
+            legend_pos = legend_out._data_dict.get('pos', None)        
+            
             # scene.visuals.Line(pos=headings_deg_pos, parent=view_a.scene)
             VispyHelpers.set_view_camera(view_a, pos=legend_pos)
-            print(f'legend_data_dict: {legend_data_dict}')
+            # print(f'legend_data_dict: {legend_data_dict}')
 
 
     pos = VispyHelpers.build_line_pos(t, pos[:, 0])
