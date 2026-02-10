@@ -6,9 +6,9 @@ import sys
 import subprocess
 from pathlib import Path
 
-from PyQt5.QtCore import QRegExp
+from PyQt5.QtCore import QRegExp, Qt, QSettings
 from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QColor, QFont
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QPushButton, QPlainTextEdit, QApplication, QMessageBox)
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QPushButton, QPlainTextEdit, QApplication, QMessageBox, QMenu)
 
 
 class PythonSyntaxHighlighter(QSyntaxHighlighter):
@@ -93,6 +93,7 @@ class VispyExampleBrowser(QMainWindow):
         current_file = Path(__file__).resolve()
         self.examples_dir = current_file.parent / "examples"
         self.examples = self.scan_examples()
+        self._favorites = set(self._load_favorites())
         self.create_ui()
 
         if self.examples and self.example_list.count() > 0:
@@ -136,6 +137,23 @@ class VispyExampleBrowser(QMainWindow):
         return "Vispy example"
 
 
+    def _display_name(self, name):
+        """Return list display text for an example name (with (*) prefix if favorite)."""
+        return ("(*) " + name) if name in self._favorites else name
+
+
+    def _load_favorites(self):
+        """Load favorite example names from QSettings."""
+        settings = QSettings("Spike3D", "VispyExampleBrowser")
+        return settings.value("favorites", [], type=list) or []
+
+
+    def _save_favorites(self):
+        """Persist favorite example names to QSettings."""
+        settings = QSettings("Spike3D", "VispyExampleBrowser")
+        settings.setValue("favorites", list(self._favorites))
+
+
     def create_ui(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -154,8 +172,11 @@ class VispyExampleBrowser(QMainWindow):
 
         self.example_list = QListWidget()
         self.example_list.setMaximumWidth(300)
+        self.example_list.setContextMenuPolicy(Qt.CustomContextMenu)  # type: ignore[attr-defined]
+        self.example_list.customContextMenuRequested.connect(self._on_list_context_menu)
         for name, _, description in self.examples:
-            item = QListWidgetItem(name)
+            item = QListWidgetItem(self._display_name(name))
+            item.setData(Qt.UserRole, name)  # type: ignore[attr-defined]
             item.setToolTip(description)
             self.example_list.addItem(item)
         self.example_list.itemSelectionChanged.connect(self.on_example_selected)
@@ -191,13 +212,45 @@ class VispyExampleBrowser(QMainWindow):
         main_layout.addWidget(right_panel, 1)
 
 
+    def _on_list_context_menu(self, pos):
+        item = self.example_list.itemAt(pos)
+        if not item:
+            return
+        name = item.data(Qt.UserRole) or item.text().lstrip("(*) ")  # type: ignore[attr-defined]
+        menu = QMenu(self)
+        if name in self._favorites:
+            action = menu.addAction("Remove from favorites")
+        else:
+            action = menu.addAction("Add to favorites")
+        action = menu.exec_(self.example_list.mapToGlobal(pos))
+        if not action:
+            return
+        if name in self._favorites:
+            self._favorites.discard(name)
+        else:
+            self._favorites.add(name)
+        self._save_favorites()
+        item.setText(self._display_name(name))
+
+
+    def _canonical_name(self, item):
+        """Return the example name for an item (without (*) prefix)."""
+        if item is None:
+            return None
+        name = item.data(Qt.UserRole)  # type: ignore[attr-defined]
+        if name is not None:
+            return name
+        text = item.text()
+        return text.lstrip("(*) ") if text.startswith("(*) ") else text
+
+
     def on_example_selected(self):
         current_item = self.example_list.currentItem()
         if not current_item:
             self.run_button.setEnabled(False)
             return
 
-        example_name = current_item.text()
+        example_name = self._canonical_name(current_item)
         selected_example = None
         for name, path, description in self.examples:
             if name == example_name:
@@ -225,7 +278,7 @@ class VispyExampleBrowser(QMainWindow):
         if not current_item:
             return
 
-        example_name = current_item.text()
+        example_name = self._canonical_name(current_item)
         selected_example = None
         for name, path, description in self.examples:
             if name == example_name:
@@ -239,7 +292,8 @@ class VispyExampleBrowser(QMainWindow):
         try:
             python_exe = sys.executable
             script_path = str(path.resolve())
-            subprocess.Popen([python_exe, script_path], creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0)
+            wrapper_path = str(Path(__file__).resolve().parent / "_run_vispy_example.py")
+            subprocess.Popen([python_exe, wrapper_path, name, script_path], creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to run example:\n{str(e)}")
 

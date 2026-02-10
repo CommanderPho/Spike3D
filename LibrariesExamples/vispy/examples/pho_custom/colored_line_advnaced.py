@@ -16,7 +16,7 @@ from vispy import app, scene
 import vispy.plot as vp
 from vispy.color import Colormap
 from pyphoplacecellanalysis.Pho2D.vispy.vispy_helpers import VispyHelpers
-
+from pyphoplacecellanalysis.Pho2D.vispy.position_heading_angle import AngleColoredLineVisual
 
 # def add_line_axes(view, pos):
 #     title = scene.Label("Plot Title", color='white')
@@ -68,14 +68,16 @@ def _example_with_colormap(custom_cmap: Colormap):
     
     canvas = scene.SceneCanvas(keys='interactive', size=(800, 400), show=True)
 
-    line = scene.Line(pos=pos, color=vertex_colors, method='gl')
+    # line = AngleColoredLineVisual(pos=pos, color=vertex_colors, method='gl')
+    # line = scene.Line(pos=pos, color=vertex_colors, method='gl')
     # line.transform = STTransform(translate=[0, 140])
-    line.parent = canvas.central_widget
+    # line.parent = canvas.central_widget
 
     view = canvas.central_widget.add_view()
     view.camera = scene.PanZoomCamera(aspect=1)
 
-    line = scene.Line(pos=pos, color=vertex_colors, method='gl')
+    # line = scene.Line(pos=pos, color=vertex_colors, method='gl')
+    line = AngleColoredLineVisual(pos=pos, color=vertex_colors, method='gl')
     line.parent = view.scene
 
     # Auto-center and scale to data
