@@ -433,3 +433,4 @@ NOTEBOOK_RUN_LOGS
 LibrariesExamples/Silx/example_data/example_t_bin_masks.npy
 .cursorindexingignore.bak
 exports
+burst_detection_results.png

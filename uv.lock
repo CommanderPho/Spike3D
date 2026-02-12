@@ -2564,6 +2564,21 @@ wheels = [
 ]
 
 [[package]]
+name = "datoviz"
+version = "0.3.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "platformdirs" },
+    { name = "requests" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/64/3ccc80dc068cb9e3b45da59016503d07c1e40c895ae7760b8a59be2beec8/datoviz-0.3.5-py3-none-macosx_10_9_universal2.whl", hash = "sha256:8319ccaf6b69d777e10712ac40e60042bf64d01896a722dfdb3d9e60d5ed3b0b", size = 9591453, upload-time = "2026-01-21T15:11:46.551Z" },
+    { url = "https://files.pythonhosted.org/packages/35/51/6c47f90157291ba7889c66c810ec7a3175c8b9fd3e6ae75cafdbed8de49d/datoviz-0.3.5-py3-none-manylinux_2_34_x86_64.whl", hash = "sha256:45fedfb6710ce45ac58650851b54a9b287b40e5d7a54fd0c0cfd7bb34ba0f2b7", size = 7021278, upload-time = "2026-01-21T15:11:49.385Z" },
+    { url = "https://files.pythonhosted.org/packages/95/13/1fb63e463de43b5a55548d0de133c330ba6cd5e7fb4ca23e42716ffff64e/datoviz-0.3.5-py3-none-win_amd64.whl", hash = "sha256:86c60e0cf1040e90c16867b3b76fba316c197797a4858eb172d0aab25651378b", size = 15569663, upload-time = "2026-01-21T15:11:52.516Z" },
+]
+
+[[package]]
 name = "debugpy"
 version = "1.8.17"
 source = { registry = "https://pypi.org/simple" }
@@ -15336,6 +15351,7 @@ dev = [
 testing = [
     { name = "bcubed" },
     { name = "clustpy" },
+    { name = "datoviz" },
     { name = "ipywidgets" },
     { name = "pyclustering" },
 ]
@@ -15548,6 +15564,7 @@ dev = [
 testing = [
     { name = "bcubed", specifier = ">=1.5" },
     { name = "clustpy", specifier = ">=0.0.1" },
+    { name = "datoviz", specifier = ">=0.3.5" },
     { name = "ipywidgets", specifier = ">=8.0.5,<9" },
     { name = "pyclustering", specifier = ">=0.10.1.2" },
 ]

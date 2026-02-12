@@ -213,6 +213,7 @@ dev = [
 testing = [
     "bcubed>=1.5",
     "clustpy>=0.0.1",
+    "datoviz>=0.3.5",
     "ipywidgets>=8.0.5,<9",
     "pyclustering>=0.10.1.2",
 ]
