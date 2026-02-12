@@ -177,7 +177,7 @@ dependencies = [
     "scikit-tensor-py3>=0.2.1",
     "datashader>=0.17.0",
     "ipyvtklink>=0.2.2",
-    "bayesian-changepoint-detection",
+    # "bayesian-changepoint-detection",
 ]
 
 [project.scripts]
@@ -238,7 +238,7 @@ flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main
 pylustrator = { git = "https://github.com/CommanderPho/pylustrator.git" }
 pyqtinspect = { git = "https://github.com/CommanderPho/PyQtInspect-Open.git" }
 neuropy = { path = "../NeuroPy", editable = true }
-bayesian-changepoint-detection = { path = "../bayesian_changepoint_detection" }
+# bayesian-changepoint-detection = { path = "../bayesian_changepoint_detection" }
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
