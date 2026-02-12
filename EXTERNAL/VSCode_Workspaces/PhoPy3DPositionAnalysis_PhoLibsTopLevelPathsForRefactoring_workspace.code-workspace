@@ -18,6 +18,9 @@
 		},
 		{
 			"path": "../../../sleep_loss_hippocampal_replay"
+		},
+		{
+			"path": "../../../bayesian_changepoint_detection"
 		}
 	],
 	"settings": {

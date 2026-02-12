@@ -193,6 +193,7 @@
         "actionButtons": {
 
 
+
             "commands": [
                 {
                     "name": "Back",
@@ -237,6 +238,13 @@
                     "color": "#d4e6ec",
                     "useVsCodeApi": false,
                     "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/Silx/Silx_EXAMPLES.py\""
+                },
+                {
+                    "name": "Vispy Examples",
+                    "tooltip": "Launch Vispy examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/vispy/vispy_EXAMPLES.py\""
                 },
                 {
                     "name": "ViTables Launch",
@@ -366,6 +374,18 @@
         "highlight.enabled": true,
         "pieces.cloudCapabilities": "Blended",
         "highlight.debugging": false,
+        "notebook.editorOptionsCustomizations": {
+            // "editor.colorDecoratorsActivatedOn": "hover",
+            "editor.emptySelectionClipboard": false,
+            "editor.showFoldingControls": "always",
+    },
+    "extensions.closeExtensionDetailsOnViewChange": true,
+    "problems.autoReveal": false,
+    "problems.decorations.enabled": false,
+    "notebook.cellExecutionTimeVerbosity": "verbose",
+    "notebook.diff.ignoreMetadata": true,
+    "notebook.formatOnCellExecution": false,
+    "notebook.inlineValues": "auto",
     },
     "tasks": {
         "version": "2.0.0",

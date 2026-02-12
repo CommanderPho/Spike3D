@@ -384,7 +384,7 @@
         "pieces.cloudCapabilities": "Blended",
         "highlight.debugging": true,
         "python.languageServer": "None",
-        "python.analysis.typeCheckingMode": "off",
+        "python.analysis.typeCheckingMode": "basic",
     },
     "tasks": {
         "version": "2.0.0",

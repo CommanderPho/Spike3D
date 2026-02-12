@@ -316,6 +316,7 @@
         ],
         "git.autofetch": true,
         "github.showAvatar": false,
+        "problems.visibility": false,
     },
     "tasks": {
         "version": "2.0.0",
