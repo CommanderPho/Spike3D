@@ -30,8 +30,10 @@ dependencies = [
     "pyqt5-qt5==5.15.2",
     "qtconsole>=5.4.0,<6",
     "ipython>=8.11.0,<9",
-    "attrs>=22.2.0,<23",
-    "cattrs>=23.1.2,<24",
+    # "attrs>=22.2.0,<23",
+    # "cattrs>=23.1.2,<24",
+    "attrs>=22.2.0",
+    "cattrs>=23.1.2",
     "pillow>=9.4.0,<10",
     "seaborn[stats]>=0.12.2,<0.13",
     "param>=1.13.0,<2",
@@ -218,8 +220,8 @@ testing = [
     "pyclustering>=0.10.1.2",
 ]
 trial = [
-    "pygwalker>=0.4.9.15",
-    "runcell>=0.1.14",
+    # "pygwalker>=0.4.9.15",
+    # "runcell>=0.1.14",
     "traja>=25.0.1",
 ]
 
