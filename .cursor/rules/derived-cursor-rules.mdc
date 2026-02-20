@@ -1,6 +1,6 @@
 ---
 description: AI rules derived by SpecStory from the project AI interaction history
-globs: *
+applyTo: *
 ---
 
 ## PROJECT OVERVIEW
@@ -14,6 +14,17 @@ This document defines the rules, coding standards, workflow guidelines, referenc
 *   Keep functions short and focused.
 *   Add comments to explain complex logic.
 *   There must be two blank lines between Python class methods.
+*   **Consistent Variable Naming**: When creating variables representing the number of slots in a time bin, use the naming convention `n_time_bin_slots`.
+*   **Vectorized Operations**: When normalizing slices of a multi-dimensional array based on nonzero indices, use vectorized operations instead of explicit loops for efficiency. If `is_nonzero = np.nonzero(norm_sums)` returns a tuple of arrays, use `nonzero_idx = is_nonzero[0]` to access the array of indices for vectorized operations:
+    ```python
+    nonzero_idx = np.nonzero(norm_sums)[0]
+    a_context_included_pdf[:, :, nonzero_idx] = a_context_included_pdf[:, :, nonzero_idx] / norm_sums[nonzero_idx]
+    ```
+*   **Array Copying**: When creating a copy of a NumPy array to avoid modifying the original array, use `.copy()` instead of `deepcopy()` for clarity and performance. For example:
+    ```python
+    a_p_x_given_n = np.squeeze(p_x_given_n[:, :, an_epoch_idx, :]).copy()
+    ```
+    This is especially important when the squeezed array could be a view of the original array and an in-place operation is performed on the copy.
 
 ## FOLDER ORGANIZATION
 
@@ -29,6 +40,8 @@ This document defines the rules, coding standards, workflow guidelines, referenc
 *   NumPy
 *   Vispy
 *   Pandas
+*   PyQt5
+*   scikit-image (skimage)
 
 ## PROJECT-SPECIFIC STANDARDS
 
@@ -87,7 +100,7 @@ This document defines the rules, coding standards, workflow guidelines, referenc
                 return fig, n_rows, n_fixed_columns
             ```
 *   Implement a Matplotlib version of the heading-angle shaded trajectory line (working using Vispy here: `@pyphoplacecellanalysis/Pho2D/vispy/vispy_helpers.py:370-397`) in `@pyphoplacecellanalysis/PhoPositionalData/plotting/mixins/decoder_plotting_mixins.py:2264-2301`. The Matplotlib version should color the line by heading angle (0°=red through ROYGBIV to 359°=violet), similar to the Vispy implementation.
-*   All methods in `@pyphocorehelpers/plotting/heading_angle_helpers.py` must be classmethods of the `HeadingAngleHelpers` class.
+*   All methods in `@pyphocorehelpers/plotting/heading/heading_angle_helpers.py` must be classmethods of the `HeadingAngleHelpers` class.
 *   In `@pyphoplacecellanalysis/PhoPositionalData/plotting/mixins/decoder_plotting_mixins.py:2327-2386`, when adding concentrated arrows to a line, enable modes to determine arrow colors using the `RenderColoringMode` Enum:
     *   `RenderColoringMode.SPEED`: colors by speed via `time_cmap`.
     *   `RenderColoringMode.ANGLE`: colors by direction via `HeadingAngleHelpers` (North=Red, ROYGBIV).
@@ -111,37 +124,95 @@ This document defines the rules, coding standards, workflow guidelines, referenc
         *   **Fallback**: When segments need different widths (or different methods), use one Line per segment under a single parent Node; still "one canvas" from the user's perspective (one parent to add to the view).
     *   The class should be something like: `TrajectorySegmentsVisual(parent, segments: List[pd.DataFrame], ...)`
     *   Segment style: either a single style dict (color, width, method) applied to all, or a list of dicts / a callable `(idx, df) -> dict` for per-segment color/width/method.
-    *   Internally: if all widths (and methods) are the same, build one Line with connect + vertex colors; else build N Lines.
+    *   Internally: if all widths (and methods) are the same, build one Line with connect array + vertex colors; else build N Lines.
     *   **DataFrame column handling:** Allow `x_col='x', y_col='y'` (default). Extract positions as `np.column_stack([df[x_col].values, df[y_col].values]).astype(np.float32)`.
-
-## WORKFLOW & RELEASE RULES
-
-*   Use Git for version control.
-*   Create pull requests for all code changes.
-*   All pull requests must be reviewed before merging.
-*   Follow semantic versioning for releases.
-
-## REFERENCE EXAMPLES
-
-(This section is currently empty, but will be populated with code examples as the project evolves.)
-
-## PROJECT DOCUMENTATION & CONTEXT SYSTEM
-
-*   Use docstrings to document all functions and classes.
-*   Maintain up-to-date README files in each directory.
-*   Use a consistent documentation style.
-
-## DEBUGGING
-
-*   Use a debugger to step through code and inspect variables.
-*   Write unit tests to catch errors early.
-*   Use logging to track down issues in production.
-*   When encountering Vispy shader compilation errors, carefully examine the shader code for syntax errors, especially unexpected end-of-file (EOF) tokens. If the driver continues to receive empty shader source, consider refactoring the demos to use `vispy.scene.SceneCanvas` and `vispy.scene.visuals.Line` with precomputed per-vertex colors.
-
-## FINAL DOs AND DON'Ts
-
-*   **DO** write clean, readable code.
-*   **DO** follow the established coding standards.
-*   **DO** write unit tests for all code.
-*   **DON'T** commit code without review.
-*   **DON'T** introduce unnecessary complexity.
+*   **Important Implementation Detail for Predictive Decoding:** The `epoch_high_prob_pos_masks` are 2D boolean masks indicating high-probability positions for each epoch. The shape of each mask should correspond to the shape of the spatial dimensions of the decoded posterior probability array (`p_x_given_n`), meaning `epoch_high_prob_pos_masks[i].shape == (n_x_bins, n_y_bins)`. **Ensure that the `epoch_high_prob_pos_masks` second dimension (`n_y_bins`) equals `len(ybin_centers)`**, where `ybin_centers` are the centers of the y-axis bins used for decoding. When indexing the `epoch_high_prob_pos_masks` using the binned position data (`binned_x`, `binned_y`), remember that the binned position indices (`binned_x`, `binned_y`) are 1-based, so the mask is indexed with `epoch_high_prob_mask[(a_pos.binned_x-1), (a_pos.binned_y-1)]` to perform 0-based indexing.
+    *   The `epoch_high_prob_pos_masks` are derived from `curr_epoch_p_x_given_n` (i.e. the posterior). The posterior comes from the decoder and has shape (n_x_bins, n_y_bins, n_time_bins). The decoder is built elsewhere (reconstruction module). The `DecodingLocalityMeasures` has xbin_centers, ybin_centers which are supposed to match the decoder grid. If they were built consistently, len(xbin_centers)=n_x_bins and len(ybin_centers)=n_y_bins.
+    *   The decoder produces a posterior with one value per spatial bin, so its y-dimension is the number of bins, not the number of edges or the number of "center" points if those were defined with an off-by-one.
+*   In `@pyphoplacecellanalysis/PhoPositionalData/plotting/mixins/decoder_plotting_mixins.py:4315-4347`, only one contour per time bin is desired (and each time bin's contour should have a unique color). Further, the contour should be filled with a translucent fill of its color.
+    *   To achieve this, the `plot_single_t_bin_contour` function should:
+        *   Take `t_idx` and `n_t_bins` as arguments.
+        *   Use a single contour level (isosurface), setting the level to `(vmin + vmax) / 2` for boolean or scalar values. If a sequence of `levels` is provided, the middle value should be used.
+        *   Compute a color for each time bin using a colormap indexed by `t_idx / (n_t_bins - 1)`.
+        *   Create a filled region by thresholding the grid where posterior >= `single_level`.
+        *   Add the filled mesh with translucent color, followed by the contour line on top with the same color and full or slightly reduced opacity for visibility.
+    *   The contour line can be extended upward along the z-axis like a surface. To achieve this, add an optional `contour_height` parameter (default to 0.0). This parameter specifies how much the line is extruded. The `extrude()` function can be called to create a surface from the line, and the surface can then be added to the plot.
+*   **Bug Identification and Resolution:** The `compute_locality_measures_for_posterior` function (@pyphoplacecellanalysis/General/Pipeline/Stages/ComputationFunctions/MultiContextComputationFunctions/PredictiveDecodingComputations.py, lines 668-890) contains a bug:
+    *   The `a_computation_measure_name` is set to 'peak_prom' (line 778).
+    *   If `gaussian_volume` is not None, `result_dict[a_computation_measure_name]` is overwritten with the overlap (gaussian * mask) instead of the peak prominence (lines 823-824).
+    *   The actual peak prominence is never stored under the 'peak_prom' key, leading to incorrect results.
+*   **Unused Variable:** In `compute_locality_measures_for_posterior`, the variable `distances_spatial` is computed (line 751 and 864) but only `distances_spatial_frac_max` is used and stored. The `distances_spatial` variable is therefore unused.
+*   **Empty Dictionary:** In the `DecodingLocalityMeasures.compute_locality_measures` function, the `self.moving_avg_meas_pos_overlap_dict` attribute is initialized as an empty dictionary but is never populated within that class's scope. The `moving_avg_meas_pos_overlap_dict` is only populated within the `PredictiveDecoding` class.
+*   **Size discrepancy in `epoch_high_prob_pos_masks`:** The mask has the same shape as the decoding posterior's spatial dimensions `(n_x_bins, n_y_bins)`. So, the mask's second dimension is `n_y_bins`. If that's one smaller than "n_y_centers", then `n_y_centers = n_y_bins + 1`. This typically means the grid you're comparing to (`ybin_centers`) has one more point than the number of bins in the decoder (e.g., bin edges stored as centers, or a linspace that produced n_bins+1 points). The decoder produces one probability per bin, so its y-dimension is the number of bins, not the number of edges or the number of "center" points if those were defined with an off-by-one.
+*   **Predictive Decoding Vispy Widget - Identified Issues:**
+    *   **Central view: centroid arrow color indexing (likely crash)**
+        *   **File:** `pyphoplacecellanalysis/Pho2D/vispy/predictive_decoding_central_view.py` (lines 87–92, 127–129)
+        *   `centroid_colors` is built with shape `(n_centroids, 4)` and is indexed by position 0..n_centroids-1 (one per valid centroid).
+        *   `original_indices = np.where(valid_mask)[0]` are the original row indices in the full `centroids_df` (e.g. 0, 2, 5, 7).
+        *   Arrow code then does:
+            *   `arrow_centroids_df['original_index_start']` = those original indices (e.g. 0, 2, 5, 7).
+            *   `_safe_color_map_fn = lambda t_idx: centroid_colors[t_idx, :] if (t_idx < np.shape(centroid_colors)[0]) else ...`
+        *   So `t_idx` is an original index (e.g. 5 or 7), while `centroid_colors` is only indexed by position (0..3). Once `t_idx >= n_centroids` (e.g. 7 when you have 4 valid centroids), `centroid_colors[t_idx, :]` raises IndexError. So centroid-arrow plotting can crash whenever valid centroids don’t correspond to the first `n_centroids` rows (non-consecutive or reordered valid rows).
+        *   **Fix:** Map original index → position in valid list (e.g. position = `np.searchsorted(original_indices, t_idx)` or an explicit index array) and use that to index `centroid_colors`.
+        *   **Implemented Fix:** Build unique colors for all original centroids (original time bin indices, even if we don't have a valid centroid).
+    *   **Trajectory lines: time/opacity colors never applied (wrong appearance)**
+        *   **File:** `PredictiveDecodingComputations.py` (lines 7365–7502)
+        *   A full per-vertex `colors` array is built: time-based opacity, optional custom colormap (`color_matches_by_merged_epoch_t_bin_idx`), and `base_rgb` fallback.
+        *   The line is created with: `VispyHelpers.create_heading_rainbow_line(pos=np.column_stack([x_valid, y_valid]), parent=view.scene, line_width=2, order=1)` and no `color` argument.
+        *   `create_heading_rainbow_line` (in `vispy_helpers.py`) ignores that and assigns colors from heading (derived from segment directions), not from your `colors`.
+        *   So the intended time/opacity/colormap coloring is never used; past/future trajectories always show heading-based rainbow. If you rely on time or opacity for interpretation, “plotting” effectively fails by showing the wrong encoding.
+        *   **Fix:** Either pass your `colors` into a `vz.Line(..., color=colors, ...)` (and skip `create_heading_rainbow_line` when you want time-based coloring), or extend the helper to accept an optional vertex color array and use it when provided.
+    *   **Central view: zero-length arrows (NaNs / bad visuals)**
+        *   **File:** `predictive_decoding_central_view.py` (lines 115–122)
+        *   `arrow_centroids_df['dxdy_len'] = distances_spatial` can be zero when two consecutive centroids coincide.
+        *   Then: `arrow_centroids_df[['unit_dx', 'unit_dy']] = ... / arrow_centroids_df['dxdy_len'].to_numpy()[:, None]` causes division by zero → NaNs.
+        *   Those NaNs can break Vispy Arrow rendering or cause Assert.same_length to fail if shapes change.
+        *   **Fix:** Mask out or drop rows where `dxdy_len` is zero (or below a small epsilon) before computing `unit_dx`/`unit_dy` and building arrow geometry.
+    *   **Keyboard navigation: wrong key check**
+        *   **File:** `PredictiveDecodingComputations.py` (lines 8028–8038)
+        *   `proposed_new_epoch = self.current_epoch_idx - 1` is used for both Left and Right.
+        *   The condition `(proposed_new_epoch < 0) or (proposed_new_epoch > (self.num_epochs-1))` causes an early return for any key when that single value is out of range.
+        *   At epoch 0: `proposed_new_epoch == -1` → return, so Right is blocked even though it should move to epoch 1.
+        *   At last epoch: the check can still allow the handler to run and call `update_epoch_display(self.current_epoch_idx + 1)` (out of range). `update_epoch_display` does guard and return, so no crash, but behavior is inconsistent.
+        *   **Fix:** Check the target index for each key: e.g. for Left use `current_epoch_idx - 1`, for Right use `current_epoch_idx + 1`, and return only when that target is < 0 or ≥ num_epochs.
+    *   **Multi-epoch mode vs `update_epoch_display`**
+        *   When `enable_multi_epoch_overview_display_mode` is True, `buildUI()` never creates `epoch_slider`, `epoch_value_label`, or the single-epoch views (`past_view`, `future_view`, `posterior_2d_view`, `time_bin_grid`, `combined_timeline_view`, `colorbar_view`, etc.).
+        *   `update_epoch_display()` always does: `self.epoch_slider.blockSignals(True)`, `self.epoch_value_label.setText(...)`, and uses those views.
+        *   So if anything (e.g. export or a future feature) calls `update_epoch_display()` while in multi-epoch mode, you get AttributeError (e.g. `'NoneType' has no attribute 'blockSignals'` or missing views).
+        *   **Fix:** At the start of `update_epoch_display()`, return early (or no-op) when `enable_multi_epoch_overview_display_mode` is True, or guard every use of `epoch_slider`, `epoch_value_label`, and single-epoch views with `if not self.enable_multi_epoch_overview_display_mode` (and only then run the slider/label/view logic).
+    *   **`_clear_epoch_visuals` and dict-of-lists**
+        *   `trajectory_debug_arrows` and `render_data_dict_list_dict` are dicts of lists. Clearing and detaching is implemented for dicts, but the comment mentions `render_data_dict_list_dict` as possibly not having `.parent` (data only). The code catches `AttributeError` and ignores it for that name; if other dict values ever hold non-visual items, the same pattern may be needed to avoid noisy or failing clears.
+    *   **Centroid arrow color index fix:**
+        *   **File:** `pyphoplacecellanalysis/Pho2D/vispy/predictive_decoding_central_view.py`
+        *   **Problem:** `centroid_colors` is indexed by position 0..n_centroids-1 (one per valid centroid). Arrow code uses `original_index_start` and `original_index_end`, which are time bin indices. `_safe_color_map_fn(t_idx)` does `centroid_colors[t_idx, :]`, so when `t_idx` is a time bin index and there are fewer valid centroids, this raises IndexError.
+        *   **Solution:** Build a single time-bin-indexed color array that covers all original time bin indices.
+        *   **Implementation:**
+            1.  After computing `original_indices`, compute the number of time bin indices to support:
+                *   `n_time_bin_slots = len(time_bin_colors)` when there are no valid centroids.
+                *   Otherwise, `n_time_bin_slots = max(len(time_bin_colors), int(np.max(original_indices)) + 1)` so we cover all indices that appear in the centroid data.
+            2.  Allocate `color_by_time_bin = np.zeros((n_time_bin_slots, 4), dtype=np.float32)`.
+            3.  Fill `color_by_time_bin[0:len(time_bin_colors)]` from `time_bin_colors`.
+            4.  For any remaining slots (if `n_time_bin_slots > len(time_bin_colors)`), set `color_by_time_bin[len(time_bin_colors):]` to the fallback `(1.0, 1.0, 1.0, 0.8)`.
+            5.  Replace the `centroid_colors` construction with `centroid_colors = color_by_time_bin[original_indices]`.
+            6.  In the single-arrows object branch, change `_safe_color_map_fn` to: `_safe_color_map_fn = lambda t_idx: tuple(color_by_time_bin[t_idx]) if (0 <= t_idx < n_time_bin_slots) else (1.0, 1.0, 1.0, 0.8)`.
+            7.  In the per-arrow loop, replace `an_arrow_color = tuple(time_bin_colors[t_idx]) if t_idx < len(time_bin_colors) else ...` with `an_arrow_color = tuple(color_by_time_bin[t_idx]) if (0 <= t_idx < n_time_bin_slots) else (1.0, 1.0, 1.0, 0.8)`.
+            8. In the legacy arrow branch (segment_Vp_deg), replace the per-arrow color logic using `time_bin_colors[t_idx]` with `color_by_time_bin[t_idx]` with the same bounds check `(0 <= t_idx < n_time_bin_slots)` and fallback.
+*   **Specific to `plot_decoded_PBE_matching_past_future_results` in `@pyphoplacecellanalysis/PhoPositionalData/plotting/mixins/decoder_plotting_mixins.py`:**
+    *   **Undefined `a_ds`**: The body uses `a_ds` (e.g. `curr_position_df = deepcopy(a_ds.curr_position_df)`) but it is never set. The method lives on `DecoderRenderingPyVistaMixin`; callers are expected to be datasources (e.g. conform to `EpochTimebinningIndexingDatasource`). At the start of the body, bind the datasource explicitly, e.g. `a_ds = self` (or add an optional parameter `a_ds=None` and use `a_ds = a_ds if a_ds is not None else self`).
+    *   **Return-value assignment**: `perform_plot_filled_contours` returns `(plotActors, data_dict)`. The code does `plots_data[active_plot_key], plots[active_plot_key] = ...`, so actors go into `plots_data` and data into `plots`. Confirm whether this is intentional (naming is then misleading) or the assignment should be swapped to `plots[...]`, `plots_data[...] = ...`.
+    *   **Dead line**: `times_to_z_pos_fn` is a no-op expression; remove it.
+    *   **Docstring**: Replace the import line inside the docstring with a one-line summary and, if needed, a short "Example" or "Usage" section.
+    *   **Overlong section headers**: The "BEGIN FUNCTION BODY" bar is excessive; use short section comments instead.
+    *   Recommended structure (single method, nested helpers only): Keep the same four nested helpers; order and main-body flow as specified in the plan.
+*   **Contour surfaces blending mode modification was not working and has been reverted. Instead, the contour mesh should now render as a volume.**
+*   **`compute_2d_dt_posterior_peak_promenences` Efficiencies:**
+    *   The `compute_2d_dt_posterior_peak_promenences` function in `@pyphoplacecellanalysis/External/peak_prominence2d.py` has several potential inefficiencies that can lead to high memory usage and Jupyter kernel crashes, especially when processing many time bins or epochs:
+        1.  **Per-Time-Bin Computation:** The function performs significant work for each time bin, including:
+            *   Creating a copy of the 2D array `Z_2d` using `seed = Z_2d.copy()`.
+            *   Calling `skimage.morphology.reconstruction(seed, Z_2d, method="dilation")`, which can be memory-intensive.
+            *   Calling `ndimage.label(threshold_mask)` for each alpha value, allocating a labeled array with the same shape as `Z_2d`.
+        2.  **Memory Accumulation:** The function accumulates a list of lists of boolean arrays (`epoch_masks`) with shape `(N_XBINS, N_YBINS)` and a list of tuples (`epoch_promenence_tuples`). The memory usage for `epoch_masks` is `O(n_t_bins * len(alpha) * N_XBINS * N_YBINS)`, which can become very large.
+        3.  **Stacking Operation:** Line 2162 of `@pyphoplacecellanalysis/External/peak_prominence2d.py` reassigns `epoch_masks` to a new list of stacked arrays. This operation iterates over the full list of masks twice and creates `len(alpha)` arrays with shape `(N_XBINS, N_YBINS, n_t_bins)`, potentially doubling memory usage.
+        4.  **Epoch Accumulation:** The caller function `compute_posterior_peak_promenences` appends results to lists for each epoch, potentially holding all epoch results in memory if processing many epochs.
+*   **Integer Overflow Risk in `compute_2d_dt_posterior_peak_promenences`:**
+    *   In `@pyphoplacecellanalysis/External/peak_prominence2d.py`, specifically line 2095 (where `memory_warn_bytes` defaults to `int(60 * 1024**3)`), be aware of the potential for integer overflow when calculating the default value for `memory_warn_

@@ -182,6 +182,7 @@ dependencies = [
     "ipykernel>=6.30.1",
     "pyzmq>=27.1.0",
     "numpy>=1.23.5",
+    "pyrefly>=0.53.0",
 ]
 
 [project.scripts]

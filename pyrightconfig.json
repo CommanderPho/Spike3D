@@ -1,7 +1,7 @@
 {
   "exclude":  [
-    "**/EXTERNAL", "**/__pycache__", "**/.vincent", "**/.venv_new", "**/data", "**/.venv", "**/.venv_alt", "**/.venv_green", "**/.classpath", "**/.factorypath", "**/.ipynb_checkpoints", "**/CVS", "**/.venv_*", "**.svn", "**/.venv_UV", "**/dist", "**/.virtual_documents", "**/.mypy_cache", "**/.idea", "**/*.asv", "**/.git", "**/.spyproject", "**/docs", "**/.venv_black", "**/.project", "**/.venv_teal", "**/.venv_white", "**/scratchpads", "**/node_modules", "**/.dvc", "**/._cell_execution_logs", "**/build", "**/LibrariesExamples", "**/.settings", "**/.venv_raw", "**/.vscode", "**/templating", "**/.hg", "**/.venv_yellow", "**/site-packages/**", "**/output",
-    "**/SCRATCH",
+    "**/EXTERNAL", "**/__pycache__", "**/.vincent", "**/.venv_new", "**/data", "**/.venv", "**/.venv_alt", "**/.venv_green", "**/.classpath", "**/.factorypath", "**/.ipynb_checkpoints", "**/CVS", "**/.venv_*", "**/.svn", "**/.venv_UV", "**/dist", "**/.virtual_documents", "**/.mypy_cache", "**/.idea", "**/*.asv", "**/.git", "**/.spyproject", "**/docs", "**/.venv_black", "**/.project", "**/.venv_teal", "**/.venv_white", "**/scratchpads", "**/node_modules", "**/.dvc", "**/._cell_execution_logs", "**/build", "**/LibrariesExamples", "**/.settings", "**/.venv_raw", "**/.vscode", "**/templating", "**/.hg", "**/.venv_yellow", "**/site-packages/**", "**/output",
+    "**/SCRATCH"
   ],
   "ignore":  [
     "**/.vincent", "**/.data", "**/data", "**/.venv_new", "**/docs_sphinx", "**/.venv", "**/.venv_alt", "**/.ruff_cache, **/.mypy_cache", "**/.venv_green", "templating", "scripts", "**/.venv_*", "**/.venv_UV", "**/.mypy_cache", "**/.idea", "**/docs", "**/.venv_black", "EXTERNAL", "**/pyphoplacecellanalysis/External", "**/.venv_teal", "**/.venv_white", "**/scratchpads", "**/.conda", "**/._cell_execution_logs", "**/uv/python*", "LibrariesExamples", "**/.venv_raw", "**/site", "src/oldstuff", "**/.venv_yellow", "**/output",
@@ -10,41 +10,8 @@
   "defineConstant": {
     "DEBUG": true
   },
-
-//   "stubPath": "src/stubs",
-//   "venv": "env367",
-
   "reportMissingImports": true,
   "reportMissingTypeStubs": false,
   "reportOptionalMemberAccess": "none",
-
-  "pythonVersion": "3.9",
-//   "pythonPlatform": "Linux",
-//   "executionEnvironments": [
-//     {
-//       "root": "src/web",
-//       "pythonVersion": "3.5",
-//       "pythonPlatform": "Windows",
-//       "extraPaths": [
-//         "src/service_libs"
-//       ]
-//     },
-//     {
-//       "root": "src/sdk",
-//       "pythonVersion": "3.0",
-//       "extraPaths": [
-//         "src/backend"
-//       ]
-//     },
-//     {
-//       "root": "src/tests",
-//       "extraPaths": [
-//         "src/tests/e2e",
-//         "src/sdk"
-//       ]
-//     },
-//     {
-//       "root": "src"
-//     }
-//   ]
+  "pythonVersion": "3.9"
 }

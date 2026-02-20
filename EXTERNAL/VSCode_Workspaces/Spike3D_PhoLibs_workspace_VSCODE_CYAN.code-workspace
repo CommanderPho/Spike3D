@@ -458,7 +458,8 @@
             "kawamataryo.copy-python-dotted-path",
             "fabiospampinato.vscode-highlight",
             "prasadgk.pythoncodelens",
-            "yimmas.jupyter-enhancements"
+            "yimmas.jupyter-enhancements",
+            "meta.pyrefly"
         ]
     }
 }
