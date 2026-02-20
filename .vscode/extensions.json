@@ -31,6 +31,7 @@
     "kawamataryo.copy-python-dotted-path",
     "phohale.version-status-bar",
     "phohale.properpythonpasting",
-    "danielbayley.custom-app-icons"
+    "danielbayley.custom-app-icons",
+    "meta.pyrefly"
     ]
 }
