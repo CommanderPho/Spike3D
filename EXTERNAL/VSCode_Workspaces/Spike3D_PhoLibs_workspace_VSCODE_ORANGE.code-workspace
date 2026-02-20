@@ -15,6 +15,12 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy/neuropy"
+        },
+        {
+            "path": "../../../rerun"
+        },
+        {
+            "path": "../../../phoRerunSpike3DTesting"
         }
     ],
     "settings": {
@@ -375,10 +381,10 @@
         "pieces.cloudCapabilities": "Blended",
         "highlight.debugging": false,
         "notebook.editorOptionsCustomizations": {
-            // "editor.colorDecoratorsActivatedOn": "hover",
             "editor.emptySelectionClipboard": false,
             "editor.showFoldingControls": "always",
-    },
+            "editor.insertSpaces": true
+        },
     "extensions.closeExtensionDetailsOnViewChange": true,
     "problems.autoReveal": false,
     "problems.decorations.enabled": false,
@@ -386,6 +392,7 @@
     "notebook.diff.ignoreMetadata": true,
     "notebook.formatOnCellExecution": false,
     "notebook.inlineValues": "auto",
+    "problems.visibility": false,
     },
     "tasks": {
         "version": "2.0.0",
