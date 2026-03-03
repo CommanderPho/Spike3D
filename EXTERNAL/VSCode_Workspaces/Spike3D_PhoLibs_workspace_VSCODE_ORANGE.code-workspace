@@ -393,6 +393,7 @@
     "notebook.formatOnCellExecution": false,
     "notebook.inlineValues": "auto",
     "problems.visibility": false,
+    "editorjumper.selectedIDE": "Cursor",
     },
     "tasks": {
         "version": "2.0.0",
