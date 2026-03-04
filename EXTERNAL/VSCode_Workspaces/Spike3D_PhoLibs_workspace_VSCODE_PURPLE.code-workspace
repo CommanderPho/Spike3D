@@ -46,7 +46,7 @@
             "editor.lineHighlightBorder": "#b09fd11f",
             "activityBar.background": "#37234b",
             "titleBar.activeBackground": "#8453c7",
-            "titleBar.activeForeground": "#000000",
+            "titleBar.activeForeground": "#ffffff",
             "scrollbarSlider.background": "#a210ff57",
             "scrollbarSlider.hoverBackground": "#8800ff82",
             "scrollbarSlider.activeBackground": "#8100ffdf",
