@@ -1,0 +1,10 @@
+id: find-qwidget-subclasses
+language: python
+severity: hint
+message: "QWidget subclass found: $NAME"
+rule:
+  kind: class_definition
+  has:
+    field: superclasses
+    has:
+      pattern: QWidget

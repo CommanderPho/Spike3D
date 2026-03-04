@@ -32,6 +32,7 @@
     "phohale.version-status-bar",
     "phohale.properpythonpasting",
     "danielbayley.custom-app-icons",
-    "meta.pyrefly"
+    "meta.pyrefly",
+    "ast-grep.ast-grep-vscode"
     ]
 }

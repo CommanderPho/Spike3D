@@ -1,0 +1,6 @@
+id: rule-unique-id          # unique identifier for the rule
+language: python             # target language
+rule:                        # the matching logic
+  kind: class_definition     # match by AST node kind
+message: "Found a class"     # message to display on match
+severity: hint               # hint | warning | error

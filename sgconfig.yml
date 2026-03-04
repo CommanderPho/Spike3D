@@ -1,0 +1,15 @@
+ruleDirs:
+- H:\TEMP\Spike3DEnv_ExploreUpgrade\Spike3DWorkEnv\Spike3D\.pho\ast-grep/rules
+testConfigs:
+- testDir: H:\TEMP\Spike3DEnv_ExploreUpgrade\Spike3DWorkEnv\Spike3D\.pho\ast-grep\rule-tests
+utilDirs:
+- H:\TEMP\Spike3DEnv_ExploreUpgrade\Spike3DWorkEnv\Spike3D\.pho\ast-grep\utils
+files:
+  - ../../../pyPhoCoreHelpers/src/pyphocorehelpers/**
+  - ../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/**
+  - ../../../NeuroPy/neuropy/**
+ignore:
+  - tests/**
+  - build/**
+  - venv/**
+  - .venv/**
