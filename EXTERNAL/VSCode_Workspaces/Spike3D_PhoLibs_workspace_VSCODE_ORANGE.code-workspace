@@ -15,12 +15,6 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy/neuropy"
-        },
-        {
-            "path": "../../../rerun"
-        },
-        {
-            "path": "../../../phoRerunSpike3DTesting"
         }
     ],
     "settings": {
