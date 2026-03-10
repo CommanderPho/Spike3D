@@ -15,12 +15,6 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy/neuropy"
-        },
-        {
-            "path": "../../../rerun"
-        },
-        {
-            "path": "../../../phoRerunSpike3DTesting"
         }
     ],
     "settings": {
@@ -293,7 +287,7 @@
         "workbench.sash.size": 9,
         "workbench.sash.hoverDelay": 120,
         "scratchpads.filePrefix": "scratch_",
-        "scratchpads.scratchpadsFolder": "C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/DEVELOPER_NOTES/UnsortedErrorLogs",
+        "scratchpads.scratchpadsFolder": "H:\\TEMP\\Spike3DEnv_ExploreUpgrade\\Spike3DWorkEnv\\Spike3D\\EXTERNAL\\DEVELOPER_NOTES\\SCRATCHPADS",
         "notebook.find.filters": {
             "markupSource": true,
             "markupPreview": false,
@@ -394,6 +388,15 @@
     "notebook.inlineValues": "auto",
     "problems.visibility": false,
     "editorjumper.selectedIDE": "Cursor",
+    "jupyter-cell-tags.jupyterEnhancements.background.enable": false,
+    "jupyter-cell-tags.jupyterEnhancements.flash.enable": false,
+    "jupyter-cell-tags.jupyterEnhancements.innerBorder.enable": false,
+    "jupyter-cell-tags.jupyterEnhancements.innerBorder.persist": false,
+    "jupyter-cell-tags.jupyterEnhancements.kernel.pythonPath": "H:\\TEMP\\Spike3DEnv_ExploreUpgrade\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
+    "jupyter-cell-tags.jupyterEnhancements.outerBorder.enable": false,
+    "jupyter-cell-tags.jupyterEnhancements.outerBorder.persist": false,
+    "jupyter-cell-tags.scrollbarDecorators.enabled": false,
+    "jupyter-cell-tags.tagSortOrder": "creation-date",
     },
     "tasks": {
         "version": "2.0.0",

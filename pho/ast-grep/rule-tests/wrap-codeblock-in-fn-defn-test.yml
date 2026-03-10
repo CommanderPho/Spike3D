@@ -1,0 +1,18 @@
+id: wrap-codeblock-in-fn-defn
+valid:
+- |
+  if True:
+      pass
+- |
+  def foo():
+      return 1
+invalid:
+- |
+  if True:
+      x = 1
+      y = x + 1
+      print(y)
+- |
+  for i in range(3):
+      a = i * 2
+      b = a + 1

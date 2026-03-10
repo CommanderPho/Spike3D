@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ast-grep/ast-grep/main/schemas/rule.json
+# Wraps a Python code block in a function definition and adds a call passing locals as kwargs.
+# Match target: any block (suite) e.g. body of if/for/with/function. Apply to a selection by
+# ensuring the block is the AST node you want to wrap. For "appropriate returns" and exact
+# kwargs, add return statements and parameters manually after the rewrite.
+
+id: wrap-codeblock-in-fn-defn
+message: Wrap this block in a function and call it with **locals() as kwargs; add params/returns as needed.
+severity: hint
+language: Python
+rule:
+  all:
+    - kind: block
+    - pattern: $$$BODY
+# Only match blocks with at least 2 lines (avoid wrapping single-statement blocks)
+constraints:
+  BODY:
+    regex: .+\n.+
+fix: |
+  def _extracted():
+      $BODY
+
+  _extracted(**locals())
