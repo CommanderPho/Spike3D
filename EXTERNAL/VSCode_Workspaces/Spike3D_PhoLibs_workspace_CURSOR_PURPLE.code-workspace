@@ -44,23 +44,14 @@
         "workbench.colorCustomizations": {
             "editor.lineHighlightBackground": "#4b10cf2d",
             "editor.lineHighlightBorder": "#b09fd11f",
-            "activityBar.background": "#37234b",
-            "titleBar.activeBackground": "#8453c7",
-            "titleBar.activeForeground": "#000000",
             "scrollbarSlider.background": "#a210ff57",
             "scrollbarSlider.hoverBackground": "#8800ff82",
             "scrollbarSlider.activeBackground": "#8100ffdf",
-            "activityBar.inactiveForeground": "#ffffff3c",
-            "activityBar.foreground": "#ffffff",
             "notebook.outputContainerBackgroundColor": "#395a3e50",
             "notebook.outputContainerBorderColor": "#a210ff",
             "notebook.focusedCellBorder": "#9900ffda",
             "notebook.focusedEditorBorder": "#9900ff",
             "notebook.inactiveFocusedCellBorder": "#9900ff63",
-            "titleBar.inactiveBackground": "#8453c78e",
-            "tab.activeBorder": "#2F3C2E",
-            "statusBar.background": "#3c2e3c",
-            "statusBar.foreground": "#ffffff",
             "window.activeBorder": "#9900ff",
             "window.inactiveBorder": "#9900ff18",
             "sideBar.dropBackground": "#53595d80",
@@ -68,7 +59,6 @@
             "sideBySideEditor.verticalBorder": "#ffffff17",
             "profileBadge.background": "#4d4d4d",
             "profileBadge.foreground": "#9900ff",
-            "editorGroup.border": "#9900ff17",
             "editorGroupHeader.tabsBackground": "#9900ff2d",
             "editorGroupHeader.tabsBorder": "#36003f",
             "tab.activeBackground": "#370041",
@@ -102,25 +92,7 @@
             "editorIndentGuide.activeBackground3": "#f475ff86",
             "editorIndentGuide.activeBackground4": "#c2c6ff86",
             "editorIndentGuide.activeBackground5": "#7a33ff86",
-            "editorIndentGuide.activeBackground6": "#ffebfd86",
-            "sash.hoverBorder":"#007fd4",
-
-            // "titleBar.activeBackground": "#66409baf",
-            "titleBar.activeForeground": "#ffffff", // var(--vscode-titleBar-activeForeground)
-
-            // "editorActionList.background": "#c300ff",
-            // "editorActionList.focusBackground": "#04395e",
-            // "editorActionList.focusForeground": "#ff00b3",
-            // "editorActionList.foreground": "#cccccc",
-
-            // "actionButton.background": "#ff0000",
-            // "actionButton.hoverBackground": "#ff5555",
-            // "button.background": "#00ff00",
-            // "button.hoverBackground": "#55ff55",
-            // "editorActionList.foreground": "#c300ff",
-
-
-
+            "editorIndentGuide.activeBackground6": "#ffebfd86"
         },
         "search.exclude": {
             "**/.ipynb_checkpoints": true,
@@ -317,6 +289,7 @@
         "git.autofetch": true,
         "github.showAvatar": false,
         "problems.visibility": false,
+        "python.languageServer": "None",
     },
     "tasks": {
         "version": "2.0.0",
