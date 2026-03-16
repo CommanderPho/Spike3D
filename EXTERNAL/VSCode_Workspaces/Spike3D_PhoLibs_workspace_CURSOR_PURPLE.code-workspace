@@ -42,14 +42,8 @@
         },
         "python.analysis.logLevel": "Trace",
         "workbench.colorCustomizations": {
-            "titleBar.activeForeground": "#ffffff",
-            "titleBar.inactiveForeground": "#ffffffbb",
             "editor.lineHighlightBackground": "#4b10cf2d",
             "editor.lineHighlightBorder": "#b09fd11f",
-            "editorActionList.background": "#252526",
-            "editorActionList.focusBackground": "#04395e",
-            "editorActionList.focusForeground": "#ffffff",
-            "editorActionList.foreground": "#cccccc",
             "scrollbarSlider.background": "#a210ff57",
             "scrollbarSlider.hoverBackground": "#8800ff82",
             "scrollbarSlider.activeBackground": "#8100ffdf",
@@ -295,6 +289,7 @@
         "git.autofetch": true,
         "github.showAvatar": false,
         "problems.visibility": false,
+        "python.languageServer": "None",
     },
     "tasks": {
         "version": "2.0.0",
