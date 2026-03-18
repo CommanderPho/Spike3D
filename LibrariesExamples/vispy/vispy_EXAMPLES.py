@@ -187,6 +187,11 @@ class VispyExampleBrowser(QMainWindow):
         self.run_button.clicked.connect(self.run_example)
         left_layout.addWidget(self.run_button)
 
+        self.open_editor_button = QPushButton("Open in Default Editor")
+        self.open_editor_button.setEnabled(False)
+        self.open_editor_button.clicked.connect(self.open_in_editor)
+        left_layout.addWidget(self.open_editor_button)
+
         left_layout.addStretch()
         main_layout.addWidget(left_panel)
 
@@ -248,6 +253,7 @@ class VispyExampleBrowser(QMainWindow):
         current_item = self.example_list.currentItem()
         if not current_item:
             self.run_button.setEnabled(False)
+            self.open_editor_button.setEnabled(False)
             return
 
         example_name = self._canonical_name(current_item)
@@ -268,9 +274,11 @@ class VispyExampleBrowser(QMainWindow):
                 code = f.read()
             self.code_preview.setPlainText(code)
             self.run_button.setEnabled(True)
+            self.open_editor_button.setEnabled(True)
         except Exception as e:
             self.code_preview.setPlainText(f"Error loading file: {str(e)}")
             self.run_button.setEnabled(False)
+            self.open_editor_button.setEnabled(False)
 
 
     def run_example(self):
@@ -290,12 +298,40 @@ class VispyExampleBrowser(QMainWindow):
 
         name, path, description = selected_example
         try:
-            python_exe = sys.executable
+            python_exe = str(Path(sys.executable).resolve())
             script_path = str(path.resolve())
             wrapper_path = str(Path(__file__).resolve().parent / "_run_vispy_example.py")
-            subprocess.Popen([python_exe, wrapper_path, name, script_path], creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0)
+            subprocess.Popen([python_exe, wrapper_path, name, script_path], cwd=str(path.resolve().parent), env=os.environ.copy(), creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to run example:\n{str(e)}")
+
+
+    def open_in_editor(self):
+        current_item = self.example_list.currentItem()
+        if not current_item:
+            return
+
+        example_name = self._canonical_name(current_item)
+        selected_example = None
+        for name, path, description in self.examples:
+            if name == example_name:
+                selected_example = (name, path, description)
+                break
+
+        if not selected_example:
+            return
+
+        _, path, _ = selected_example
+        try:
+            path_str = str(path.resolve())
+            if sys.platform == "win32":
+                os.startfile(path_str)
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", path_str])
+            else:
+                subprocess.Popen(["xdg-open", path_str])
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Could not open file in default editor:\n{str(e)}")
 
 
 def main():

@@ -223,11 +223,18 @@
                     "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/Silx/Silx_EXAMPLES.py\""
                 },
                 {
+                    "name": "Vispy Examples",
+                    "tooltip": "Launch Vispy examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/vispy/vispy_EXAMPLES.py\""
+                },
+                {
                     "name": "ViTables Launch",
                     "tooltip": "Launch ViTables pytables GUI (HDF5, etc)",
                     "color": "#ffed78",
                     "useVsCodeApi": false,
-                    "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m vitables"
+                    "command": "cd ${workspaceFolder} && uv run python -m vitables"
                 },
                 {
                     "name": "JupyterBook Build",
@@ -241,7 +248,7 @@
                     "tooltip": "Launch standalone spike_raster_window",
                     "color": "#aaed78",
                     "useVsCodeApi": false,
-                    "command": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
+                    "command": "cd ${workspaceFolder} && uv run python -m PyQtInspect --direct --qt-support=pyqt5 --file c:/Users/pho/repos/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/GUI/Qt/SpikeRasterWindows/Spike3DRasterWindowWidget.py"
                 },
                 {
                     "name": "\u00e2\u2021\u00a5 Convert to File Spaces",
