@@ -38,7 +38,7 @@ isProject: false
   - `**add_posterior_contours`**: add optional `scene_parent=None`; resolve `parent = scene_parent if scene_parent is not None else self.view.scene`, pass into `_build_posterior_contours_3d`, and store `'scene_parent': parent` in `posterior_contours_by_key[identifier]` so downstream code knows the group root.
 3. **Extrusions follow the same parent**
   - `**_build_extrusion_wall_mesh`** and `**_build_intersection_tube`**: add required or defaulted `scene_same_parent` argument; use it instead of hard-coded `self.view.scene`.
-  - `**build_contour_extrusions**`: read `scene_parent = contour_entry.get('scene_parent', self.view.scene)` and pass it into wall/tube construction so `ExtWall[...]` and `IntTube[...]` sit under the same epoch node as the contour lines/fills.
+  - `**build_contour_extrusions`**: read `scene_parent = contour_entry.get('scene_parent', self.view.scene)` and pass it into wall/tube construction so `ExtWall[...]` and `IntTube[...]` sit under the same epoch node as the contour lines/fills.
 4. **Emphasis plane under the same epoch**
   - `**add_emphasis_plane`**: add optional `scene_parent=None`; use resolved parent for `plane_mesh` and `edge_line` instead of `self.view.scene`.
 5. **Wire `add_epoch_visuals`**
