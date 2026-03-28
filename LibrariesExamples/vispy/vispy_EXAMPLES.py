@@ -5,10 +5,13 @@ os.environ['PYQTGRAPH_QT_LIB'] = 'PyQt5'
 import sys
 import subprocess
 from pathlib import Path
+from typing import Any
 
-from PyQt5.QtCore import QRegExp, Qt, QSettings
-from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QColor, QFont
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QPushButton, QPlainTextEdit, QApplication, QMessageBox, QMenu)
+from PyQt5.QtCore import QRegExp, Qt, QSettings, QThread, pyqtSignal
+from PyQt5.QtGui import QCloseEvent, QSyntaxHighlighter, QTextCharFormat, QColor, QFont
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QPushButton, QPlainTextEdit, QSplitter, QApplication, QMessageBox, QMenu)
+
+from pyphoplacecellanalysis.GUI.Qt.Widgets.PhoCodeConsoleWidget import PhoCodeConsoleWidget
 
 
 def _subprocess_python_executable() -> str:
@@ -28,14 +31,53 @@ def _subprocess_python_executable() -> str:
     return str(exe)
 
 
-def _subprocess_env_for_examples() -> dict:
-    """Copy of the process environment with venv bin dir prepended to PATH so nested `python` calls resolve to the same env."""
-    env = os.environ.copy()
-    if sys.prefix != sys.base_prefix:
-        bindir = str(Path(sys.prefix).resolve() / ("Scripts" if sys.platform == "win32" else "bin"))
-        env["PATH"] = bindir + os.pathsep + env.get("PATH", "")
-        env["VIRTUAL_ENV"] = str(Path(sys.prefix).resolve())
-    return env
+class ExampleSubprocessRunner(QThread):
+    """Runs ``subprocess.Popen`` in a thread and streams merged stdout/stderr via ``chunk_ready``. Avoids QProcess (some Windows setups always fail with ``UnknownError`` even for ``cmd.exe``)."""
+
+    chunk_ready = pyqtSignal(str)
+    process_finished = pyqtSignal(int)
+
+    def __init__(self, argv: list[str], cwd: str, parent: Any = None):
+        super().__init__(parent)
+        self._argv = argv
+        self._cwd = cwd
+        self._proc: Any = None
+
+    def terminate_subprocess(self) -> None:
+        p = self._proc
+        if p is not None and p.poll() is None:
+            try:
+                p.kill()
+            except Exception:
+                pass
+
+    def run(self) -> None:
+        creationflags = getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
+        try:
+            self._proc = subprocess.Popen(self._argv, cwd=self._cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=None, creationflags=creationflags)
+        except Exception as e:
+            self.chunk_ready.emit("Failed to start subprocess: %s\n" % (e,))
+            self.process_finished.emit(-1)
+            return
+        out = self._proc.stdout
+        assert out is not None
+        try:
+            while True:
+                chunk = out.read(4096)
+                if not chunk:
+                    break
+                self.chunk_ready.emit(chunk.decode("utf-8", errors="replace"))
+        except Exception as e:
+            self.chunk_ready.emit("\n[stdout read error] %s\n" % (e,))
+        finally:
+            try:
+                out.close()
+            except Exception:
+                pass
+            if self._proc.poll() is None:
+                self._proc.wait()
+            rc = self._proc.returncode if self._proc.returncode is not None else -1
+            self.process_finished.emit(rc)
 
 
 class PythonSyntaxHighlighter(QSyntaxHighlighter):
@@ -121,6 +163,7 @@ class VispyExampleBrowser(QMainWindow):
         self.examples_dir = current_file.parent / "examples"
         self.examples = self.scan_examples()
         self._favorites = set(self._load_favorites())
+        self._example_process = None
         self.create_ui()
 
         if self.examples and self.example_list.count() > 0:
@@ -184,10 +227,14 @@ class VispyExampleBrowser(QMainWindow):
     def create_ui(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
+        outer_layout = QVBoxLayout(central_widget)
+        outer_layout.setSpacing(5)
+        outer_layout.setContentsMargins(5, 5, 5, 5)
 
-        main_layout = QHBoxLayout(central_widget)
+        top_area = QWidget()
+        main_layout = QHBoxLayout(top_area)
         main_layout.setSpacing(5)
-        main_layout.setContentsMargins(5, 5, 5, 5)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
         left_panel = QWidget()
         left_layout = QVBoxLayout(left_panel)
@@ -243,6 +290,86 @@ class VispyExampleBrowser(QMainWindow):
 
         main_layout.addWidget(right_panel, 1)
 
+        here = Path(__file__).resolve().parent
+        wrapper = here / "_run_vispy_example.py"
+        sample_name = self.examples[0][0] if self.examples else "relative/path/to_example"
+        sample_script = self.examples[0][1] if self.examples else (self.examples_dir / "your_example.py")
+        win_hint = "On Windows, quote paths with spaces in ! lines; ! blocks the UI until the command exits."
+        welcome_lines = [
+            "PhoCodeConsoleWidget — vispy example output and commands",
+            "",
+            "Preferred (same subprocess as Run Example; does not block the browser UI):",
+            "  browser.run_example()     # requires a selected list item",
+            '  run_vispy_example("%s")   # run by scanned name' % (sample_name,),
+            "",
+            "This panel also shows merged stdout/stderr from the example subprocess (background thread).",
+            "",
+            "Advanced (block the Qt UI until the child script exits):",
+            '  %%run "%s" "%s" "%s"' % (wrapper, sample_name, sample_script),
+            "  run \"...\"  # same in-process runpy as %run",
+            "  !\"%s\" \"%s\" \"%s\" \"%s\"   # shell; %s" % (_subprocess_python_executable(), wrapper, sample_name, sample_script, win_hint),
+            "",
+            "%run/run merge names into the console namespace; share one interpreter with this browser (vispy/Qt caveats).",
+            "Shell ! is disabled if the widget is constructed with enable_shell_commands=False.",
+            "",
+        ]
+        console_ns = {
+            "browser": self,
+            "vispy_examples_dir": self.examples_dir,
+            "vispy_run_helper": wrapper,
+            "vispy_python": _subprocess_python_executable(),
+            "run_vispy_example": self.run_vispy_example,
+        }
+        self._run_console = PhoCodeConsoleWidget(parent=self, namespace=console_ns, text="\n".join(welcome_lines) + "\n", enable_shell_commands=True)
+        self._run_console.setMinimumHeight(180)
+
+        splitter = QSplitter(Qt.Vertical)  # type: ignore[attr-defined]
+        splitter.addWidget(top_area)
+        splitter.addWidget(self._run_console)
+        splitter.setStretchFactor(0, 4)
+        splitter.setStretchFactor(1, 1)
+        outer_layout.addWidget(splitter)
+
+
+    def closeEvent(self, event: QCloseEvent):
+        if self._example_process is not None:
+            runner = self._example_process
+            self._example_process = None
+            for _sig in (runner.chunk_ready, runner.process_finished):
+                try:
+                    _sig.disconnect()
+                except TypeError:
+                    pass
+            runner.terminate_subprocess()
+            runner.wait(60000)
+            runner.deleteLater()
+        super().closeEvent(event)
+
+
+    def _stop_running_example_process(self):
+        """Stop the current example subprocess without blocking the UI; thread ``finished`` deletes the runner."""
+        if self._example_process is None:
+            return
+        runner = self._example_process
+        self._example_process = None
+        try:
+            runner.chunk_ready.disconnect()
+        except TypeError:
+            pass
+        try:
+            runner.process_finished.disconnect()
+        except TypeError:
+            pass
+        runner.terminate_subprocess()
+
+
+    def _on_example_subprocess_finished(self, exit_code: int):
+        runner = self.sender()
+        if runner is not self._example_process:
+            return
+        self._run_console.write("\n[Process finished] exit code: %s\n" % (exit_code,))
+        self._example_process = None
+
 
     def _on_list_context_menu(self, pos):
         item = self.example_list.itemAt(pos)
@@ -274,6 +401,55 @@ class VispyExampleBrowser(QMainWindow):
             return name
         text = item.text()
         return text.lstrip("(*) ") if text.startswith("(*) ") else text
+
+
+    def _start_example_process(self, name, path):
+        """Start wrapper + example in a background thread via ``subprocess.Popen`` (same argv as ``!`` shell); inherits env from this process."""
+        try:
+            python_exe = _subprocess_python_executable()
+            script_path = str(path.resolve())
+            wrapper_path = str(Path(__file__).resolve().parent / "_run_vispy_example.py")
+            work_dir = str(path.resolve().parent)
+            py_path, wrap_path, sk_path = Path(python_exe), Path(wrapper_path), Path(script_path)
+            if not py_path.is_file():
+                self._run_console.write("Interpreter missing or not a file: %s\n" % (python_exe,))
+                return False
+            if not wrap_path.is_file():
+                self._run_console.write("Wrapper missing or not a file: %s\n" % (wrapper_path,))
+                return False
+            if not sk_path.is_file():
+                self._run_console.write("Example script missing or not a file: %s\n" % (script_path,))
+                return False
+            if not Path(work_dir).is_dir():
+                self._run_console.write("Working directory missing or not a dir: %s\n" % (work_dir,))
+                return False
+            argv = [python_exe, wrapper_path, name, script_path]
+            runner = ExampleSubprocessRunner(argv, work_dir, self)
+            runner.chunk_ready.connect(self._run_console.write)
+            runner.process_finished.connect(self._on_example_subprocess_finished)
+            runner.finished.connect(runner.deleteLater)
+            self._example_process = runner
+            runner.start()
+            return True
+        except Exception as e:
+            self._run_console.write(f"Failed to run example: {str(e)}\n")
+            return False
+
+
+    def run_vispy_example(self, name):
+        """Run a scanned example by list id (e.g. ``basics/line``). Same non-blocking subprocess path as Run Example."""
+        selected = None
+        for n, path, _d in self.examples:
+            if n == name:
+                selected = (n, path)
+                break
+        if not selected:
+            self._run_console.write("Unknown example name: %s\n" % (name,))
+            return
+        n, path = selected
+        self._stop_running_example_process()
+        self._run_console.write(f"\n{'=' * 60}\nRun example: {n}\n{'=' * 60}\n")
+        self._start_example_process(n, path)
 
 
     def on_example_selected(self):
@@ -325,12 +501,11 @@ class VispyExampleBrowser(QMainWindow):
 
         name, path, description = selected_example
         try:
-            python_exe = _subprocess_python_executable()
-            script_path = str(path.resolve())
-            wrapper_path = str(Path(__file__).resolve().parent / "_run_vispy_example.py")
-            subprocess.Popen([python_exe, wrapper_path, name, script_path], cwd=str(path.resolve().parent), env=_subprocess_env_for_examples(), creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0)
+            self._stop_running_example_process()
+            self._run_console.write(f"\n{'=' * 60}\nRun example: {name}\n{'=' * 60}\n")
+            self._start_example_process(name, path)
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to run example:\n{str(e)}")
+            self._run_console.write(f"Failed to run example: {str(e)}\n")
 
 
     def open_in_editor(self):

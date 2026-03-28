@@ -1,6 +1,13 @@
 """
 Run a vispy example script with the window title set to the example name.
-Used by vispy_EXAMPLES.py. Usage: python _run_vispy_example.py <example_name> <script_path>
+
+Argv: ``python _run_vispy_example.py <example_name> <script_path> [extra_args...]`` — extra tokens
+are forwarded after ``sys.argv`` is rewritten to the script path (see below).
+
+``vispy_EXAMPLES.py`` starts this wrapper with ``QProcess`` so examples run in a subprocess with
+correct interpreter and env. From ``PhoCodeConsoleWidget`` inside that browser, prefer
+``browser.run_example()`` / ``run_vispy_example("name")`` (async) over ``%run`` or ``!`` on this file,
+which block the Qt UI until the child / script finishes.
 """
 import os
 import sys
@@ -32,7 +39,10 @@ import vispy.app
 _orig_canvas_init = vispy.app.Canvas.__init__
 
 def _patched_canvas_init(self, *args, **kwargs):
+    kwargs = dict(kwargs)
     kwargs["title"] = example_name
+    if args:
+        args = args[1:]
     return _orig_canvas_init(self, *args, **kwargs)
 
 vispy.app.Canvas.__init__ = _patched_canvas_init  # type: ignore[assignment]
@@ -42,7 +52,10 @@ try:
     _orig_scene_canvas_init = vispy.scene.canvas.SceneCanvas.__init__
 
     def _patched_scene_canvas_init(self, *args, **kwargs):
+        kwargs = dict(kwargs)
         kwargs["title"] = example_name
+        if args:
+            args = args[1:]
         return _orig_scene_canvas_init(self, *args, **kwargs)
 
     vispy.scene.canvas.SceneCanvas.__init__ = _patched_scene_canvas_init  # type: ignore[assignment]
