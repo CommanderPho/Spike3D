@@ -40,9 +40,11 @@ _orig_canvas_init = vispy.app.Canvas.__init__
 
 def _patched_canvas_init(self, *args, **kwargs):
     kwargs = dict(kwargs)
-    kwargs["title"] = example_name
+    kwargs.pop("title", None)
     if args:
-        args = args[1:]
+        args = (example_name,) + args[1:]
+    else:
+        kwargs["title"] = example_name
     return _orig_canvas_init(self, *args, **kwargs)
 
 vispy.app.Canvas.__init__ = _patched_canvas_init  # type: ignore[assignment]
@@ -53,9 +55,11 @@ try:
 
     def _patched_scene_canvas_init(self, *args, **kwargs):
         kwargs = dict(kwargs)
-        kwargs["title"] = example_name
+        kwargs.pop("title", None)
         if args:
-            args = args[1:]
+            args = (example_name,) + args[1:]
+        else:
+            kwargs["title"] = example_name
         return _orig_scene_canvas_init(self, *args, **kwargs)
 
     vispy.scene.canvas.SceneCanvas.__init__ = _patched_scene_canvas_init  # type: ignore[assignment]
