@@ -11,6 +11,33 @@ from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QColor, QFont
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QPushButton, QPlainTextEdit, QApplication, QMessageBox, QMenu)
 
 
+def _subprocess_python_executable() -> str:
+    """Interpreter for spawning example processes. When a venv is active (prefix != base_prefix), use the python next to sys.prefix so we do not rely on a mis-set sys.executable (common on Windows / pythonw). Prefer python.exe over pythonw.exe for console subprocesses."""
+    prefix = Path(sys.prefix).resolve()
+    if sys.platform == "win32":
+        venv_python = prefix / "Scripts" / "python.exe"
+    else:
+        venv_python = prefix / "bin" / "python"
+    if sys.prefix != sys.base_prefix and venv_python.is_file():
+        return str(venv_python.resolve())
+    exe = Path(sys.executable).resolve()
+    if sys.platform == "win32" and exe.name.lower() == "pythonw.exe":
+        alt = exe.with_name("python.exe")
+        if alt.is_file():
+            return str(alt)
+    return str(exe)
+
+
+def _subprocess_env_for_examples() -> dict:
+    """Copy of the process environment with venv bin dir prepended to PATH so nested `python` calls resolve to the same env."""
+    env = os.environ.copy()
+    if sys.prefix != sys.base_prefix:
+        bindir = str(Path(sys.prefix).resolve() / ("Scripts" if sys.platform == "win32" else "bin"))
+        env["PATH"] = bindir + os.pathsep + env.get("PATH", "")
+        env["VIRTUAL_ENV"] = str(Path(sys.prefix).resolve())
+    return env
+
+
 class PythonSyntaxHighlighter(QSyntaxHighlighter):
     """Syntax highlighter for Python code"""
 
@@ -298,10 +325,10 @@ class VispyExampleBrowser(QMainWindow):
 
         name, path, description = selected_example
         try:
-            python_exe = str(Path(sys.executable).resolve())
+            python_exe = _subprocess_python_executable()
             script_path = str(path.resolve())
             wrapper_path = str(Path(__file__).resolve().parent / "_run_vispy_example.py")
-            subprocess.Popen([python_exe, wrapper_path, name, script_path], cwd=str(path.resolve().parent), env=os.environ.copy(), creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0)
+            subprocess.Popen([python_exe, wrapper_path, name, script_path], cwd=str(path.resolve().parent), env=_subprocess_env_for_examples(), creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to run example:\n{str(e)}")
 
