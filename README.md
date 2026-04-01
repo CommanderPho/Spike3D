@@ -79,3 +79,10 @@ pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellA
 
 
 ```
+
+## 2026-04-01
+```
+uv tool install -U git+https://github.com/CommanderPho/uv-deps-switcher.git
+uv-deps-switcher dev
+
+```
