@@ -445,3 +445,6 @@ EXTERNAL/DEVELOPER_NOTES/SCRATCHPADS/scratchpads/__globalScratchpads__
 EXTERNAL/DEVELOPER_NOTES/SCRATCHPADS/scratchpads
 templating/uv_deps_switcher/backups/pyproject.toml.bak
 binned_occupancy_comparisons.svg
+
+# uv-deps-switcher
+**/templating/uv_deps_switcher/backups

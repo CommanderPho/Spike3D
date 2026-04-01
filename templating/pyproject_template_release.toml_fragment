@@ -10,4 +10,4 @@ pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = "^0.3.6"
-silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop", editable=true, extras = ["full"]}
+silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop"}
