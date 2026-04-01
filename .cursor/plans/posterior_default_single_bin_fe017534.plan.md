@@ -32,11 +32,11 @@ isProject: false
 
 **File:** [TimeSynchronizedPositionDecoderPlotter.py](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/Pho2D/PyQtPlots/TimeSynchronizedPlotters/TimeSynchronizedPositionDecoderPlotter.py)
 
-1. `**__init_`_** — After other `param_kwargs.pop` calls, add:
+1. `**__init`__** — After other `param_kwargs.pop` calls, add:
   - `self.use_all_active_viewport_timebins = param_kwargs.pop('use_all_active_viewport_timebins', False)` (bool, default `False`).
 2. `**on_window_changed`** — Branch on `self.use_all_active_viewport_timebins`:
   - **False:** Compute `idx` with the same logic as `update` but use `start_t` instead of `t` (`searchsorted` + clamp). Set `self.last_included_posterior_bin_indices = np.array([idx], dtype=np.intp)`, `last_window_index` / `last_window_time` from `idx` / `centers[idx]`.
-  - **True:** Keep the current block calling `_included_posterior_bin_indices_for_viewport(...)` and the existing `fi = first index` assignment for `last_window_`*.
+  - **True:** Keep the current block calling `_included_posterior_bin_indices_for_viewport(...)` and the existing `fi = first index` assignment for `last_window`_*.
 3. `**_update_plots` title** (~585–586) — Only append `| n_bins: {len(...)}` when `self.use_all_active_viewport_timebins` is True **and** `last_included_posterior_bin_indices is not None`. That removes the new suffix from default UI and keeps it as a signal for aggregation mode.
 4. **Docs** — One-line note on `_included_posterior_bin_indices_for_viewport` that it is used when `use_all_active_viewport_timebins` is enabled.
 
