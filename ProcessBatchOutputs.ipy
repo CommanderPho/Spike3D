@@ -112,8 +112,8 @@ print(f'collected_outputs_path: {collected_outputs_path}')
 
 # %%
 # Get the generated code for user-contributed functions:
-phase_any_run_custom_user_completion_functions_dict = None
-# phase_any_run_custom_user_completion_functions_dict = {
+# phase_any_run_custom_user_completion_functions_dict = None
+phase_any_run_custom_user_completion_functions_dict = {
 #     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
 #     # "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
 # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
@@ -130,9 +130,10 @@ phase_any_run_custom_user_completion_functions_dict = None
 #     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
 #     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
 #     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
-# 	'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-#     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
-# }
+	'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+    'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function,
+    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+}
 
 # %%
 
