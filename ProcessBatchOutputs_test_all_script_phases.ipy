@@ -262,7 +262,7 @@ def process_all_phases(
                     force_recompute=drop_previous_result_and_compute_fresh, 
                     debug_print=True
                 ),
-                'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=False),
+                'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
                 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
             }
         })

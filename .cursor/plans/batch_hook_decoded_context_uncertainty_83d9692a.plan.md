@@ -41,7 +41,7 @@ So:
 1. **Add a thin wrapper** in [`batch_user_completion_helpers.py`](h:/TEMP/Spike3DEnv_KDibaVersion/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/General/Batch/BatchJobCompletion/UserCompletionHelpers/batch_user_completion_helpers.py) (same file as `generalized_decode_epochs_dict_and_export_results_completion_function`), e.g. `export_decoded_context_uncertainty_by_position_completion_function`, that:
    - `assert self.collected_outputs_path.exists()` (same pattern as `compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function`).
    - Lazy-imports `determine_decoded_context_uncertainty_as_fn_of_position` from `PendingNotebookCode` (this file already imports from `PendingNotebookCode` elsewhere—e.g. ~1063).
-   - Calls `determine_decoded_context_uncertainty_as_fn_of_position(curr_active_pipeline, time_bin_size=..., enable_export_path=self.collected_outputs_path.resolve(), show_pos_by_ctxt_joint_figure=False)` so batch runs stay headless and write under `collected_outputs/output/` as your function already does.
+   - Calls `determine_decoded_context_uncertainty_as_fn_of_position(curr_active_pipeline, time_bin_size=..., enable_export_path=self.collected_outputs_path.resolve(), show_pos_by_ctxt_joint_figure=True)` so batch runs stay headless and write under `collected_outputs/output/` as your function already does.
    - Wraps the call in try/except if you want parity with other completions that must not kill the whole session on failure; your CSV/PNG paths already catch per-file errors.
    - Stores a small summary in `across_session_results_extended_dict['export_decoded_context_uncertainty_by_position_completion_function']` (e.g. partition keys or `None` on failure) for later inspection from `PipelineCompletionResult.across_session_results`.
 
@@ -55,4 +55,4 @@ In `determine_decoded_context_uncertainty_as_fn_of_position`, `time_bin_size` is
 
 ## Summary
 
-**Safest placement:** a new `*_completion_function` in `batch_user_completion_helpers.py`, registered **immediately after** `generalized_decode_epochs_dict_and_export_results_completion_function` in whichever dict actually feeds your script generation (`MAIN_get_template_string` defaults if `ProcessBatchOutputs.ipy` keeps `None`, else `pythonScriptTemplating` phase3 or your override). Use `enable_export_path=self.collected_outputs_path` and `show_pos_by_ctxt_joint_figure=False` for supercomputer runs.
+**Safest placement:** a new `*_completion_function` in `batch_user_completion_helpers.py`, registered **immediately after** `generalized_decode_epochs_dict_and_export_results_completion_function` in whichever dict actually feeds your script generation (`MAIN_get_template_string` defaults if `ProcessBatchOutputs.ipy` keeps `None`, else `pythonScriptTemplating` phase3 or your override). Use `enable_export_path=self.collected_outputs_path` and `show_pos_by_ctxt_joint_figure=True` for supercomputer runs.

@@ -308,7 +308,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
         ),
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
     'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True), ## #TODO 2025-08-27 15:41: - [ ] Use lap time bin size
-    'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=False),
+    'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
 }
 
