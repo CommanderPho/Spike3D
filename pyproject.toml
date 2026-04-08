@@ -183,6 +183,7 @@ dependencies = [
     "pyzmq>=27.1.0",
     "numpy>=1.23.5",
     "pyrefly>=0.53.0",
+    "vispy>=0.14.3",
 ]
 
 [project.scripts]
