@@ -235,7 +235,6 @@ default-groups = "all"
 
 [tool.uv.sources]
 qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
-neuropy = { path = "../NeuroPy", editable=true }
 pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable=true }
 pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable=true }
 mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
@@ -244,10 +243,12 @@ vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-wo
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 pylustrator = { git = "https://github.com/CommanderPho/pylustrator.git" }
-# bayesian-changepoint-detection = { path = "../bayesian_changepoint_detection" }
-silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop"}
-maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = { path = "../PyQtInspect-Open", editable=false }
+neuropy = { path = "../NeuroPy", editable=true }
+# bayesian-changepoint-detection = { path = "../bayesian_changepoint_detection" }
+
+maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
+silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop"}
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
