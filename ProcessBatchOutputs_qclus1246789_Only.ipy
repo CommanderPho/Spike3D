@@ -149,7 +149,7 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
-    'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+    # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
     'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
@@ -276,7 +276,7 @@ drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
-laps_decoding_time_bin_size = 0.050
+# laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
 laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
@@ -289,7 +289,7 @@ laps_decoding_time_bin_size = 0.075
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
 # ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
+# ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.060
 ripple_decoding_time_bin_size = 0.075
 # job_suffix='tbin_50ms'
