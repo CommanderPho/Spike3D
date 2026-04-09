@@ -7699,7 +7699,7 @@ default = [
 
 [[package]]
 name = "neuropy"
-version = "0.2.7"
+version = "0.2.5"
 source = { editable = "../NeuroPy" }
 dependencies = [
     { name = "cupy-cuda12x" },
@@ -7724,7 +7724,6 @@ dependencies = [
     { name = "pingouin" },
     { name = "portion" },
     { name = "python-benedict" },
-    { name = "rdp" },
     { name = "scikit-learn", version = "1.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "scikit-learn", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "scikit-posthocs" },
@@ -7762,7 +7761,6 @@ requires-dist = [
     { name = "pingouin", specifier = ">=0.5.3,<0.6" },
     { name = "portion", git = "https://github.com/CommanderPho/portion.git" },
     { name = "python-benedict", specifier = ">=0.28.3,<0.29" },
-    { name = "rdp", specifier = ">=0.8" },
     { name = "scikit-learn", specifier = ">=1.2.1,<2" },
     { name = "scikit-posthocs", specifier = ">=0.7.0,<0.8" },
     { name = "scipy", specifier = "~=1.6" },
@@ -7782,7 +7780,6 @@ dev = [
     { name = "ipdb", specifier = ">=0.13.11,<0.14" },
     { name = "pip", specifier = "~=24.0" },
     { name = "pyrefly", specifier = ">=0.54.0" },
-    { name = "pytest", specifier = ">=7.2.1,<9" },
 ]
 
 [[package]]
@@ -9499,6 +9496,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/38/bc/a287d41b4421ad50eafb02313137d0276d6aeffab90a91e2b08f64140852/pycryptodome-3.23.0-pp39-pypy39_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:64093fc334c1eccfd3933c134c4457c34eaca235eeae49d69449dc4728079339", size = 1702359, upload-time = "2025-05-17T17:21:39.827Z" },
     { url = "https://files.pythonhosted.org/packages/2b/62/2392b7879f4d2c1bfa20815720b89d464687877851716936b9609959c201/pycryptodome-3.23.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:ce64e84a962b63a47a592690bdc16a7eaf709d2c2697ababf24a0def566899a6", size = 1802461, upload-time = "2025-05-17T17:21:41.722Z" },
 ]
+
+[[package]]
+name = "pycscope"
+version = "1.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2c/6a/fdda7d0b7c2ad0ad4e654ff47743aeff8827967f3dfe3c2edcec3632ee14/pycscope-1.2.1.tar.gz", hash = "sha256:3c6a08263be7a49e71bc8dc0b6c70b3667f6760f9220005a9d452dee8c524950", size = 55680, upload-time = "2013-03-16T09:21:20.864Z" }
 
 [[package]]
 name = "pyct"
@@ -12753,7 +12756,7 @@ viz = [
 
 [[package]]
 name = "pyphoplacecellanalysis"
-version = "0.3.8"
+version = "0.3.7"
 source = { editable = "../pyPhoPlaceCellAnalysis" }
 dependencies = [
     { name = "attrs" },
@@ -12772,7 +12775,6 @@ dependencies = [
     { name = "napari-animated-gif-io" },
     { name = "napari-animation" },
     { name = "neuropy" },
-    { name = "numpy" },
     { name = "opencv-contrib-python" },
     { name = "pandas" },
     { name = "panel" },
@@ -12780,7 +12782,7 @@ dependencies = [
     { name = "params" },
     { name = "pip" },
     { name = "pybursts" },
-    { name = "pyclustering" },
+    { name = "pycscope" },
     { name = "pyopengl-accelerate" },
     { name = "pyphocorehelpers" },
     { name = "pyqt-builder" },
@@ -12792,7 +12794,6 @@ dependencies = [
     { name = "setuptools" },
     { name = "shapely", version = "2.0.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "shapely", version = "2.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "silx" },
     { name = "sqlalchemy" },
     { name = "srsly" },
     { name = "tables", version = "3.9.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -12819,15 +12820,14 @@ requires-dist = [
     { name = "napari-animated-gif-io", specifier = ">=0.1.2,<0.2" },
     { name = "napari-animation", specifier = ">=0.0.8,<0.0.9" },
     { name = "neuropy", editable = "../NeuroPy" },
-    { name = "numpy", specifier = ">=1.23.5" },
     { name = "opencv-contrib-python", specifier = ">=4.10.0.84,<5" },
     { name = "pandas", specifier = "==1.5.3" },
     { name = "panel", specifier = ">=1.2.3,<2" },
-    { name = "param", specifier = ">=1.12.3,<3" },
+    { name = "param", specifier = ">=1.12.3,<2" },
     { name = "params", specifier = ">=0.9.0,<0.10" },
     { name = "pip", specifier = "~=24.0" },
     { name = "pybursts", git = "https://github.com/CommanderPho/pybursts.git?rev=master" },
-    { name = "pyclustering", specifier = ">=0.10.1.2" },
+    { name = "pycscope", specifier = ">=1.2.1,<2" },
     { name = "pyopengl-accelerate", specifier = ">=3.1.6,<4" },
     { name = "pyphocorehelpers", editable = "../pyPhoCoreHelpers" },
     { name = "pyqt-builder", specifier = ">=1.15.3,<2" },
@@ -12837,7 +12837,6 @@ requires-dist = [
     { name = "scikit-learn", specifier = "~=1.5" },
     { name = "setuptools", specifier = ">=78.1.0" },
     { name = "shapely", specifier = ">=2.0.1,<3" },
-    { name = "silx", specifier = ">=2.2.0,<3" },
     { name = "sqlalchemy", specifier = ">=2.0.2,<3" },
     { name = "srsly", specifier = ">=2.4.5,<3" },
     { name = "tables", specifier = ">=3.8.0,<4" },
@@ -12851,7 +12850,6 @@ dev = [
     { name = "ipython", specifier = ">=8.9.0,<9" },
     { name = "lxml-html-clean", specifier = ">=0.4.0,<1" },
     { name = "pyan", specifier = ">=0.1.3,<0.2" },
-    { name = "pyrefly", specifier = ">=0.54.0" },
     { name = "pytest", specifier = ">=7.2.1,<8" },
     { name = "setuptools", specifier = ">=78.1.0" },
     { name = "snakeviz", specifier = ">=2.1.1,<3" },
@@ -12871,11 +12869,8 @@ gui = [
     { name = "qtawesome", specifier = ">=1.2.2,<2" },
     { name = "vedo", git = "https://github.com/CommanderPho/vedo.git?rev=feature%2Fmerge-upstream" },
 ]
-testing = [
-    { name = "bcubed", specifier = ">=1.5" },
-    { name = "mplcursors", specifier = ">=0.5.2,<0.6" },
-    { name = "pyclustering", specifier = ">=0.10.1.2" },
-]
+remote = [{ name = "neuropy", editable = "../NeuroPy" }]
+testing = [{ name = "mplcursors", specifier = ">=0.5.2,<0.6" }]
 
 [[package]]
 name = "pyproject-hooks"
@@ -13128,8 +13123,17 @@ wheels = [
 [[package]]
 name = "pyqtinspect"
 version = "0.4.0"
-source = { git = "https://github.com/CommanderPho/PyQtInspect-Open.git#de9a8c189c6e46fd4a1fd9c42a07561843def784" }
+source = { directory = "../PyQtInspect-Open" }
 dependencies = [
+    { name = "ihook" },
+    { name = "psutil" },
+    { name = "pyobjc-framework-cocoa", marker = "sys_platform == 'darwin'" },
+    { name = "pyqt5" },
+    { name = "wingrab", marker = "sys_platform == 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
     { name = "ihook" },
     { name = "psutil" },
     { name = "pyobjc-framework-cocoa", marker = "sys_platform == 'darwin'" },
@@ -14675,31 +14679,32 @@ wheels = [
 
 [[package]]
 name = "silx"
-version = "2.2.2"
-source = { registry = "https://pypi.org/simple" }
+version = "2.2.0a0"
+source = { git = "https://github.com/CommanderPho/silx.git?rev=develop#b261ff840ab0033097e22e0047a1490a159bb4ff" }
 dependencies = [
+    { name = "cython" },
     { name = "fabio" },
     { name = "h5py" },
     { name = "numpy" },
     { name = "packaging" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/34/ee443851672fc1a8f27e0a7c212c567118fd1892d1cb798c6d5c405c6efe/silx-2.2.2.tar.gz", hash = "sha256:5d9ba367b5715cc4cb9011388f3d71200d7beb7676c910952fd1350a342c571f", size = 19102274, upload-time = "2025-04-08T11:44:59.716Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/34/ee443851672fc1a8f27e0a7c212c567118fd1892d1cb798c6d5c405c6efe/silx-2.2.2.tar.gz", hash = "sha256:5d9ba367b5715cc4cb9011388f3d71200d7beb7676c910952fd1350a342c571f", size = 19102274 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5f/bc/6a9aaa3e605cfe7e73856c9067ba42cd6289660eb7a6d31970c7f9cca725/silx-2.2.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:4eb1f8829323703133b3456cc3c2dd0a08b631b4cf4752bd3cefc2c591ea14ee", size = 6178498, upload-time = "2025-04-08T11:43:33.654Z" },
-    { url = "https://files.pythonhosted.org/packages/52/f4/741960f820e9b26e0515c938c381d36a75a3f755bece1dd954b4e1fe287e/silx-2.2.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9c6d19a9d5c336a9f5abd9ed8d361d1457aabae3852715a60001ee84a066cff4", size = 13163700, upload-time = "2025-04-08T11:43:36.418Z" },
-    { url = "https://files.pythonhosted.org/packages/34/41/ba588493af3bd756589dc4c5b012bb50c14f64e3bd39f370c2f076ad58f1/silx-2.2.2-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:1953691d0f33e181f192c715c28fc1081345bf4d731c8362b0e6d4395cceb5c7", size = 13562859, upload-time = "2025-04-08T11:43:39.615Z" },
-    { url = "https://files.pythonhosted.org/packages/65/8a/2b46cb76762468deea3dbcc5370c858d60e5b7bdaf09bdccd0169707147c/silx-2.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ccf4239f9f625d00d69210ccdde27cbed5e6e5f5ffa4e7e2477c4f97c3ce837e", size = 13275921, upload-time = "2025-04-08T11:43:42.345Z" },
-    { url = "https://files.pythonhosted.org/packages/a0/e0/cca4f9ac0a2da45097f30d203d2051a4de2abab95980a93d2579a3e2cfe4/silx-2.2.2-cp310-cp310-win_amd64.whl", hash = "sha256:1322b91a953f9417aed0c369d17299f7de3288a959b32af6696693119f4980db", size = 4287732, upload-time = "2025-04-08T11:43:45.597Z" },
-    { url = "https://files.pythonhosted.org/packages/2f/71/9574dc9420258b1daaba18e6032b888a25768510394ed39c4047b39ae10d/silx-2.2.2-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:e0658063adb7652b7360f438ac62d7d42531114011e77e2ffa3740a99c91aac6", size = 6182793, upload-time = "2025-04-08T11:43:47.45Z" },
-    { url = "https://files.pythonhosted.org/packages/d5/4d/19c7e652bbdedbff3d0b47fb6cae21638359c57fe64e1b3e9cf4b4f36761/silx-2.2.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d21cb7ca1dd74b561592798a6b2e4583095f5a7e3d2a23478918c59d366b9beb", size = 13863034, upload-time = "2025-04-08T11:43:54.279Z" },
-    { url = "https://files.pythonhosted.org/packages/b2/6f/1444c4b7a7402bcd7d7a849117aace61bff239ff85bded9e91b08fb929d0/silx-2.2.2-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:41794f85a00b11cc571ef7f4cb4fbccbd2448f496ebac5fb1be5f6c7b44a8f85", size = 14320761, upload-time = "2025-04-08T11:43:57.45Z" },
-    { url = "https://files.pythonhosted.org/packages/d3/fb/4c08c29a262f75e60911db0f039e7011f9a2daf1000659cbe5a950737434/silx-2.2.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:962efdfc3d22a7dbca7e5884cd6bfdbb24424e79891444a89cc1d0c5e0fdacb6", size = 13972613, upload-time = "2025-04-08T11:44:00.437Z" },
-    { url = "https://files.pythonhosted.org/packages/47/9f/b47b7f9183db61ddb6d3d52b27a2d70ed9fee5715b6db4ca0d48d4d2db05/silx-2.2.2-cp311-cp311-win_amd64.whl", hash = "sha256:9994b78600c7e04407bdbb0091a931067d6fa9b424ffb6001a3a6c29023d7c64", size = 4289910, upload-time = "2025-04-08T11:44:03.529Z" },
-    { url = "https://files.pythonhosted.org/packages/19/d6/0343092892f578b3e44073a6be6b7122570f66556a5c3196b17ffb344205/silx-2.2.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:c8973aa32a169368543ef5303d386f91aa52c45c11e5a6aecb7d7395d1f27174", size = 6193437, upload-time = "2025-04-08T11:44:46.912Z" },
-    { url = "https://files.pythonhosted.org/packages/c6/4d/700b04af8c785a6edb8628bfa59fe84e223a7b1fd6541312ec69f5f4c134/silx-2.2.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fbf2e168df12c14a37f1cbcc60a91a087a31a2fe69723a4cf353fe5ca7b57d1f", size = 13183567, upload-time = "2025-04-08T11:44:49.675Z" },
-    { url = "https://files.pythonhosted.org/packages/3a/eb/fc1b1b772fb3afd51ae0b3df8a3c048fd511068f25ce4703281030669c00/silx-2.2.2-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:fadf06811b3c5b3ce17557469fc23cb74758015c673d31c9e48d7a53976f751f", size = 13592517, upload-time = "2025-04-08T11:44:52.438Z" },
-    { url = "https://files.pythonhosted.org/packages/a5/5a/bc9c275dc50a0c4fec5671e54b297ebd66148865b938733a530da89342d0/silx-2.2.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4576280a138c8c1bb53606a3b2973bd3a9501a038d8142ef88f77bee6dd47700", size = 13296573, upload-time = "2025-04-08T11:44:54.992Z" },
-    { url = "https://files.pythonhosted.org/packages/1d/6a/9620884ca8023b6ee17cc1105f6440d6d45eaeb95c18276a258a0aedf5b8/silx-2.2.2-cp39-cp39-win_amd64.whl", hash = "sha256:74cc3f764bb4c8ef8dfa466d8f3465d6ba5aad8f4beb86f3161c9c8ca26d7742", size = 4294426, upload-time = "2025-04-08T11:44:57.337Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/bc/6a9aaa3e605cfe7e73856c9067ba42cd6289660eb7a6d31970c7f9cca725/silx-2.2.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:4eb1f8829323703133b3456cc3c2dd0a08b631b4cf4752bd3cefc2c591ea14ee", size = 6178498 },
+    { url = "https://files.pythonhosted.org/packages/52/f4/741960f820e9b26e0515c938c381d36a75a3f755bece1dd954b4e1fe287e/silx-2.2.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9c6d19a9d5c336a9f5abd9ed8d361d1457aabae3852715a60001ee84a066cff4", size = 13163700 },
+    { url = "https://files.pythonhosted.org/packages/34/41/ba588493af3bd756589dc4c5b012bb50c14f64e3bd39f370c2f076ad58f1/silx-2.2.2-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:1953691d0f33e181f192c715c28fc1081345bf4d731c8362b0e6d4395cceb5c7", size = 13562859 },
+    { url = "https://files.pythonhosted.org/packages/65/8a/2b46cb76762468deea3dbcc5370c858d60e5b7bdaf09bdccd0169707147c/silx-2.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ccf4239f9f625d00d69210ccdde27cbed5e6e5f5ffa4e7e2477c4f97c3ce837e", size = 13275921 },
+    { url = "https://files.pythonhosted.org/packages/a0/e0/cca4f9ac0a2da45097f30d203d2051a4de2abab95980a93d2579a3e2cfe4/silx-2.2.2-cp310-cp310-win_amd64.whl", hash = "sha256:1322b91a953f9417aed0c369d17299f7de3288a959b32af6696693119f4980db", size = 4287732 },
+    { url = "https://files.pythonhosted.org/packages/2f/71/9574dc9420258b1daaba18e6032b888a25768510394ed39c4047b39ae10d/silx-2.2.2-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:e0658063adb7652b7360f438ac62d7d42531114011e77e2ffa3740a99c91aac6", size = 6182793 },
+    { url = "https://files.pythonhosted.org/packages/d5/4d/19c7e652bbdedbff3d0b47fb6cae21638359c57fe64e1b3e9cf4b4f36761/silx-2.2.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d21cb7ca1dd74b561592798a6b2e4583095f5a7e3d2a23478918c59d366b9beb", size = 13863034 },
+    { url = "https://files.pythonhosted.org/packages/b2/6f/1444c4b7a7402bcd7d7a849117aace61bff239ff85bded9e91b08fb929d0/silx-2.2.2-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:41794f85a00b11cc571ef7f4cb4fbccbd2448f496ebac5fb1be5f6c7b44a8f85", size = 14320761 },
+    { url = "https://files.pythonhosted.org/packages/d3/fb/4c08c29a262f75e60911db0f039e7011f9a2daf1000659cbe5a950737434/silx-2.2.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:962efdfc3d22a7dbca7e5884cd6bfdbb24424e79891444a89cc1d0c5e0fdacb6", size = 13972613 },
+    { url = "https://files.pythonhosted.org/packages/47/9f/b47b7f9183db61ddb6d3d52b27a2d70ed9fee5715b6db4ca0d48d4d2db05/silx-2.2.2-cp311-cp311-win_amd64.whl", hash = "sha256:9994b78600c7e04407bdbb0091a931067d6fa9b424ffb6001a3a6c29023d7c64", size = 4289910 },
+    { url = "https://files.pythonhosted.org/packages/19/d6/0343092892f578b3e44073a6be6b7122570f66556a5c3196b17ffb344205/silx-2.2.2-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:c8973aa32a169368543ef5303d386f91aa52c45c11e5a6aecb7d7395d1f27174", size = 6193437 },
+    { url = "https://files.pythonhosted.org/packages/c6/4d/700b04af8c785a6edb8628bfa59fe84e223a7b1fd6541312ec69f5f4c134/silx-2.2.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fbf2e168df12c14a37f1cbcc60a91a087a31a2fe69723a4cf353fe5ca7b57d1f", size = 13183567 },
+    { url = "https://files.pythonhosted.org/packages/3a/eb/fc1b1b772fb3afd51ae0b3df8a3c048fd511068f25ce4703281030669c00/silx-2.2.2-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:fadf06811b3c5b3ce17557469fc23cb74758015c673d31c9e48d7a53976f751f", size = 13592517 },
+    { url = "https://files.pythonhosted.org/packages/a5/5a/bc9c275dc50a0c4fec5671e54b297ebd66148865b938733a530da89342d0/silx-2.2.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4576280a138c8c1bb53606a3b2973bd3a9501a038d8142ef88f77bee6dd47700", size = 13296573 },
+    { url = "https://files.pythonhosted.org/packages/1d/6a/9620884ca8023b6ee17cc1105f6440d6d45eaeb95c18276a258a0aedf5b8/silx-2.2.2-cp39-cp39-win_amd64.whl", hash = "sha256:74cc3f764bb4c8ef8dfa466d8f3465d6ba5aad8f4beb86f3161c9c8ca26d7742", size = 4294426 },
 ]
 
 [[package]]
@@ -15579,7 +15584,7 @@ requires-dist = [
     { name = "setuptools", specifier = ">=78.1.0,<81" },
     { name = "shapely", specifier = ">=2.0.7" },
     { name = "sidecar", specifier = ">=0.7.0,<0.8" },
-    { name = "silx", specifier = ">=2.2.0,<3" },
+    { name = "silx", git = "https://github.com/CommanderPho/silx.git?rev=develop" },
     { name = "sklearn-utils", specifier = ">=0.0.15" },
     { name = "solara", extras = ["assets"], specifier = ">=1.33.0,<2" },
     { name = "spimagine", specifier = ">=0.2.6" },
@@ -15627,7 +15632,7 @@ dev = [
     { name = "pylsp-rope", specifier = ">=0.1.17" },
     { name = "pylustrator", git = "https://github.com/CommanderPho/pylustrator.git" },
     { name = "pympler", specifier = "~=1.1" },
-    { name = "pyqtinspect", git = "https://github.com/CommanderPho/PyQtInspect-Open.git" },
+    { name = "pyqtinspect", directory = "../PyQtInspect-Open" },
     { name = "pyright", specifier = ">=1.1.396,<2" },
     { name = "python-lsp-server", specifier = ">=1.14.0" },
     { name = "qt-style-sheet-inspector", git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git?rev=master" },
