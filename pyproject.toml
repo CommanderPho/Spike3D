@@ -141,7 +141,6 @@ dependencies = [
     "cython>=3.0.11,<4",
     "ipyflex>=0.3.1,<0.4",
     "neo==0.13.2",
-    "silx>=2.2.0,<3",
     "ipyevents>=2.0.2,<3",
     "vitables==3.0.2",
     "pyjson5>=1.6.8,<2",
@@ -249,7 +248,6 @@ neuropy = { path = "../NeuroPy", editable=true }
 # bayesian-changepoint-detection = { path = "../bayesian_changepoint_detection" }
 
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
-silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop"}
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
