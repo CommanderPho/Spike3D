@@ -4,16 +4,16 @@ overview: Remove the hardcoded ripple spikemat path, introduce a single `force_r
 todos:
   - id: api-flag
     content: Replace force_ratday_preprocess with force_recompute on run_session_pipeline; update run_all_comps_for_sess Click option and call site
-    status: pending
+    status: completed
   - id: path-helpers
     content: Add _artifact_path helpers + imports (RESULTS_PATH, Diffusion, Momentum, Stationary_Gaussian) mirroring read_write patterns
-    status: pending
+    status: completed
   - id: skip-branches
     content: Wire exists checks for spikemat, reformat, stationary/random models, gridsearch composite, model_comparison, deviance, marginals (default likelihood), trajectories, diffusion_constant; fix ratday to use force_recompute
-    status: pending
+    status: completed
   - id: remove-wip
     content: Delete hardcoded ripple path and dead commented code
-    status: pending
+    status: completed
 isProject: false
 ---
 
