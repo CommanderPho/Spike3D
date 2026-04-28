@@ -182,7 +182,7 @@ dependencies = [
     "numpy>=1.23.5",
     "pyrefly>=0.53.0",
     "vispy>=0.14.3",
-    "hippocampalswrdynamics",
+    # "hippocampalswrdynamics",
     "silx>=2.2.0,<3",
 ]
 
@@ -218,7 +218,7 @@ dev = [
     "python-lsp-server>=1.14.0",
     "rope>=1.14.0",
     "pylsp-rope>=0.1.17",
-    "replayswitchinghmm",
+    # "replayswitchinghmm",
 ]
 testing = [
     "bcubed>=1.5",

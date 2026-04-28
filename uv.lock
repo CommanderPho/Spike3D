@@ -2775,62 +2775,21 @@ wheels = [
 name = "clustpy"
 version = "0.0.1"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-    "python_full_version <= '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin'",
-    "python_full_version > '3.9' and python_full_version < '3.10' and sys_platform == 'win32'",
-    "python_full_version <= '3.9' and sys_platform == 'win32'",
-    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version > '3.9' and python_full_version < '3.10' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version <= '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version > '3.9' and python_full_version < '3.10' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version <= '3.9' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
 dependencies = [
-    { name = "matplotlib", marker = "python_full_version < '3.10'" },
-    { name = "nltk", marker = "python_full_version < '3.10'" },
-    { name = "numpy", marker = "python_full_version < '3.10'" },
-    { name = "pandas", marker = "python_full_version < '3.10'" },
-    { name = "pillow", marker = "python_full_version < '3.10'" },
+    { name = "matplotlib" },
+    { name = "nltk" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "pillow" },
     { name = "scikit-learn", version = "1.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "scikit-learn", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "scipy", version = "1.13.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "torch", marker = "python_full_version < '3.10'" },
-    { name = "torchvision", marker = "python_full_version < '3.10'" },
-    { name = "xlrd", marker = "python_full_version < '3.10'" },
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "torch" },
+    { name = "torchvision" },
+    { name = "xlrd" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ee/de/97dd523bba27de253a63e52668c40021641795cb56dd417fdee3b56c0662/clustpy-0.0.1.tar.gz", hash = "sha256:fa3bfa774b55f37454928ecab36c1eba6e186c5735e84d7f539e0d7b851cb6a0", size = 2293032, upload-time = "2023-02-28T17:05:53.292Z" }
-
-[[package]]
-name = "clustpy"
-version = "0.0.2"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.11' and sys_platform == 'darwin'",
-    "python_full_version == '3.10.*' and sys_platform == 'darwin'",
-    "python_full_version >= '3.11' and platform_machine == 'ARM64' and sys_platform == 'win32'",
-    "python_full_version >= '3.11' and platform_machine != 'ARM64' and sys_platform == 'win32'",
-    "python_full_version == '3.10.*' and platform_machine == 'ARM64' and sys_platform == 'win32'",
-    "python_full_version == '3.10.*' and platform_machine != 'ARM64' and sys_platform == 'win32'",
-    "python_full_version >= '3.11' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.11' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version == '3.10.*' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version == '3.10.*' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.11' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version == '3.10.*' and sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-dependencies = [
-    { name = "matplotlib", marker = "python_full_version >= '3.10'" },
-    { name = "numpy", marker = "python_full_version >= '3.10'" },
-    { name = "pandas", marker = "python_full_version >= '3.10'" },
-    { name = "scikit-learn", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "torch", marker = "python_full_version >= '3.10'" },
-    { name = "tqdm", marker = "python_full_version >= '3.10'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6f/1c/a1e0a31f0341c4efde154f711b85d3d257bd5f8ab5bd1d9e801f8a1f8d0a/clustpy-0.0.2.tar.gz", hash = "sha256:3de9ff7deb111dce08e3f8f1a6d994d184caf6ea95f6ddc9497b3703ee2d83ab", size = 2375198, upload-time = "2024-09-04T10:28:02.774Z" }
 
 [[package]]
 name = "cmap"
@@ -2869,15 +2828,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/4c/13/7d740c5849255756bc17888787313b61fd38a0a8304fc4f073dfc46122aa/comm-0.2.3.tar.gz", hash = "sha256:2dc8048c10962d55d7ad693be1e7045d891b7ce8d999c97963a5e3e99c055971", size = 6319, upload-time = "2025-07-25T14:02:04.452Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/97/891a0971e1e4a8c5d2b20bbe0e524dc04548d2307fee33cdeba148fd4fc7/comm-0.2.3-py3-none-any.whl", hash = "sha256:c615d91d75f7f04f095b30d1c1711babd43bdc6419c1be9886a85f2f4e489417", size = 7294, upload-time = "2025-07-25T14:02:02.896Z" },
-]
-
-[[package]]
-name = "compress-pickle"
-version = "2.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c8/23/a448abd4e98b64ad5b99537a2b4df3f6a829e6fac749afbaf921f89c0941/compress_pickle-2.1.0.tar.gz", hash = "sha256:3e944ce0eeab5b6331324d62351c957d41c9327c8417d439843e88fe69b77991", size = 16360, upload-time = "2021-09-21T18:13:58.57Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/4f/f94ac1b84d2169cf2ebf64353ce98fd743f85d30678059c514d9b3d6644c/compress_pickle-2.1.0-py3-none-any.whl", hash = "sha256:598650da4686d9bd97bee185b61e74d7fe1872bb0c23909d5ed2d8793b4a8818", size = 24694, upload-time = "2021-09-21T18:13:57.047Z" },
 ]
 
 [[package]]
@@ -5938,54 +5888,6 @@ wheels = [
 ]
 
 [[package]]
-name = "hippocampalswrdynamics"
-version = "0.2.2"
-source = { editable = "../HippocampalSWRDynamics" }
-dependencies = [
-    { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "click", version = "8.3.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "compress-pickle" },
-    { name = "ipython", version = "8.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "ipython", version = "8.39.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "jupyterlab" },
-    { name = "matplotlib" },
-    { name = "notebook" },
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "pywinpty", version = "2.0.13", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'win32'" },
-    { name = "scipy", version = "1.13.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "seaborn" },
-    { name = "torch" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "click" },
-    { name = "compress-pickle", specifier = ">=2.0.1,<3" },
-    { name = "ipython", specifier = ">=8.9.0,<9" },
-    { name = "jupyterlab" },
-    { name = "matplotlib", specifier = ">=3.2.1,<4" },
-    { name = "notebook" },
-    { name = "numpy", specifier = ">=1.18.2,<2" },
-    { name = "pandas", specifier = ">=1.0.3,<2" },
-    { name = "pywinpty", marker = "sys_platform == 'win32'", specifier = ">=2.0.10,<2.0.14" },
-    { name = "scipy", specifier = ">=1.4.1,<2" },
-    { name = "seaborn" },
-    { name = "torch", specifier = ">=1.4.0,<2" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "black", specifier = "==18.9b0" },
-    { name = "flake8", specifier = ">=3.7.9,<4" },
-    { name = "ipykernel", specifier = ">=5.4.3,<6" },
-    { name = "mypy", specifier = ">=0.910,<0.920" },
-    { name = "pytest", specifier = ">=5.2,<6" },
-    { name = "yapf", specifier = ">=0.29.0,<0.30" },
-]
-
-[[package]]
 name = "hmmlearn"
 version = "0.3.3"
 source = { registry = "https://pypi.org/simple" }
@@ -6227,15 +6129,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/0703ccc57f3a7233505399edb88de3cbd678da106337b9fcde432b65ed60/idna-3.11.tar.gz", hash = "sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902", size = 194582, upload-time = "2025-10-12T14:55:20.501Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl", hash = "sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea", size = 71008, upload-time = "2025-10-12T14:55:18.883Z" },
-]
-
-[[package]]
-name = "ihook"
-version = "0.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/44/ba/d3b86bf84ead73ce8a70a14681fc46f77626eb56a3776c55ce49b203b339/ihook-0.2.1.tar.gz", hash = "sha256:6f09a5f3d043097b30123082ebae7af42158a80a779fc49dfbbcd6966e0ac01a", size = 12212, upload-time = "2025-09-12T02:20:20.224Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/0e/b2a79cdc4052fb47b95cfcfb599df5ba12104bb8386d1e698f05423844a3/ihook-0.2.1-py3-none-any.whl", hash = "sha256:5831159c49c4c13fe4cdd510e397f0485d76e9f0eeab0ea89e6939e66ea79c1c", size = 7476, upload-time = "2025-09-12T02:20:17.15Z" },
 ]
 
 [[package]]
@@ -10240,9 +10133,10 @@ version = "3.9.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "joblib", marker = "python_full_version < '3.10'" },
-    { name = "regex", marker = "python_full_version < '3.10'" },
-    { name = "tqdm", marker = "python_full_version < '3.10'" },
+    { name = "click", version = "8.3.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "joblib" },
+    { name = "regex" },
+    { name = "tqdm" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f9/76/3a5e4312c19a028770f86fd7c058cf9f4ec4321c6cf7526bab998a5b683c/nltk-3.9.2.tar.gz", hash = "sha256:0f409e9b069ca4177c1903c3e843eef90c7e92992fa4931ae607da6de49e1419", size = 2887629, upload-time = "2025-10-01T07:19:23.764Z" }
 wheels = [
@@ -20182,22 +20076,17 @@ wheels = [
 
 [[package]]
 name = "pyqtinspect"
-version = "0.4.0"
+version = "0.3.7"
 source = { directory = "../PyQtInspect-Open" }
 dependencies = [
-    { name = "ihook" },
     { name = "psutil" },
-    { name = "pyobjc-framework-cocoa", version = "11.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and sys_platform == 'darwin'" },
-    { name = "pyobjc-framework-cocoa", version = "12.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and sys_platform == 'darwin'" },
     { name = "pyqt5" },
     { name = "wingrab", marker = "sys_platform == 'win32'" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "ihook" },
     { name = "psutil" },
-    { name = "pyobjc-framework-cocoa", marker = "sys_platform == 'darwin'" },
     { name = "pyqt5" },
     { name = "wingrab", marker = "sys_platform == 'win32'" },
 ]
@@ -21166,17 +21055,6 @@ dependencies = [
     { name = "numpy" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ef/d5/ee808ac429913649c80c8ebf7855343344b6c9744ed451548ccbe2ce803a/reikna-0.8.0.tar.gz", hash = "sha256:7e96b53dfa3910069f83b3e085ad7b1ba9391b5ddf744ae3725bf43a7fee6322", size = 191880, upload-time = "2023-01-20T07:23:27.426Z" }
-
-[[package]]
-name = "replayswitchinghmm"
-version = "0.1.1"
-source = { directory = "../ReplaySwitchingHMM" }
-dependencies = [
-    { name = "neuropy" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "neuropy", editable = "../NeuroPy" }]
 
 [[package]]
 name = "requests"
@@ -22802,7 +22680,6 @@ dependencies = [
     { name = "hdf5plugin" },
     { name = "hdf5storage" },
     { name = "highlight-text" },
-    { name = "hippocampalswrdynamics" },
     { name = "hvplot" },
     { name = "importlib-resources" },
     { name = "ipydatagrid" },
@@ -22985,15 +22862,13 @@ dev = [
     { name = "pyright" },
     { name = "python-lsp-server" },
     { name = "qt-style-sheet-inspector" },
-    { name = "replayswitchinghmm" },
     { name = "rope" },
     { name = "viztracer" },
     { name = "vulture" },
 ]
 testing = [
     { name = "bcubed" },
-    { name = "clustpy", version = "0.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "clustpy", version = "0.0.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "clustpy" },
     { name = "ipywidgets" },
     { name = "pyclustering" },
 ]
@@ -23034,7 +22909,6 @@ requires-dist = [
     { name = "hdf5plugin", specifier = ">=4.1.1,<5" },
     { name = "hdf5storage", specifier = ">=0.1.19,<0.2" },
     { name = "highlight-text", specifier = ">=0.2,<0.3" },
-    { name = "hippocampalswrdynamics", editable = "../HippocampalSWRDynamics" },
     { name = "hvplot", specifier = ">=0.8.4,<0.9" },
     { name = "importlib-resources", specifier = ">=6.5.2" },
     { name = "ipydatagrid", specifier = ">=1.2.0,<2" },
@@ -23203,7 +23077,6 @@ dev = [
     { name = "pyright", specifier = ">=1.1.396,<2" },
     { name = "python-lsp-server", specifier = ">=1.14.0" },
     { name = "qt-style-sheet-inspector", git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git?rev=master" },
-    { name = "replayswitchinghmm", directory = "../ReplaySwitchingHMM" },
     { name = "rope", specifier = ">=1.14.0" },
     { name = "viztracer", specifier = ">=0.15.6,<0.16" },
     { name = "vulture", specifier = ">=2.14" },
@@ -24276,11 +24149,12 @@ name = "torchvision"
 version = "0.14.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", marker = "python_full_version < '3.10'" },
-    { name = "pillow", marker = "python_full_version < '3.10'" },
+    { name = "numpy" },
+    { name = "pillow" },
     { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "torch", marker = "python_full_version < '3.10'" },
-    { name = "typing-extensions", marker = "python_full_version < '3.10'" },
+    { name = "requests", version = "2.33.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "torch" },
+    { name = "typing-extensions" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/7e/4eaf3fff579af12c5d02514fd613826b939c24f5a9d2c8962c7e23560382/torchvision-0.14.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:eeb05dd9dd3af5428fee525400759daf8da8e4caec45ddd6908cfb36571f6433", size = 1391610, upload-time = "2022-12-15T20:19:54.233Z" },
