@@ -18,6 +18,9 @@
 		},
 		{
 			"path": "../../../HippocampalSWRDynamics"
+		},
+		{
+			"path": "../../../ReplaySwitchingHMM"
 		}
 	],
 	"settings": {
