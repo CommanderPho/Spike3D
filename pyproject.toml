@@ -179,11 +179,11 @@ dependencies = [
     "awkward>=2.8.12",
     "ipykernel>=6.30.1",
     "pyzmq>=27.1.0",
-    "numpy>=1.23.5",
     "pyrefly>=0.53.0",
     "vispy>=0.14.3",
     # "hippocampalswrdynamics",
     "silx>=2.2.0,<3",
+    "numpy==1.23.5",
 ]
 
 [project.scripts]
