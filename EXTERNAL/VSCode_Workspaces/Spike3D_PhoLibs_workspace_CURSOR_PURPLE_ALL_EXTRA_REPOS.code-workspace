@@ -1,27 +1,43 @@
 {
     "folders": [
-        {
-            "name": "Spike3D",
-            "path": "../../"
-        },
-        {
-            "name": "pyphocorehelpers",
-            "path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
-        },
-        {
-            "name": "pyphoplacecellanalysis",
-            "path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
-        },
-        {
-            "name": "neuropy",
-            "path": "../../../NeuroPy/neuropy"
-        }
-    ],
+		{
+			"name": "Spike3D",
+			"path": "../.."
+		},
+		{
+			"name": "pyphocorehelpers",
+			"path": "../../../pyPhoCoreHelpers/src/pyphocorehelpers"
+		},
+		{
+			"name": "pyphoplacecellanalysis",
+			"path": "../../../pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis"
+		},
+		{
+			"name": "neuropy",
+			"path": "../../../NeuroPy/neuropy"
+		},
+		{
+			"path": "../../../HippocampalSWRDynamics"
+		},
+		{
+			"path": "../../../ReplaySwitchingHMM"
+		},
+		{
+			"path": "../../../sleep_loss_hippocampal_replay"
+		},
+		{
+			"path": "../../../SCRIPTS"
+		},
+		{
+			"path": "../../../replay_trajectory_classification"
+		}
+	],
     "settings": {
         "python.analysis.gotoDefinitionInStringLiteral": true,
         "jupyter.askForKernelRestart": true,
         "jupyter.debugJustMyCode": true,
         "files.exclude": {
+            "\"**/.mypy_cache": true,
             "**/.classpath": true,
             "**/.DS_Store": true,
             "**/.factorypath": true,
@@ -41,51 +57,41 @@
         },
         "python.analysis.logLevel": "Trace",
         "workbench.colorCustomizations": {
-            "editor.lineHighlightBackground": "#1073cf2d",
-            "editor.lineHighlightBorder": "#9fced11f",
-            "activityBar.background": "#4b3b23",
-            "titleBar.activeBackground": "#c79553",
-            "titleBar.activeForeground": "#000000",
-            "scrollbarSlider.background": "#ffae0057",
-            "scrollbarSlider.hoverBackground": "#ff880082",
-            "scrollbarSlider.activeBackground": "#ff9100df",
-            "activityBar.inactiveForeground": "#ffffff3c",
-            "activityBar.foreground": "#ffffff",
+            "editor.lineHighlightBackground": "#4b10cf2d",
+            "editor.lineHighlightBorder": "#b09fd11f",
+            "scrollbarSlider.background": "#a210ff57",
+            "scrollbarSlider.hoverBackground": "#8800ff82",
+            "scrollbarSlider.activeBackground": "#8100ffdf",
             "notebook.outputContainerBackgroundColor": "#395a3e50",
-            "notebook.outputContainerBorderColor": "#ff8f10",
-            "notebook.focusedCellBorder": "#ff9100da",
-            "notebook.focusedEditorBorder": "#ff9900",
-            "notebook.inactiveFocusedCellBorder": "#ffff0063",
-            "titleBar.inactiveBackground": "#c799538e",
-            "tab.activeBorder": "#2F3C2E",
-            "statusBar.background": "#3c3c2e",
-            "statusBar.foreground": "#ffffff",
-            "window.activeBorder": "#ffa600",
-            "window.inactiveBorder": "#fffb0018",
+            "notebook.outputContainerBorderColor": "#a210ff",
+            "notebook.focusedCellBorder": "#9900ffda",
+            "notebook.focusedEditorBorder": "#9900ff",
+            "notebook.inactiveFocusedCellBorder": "#9900ff63",
+            "window.activeBorder": "#9900ff",
+            "window.inactiveBorder": "#9900ff18",
             "sideBar.dropBackground": "#53595d80",
             "sideBySideEditor.horizontalBorder": "#ffffff17",
             "sideBySideEditor.verticalBorder": "#ffffff17",
             "profileBadge.background": "#4d4d4d",
-            "profileBadge.foreground": "#ffa600",
-            "editorGroup.border": "#ffee0017",
-            "editorGroupHeader.tabsBackground": "#ffd9002d",
-            "editorGroupHeader.tabsBorder": "#3f3600",
-            "tab.activeBackground": "#413700",
-            "tab.activeBorderTop": "#ff8800",
+            "profileBadge.foreground": "#9900ff",
+            "editorGroupHeader.tabsBackground": "#9900ff2d",
+            "editorGroupHeader.tabsBorder": "#36003f",
+            "tab.activeBackground": "#370041",
+            "tab.activeBorderTop": "#9900ff",
             "tab.activeForeground": "#ffffff",
-            "tab.border": "#6b3900",
-            "tab.hoverBackground": "#302f00",
+            "tab.border": "#4a006b",
+            "tab.hoverBackground": "#2e0030",
             "tab.inactiveBackground": "#181818",
             "tab.inactiveForeground": "#9d9d9d",
             "tab.lastPinnedBorder": "#cccccc33",
             "tab.unfocusedActiveBorder": "#1f1f1f",
             "tab.unfocusedActiveBorderTop": "#2b2b2b",
             "tab.unfocusedHoverBackground": "#1f1f1f",
-            "tab.activeModifiedBorder": "#cc8f33",
-            "tab.inactiveModifiedBorder": "#cc8f3380",
+            "tab.activeModifiedBorder": "#9933cc",
+            "tab.inactiveModifiedBorder": "#9933cc80",
             "tab.unfocusedActiveBackground": "#1f1f1f",
             "tab.unfocusedActiveForeground": "#ffffff80",
-            "tab.unfocusedActiveModifiedBorder": "#cc8f3380",
+            "tab.unfocusedActiveModifiedBorder": "#9933cc80",
             "tab.unfocusedInactiveBackground": "#181818",
             "tab.unfocusedInactiveForeground": "#9d9d9d80",
             "tab.unfocusedInactiveModifiedBorder": "#3399cc40",
@@ -96,18 +102,12 @@
             "editorBracketHighlight.foreground5": "#97c26c",
             "editorBracketHighlight.foreground6": "#abb2c0",
             "editorBracketHighlight.unexpectedBracket.foreground": "#db6165",
-            "editorIndentGuide.activeBackground1": "#ffee0086",
-            "editorIndentGuide.activeBackground2": "#3cff0086",
-            "editorIndentGuide.activeBackground3": "#75fff486",
+            "editorIndentGuide.activeBackground1": "#9900ff86",
+            "editorIndentGuide.activeBackground2": "#ff00e586",
+            "editorIndentGuide.activeBackground3": "#f475ff86",
             "editorIndentGuide.activeBackground4": "#c2c6ff86",
             "editorIndentGuide.activeBackground5": "#7a33ff86",
-            "editorIndentGuide.activeBackground6": "#ffebfd86",
-            "editorIndentGuide.background1": "#0066ff42",
-            "editorIndentGuide.background2": "#00e5ff42",
-            "editorIndentGuide.background3": "#00e5ff42",
-            "editorIndentGuide.background4": "#00e5ff42",
-            "editorIndentGuide.background5": "#00e5ff42",
-            "editorIndentGuide.background6": "#00e5ff42"
+            "editorIndentGuide.activeBackground6": "#ffebfd86"
         },
         "search.exclude": {
             "**/.ipynb_checkpoints": true,
@@ -123,6 +123,7 @@
         "qtForPython.uic.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
         "python.autoComplete.extraPaths": [],
         "git.ignoreLimitWarning": true,
+        "git.enabled": true,
         "qtForPython.uic.options": [
             "-o",
             "${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
@@ -191,9 +192,6 @@
         "editor.codeActionWidget.includeNearbyQuickFixes": false,
         "editor.dragAndDrop": false,
         "actionButtons": {
-
-
-
             "commands": [
                 {
                     "name": "Back",
@@ -287,116 +285,33 @@
         "workbench.sash.size": 9,
         "workbench.sash.hoverDelay": 120,
         "scratchpads.filePrefix": "scratch_",
-        "scratchpads.scratchpadsFolder": "H:\\TEMP\\Spike3DEnv_ExploreUpgrade\\Spike3DWorkEnv\\Spike3D\\EXTERNAL\\DEVELOPER_NOTES\\SCRATCHPADS",
+        "scratchpads.scratchpadsFolder": "C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/EXTERNAL/DEVELOPER_NOTES/UnsortedErrorLogs",
         "notebook.find.filters": {
             "markupSource": true,
             "markupPreview": false,
             "codeSource": true,
             "codeOutput": false
         },
-        "highlight.regexes": {
-
-            // "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *TODO(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
-            //     "filterFileRegex": ".*(?<!CHANGELOG.md)$",
-            //     "decorations": [
-            //         {
-            //             "overviewRulerColor": "#ffcc00",
-            //             "backgroundColor": "rgba(100, 50, 150, 0.7)", //"#ffcc00",
-            //             "color": "#1f1f1f",
-            //             "fontWeight": "bold"
-            //         },
-            //         {
-            //             "backgroundColor": "rgba(255, 204, 0, 0.5)", //"#ffcc00",
-            //             "color": "#1f1f1f"
-            //         }
-            //     ]
-            // },
-
-            // "((?:<!-- *)?(?:#|// @|//|./\\*+|<!--|--|\\* @|{!|{{!--|{{!) *(?:FIXME|FIX|BUG|UGLY|DEBUG|HACK)(?:[\\t\\f\\v ]*\\([^\\r\\n)]+\\))?:?)((?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--|{!|{{!--|{{!))|(?: +[^\\r\\n@]*?)(?= *(?:[^\\r\\n:]//|/\\*+|<!--|@|--(?!>)|{!|{{!--|{{!))|(?: +[^\\r\\n@]+)?))": {
-            //     "filterFileRegex": ".*(?<!CHANGELOG.md)$",
-            //     "decorations": [
-            //         {
-            //             "overviewRulerColor": "#cc0000",
-            //             "backgroundColor": "rgba(100, 50, 150, 0.7)", //"#cc000022",
-            //             "color": "#1f1f1f",
-            //             "fontWeight": "bold"
-            //         },
-            //         {
-            //             "backgroundColor": "rgba(100, 50, 150, 0.7)", // "#cc000022",
-            //             "color": "#1f1f1f"
-            //         }
-            //     ]
-            // },
-
-            // "@metadata_attributes\\([^)]*\\)": {
-            //     "filterFileRegex": "\\.py$",
-            //     "decorations": [
-            //         {
-            //             "overviewRulerColor": "#00aa55",
-            //             "backgroundColor": "#0ecf6f",
-            //             "opacity": "0.9",
-            //             "color": "#181818",
-            //             "fontWeight": "bold",
-            //             "isWholeLine": true,
-            //             "borderColor": "#1b1b1b",
-            //             "borderStyle": "border",
-            //             "borderWidth": "2",
-            //         },
-            //         {
-            //             "backgroundColor": "#00aaff",
-            //             "opacity": "50%",
-            //             "color": "#1f1f1f"
-            //         }
-            //     ]
-            // },
-
-            // "@function_attributes\\([^)]*\\)": {
-            //     "filterFileRegex": "\\.py$",
-            //     "decorations": [
-            //         {
-            //             "overviewRulerColor": "#00ff88",
-            //             "backgroundColor": "#00ff8844",
-            //             "color": "#1f1f1f",
-            //             "fontWeight": "bold",
-            //             "borderColor": "#ffcc00",
-            //             "borderWidth": "0 0 0 3px",
-            //             "borderStyle": "solid",
-            //         },
-            //         {
-            //             "color": "#ffcc00",
-            //             "fontWeight": "bold"
-            //             // "backgroundColor": "#00ff88",
-            //             // "color": "#1f1f1f"
-            //         }
-            //     ]
-            // }
-        },
-        "highlight.enabled": true,
-        "pieces.cloudCapabilities": "Blended",
-        "highlight.debugging": false,
-        "notebook.editorOptionsCustomizations": {
-            "editor.emptySelectionClipboard": false,
-            "editor.showFoldingControls": "always",
-            "editor.insertSpaces": true
-        },
-    "extensions.closeExtensionDetailsOnViewChange": true,
-    "problems.autoReveal": false,
-    "problems.decorations.enabled": false,
-    "notebook.cellExecutionTimeVerbosity": "verbose",
-    "notebook.diff.ignoreMetadata": true,
-    "notebook.formatOnCellExecution": false,
-    "notebook.inlineValues": "auto",
-    "problems.visibility": false,
-    "editorjumper.selectedIDE": "Cursor",
-    "jupyter-cell-tags.jupyterEnhancements.background.enable": false,
-    "jupyter-cell-tags.jupyterEnhancements.flash.enable": false,
-    "jupyter-cell-tags.jupyterEnhancements.innerBorder.enable": false,
-    "jupyter-cell-tags.jupyterEnhancements.innerBorder.persist": false,
-    "jupyter-cell-tags.jupyterEnhancements.kernel.pythonPath": "H:\\TEMP\\Spike3DEnv_ExploreUpgrade\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\python.exe",
-    "jupyter-cell-tags.jupyterEnhancements.outerBorder.enable": false,
-    "jupyter-cell-tags.jupyterEnhancements.outerBorder.persist": false,
-    "jupyter-cell-tags.scrollbarDecorators.enabled": false,
-    "jupyter-cell-tags.tagSortOrder": "creation-date",
+        "cursorpyright.analysis.exclude": [
+            "**/EXTERNAL",
+            "**/LibrariesExamples"
+        ],
+        "cursorpyright.analysis.extraPaths": [],
+        "cursorpyright.analysis.logLevel": "Trace",
+        "cursorpyright.analysis.stubPath": "",
+        "versionStatusBar.extensionsToShow": [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "ms-python.debugpy",
+            "ms-toolsai.jupyter",
+            "phohale.pho-vscode-jupyter-cell-tags",
+            "ms-toolsai.datawrangler",
+            "phohale.version-status-bar",
+        ],
+        "git.autofetch": true,
+        "github.showAvatar": false,
+        "problems.visibility": false,
+        "python.languageServer": "None",
     },
     "tasks": {
         "version": "2.0.0",
@@ -467,8 +382,18 @@
             "astallinger.sourcetrail",
             "phohale.pho-vs-code-url-scheme-grabber",
             "kawamataryo.copy-python-dotted-path",
+            "toughtype.pydance",
+            "gediminaszlatkus.ctags-companion",
             "fabiospampinato.vscode-highlight",
-            "ast-grep.ast-grep-vscode"
+            "waylongleon.navigation-history",
+            "mohanrajoria.clip-vault",
+            "seanho.daily-git-progress",
+            "thoughtphotography.cursor-indexing-limiter",
+            "ambitiouscoder.function-name-search",
+            "codeque.codeque",
+            "joshskidmore2025.keycheat",
+            "ast-grep.ast-grep-vscode",
+            "phil294.search-plusplus"
         ]
     }
 }
