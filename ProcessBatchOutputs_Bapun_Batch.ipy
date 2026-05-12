@@ -70,8 +70,8 @@ from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder,
 import inspect
 from jinja2 import Template
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, curr_runtime_context_header_template, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_context_uncertainty_by_position_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
@@ -96,11 +96,11 @@ def process_all_phases(
     extra_extended_computations_include_includelist: List = None,
     custom_phase_extended_computations_include_includelist: List = None,
     included_qclu_values: List = None,
-    minimum_inclusion_fr_Hz: float = 5.0,
+    minimum_inclusion_fr_Hz: float = 1.0,
     num_shuffles: int = 1024,
     drop_previous_result_and_compute_fresh: bool = True,
-    laps_decoding_time_bin_size: float = 0.025,
-    ripple_decoding_time_bin_size: float = 0.025,
+    laps_decoding_time_bin_size: float = 0.250,
+    ripple_decoding_time_bin_size: float = 0.050,
     enable_auto_code_block_execution: bool = False,
     max_parallel_executions: int = 1,
     also_show_figure_script_outputs: bool = False,
@@ -148,11 +148,12 @@ def process_all_phases(
 
     # Setup paths
     known_scripts_output_paths = [Path(v).resolve() for v in [
-        '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts',
-        '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
-        '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs',
-        '/home/halechr/FastData/gen_scripts/',
-        'output/gen_scripts/'
+        # '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts',
+        # '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
+        # '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs',
+        # '/home/halechr/FastData/gen_scripts/',
+        # 'output/gen_scripts/',
+        Path(r"W:/Data/Output/gen_scripts"),
     ]]
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
     assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist!"
@@ -162,19 +163,23 @@ def process_all_phases(
 
     # Setup global data root path
     known_global_data_root_parent_paths = [
-        Path('/Users/pho/data'), Path(r'/nfs/turbo/umms-kdiba/Data'),
-        Path(r'/media/halechr/MAX/Data'), Path(r'W:/Data'),
-        Path(r'/home/halechr/FastData'), Path(r'/Volumes/MoverNew/data')
+        Path(r'W:/Data'), 
+        # Path('/Users/pho/data'),
+        # Path(r'/nfs/turbo/umms-kdiba/Data'),
+        # Path(r'/media/halechr/MAX/Data'), 
+        # Path(r'/home/halechr/FastData'),
+        # Path(r'/Volumes/MoverNew/data')
     ]
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist!"
 
     good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(
-        global_data_root_parent_path, included_session_contexts
+        global_data_root_parent_path=global_data_root_parent_path, included_session_contexts=included_session_contexts,
+        debug_print=True,
     )
 
     # Bapun batch: distinct suffix so outputs do not collide with KDIBA batch naming.
-    job_suffix = f"_bapun_withNormalComputedReplays-qclu_12-frateThresh_5.0_tbin_25ms"
+    job_suffix = f"_bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms"
 
     # Process each phase
     for phase_idx, active_phase in enumerate(phases_to_run):
@@ -294,6 +299,8 @@ def process_all_phases(
 
         # Generate scripts for this phase
         session_basedirs_dict = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
+
+        # For format_name='bapun', each generated `run_*.py` (and matching temp notebook) passes preflight_bapun_batch_helpers_run_all so `run_specific_batch` runs `BapunBatchHelpers.run_all(curr_active_pipeline)` after `batch_load_session` and before batch completion helpers; `figures_*.py` skips that preflight (see pyphoplacecellanalysis General.Batch.runBatch / pythonScriptTemplating).
 
         batch_scripts_collection = generate_batch_single_session_scripts(
             global_data_root_parent_path,
@@ -421,16 +428,16 @@ process_all_phases(
     extra_extended_computations_include_includelist=[],
     custom_phase_extended_computations_include_includelist=None,
     included_qclu_values=[1, 2, 4, 6, 7, 8, 9],
-    minimum_inclusion_fr_Hz=2.0,
+    minimum_inclusion_fr_Hz=1.0,
     num_shuffles=1024,
     drop_previous_result_and_compute_fresh=True,
-    laps_decoding_time_bin_size=0.050,
+    laps_decoding_time_bin_size=0.250,
     ripple_decoding_time_bin_size=0.050,
     enable_auto_code_block_execution=enable_auto_code_block_execution,
     max_parallel_executions=1,
     also_show_figure_script_outputs=False,
     wait_between_phases=True,  # Set to False to run all phases without waiting
-    phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run]  # None means run all phases, or specify specific phases like [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.figure_run]
+    phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.figure_run]  # None means run all phases, or specify specific phases like [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.figure_run]
 )
 
 # %%
