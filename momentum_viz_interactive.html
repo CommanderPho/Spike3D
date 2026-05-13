@@ -1,0 +1,260 @@
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Play, Pause, RotateCcw, Activity } from 'lucide-react';
+
+export default function App() {
+  const [aMax, setAMax] = useState(1200); // Maximum acceleration/force limit
+  const [speed, setSpeed] = useState(250); // Target speed (momentum proxy)
+  const [playing, setPlaying] = useState(true);
+  const [frame, setFrame] = useState(0);
+
+  // Constants for the simulation
+  const dt = 0.02; // Time step (50 FPS)
+  const kp = 25.0; // Proportional gain (how hard it tries to reach the target)
+  const kd = 5.0;  // Derivative gain (damping to prevent infinite oscillation)
+
+  // Define the impossible sharp trajectory (Waypoints)
+  const waypoints = [
+    { x: 100, y: 150 }, // Start
+    { x: 700, y: 150 }, // Sharp 90-deg corner
+    { x: 700, y: 450 }, // Another 90-deg corner
+    { x: 250, y: 450 }, // Hairpin start
+    { x: 100, y: 300 }, // Hairpin apex
+    { x: 250, y: 150 }, // Hairpin exit / return to start
+  ];
+
+  // Run the kinematic simulation whenever physics parameters change
+  const { targetPath, actualPath } = useMemo(() => {
+    const tPath = [];
+    const aPath = [];
+
+    // 1. Generate the perfect, impossible target path (constant speed)
+    waypoints.forEach((wp, idx) => {
+      const nextWp = waypoints[(idx + 1) % waypoints.length];
+      const dist = Math.hypot(nextWp.x - wp.x, nextWp.y - wp.y);
+      const steps = Math.floor(dist / (speed * dt));
+      
+      for (let i = 0; i < steps; i++) {
+        tPath.push({
+          x: wp.x + (nextWp.x - wp.x) * (i / steps),
+          y: wp.y + (nextWp.y - wp.y) * (i / steps)
+        });
+      }
+    });
+
+    // 2. Simulate the animal following the target, clamped by aMax
+    let pos = { ...tPath[0] };
+    let vel = { x: 0, y: 0 };
+
+    for (let i = 0; i < tPath.length; i++) {
+      const target = tPath[i];
+
+      // Calculate desired acceleration to reach target (PD Controller)
+      let ax = kp * (target.x - pos.x) - kd * vel.x;
+      let ay = kp * (target.y - pos.y) - kd * vel.y;
+
+      // Calculate magnitude of desired acceleration
+      const a_mag = Math.hypot(ax, ay);
+
+      // THE CORE CONSTRAINT: Clamp acceleration to aMax
+      let actual_a_mag = a_mag;
+      if (a_mag > aMax) {
+        ax = ax * (aMax / a_mag);
+        ay = ay * (aMax / a_mag);
+        actual_a_mag = aMax;
+      }
+
+      // Kinematic Integration
+      vel.x += ax * dt;
+      vel.y += ay * dt;
+      
+      pos.x += vel.x * dt;
+      pos.y += vel.y * dt;
+
+      aPath.push({
+        x: pos.x, 
+        y: pos.y, 
+        vMag: Math.hypot(vel.x, vel.y),
+        aMag: actual_a_mag,
+        isMaxed: actual_a_mag >= aMax - 0.1
+      });
+    }
+
+    return { targetPath: tPath, actualPath: aPath };
+  }, [aMax, speed]);
+
+  // Animation Loop
+  useEffect(() => {
+    let animationFrameId;
+    const render = () => {
+      if (playing) {
+        setFrame(f => (f + 1) % actualPath.length);
+      }
+      animationFrameId = requestAnimationFrame(render);
+    };
+    render();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [playing, actualPath.length]);
+
+  // Safety check if speed changes cause path length to shrink below current frame
+  const currentFrame = frame >= actualPath.length ? 0 : frame;
+  const currentAnimalState = actualPath[currentFrame];
+
+  return (
+    <div className="flex flex-col h-screen bg-slate-50 font-sans">
+      {/* Header */}
+      <div className="bg-white p-4 shadow-sm border-b border-slate-200 flex justify-between items-center">
+        <div>
+          <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <Activity className="text-blue-500" /> Kinematic Envelope Simulator
+          </h1>
+          <p className="text-sm text-slate-500">Visualizing maximum force limits on 2D trajectories</p>
+        </div>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => setPlaying(!playing)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            {playing ? <Pause size={18} /> : <Play size={18} />}
+            {playing ? 'Pause' : 'Play'}
+          </button>
+          <button 
+            onClick={() => setFrame(0)}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300 transition"
+          >
+            <RotateCcw size={18} /> Restart
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        {/* Sidebar Controls */}
+        <div className="w-full md:w-80 bg-white p-6 border-r border-slate-200 flex flex-col gap-8 overflow-y-auto">
+          
+          <div className="space-y-4">
+            <div>
+              <label className="flex justify-between font-semibold text-slate-700 mb-1">
+                <span>Max Force Limit (a<sub>max</sub>)</span>
+                <span className="text-blue-600">{aMax}</span>
+              </label>
+              <p className="text-xs text-slate-500 mb-2">Simulates maximum muscle force. Lower limits force wider, smoother turns.</p>
+              <input 
+                type="range" min="200" max="5000" step="100"
+                value={aMax} onChange={(e) => setAMax(Number(e.target.value))}
+                className="w-full accent-blue-600"
+              />
+            </div>
+
+            <div>
+              <label className="flex justify-between font-semibold text-slate-700 mb-1">
+                <span>Animal Speed (v)</span>
+                <span className="text-blue-600">{speed} px/s</span>
+              </label>
+              <p className="text-xs text-slate-500 mb-2">Higher momentum requires vastly more force to turn. Notice how high speed breaks the trajectory.</p>
+              <input 
+                type="range" min="100" max="600" step="10"
+                value={speed} onChange={(e) => setSpeed(Number(e.target.value))}
+                className="w-full accent-blue-600"
+              />
+            </div>
+          </div>
+
+          <div className="bg-slate-100 p-4 rounded-lg">
+            <h3 className="font-semibold text-sm text-slate-700 mb-2">Live Telemetry</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Current Speed:</span>
+                <span className="font-mono">{Math.round(currentAnimalState?.vMag || 0)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Acceleration:</span>
+                <span className={`font-mono ${currentAnimalState?.isMaxed ? 'text-red-500 font-bold' : 'text-green-600'}`}>
+                  {Math.round(currentAnimalState?.aMag || 0)}
+                </span>
+              </div>
+            </div>
+            
+            {/* Force Gauge */}
+            <div className="mt-3 h-2 w-full bg-slate-300 rounded-full overflow-hidden">
+              <div 
+                className={`h-full transition-all duration-75 ${currentAnimalState?.isMaxed ? 'bg-red-500' : 'bg-green-500'}`}
+                style={{ width: `${Math.min(100, ((currentAnimalState?.aMag || 0) / aMax) * 100)}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="text-xs text-slate-500 space-y-2">
+            <p><strong>Dashed Gray:</strong> The theoretical path (infinite acceleration required at corners).</p>
+            <p><strong>Solid Colored Line:</strong> The biologically constrained path.</p>
+            <p><strong>Color Mapping:</strong> Green means coasting. Red indicates the animal is maxing out its force limit to change direction.</p>
+          </div>
+        </div>
+
+        {/* Canvas Area */}
+        <div className="flex-1 bg-slate-100 flex items-center justify-center p-4 relative">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden" style={{ width: '800px', height: '600px' }}>
+            <svg width="800" height="600" className="bg-slate-50">
+              
+              {/* Draw theoretical target path (Dashed) */}
+              <polyline 
+                points={targetPath.map(p => `${p.x},${p.y}`).join(' ')}
+                fill="none" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="6,6"
+              />
+
+              {/* Draw constrained animal path (Colored by acceleration stress) */}
+              {actualPath.map((p, i) => {
+                if (i === 0) return null;
+                const prev = actualPath[i - 1];
+                
+                // Color mapping: Green (low stress) to Red (high stress/max force)
+                const stress = p.aMag / aMax;
+                const r = Math.round(stress * 255);
+                const g = Math.round((1 - stress) * 200 + 50);
+                const color = `rgb(${r}, ${g}, 50)`;
+
+                return (
+                  <line 
+                    key={i}
+                    x1={prev.x} y1={prev.y}
+                    x2={p.x} y2={p.y}
+                    stroke={color} strokeWidth="4"
+                    strokeLinecap="round"
+                  />
+                );
+              })}
+
+              {/* Draw Ghost Target Position */}
+              <circle 
+                cx={targetPath[currentFrame]?.x} 
+                cy={targetPath[currentFrame]?.y} 
+                r="4" fill="#94a3b8" 
+              />
+
+              {/* Draw Animal Position */}
+              <circle 
+                cx={currentAnimalState?.x} 
+                cy={currentAnimalState?.y} 
+                r="8" fill={currentAnimalState?.isMaxed ? '#ef4444' : '#3b82f6'} 
+                className="transition-colors duration-100"
+              />
+              
+              {/* Velocity Vector (Optional visualization) */}
+              {currentFrame > 0 && (
+                <line 
+                  x1={currentAnimalState?.x} 
+                  y1={currentAnimalState?.y}
+                  x2={currentAnimalState?.x + (actualPath[currentFrame]?.x - actualPath[currentFrame-1]?.x) * 10}
+                  y2={currentAnimalState?.y + (actualPath[currentFrame]?.y - actualPath[currentFrame-1]?.y) * 10}
+                  stroke="#1e40af" strokeWidth="2" strokeLinecap="round"
+                />
+              )}
+
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}

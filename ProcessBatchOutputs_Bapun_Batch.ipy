@@ -411,7 +411,7 @@ included_session_contexts = [
     # Legacy duplicate context if your on-disk layout still uses the old session_name stem:
     # IdentifyingContext(format_name='bapun', animal='RatU', session_name='RatUDay5OpenfieldSD'),
     # Optional — notebooks report issues for RatK; uncomment if you need this session in batch:
-    # IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day4Openfield'),
+    IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day4Openfield'),
 ]
 
 # %%
@@ -435,8 +435,8 @@ process_all_phases(
     ripple_decoding_time_bin_size=0.050,
     enable_auto_code_block_execution=enable_auto_code_block_execution,
     max_parallel_executions=1,
-    also_show_figure_script_outputs=False,
-    wait_between_phases=True,  # Set to False to run all phases without waiting
+    also_show_figure_script_outputs=True,
+    wait_between_phases=False,  # Set to False to run all phases without waiting
     phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.figure_run]  # None means run all phases, or specify specific phases like [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.figure_run]
 )
 
