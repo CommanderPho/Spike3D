@@ -15,6 +15,9 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy/neuropy"
+        },
+        {
+            "path": "../../../bapun_sess_init_scripts"
         }
     ],
     "settings": {
