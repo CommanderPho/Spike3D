@@ -71,7 +71,7 @@ import inspect
 from jinja2 import Template
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
@@ -92,6 +92,7 @@ def process_all_phases(
     batch_date_to_use: str,
     included_session_contexts: List[IdentifyingContext],
     phase_any_run_custom_user_completion_functions_dict: Dict,
+    bapun_figure_custom_user_completion_functions_dict: Dict = None,
     force_recompute_override_computations_includelist: List = None,
     extra_extended_computations_include_includelist: List = None,
     custom_phase_extended_computations_include_includelist: List = None,
@@ -115,6 +116,7 @@ def process_all_phases(
         batch_date_to_use: Full batch identifier string
         included_session_contexts: List of session contexts to process
         phase_any_run_custom_user_completion_functions_dict: Custom completion functions
+        bapun_figure_custom_user_completion_functions_dict: Figure-phase-only completion functions merged on figure_run
         force_recompute_override_computations_includelist: List of computations to force recompute
         extra_extended_computations_include_includelist: Additional extended computations
         custom_phase_extended_computations_include_includelist: Custom phase computations
@@ -145,6 +147,8 @@ def process_all_phases(
             ProcessingScriptPhases.final_run,
             ProcessingScriptPhases.figure_run
         ]
+    if bapun_figure_custom_user_completion_functions_dict is None:
+        bapun_figure_custom_user_completion_functions_dict = {}
 
     # Setup paths
     known_scripts_output_paths = [Path(v).resolve() for v in [
@@ -188,10 +192,13 @@ def process_all_phases(
         print(f"{'='*80}")
 
         # Get custom completion functions
+        active_override_dict = dict(phase_any_run_custom_user_completion_functions_dict)
+        if active_phase.is_figure_phase:
+            active_override_dict = active_override_dict | bapun_figure_custom_user_completion_functions_dict
         custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(
             BATCH_DATE_TO_USE=batch_date_to_use,
             collected_outputs_path=collected_outputs_path,
-            override_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict
+            override_custom_user_completion_functions_dict=active_override_dict
         )
 
         # Get phase configuration
@@ -271,6 +278,11 @@ def process_all_phases(
                     epochs_decoding_time_bin_size=ripple_decoding_time_bin_size,
                     force_recompute=drop_previous_result_and_compute_fresh,
                     debug_print=True
+                ),
+                'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': dict(
+                    training_data_portion=9.0/10.0,
+                    laps_decoding_time_bin_size=laps_decoding_time_bin_size,
+                    debug_print=False
                 ),
                 'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
                 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
@@ -400,7 +412,12 @@ phase_any_run_custom_user_completion_functions_dict = {
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+    'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': compute_and_export_bapun_train_test_decoder_error_distance_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+}
+
+bapun_figure_custom_user_completion_functions_dict = {
+    'figures_plot_bapun_train_test_decoder_error_distance_completion_function': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
 }
 
 # Keys align with BapunDataSessionFormatRegisteredClass._get_session_specific_parameters (NeuroPy BapunDataSessionFormat.py).
@@ -424,6 +441,7 @@ process_all_phases(
     batch_date_to_use=BATCH_DATE_TO_USE,
     included_session_contexts=included_session_contexts,
     phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
+    bapun_figure_custom_user_completion_functions_dict=bapun_figure_custom_user_completion_functions_dict,
     force_recompute_override_computations_includelist=[],
     extra_extended_computations_include_includelist=[],
     custom_phase_extended_computations_include_includelist=None,
