@@ -450,3 +450,6 @@ binned_occupancy_comparisons.svg
 # uv-deps-switcher
 **/templating/uv_deps_switcher/backups
 optimized_burst_detection.png
+run_history.csv
+run_history.json
+screenshot.png
