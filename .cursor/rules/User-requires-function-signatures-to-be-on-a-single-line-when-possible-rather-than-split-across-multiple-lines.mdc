@@ -4,14 +4,25 @@ alwaysApply: true
 
 User requires function signatures to be on a single line when possible, rather than split across multiple lines. This applies to all projects and all function/method definitions.
 
-Preferred format:
+Preferred format (when the full `def ...` line is ≤ 400 characters):
     def parse_video_folder(cls, folder_path: Path, video_extensions: List[str] = ['.mp4', '.avi']) -> pd.DataFrame:
 
-Not preferred (multi-line):
+Not preferred (multi-line with one argument per line):
     def parse_video_folder(
         cls,
         folder_path: Path,
         video_extensions: List[str] = ['.mp4', '.avi']
     ) -> pd.DataFrame:
 
-Only split function signatures across multiple lines when absolutely necessary due to length constraints.
+When the full `def ...` line exceeds 400 characters, split across multiple lines grouped by logical kwarg/parameter purpose — not one parameter per line.
+
+Preferred format (> 400 characters):
+    def compute_all_missing(cls, pos_df: pd.DataFrame,
+                            smooth_N: int = 20, non_smoothed_column_labels: Optional[List[str]] = None,
+                            linearization_method: str = 'isomap', linearization_kwargs: Optional[Dict[str, Any]] = None,
+                            approx_head_dir_N: int = 15, approx_head_dir_n_dir_angular_bins: int = 8,
+                            normal_dir_N: int = 15, normal_dir_x_column_name: str = 'x_smooth', normal_dir_time_column_name: str = 't', normal_dir_replace_existing: bool = False,
+                            segment_plot_result: bool = False, segment_disable_segmentation: bool = True, segment_min_signal_length: int = 4, segment_pen: float = 10.0, segment_n_dir_angular_bins: int = 8, segment_overwrite_existing: bool = True,
+                            xbin_edges=None, ybin_edges=None, active_computation_config=None, binned_position_debug_print: bool = False) -> pd.DataFrame:
+
+Group related parameters together on the same continuation line (e.g. smoothing kwargs, linearization kwargs, segment kwargs, binning kwargs).
