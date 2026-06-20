@@ -419,7 +419,7 @@ def process_all_phases(
 
         active_phase_dict.update({
             'job_suffix': current_job_suffix,
-            'should_freeze_pipeline_updates': True,
+            'should_freeze_pipeline_updates': False,
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
             'should_generate_run_scripts': True,
@@ -427,6 +427,7 @@ def process_all_phases(
             # 'should_generate_run_notebooks': False,
             'should_create_vscode_workspace': True,
             'preflight_bapun_batch_helpers_run_all': False, # Bapun-specific
+            # 'preflight_bapun_batch_helpers_run_all': True, # Bapun-specific
         })
 
         print(f'Phase: {active_phase.name}')
