@@ -423,8 +423,8 @@ def process_all_phases(
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
             'should_generate_run_scripts': True,
-            # 'should_generate_run_notebooks': True,
             'should_generate_run_notebooks': True,
+            # 'should_generate_run_notebooks': False,
             'should_create_vscode_workspace': True,
             'preflight_bapun_batch_helpers_run_all': False, # Bapun-specific
         })
