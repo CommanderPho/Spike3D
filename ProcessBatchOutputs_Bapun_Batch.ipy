@@ -517,8 +517,8 @@ included_session_contexts = [
 ]
 
 # %%
-# Main execution - sequential auto-submit on Great Lakes
-enable_auto_code_block_execution: bool = True
+# Main execution - manual mode: generate scripts, print sbatch commands, write submit_*.sh manifests (no auto-submit)
+enable_auto_code_block_execution: bool = False
 
 process_all_phases(
     batch_day_date=BATCH_DAY_DATE,
@@ -538,22 +538,22 @@ process_all_phases(
     enable_auto_code_block_execution=enable_auto_code_block_execution,
     max_parallel_executions=1,
     also_show_figure_script_outputs=False,
-    wait_between_phases=False,
-    copy_commands_to_clipboard=False,
+    wait_between_phases=True,
+    copy_commands_to_clipboard=True,
     slurm_poll_seconds=60,
     phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
 )
 
 # %%
-# Alternative: manual mode (generate scripts + print sbatch commands; no auto-submit)
+# Alternative: auto-submit mode (requires sbatch from an interactive Great Lakes login node)
 # process_all_phases(
 #     batch_day_date=BATCH_DAY_DATE,
 #     batch_date_to_use=BATCH_DATE_TO_USE,
 #     included_session_contexts=included_session_contexts,
 #     phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
 #     bapun_figure_custom_user_completion_functions_dict=bapun_figure_custom_user_completion_functions_dict,
-#     phases_to_run=[ProcessingScriptPhases.clean_run],
-#     enable_auto_code_block_execution=False,
-#     wait_between_phases=True,
-#     copy_commands_to_clipboard=True,
+#     phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
+#     enable_auto_code_block_execution=True,
+#     wait_between_phases=False,
+#     copy_commands_to_clipboard=False,
 # )
