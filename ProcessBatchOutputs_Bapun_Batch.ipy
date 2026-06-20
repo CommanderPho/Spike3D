@@ -10,7 +10,11 @@
 # %autoreload 3
 import os
 import sys
+import re
+import json
+import time
 import platform
+import subprocess
 from copy import deepcopy
 from typing import List, Dict, Optional, Union, Callable
 from pathlib import Path
@@ -77,14 +81,91 @@ from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import Processi
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
 
 
-def execute_code_block(code_block: str) -> None:
-    """Executes a block of code in the terminal."""
-    import subprocess
-    try:
-        result = subprocess.run(code_block, shell=True, check=True, text=True)
-        print(result.stdout)  # Output from the command
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing command: {e}")
+def build_bapun_pickle_suffix(included_qclu_values: List[int], minimum_inclusion_fr_Hz: float) -> str:
+    return f"_withNormalComputedReplays-qclu_{included_qclu_values}-frateThresh_{minimum_inclusion_fr_Hz}"
+
+
+def validate_bapun_session_paths(good_session_concrete_folders) -> None:
+    missing_messages = []
+    for a_session_folder in good_session_concrete_folders:
+        basedir = Path(a_session_folder.path)
+        if not basedir.is_dir():
+            missing_messages.append(f"{a_session_folder.context}: {basedir} (directory missing)")
+            continue
+        xml_files = list(basedir.glob('*.xml'))
+        if len(xml_files) == 0:
+            missing_messages.append(f"{a_session_folder.context}: {basedir} (no .xml file)")
+        elif len(xml_files) > 1:
+            print(f"WARN: {a_session_folder.context}: multiple .xml files in {basedir}")
+    if len(missing_messages) > 0:
+        raise FileNotFoundError("Bapun session preflight failed:\n  " + "\n  ".join(missing_messages))
+
+
+def submit_slurm_scripts(slurm_script_paths: List[str]) -> List[int]:
+    job_ids = []
+    for slurm_script in slurm_script_paths:
+        result = subprocess.run(f"sbatch '{slurm_script}'", shell=True, check=True, capture_output=True, text=True)
+        match = re.search(r'Submitted batch job (\d+)', result.stdout)
+        if match is None:
+            raise RuntimeError(f"Could not parse sbatch job ID from stdout={result.stdout!r} stderr={result.stderr!r}")
+        job_id = int(match.group(1))
+        job_ids.append(job_id)
+        print(f"Submitted job {job_id}: {slurm_script}")
+    return job_ids
+
+
+def wait_for_slurm_jobs(job_ids: List[int], poll_seconds: int = 60) -> None:
+    if len(job_ids) == 0:
+        return
+    job_id_str = ','.join(str(j) for j in job_ids)
+    print(f"Waiting for Slurm jobs: {job_id_str}")
+    while True:
+        result = subprocess.run(f"squeue -j {job_id_str} -h", shell=True, capture_output=True, text=True)
+        if len(result.stdout.strip()) == 0:
+            break
+        running_count = len([line for line in result.stdout.strip().splitlines() if line.strip()])
+        print(f"  still running ({running_count} jobs)...")
+        time.sleep(poll_seconds)
+    sacct_result = subprocess.run(f"sacct -j {job_id_str} --format=JobID,State,ExitCode,Elapsed -P", shell=True, capture_output=True, text=True)
+    print(sacct_result.stdout)
+    for line in sacct_result.stdout.splitlines()[1:]:
+        if any(bad_state in line for bad_state in ['FAILED', 'CANCELLED', 'TIMEOUT', 'OUT_OF_MEMORY', 'NODE_FAIL']):
+            raise RuntimeError(f"Slurm job(s) failed:\n{sacct_result.stdout}")
+
+
+def write_phase_manifest(phase_name: str, run_slurm_paths: List[str], figs_slurm_paths: List[str], run_job_ids: List[int], figs_job_ids: List[int], manifest_output_dir: Path) -> None:
+    manifest_output_dir.mkdir(parents=True, exist_ok=True)
+    manifest = {'phase': phase_name, 'run_slurm_paths': run_slurm_paths, 'figs_slurm_paths': figs_slurm_paths, 'run_job_ids': run_job_ids, 'figs_job_ids': figs_job_ids}
+    manifest_path = manifest_output_dir / f'manifest_{phase_name}.json'
+    with open(manifest_path, 'w') as manifest_file:
+        json.dump(manifest, manifest_file, indent=2)
+    if len(run_slurm_paths) > 0:
+        submit_run_path = manifest_output_dir / f'submit_{phase_name}_run.sh'
+        with open(submit_run_path, 'w') as submit_run_file:
+            submit_run_file.write('\n'.join([f"sbatch '{p}'" for p in run_slurm_paths]) + '\n')
+        print(f"Wrote submit script: {submit_run_path}")
+    if len(figs_slurm_paths) > 0:
+        submit_figs_path = manifest_output_dir / f'submit_{phase_name}_figs.sh'
+        with open(submit_figs_path, 'w') as submit_figs_file:
+            submit_figs_file.write('\n'.join([f"sbatch '{p}'" for p in figs_slurm_paths]) + '\n')
+        print(f"Wrote submit script: {submit_figs_path}")
+    print(f"Wrote phase manifest: {manifest_path}")
+
+
+def execute_code_block(code_block: str, wait_for_completion: bool = True, poll_seconds: int = 60) -> List[int]:
+    """Parse sbatch lines from a code block, submit each script, and optionally wait for completion."""
+    slurm_paths = []
+    for line in code_block.strip().splitlines():
+        line = line.strip()
+        if not line.startswith('sbatch '):
+            continue
+        match = re.search(r"sbatch '([^']+)'", line)
+        if match is not None:
+            slurm_paths.append(match.group(1))
+    job_ids = submit_slurm_scripts(slurm_paths)
+    if wait_for_completion:
+        wait_for_slurm_jobs(job_ids, poll_seconds=poll_seconds)
+    return job_ids
 
 
 def process_all_phases(
@@ -106,6 +187,8 @@ def process_all_phases(
     max_parallel_executions: int = 1,
     also_show_figure_script_outputs: bool = False,
     wait_between_phases: bool = True,
+    copy_commands_to_clipboard: bool = False,
+    slurm_poll_seconds: int = 60,
     phases_to_run: List[ProcessingScriptPhases] = None
 ):
     """
@@ -126,12 +209,17 @@ def process_all_phases(
         drop_previous_result_and_compute_fresh: Whether to recompute from scratch
         laps_decoding_time_bin_size: Time bin size for laps decoding
         ripple_decoding_time_bin_size: Time bin size for ripple decoding
-        enable_auto_code_block_execution: Whether to auto-execute generated scripts
-        max_parallel_executions: Maximum parallel script executions
-        also_show_figure_script_outputs: Whether to show figure script outputs
-        wait_between_phases: Whether to wait for user input between phases
+        enable_auto_code_block_execution: Whether to auto-submit generated Slurm scripts and wait for completion
+        max_parallel_executions: Maximum parallel script executions (Windows PowerShell only)
+        also_show_figure_script_outputs: Whether to print figure sbatch commands during compute phases
+        wait_between_phases: Whether to wait for user input between phases (manual mode only)
+        copy_commands_to_clipboard: Whether to copy sbatch commands to clipboard (manual fallback)
+        slurm_poll_seconds: Poll interval when waiting for Slurm jobs
         phases_to_run: Specific phases to run (if None, runs all phases)
     """
+    if not enable_auto_code_block_execution and wait_between_phases is False:
+        wait_between_phases = True
+        print("Manual mode: enabling wait_between_phases because enable_auto_code_block_execution=False")
 
     # Set default values
     if force_recompute_override_computations_includelist is None:
@@ -152,18 +240,22 @@ def process_all_phases(
 
     # Setup paths
     known_scripts_output_paths = [Path(v).resolve() for v in [
-        # '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts',
+        '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts',
         '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
-        # '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs',
-        # '/home/halechr/FastData/gen_scripts/',
-        # 'output/gen_scripts/',
         Path(r"W:/Data/Output/gen_scripts"),
     ]]
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
     assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist!"
+    batch_manifest_dir = scripts_output_path / f'bapun_batch_{batch_date_to_use}'
+    batch_manifest_dir.mkdir(parents=True, exist_ok=True)
 
     collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
     collected_outputs_path.mkdir(exist_ok=True)
+
+    print(f'scripts_output_path: {scripts_output_path}')
+    print(f'batch_manifest_dir: {batch_manifest_dir}')
+    print(f'collected_outputs_path: {collected_outputs_path}')
+    print(f'sys.executable: {sys.executable}')
 
     # Setup global data root path
     known_global_data_root_parent_paths = [
@@ -176,14 +268,18 @@ def process_all_phases(
     ]
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist!"
+    print(f'global_data_root_parent_path: {global_data_root_parent_path}')
 
     good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(
         global_data_root_parent_path=global_data_root_parent_path, included_session_contexts=included_session_contexts,
         debug_print=True,
     )
+    validate_bapun_session_paths(good_session_concrete_folders)
 
-    # Bapun batch: distinct suffix so outputs do not collide with KDIBA batch naming.
-    job_suffix = f"_bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms"
+    bapun_pickle_suffix = build_bapun_pickle_suffix(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz)
+    job_suffix = f"_bapun{bapun_pickle_suffix}_tbin_25ms"
+    print(f'bapun_pickle_suffix: "{bapun_pickle_suffix}"')
+    print(f'base job_suffix: "{job_suffix}"')
 
     # Process each phase
     for phase_idx, active_phase in enumerate(phases_to_run):
@@ -215,7 +311,7 @@ def process_all_phases(
         # Setup phase-specific parameters
         active_phase_dict.update({
             'should_freeze_pipeline_updates': False,
-            'override_custom_pickle_suffix': "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_5.0",
+            'override_custom_pickle_suffix': bapun_pickle_suffix,
             'force_recompute_override_computation_kwargs_dict': {
                 'merged_directional_placefields': {
                     'laps_decoding_time_bin_size': laps_decoding_time_bin_size,
@@ -321,6 +417,7 @@ def process_all_phases(
             output_directory=scripts_output_path,
             use_separate_run_directories=True,
             should_use_file_redirected_output_logging=True,
+            batch_script_subdirectory=active_phase.name,
             **active_phase_dict
         )
 
@@ -334,57 +431,45 @@ def process_all_phases(
 
         computation_script_paths = [x[0] for x in output_python_scripts]
         generate_figures_script_paths = [x[1] for x in output_python_scripts]
+        run_slurm_paths = list(output_slurm_scripts.get('run', []))
+        figs_slurm_paths = list(output_slurm_scripts.get('figs', []))
+        run_job_ids: List[int] = []
+        figs_job_ids: List[int] = []
 
-        # Determine which scripts to run based on phase
-        if active_phase.is_figure_phase:
-            print(f'Running figure generation scripts')
-            script_paths = generate_figures_script_paths
-        else:
-            print(f'Running computation scripts')
-            script_paths = computation_script_paths
-
-        # Execute scripts based on platform
         if platform.system() == 'Windows':
-            # Windows PowerShell execution
-            powershell_script_path = build_windows_powershell_run_script(
-                script_paths,
-                max_concurrent_jobs=max_parallel_executions,
-                script_name=f'run_scripts_{active_phase.name}'
-            )
+            script_paths = generate_figures_script_paths if active_phase.is_figure_phase else computation_script_paths
+            powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}')
             print(f"PowerShell script: '{powershell_script_path}'")
-
             if also_show_figure_script_outputs or active_phase_dict['should_perform_figure_generation_to_file']:
-                powershell_figures_script_path = build_windows_powershell_run_script(
-                    generate_figures_script_paths,
-                    max_concurrent_jobs=1,
-                    script_name=f'run_figure_scripts_{active_phase.name}'
-                )
+                powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}')
                 print(f"PowerShell figures script: '{powershell_figures_script_path}'")
 
         else:
-            # Linux/Unix Slurm execution
-            if not active_phase.is_figure_phase:
-                sbatch_run_start_slurm_scripts = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts['run']])
+            phase_manifest_dir = batch_manifest_dir / active_phase.name
+            if len(run_slurm_paths) > 0:
+                sbatch_run_start_slurm_scripts = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in run_slurm_paths])
                 print(f"\n{active_phase.name} - RunMain:")
                 print(sbatch_run_start_slurm_scripts)
-                copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
-
+                if copy_commands_to_clipboard and not enable_auto_code_block_execution:
+                    copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
                 if enable_auto_code_block_execution:
-                    print(f'Executing {active_phase.name} computation scripts...')
-                    execute_code_block(sbatch_run_start_slurm_scripts)
+                    print(f'Submitting {active_phase.name} run scripts...')
+                    run_job_ids = submit_slurm_scripts(run_slurm_paths)
+                    wait_for_slurm_jobs(run_job_ids, poll_seconds=slurm_poll_seconds)
 
             if active_phase.is_figure_phase or also_show_figure_script_outputs:
-                if 'figs' in output_slurm_scripts and len(output_slurm_scripts['figs']) > 0:
-                    sbatch_figs_start_slurm_scripts = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts['figs']])
+                if len(figs_slurm_paths) > 0:
+                    sbatch_figs_start_slurm_scripts = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in figs_slurm_paths])
                     print(f"\n{active_phase.name} - Figures:")
                     print(sbatch_figs_start_slurm_scripts)
-
-                    if active_phase.is_figure_phase:
+                    if copy_commands_to_clipboard and active_phase.is_figure_phase and not enable_auto_code_block_execution:
                         copy_to_clipboard(sbatch_figs_start_slurm_scripts, message_print=True)
+                    if enable_auto_code_block_execution and active_phase.is_figure_phase:
+                        print(f'Submitting {active_phase.name} figure scripts...')
+                        figs_job_ids = submit_slurm_scripts(figs_slurm_paths)
+                        wait_for_slurm_jobs(figs_job_ids, poll_seconds=slurm_poll_seconds)
 
-                        if enable_auto_code_block_execution:
-                            print(f'Executing {active_phase.name} figure scripts...')
-                            execute_code_block(sbatch_figs_start_slurm_scripts)
+            write_phase_manifest(phase_name=active_phase.name, run_slurm_paths=run_slurm_paths, figs_slurm_paths=figs_slurm_paths, run_job_ids=run_job_ids, figs_job_ids=figs_job_ids, manifest_output_dir=phase_manifest_dir)
 
         print(f"Completed phase: {active_phase.name}")
 
@@ -432,10 +517,9 @@ included_session_contexts = [
 ]
 
 # %%
-# Main execution - process all phases automatically
-enable_auto_code_block_execution: bool = False  # Set to True to auto-execute scripts
+# Main execution - sequential auto-submit on Great Lakes
+enable_auto_code_block_execution: bool = True
 
-# Run all phases
 process_all_phases(
     batch_day_date=BATCH_DAY_DATE,
     batch_date_to_use=BATCH_DATE_TO_USE,
@@ -453,21 +537,23 @@ process_all_phases(
     ripple_decoding_time_bin_size=0.050,
     enable_auto_code_block_execution=enable_auto_code_block_execution,
     max_parallel_executions=1,
-    also_show_figure_script_outputs=True,
-    wait_between_phases=False,  # Set to False to run all phases without waiting
-    phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.figure_run]  # None means run all phases, or specify specific phases like [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.figure_run]
+    also_show_figure_script_outputs=False,
+    wait_between_phases=False,
+    copy_commands_to_clipboard=False,
+    slurm_poll_seconds=60,
+    phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
 )
 
 # %%
-# Alternative: Run specific phases only
-# Uncomment and modify as needed:
-
+# Alternative: manual mode (generate scripts + print sbatch commands; no auto-submit)
 # process_all_phases(
 #     batch_day_date=BATCH_DAY_DATE,
 #     batch_date_to_use=BATCH_DATE_TO_USE,
 #     included_session_contexts=included_session_contexts,
 #     phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
-#     phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run],  # Only run first two phases
-#     wait_between_phases=False,  # Run without pausing
-#     enable_auto_code_block_execution=True  # Auto-execute scripts
+#     bapun_figure_custom_user_completion_functions_dict=bapun_figure_custom_user_completion_functions_dict,
+#     phases_to_run=[ProcessingScriptPhases.clean_run],
+#     enable_auto_code_block_execution=False,
+#     wait_between_phases=True,
+#     copy_commands_to_clipboard=True,
 # )
