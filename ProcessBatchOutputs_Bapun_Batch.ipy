@@ -229,8 +229,8 @@ def process_all_phases(
     if included_qclu_values is None:
         included_qclu_values = [1, 2]
     if phases_to_run is None:
+        # Default: skip clean_run (full reload); start from continued_run unless you need a fresh pipeline rebuild.
         phases_to_run = [
-            ProcessingScriptPhases.clean_run,
             ProcessingScriptPhases.continued_run,
             ProcessingScriptPhases.final_run,
             ProcessingScriptPhases.figure_run
@@ -541,7 +541,7 @@ process_all_phases(
     wait_between_phases=False,
     copy_commands_to_clipboard=False,
     slurm_poll_seconds=60,
-    phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
+    phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
 )
 
 # %%
