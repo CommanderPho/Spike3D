@@ -115,6 +115,45 @@ def filter_bapun_session_paths(included_session_contexts: List[IdentifyingContex
     return filtered_contexts, filtered_folders
 
 
+def resolve_bapun_session_folder_and_root(curr_session_context: IdentifyingContext, known_global_data_root_parent_paths: List[Path], debug_print: bool = False) -> tuple[Optional[Path], Optional[Path]]:
+    """Return (global_data_root_parent_path, session_basedir) for the first known root where the session folder exists."""
+    for candidate_root in known_global_data_root_parent_paths:
+        if not candidate_root.exists():
+            if debug_print:
+                print(f'  {curr_session_context}: skip root (missing): {candidate_root}')
+            continue
+        basedirs_dict = BapunDataSessionFormatRegisteredClass.build_session_basedirs_dict(candidate_root, debug_print=False)
+        session_basedir = basedirs_dict.get(curr_session_context)
+        if session_basedir is None:
+            if debug_print:
+                print(f'  {curr_session_context}: skip root {candidate_root} (not in build_session_basedirs_dict)')
+            continue
+        if session_basedir.is_dir():
+            if debug_print:
+                print(f'{curr_session_context}: using {candidate_root} -> {session_basedir}')
+            return candidate_root.resolve(), session_basedir.resolve()
+        if debug_print:
+            print(f'  {curr_session_context}: skip root {candidate_root} ({session_basedir} not a directory)')
+    return None, None
+
+
+def build_bapun_concrete_session_folders_per_root(included_session_contexts: List[IdentifyingContext], known_global_data_root_parent_paths: List[Path], debug_print: bool = False) -> tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path]]:
+    """Resolve each session's data root independently by trying known_global_data_root_parent_paths in priority order (fast -> slow)."""
+    good_session_concrete_folders: List[ConcreteSessionFolder] = []
+    session_global_data_root_parent_paths: Dict[IdentifyingContext, Path] = {}
+    print('Per-session global_data_root_parent_path resolution:')
+    for curr_session_context in included_session_contexts:
+        resolved_root, session_basedir = resolve_bapun_session_folder_and_root(curr_session_context, known_global_data_root_parent_paths, debug_print=debug_print)
+        if resolved_root is None or session_basedir is None:
+            if debug_print:
+                print(f'  {curr_session_context}: no extant folder on any known root')
+            continue
+        good_session_concrete_folders.append(ConcreteSessionFolder(curr_session_context, session_basedir))
+        session_global_data_root_parent_paths[curr_session_context] = resolved_root
+        print(f'  {curr_session_context} -> {resolved_root}')
+    return good_session_concrete_folders, session_global_data_root_parent_paths
+
+
 def submit_slurm_scripts(slurm_script_paths: List[str]) -> List[int]:
     job_ids = []
     for slurm_script in slurm_script_paths:
@@ -271,18 +310,18 @@ def process_all_phases(
     print(f'collected_outputs_path: {collected_outputs_path}')
     print(f'sys.executable: {sys.executable}')
 
-    # Setup global data root path
+    # Per-session data roots: list order = storage priority (fast -> slow). Comment/uncomment blocks per machine.
     known_global_data_root_parent_paths = [
-        Path(r'W:/Data'), 
+        Path(r'W:/Data'),
         # Path('/Users/pho/data'),
         Path(r'/nfs/turbo/umms-kdiba/Data'),
-        # Path(r'/media/halechr/MAX/Data'), 
+        # Path(r'/media/halechr/MAX/Data'),
         # Path(r'/home/halechr/FastData'),
         # Path(r'/Volumes/MoverNew/data')
     ]
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist!"
-    print(f'global_data_root_parent_path: {global_data_root_parent_path}')
+    print(f'global_data_root_parent_path (fallback default): {global_data_root_parent_path}')
 
     known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in [
         '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python',
@@ -296,8 +335,9 @@ def process_all_phases(
     assert vscode_default_interpreter_path.exists(), f"vscode_default_interpreter_path: {vscode_default_interpreter_path} does not exist!"
     print(f'vscode_default_interpreter_path: {vscode_default_interpreter_path}')
 
-    good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path=global_data_root_parent_path, included_session_contexts=included_session_contexts, debug_print=True)
+    good_session_concrete_folders, session_global_data_root_parent_paths = build_bapun_concrete_session_folders_per_root(included_session_contexts=included_session_contexts, known_global_data_root_parent_paths=known_global_data_root_parent_paths, debug_print=True)
     included_session_contexts, good_session_concrete_folders = filter_bapun_session_paths(included_session_contexts, good_session_concrete_folders)
+    session_global_data_root_parent_paths = {a_session_folder.context: session_global_data_root_parent_paths[a_session_folder.context] for a_session_folder in good_session_concrete_folders}
 
     # bapun_pickle_suffix = build_bapun_pickle_suffix(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz)
     bapun_pickle_suffix = '' # No pickle suffix, use default name
@@ -443,6 +483,7 @@ def process_all_phases(
             global_data_root_parent_path,
             session_batch_basedirs=session_basedirs_dict,
             included_session_contexts=included_session_contexts,
+            session_global_data_root_parent_paths=session_global_data_root_parent_paths,
             output_directory=scripts_output_path,
             use_separate_run_directories=True,
             should_use_file_redirected_output_logging=True,
