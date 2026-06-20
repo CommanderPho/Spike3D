@@ -169,7 +169,7 @@ def process_all_phases(
     known_global_data_root_parent_paths = [
         Path(r'W:/Data'), 
         # Path('/Users/pho/data'),
-        # Path(r'/nfs/turbo/umms-kdiba/Data'),
+        Path(r'/nfs/turbo/umms-kdiba/Data'),
         # Path(r'/media/halechr/MAX/Data'), 
         # Path(r'/home/halechr/FastData'),
         # Path(r'/Volumes/MoverNew/data')
