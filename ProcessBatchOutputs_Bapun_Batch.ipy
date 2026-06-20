@@ -419,7 +419,7 @@ def process_all_phases(
 
         active_phase_dict.update({
             'job_suffix': current_job_suffix,
-            'should_freeze_pipeline_updates': False,
+            'should_freeze_pipeline_updates': True,
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
             'should_generate_run_scripts': True,
