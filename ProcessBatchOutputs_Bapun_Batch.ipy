@@ -284,6 +284,17 @@ def process_all_phases(
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist!"
     print(f'global_data_root_parent_path: {global_data_root_parent_path}')
 
+    known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in [
+        '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python',
+        '~/repos/Spike3D/.venv/bin/python',
+        '/home/halechr/repos/Spike3D/.venv/bin/python',
+        r'H:\TEMP\Spike3DEnv_ExploreUpgrade\Spike3DWorkEnv\Spike3D\.venv\Scripts\python.exe',
+        r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv_UV/Scripts/python',
+    ]] + [Path(sys.executable).resolve()]
+    vscode_default_interpreter_path = find_first_extant_path(known_vscode_default_interpreter_paths)
+    assert vscode_default_interpreter_path.exists(), f"vscode_default_interpreter_path: {vscode_default_interpreter_path} does not exist!"
+    print(f'vscode_default_interpreter_path: {vscode_default_interpreter_path}')
+
     good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path=global_data_root_parent_path, included_session_contexts=included_session_contexts, debug_print=True)
     included_session_contexts, good_session_concrete_folders = filter_bapun_session_paths(included_session_contexts, good_session_concrete_folders)
 
@@ -323,7 +334,7 @@ def process_all_phases(
 
         # Setup phase-specific parameters
         active_phase_dict.update({
-            'vscode_default_interpreter_path': '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python', ## Set path for GreatLakes
+            'vscode_default_interpreter_path': str(vscode_default_interpreter_path.as_posix()),
             'should_freeze_pipeline_updates': False,
             'override_custom_pickle_suffix': bapun_pickle_suffix,
             'force_recompute_override_computation_kwargs_dict': {
