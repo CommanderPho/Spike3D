@@ -316,3 +316,12 @@ Installed kernelspec spike3d-global-poetry in C:\Users\pho\AppData\Roaming\jupyt
 
 ipython kernel install --user --name=spike3d-global-poetry
 ```
+
+
+# 2026-06-20 - New Venv 
+
+```bash
+
+ipython kernel install --user --name=spike3d-globalTesting-UV
+
+```
