@@ -286,10 +286,11 @@ def process_all_phases(
 
     known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in [
         '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python',
-        '~/repos/Spike3D/.venv/bin/python',
-        '/home/halechr/repos/Spike3D/.venv/bin/python',
-        r'H:\TEMP\Spike3DEnv_ExploreUpgrade\Spike3DWorkEnv\Spike3D\.venv\Scripts\python.exe',
+        r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe', 
         r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv_UV/Scripts/python',
+        '~/repos/Spike3D/.venv/bin/python',
+        # '/home/halechr/repos/Spike3D/.venv/bin/python',
+
     ]] + [Path(sys.executable).resolve()]
     vscode_default_interpreter_path = find_first_extant_path(known_vscode_default_interpreter_paths)
     assert vscode_default_interpreter_path.exists(), f"vscode_default_interpreter_path: {vscode_default_interpreter_path} does not exist!"
