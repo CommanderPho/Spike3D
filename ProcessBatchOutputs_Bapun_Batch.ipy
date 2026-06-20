@@ -274,6 +274,7 @@ def process_all_phases(
     # Setup global data root path
     known_global_data_root_parent_paths = [
         Path(r'W:/Data'), 
+        Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
         # Path('/Users/pho/data'),
         Path(r'/nfs/turbo/umms-kdiba/Data'),
         # Path(r'/media/halechr/MAX/Data'), 
