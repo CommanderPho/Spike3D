@@ -85,20 +85,34 @@ def build_bapun_pickle_suffix(included_qclu_values: List[int], minimum_inclusion
     return f"_withNormalComputedReplays-qclu_{included_qclu_values}-frateThresh_{minimum_inclusion_fr_Hz}"
 
 
-def validate_bapun_session_paths(good_session_concrete_folders) -> None:
-    missing_messages = []
-    for a_session_folder in good_session_concrete_folders:
+def filter_bapun_session_paths(included_session_contexts: List[IdentifyingContext], good_session_concrete_folders) -> tuple[List[IdentifyingContext], list]:
+    """Return filtered (contexts, folders), skipping unregistered or missing on-disk sessions with warnings."""
+    session_folder_by_context = {a_session_folder.context: a_session_folder for a_session_folder in good_session_concrete_folders}
+    filtered_contexts: List[IdentifyingContext] = []
+    filtered_folders = []
+    for curr_session_context in included_session_contexts:
+        a_session_folder = session_folder_by_context.get(curr_session_context)
+        if a_session_folder is None:
+            print(f"WARN: skipping {curr_session_context}: not registered in Bapun build_session_basedirs_dict (no known data path)")
+            continue
         basedir = Path(a_session_folder.path)
         if not basedir.is_dir():
-            missing_messages.append(f"{a_session_folder.context}: {basedir} (directory missing)")
+            print(f"WARN: skipping {a_session_folder.context}: {basedir} (directory missing)")
             continue
         xml_files = list(basedir.glob('*.xml'))
         if len(xml_files) == 0:
-            missing_messages.append(f"{a_session_folder.context}: {basedir} (no .xml file)")
-        elif len(xml_files) > 1:
+            print(f"WARN: skipping {a_session_folder.context}: {basedir} (no .xml file)")
+            continue
+        if len(xml_files) > 1:
             print(f"WARN: {a_session_folder.context}: multiple .xml files in {basedir}")
-    if len(missing_messages) > 0:
-        raise FileNotFoundError("Bapun session preflight failed:\n  " + "\n  ".join(missing_messages))
+        filtered_contexts.append(curr_session_context)
+        filtered_folders.append(a_session_folder)
+    if len(filtered_contexts) == 0:
+        raise FileNotFoundError("Bapun session preflight failed: no valid session paths remain after filtering included_session_contexts.")
+    skipped_count = len(included_session_contexts) - len(filtered_contexts)
+    if skipped_count > 0:
+        print(f"Bapun session preflight: proceeding with {len(filtered_contexts)}/{len(included_session_contexts)} sessions ({skipped_count} skipped due to missing paths).")
+    return filtered_contexts, filtered_folders
 
 
 def submit_slurm_scripts(slurm_script_paths: List[str]) -> List[int]:
@@ -271,7 +285,7 @@ def process_all_phases(
     print(f'global_data_root_parent_path: {global_data_root_parent_path}')
 
     good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path=global_data_root_parent_path, included_session_contexts=included_session_contexts, debug_print=True)
-    validate_bapun_session_paths(good_session_concrete_folders)
+    included_session_contexts, good_session_concrete_folders = filter_bapun_session_paths(included_session_contexts, good_session_concrete_folders)
 
     # bapun_pickle_suffix = build_bapun_pickle_suffix(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz)
     bapun_pickle_suffix = '' # No pickle suffix, use default name
@@ -309,6 +323,7 @@ def process_all_phases(
 
         # Setup phase-specific parameters
         active_phase_dict.update({
+            'vscode_default_interpreter_path': '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python', ## Set path for GreatLakes
             'should_freeze_pipeline_updates': False,
             'override_custom_pickle_suffix': bapun_pickle_suffix,
             'force_recompute_override_computation_kwargs_dict': {
