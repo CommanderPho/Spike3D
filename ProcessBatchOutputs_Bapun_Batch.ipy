@@ -276,7 +276,9 @@ def process_all_phases(
     )
     validate_bapun_session_paths(good_session_concrete_folders)
 
-    bapun_pickle_suffix = build_bapun_pickle_suffix(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz)
+    # bapun_pickle_suffix = build_bapun_pickle_suffix(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz)
+    bapun_pickle_suffix = '' # No pickle suffix, use default name
+
     job_suffix = f"_bapun{bapun_pickle_suffix}_tbin_25ms"
     print(f'bapun_pickle_suffix: "{bapun_pickle_suffix}"')
     print(f'base job_suffix: "{job_suffix}"')
@@ -426,8 +428,8 @@ def process_all_phases(
         output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
         vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
 
-        if vscode_workspace_path is not None:
-            print(f"VSCode workspace: {vscode_workspace_path}")
+        # if vscode_workspace_path is not None:
+        #     print(f"VSCode workspace: {vscode_workspace_path}")
 
         computation_script_paths = [x[0] for x in output_python_scripts]
         generate_figures_script_paths = [x[1] for x in output_python_scripts]
