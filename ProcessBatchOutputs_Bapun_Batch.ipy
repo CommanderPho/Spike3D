@@ -426,6 +426,7 @@ def process_all_phases(
             # 'should_generate_run_notebooks': True,
             'should_generate_run_notebooks': True,
             'should_create_vscode_workspace': True,
+            'preflight_bapun_batch_helpers_run_all': False, # Bapun-specific
         })
 
         print(f'Phase: {active_phase.name}')
