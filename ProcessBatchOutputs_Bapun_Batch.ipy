@@ -153,7 +153,7 @@ def process_all_phases(
     # Setup paths
     known_scripts_output_paths = [Path(v).resolve() for v in [
         # '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts',
-        # '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
+        '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
         # '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs',
         # '/home/halechr/FastData/gen_scripts/',
         # 'output/gen_scripts/',
