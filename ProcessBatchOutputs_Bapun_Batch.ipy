@@ -462,7 +462,7 @@ def process_all_phases(
             'job_suffix': current_job_suffix,
             'should_freeze_pipeline_updates': False, # False => the pipeline is allowed to update/recompute AND the generated run script saves the pipeline (and global results) when done (continued/final runs render saving_mode=TEMP_THEN_OVERWRITE)
             # 'should_freeze_pipeline_updates': True,
-            'skip_save_on_initial_load': False, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
+            'skip_save_on_initial_load': True, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
             'should_generate_run_scripts': True,
@@ -581,20 +581,19 @@ bapun_figure_custom_user_completion_functions_dict = {
 # Keys align with BapunDataSessionFormatRegisteredClass._get_session_specific_parameters (NeuroPy BapunDataSessionFormat.py).
 included_session_contexts = [
     # ## OpenField Contexts:
-    # IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day4Openfield'),
-    # IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day4Openfield'),
-    # IdentifyingContext(format_name='bapun', animal='RatN', session_name='Day4OpenField'),
-    # IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day1OpenField'),
-    # IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day4OpenField'),
-    # IdentifyingContext(format_name='bapun', animal='RatU', session_name='Day5Openfield'),
+    IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day4Openfield'),
+    IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day4Openfield'),
+    IdentifyingContext(format_name='bapun', animal='RatN', session_name='Day4OpenField'),
+    IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day1OpenField'),
+    IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day4OpenField'),
+    IdentifyingContext(format_name='bapun', animal='RatU', session_name='Day5Openfield'),
     # # IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day5OpenfieldSD'), # Legacy duplicate context if your on-disk layout still uses the old session_name stem
-
 
     ## TwoNovel Contexts:
     IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day3TwoNovel'),
     IdentifyingContext(format_name='bapun',animal='RatK', session_name='Day3TwoNovel'),
-    # IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
-    IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day3TwoNovel'),
+    IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
+    IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day3TwoNovel'), ## #TODO 2026-06-21 06:23: - [ ] Disable because running in notebook interactively
 ]
 
 # %%
@@ -623,7 +622,8 @@ process_all_phases(
     copy_commands_to_clipboard=True,
     slurm_poll_seconds=60,
     # phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
-    phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
+    # phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
+    phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
 )
 
 # %%
