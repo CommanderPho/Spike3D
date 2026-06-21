@@ -622,8 +622,8 @@ process_all_phases(
     wait_between_phases=True,
     copy_commands_to_clipboard=True,
     slurm_poll_seconds=60,
-    phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
-    # phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
+    # phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
+    phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
 )
 
 # %%
