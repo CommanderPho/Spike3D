@@ -184,6 +184,7 @@ dependencies = [
     # "hippocampalswrdynamics",
     "silx>=2.2.0,<3",
     "numpy==1.23.5",
+    "pyrasite>=2.0",
 ]
 
 [project.scripts]
