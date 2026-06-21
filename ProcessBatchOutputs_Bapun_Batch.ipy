@@ -460,8 +460,9 @@ def process_all_phases(
 
         active_phase_dict.update({
             'job_suffix': current_job_suffix,
-            'should_freeze_pipeline_updates': False,
+            'should_freeze_pipeline_updates': False, # False => the pipeline is allowed to update/recompute AND the generated run script saves the pipeline (and global results) when done (continued/final runs render saving_mode=TEMP_THEN_OVERWRITE)
             # 'should_freeze_pipeline_updates': True,
+            'skip_save_on_initial_load': False, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
             'should_generate_run_scripts': True,
