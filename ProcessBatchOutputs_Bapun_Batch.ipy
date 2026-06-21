@@ -580,20 +580,20 @@ bapun_figure_custom_user_completion_functions_dict = {
 
 # Keys align with BapunDataSessionFormatRegisteredClass._get_session_specific_parameters (NeuroPy BapunDataSessionFormat.py).
 included_session_contexts = [
-    ## OpenField Contexts:
-    IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day4Openfield'),
-    IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day4Openfield'),
-    IdentifyingContext(format_name='bapun', animal='RatN', session_name='Day4OpenField'),
-    IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day1OpenField'),
-    IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day4OpenField'),
-    IdentifyingContext(format_name='bapun', animal='RatU', session_name='Day5Openfield'),
-    # IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day5OpenfieldSD'), # Legacy duplicate context if your on-disk layout still uses the old session_name stem
+    # ## OpenField Contexts:
+    # IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day4Openfield'),
+    # IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day4Openfield'),
+    # IdentifyingContext(format_name='bapun', animal='RatN', session_name='Day4OpenField'),
+    # IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day1OpenField'),
+    # IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day4OpenField'),
+    # IdentifyingContext(format_name='bapun', animal='RatU', session_name='Day5Openfield'),
+    # # IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day5OpenfieldSD'), # Legacy duplicate context if your on-disk layout still uses the old session_name stem
 
 
     ## TwoNovel Contexts:
     IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day3TwoNovel'),
     IdentifyingContext(format_name='bapun',animal='RatK', session_name='Day3TwoNovel'),
-    IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
+    # IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
     IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day3TwoNovel'),
 ]
 
