@@ -1,0 +1,604 @@
+[
+  {
+    "hash": "26f673d14b963201872b14a4d5e35746620c647e",
+    "date": "2025-09-23",
+    "message": "final_process_bapun_all_comps improved",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# _out_container.plot # _out_container.plot_data.directional_decoders_decode_result = directional_decoders_decode_result # _out_container.plot_data.directional_decoders_decode_result = directional_decoders_decode_result"
+  },
+  {
+    "hash": "078ef9d552513e1013d40e3895d13e4154b10d6d",
+    "date": "2025-09-21",
+    "message": "made combined method",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## INPUTS: contextual_pf2D_Decoder, curr_active_pipeline ## Decode PBEs please # ripple_decoding_time_bin_size: float = 0.025 # 25ms ## 18m at 60ms ## OUTPUTS: pbes_full_result"
+  },
+  {
+    "hash": "33458d254e43e7858bfefe2d8950c08b221868bf",
+    "date": "2025-09-21",
+    "message": "DecodedFilterEpochsResult -- tried to fix missing 'marginal_z' values and propagating/updating those as I would the 'marginal_y' values",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## marginal_z_list"
+  },
+  {
+    "hash": "afd021d4edc9e10fe739ac8f19f56e92327d2f36",
+    "date": "2025-09-19",
+    "message": "final_process_bapun_all_comps",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# activity_only_epoch_names: List[str] = ['maze1', 'maze2', 'maze_GLOBAL'] # activity_only_epochs_df: pd.DataFrame = epochs_df[epochs_df['label'].isin(['maze1', 'maze2', 'maze_GLOBAL'])] ## GLobal only ('maze_GLOBAL') ## OUTPUTS: activity_only_epochs, global_activity_only_epoch ## OUTPUTS: activity_only_epoch ## Need 2 diff active_session_computation_configs: ## UPDATES: active_session_computation_configs # curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_excludelist=['_perform_spike_burst_detection_computation', '_perform_velocity_vs_pf_density_computation', '_perform_velocity_vs_pf_simplified_count_density_computation']) # SpikeAnalysisComputations._perform_spike_burst_detection_computation # curr_active_pipeline.perform_computations(active_session_computation_configs[0], computation_functions_name_includelist=active_computation_functions_name_includelist, enabled_filter_names=activity_only_epoch_names, overwrite_extant_results=True, fail_on_exception=False, debug_print=True) # SpikeAnalysisComputations._perform_spike_burst_detection_computation # ==================================================================================================================================================================================================================================================================================== # # COMPUTE DONE                                                                                                                                                                                                                                                                         # # ==================================================================================================================================================================================================================================================================================== # # curr_active_pipeline.computation_results['maze'].accumulated_errors # curr_active_pipeline.prepare_for_display(root_output_dir=r'W:\\Data\\Output', should_smooth_maze=True) # TODO: pass a display config"
+  },
+  {
+    "hash": "78b2de7cd7a1244e6a8b250cb29270a70c5cc1e7",
+    "date": "2025-09-19",
+    "message": "drop dimensions above 2 before decoding",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "c4e70e43be0dfe3112448a44c0fd83bdda5ee2ae",
+    "date": "2025-09-11",
+    "message": "hopefully prevented execution of 'lap_direction_determination' computation for non-kdiba (non-directional) sessions",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "ea36ae993b4ef493aeb686bb4f8cc3f0327e81ff",
+    "date": "2025-09-11",
+    "message": "factored out _add_context_marginal_to_timeline, _add_context_decoded_epoch_marginals_to_timeline",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## Decode PBEs please # print(f'marginal_z.shape: {np.shape(marginal_z)}') ## Decode PBEs please"
+  },
+  {
+    "hash": "4a67bfce924a78b0b6a88babd6980aad5b005666",
+    "date": "2025-09-09",
+    "message": "added .marginal_z_list to SingleEpochDecodedResult",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "401132bb346a4ef7de259733ad78b94244183ac9",
+    "date": "2025-09-09",
+    "message": "decoding for Bapun sessions",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "6da90cbb13e69006e02d99598097f7b6dfd8c515",
+    "date": "2025-09-05",
+    "message": "compute_3d_occupancy_map example",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## INPUTS: global_pf2D # Create evenly spaced bin edges from 0 to 360 # Use pd.cut with the explicit bin edges"
+  },
+  {
+    "hash": "9d9d12ba774f1e5ac7a07486224238f98285c132",
+    "date": "2025-09-05",
+    "message": "added note about the sess.non_pbes existance on Bapun's data",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# is_enabled = hasattr(sess, 'non_pbe')"
+  },
+  {
+    "hash": "4ae9ae6abfcfddf1732937ca7849af9795bd7075",
+    "date": "2025-09-04",
+    "message": "added HeatmapExportConfig.posterior_epoch_info to aid in getting epoch start time for export. ['epoch_info_dict']",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## INPUTS: a_config"
+  },
+  {
+    "hash": "812456ea1575fa72002d93b7783b772a621281c1",
+    "date": "2025-09-03",
+    "message": "hopefully working",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## row_idx is actually the column index... ## Doing a single row ## col_idx is actually the decoder index and is redundant #TODO 2025-09-03 18:58: - [ ] This is excessively nested and iterates incorreclty # if progress_print: #     print(f'_out_vstack.size: {_out_vstack.size}')"
+  },
+  {
+    "hash": "afba5278c14d96db73977de95e2cb3b9e91b8b8a",
+    "date": "2025-09-03",
+    "message": "improved labels for Fig4 example posteriors",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "6f08e1c39b6d2da218986bf48fa01177a477cbf2",
+    "date": "2025-08-28",
+    "message": "AcrossSessionsVisualizations._sanity_check_dropped_t_bins_per_session",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## INPUTS: acitve_dropped_df, acitve_ignore_df # Plot # count_col_name: str = 'n_dropped' # ax.set_xticklabels(df['session_name'], rotation=90) # ==================================================================================================================================================================================================================================================================================== # # BEGIN FUNCTION BODY                                                                                                                                                                                                                                                                  # # ==================================================================================================================================================================================================================================================================================== # ## INPUTS: acitve_dropped_df, acitve_ignore_df # n_total_either = n_total_dropped + n_total_dropped # Performed 1 aggregation grouped on columns: 'session_name', 'time_bin_size', 'pre_post_delta_category' # Performed 1 aggregation grouped on columns: 'session_name', 'time_bin_size', 'pre_post_delta_category' ## OUTPUTS: acitve_ignore_counts_df, acitve_dropped_counts_df"
+  },
+  {
+    "hash": "b8b9b0013e31e212d9a763a9fd2c6c4db62e716a",
+    "date": "2025-08-28",
+    "message": "PerfmncMeasures factored out to file",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## INPUTS: most_recent_parsed_csv_files_df # Filter rows based on column: 'decoding_time_bin_size_str' # most_recent_parsed_perfmnc_session_csv_files_df = most_recent_parsed_perfmnc_session_csv_files_df[most_recent_parsed_perfmnc_session_csv_files_df['decoding_time_bin_size_str'] == \"0.05\"] ## NOTE: HARDCODED STRING # most_recent_parsed_perfmnc_session_csv_files_df = most_recent_parsed_perfmnc_session_csv_files_df[most_recent_parsed_perfmnc_session_csv_files_df['known_named_decoding_epochs_type'] == \"laps\"] # why doesn't this work? `.pho.constrain_df_cols(known_named_decoding_epochs_type='laps')` # Sort by column: 'export_datetime' (descending) ## Add in the `_comparable_custom_replay_name` ## iterate through each row ## load the CSV ## Split custom_replay_name column to separate columns: ## split on record type: # fig.update_yaxes(matches='y') # Update y-axis labels for each facet row # showarrow=False, textangle=-90, font=dict(size=16),"
+  },
+  {
+    "hash": "8ca80194e78be263a6b77247fb00739bbe4890da",
+    "date": "2025-08-28",
+    "message": "added individual epoch correctness to determine_percent_correctly_decoded_contexts",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# if export_all_laps_mode: ## for each group of epochs, compute the stats # worse_percent_correct, (percent_correct_pre, n_correct_pre, n_total_pre), (percent_correct_post, n_correct_post, n_total_post) = a_num_counts_tuple # a_record = dict(**best_matching_context.to_dict(), worse_percent_correct=worse_percent_correct, percent_correct_pre=percent_correct_pre, n_correct_pre=n_correct_pre, n_total_pre=n_total_pre,  percent_correct_post=percent_correct_post, n_correct_post=n_correct_post, n_total_post=n_total_post) # records_df.append(a_record) # records_df: pd.DataFrame = pd.DataFrame.from_records(records_df) # if curr_active_pipeline is not None: #     records_df = records_df.across_session_identity.add_session_df_columns_from_pipeline(curr_active_pipeline=curr_active_pipeline, time_bin_size=time_bin_size, time_col=None)"
+  },
+  {
+    "hash": "970d799b2c3a688af6a297d1b8c6d4a3c35f3ae1",
+    "date": "2025-08-28",
+    "message": "split_custom_replay_name_col_to_replayMethod_qclu_frateThresh_cols",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# df = df.join( #     df[custom_replay_col].map(cls.parse_comparable_custom_replay_name_to_separate_columns).apply(pd.Series) # ).drop(columns=[custom_replay_col]).convert_dtypes()"
+  },
+  {
+    "hash": "c6c35093aeed80316f79fc001cd5ceb078a49829",
+    "date": "2025-08-26",
+    "message": "add_session_df_columns_from_pipeline",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Add the maze_id to the active_filter_epochs so we can see how properties change as a function of which track the replay event occured on:"
+  },
+  {
+    "hash": "b3bd28fe740ea8f786883df41d36b4a501fa19b0",
+    "date": "2025-08-26",
+    "message": "determine_percent_correctly_decoded_contexts",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# ==================================================================================================================================================================================================================================================================================== # # 2025-08-26 - Final Correct Context Decoding Stabilities:                                                                                                                                                                                                                             # # ==================================================================================================================================================================================================================================================================================== # # ==================================================================================================================================================================================================================================================================================== # # BEGIN FUNCTION BODY                                                                                                                                                                                                                                                                  # # ==================================================================================================================================================================================================================================================================================== # # a_target_context: IdentifyingContext = IdentifyingContext(trained_compute_epochs='laps', pfND_ndim=1, time_bin_size=0.050, known_named_decoding_epochs_type='pbe', masked_time_bin_fill_type='ignore') # , decoder_identifier='long_LR' # a_target_context: IdentifyingContext = IdentifyingContext(trained_compute_epochs='laps', pfND_ndim=1, time_bin_size=0.025, known_named_decoding_epochs_type='pbe', masked_time_bin_fill_type='ignore', data_grain='per_epoch') # , time_bin_size=0.050, known_named_decoding_epochs_type='pbe', masked_time_bin_fill_type='ignore', decoder_identifier='long_LR' # a_target_context: IdentifyingContext = IdentifyingContext(trained_compute_epochs='laps', pfND_ndim=1, time_bin_size=0.025, known_named_decoding_epochs_type='laps', masked_time_bin_fill_type='ignore', data_grain='per_epoch') ## Laps # any_matching_contexts_list, result_context_dict, decoder_context_dict, decoded_marginal_posterior_df_context_dict = a_new_fully_generic_result.get_results_matching_contexts(context_query=a_target_context) # common_constraint_dict = dict(trained_compute_epochs='laps', pfND_ndim=1, time_bin_size=0.025, masked_time_bin_fill_type='ignore') # common_constraint_dict = dict(trained_compute_epochs='laps', time_bin_size=0.060, masked_time_bin_fill_type='nan_filled') # , pfND_ndim=1 ## Laps context: # best_matching_context, a_result, a_decoder, a_decoded_marginal_posterior_df = a_new_fully_generic_result.get_results_best_matching_context(context_query=a_Laps_target_context) # _output_dict[best_matching_context] = _subfn_determine_num_correctly_decoded_time_bins(a_decoded_marginal_posterior_df=a_decoded_marginal_posterior_df) # ## Global context: ## PBEs context: ## OUTPUTS: a_decoded_marginal_posterior_df"
+  },
+  {
+    "hash": "0212a91a70af56c014598466ef418063544c97e0",
+    "date": "2025-08-26",
+    "message": "`plot_bin_by_bin_decoding_example` -- return a BinByBinDecodingDebugger instance",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# bin_by_bin_debugger: BinByBinDecodingDebugger = BinByBinDecodingDebugger.init_from_plot_bin_by_bin_decoding(win=win, pf1D_decoder_template_objects=out_pf1D_decoder_template_objects, #                                                                                                     _out_decoded_active_plots=_out_decoded_active_plots, #                                                                                                     _out_decoded_active_plots_data=_out_decoded_active_plots_data) # return win, out_pf1D_decoder_template_objects, (_out_decoded_active_plots, _out_decoded_active_plots_data)"
+  },
+  {
+    "hash": "e699dcca11e453c7a2f610238a41ec655baf225b",
+    "date": "2025-08-22",
+    "message": "fixed `generalized_decoded_yellow_blue_marginal_epochs` output figure sizes",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "2b5e225480110c39b63a3f1aa5304750e1132eee",
+    "date": "2025-08-21",
+    "message": "concatenated output PDFs in figures_plot_generalized_decode_epochs_dict_and_export_results_completion_fu's '_display_measured_vs_decoded_occupancy_distributions'",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## INPUT: `_out`"
+  },
+  {
+    "hash": "1841598180fbc9cc287deb8b92c7da8c1d7bb52c",
+    "date": "2025-08-21",
+    "message": "figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function defaults updated",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "9cb4f51ed46c290bc411cc8fc541fb0a8b9f346f",
+    "date": "2025-08-20",
+    "message": "skip_plotting_measured for PBEs",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# if not is_measured_result_curr_period: #     measured_kwargs = dict(alpha=0.1) ## only plot measured for the correct measured period:"
+  },
+  {
+    "hash": "e41392402c540e28b6a7b221ff93bbbf6592927d",
+    "date": "2025-08-20",
+    "message": "tried to deemphasize the non-active period's measured occupancy histogram in perform_plot_occupancy",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## sum over all positions to get the scalar per decoder # else: #     measured_kwargs = dict(alpha=1.0)"
+  },
+  {
+    "hash": "f3f8e855d72fdf27d4a2c209efb04fd434f000e4",
+    "date": "2025-08-19",
+    "message": "removed deepcopy",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# pf1D_dt_snapshot_outputs[a_decoder_name] = deepcopy(_a_pf1D_dt_snapshots)"
+  },
+  {
+    "hash": "4cb19aac8e1bbc849d2dd87c73d1e220d34522bc",
+    "date": "2025-08-18",
+    "message": "plot_napari_trial_by_trial_correlation_matrix",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## Directional ## Global: ## Global: # viewer, image_layer_dict = napari_trial_by_trial_activity_viz(z_scored_tuning_map_matrix, C_trial_by_trial_correlation_matrix, title='Trial-by-trial Correlation Matrix C', axis_labels=('aclu', 'lap', 'xbin')) # GLOBAL"
+  },
+  {
+    "hash": "a37a9b75f2756d3b259132fed4cca4eac9572f46",
+    "date": "2025-08-14",
+    "message": "export_session_h5_file_completion_function",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## Get needed results ## Get save paths # posteriors_save_path = Path('output/newest_all_decoded_epoch_posteriors.h5').resolve() # output_man = curr_active_pipeline.get_output_manager(context_to_path_mode=ContextToPathMode.GLOBAL_UNIQUE, override_output_parent_path=active_export_parent_output_path) # print(f'_parent_save_context: {_parent_save_context}') # posteriors_save_path: Path = output_man.get_figure_save_file_path(final_context=_parent_save_context).with_suffix('.h5') ## add optional time bin suffix:"
+  },
+  {
+    "hash": "69f39b35778c687898bf5ad481a4a1b4e382fe3f",
+    "date": "2025-08-14",
+    "message": "added notes on how 'most_likely_positions_1D' column is propagated through (FAT) df calculations",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## Computes marginals for `dropping_masked_laps_pseudo2D_continuous_specific_decoded_result` -- The loss of the 'most_likely_positions_1D' must be happening here -- confirmed previous step does not cause loss in the `a_decoded_marginals_df` variable at least while the next step does. #  , epoch_start_t_col_name=epoch_start_t_col_name, additional_transfer_column_names=additional_transfer_column_names #TODO 2025-08-14 11:52: - [ ] Could add the 'most_likely_positions_1D' column here in a manner similar to the other method"
+  },
+  {
+    "hash": "51d7bc46f4098064608d6ba951630053b320beb0",
+    "date": "2025-08-07",
+    "message": "rollback many changes",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# a_sess_pre_post_delta_result_list = (self.AnyC_ThetaDeltaMinus, self.AnyC_ThetaDeltaPlus, self.AnyC_ReplayDeltaMinus, self.AnyC_ReplayDeltaPlus) # a_sess_pre_post_delta_result_dict = dict(zip(['ThetaDeltaMinus', 'ThetaDeltaPlus', 'ReplayDeltaMinus', 'ReplayDeltaPlus'], a_sess_pre_post_delta_result_list)) # # for a_pre_post_period_result in a_sess_pre_post_delta_result_list: # for a_period_name, a_pre_post_period_result in a_sess_pre_post_delta_result_dict.items(): #     a_result_col_name: str = 'n_participating_epochs' #     n_participating_epochs_dict, n_participating_epochs, has_epoch_participation, per_aclu_additional_properties_dict = a_pre_post_period_result.compute_participation_stats(a_session_ctxt=self.active_identifying_session_ctx, should_update_self=True) #     # df_combined['lap_delta_minus', 'lap_delta_plus', 'replay_delta_minus', 'replay_delta_plus' #     assert len(a_pre_post_period_result.included_neuron_ids) == len(n_participating_epochs), f\"len(a_pre_post_period_result.included_neuron_ids): {len(a_pre_post_period_result.included_neuron_ids)} != len(n_participating_epochs): {len(n_participating_epochs)}\" #     # assert len(df_combined) == len(n_participating_epochs), f\"len(df_combined): {len(df_combined)} != len(n_participating_epochs): {len(n_participating_epochs)}\" #     # df_combined[f\"{a_period_name}_{a_result_col_name}\"] = deepcopy(n_participating_epochs) ## add this column to the dataframe # Adds columns ['ThetaDeltaMinus_n_participating_epochs', 'ThetaDeltaPlus_n_participating_epochs', 'ReplayDeltaMinus_n_participating_epochs', 'ReplayDeltaPlus_n_participating_epochs'] # a_sess_pre_post_delta_result_list = (self.AnyC_ThetaDeltaMinus, self.AnyC_ThetaDeltaPlus, self.AnyC_ReplayDeltaMinus, self.AnyC_ReplayDeltaPlus, #                                      self.LxC_ThetaDeltaMinus, self.LxC_ThetaDeltaPlus, self.LxC_ReplayDeltaMinus, self.LxC_ReplayDeltaPlus, #                                      self.SxC_ThetaDeltaMinus, self.SxC_ThetaDeltaPlus, self.SxC_ReplayDeltaMinus, self.SxC_ReplayDeltaPlus) # for a_pre_post_period_result in a_sess_pre_post_delta_result_list: # df_combined['lap_delta_minus', 'lap_delta_plus', 'replay_delta_minus', 'replay_delta_plus' # assert len(a_pre_post_period_result.included_neuron_ids) == len(n_participating_epochs), f\"len(a_pre_post_period_result.included_neuron_ids): {len(a_pre_post_period_result.included_neuron_ids)} != len(n_participating_epochs): {len(n_participating_epochs)}\" ## END if should_add_participation..."
+  },
+  {
+    "hash": "6a09f3bee2e2001a05d1d549fbb17e89c0780eca",
+    "date": "2025-08-06",
+    "message": "added x/y axis labels in `.plot_stability_group_diagnostics(...)`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "90623e3e2077c650007810c2e0fd8229a503ab5c",
+    "date": "2025-08-06",
+    "message": "added dict of optional additional properties to `SpikeRateTrends` named `.per_aclu_additional_properties_dict` which is updated to hold 'epoch_is_participating_dict' and other new props",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Either instantaneous or non-instantaneous # unit_specific_has_epoch_participation_dict = {aclu:(unit_specific_binned_spike_counts_dict.get(aclu, np.zeros((n_epoch_time_bins, ))) > 0) for aclu in included_neuron_ids} # epoch_results_list_dict['epoch_is_participating_dict'].append(unit_specific_has_epoch_participation_dict)"
+  },
+  {
+    "hash": "6cbc074d8d627545e979cf12800180a715b783e1",
+    "date": "2025-08-05",
+    "message": "renamed zero_point_stability/minimum_one_point_stability to more descriptive names",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# plots_dict['vlines_labels'] = ax.text(contra_period_max_permitted_stability, 0.1, f'max_contra={contra_period_max_permitted_stability}', rotation=90, verticalalignment='bottom', horizontalalignment='center')"
+  },
+  {
+    "hash": "0f0a25b543d1f21db3407cc7c0232362acbbf7bd",
+    "date": "2025-08-05",
+    "message": "SpareRunningSequenceScore refinements, finished implementation, now need to check",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# for decoder_idx in np.arange(n_decoders): # out_decoder_spare_scores.append(out_spare_score)"
+  },
+  {
+    "hash": "1febd83da8e70f4e23d78365bc504c218348fdef",
+    "date": "2025-08-05",
+    "message": "moved \"spare\" scoring into a class SpareRunningSequenceScore",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## start at the end of the posterior # out_spare_score = np.full_like(a_p_x_given_n, fill_value=np.nan) ## find the \"miss\" bins # most_likely_pos_idx_change = [0, np.diff(a_most_likely_pos_idxs)] # sign_change_locations = np.diff(np.sign(most_likely_pos_idx_change)) # -1 if x < 0, 0 if x==0, 1 if x > 0 ## start in the last frame and work forward until the first # sign_change_locations[t_idx] ## for any but the first index in the series # need to know the max index ## if it is the first bound in the series, we need to decide which side to integrate from (it should be the closest to curr peak: # out_spare_score[t_idx] = # for t_idx in reversed(np.arange(a_seg_len)) # most_likely_decoder_idxs # .shape # p_x_given_n.shape # p_x_given_n.shape (59, 4, 69488) # p_x_given_n[most_likely_decoder_idxs, :] ## compute each decoder indepednently ## Normalize to this decoder by summing over each time bin and dividing by the output # Extract the maximum locations for each time bin"
+  },
+  {
+    "hash": "0fa273d4575a5077e5902e83801ed1695e18e983",
+    "date": "2025-08-04",
+    "message": "`bowling_spare_integration`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# def compute_spare_operation(a_p_x_given_n: NDArray) -> List[NDArray]: #     \"\"\" Done #     \"\"\" #     ## start at the end of the posterior #     n_pos, n_time_bins = np.shape(a_p_x_given_n) # np.shape(p_x_given_n) - (59, 69488) -(n_pos, n_time_bins) #     a_most_likely_pos_idxs: NDArray = np.argmax(a_p_x_given_n, axis=1) ## find the max position bins (69488, ) - (n_time_bins, ) #     # out_spare_score = np.full_like(a_p_x_given_n, fill_value=np.nan) #     out_spare_score = [] # np.full_like(a_p_x_given_n, fill_value=np.nan) #     ## find the \"miss\" bins #     # most_likely_pos_idx_change = [0, np.diff(a_most_likely_pos_idxs)] #     # sign_change_locations = np.diff(np.sign(most_likely_pos_idx_change)) # -1 if x < 0, 0 if x==0, 1 if x > 0 #     diff = np.diff(a_most_likely_pos_idxs) #     signs = np.sign(diff) #     sign_change_locations = np.where(np.diff(signs) != 0)[0] + 1 #     p_x_given_n_segments = np.split(a_p_x_given_n, sign_change_locations) #     n_segments: int = len(p_x_given_n_segments) #     segement_lengths = np.array([len(v) for v in p_x_given_n_segments]) #     for seg_idx, a_seg in enumerate(p_x_given_n_segments): #         a_seg_len: int = segement_lengths[seg_idx] #         a_spare_score = [] #         for t_idx in reversed(np.arange(a_seg_len)): #             ## start in the last frame and work forward until the first #             # sign_change_locations[t_idx] #             if t_idx > 0: #                 ## for any but the first index in the series #                 start_bound = a_most_likely_pos_idxs[t_idx] #                 # need to know the max index #                 end_bound = a_most_likely_pos_idxs[t_idx-1] #             else: #                 ## if it is the first bound in the series, we need to decide which side to integrate from (it should be the closest to curr peak: #                 start_bound = a_most_likely_pos_idxs[t_idx] #                 end_bound = a_most_likely_pos_idxs[t_idx-1] #             # out_spare_score[t_idx] = #             a_spare_score.append(np.nansum(a_seg[start_bound:end_bound, t_idx])) ## sum over all values of the segment #         # for t_idx in reversed(np.arange(a_seg_len)) #         a_spare_score = np.array(a_spare_score) #         out_spare_score.append(a_spare_score) #     # for seg_idx, a_seg in enumerate(p_x_given_n_segments) #     # for t_idx in reversed(np.arange(n_time_bins)): #     #     ## start in the last frame and work forward until the first #     #     sign_change_locations[t_idx] #     # for t_idx in reversed(np.arange(n_time_bins)): #     #     ## start in the last frame and work forward until the first #     #     sign_change_locations[t_idx] #     return out_spare_score # most_likely_decoder_idxs # .shape # p_x_given_n.shape # p_x_given_n.shape (59, 4, 69488) # p_x_given_n[most_likely_decoder_idxs, :] ## compute each decoder indepednently ## Normalize to this decoder by summing over each time bin and dividing by the output # Extract the maximum locations for each time bin"
+  },
+  {
+    "hash": "37ef2ec6b2cf49c3af76fa74d769a1fbfd689326",
+    "date": "2025-08-01",
+    "message": "finally figured out what needed to be corrected for the `SpikeRateTrends` and inst frs: adding directionality support so highly-directional cells weren't punished",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## Recompute for all time bins within each epoch to get at epoch_aggregated firing rates (one for each epoch): ## OLD WAY that abused directional cells: # cell_agg_firing_rates_list = epoch_agg_firing_rates_list.mean(axis=0) # find the peak over all epochs (for all cells) using `.max(...)` --- OOPS, what about the zero epochs? Should those actually effect the rate? Should they be excluded? ## 2025-08-01 07:29 NEW WAY that permits LR/RL/ALL consideration separately so purely directional cells don't get averaged acrossed periods they aren't supposed to be active: ## INPUTS: epoch_agg_inst_fr_list # (N_EPOCHS, N_ACLUS) in period # an_inst_fr_list = self.epoch_agg_inst_fr_list # (N_EPOCHS, N_ACLUS) in period # epoch_agg_firing_rates_list = deepcopy(epoch_agg_firing_rates_list) # (N_EPOCHS, N_ACLUS) in period # an_inst_fr_list = np.squeeze(a_pre_post_period_result.epoch_agg_inst_fr_list[:, target_aclu_idx]) # (N_EPOCHS) in period # print(f'an_inst_fr_list.shape: {np.shape(an_inst_fr_list)}') # an_inst_fr_list.shape: (39, 20) # print(f'LR_an_inst_fr_list.shape: {np.shape(LR_an_inst_fr_list)}') # LR_an_inst_fr_list.shape: (20, 20) # print(f'RL_an_inst_fr_list.shape: {np.shape(RL_an_inst_fr_list)}') # RL_an_inst_fr_list.shape: (19, 20) # print(f'a_period_epoch_agg_frs_list.shape: {np.shape(a_period_epoch_agg_frs_list)}') # a_period_epoch_agg_frs_list.shape: (3, 20) # print(f'a_period_epoch_agg_fr.shape: {np.shape(a_period_epoch_agg_fr)}') # a_period_epoch_agg_fr.shape: (20,) ## OVERWRITE cell_agg_inst_fr_list ## update the all agg result # True Instantaneous Firing Rate _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ # # Non-instantaneous rate _____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ #"
+  },
+  {
+    "hash": "ba1e0619c152ee034eb64b3849819a3722bb00d0",
+    "date": "2025-08-01",
+    "message": "enabled overriding the minimum firing rate by default so all the cells show up",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# spikes_df: pd.DataFrame = get_proper_global_spikes_df(curr_active_pipeline) ## this gets too few spikes, should just use the raw spikes maybe"
+  },
+  {
+    "hash": "dc3822c6144a2940afa4bc0fbf2cfb999672dc81",
+    "date": "2025-07-31",
+    "message": "added `stability_df['stability_class']` column",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "1fa21e969fe4d973fa7dbcd975362d89727abc04",
+    "date": "2025-07-30",
+    "message": "made position line even thinner to see the spikes better",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "768891749709a812e506f4fd9580cc128f2beead",
+    "date": "2025-07-30",
+    "message": "working normal hairs for spikes",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "a27d308d8055ee4098e452308a321ea41a16f591",
+    "date": "2025-07-30",
+    "message": "included 'normal_dir_unit_t', 'normal_dir_unit_x' for plotting",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## END for cell_df in cell_spikes_dfs...."
+  },
+  {
+    "hash": "9331be0f62cda6cff975966ac5fe551f56e0e3bc",
+    "date": "2025-07-29",
+    "message": "factored out `add_significance_bars` and implemented stats and significant comparison overlays for Figure 2",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Add significance bars between groups # _out_ann_BC = add_significance_bars(ax, SxC_Laps_T_result.pvalue, 1, 2, 6) # Offset for the bar above y # Annotate with asterisks based on p-value ## OUTPUT: ## Compute and add the bar graph stats and significance bars ## Add stats from t-tests (check?) ## INPUTS: across_session_inst_fr_computation_shell_obj # 'Fig2_Laps_FR' # LxC_Laps_T_result: TtestResult(statistic=6.712433589492588, pvalue=5.2823734983320806e-05, df=10) # SxC_Laps_T_result: TtestResult(statistic=-4.339172228913557, pvalue=0.002481149212058544, df=8) # LxC_Replay_T_result: TtestResult(statistic=-1.1080728076872137, pvalue=0.29376948620786025, df=10) # SxC_Replay_T_result: TtestResult(statistic=-2.952880002807658, pvalue=0.018344744614346115, df=8) # LxC_Laps_T_result: TtestResult(statistic=4.91664380764766, pvalue=8.326747683573472e-05, df=20) # SxC_Laps_T_result: TtestResult(statistic=-4.836261942292889, pvalue=0.00011472243045619965, df=19) # LxC_Replay_T_result: TtestResult(statistic=0.6019865878499693, pvalue=0.5539469660448748, df=20) # SxC_Replay_T_result: TtestResult(statistic=-4.580715643685985, pvalue=0.00020418641915182124, df=19) # Add significance bars between groups # ax = _fig_2_output_dict['theta'].ax # ax = _fig_2_theta_out.axes[0] # one shared axis per figure # _out_ann_BC = add_significance_bars(ax, SxC_Laps_T_result.pvalue, 1, 2, 6) # _out_ann_BD = add_significance_bars(ax, SxC_Laps_T_result.pvalue, 0.5, 2.5, 8) # _out_ann_AC = add_significance_bars(ax, 0.005, 0, 2, 15) # Add significance bars between groups # ax = _fig_2_output_dict['replay'].ax # _out_ann_BC = add_significance_bars(ax, SxC_Laps_T_result.pvalue, 1, 2, 6)"
+  },
+  {
+    "hash": "314b093eee3618947424d98294b9dc7fdbd2cea1",
+    "date": "2025-07-29",
+    "message": "tried to make `SpikeRateTrends` conform to `NeuronUnitSlicableObjectProtocol` but I don't think it's done",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# for NeuronUnitSlicableObjectProtocol: # _obj.epoch_agg_inst_fr_list = _obj.epoch_agg_inst_fr_list[:, ids]"
+  },
+  {
+    "hash": "00d559de081d77f1fc2986bad4c73a7f52b78a05",
+    "date": "2025-07-28",
+    "message": "factored out `_perform_compute_spike_rate_bars`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Common: # Note that in general LxC and SxC might have differing numbers of cells. # self.Fig2_Replay_FR = None # None mode # initialize with an empty array and None values for the mean and std. # Note that in general LxC and SxC might have differing numbers of cells. # self.Fig2_Laps_FR = None # NONE mode # Note that in general LxC and SxC might have differing numbers of cells."
+  },
+  {
+    "hash": "2aaea58ead084b222fedaf2ae3311b9adf1e6333",
+    "date": "2025-07-28",
+    "message": "fixed instantaneous computations",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# epoch_agg_firing_rates_list = epoch_agg_firing_rates_list.mean(axis=0) # epoch_value_counts.append({k:v.get(aclu, 0) for k, v in epoch_spike_counts_dict.items()})"
+  },
+  {
+    "hash": "c6b324b42069c9959c0e03114fbeec284c20225e",
+    "date": "2025-07-28",
+    "message": "removed duplicate aclus from `InstantaneousSpikeRateGroupsComputation.get_summary_dataframe()`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## Drop duplicates, keeping the first (corresponding to the SxC/LxC over the AnyC, although all the values are the same so only the 'active_set_membership' column would need to be changed): ## Add extra columns:"
+  },
+  {
+    "hash": "4626980fb9bdaa6951affa13a55635abbebf8e0e",
+    "date": "2025-07-25",
+    "message": "tested whether the spike sampling rate passed to Instantaneous spike rate calc functions mattered, and it did not, so I removed it",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "10d22c2ff47b7154ad34e4d5198f0077216ec81f",
+    "date": "2025-07-23",
+    "message": "fixed error introduced by using the `get_proper_global_spikes_df(...)` instead of the `global_results.sess.spikes_df` (which I guess it updates)",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# from pyphoplacecellanalysis.General.Pipeline.Stages.ComputationFunctions.MultiContextComputationFunctions.DirectionalPlacefieldGlobalComputationFunctions import get_proper_global_spikes_df # global_spikes_df: pd.DataFrame = deepcopy(get_proper_global_spikes_df(owning_pipeline_reference)) # global_spikes_df = add_spikes_df_placefield_inclusion_columns(curr_active_pipeline=owning_pipeline_reference, global_spikes_df=global_spikes_df, overwrite_columns=True) ## in_place"
+  },
+  {
+    "hash": "e2c54e2127c29a1f6223b4b60bc11fce21833bad",
+    "date": "2025-07-23",
+    "message": "substantially improved CellFieldRemappingModels.is_non_linear_remapping",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## implies (S  exceeds the allowed deviation from the S expected by translation ## First question is: does it go the opposite way of the remapping? ## is right of midpoint ## implies (S > L) -> moved ++ (to right) ## is left of midpoint ## implies (L > S) -> moved -- (to left) # ## Second question: does it greatly exceed the contraction distance? (it shouldn't): # contraction_amount_cm: float = 15.0 # wiggle_room_factor: float = 0.2 # if np.abs(LS_diff) > 40.0: #(contraction_amount_cm + (contraction_amount_cm * wiggle_room_factor)): #     is_non_linear = True #     return is_non_linear ## point moved much further than the translation would expect"
+  },
+  {
+    "hash": "6e7e2b98f3706878ed54e055255e5f3f6136cc15",
+    "date": "2025-07-23",
+    "message": "BatchPhoJonathanFiguresHelper -- hopefuly fixed output size and axes xlims across cells",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# single_subfigure_size_inches = np.array([19.2,  2.2]) #TODO 2025-07-09 13:22: - [ ] Changed for publication output # long_session, short_session, global_session = [curr_active_pipeline.filtered_sessions[an_epoch_name] for an_epoch_name in [long_epoch_name, short_epoch_name, global_epoch_name]] # only uses global_session #TODO 2025-07-23 15:55: - [ ] Currently exporting each cell programmatically still results in variation in the output width and alignment. Seems to depend on whether the cell has  long_pf/short_pf placefield1Ds or not and affects positions ## add session t_start/t_stop to kwargs # ## Just adjust post-hoc # t_start, t_delta, t_end # t_start = kwargs.get('t_start', None) # t_end = kwargs.get('t_end', None) # if (t_start is not None) and (t_end is not None): #     for k, _out_dict in graphics_output_dict.axes.items(): #         curr_ax_lap_spikes = _out_dict.axes.get('lap_spikes', None) #         curr_ax_firing_rate = _out_dict.axes.get('firing_rate', None) #         curr_ax_firing_rate.set_xlim((t_start, t_end)) ## Set to entire session start_t/end_t #         curr_ax_lap_spikes.set_xlim((t_start, t_end)) ## Set to entire session start_t/end_t # Add this parameter near the top with the other kwargs # have short-specific pf ## setup the right placefield independently without `plot_single_cell_1D_placecell_validation` ## neuron aclu is missing from pf1d_short. # curr_ax_left_placefield.set_visible(False) # hide completely? ## `curr_ax_placefield` was drawn on by the global (_all) placefield tuning curve. Clear this one to plot the short-exclusive. # have long-specific pf ## setup the left placefield independently without `plot_single_cell_1D_placecell_validation` ## neuron aclu is missing from pf1d_long. # curr_ax_left_placefield.set_visible(False) # hide completely? # curr_ax_lap_spikes = _out_dict.axes.get('lap_spikes', None) # curr_ax_firing_rate = _out_dict.axes.get('firing_rate', None) # curr_ax_firing_rate.set_xlim((t_start, t_end)) ## Set to entire session start_t/end_t # Part 2: The Placefield Plot to the Right and the connecting features: ______________________________________________ #"
+  },
+  {
+    "hash": "ef918cee3d49265b6dea0b4d109bd5ff97a55553",
+    "date": "2025-07-23",
+    "message": "`compute_and_export_session_instantaneous_spike_rates_completion_function` -- returned computed object",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "447f4bd882be198a8a5a76069baf88d27a9d4947",
+    "date": "2025-07-23",
+    "message": "SpikeRateTrends: added optional spike_counts_df_list and epoch_unit_fr_df_list computed using simple averaging",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## spike counts: # epoch_value_counts.append({k:v.get(aclu, np.zeros((n_epoch_time_bins, )) for k, v in epoch_spike_counts_dict.items()}) # unit_specific_binned_spike_counts = ZhangReconstructionImplementation.compute_unit_specific_bin_specific_spike_counts(spikes_df=epoch_spikes_df, active_indicies, debug_print=debug_print) ## Spike Counts ## Convert the returned df to a \"full\" representation: containing a column for each aclu in `included_neuron_ids` (which will be all zeros for aclus not active in this epoch) ## OUTPUT unit_specific_binned_spike_counts_df to spike_counts # unit_avg_spike_counts = np.nanmean(unit_specific_binned_spike_counts_df.to_numpy(), axis=0) # (n_neurons, ) # epoch_results_list_dict['epoch_avg_spike_counts'].append(unit_avg_spike_counts) ## Sum up the spikes per epoch for each cell, and then divide each by the epoch duration to get the epoch firing rate ## END for epoch_id in np.arange(n_epochs)... # epoch_results_list_dict['spike_counts'] = np.vstack(epoch_results_list_dict['spike_counts'])"
+  },
+  {
+    "hash": "d822276289cc09ba24cc06d19bb683ff758937ee",
+    "date": "2025-07-23",
+    "message": "decided on \"AnyC\" analagous to \"XxC\"",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# AnyC_aclus = np.array([aclu for aclu in all_spikes_aclus if ((aclu not in self.LxC_aclus) and (aclu not in self.SxC_aclus))]) ## shared only # AnyC: `AnyC.track_exclusive_aclus` # AnyC: `AnyC.track_exclusive_aclus`"
+  },
+  {
+    "hash": "3fa0bdf3d79641b55caa6a6aef4e83517839054c",
+    "date": "2025-07-23",
+    "message": "moved Publication figure 2 & 3 axes/label conventions into `PhoPublicationFigureHelper`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Laps_fr_label: str = '\\\\theta' # PBE_fr_label: str = 'R' # laps_fri_label_str: str = 'Laps Firing Rate Index $\\\\frac{\\\\theta_{' + f'{pre_delta_str}' + '}-\\\\theta_{' + f'{post_delta_str}' + '}}{\\\\theta_{' + f'{post_delta_str}' + '} + \\\\theta_{' + f'{pre_delta_str}' + '}}$' # replays_fri_label_str: str = 'Replay Firing Rate Index $\\\\frac{R_{' + f'{pre_delta_str}' + '}-R_{' + f'{post_delta_str}' + '}}{R_{' + f'{post_delta_str}' + '} + R_{' + f'{pre_delta_str}' + '}}$' # Laps_fr_label: str = '\\\\theta' # PBE_fr_label: str = 'R' # delta_minus_str: str = '\\\\Delta -' # delta_plus_str: str = '\\\\Delta +' # delta_minus_str: str = '\u2b16' # delta_plus_str: str = '\u2b17'"
+  },
+  {
+    "hash": "8093be3466bf5b4cf4708d76c591977e7a287e30",
+    "date": "2025-07-17",
+    "message": "testing save_FAT_csv in `compute_and_export_session_instantaneous_spike_rates_completion_function`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## OUTPUTS: active_export_parent_output_path ## 2025-07-17 - FAT_df CSV saving: ## FAT_csv Saving: ## Export to CSVs: # FAT_df: pd.DataFrame = _out_recomputed_inst_fr_comps.get_comprehensive_dataframe()"
+  },
+  {
+    "hash": "36657eb6a0458262c3023a5148580b193a6a9e15",
+    "date": "2025-07-17",
+    "message": "similarly combine all private helper methods into `from_comprehensive_dataframe`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# 8. Direct reconstruction from DataFrame # 9. Compare original and reconstructed objects # Handle column name synonyms # Reconstruct cell arrays # Reconstruct SpikeRateTrends objects # Create minimal SpikeRateTrends object # Extract additional metadata if available # Extract values array from individual cell data"
+  },
+  {
+    "hash": "5ecac60df1a894374474ea7329b0ff42f3f0d573",
+    "date": "2025-07-17",
+    "message": "combine all private helper methods into get_comprehensive_dataframe",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Example usage of the complete round-trip functionality: # 1. Create and compute the original object # 2. Get comprehensive DataFrame # Handle empty case # Session-level metadata (same for all rows) # Process each cell type # Get the relevant SpikeRateTrends objects for this cell type # Extract population-level metadata once per cell type # Extract common attributes # Add population statistics # Process each cell # Add individual cell firing rates # Create DataFrame # Add Fig2 summary statistics # Fig2_Replay_FR: [LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus] # Fig2_Laps_FR: [LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus]"
+  },
+  {
+    "hash": "f32612c8c54baf217dc6192e7feec050119efd35",
+    "date": "2025-07-17",
+    "message": "remove unused perform_save_all_decoded_posteriors_to_pkl",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "d04c060eb2fa41fef726e49de33490ed36c38151",
+    "date": "2025-07-17",
+    "message": "Insanely over-complicated InstantaneousSpikeRateGroupsComputation conversion to/from a df, which eventually will be like a \"FAT_df\"",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# ==================================================================================================================================================================================================================================================================================== # # `get_comprehensive_dataframe(...)` Private Helpers                                                                                                                                                                                                                                   # # ==================================================================================================================================================================================================================================================================================== # # Get the relevant SpikeRateTrends objects # Process each cell # Add firing rate data for each condition # Add additional SpikeRateTrends metadata # Extract common attributes that might exist in SpikeRateTrends # Add statistical info # Fig2_Replay_FR has 4 SingleBarResult objects for: # [LxC_ReplayDeltaMinus, LxC_ReplayDeltaPlus, SxC_ReplayDeltaMinus, SxC_ReplayDeltaPlus] # Add summary statistics # Add scatter properties if they exist # Fig2_Laps_FR has 4 SingleBarResult objects for: # [LxC_ThetaDeltaMinus, LxC_ThetaDeltaPlus, SxC_ThetaDeltaMinus, SxC_ThetaDeltaPlus] # Add summary statistics # Add scatter properties if they exist # For arrays, we need to handle them carefully # If array length matches number of cells, assign directly # If lengths don't match, convert to string representation # For scalar values, assign to all matching rows # Firing rate columns # Population statistics columns # Summary statistics columns # ==================================================================================================================================================================================================================================================================================== # # BEGIN FUNCTION BODY                                                                                                                                                                                                                                                                  # # ==================================================================================================================================================================================================================================================================================== # # Return empty DataFrame with expected columns if no cells # Session-level metadata (same for all rows) # Add session context if available # Process LxC cells # Process SxC cells # Create DataFrame # Add Fig2 summary statistics # Add extended neuron identity columns if session context exists # ==================================================================================================================================================================================================================================================================================== # # From comprehensive dataframe                                                                                                                                                                                                                                                         # # ==================================================================================================================================================================================================================================================================================== # # Return minimal instance for empty DataFrame ## rename columns: # Extract scalar session-level metadata # Create instance # Reconstruct session context # Reconstruct cell arrays # Reconstruct SpikeRateTrends objects # Reconstruct Fig2 results # Look for session context columns # Extract session context data from first row # Try to reconstruct IdentifyingContext # If reconstruction fails, return None # Extract cell IDs by type # Sort by cell_index_in_type to maintain original order # Define the mapping of conditions to attributes # Set all trends to None for this cell type # Extract firing rates, handling NaN values # Create a minimal SpikeRateTrends object # Create a basic SpikeRateTrends object # This is a simplified version - you may need to adjust based on SpikeRateTrends constructor # Set the essential attributes # Extract additional metadata if available # Try to set the attribute if it exists # Reconstruct Fig2_Replay_FR # Extract values array (this is more complex - we need to reconstruct from individual cell data) # Create empty result # Reconstruct Fig2_Laps_FR # Extract values array # Create empty result"
+  },
+  {
+    "hash": "3ab3c276e0af388b6c875bdfe48f434ecfcad887",
+    "date": "2025-07-16",
+    "message": "moved `override_laps` into PipelineWithComputedPipelineStageMixin",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# from pyphoplacecellanalysis.SpecificResults.PendingNotebookCode import override_laps ## Load the custom laps # Either way, ensure that the lap_dir is an 'int' column. # override_laps_df['lap_dir'] = override_laps_df['lap_dir'].astype('int') # override_laps_df['is_LR_dir'] = (override_laps_df['lap_dir'] < 1.0) # curr_laps_df = Laps._compute_lap_dir_from_smoothed_velocity(laps_df=curr_laps_df, global_session=global_session, replace_existing=True) ## OUTPUTS: override_laps_obj # curr_active_pipeline.sess.laps_df = override_laps_df # curr_active_pipeline.sess = curr_active_pipeline.sess # a_pf1D_dt.replacing_computation_epochs(epochs=override_laps_df) ## current session # override_laps_obj.filter_to_valid() # a_filtered_context.lap_dir"
+  },
+  {
+    "hash": "52e919652cef42f49f541466110f925ec0a98bb6",
+    "date": "2025-07-15",
+    "message": "clearer error message when placefield calc fails due to 0 cells",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## if not dry_run, do the recomputations: ## no changes and not force_recompute"
+  },
+  {
+    "hash": "67dc7f851aa4c2d8008cf5363bf5740b6abab72b",
+    "date": "2025-07-09",
+    "message": "changed generated run script names to include full context (like \"run_kdiba_gor01_one_2006-6-07_11-26-53__withNormalComputedReplays-qclu_12-frateThresh_5.0_tbin_25ms_Clean.py\")",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## end for curr_session_context in include...."
+  },
+  {
+    "hash": "a403b66261113119f56f01e97927c3004799bdd3",
+    "date": "2025-07-08",
+    "message": "CellFieldRemappingModels",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Define the piecewise function using np.piecewise # Define the piecewise function using np.piecewise # Define the piecewise function using np.piecewise # ==================================================================================================================================================================================================================================================================================== # # END MODELS                                                                                                                                                                                                                                                                           # # ==================================================================================================================================================================================================================================================================================== # ## First question is: does it go the opposite way of the remapping? ## Second question: does it greatly exceed the contraction distance? (it shouldn't): # active_scatter_all_neuron_stats_table # --- New code for model evaluation --- # 1. Get both the input (L) and the measured output (S) values # Ensure there are no NaN values in the columns you're using # 2. Calculate predictions for each model (as in your original code) # 3. Calculate RMSE for each model # Calculate Mean Squared Error # Calculate Root Mean Squared Error # 4. Find and announce the best model"
+  },
+  {
+    "hash": "ec3b67da7b970018e22f5edaa3d84d5a835ea711",
+    "date": "2025-07-08",
+    "message": "split_to_directional_laps",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "c2249de611c9fbec88e45f8e21b4641cd3648712",
+    "date": "2025-07-08",
+    "message": "PhoJonathanPlotHelpers - spike downsampling for efficiency",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Apply adaptive downsampling"
+  },
+  {
+    "hash": "e936ca17964faea5949dd34b954865aa7f480ae2",
+    "date": "2025-07-08",
+    "message": "fix percent change calculations",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# decoders_total_num_spikes_df['pct_short_fr_Hz'] = decoders_total_num_spikes_df['short_fr_Hz'] / decoders_total_num_spikes_df['total_fr_Hz'] ## negative if LONG is bigger:"
+  },
+  {
+    "hash": "d6643d99fdc0d61e4c18935176bb455e1fd33b63",
+    "date": "2025-07-08",
+    "message": "added normalization by duration (producing firing rates)",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## Use n_spikes combined with duration info to compute firing rates: ## percent long (used for determing exclusivity)"
+  },
+  {
+    "hash": "4648f06fbd69bc5b865c7945ac0d4584050a3612",
+    "date": "2025-07-08",
+    "message": "perform_determine_quant_cell_eXclusivities",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## percent long (used for determing exclusivity) ## OUTPUTS: decoders_total_num_spikes_df # expected_v_observed_result = curr_long_short_post_decoding.expected_v_observed_result"
+  },
+  {
+    "hash": "8d72d3cac819173127941fa7743e70ff38c54a4a",
+    "date": "2025-07-08",
+    "message": "found where 'has_considerable_remapping' is set (which appears to be wrong in exports)",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "65e1d1d89539622903a93deebac57e9cc0723bfc",
+    "date": "2025-07-03",
+    "message": "tried to downsample, doesn't seem to do anything",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# Use separate datasets if provided (for downsampling) # Get sampled data for scatter plot # active_plot_kwargs = (extra_plot_kwargs | {'legend_groups_to_hide': legend_groups_to_hide} | kwargs) # Pass both full and sampled data to plotting function # concatenated_ripple_df=deepcopy(active_plot_df),"
+  },
+  {
+    "hash": "09ea536faf4c9f327c2342350557485ce3cf9047",
+    "date": "2025-07-03",
+    "message": "turn off spines/box",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# You can also set 'left' and 'bottom' to False if desired # occupancy_ax.set_frame_on(False) # Hides all four spines (top, bottom, left, right)"
+  },
+  {
+    "hash": "013d7a77bfa646ae64a2bef815c4ca2ca0c23ff0",
+    "date": "2025-07-01",
+    "message": "fixed call to `get_all_computed_time_bin_sizes`, converted output list of sizes to floats instead of strings",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# pseudo2D_decoder: BasePositionDecoder = directional_decoders_decode_result.pseudo2D_decoder # time_bin_size_list = [str(a_time_bin_size) for a_time_bin_size in continuously_decoded_result_cache_dict.keys()]"
+  },
+  {
+    "hash": "da764b511d616d49fd25f812f5a15133cf814932",
+    "date": "2025-06-30",
+    "message": "added \"NonPBEDimensionalDecodingResult\" -> \"DecodingResultND\" to global_move_modules_list",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "aedd4633d4f69744221250c0efeb8798aa86d243",
+    "date": "2025-06-30",
+    "message": "renamed \"NonPBEDimensionalDecodingResult\" -> \"DecodingResultND\"",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "#     # results1D: DecodingResultND = self.results1D #     # results2D: DecodingResultND = self.results2D # results2D: DecodingResultND = nonPBE_results.results2D # results2D: DecodingResultND = self.results2D # results2D: DecodingResultND = self.results2D"
+  },
+  {
+    "hash": "4f881fb307f2d0e8a6abb8d4ff2d09d7d86b40e2",
+    "date": "2025-06-30",
+    "message": "finished factoring out `ComputeGlobalEpochBase`",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# 25ms ## Uses 1D Placefields # single_global_epoch: Epoch = Epoch(self.single_global_epoch_df) # For serialization/pickling: ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________ #"
+  },
+  {
+    "hash": "6f96e184af3f59b9152caf9c0ec4af55f4d0e1d3",
+    "date": "2025-06-30",
+    "message": "_perform_two_step_position_decoding_computation - nbin moved out to a kwarg",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "503d0cf19ada5692df82488c951ce6f8acc9513e",
+    "date": "2025-06-30",
+    "message": "_perform_two_step_position_decoding_computation - fixed erronious xbin/ybins (centers were incorrectly used)",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "f932b84c9df65308319195f7a398e31f86586b3a",
+    "date": "2025-06-27",
+    "message": "use_considerable_remapping_cells_only, use_pf2D_peaks kwargs",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": ""
+  },
+  {
+    "hash": "3e50d49163e904c69ae90be43e989e0dd271a641",
+    "date": "2025-06-27",
+    "message": "restored normal offsets",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## normal (-, +) offsets # ## positive-only offsets: # long_y_offset: float = 0.0 # short_y_offset: float = maze_y_offset # long_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=long_pf2D.ratemap.ybin, track_y_center=-11.0) # short_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=short_pf2D.ratemap.ybin, track_y_center=-11.0)"
+  },
+  {
+    "hash": "313d6a4d9f3ba0840518d0d1409e3d5185c17e5c",
+    "date": "2025-06-27",
+    "message": "positions curves correctly relatively, but not relative to the origin or the track shapes",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# First: center the data around 0 # Then: scale to desired width # Finally: offset to desired center # Just center without scaling # long_y_offset: float = -maze_y_offset # short_y_offset: float = maze_y_offset # long_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=long_pf2D.ratemap.ybin, track_y_center=-ipcDataExplorer.params.long_y_offset) # short_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=short_pf2D.ratemap.ybin, track_y_center=-ipcDataExplorer.params.short_y_offset) # long_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=long_pf2D.ratemap.ybin, track_y_center=0.0) # short_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=short_pf2D.ratemap.ybin, track_y_center=0.0) # long_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=long_pf2D.ratemap.ybin, track_y_center=long_pf2D.ratemap.ybin[0]) # short_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=short_pf2D.ratemap.ybin, track_y_center=short_pf2D.ratemap.ybin[0])"
+  },
+  {
+    "hash": "5363ee0985d636cb5cac7739811866b8d0a4e7f3",
+    "date": "2025-06-27",
+    "message": "_subfn_scale_ybin_centers_to_track_width",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "## adjust the center point: # _needed_y_center_offset_adjust: float = (data_y_center_offset - track_y_center) # _adjusted_ybin_centers = _adjusted_ybin_centers - track_y_center # _adjusted_ybin_centers = _adjusted_ybin_centers - _needed_y_center_offset_adjust ## scale width to match track width # ==================================================================================================================================================================================================================================================================================== # # Begin Function Body                                                                                                                                                                                                                                                                  # # ==================================================================================================================================================================================================================================================================================== # # long_adjusted_ybin_centers = _subfn_scale_ybin_centers_to_track_width(ybin_centers=long_pf2D.ratemap.ybin_centers, track_y_center=-maze_y_offset) # short_adjusted_ybin_centers = _subfn_scale_ybin_centers_to_track_width(ybin_centers=short_pf2D.ratemap.ybin_centers, track_y_center=maze_y_offset) # long_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=long_pf2D.ratemap.ybin, track_y_center=ipcDataExplorer.params.long_y_offset) # short_adjusted_ybin = _subfn_scale_ybin_centers_to_track_width(ybin=short_pf2D.ratemap.ybin, track_y_center=ipcDataExplorer.params.short_y_offset) # long_pf2D.ratemap.ybin_centers = get_bin_centers(long_adjusted_ybin) # short_pf2D.ratemap.ybin_centers = get_bin_centers(short_adjusted_ybin)"
+  },
+  {
+    "hash": "387c51db4c3f8babefc6ce44474be636101deaab",
+    "date": "2025-06-27",
+    "message": "try reposition actors",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# ipcDataExplorer.params.zScalingFactor = 500.0 # ipcDataExplorer.params.should_display_placefield_points = True # ipcDataExplorer.params.should_nan_non_visited_elements = True # print(f'k: {k}, v: {v}') # print(f'[{k}][{a_subactor_key}] is None!') # print(f'k: {k}, v: {v}') # print(f'[{k}][{a_subactor_key}] is None!')"
+  },
+  {
+    "hash": "48cbbca5324a36f091a3f24f37db1806bf479605",
+    "date": "2025-06-27",
+    "message": "disabled clipping, disabled default legend",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# clip_bounds = long_maze_bg.GetBounds() # clip_bounds = short_maze_bg.GetBounds()"
+  },
+  {
+    "hash": "50b21669ce6a8cfd9d95f86eb2404595badc064b",
+    "date": "2025-06-27",
+    "message": "LongShort3DPlacefieldsHelpers.render_long_short_all_neuron_peak_prominence_2d_results_on_pyvista_plotter",
+    "repo": "/tmp/pyPhoPlaceCellAnalysis",
+    "extracted": "# active_peak_prominence_2d_results_aclus = np.array(list(long_peak_prominence_2d_results.results.keys())) # AttributeError: 'NoneType' object has no attribute 'main' ## Initialize: ## visibility and such: # ipcDataExplorer.plots['tuningCurvePlotActors'][active_neuron_id].peaks = all_peaks_actors # sets the .peaks property of the CascadingDynamicPlotsList # ipcDataExplorer.plots_data['tuningCurvePlotData'][active_neuron_id]['peaks'] = all_peaks_data"
+  }
+]
