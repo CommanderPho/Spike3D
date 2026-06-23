@@ -460,8 +460,8 @@ def process_all_phases(
 
         active_phase_dict.update({
             'job_suffix': current_job_suffix,
-            'should_freeze_pipeline_updates': False, # False => the pipeline is allowed to update/recompute AND the generated run script saves the pipeline (and global results) when done (continued/final runs render saving_mode=TEMP_THEN_OVERWRITE)
-            # 'should_freeze_pipeline_updates': True,
+            # 'should_freeze_pipeline_updates': False, # False => the pipeline is allowed to update/recompute AND the generated run script saves the pipeline (and global results) when done (continued/final runs render saving_mode=TEMP_THEN_OVERWRITE)
+            'should_freeze_pipeline_updates': True,
             'skip_save_on_initial_load': True, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
@@ -560,7 +560,7 @@ def process_all_phases(
 
 # %%
 # Configuration parameters — Bapun-only batch (distinct tag from KDIBA runs).
-BATCH_DAY_DATE: str = '2026-06-21'
+BATCH_DAY_DATE: str = '2026-06-22'
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Bapun_GL'  # used for filenames throughout the batch
 
 # Get the generated code for user-contributed functions (no kdiba_session_post_fixup — KDIBA / .mat specific).
@@ -592,8 +592,8 @@ included_session_contexts = [
     ## TwoNovel Contexts:
     IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day3TwoNovel'),
     IdentifyingContext(format_name='bapun',animal='RatK', session_name='Day3TwoNovel'),
-    IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
-    IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day3TwoNovel'), ## #TODO 2026-06-21 06:23: - [ ] Disable because running in notebook interactively
+    #IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
+    #IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day3TwoNovel'), ## #TODO 2026-06-21 06:23: - [ ] Disable because running in notebook interactively
 ]
 
 # %%
