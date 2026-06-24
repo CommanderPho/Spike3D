@@ -1,0 +1,67 @@
+[
+  {
+    "Date": "2025-06-27",
+    "Category": "Idea",
+    "Description": "Conceptualized and implemented novel spatial representations for bidirectional track remapping, allowing for robust cross-epoch comparison of neural activity between distinct long and short track environments."
+  },
+  {
+    "Date": "2025-06-30",
+    "Category": "Scientific Motivation",
+    "Description": "Transitioned analytical pipelines to continuous 2D position decoding by default. This change was motivated by the hypothesis that continuous tracking provides a holistic view of place field firing dynamics across multiple interconnected task epochs without artificial segmentation."
+  },
+  {
+    "Date": "2025-07-15",
+    "Category": "Analysis Tried",
+    "Description": "Evaluated the efficacy of recursive latent place field decoding during fragmented lap traversals. The goal was to determine if latent neural population structures, decoupled from explicit spatial cues, provide higher-fidelity positional estimates."
+  },
+  {
+    "Date": "2025-07-29",
+    "Category": "Analysis Tried",
+    "Description": "Developed comparative scatter analyses contrasting pre-task and post-task neural metrics. Specifically isolated lap duration periods from sharp-wave ripple events to understand state-dependent neural memory consolidation."
+  },
+  {
+    "Date": "2025-07-31",
+    "Category": "Ruled Out",
+    "Description": "Abandoned the methodology of reusing active-cell-only computational pipelines for place field tracking. Determined that robust trial-by-trial completion functions require baseline metrics from all recorded neurons to avoid artificially inflated sparsity in decoding."
+  },
+  {
+    "Date": "2025-08-01",
+    "Category": "Problem Solved",
+    "Description": "Corrected a critical theoretical flaw in aggregated firing rate distributions where purely directional place cells were erroneously penalized in rate calculations. Implemented distinct left-to-right (LR) and right-to-left (RL) context segmentations to accurately measure directional spatial tuning."
+  },
+  {
+    "Date": "2025-08-07",
+    "Category": "Idea",
+    "Description": "Established granular physiological categorizations separating pre- and post-task periods into Theta/Delta and Replay/Delta oscillatory clusters (e.g., ThetaDeltaMinus, ReplayDeltaPlus). This framework was designed to investigate specific neurophysiological correlates with spatial memory consolidation."
+  },
+  {
+    "Date": "2025-08-19",
+    "Category": "Analysis Tried",
+    "Description": "Investigated place field stable formation thresholds. Measured the temporal distributions required for initial place field establishment across multiple maze epochs to mathematically define and quantify neural stability criteria."
+  },
+  {
+    "Date": "2025-08-21",
+    "Category": "Analysis Tried",
+    "Description": "Quantified trial-by-trial reliability by explicitly charting differences between theoretically measured spatial occupancy and algorithmic decoded occupancy distributions over extended temporal windows."
+  },
+  {
+    "Date": "2025-08-26",
+    "Category": "Problem Solved",
+    "Description": "Solidified lap-based pseudo-2D decoding ground-truth validations. Refactored the core computational logic to ensure continuous positional tracking performance is strictly baselined against known, physical animal trajectory intervals."
+  },
+  {
+    "Date": "2025-09-10",
+    "Category": "Idea",
+    "Description": "Modularized 2D contextual decoders. Abstracted global epoch temporal boundaries from localized visual tracking bounds, allowing decoders to dynamically handle multiple distinct spatial contexts simultaneously."
+  },
+  {
+    "Date": "2025-09-19",
+    "Category": "Analysis Tried",
+    "Description": "Executed comprehensive multi-maze remapping evaluations (comparing consecutive Pre, Maze1, Post1, Maze2, Post2 periods) to empirically assess changes in population firing vectors under controlled, consecutive spatial memory tasks."
+  },
+  {
+    "Date": "2025-09-21",
+    "Category": "Problem Solved",
+    "Description": "Fixed critical issues surrounding the parsing and serialization of Population Burst Event (PBE) and ripple decoders, ensuring full reconstruction of historical decoding contexts across independent analysis sessions."
+  }
+]
