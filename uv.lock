@@ -23255,6 +23255,7 @@ dependencies = [
     { name = "tables", version = "3.11.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "tikzplotlib" },
     { name = "tqdm" },
+    { name = "track-linearization" },
     { name = "traja", extra = ["all"] },
     { name = "umap-learn" },
     { name = "vaex", version = "4.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
@@ -23475,6 +23476,7 @@ requires-dist = [
     { name = "tables", specifier = ">=3.8.0,<4" },
     { name = "tikzplotlib", specifier = ">=0.10.1,<0.11" },
     { name = "tqdm", specifier = ">=4.65.1,<5" },
+    { name = "track-linearization", specifier = ">=2.3.2" },
     { name = "traja", extras = ["all"], specifier = ">=25.0.1" },
     { name = "umap-learn", specifier = ">=0.5.9.post2" },
     { name = "vaex", specifier = ">=4.17.0,<5" },
@@ -24641,6 +24643,24 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/09/a9/6ba95a270c6f1fbcd8dac228323f2777d886cb206987444e4bce66338dd4/tqdm-4.67.3.tar.gz", hash = "sha256:7d825f03f89244ef73f1d4ce193cb1774a8179fd96f31d7e1dcde62092b960bb", size = 169598, upload-time = "2026-02-03T17:35:53.048Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/16/e1/3079a9ff9b8e11b846c6ac5c8b5bfb7ff225eee721825310c91b3b50304f/tqdm-4.67.3-py3-none-any.whl", hash = "sha256:ee1e4c0e59148062281c49d80b25b67771a127c85fc9676d3be5f243206826bf", size = 78374, upload-time = "2026-02-03T17:35:50.982Z" },
+]
+
+[[package]]
+name = "track-linearization"
+version = "2.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "dask" },
+    { name = "matplotlib" },
+    { name = "networkx" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "scipy", version = "1.13.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/50/e3/c59cb9c2e0caca82386b72484ba0c06c151054f58b85e0ce73d1dbe49db1/track_linearization-2.3.2.tar.gz", hash = "sha256:ee53b0bf423c470acdd39323f15de6f09c8e2f55a17efdeb4cb41310384293e1", size = 9013, upload-time = "2024-10-23T00:01:45.65Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/fa/30acd4d49ccc68a506917ef805150b91908df002b28d208ae86bca4ad448/track_linearization-2.3.2-py3-none-any.whl", hash = "sha256:1e4579ef50bf29216c5c80346c599038ce54de315d654fbe02c4668e41fc6630", size = 9438, upload-time = "2024-10-23T00:01:44.195Z" },
 ]
 
 [[package]]
