@@ -187,9 +187,11 @@ def wait_for_slurm_jobs(job_ids: List[int], poll_seconds: int = 60) -> None:
             raise RuntimeError(f"Slurm job(s) failed:\n{sacct_result.stdout}")
 
 
-def write_phase_manifest(phase_name: str, run_slurm_paths: List[str], figs_slurm_paths: List[str], run_job_ids: List[int], figs_job_ids: List[int], manifest_output_dir: Path) -> None:
+def write_phase_manifest(phase_name: str, run_slurm_paths: List[str], figs_slurm_paths: List[str], run_job_ids: List[int], figs_job_ids: List[int], manifest_output_dir: Path, run_bash_paths: List[str] = None, figs_bash_paths: List[str] = None) -> None:
     manifest_output_dir.mkdir(parents=True, exist_ok=True)
-    manifest = {'phase': phase_name, 'run_slurm_paths': run_slurm_paths, 'figs_slurm_paths': figs_slurm_paths, 'run_job_ids': run_job_ids, 'figs_job_ids': figs_job_ids}
+    run_bash_paths = run_bash_paths or []
+    figs_bash_paths = figs_bash_paths or []
+    manifest = {'phase': phase_name, 'run_slurm_paths': run_slurm_paths, 'figs_slurm_paths': figs_slurm_paths, 'run_bash_paths': run_bash_paths, 'figs_bash_paths': figs_bash_paths, 'run_job_ids': run_job_ids, 'figs_job_ids': figs_job_ids}
     manifest_path = manifest_output_dir / f'manifest_{phase_name}.json'
     with open(manifest_path, 'w') as manifest_file:
         json.dump(manifest, manifest_file, indent=2)
@@ -203,7 +205,27 @@ def write_phase_manifest(phase_name: str, run_slurm_paths: List[str], figs_slurm
         with open(submit_figs_path, 'w') as submit_figs_file:
             submit_figs_file.write('\n'.join([f"sbatch '{p}'" for p in figs_slurm_paths]) + '\n')
         print(f"Wrote submit script: {submit_figs_path}")
+    if len(run_bash_paths) > 0:
+        submit_run_lab_path = manifest_output_dir / f'submit_{phase_name}_run_lab_workstation.sh'
+        with open(submit_run_lab_path, 'w') as submit_run_lab_file:
+            submit_run_lab_file.write('#!/bin/bash\nset -euo pipefail\n\n' + '\n'.join([f"bash '{p}'" for p in run_bash_paths]) + '\n')
+        os.chmod(submit_run_lab_path, 0o755)
+        print(f"Wrote lab workstation submit script: {submit_run_lab_path}")
+    if len(figs_bash_paths) > 0:
+        submit_figs_lab_path = manifest_output_dir / f'submit_{phase_name}_figs_lab_workstation.sh'
+        with open(submit_figs_lab_path, 'w') as submit_figs_lab_file:
+            submit_figs_lab_file.write('#!/bin/bash\nset -euo pipefail\n\n' + '\n'.join([f"bash '{p}'" for p in figs_bash_paths]) + '\n')
+        os.chmod(submit_figs_lab_path, 0o755)
+        print(f"Wrote lab workstation figures submit script: {submit_figs_lab_path}")
     print(f"Wrote phase manifest: {manifest_path}")
+
+
+def execute_bash_scripts(bash_script_paths: List[str]) -> None:
+    for bash_script in bash_script_paths:
+        print(f"Running: bash '{bash_script}'")
+        result = subprocess.run(f"bash '{bash_script}'", shell=True, check=False)
+        if result.returncode != 0:
+            raise RuntimeError(f"Non-SLURM bash script failed (exit {result.returncode}): {bash_script}")
 
 
 def execute_code_block(code_block: str, wait_for_completion: bool = True, poll_seconds: int = 60) -> List[int]:
@@ -243,7 +265,8 @@ def process_all_phases(
     wait_between_phases: bool = True,
     copy_commands_to_clipboard: bool = False,
     slurm_poll_seconds: int = 60,
-    phases_to_run: List[ProcessingScriptPhases] = None
+    phases_to_run: List[ProcessingScriptPhases] = None,
+    batch_execution_target: str = 'slurm'
 ):
     """
     Process all phases of the batch computation pipeline automatically.
@@ -270,6 +293,7 @@ def process_all_phases(
         copy_commands_to_clipboard: Whether to copy sbatch commands to clipboard (manual fallback)
         slurm_poll_seconds: Poll interval when waiting for Slurm jobs
         phases_to_run: Specific phases to run (if None, runs all phases)
+        batch_execution_target: 'slurm' (Great Lakes), 'lab_workstation' (local bash), or 'windows' (PowerShell)
     """
     if not enable_auto_code_block_execution and wait_between_phases is False:
         wait_between_phases = True
@@ -293,11 +317,10 @@ def process_all_phases(
         nwb_wmaze_figure_custom_user_completion_functions_dict = {}
 
     # Setup paths
-    known_scripts_output_paths = [Path(v).resolve() for v in [
-        '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts',
-        '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
-        Path(r"W:/Data/Output/gen_scripts"),
-    ]]
+    if batch_execution_target == 'lab_workstation':
+        known_scripts_output_paths = [Path(v).resolve() for v in ['/home/halechr/FastData/gen_scripts', '/media/halechr/BETAMAX1/Data/Output/gen_scripts', '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts']]
+    else:
+        known_scripts_output_paths = [Path(v).resolve() for v in ['/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/home/halechr/FastData/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts', Path(r"W:/Data/Output/gen_scripts")]]
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
     assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist!"
     batch_manifest_dir = scripts_output_path / f'nwb_wmaze_batch_{batch_date_to_use}'
@@ -312,28 +335,17 @@ def process_all_phases(
     print(f'sys.executable: {sys.executable}')
 
     # Per-session data roots: list order = storage priority (fast -> slow). Comment/uncomment blocks per machine.
-    known_global_data_root_parent_paths = [
-        Path(r'H:/Data'),  # local Windows: DANDI 000978 under H:/Data/DANDI/SingleDayWTrackLearning/000978/sub-JDS-SingleDay-*
-        Path(r'W:/Data'),
-        Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
-        # Path('/Users/pho/data'),
-        Path(r'/nfs/turbo/umms-kdiba/Data'),
-        # Path(r'/media/halechr/MAX/Data'),
-        # Path(r'/home/halechr/FastData'),
-        # Path(r'/Volumes/MoverNew/data')
-    ]
+    if batch_execution_target == 'lab_workstation':
+        known_global_data_root_parent_paths = [Path('/media/halechr/BETAMAX1/Data'), Path('/home/halechr/FastData'), Path('/media/halechr/MAX/Data'), Path('/nfs/turbo/umms-kdiba/Data')]
+        lab_workstation_venv_activate_path = Path('~/repos/Spike3D/.venv/bin/activate').expanduser()
+    else:
+        known_global_data_root_parent_paths = [Path(r'H:/Data'), Path(r'W:/Data'), Path('/scratch/kdiba_root/kdiba99/halechr/Data'), Path('/media/halechr/BETAMAX1/Data'), Path(r'/nfs/turbo/umms-kdiba/Data')]
+        lab_workstation_venv_activate_path = None
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist!"
     print(f'global_data_root_parent_path (fallback default): {global_data_root_parent_path}')
 
-    known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in [
-        '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python',
-        r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe', 
-        r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv_UV/Scripts/python',
-        '~/repos/Spike3D/.venv/bin/python',
-        # '/home/halechr/repos/Spike3D/.venv/bin/python',
-
-    ]] + [Path(sys.executable).resolve()]
+    known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in (['/home/halechr/repos/Spike3D/.venv/bin/python'] if batch_execution_target == 'lab_workstation' else ['/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python', r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe', r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv_UV/Scripts/python', '~/repos/Spike3D/.venv/bin/python'])] + [Path(sys.executable).resolve()]
     vscode_default_interpreter_path = find_first_extant_path(known_vscode_default_interpreter_paths)
     assert vscode_default_interpreter_path.exists(), f"vscode_default_interpreter_path: {vscode_default_interpreter_path} does not exist!"
     print(f'vscode_default_interpreter_path: {vscode_default_interpreter_path}')
@@ -468,7 +480,8 @@ def process_all_phases(
             'skip_save_on_initial_load': False, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
             'should_use_neptune_logging': False,
             'should_use_viztracer_logging': False,
-            'create_slurm_scripts': True,
+            'create_slurm_scripts': batch_execution_target == 'slurm',
+            'create_non_slurm_bash_scripts': batch_execution_target == 'lab_workstation',
             'should_generate_run_scripts': True,
             'should_generate_run_notebooks': True,
             # 'should_generate_run_notebooks': False,
@@ -485,21 +498,12 @@ def process_all_phases(
 
         # For format_name='dandi_nwb', generated `run_*.py` scripts skip Bapun preflight; epoch/lap/PBE/replay setup is handled by NWBDataSessionFormat POSTLOAD (see pythonScriptTemplating / runBatch).
 
-        batch_scripts_collection = generate_batch_single_session_scripts(
-            global_data_root_parent_path,
-            session_batch_basedirs=session_basedirs_dict,
-            included_session_contexts=included_session_contexts,
-            session_global_data_root_parent_paths=session_global_data_root_parent_paths,
-            output_directory=scripts_output_path,
-            use_separate_run_directories=True,
-            should_use_file_redirected_output_logging=True,
-            batch_script_subdirectory=active_phase.name,
-            **active_phase_dict
-        )
+        batch_scripts_collection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=included_session_contexts, session_global_data_root_parent_paths=session_global_data_root_parent_paths, output_directory=scripts_output_path, use_separate_run_directories=True, should_use_file_redirected_output_logging=True, batch_script_subdirectory=active_phase.name, venv_activate_path=(str(lab_workstation_venv_activate_path) if lab_workstation_venv_activate_path is not None else None), **active_phase_dict)
 
         output_python_scripts = batch_scripts_collection.output_python_scripts
         output_jupyter_notebooks = batch_scripts_collection.output_jupyter_notebooks
         output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
+        output_non_slurm_bash_scripts = batch_scripts_collection.output_non_slurm_bash_scripts
         vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
         batch_scripts_root_directory = batch_scripts_collection.batch_scripts_root_directory
 
@@ -510,16 +514,41 @@ def process_all_phases(
         generate_figures_script_paths = [x[1] for x in output_python_scripts]
         run_slurm_paths = list(output_slurm_scripts.get('run', []))
         figs_slurm_paths = list(output_slurm_scripts.get('figs', []))
+        run_bash_paths = list(output_non_slurm_bash_scripts.get('run', []))
+        figs_bash_paths = list(output_non_slurm_bash_scripts.get('figs', []))
         run_job_ids: List[int] = []
         figs_job_ids: List[int] = []
 
-        if platform.system() == 'Windows':
+        if batch_execution_target == 'windows' or platform.system() == 'Windows':
             script_paths = generate_figures_script_paths if active_phase.is_figure_phase else computation_script_paths
             powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}', batch_scripts_root_directory=batch_scripts_root_directory)
             print(f"PowerShell script: '{powershell_script_path}'")
             if also_show_figure_script_outputs or active_phase_dict['should_perform_figure_generation_to_file']:
                 powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}', batch_scripts_root_directory=batch_scripts_root_directory)
                 print(f"PowerShell figures script: '{powershell_figures_script_path}'")
+
+        elif batch_execution_target == 'lab_workstation':
+            phase_manifest_dir = batch_manifest_dir / active_phase.name
+            if len(run_bash_paths) > 0:
+                bash_run_start_scripts = "\n".join([f"bash '{bash_script}'" for bash_script in run_bash_paths])
+                print(f"\n{active_phase.name} - RunMain (lab workstation):")
+                print(bash_run_start_scripts)
+                if copy_commands_to_clipboard and not enable_auto_code_block_execution:
+                    copy_to_clipboard(bash_run_start_scripts, message_print=True)
+                if enable_auto_code_block_execution:
+                    print(f'Running {active_phase.name} lab workstation scripts...')
+                    execute_bash_scripts(run_bash_paths)
+            if active_phase.is_figure_phase or also_show_figure_script_outputs:
+                if len(figs_bash_paths) > 0:
+                    bash_figs_start_scripts = "\n".join([f"bash '{bash_script}'" for bash_script in figs_bash_paths])
+                    print(f"\n{active_phase.name} - Figures (lab workstation):")
+                    print(bash_figs_start_scripts)
+                    if copy_commands_to_clipboard and active_phase.is_figure_phase and not enable_auto_code_block_execution:
+                        copy_to_clipboard(bash_figs_start_scripts, message_print=True)
+                    if enable_auto_code_block_execution and active_phase.is_figure_phase:
+                        print(f'Running {active_phase.name} lab workstation figure scripts...')
+                        execute_bash_scripts(figs_bash_paths)
+            write_phase_manifest(phase_name=active_phase.name, run_slurm_paths=[], figs_slurm_paths=[], run_job_ids=run_job_ids, figs_job_ids=figs_job_ids, manifest_output_dir=phase_manifest_dir, run_bash_paths=run_bash_paths, figs_bash_paths=figs_bash_paths)
 
         else:
             phase_manifest_dir = batch_manifest_dir / active_phase.name
@@ -546,7 +575,7 @@ def process_all_phases(
                         figs_job_ids = submit_slurm_scripts(figs_slurm_paths)
                         wait_for_slurm_jobs(figs_job_ids, poll_seconds=slurm_poll_seconds)
 
-            write_phase_manifest(phase_name=active_phase.name, run_slurm_paths=run_slurm_paths, figs_slurm_paths=figs_slurm_paths, run_job_ids=run_job_ids, figs_job_ids=figs_job_ids, manifest_output_dir=phase_manifest_dir)
+            write_phase_manifest(phase_name=active_phase.name, run_slurm_paths=run_slurm_paths, figs_slurm_paths=figs_slurm_paths, run_job_ids=run_job_ids, figs_job_ids=figs_job_ids, manifest_output_dir=phase_manifest_dir, run_bash_paths=run_bash_paths, figs_bash_paths=figs_bash_paths)
 
         print(f"Completed phase: {active_phase.name}")
 
@@ -589,8 +618,9 @@ included_session_contexts = [
 ]
 
 # %%
-# Main execution - manual mode: generate scripts, print sbatch commands, write submit_*.sh manifests (no auto-submit)
+# Main execution - lab workstation: generate non-SLURM bash scripts, print bash commands, write submit_*_lab_workstation.sh manifests (no auto-run)
 enable_auto_code_block_execution: bool = False
+batch_execution_target: str = 'lab_workstation'  # 'slurm' | 'lab_workstation' | 'windows'
 
 process_all_phases(
     batch_day_date=BATCH_DAY_DATE,
@@ -616,6 +646,7 @@ process_all_phases(
     phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
     # phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
     # phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
+    batch_execution_target=batch_execution_target,
 )
 
 # %%
