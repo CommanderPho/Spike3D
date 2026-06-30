@@ -466,6 +466,7 @@ def process_all_phases(
             'should_freeze_pipeline_updates': True,
             'skip_save_on_initial_load': True, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
             'should_use_neptune_logging': False,
+            'should_use_viztracer_logging': False,
             'create_slurm_scripts': True,
             'should_generate_run_scripts': True,
             'should_generate_run_notebooks': True,
@@ -611,9 +612,9 @@ process_all_phases(
     wait_between_phases=True,
     copy_commands_to_clipboard=True,
     slurm_poll_seconds=60,
-    # phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
+    phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
     # phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
-    phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
+    # phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
 )
 
 # %%
