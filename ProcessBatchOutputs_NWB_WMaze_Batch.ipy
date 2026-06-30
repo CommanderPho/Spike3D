@@ -76,7 +76,7 @@ import inspect
 from jinja2 import Template
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function, recompute_nwb_wmaze_pipeline_computations_completion_function, figures_export_nwb_wmaze_display_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
@@ -429,6 +429,14 @@ def process_all_phases(
                 'rank_order_shuffle_analysis.minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
             },
             'custom_user_completion_function_override_kwargs_dict': {
+                'recompute_nwb_wmaze_pipeline_computations_completion_function': dict(
+                    final_process_time_bin_size=0.500,
+                    directional_decode_time_bin_size=laps_decoding_time_bin_size,
+                    overwrite_extant=True,
+                    posthoc_save=False,
+                    fail_on_exception=True,
+                    debug_print=False,
+                ),
                 'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': dict(
                     included_qclu_values=included_qclu_values,
                     minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz,
@@ -598,6 +606,7 @@ BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_NWB_WMaze_GL'  # used for filenames throu
 
 # Get the generated code for user-contributed functions (no kdiba_session_post_fixup — KDIBA / .mat specific).
 phase_any_run_custom_user_completion_functions_dict = {
+    'recompute_nwb_wmaze_pipeline_computations_completion_function': recompute_nwb_wmaze_pipeline_computations_completion_function,
     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
@@ -607,6 +616,7 @@ phase_any_run_custom_user_completion_functions_dict = {
 }
 
 nwb_wmaze_figure_custom_user_completion_functions_dict = {
+    'figures_export_nwb_wmaze_display_completion_function': figures_export_nwb_wmaze_display_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
     'figures_plot_bapun_train_test_decoder_error_distance_completion_function': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
 }
