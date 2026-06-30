@@ -53,7 +53,7 @@ from pyphocorehelpers.programming_helpers import copy_to_clipboard
 
 from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
 import pyphoplacecellanalysis.General.Batch.runBatch
-from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SavingOptions
+from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, BatchComputationProcessOptions, BatchSessionCompletionHandler, SavingOptions
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme
 
 from neuropy.core.user_annotations import UserAnnotationsManager
