@@ -14,7 +14,6 @@ dependencies = [
     "wrapt==1.11.2",
     "mpl-multitab",
     "ansi2html",
-    "vedo",
     "pybursts",
     "qdarkstyle~=3.1",
     "hdf5plugin>=4.1.1,<5",
@@ -186,6 +185,7 @@ dependencies = [
     "numpy==1.24.4",
     "pyrasite>=2.0",
     "track-linearization>=2.3.2",
+    "vedo",
 ]
 
 [project.scripts]
@@ -242,8 +242,8 @@ qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_she
 pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable=true }
 pyphoplacecellanalysis = { path = "../pyPhoPlaceCellAnalysis", editable=true }
 mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
-ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main" }
 vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
+ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main" }
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 pylustrator = { git = "https://github.com/CommanderPho/pylustrator.git" }
