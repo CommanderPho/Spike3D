@@ -313,7 +313,8 @@ def process_all_phases(
 
     # Per-session data roots: list order = storage priority (fast -> slow). Comment/uncomment blocks per machine.
     known_global_data_root_parent_paths = [
-        Path(r'W:/Data'), 
+        Path(r'H:/Data'),  # local Windows: DANDI 000978 under H:/Data/DANDI/SingleDayWTrackLearning/000978/sub-JDS-SingleDay-*
+        Path(r'W:/Data'),
         Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
         # Path('/Users/pho/data'),
         Path(r'/nfs/turbo/umms-kdiba/Data'),
