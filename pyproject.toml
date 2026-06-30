@@ -186,6 +186,7 @@ dependencies = [
     "pyrasite>=2.0",
     "track-linearization>=2.3.2",
     "vedo",
+    "replay_trajectory_classification",
 ]
 
 [project.scripts]
