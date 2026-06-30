@@ -630,7 +630,8 @@ included_session_contexts = [
 # %%
 # Main execution - linux standalone: generate non-SLURM bash scripts, print bash commands, write submit_*_linux_standalone.sh manifests (no auto-run)
 enable_auto_code_block_execution: bool = False
-batch_execution_target: str = 'linux_standalone'  # 'slurm' | 'linux_standalone' | 'windows'
+# batch_execution_target: str = 'linux_standalone'  # 'slurm' | 'linux_standalone' | 'windows'
+batch_execution_target: str = 'slurm'  # 'slurm' | 'linux_standalone' | 'windows'
 
 process_all_phases(
     batch_day_date=BATCH_DAY_DATE,
