@@ -206,17 +206,17 @@ def write_phase_manifest(phase_name: str, run_slurm_paths: List[str], figs_slurm
             submit_figs_file.write('\n'.join([f"sbatch '{p}'" for p in figs_slurm_paths]) + '\n')
         print(f"Wrote submit script: {submit_figs_path}")
     if len(run_bash_paths) > 0:
-        submit_run_lab_path = manifest_output_dir / f'submit_{phase_name}_run_lab_workstation.sh'
-        with open(submit_run_lab_path, 'w') as submit_run_lab_file:
-            submit_run_lab_file.write('#!/bin/bash\nset -euo pipefail\n\n' + '\n'.join([f"bash '{p}'" for p in run_bash_paths]) + '\n')
-        os.chmod(submit_run_lab_path, 0o755)
-        print(f"Wrote lab workstation submit script: {submit_run_lab_path}")
+        submit_run_linux_path = manifest_output_dir / f'submit_{phase_name}_run_linux_standalone.sh'
+        with open(submit_run_linux_path, 'w') as submit_run_linux_file:
+            submit_run_linux_file.write('#!/bin/bash\nset -euo pipefail\n\n' + '\n'.join([f"bash '{p}'" for p in run_bash_paths]) + '\n')
+        os.chmod(submit_run_linux_path, 0o755)
+        print(f"Wrote linux standalone submit script: {submit_run_linux_path}")
     if len(figs_bash_paths) > 0:
-        submit_figs_lab_path = manifest_output_dir / f'submit_{phase_name}_figs_lab_workstation.sh'
-        with open(submit_figs_lab_path, 'w') as submit_figs_lab_file:
-            submit_figs_lab_file.write('#!/bin/bash\nset -euo pipefail\n\n' + '\n'.join([f"bash '{p}'" for p in figs_bash_paths]) + '\n')
-        os.chmod(submit_figs_lab_path, 0o755)
-        print(f"Wrote lab workstation figures submit script: {submit_figs_lab_path}")
+        submit_figs_linux_path = manifest_output_dir / f'submit_{phase_name}_figs_linux_standalone.sh'
+        with open(submit_figs_linux_path, 'w') as submit_figs_linux_file:
+            submit_figs_linux_file.write('#!/bin/bash\nset -euo pipefail\n\n' + '\n'.join([f"bash '{p}'" for p in figs_bash_paths]) + '\n')
+        os.chmod(submit_figs_linux_path, 0o755)
+        print(f"Wrote linux standalone figures submit script: {submit_figs_linux_path}")
     print(f"Wrote phase manifest: {manifest_path}")
 
 
@@ -293,7 +293,7 @@ def process_all_phases(
         copy_commands_to_clipboard: Whether to copy sbatch commands to clipboard (manual fallback)
         slurm_poll_seconds: Poll interval when waiting for Slurm jobs
         phases_to_run: Specific phases to run (if None, runs all phases)
-        batch_execution_target: 'slurm' (Great Lakes), 'lab_workstation' (local bash), or 'windows' (PowerShell)
+        batch_execution_target: 'slurm' (Great Lakes), 'linux_standalone' (local bash), or 'windows' (PowerShell)
     """
     if not enable_auto_code_block_execution and wait_between_phases is False:
         wait_between_phases = True
@@ -317,7 +317,7 @@ def process_all_phases(
         nwb_wmaze_figure_custom_user_completion_functions_dict = {}
 
     # Setup paths
-    if batch_execution_target == 'lab_workstation':
+    if batch_execution_target == 'linux_standalone':
         known_scripts_output_paths = [Path(v).resolve() for v in ['/home/halechr/FastData/gen_scripts', '/media/halechr/BETAMAX1/Data/Output/gen_scripts', '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts']]
     else:
         known_scripts_output_paths = [Path(v).resolve() for v in ['/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/home/halechr/FastData/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts', Path(r"W:/Data/Output/gen_scripts")]]
@@ -335,17 +335,17 @@ def process_all_phases(
     print(f'sys.executable: {sys.executable}')
 
     # Per-session data roots: list order = storage priority (fast -> slow). Comment/uncomment blocks per machine.
-    if batch_execution_target == 'lab_workstation':
+    if batch_execution_target == 'linux_standalone':
         known_global_data_root_parent_paths = [Path('/media/halechr/BETAMAX1/Data'), Path('/home/halechr/FastData'), Path('/media/halechr/MAX/Data'), Path('/nfs/turbo/umms-kdiba/Data')]
-        lab_workstation_venv_activate_path = Path('~/repos/Spike3D/.venv/bin/activate').expanduser()
+        linux_standalone_venv_activate_path = Path('~/repos/Spike3D/.venv/bin/activate').expanduser()
     else:
         known_global_data_root_parent_paths = [Path(r'H:/Data'), Path(r'W:/Data'), Path('/scratch/kdiba_root/kdiba99/halechr/Data'), Path('/media/halechr/BETAMAX1/Data'), Path(r'/nfs/turbo/umms-kdiba/Data')]
-        lab_workstation_venv_activate_path = None
+        linux_standalone_venv_activate_path = None
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
     assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist!"
     print(f'global_data_root_parent_path (fallback default): {global_data_root_parent_path}')
 
-    known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in (['/home/halechr/repos/Spike3D/.venv/bin/python'] if batch_execution_target == 'lab_workstation' else ['/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python', r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe', r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv_UV/Scripts/python', '~/repos/Spike3D/.venv/bin/python'])] + [Path(sys.executable).resolve()]
+    known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in (['/home/halechr/repos/Spike3D/.venv/bin/python'] if batch_execution_target == 'linux_standalone' else ['/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python', r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe', r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv_UV/Scripts/python', '~/repos/Spike3D/.venv/bin/python'])] + [Path(sys.executable).resolve()]
     vscode_default_interpreter_path = find_first_extant_path(known_vscode_default_interpreter_paths)
     assert vscode_default_interpreter_path.exists(), f"vscode_default_interpreter_path: {vscode_default_interpreter_path} does not exist!"
     print(f'vscode_default_interpreter_path: {vscode_default_interpreter_path}')
@@ -481,7 +481,7 @@ def process_all_phases(
             'should_use_neptune_logging': False,
             'should_use_viztracer_logging': False,
             'create_slurm_scripts': batch_execution_target == 'slurm',
-            'create_non_slurm_bash_scripts': batch_execution_target == 'lab_workstation',
+            'create_non_slurm_bash_scripts': batch_execution_target == 'linux_standalone',
             'should_generate_run_scripts': True,
             'should_generate_run_notebooks': True,
             # 'should_generate_run_notebooks': False,
@@ -498,7 +498,7 @@ def process_all_phases(
 
         # For format_name='dandi_nwb', generated `run_*.py` scripts skip Bapun preflight; epoch/lap/PBE/replay setup is handled by NWBDataSessionFormat POSTLOAD (see pythonScriptTemplating / runBatch).
 
-        batch_scripts_collection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=included_session_contexts, session_global_data_root_parent_paths=session_global_data_root_parent_paths, output_directory=scripts_output_path, use_separate_run_directories=True, should_use_file_redirected_output_logging=True, batch_script_subdirectory=active_phase.name, venv_activate_path=(str(lab_workstation_venv_activate_path) if lab_workstation_venv_activate_path is not None else None), **active_phase_dict)
+        batch_scripts_collection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=included_session_contexts, session_global_data_root_parent_paths=session_global_data_root_parent_paths, output_directory=scripts_output_path, use_separate_run_directories=True, should_use_file_redirected_output_logging=True, batch_script_subdirectory=active_phase.name, venv_activate_path=(str(linux_standalone_venv_activate_path) if linux_standalone_venv_activate_path is not None else None), **active_phase_dict)
 
         output_python_scripts = batch_scripts_collection.output_python_scripts
         output_jupyter_notebooks = batch_scripts_collection.output_jupyter_notebooks
@@ -527,26 +527,26 @@ def process_all_phases(
                 powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}', batch_scripts_root_directory=batch_scripts_root_directory)
                 print(f"PowerShell figures script: '{powershell_figures_script_path}'")
 
-        elif batch_execution_target == 'lab_workstation':
+        elif batch_execution_target == 'linux_standalone':
             phase_manifest_dir = batch_manifest_dir / active_phase.name
             if len(run_bash_paths) > 0:
                 bash_run_start_scripts = "\n".join([f"bash '{bash_script}'" for bash_script in run_bash_paths])
-                print(f"\n{active_phase.name} - RunMain (lab workstation):")
+                print(f"\n{active_phase.name} - RunMain (linux standalone):")
                 print(bash_run_start_scripts)
                 if copy_commands_to_clipboard and not enable_auto_code_block_execution:
                     copy_to_clipboard(bash_run_start_scripts, message_print=True)
                 if enable_auto_code_block_execution:
-                    print(f'Running {active_phase.name} lab workstation scripts...')
+                    print(f'Running {active_phase.name} linux standalone scripts...')
                     execute_bash_scripts(run_bash_paths)
             if active_phase.is_figure_phase or also_show_figure_script_outputs:
                 if len(figs_bash_paths) > 0:
                     bash_figs_start_scripts = "\n".join([f"bash '{bash_script}'" for bash_script in figs_bash_paths])
-                    print(f"\n{active_phase.name} - Figures (lab workstation):")
+                    print(f"\n{active_phase.name} - Figures (linux standalone):")
                     print(bash_figs_start_scripts)
                     if copy_commands_to_clipboard and active_phase.is_figure_phase and not enable_auto_code_block_execution:
                         copy_to_clipboard(bash_figs_start_scripts, message_print=True)
                     if enable_auto_code_block_execution and active_phase.is_figure_phase:
-                        print(f'Running {active_phase.name} lab workstation figure scripts...')
+                        print(f'Running {active_phase.name} linux standalone figure scripts...')
                         execute_bash_scripts(figs_bash_paths)
             write_phase_manifest(phase_name=active_phase.name, run_slurm_paths=[], figs_slurm_paths=[], run_job_ids=run_job_ids, figs_job_ids=figs_job_ids, manifest_output_dir=phase_manifest_dir, run_bash_paths=run_bash_paths, figs_bash_paths=figs_bash_paths)
 
@@ -618,9 +618,9 @@ included_session_contexts = [
 ]
 
 # %%
-# Main execution - lab workstation: generate non-SLURM bash scripts, print bash commands, write submit_*_lab_workstation.sh manifests (no auto-run)
+# Main execution - linux standalone: generate non-SLURM bash scripts, print bash commands, write submit_*_linux_standalone.sh manifests (no auto-run)
 enable_auto_code_block_execution: bool = False
-batch_execution_target: str = 'lab_workstation'  # 'slurm' | 'lab_workstation' | 'windows'
+batch_execution_target: str = 'linux_standalone'  # 'slurm' | 'linux_standalone' | 'windows'
 
 process_all_phases(
     batch_day_date=BATCH_DAY_DATE,
