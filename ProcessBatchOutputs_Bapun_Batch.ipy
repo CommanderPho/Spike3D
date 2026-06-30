@@ -498,6 +498,7 @@ def process_all_phases(
         output_jupyter_notebooks = batch_scripts_collection.output_jupyter_notebooks
         output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
         vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
+        batch_scripts_root_directory = batch_scripts_collection.batch_scripts_root_directory
 
         # if vscode_workspace_path is not None:
         #     print(f"VSCode workspace: {vscode_workspace_path}")
@@ -511,10 +512,10 @@ def process_all_phases(
 
         if platform.system() == 'Windows':
             script_paths = generate_figures_script_paths if active_phase.is_figure_phase else computation_script_paths
-            powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}')
+            powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}', batch_scripts_root_directory=batch_scripts_root_directory)
             print(f"PowerShell script: '{powershell_script_path}'")
             if also_show_figure_script_outputs or active_phase_dict['should_perform_figure_generation_to_file']:
-                powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}')
+                powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}', batch_scripts_root_directory=batch_scripts_root_directory)
                 print(f"PowerShell figures script: '{powershell_figures_script_path}'")
 
         else:
