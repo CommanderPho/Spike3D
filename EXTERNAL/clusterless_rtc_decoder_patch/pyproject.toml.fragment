@@ -1,0 +1,95 @@
+[project]
+name = "pyphoplacecellanalysis"
+version = "0.3.0"
+description = ""
+authors = [{ name = "Pho Hale", email = "halechr@umich.edu" }]
+requires-python = ">=3.9,<3.12"
+readme = "README.md"
+dependencies = [
+    "param>=1.12.3,<2",
+    "qtmodern>=0.2.0,<0.3",
+    "elephant>=0.11.2,<0.12",
+    "dill[graph]==0.3.5.1",
+    "klepto==0.2.2",
+    "findpeaks>=2.4.4,<3",
+    "shapely>=2.0.1,<3",
+    "pybursts",
+    "pyopengl-accelerate>=3.1.6,<4",
+    "sqlalchemy>=2.0.2,<3",
+    "pip~=24.0",
+    "setuptools>=78.1.0",
+    "srsly>=2.4.5,<3",
+    "tables>=3.8.0,<4",
+    "hdf5plugin>=4.1.1,<5",
+    "magicgui>=0.6.1,<0.7",
+    "deeptime>=0.4.4,<0.5",
+    "attrs>=22.2.0,<23",
+    "jinja2==3.0.3",
+    "pandas==1.5.3",
+    "napari[pyqt5]>=0.4.18,<0.5",
+    "napari-animated-gif-io>=0.1.2,<0.2",
+    "napari-animation>=0.0.8,<0.0.9",
+    "panel>=1.2.3,<2",
+    "params>=0.9.0,<0.10",
+    "jupyter-bokeh>=3.0.7,<4",
+    "pyqt-builder>=1.15.3,<2",
+    "pyqt5-qt5==5.15.2",
+    "pycscope>=1.2.1,<2",
+    "scikit-learn~=1.5",
+    "opencv-contrib-python>=4.10.0.84,<5",
+    "qtawesome>=1.4.0",
+    "importlib-resources>=6.5.2",
+    "wheel",
+    "cython",
+    "neuropy>=0.2.0",
+    "pyphocorehelpers",
+    "replay_trajectory_classification",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.2.1,<8",
+    "ipython>=8.9.0,<9",
+    "viztracer>=0.15.6,<0.16",
+    "setuptools>=78.1.0",
+    "ansi2html",
+    "snakeviz>=2.1.1,<3",
+    "pyan>=0.1.3,<0.2",
+    "dvc[gdrive]>=3.59.0,<4",
+]
+gui = [
+    "click>=8.1.3,<9",
+    "pyqt5==5.15.7",
+    "pyqt-checkbox-table-widget>=0.0.14,<0.0.15",
+    "pyqt5-qt5>=5.15.2,<6",
+    "pyqt-custom-titlebar-window>=0.0.50,<0.0.51",
+    "qtawesome>=1.2.2,<2",
+    "loguru>=0.6.0,<0.7",
+    "pyopengl>=3.1.6,<4",
+    "mpl-multitab",
+    "patchworklib>=0.5.2,<0.6",
+    "pyqt-responsive-label>=0.0.3,<0.0.4",
+]
+remote = [
+    "neuropy",
+]
+testing = ["mplcursors>=0.5.2,<0.6"]
+
+[tool.uv]
+default-groups = [
+    "dev",
+    "gui",
+    "remote",
+    "testing",
+]
+
+[tool.uv.sources]
+ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main" }
+mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
+neuropy = { path = "../NeuroPy", editable = true }
+pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
+pyphocorehelpers = { path = "../pyPhoCoreHelpers", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
