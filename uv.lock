@@ -3190,7 +3190,7 @@ wheels = [
 ]
 
 [[package]]
-name = "cupy-cuda12x"
+name = "cupy-cuda13x"
 version = "13.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
@@ -3198,15 +3198,15 @@ dependencies = [
     { name = "numpy" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f7/2e/db22c5148884e4e384f6ebbc7971fa3710f3ba67ca492798890a0fdebc45/cupy_cuda12x-13.6.0-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:9e37f60f27ff9625dfdccc4688a09852707ec613e32ea9404f425dd22a386d14", size = 126341714, upload-time = "2025-08-18T08:24:08.335Z" },
-    { url = "https://files.pythonhosted.org/packages/53/2b/8064d94a6ab6b5c4e643d8535ab6af6cabe5455765540931f0ef60a0bc3b/cupy_cuda12x-13.6.0-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:e78409ea72f5ac7d6b6f3d33d99426a94005254fa57e10617f430f9fd7c3a0a1", size = 112238589, upload-time = "2025-08-18T08:24:15.541Z" },
-    { url = "https://files.pythonhosted.org/packages/de/7b/bac3ca73e164d2b51c6298620261637c7286e06d373f597b036fc45f5563/cupy_cuda12x-13.6.0-cp310-cp310-win_amd64.whl", hash = "sha256:f33c9c975782ef7a42c79b6b4fb3d5b043498f9b947126d792592372b432d393", size = 89874119, upload-time = "2025-08-18T08:24:20.628Z" },
-    { url = "https://files.pythonhosted.org/packages/54/64/71c6e08f76c06639e5112f69ee3bc1129be00054ad5f906d7fd3138af579/cupy_cuda12x-13.6.0-cp311-cp311-manylinux2014_aarch64.whl", hash = "sha256:c790d012fd4d86872b9c89af9f5f15d91c30b8e3a4aa4dd04c2610f45f06ac44", size = 128016458, upload-time = "2025-08-18T08:24:26.394Z" },
-    { url = "https://files.pythonhosted.org/packages/fc/d9/5c5077243cd92368c3eccecdbf91d76db15db338169042ffd1647533c6b1/cupy_cuda12x-13.6.0-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:77ba6745a130d880c962e687e4e146ebbb9014f290b0a80dbc4e4634eb5c3b48", size = 113039337, upload-time = "2025-08-18T08:24:31.814Z" },
-    { url = "https://files.pythonhosted.org/packages/88/f5/02bea5cdf108e2a66f98e7d107b4c9a6709e5dbfedf663340e5c11719d83/cupy_cuda12x-13.6.0-cp311-cp311-win_amd64.whl", hash = "sha256:a20b7acdc583643a623c8d8e3efbe0db616fbcf5916e9c99eedf73859b6133af", size = 89885526, upload-time = "2025-08-18T08:24:37.258Z" },
-    { url = "https://files.pythonhosted.org/packages/1d/23/aec6590ce32f0b0d284081192e9d25a07a410e57aaa28e2c3f2911881d2d/cupy_cuda12x-13.6.0-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:6ccd2fc75b0e0e24493531b8f8d8f978efecddb45f8479a48890c40d3805eb87", size = 126427104, upload-time = "2025-08-18T08:25:16.124Z" },
-    { url = "https://files.pythonhosted.org/packages/17/56/683967510b4392b518ba32a8560ef587d841f91b20afea76c6c642eb8b68/cupy_cuda12x-13.6.0-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:771f3135861b68199c18b49345210180d4fcdce4681b51c28224db389c4aac5d", size = 112305805, upload-time = "2025-08-18T08:25:24.097Z" },
-    { url = "https://files.pythonhosted.org/packages/02/55/92ef35d57303cb9d4fbf9443f524327cc5426fa8d1c5cf88d6395ec75f1e/cupy_cuda12x-13.6.0-cp39-cp39-win_amd64.whl", hash = "sha256:4d2dfd9bb4705d446f542739a3616b4c9eea98d674fce247402cc9bcec89a1e4", size = 89888841, upload-time = "2025-08-18T08:25:29.801Z" },
+    { url = "https://files.pythonhosted.org/packages/1c/4e/94a7f6c18a63810fcebc7f4bb4c093cc850aafb72f1b5be6e2590d4fdeb5/cupy_cuda13x-13.6.0-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:93896a5d36788eadb8d983cb0076c1203df6f1d5ef148464680e8f1b13da2235", size = 65332783, upload-time = "2025-08-18T08:32:09.123Z" },
+    { url = "https://files.pythonhosted.org/packages/71/64/b08348fb125c868711b1c879f075a70e63e7e9b169407e39c75baa99a5b7/cupy_cuda13x-13.6.0-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:a6682bdad8e40fff560e29588fef20d08a1c036e9634dac6fe9c85ea094e448c", size = 53937433, upload-time = "2025-08-18T08:32:13.455Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/44/2eec8b0225a8265f8661821edb4e80f120adac73c36b57f24219826276d1/cupy_cuda13x-13.6.0-cp310-cp310-win_amd64.whl", hash = "sha256:53a9780f746e53958087ed44f5a8a7f1faf2268f6fefc2a48070d25261299db4", size = 33984710, upload-time = "2025-08-18T08:32:17.103Z" },
+    { url = "https://files.pythonhosted.org/packages/2e/b4/5c0895ebcb2ea73fd3e783c5ed605fb930b08edc91f823b3f05400995579/cupy_cuda13x-13.6.0-cp311-cp311-manylinux2014_aarch64.whl", hash = "sha256:81948cb0d21da5f0a56aef75bb6b0801486f5898276de2e53d171949422b7c4e", size = 67022616, upload-time = "2025-08-18T08:32:20.301Z" },
+    { url = "https://files.pythonhosted.org/packages/0d/ea/cabcc21555d11ffed8a4576870fa7a293047e373f140f3626ed267e2f9b4/cupy_cuda13x-13.6.0-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:82a71002b1bf3305efac27c0f4fd6771c8581569232ca3f8a19daf8664559339", size = 54661946, upload-time = "2025-08-18T08:32:24.143Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/9e/bdb928a0478d6dc80b3988d60eafbf3c8946dae8e9cd0e18e02c462144e4/cupy_cuda13x-13.6.0-cp311-cp311-win_amd64.whl", hash = "sha256:bc4e776c94329e92f0ba336aa0873b83ef0217c9f72cf9dd9ff0afa9b65c818c", size = 33995610, upload-time = "2025-08-18T08:32:27.835Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/76/f3df1dee3174ef2e55e2e7422fb9fdd7efc39e5f4a4fd5040a3bc6e2a508/cupy_cuda13x-13.6.0-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:0c6586c28a3209b3022c4482d3020e77fca9c82095839ba95ef86e61c5be3dc8", size = 65415621, upload-time = "2025-08-18T08:32:54.249Z" },
+    { url = "https://files.pythonhosted.org/packages/3a/54/f3b0520ff47c1c93d1c038276ec00e4360dd2e03412a41be0b92856da3af/cupy_cuda13x-13.6.0-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:3e60748647b5bda97ece87ea75c71d1375ec6437fd1fe48a15a24b08e007b5ad", size = 53999894, upload-time = "2025-08-18T08:32:58.315Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/58/e66824ae4510914ddae5ca586198d3d98c24f2415e878a1f546eb0188f95/cupy_cuda13x-13.6.0-cp39-cp39-win_amd64.whl", hash = "sha256:4ea757682ebf4b45b38cc4e14c73da5e6499f7eabcd0fe15d88eb04e60f66e9c", size = 33998869, upload-time = "2025-08-18T08:33:02.018Z" },
 ]
 
 [[package]]
@@ -10481,10 +10481,10 @@ default = [
 
 [[package]]
 name = "neuropy"
-version = "0.2.8"
+version = "0.2.9"
 source = { editable = "../NeuroPy" }
 dependencies = [
-    { name = "cupy-cuda12x" },
+    { name = "cupy-cuda13x" },
     { name = "dill", extra = ["graph"] },
     { name = "dvc", extra = ["all"] },
     { name = "flexitext" },
@@ -10528,7 +10528,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cupy-cuda12x", specifier = ">=13.4.0,<14" },
+    { name = "cupy-cuda13x", specifier = ">=13.6.0,<14" },
     { name = "dill", extras = ["graph"], specifier = "==0.3.5.1" },
     { name = "dvc", extras = ["all"], specifier = ">=3.63.0" },
     { name = "flexitext", git = "https://github.com/CommanderPho/flexitext.git?rev=main" },
