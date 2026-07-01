@@ -6443,6 +6443,15 @@ wheels = [
 ]
 
 [[package]]
+name = "ihook"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/44/ba/d3b86bf84ead73ce8a70a14681fc46f77626eb56a3776c55ce49b203b339/ihook-0.2.1.tar.gz", hash = "sha256:6f09a5f3d043097b30123082ebae7af42158a80a779fc49dfbbcd6966e0ac01a", size = 12212, upload-time = "2025-09-12T02:20:20.224Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cf/0e/b2a79cdc4052fb47b95cfcfb599df5ba12104bb8386d1e698f05423844a3/ihook-0.2.1-py3-none-any.whl", hash = "sha256:5831159c49c4c13fe4cdd510e397f0485d76e9f0eeab0ea89e6939e66ea79c1c", size = 7476, upload-time = "2025-09-12T02:20:17.15Z" },
+]
+
+[[package]]
 name = "imageio"
 version = "2.37.2"
 source = { registry = "https://pypi.org/simple" }
@@ -20575,17 +20584,22 @@ wheels = [
 
 [[package]]
 name = "pyqtinspect"
-version = "0.3.7"
+version = "0.4.0"
 source = { directory = "../PyQtInspect-Open" }
 dependencies = [
+    { name = "ihook" },
     { name = "psutil" },
+    { name = "pyobjc-framework-cocoa", version = "11.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and sys_platform == 'darwin'" },
+    { name = "pyobjc-framework-cocoa", version = "12.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and sys_platform == 'darwin'" },
     { name = "pyqt5" },
     { name = "wingrab", marker = "sys_platform == 'win32'" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "ihook" },
     { name = "psutil" },
+    { name = "pyobjc-framework-cocoa", marker = "sys_platform == 'darwin'" },
     { name = "pyqt5" },
     { name = "wingrab", marker = "sys_platform == 'win32'" },
 ]
