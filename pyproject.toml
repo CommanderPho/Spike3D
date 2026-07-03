@@ -34,7 +34,7 @@ dependencies = [
     "cattrs>=23.1.2",
     "pillow>=9.4.0,<10",
     "seaborn[stats]>=0.12.2,<0.13",
-    "param>=1.13.0,<2",
+    "param>=1.13.0,<3",
     "pyflakes>=3.0.1,<4",
     "neptune>=1.2.0,<2",
     "nptyping[complete]>=2.5.0,<3",
@@ -81,7 +81,7 @@ dependencies = [
     "streamlit>=1.27.1,<2",
     "streamlit-extras>=0.3.2,<0.4",
     "regex>=2023.10.3,<2024",
-    "panel>=1.2.3,<2",
+    "panel>=1.4,<2",
     "params>=0.9.0,<0.10",
     "findpeaks>=2.5.4,<3",
     "qtvoila>=2.1.0,<3 ; sys_platform != 'linux'",
@@ -197,6 +197,9 @@ setup_dependent_repos = "scripts/setup_dependent_repos.py"
 rebuild_typestubs_and_requirements = "scripts/windows/export_requirements_and_create_typestubs.ps1"
 
 [dependency-groups]
+debugging = [
+    "py-spy>=0.4.2",
+]
 dev = [
     "ipython>=8.9.0,<9",
     "viztracer>=0.15.6,<0.16",
