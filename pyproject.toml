@@ -258,6 +258,8 @@ neuropy = { path = "../NeuroPy", editable=true }
 
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 replayswitchinghmm = { path = "../ReplaySwitchingHMM" }
+spyglass = {path = "../spyglass", editable=true}
+
 
 [tool.poetry.dependencies]
 pyjsoncanvas = {develop = true}
