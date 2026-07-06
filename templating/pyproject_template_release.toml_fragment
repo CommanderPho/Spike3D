@@ -11,3 +11,4 @@ flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 pyqtinspect = "^0.3.6"
 silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop"}
+spyglass = {git = "https://github.com/CommanderPho/spyglass.git" }
