@@ -603,7 +603,7 @@ process_all_phases(
     phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
     bapun_figure_custom_user_completion_functions_dict=bapun_figure_custom_user_completion_functions_dict,
     force_recompute_override_computations_includelist=[],
-    custom_phase_extended_computations_include_includelist=extra_extended_computations_include_includelist,
+    custom_phase_extended_computations_include_includelist=['position_decoding_spyglass_clusterless'],
     included_qclu_values=[1, 2, 4, 6, 7, 8, 9],
     minimum_inclusion_fr_Hz=1.0,
     num_shuffles=1024,
