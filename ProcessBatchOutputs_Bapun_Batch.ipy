@@ -276,7 +276,7 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
 
     # Setup paths
     known_scripts_output_paths = [Path(v).resolve() for v in [
-        '/home/halechrFastData/Output/gen_scripts',
+        '/home/halechr/FastData/Output/gen_scripts',
         '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts',
         '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
         Path(r"W:/Data/Output/gen_scripts"),
