@@ -75,7 +75,7 @@ import inspect
 from jinja2 import Template
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_pickle_clusterless_decoder_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_pickle_clusterless_decoder_completion_function, compute_and_pickle_spyglass_clusterless_decoder_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function, figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
@@ -221,29 +221,12 @@ def execute_code_block(code_block: str, wait_for_completion: bool = True, poll_s
     return job_ids
 
 
-def process_all_phases(
-    batch_day_date: str,
-    batch_date_to_use: str,
-    included_session_contexts: List[IdentifyingContext],
-    phase_any_run_custom_user_completion_functions_dict: Dict,
-    bapun_figure_custom_user_completion_functions_dict: Dict = None,
-    force_recompute_override_computations_includelist: List = None,
-    extra_extended_computations_include_includelist: List = None,
-    custom_phase_extended_computations_include_includelist: List = None,
-    included_qclu_values: List = None,
-    minimum_inclusion_fr_Hz: float = 1.0,
-    num_shuffles: int = 1024,
-    drop_previous_result_and_compute_fresh: bool = True,
-    laps_decoding_time_bin_size: float = 0.250,
-    ripple_decoding_time_bin_size: float = 0.050,
-    enable_auto_code_block_execution: bool = False,
-    max_parallel_executions: int = 1,
-    also_show_figure_script_outputs: bool = False,
-    wait_between_phases: bool = True,
-    copy_commands_to_clipboard: bool = False,
-    slurm_poll_seconds: int = 60,
-    phases_to_run: List[ProcessingScriptPhases] = None
-):
+def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_session_contexts: List[IdentifyingContext], phase_any_run_custom_user_completion_functions_dict: Dict, bapun_figure_custom_user_completion_functions_dict: Dict = None,
+                        force_recompute_override_computations_includelist: List = None, extra_extended_computations_include_includelist: List = None, custom_phase_extended_computations_include_includelist: List = None, included_qclu_values: List = None,
+                        minimum_inclusion_fr_Hz: float = 1.0, num_shuffles: int = 1024, drop_previous_result_and_compute_fresh: bool = True, laps_decoding_time_bin_size: float = 0.250, ripple_decoding_time_bin_size: float = 0.050,
+                        enable_auto_code_block_execution: bool = False, max_parallel_executions: int = 1, also_show_figure_script_outputs: bool = False, wait_between_phases: bool = True,
+                        copy_commands_to_clipboard: bool = False, slurm_poll_seconds: int = 60, phases_to_run: List[ProcessingScriptPhases] = None,
+    ):
     """
     Process all phases of the batch computation pipeline automatically.
 
@@ -254,7 +237,7 @@ def process_all_phases(
         phase_any_run_custom_user_completion_functions_dict: Custom completion functions
         bapun_figure_custom_user_completion_functions_dict: Figure-phase-only completion functions merged on figure_run
         force_recompute_override_computations_includelist: List of computations to force recompute
-        extra_extended_computations_include_includelist: Additional extended computations
+        extra_extended_computations_include_includelist: Additional extended computations (default: position_decoding_spyglass_clusterless)
         custom_phase_extended_computations_include_includelist: Custom phase computations
         included_qclu_values: Quality cluster values to include
         minimum_inclusion_fr_Hz: Minimum firing rate threshold
@@ -278,7 +261,7 @@ def process_all_phases(
     if force_recompute_override_computations_includelist is None:
         force_recompute_override_computations_includelist = []
     if extra_extended_computations_include_includelist is None:
-        extra_extended_computations_include_includelist = []
+        extra_extended_computations_include_includelist = ['position_decoding_spyglass_clusterless']
     if included_qclu_values is None:
         included_qclu_values = [1, 2]
     if phases_to_run is None:
@@ -450,7 +433,13 @@ def process_all_phases(
                 'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
                 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
                 'compute_and_pickle_clusterless_decoder_completion_function': dict(), 
+                'compute_and_pickle_spyglass_clusterless_decoder_completion_function': dict(),
                 'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': dict(),
+                'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': dict(
+                    training_data_portion=9.0/10.0,
+                    laps_decoding_time_bin_size=laps_decoding_time_bin_size,
+                    debug_print=False
+                ),
             }
         })
 
@@ -563,7 +552,7 @@ def process_all_phases(
 
 # %%
 # Configuration parameters — Bapun-only batch (distinct tag from KDIBA runs).
-BATCH_DAY_DATE: str = '2026-06-22'
+BATCH_DAY_DATE: str = '2026-07-07'
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Bapun_GL'  # used for filenames throughout the batch
 
 # Get the generated code for user-contributed functions (no kdiba_session_post_fixup — KDIBA / .mat specific).
@@ -574,13 +563,15 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': compute_and_export_bapun_train_test_decoder_error_distance_completion_function, 
-    'compute_and_pickle_clusterless_decoder_completion_function': compute_and_pickle_clusterless_decoder_completion_function, ## CLUSTERLESS
+    # 'compute_and_pickle_clusterless_decoder_completion_function': compute_and_pickle_clusterless_decoder_completion_function, ## CLUSTERLESS
+    'compute_and_pickle_spyglass_clusterless_decoder_completion_function': compute_and_pickle_spyglass_clusterless_decoder_completion_function, ## SPYGLASS CLUSTERLESS
 }
 
 bapun_figure_custom_user_completion_functions_dict = {
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'figures_plot_bapun_train_test_decoder_error_distance_completion_function': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
-    'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function, ## CLUSTERLESS
+    # 'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function, ## CLUSTERLESS
+    'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function, ## SPYGLASS CLUSTERLESS
 }
 
 # Keys align with BapunDataSessionFormatRegisteredClass._get_session_specific_parameters (NeuroPy BapunDataSessionFormat.py).
@@ -612,8 +603,7 @@ process_all_phases(
     phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
     bapun_figure_custom_user_completion_functions_dict=bapun_figure_custom_user_completion_functions_dict,
     force_recompute_override_computations_includelist=[],
-    extra_extended_computations_include_includelist=[],
-    custom_phase_extended_computations_include_includelist=None,
+    custom_phase_extended_computations_include_includelist=extra_extended_computations_include_includelist,
     included_qclu_values=[1, 2, 4, 6, 7, 8, 9],
     minimum_inclusion_fr_Hz=1.0,
     num_shuffles=1024,
