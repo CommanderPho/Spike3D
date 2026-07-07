@@ -276,6 +276,7 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
 
     # Setup paths
     known_scripts_output_paths = [Path(v).resolve() for v in [
+        '/home/halechrFastData/Output/gen_scripts',
         '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts',
         '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
         Path(r"W:/Data/Output/gen_scripts"),
@@ -296,11 +297,11 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
     # Per-session data roots: list order = storage priority (fast -> slow). Comment/uncomment blocks per machine.
     known_global_data_root_parent_paths = [
         Path(r'W:/Data'), 
+        Path(r'/home/halechr/FastData'),
         Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
         # Path('/Users/pho/data'),
         Path(r'/nfs/turbo/umms-kdiba/Data'),
         # Path(r'/media/halechr/MAX/Data'),
-        # Path(r'/home/halechr/FastData'),
         # Path(r'/Volumes/MoverNew/data')
     ]
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
