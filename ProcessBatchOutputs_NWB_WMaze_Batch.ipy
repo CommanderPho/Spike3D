@@ -76,7 +76,7 @@ import inspect
 from jinja2 import Template
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function, recompute_nwb_wmaze_pipeline_computations_completion_function, figures_export_nwb_wmaze_display_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function, recompute_nwb_wmaze_pipeline_computations_completion_function, figures_export_nwb_wmaze_display_completion_function, compute_and_pickle_spyglass_clusterless_decoder_completion_function, figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
@@ -469,6 +469,8 @@ def process_all_phases(
                     laps_decoding_time_bin_size=laps_decoding_time_bin_size,
                     debug_print=False
                 ),
+                'compute_and_pickle_spyglass_clusterless_decoder_completion_function': dict(debug_print=False),
+                'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': dict(training_data_portion=9.0/10.0, laps_decoding_time_bin_size=laps_decoding_time_bin_size, debug_print=False),
                 'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
                 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
             }
@@ -613,12 +615,14 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function, # No — KDIBA long/short
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # Partial
     'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': compute_and_export_bapun_train_test_decoder_error_distance_completion_function,
+    'compute_and_pickle_spyglass_clusterless_decoder_completion_function': compute_and_pickle_spyglass_clusterless_decoder_completion_function,
 }
 
 nwb_wmaze_figure_custom_user_completion_functions_dict = {
     'figures_export_nwb_wmaze_display_completion_function': figures_export_nwb_wmaze_display_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # Partial / KDIBA-biased
     'figures_plot_bapun_train_test_decoder_error_distance_completion_function': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
+    'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function,
 }
 
 # Keys align with NWBDataSessionFormatRegisteredClass._get_session_specific_parameters (NeuroPy NWBDataSessionFormat.py).
@@ -640,7 +644,7 @@ process_all_phases(
     phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
     nwb_wmaze_figure_custom_user_completion_functions_dict=nwb_wmaze_figure_custom_user_completion_functions_dict,
     force_recompute_override_computations_includelist=[],
-    extra_extended_computations_include_includelist=[],
+    extra_extended_computations_include_includelist=['position_decoding_spyglass_clusterless'],
     custom_phase_extended_computations_include_includelist=None,
     included_qclu_values=[1, 2, 4, 6, 7, 8, 9],
     minimum_inclusion_fr_Hz=1.0,
@@ -651,7 +655,7 @@ process_all_phases(
     enable_auto_code_block_execution=enable_auto_code_block_execution,
     max_parallel_executions=1,
     also_show_figure_script_outputs=False,
-    wait_between_phases=True,
+    wait_between_phases=False,
     copy_commands_to_clipboard=True,
     slurm_poll_seconds=60,
    # phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
