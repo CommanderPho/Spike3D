@@ -434,7 +434,7 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
                 'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
                 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
                 'compute_and_pickle_clusterless_decoder_completion_function': dict(), 
-                'compute_and_pickle_spyglass_clusterless_decoder_completion_function': dict(),
+                'compute_and_pickle_spyglass_clusterless_decoder_completion_function': dict(pickle_spyglass_clusterless_decoder=True, force_recompute=True, debug_print=False),
                 'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': dict(),
                 'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': dict(
                     training_data_portion=9.0/10.0,
