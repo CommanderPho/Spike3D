@@ -477,7 +477,7 @@ def process_all_phases(
                 'figures_export_nwb_wmaze_display_completion_function': dict(
                                                 # time_bin_size = 0.500,
                                                 skip_widget_required_plots = True,
-                                            )
+                                            ),
                 'figures_plot_nwb_wmaze_pbe_replay_decode_posteriors_completion_function': dict(
                                                 # time_bin_size = 0.500,
                                                 export_pbe_posterior_images = False,
