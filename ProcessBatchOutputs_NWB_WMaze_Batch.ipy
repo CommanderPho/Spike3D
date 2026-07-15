@@ -77,7 +77,7 @@ from jinja2 import Template
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function, recompute_nwb_wmaze_pipeline_computations_completion_function, figures_export_nwb_wmaze_display_completion_function, compute_and_pickle_spyglass_clusterless_decoder_completion_function, figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import figures_plot_nwb_wmaze_pbe_replay_decode_posteriors_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import figures_plot_nwb_wmaze_pbe_replay_decode_posteriors_completion_function, compute_and_figures_nwb_wmaze_maze_context_probabilities_completion_function
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
@@ -321,7 +321,8 @@ def process_all_phases(
     if batch_execution_target == 'linux_standalone':
         known_scripts_output_paths = [Path(v).resolve() for v in ['/home/halechr/FastData/gen_scripts', '/media/halechr/BETAMAX1/Data/Output/gen_scripts', '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts']]
     else:
-        known_scripts_output_paths = [Path(v).resolve() for v in ['/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/home/halechr/FastData/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts', Path(r"W:/Data/Output/gen_scripts")]]
+        known_scripts_output_paths = [Path(v).resolve() for v in ['/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts', '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/home/halechr/FastData/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts', Path(r"W:/Data/Output/gen_scripts")]]
+
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
     assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist!"
     batch_manifest_dir = scripts_output_path / f'nwb_wmaze_batch_{batch_date_to_use}'
@@ -490,6 +491,14 @@ def process_all_phases(
                                                 spatial_gif_max_epochs=500,          # optional cap; None = all epochs
                                                 spatial_gif_context_reduction='sum_contexts',  # or 'most_likely_context'
                                             ),
+                'compute_and_figures_nwb_wmaze_maze_context_probabilities_completion_function': dict(
+                                                decoding_time_bin_size = 0.060,
+                                                overwrite_pbe_replay_epochs = False,
+                                                save_csv=True, write_png=True, write_vector_format=False, 
+                                                debug_print = True,
+                                                override_output_parent_path = Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output').resolve(),
+                                            ),
+
             }
         })
 
@@ -620,27 +629,29 @@ def process_all_phases(
 
 # %%
 # PARAMS:  Configuration parameters — NWB W-maze batch (DANDI 000978, distinct tag from KDIBA/Bapun runs).
-BATCH_DAY_DATE: str = '2026-07-10'
+BATCH_DAY_DATE: str = '2026-07-14'
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_NWB_WMaze_GL'  # used for filenames throughout the batch
 
 # Get the generated code for user-contributed functions (no kdiba_session_post_fixup — KDIBA / .mat specific).
 phase_any_run_custom_user_completion_functions_dict = {
     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
-    'recompute_nwb_wmaze_pipeline_computations_completion_function': recompute_nwb_wmaze_pipeline_computations_completion_function,
+    # 'recompute_nwb_wmaze_pipeline_computations_completion_function': recompute_nwb_wmaze_pipeline_computations_completion_function,
     # 'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # No — KDIBA directional
     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function, # No — KDIBA long/short
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # Partial
     # 'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': compute_and_export_bapun_train_test_decoder_error_distance_completion_function,
     # 'compute_and_pickle_spyglass_clusterless_decoder_completion_function': compute_and_pickle_spyglass_clusterless_decoder_completion_function,
+    'compute_and_figures_nwb_wmaze_maze_context_probabilities_completion_function': compute_and_figures_nwb_wmaze_maze_context_probabilities_completion_function,
 }
 
 nwb_wmaze_figure_custom_user_completion_functions_dict = {
     # 'figures_export_nwb_wmaze_display_completion_function': figures_export_nwb_wmaze_display_completion_function,
-    'figures_plot_nwb_wmaze_pbe_replay_decode_posteriors_completion_function': figures_plot_nwb_wmaze_pbe_replay_decode_posteriors_completion_function,
+    # 'figures_plot_nwb_wmaze_pbe_replay_decode_posteriors_completion_function': figures_plot_nwb_wmaze_pbe_replay_decode_posteriors_completion_function,
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # Partial / KDIBA-biased
     # 'figures_plot_bapun_train_test_decoder_error_distance_completion_function': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
     # 'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function,
+    'compute_and_figures_nwb_wmaze_maze_context_probabilities_completion_function': compute_and_figures_nwb_wmaze_maze_context_probabilities_completion_function,
 }
 
 # Keys align with NWBDataSessionFormatRegisteredClass._get_session_specific_parameters (NeuroPy NWBDataSessionFormat.py).
