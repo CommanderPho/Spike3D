@@ -494,7 +494,7 @@ def process_all_phases(
                 'compute_and_figures_nwb_wmaze_maze_context_probabilities_completion_function': dict(
                                                 decoding_time_bin_size=0.060,
                                                 overwrite_pbe_replay_epochs=False,
-                                                save_csv=True, save_pkls=True, write_png=True, write_vector_format=False,
+                                                save_csv=True, save_pkls=False, write_png=True, write_vector_format=False,
                                                 debug_print=True,
                                                 override_output_parent_path='/scratch/kdiba_root/kdiba99/halechr/Data/Output', ## HARDCODED path
                                             ),
