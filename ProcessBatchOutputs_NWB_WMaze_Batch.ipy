@@ -496,7 +496,7 @@ def process_all_phases(
                                                 overwrite_pbe_replay_epochs = False,
                                                 save_csv=True, write_png=True, write_vector_format=False, 
                                                 debug_print = True,
-                                                override_output_parent_path = Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output').resolve(),
+                                                override_output_parent_path = Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output').resolve(), ## HARDCODED path
                                             ),
 
             }
