@@ -13,11 +13,14 @@ Dependencies:
     - matplotlib
     - tkinter (standard library)
 """
+from __future__ import annotations
+import ast
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 import copy
 import colorsys
 import string
+from typing import Optional, Union, List, Tuple
 
 
 # ---------------------------------------------------------------------------
@@ -209,6 +212,183 @@ class MosaicModel:
         lines.append("plt.show()")
         return "\n".join(lines)
 
+    def load_from_code(self, code_str: str) -> tuple[bool, str]:
+        """Parse Python code containing a subplot_mosaic definition and update the model."""
+        try:
+            tree = ast.parse(code_str)
+        except Exception as e:
+            return False, f"Syntax Error: {e}"
+
+        extracted_grid = None
+        extracted_empty_sentinel = "."
+        extracted_height_ratios = None
+        extracted_width_ratios = None
+        extracted_wspace = None
+        extracted_hspace = None
+        extracted_fig_width = None
+        extracted_fig_height = None
+
+        var_dict = {}
+
+        def eval_node(node):
+            if node is None:
+                return None
+            try:
+                return ast.literal_eval(node)
+            except Exception:
+                return None
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        val = eval_node(node.value)
+                        if val is not None:
+                            var_dict[target.id] = val
+
+            if isinstance(node, ast.Call):
+                func_name = ""
+                if isinstance(node.func, ast.Attribute):
+                    func_name = node.func.attr
+                elif isinstance(node.func, ast.Name):
+                    func_name = node.func.id
+
+                if func_name in ("figure", "Figure"):
+                    for kw in node.keywords:
+                        if kw.arg == "figsize":
+                            val = eval_node(kw.value)
+                            if isinstance(val, (tuple, list)) and len(val) == 2:
+                                try:
+                                    extracted_fig_width, extracted_fig_height = float(val[0]), float(val[1])
+                                except (ValueError, TypeError):
+                                    pass
+
+                if func_name == "subplot_mosaic":
+                    layout_node = None
+                    if node.args:
+                        layout_node = node.args[0]
+                    else:
+                        for kw in node.keywords:
+                            if kw.arg in ("mosaic", "layout"):
+                                layout_node = kw.value
+
+                    if layout_node is not None:
+                        if isinstance(layout_node, ast.Name) and layout_node.id in var_dict:
+                            extracted_grid = var_dict[layout_node.id]
+                        else:
+                            extracted_grid = eval_node(layout_node)
+
+                    for kw in node.keywords:
+                        val = eval_node(kw.value)
+                        if val is None and isinstance(kw.value, ast.Name) and kw.value.id in var_dict:
+                            val = var_dict[kw.value.id]
+
+                        if kw.arg == "empty_sentinel":
+                            if isinstance(val, str):
+                                extracted_empty_sentinel = val
+                        elif kw.arg == "height_ratios":
+                            if isinstance(val, (tuple, list)):
+                                try:
+                                    extracted_height_ratios = [float(v) for v in val]
+                                except (ValueError, TypeError):
+                                    pass
+                        elif kw.arg == "width_ratios":
+                            if isinstance(val, (tuple, list)):
+                                try:
+                                    extracted_width_ratios = [float(v) for v in val]
+                                except (ValueError, TypeError):
+                                    pass
+                        elif kw.arg == "gridspec_kw":
+                            gkw = {}
+                            if isinstance(kw.value, ast.Dict):
+                                gkw = eval_node(kw.value) or {}
+                            elif isinstance(kw.value, ast.Call):
+                                for gkw_item in kw.value.keywords:
+                                    gval = eval_node(gkw_item.value)
+                                    if gval is not None:
+                                        gkw[gkw_item.arg] = gval
+                            if isinstance(gkw, dict):
+                                if "wspace" in gkw:
+                                    try:
+                                        extracted_wspace = float(gkw["wspace"])
+                                    except (ValueError, TypeError):
+                                        pass
+                                if "hspace" in gkw:
+                                    try:
+                                        extracted_hspace = float(gkw["hspace"])
+                                    except (ValueError, TypeError):
+                                        pass
+
+        if extracted_grid is None:
+            for k in ("mosaic_layout", "mosaic", "layout"):
+                if k in var_dict:
+                    extracted_grid = var_dict[k]
+                    break
+
+        if extracted_grid is None:
+            return False, "Could not find a mosaic layout variable or subplot_mosaic call in the code."
+
+        formatted_grid = []
+        if isinstance(extracted_grid, (list, tuple)):
+            for row in extracted_grid:
+                if isinstance(row, (list, tuple)):
+                    formatted_grid.append([str(item) for item in row])
+                elif isinstance(row, str):
+                    if " " in row.strip():
+                        formatted_grid.append(row.strip().split())
+                    elif ";" in row:
+                        formatted_grid.append([x.strip() for x in row.split(";")])
+                    else:
+                        formatted_grid.append(list(row))
+                else:
+                    return False, f"Invalid layout row format: {row}"
+        elif isinstance(extracted_grid, str):
+            lines = [line.strip() for line in extracted_grid.strip().splitlines() if line.strip()]
+            for line in lines:
+                if " " in line:
+                    formatted_grid.append(line.split())
+                else:
+                    formatted_grid.append(list(line))
+
+        if not formatted_grid:
+            return False, "Mosaic layout grid is empty."
+
+        cols = len(formatted_grid[0])
+        if cols == 0:
+            return False, "Mosaic layout grid has 0 columns."
+        for r_idx, row in enumerate(formatted_grid):
+            if len(row) != cols:
+                return False, f"Row {r_idx} has {len(row)} items, but Row 0 has {cols} items. All rows in mosaic_layout must have the same length."
+
+        rows = len(formatted_grid)
+
+        # Update model properties
+        self.rows = rows
+        self.cols = cols
+        self.grid = formatted_grid
+        self.empty_sentinel = extracted_empty_sentinel
+
+        if extracted_height_ratios and len(extracted_height_ratios) == rows:
+            self.height_ratios = extracted_height_ratios
+        else:
+            self.height_ratios = [1.0] * rows
+
+        if extracted_width_ratios and len(extracted_width_ratios) == cols:
+            self.width_ratios = extracted_width_ratios
+        else:
+            self.width_ratios = [1.0] * cols
+
+        if extracted_wspace is not None:
+            self.wspace = extracted_wspace
+        if extracted_hspace is not None:
+            self.hspace = extracted_hspace
+        if extracted_fig_width is not None:
+            self.fig_width = extracted_fig_width
+        if extracted_fig_height is not None:
+            self.fig_height = extracted_fig_height
+
+        return True, ""
+
 
 def _fmt_num(v: float) -> str:
     """Format a float nicely (strip trailing zeros)."""
@@ -247,8 +427,9 @@ class MosaicDesigner:
         self.master.minsize(900, 750)
 
         self.model = MosaicModel(rows=2, cols=2)
-        self._selected_cell: str | None = None
-        self._merge_anchor: tuple[int, int] | None = None  # for merge selection
+        self._selected_cell: Optional[str] = None
+        self._merge_anchor: Optional[Tuple[int, int]] = None  # for merge selection
+        self._is_syncing_from_code = False
 
         self._build_ui()
         self._refresh()
@@ -341,10 +522,16 @@ class MosaicDesigner:
         code_top = ttk.Frame(code_frame)
         code_top.pack(fill=tk.X)
         ttk.Button(code_top, text="📋 Copy to Clipboard", command=self._copy_code).pack(side=tk.RIGHT, padx=4, pady=2)
+        ttk.Button(code_top, text="⚡ Apply Code to GUI", command=self._apply_code_to_gui).pack(side=tk.RIGHT, padx=4, pady=2)
+
+        self._status_label = ttk.Label(code_top, text="Ctrl+Enter to apply code changes", font=("Arial", 9, "italic"), foreground="#888888")
+        self._status_label.pack(side=tk.LEFT, padx=6, pady=2)
 
         self._code_text = tk.Text(code_frame, wrap=tk.NONE, height=10, bg="#1e1e1e", fg="#d4d4d4",
                                   insertbackground="#d4d4d4", relief=tk.FLAT, padx=8, pady=6)
         self._code_text.pack(fill=tk.BOTH, expand=True, padx=4, pady=(0, 4))
+        self._code_text.bind("<Control-Return>", lambda e: (self._apply_code_to_gui(), "break")[1])
+        self._code_text.bind("<Command-Return>", lambda e: (self._apply_code_to_gui(), "break")[1])
 
         # configure code font
         try:
@@ -464,7 +651,7 @@ class MosaicDesigner:
                 if name != self.model.empty_sentinel:
                     drawn_spans.add(name)
 
-    def _hit_test(self, x: float, y: float) -> tuple[int, int] | None:
+    def _hit_test(self, x: float, y: float) -> Optional[Tuple[int, int]]:
         """Return (row, col) for the cell under (x, y) or None."""
         for r, c, x1, y1, x2, y2 in self._cell_rects:
             if x1 <= x <= x2 and y1 <= y <= y2:
@@ -561,6 +748,8 @@ class MosaicDesigner:
                     return
 
     def _on_fig_change(self):
+        if getattr(self, "_is_syncing_from_code", False):
+            return
         try:
             self.model.fig_width = self._fw_var.get()
         except (tk.TclError, ValueError):
@@ -580,6 +769,8 @@ class MosaicDesigner:
         self._update_code()
 
     def _on_ratio_change(self):
+        if getattr(self, "_is_syncing_from_code", False):
+            return
         try:
             for i, var in enumerate(self._hr_vars):
                 self.model.height_ratios[i] = max(0.1, var.get())
@@ -599,6 +790,34 @@ class MosaicDesigner:
         self.master.clipboard_append(code)
         messagebox.showinfo("Copied", "Code copied to clipboard!")
 
+    def _apply_code_to_gui(self, event=None):
+        """Parse the Python code from the text area and update the GUI layout/model."""
+        code = self._code_text.get("1.0", tk.END).strip()
+        if not code:
+            return
+
+        ok, err_msg = self.model.load_from_code(code)
+        if not ok:
+            messagebox.showerror("Code Parsing Error", f"Could not update GUI layout from code:\n\n{err_msg}")
+            return
+
+        self._is_syncing_from_code = True
+        try:
+            self._fw_var.set(self.model.fig_width)
+            self._fh_var.set(self.model.fig_height)
+            self._ws_var.set(self.model.wspace)
+            self._hs_var.set(self.model.hspace)
+            self._selected_cell = None
+            self._merge_anchor = None
+            self._rebuild_ratio_widgets()
+            self._draw_preview()
+            self._highlight_code()
+            if hasattr(self, "_status_label") and self._status_label:
+                self._status_label.config(text="✓ GUI updated from code!", foreground="#4ec9b0")
+                self.master.after(2500, lambda: self._status_label.config(text="Ctrl+Enter to apply code changes", foreground="#888888"))
+        finally:
+            self._is_syncing_from_code = False
+
     # ------------------------------------------------------------------ refresh
     def _refresh(self):
         """Full UI refresh."""
@@ -607,6 +826,8 @@ class MosaicDesigner:
         self._update_code()
 
     def _update_code(self):
+        if getattr(self, "_is_syncing_from_code", False):
+            return
         code = self.model.generate_code()
         self._code_text.configure(state=tk.NORMAL)
         self._code_text.delete("1.0", tk.END)
