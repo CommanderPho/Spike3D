@@ -1,0 +1,39 @@
+---
+description: Do not auto-remove seemingly unused Python imports; only dedupe literal duplicates
+globs: **/*.{py,ipy,ipynb}
+alwaysApply: false
+---
+
+# Preserve Python imports (dedupe only)
+
+Do **not** remove Python imports because they look unused (static analysis false positives, re-exports, side effects, TYPE_CHECKING, notebooks, optional deps, etc.).
+
+Only clean up **literal duplicates**: repeated identical imports, or overlapping names from the same module that can be merged into one statement.
+
+## ✅ Allowed — dedupe / merge duplicates
+
+```python
+# Before
+from typing import List, Set, Tuple
+import numpy as np
+import pandas as pd
+import numpy as np
+from typing import Tuple
+from typing import Sequence
+
+# After
+from typing import List, Set, Tuple, Sequence
+import numpy as np
+import pandas as pd
+```
+
+## ❌ Not allowed — removing “unused” imports
+
+Do not delete an import solely because nothing in the visible file references it. Leave it unless the user asks to prune unused imports, or it is a literal duplicate as above.
+
+## Rules
+
+- Keep imports that appear unused
+- Remove only exact duplicate import lines (same module + same binding)
+- When the same `from module import ...` appears more than once, merge names into a single import
+- Do not reorder or restyle the whole import block while deduping unless needed for the merge

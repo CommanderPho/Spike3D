@@ -1,0 +1,20 @@
+---
+description: Ask before modifying Jupyter notebooks unless they are explicitly included as context
+globs: **/*.ipynb
+alwaysApply: true
+---
+
+# Ask before modifying Jupyter notebooks
+
+Always ask the user before creating, editing, or deleting any Jupyter Notebook (`**/*.ipynb`) unless that notebook is explicitly included as context in the conversation (for example, attached, @-mentioned, or opened and referenced by the user).
+
+## Rules
+
+- Do not modify `.ipynb` files on your own initiative
+- If a task seems to require notebook changes and no target notebook is in context, ask first
+- If a notebook is explicitly included as context, you may edit it as needed for the task without asking again
+
+## Examples
+
+- User asks to "clean up the analysis" and a notebook is not in context → ask before touching any `.ipynb`
+- User @-mentions `analysis.ipynb` or attaches it → you may edit that notebook for the requested work
