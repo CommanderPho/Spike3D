@@ -1,7 +1,6 @@
 ---
-description: Do not auto-remove seemingly unused Python imports; only dedupe literal duplicates
-globs: **/*.{py,ipy,ipynb}
-alwaysApply: false
+description: 
+alwaysApply: true
 ---
 
 # Preserve Python imports (dedupe only)
