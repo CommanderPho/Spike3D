@@ -1,0 +1,40 @@
+---
+description: Preserve user-written comments and inline documentation when editing code
+alwaysApply: true
+---
+
+# Preserve user-written comments
+
+When replacing or editing lines that include user-written comments, **keep those comments** unless the change makes them incorrect or misleading.
+
+Prefer preserving user documentation even when it is more verbose than the agent would normally write (example values, `.shape` notes, expected outputs, rationale, etc.).
+
+## ✅ Preserve
+
+```python
+# Before
+result = compute_rates(spikes)  # e.g. shape (n_neurons, n_bins) ≈ (120, 50)
+# After (refactor only)
+result = compute_rates(spikes, bin_size=bin_size)  # e.g. shape (n_neurons, n_bins) ≈ (120, 50)
+```
+
+## ❌ Do not strip casually
+
+```python
+# Before
+result = compute_rates(spikes)  # e.g. shape (n_neurons, n_bins) ≈ (120, 50)
+# Bad — comment removed for brevity
+result = compute_rates(spikes, bin_size=bin_size)
+```
+
+## When removal/update is allowed
+
+- The comment is now **wrong** (update it to match the new code, or remove if no accurate short note remains)
+- The user explicitly asks to remove or tighten comments
+- The comment documents removed code and no longer applies
+
+## Rules
+
+- Prefer keep/update over delete when editing comment-bearing lines
+- Do not drop comments solely because they are verbose, informal, or “obvious”
+- When rewriting a block, carry forward nearby user comments that still apply
