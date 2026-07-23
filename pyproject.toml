@@ -188,6 +188,7 @@ dependencies = [
     "vedo",
     "replay_trajectory_classification",
     "cupy-cuda13x>=13.6.0,<14",
+    "polars>=1.36.1",
 ]
 
 [project.scripts]
