@@ -234,53 +234,50 @@
       p.drop_negative_contributing_terms_mode,
     );
 
-    const pfRow = $("row-pf");
-    const LRow = $("row-L");
-    const ERow = $("row-E");
-    const factorRow = $("row-factors");
-    pfRow.innerHTML = "";
-    LRow.innerHTML = "";
-    ERow.innerHTML = "";
-    factorRow.innerHTML = "";
-    ERow.hidden = !p.is_dst;
-    $("heading-E").hidden = !p.is_dst;
-
-    p.neuron_ids.forEach(function (aclu, i) {
-      const cmap = ["Greens", "Reds", "Blues", "Purples", "Oranges"][i % 5];
-      renderHeatmap(pfRow, "pf-" + i, p.tuning_curves[i], p.xbin, p.ybin, "PF aclu " + aclu, {
-        colorscale: cmap,
-      });
-      renderHeatmap(
-        LRow,
-        "Li-" + i,
-        parts.per_cell_L[i],
-        p.xbin,
-        p.ybin,
-        "Lᵢ n=" + state.n[i],
-        { colorscale: "Viridis" },
-      );
-    });
-
+    let ei = null;
     if (p.is_dst && p.reliability_active && p.reliability_silent) {
-      const ei = dstEiMaps(
+      ei = dstEiMaps(
         p.tuning_curves,
         state.n,
         p.tau,
         p.reliability_active,
         p.reliability_silent,
       );
-      p.neuron_ids.forEach(function (aclu, i) {
-        const a = ei.alphas[i];
-        renderHeatmap(
-          ERow,
-          "Ei-" + i,
-          ei.per_cell_E[i],
-          p.xbin,
-          p.ybin,
-          "Eᵢ α=" + a.toFixed(3),
-          { colorscale: "Cividis" },
-        );
+    }
+
+    const cellCols = $("cell-columns");
+    const factorRow = $("row-factors");
+    cellCols.innerHTML = "";
+    factorRow.innerHTML = "";
+
+    p.neuron_ids.forEach(function (aclu, i) {
+      const col = document.createElement("div");
+      col.className = "cell-column";
+      col.id = "cell-col-" + i;
+
+      const header = document.createElement("div");
+      header.className = "cell-column-header";
+      header.style.color = CELL_COLORS[i % CELL_COLORS.length];
+      header.textContent = "aclu " + aclu + " · n=" + state.n[i];
+      col.appendChild(header);
+      cellCols.appendChild(col);
+
+      const cmap = ["Greens", "Reds", "Blues", "Purples", "Oranges"][i % 5];
+      renderHeatmap(col, "pf-" + i, p.tuning_curves[i], p.xbin, p.ybin, "PF", {
+        colorscale: cmap,
       });
+      renderHeatmap(col, "Li-" + i, parts.per_cell_L[i], p.xbin, p.ybin, "Lᵢ", {
+        colorscale: "Viridis",
+      });
+      if (ei) {
+        const a = ei.alphas[i];
+        renderHeatmap(col, "Ei-" + i, ei.per_cell_E[i], p.xbin, p.ybin, "Eᵢ α=" + a.toFixed(3), {
+          colorscale: "Cividis",
+        });
+      }
+    });
+
+    if (ei) {
       const conflict = computeConflictMap(ei.per_cell_E);
       renderHeatmap(
         factorRow,

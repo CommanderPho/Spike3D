@@ -155,6 +155,31 @@ h2 {
   letter-spacing: 0.04em;
 }
 
+.cell-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.cell-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: min(280px, 100%);
+  padding: 0.55rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.cell-column-header {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 650;
+  padding: 0 0.15rem 0.15rem;
+}
+
 .plot-row {
   display: flex;
   flex-wrap: wrap;
@@ -164,7 +189,11 @@ h2 {
 .plot {
   width: min(280px, 100%);
   height: 240px;
-  background: var(--panel);
+  background: #0c1015;
   border: 1px solid var(--border);
   border-radius: 8px;
+}
+
+.cell-column .plot {
+  width: 100%;
 }
