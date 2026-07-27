@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bayesian 2D Equation Debugger</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Bayesian 2D Equation Debugger</h1>
+      <p class="subtitle">
+        Browser port of <code>InteractiveBayesian2DEquationDebugger</code> — Poisson factor maps (+ DST
+        <code>Eᵢ</code> / conflict). Loads JSON exports from <code>./data/</code>.
+      </p>
+    </header>
+
+    <section class="controls">
+      <label>
+        Data dir
+        <input id="data-dir" type="text" value="./data" />
+      </label>
+      <label>
+        Group
+        <select id="group-key"></select>
+      </label>
+      <button id="btn-refresh" type="button">Refresh list</button>
+      <button id="btn-load" type="button">Load</button>
+      <div class="preset-btns">
+        <button id="btn-n0" type="button">n=0</button>
+        <button id="btn-n1" type="button">n=1</button>
+        <button id="btn-nE" type="button">n≈E</button>
+      </div>
+      <label class="chk"><input id="chk-log" type="checkbox" checked /> log₁₀ L</label>
+      <label class="chk"
+        ><input id="chk-drop" type="checkbox" checked /> drop silence terms (nᵢ=0)</label
+      >
+    </section>
+
+    <p id="status" class="status">Initializing…</p>
+    <p id="meta" class="meta"></p>
+
+    <section id="sliders" class="sliders" aria-label="Spike count sliders"></section>
+
+    <h2>Placefields</h2>
+    <div id="row-pf" class="plot-row"></div>
+
+    <h2>Per-cell Lᵢ</h2>
+    <div id="row-L" class="plot-row"></div>
+
+    <h2 id="heading-E">DST Eᵢ</h2>
+    <div id="row-E" class="plot-row"></div>
+
+    <h2>Factors / posterior</h2>
+    <div id="row-factors" class="plot-row"></div>
+
+    <!-- Classic scripts: python -m http.server often serves .js as text/plain, which blocks ES modules -->
+    <script src="./js/math.js"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>
