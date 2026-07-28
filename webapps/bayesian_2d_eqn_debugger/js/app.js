@@ -164,34 +164,58 @@
   function buildSliderUI(payload) {
     const wrap = $("sliders");
     wrap.innerHTML = "";
+    const maxN = payload.max_spikes_per_cell;
     payload.neuron_ids.forEach(function (aclu, i) {
       const row = document.createElement("div");
       row.className = "slider-row";
+      const color = CELL_COLORS[i % CELL_COLORS.length];
+
       const label = document.createElement("label");
       label.textContent = "n[" + aclu + "]";
-      label.style.color = CELL_COLORS[i % CELL_COLORS.length];
+      label.style.color = color;
+
+      const trackWrap = document.createElement("div");
+      trackWrap.className = "slider-track-wrap";
+
+      // Vertical marker at E[n] = τ · f_peak (matches matplotlib axvline on the Slider)
+      const E = Number(state.E_n[i] != null ? state.E_n[i] : 0);
+      const E_clipped = Math.max(0, Math.min(maxN, E));
+      const markerPct = maxN > 0 ? (E_clipped / maxN) * 100 : 0;
+      const marker = document.createElement("div");
+      marker.className = "slider-e-marker";
+      marker.style.left = markerPct + "%";
+      marker.style.background = color;
+      marker.title = "E[n] at peak = τ·f_peak = " + E.toFixed(2);
+      trackWrap.appendChild(marker);
+
       const input = document.createElement("input");
       input.type = "range";
       input.min = "0";
-      input.max = String(payload.max_spikes_per_cell);
+      input.max = String(maxN);
       input.step = "1";
       input.value = String(state.n[i] != null ? state.n[i] : 1);
       input.dataset.idx = String(i);
+      input.style.accentColor = color;
+      trackWrap.appendChild(input);
+
       const val = document.createElement("span");
       val.className = "slider-val";
       val.textContent = input.value;
+
       const expected = document.createElement("span");
       expected.className = "expected";
-      expected.textContent =
-        "E≈" + (state.E_n[i] != null ? state.E_n[i] : 0).toFixed(2);
+      expected.style.color = color;
+      expected.textContent = "E≈" + E.toFixed(2);
+
       input.addEventListener("input", function () {
         const idx = Number(input.dataset.idx);
         state.n[idx] = Number(input.value);
         val.textContent = input.value;
         redraw();
       });
+
       row.appendChild(label);
-      row.appendChild(input);
+      row.appendChild(trackWrap);
       row.appendChild(val);
       row.appendChild(expected);
       wrap.appendChild(row);
@@ -216,8 +240,10 @@
       .forEach(function (input) {
         const idx = Number(input.dataset.idx);
         input.value = String(state.n[idx]);
-        input.parentElement.querySelector(".slider-val").textContent =
-          input.value;
+        const row = input.closest(".slider-row");
+        if (row) {
+          row.querySelector(".slider-val").textContent = input.value;
+        }
       });
     redraw();
   }
