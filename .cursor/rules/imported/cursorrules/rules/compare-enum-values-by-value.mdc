@@ -1,0 +1,25 @@
+---
+description: Compare Enum members by .value to avoid notebook autoreload type-identity failures
+globs: **/*.{py,ipy,ipynb}
+alwaysApply: true
+---
+
+# Compare Enum values by `.value`
+
+When comparing Enum members, always compare `.value` on both sides. Do not rely on Enum identity or direct `==` between Enum instances.
+
+Notebook autoreload can redefine the Enum class, so two members that look the same may fail `==` because they are different Python types.
+
+## Preferred
+
+```python
+if estimation_mode.value == ReliabilityEstimationMode.POSITION_DEPENDENT.value:
+    ...
+```
+
+## Avoid
+
+```python
+if estimation_mode == ReliabilityEstimationMode.POSITION_DEPENDENT:
+    ...
+```

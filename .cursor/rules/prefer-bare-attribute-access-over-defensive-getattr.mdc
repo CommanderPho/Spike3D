@@ -1,0 +1,30 @@
+---
+description: Avoid overly defensive coding; prefer bare access so required/expected failures are loud
+globs: "**/*.{py,ipy,ipynb}"
+alwaysApply: false
+---
+
+# Avoid overly defensive coding
+
+Do **not** paper over missing or invalid state with defaults, silent fallbacks, or “just in case” guards when the value is required or expected. Prefer direct access and let programming errors fail loudly.
+
+## Prefer bare access over defensive `getattr`
+
+```python
+# ❌ Defensive getattr for a required field
+estimation_mode = getattr(self, 'reliability_estimation_mode', ReliabilityEstimationMode.PER_CELL)
+
+# ✅ Bare access — missing = programming error
+estimation_mode = self.reliability_estimation_mode
+```
+
+Same idea elsewhere: skip unnecessary `hasattr` / `try`/`except` / `or default` when absence is not a supported case.
+
+## When defense is appropriate
+
+Use soft fallbacks only when absence is a real, supported case (optional duck-typing, legacy pickles, third-party APIs, soft feature detection):
+
+```python
+debug = getattr(self, 'debug_print', False)
+callback = getattr(widget, 'on_changed', None)
+```
