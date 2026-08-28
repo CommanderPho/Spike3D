@@ -128,7 +128,7 @@ print(f'collected_outputs_path: {collected_outputs_path}')
 #     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
 #     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-        # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function,
+        # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
 #     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
 #     # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
@@ -150,7 +150,7 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-    'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function,
+    # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
     'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
     'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
