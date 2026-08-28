@@ -279,11 +279,13 @@ active_phase_dict['override_custom_pickle_suffix'] = base_suffix # LOAD from bas
 active_phase_dict['override_custom_pickle_output_suffix'] = track_body_suffix  # SAVE variant
 # job_suffix = f"{track_body_suffix}_tbin_75ms"
 job_suffix = f"{job_suffix}-trackBodyPeakOnly"
+export_filename_extra_suffix_parts = ['variant_trackBodyPeakOnly'] # parser-safe (key_value form): appended to collected_outputs export filenames to avoid overwriting base-run exports
 active_phase_dict['batch_session_completion_handler_kwargs'] = {
     **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),
     'apply_track_body_aclu_filter': True,
     'track_body_filter_minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
     'track_body_filter_included_qclu_values': included_qclu_values,
+    'export_filename_extra_suffix_parts': export_filename_extra_suffix_parts,
 }
 # Narrow force-recompute to downstream only (base DirectionalLaps is loaded then sliced):
 active_phase_dict['force_recompute_override_computations_includelist'] = [
@@ -387,6 +389,15 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
                                                                                                                         # '_render_export_all_time_tracks',
                                                                                                                         ]), # ['_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay']                                                    
 }
+
+# Track-body variant (Option 2): pass parser-safe export filename suffix into export-producing completion functions so their collected_outputs exports don't overwrite base-run files:
+_export_filename_extra_suffix_parts = active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('export_filename_extra_suffix_parts', None)
+if _export_filename_extra_suffix_parts:
+    _export_suffix_kwarg = dict(export_filename_extra_suffix_parts=_export_filename_extra_suffix_parts)
+    for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', 'save_custom_session_files_completion_function', 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function']:
+        active_phase_dict['custom_user_completion_function_override_kwargs_dict'][_a_fn_name] = {**active_phase_dict['custom_user_completion_function_override_kwargs_dict'].get(_a_fn_name, {}), **_export_suffix_kwarg}
+    ## END for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', ...]...
+
 
 # ==================================================================================================================== #
 # Last-Chance Overrides                                                                                                #
