@@ -37,66 +37,32 @@ def _print_timing_summary() -> None:
 
 _time_checkpoint('stdlib+numpy/pandas/tables')
 
+os.environ.setdefault('MPLBACKEND', 'Agg')
+if hasattr(os, 'getuid'):
+    os.environ.setdefault('MPLCONFIGDIR', f'/tmp/mpl-cache-{os.getuid()}')
+os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+
 # # required to enable non-blocking interaction:
 # %gui qt5 ## TODO 2024-01-18 - this causes kernel to crash when running notebook remotely via VSCode's ssh remote
 
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
-
-# Jupyter interactivity:
-from IPython.display import display
-_time_checkpoint('path_helpers+IPython')
-
-# pyPhoPlaceCellAnalysis:
-# NeuroPy (Diba Lab Python Repo) Loading
-from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
-from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
-from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
-_time_checkpoint('session_formats:Base+Bapun+KDiba')
-from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
-from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
-_time_checkpoint('session_formats:Rachel+Hiro')
-
-## For computation parameters:
-from neuropy.utils.result_context import IdentifyingContext
-from neuropy.core.session.Formats.BaseDataSessionFormats import find_local_session_paths
-from neuropy.core import Epoch
-_time_checkpoint('neuropy:IdentifyingContext+Epoch')
-
 from pyphocorehelpers.programming_helpers import copy_to_clipboard
+_time_checkpoint('path_helpers+copy_to_clipboard')
 
-from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
-import pyphoplacecellanalysis.General.Batch.runBatch
-from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SavingOptions
-from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme
-_time_checkpoint('pyphoplacecellanalysis:Loading+runBatch+NeuropyPipeline')
+from neuropy.utils.result_context import IdentifyingContext
+from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
+_time_checkpoint('session_formats:KDiba')
 
-from neuropy.core.user_annotations import UserAnnotationsManager
-from pyphoplacecellanalysis.General.Batch.runBatch import SessionBatchProgress
-from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionsResults, AcrossSessionTables, AcrossSessionsVisualizations
-_time_checkpoint('pyphoplacecellanalysis:runBatch+AcrossSessionResults')
+from pyphoplacecellanalysis.General.Batch.concrete_session_folder import ConcreteSessionFolder
+_time_checkpoint('concrete_session_folder')
 
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_vscode_workspace, build_windows_powershell_run_script
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
+_time_checkpoint('pythonScriptTemplating')
 
-from pyphoplacecellanalysis.General.Batch.runBatch import PipelineCompletionResult, BatchSessionCompletionHandler
-
-from pyphocorehelpers.Filesystem.metadata_helpers import FilesystemMetadata, get_file_metadata
-from pyphocorehelpers.Filesystem.path_helpers import discover_data_files, generate_copydict, copy_movedict, copy_file, save_copydict_to_text_file, read_copydict_from_text_file, invert_filedict
-from pyphoplacecellanalysis.General.Batch.runBatch import get_file_str_if_file_exists
-from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import check_output_h5_files, copy_files_in_filelist_to_dest
-from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder, BackupMethods
-_time_checkpoint('pyphoplacecellanalysis:pythonScriptTemplating+metadata')
-
-# from pyphocorehelpers.gui.Jupyter.simple_widgets import fullwidth_path_widget, filesystem_path_folder_contents_widget
-
-import inspect
-from jinja2 import Template
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
-
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
 _time_checkpoint('batch_user_completion_helpers')
 
 
