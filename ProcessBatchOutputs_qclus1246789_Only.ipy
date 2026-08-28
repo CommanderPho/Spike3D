@@ -6,6 +6,7 @@
 import os
 import sys
 import platform
+import time
 from copy import deepcopy
 from typing import List, Dict, Optional, Union, Callable
 from pathlib import Path
@@ -17,6 +18,25 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from attrs import define, field, Factory
 
+_t0: float = time.perf_counter()
+_timing_log: List[tuple] = []
+
+def _time_checkpoint(label: str) -> None:
+    global _t0
+    elapsed = time.perf_counter() - _t0
+    _timing_log.append((label, elapsed))
+    print(f'[TIMING] {label}: {elapsed:.2f}s')
+    _t0 = time.perf_counter()
+
+def _print_timing_summary() -> None:
+    total = sum(e for _, e in _timing_log)
+    print(f'\n[TIMING SUMMARY] total={total:.2f}s across {len(_timing_log)} checkpoints:')
+    for label, elapsed in sorted(_timing_log, key=lambda x: -x[1]):
+        pct = 100.0 * elapsed / total if total else 0.0
+        print(f'  {elapsed:7.2f}s ({pct:5.1f}%)  {label}')
+
+_time_checkpoint('stdlib+numpy/pandas/tables')
+
 # # required to enable non-blocking interaction:
 # %gui qt5 ## TODO 2024-01-18 - this causes kernel to crash when running notebook remotely via VSCode's ssh remote
 
@@ -25,19 +45,23 @@ from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
 
 # Jupyter interactivity:
 from IPython.display import display
+_time_checkpoint('path_helpers+IPython')
 
 # pyPhoPlaceCellAnalysis:
 # NeuroPy (Diba Lab Python Repo) Loading
 from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
 from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
 from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
+_time_checkpoint('session_formats:Base+Bapun+KDiba')
 from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
 from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
+_time_checkpoint('session_formats:Rachel+Hiro')
 
 ## For computation parameters:
 from neuropy.utils.result_context import IdentifyingContext
 from neuropy.core.session.Formats.BaseDataSessionFormats import find_local_session_paths
 from neuropy.core import Epoch
+_time_checkpoint('neuropy:IdentifyingContext+Epoch')
 
 from pyphocorehelpers.programming_helpers import copy_to_clipboard
 
@@ -45,10 +69,12 @@ from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loa
 import pyphoplacecellanalysis.General.Batch.runBatch
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SavingOptions
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme
+_time_checkpoint('pyphoplacecellanalysis:Loading+runBatch+NeuropyPipeline')
 
 from neuropy.core.user_annotations import UserAnnotationsManager
 from pyphoplacecellanalysis.General.Batch.runBatch import SessionBatchProgress
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionsResults, AcrossSessionTables, AcrossSessionsVisualizations
+_time_checkpoint('pyphoplacecellanalysis:runBatch+AcrossSessionResults')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_vscode_workspace, build_windows_powershell_run_script
 
@@ -59,6 +85,7 @@ from pyphocorehelpers.Filesystem.path_helpers import discover_data_files, genera
 from pyphoplacecellanalysis.General.Batch.runBatch import get_file_str_if_file_exists
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import check_output_h5_files, copy_files_in_filelist_to_dest
 from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder, BackupMethods
+_time_checkpoint('pyphoplacecellanalysis:pythonScriptTemplating+metadata')
 
 # from pyphocorehelpers.gui.Jupyter.simple_widgets import fullwidth_path_widget, filesystem_path_folder_contents_widget
 
@@ -70,20 +97,8 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
+_time_checkpoint('batch_user_completion_helpers')
 
-
-def execute_code_block(code_block: str) -> None:
-    """Executes a block of code in the terminal."""
-    import subprocess
-    try:
-        result = subprocess.run(code_block, shell=True, check=True, text=True)
-        print(result.stdout)  # Output from the command
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing command: {e}")
-
-
-# enable_auto_code_block_execution: bool = True
-enable_auto_code_block_execution: bool = False
 
 BATCH_DAY_DATE: str = '2026-08-28'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
@@ -100,11 +115,13 @@ scripts_output_path = find_first_extant_path(known_scripts_output_paths)
 assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
 # fullwidth_path_widget(scripts_output_path, file_name_label='Scripts Output Path:')
 print(f'scripts_output_path: {scripts_output_path}')
+_time_checkpoint('paths:scripts_output_path')
 
 collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
 collected_outputs_path.mkdir(exist_ok=True)
 assert collected_outputs_path.exists()
 print(f'collected_outputs_path: {collected_outputs_path}')
+_time_checkpoint('paths:collected_outputs_path')
 
 # %% [markdown]
 # ## Build Processing Scripts:
@@ -202,6 +219,7 @@ known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turb
 global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
+_time_checkpoint('build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
@@ -220,8 +238,10 @@ custom_user_completion_functions_dict = phase_any_run_custom_user_completion_fun
 
 # print(f'custom_user_completion_functions_dict: {custom_user_completion_functions_dict}')
 custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict)
+_time_checkpoint('MAIN_get_template_string')
 # print(f'custom_user_completion_function_template_code: {custom_user_completion_function_template_code}')
 active_phase_dict = active_phase.get_run_configuration(custom_user_completion_function_template_code=custom_user_completion_function_template_code, extra_extended_computations_include_includelist=extra_extended_computations_include_includelist)
+_time_checkpoint('active_phase.get_run_configuration')
 
 ## Completely replace with custom functions:
 if custom_phase_extended_computations_include_includelist is not None:
@@ -453,6 +473,7 @@ batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session
                                                                                         fail_on_exception = False, # 2025-08-27 - Default,
                                                                                         **active_phase_dict
                                                                                     )
+_time_checkpoint('generate_batch_single_session_scripts')
 
 
 # batch_scripts_collection.included_session_contexts, output_python_scripts, output_slurm_scripts
@@ -487,6 +508,7 @@ else:
 
 if (platform.system() == 'Windows'):
     powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name='run_scripts')
+    _time_checkpoint('build_windows_powershell_run_script')
     # print(f'powershell_script_path: {powershell_script_path}')
     # display(fullwidth_path_widget(powershell_script_path, file_name_label='powershell_script_path:'))
     print(f"powershell_script_path: '{powershell_script_path}'\n")
@@ -520,10 +542,8 @@ if (platform.system() != 'Windows'):
         print(sbatch_run_start_slurm_scripts)
         print(f'\n\n')
         copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
+        _time_checkpoint('copy_to_clipboard:run')
 
-        if enable_auto_code_block_execution:
-            print(f'executing code block!')
-            execute_code_block(sbatch_run_start_slurm_scripts)
 
     if (active_phase.is_figure_phase or also_show_figure_script_outputs and (len(sbatch_figs_start_slurm_scripts)>0)):
         print("Figures:")
@@ -531,11 +551,10 @@ if (platform.system() != 'Windows'):
         print(f'\n\n')
         if (active_phase.is_figure_phase):
             copy_to_clipboard(sbatch_figs_start_slurm_scripts, message_print=True)
-            if enable_auto_code_block_execution:
-                print(f'executing code block!')
-                execute_code_block(sbatch_figs_start_slurm_scripts)
+            _time_checkpoint('copy_to_clipboard:figs')
 
 
+_print_timing_summary()
 
 # Batch 1
 # sbatch '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/run_kdiba_pin01_one_11-02_17-46-44/run_kdiba_pin01_one_11-02_17-46-44.sh'
