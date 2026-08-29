@@ -118,7 +118,7 @@ _time_checkpoint('paths:collected_outputs_path')
 # }
 
 phase_any_run_custom_user_completion_functions_dict = {
-    'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
+    # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
     'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
     # "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
 # # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
