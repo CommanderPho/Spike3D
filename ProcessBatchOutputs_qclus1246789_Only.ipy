@@ -296,8 +296,8 @@ drop_previous_result_and_compute_fresh: bool = True
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
-laps_decoding_time_bin_size = 0.060
-# laps_decoding_time_bin_size = 0.075
+# laps_decoding_time_bin_size = 0.060
+laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -309,8 +309,8 @@ laps_decoding_time_bin_size = 0.060
 # job_suffix='tbin_58ms'
 # ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
-ripple_decoding_time_bin_size = 0.060
-# ripple_decoding_time_bin_size = 0.075
+# ripple_decoding_time_bin_size = 0.060
+ripple_decoding_time_bin_size = 0.075
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 # job_suffix='tbin_25ms'
@@ -319,8 +319,8 @@ ripple_decoding_time_bin_size = 0.060
 # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_50ms"
-job_suffix = f"{job_suffix}_tbin_60ms"
-# job_suffix = f"{job_suffix}_tbin_75ms"
+# job_suffix = f"{job_suffix}_tbin_60ms"
+job_suffix = f"{job_suffix}_tbin_75ms"
 
 # END ________________________________________________________________________________________________________________ #
 
@@ -355,7 +355,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=None, custom_all_param_sweep_options=None, additional_session_context=None),
-    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=np.unique([0.025, 0.060, 0.075, ripple_decoding_time_bin_size]), custom_all_param_sweep_options=None, additional_session_context=None), #TODO 2026-09-01 08:56: - [ ] override sweep time bin sizes
+    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=list(np.unique([0.025, 0.060, 0.075, ripple_decoding_time_bin_size])), custom_all_param_sweep_options=None, additional_session_context=None), #TODO 2026-09-01 08:56: - [ ] override sweep time bin sizes
     'compute_and_export_session_trial_by_trial_performance_completion_function': dict(active_laps_decoding_time_bin_size=ripple_decoding_time_bin_size),
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': dict(ripple_decoding_time_bin_size_override=ripple_decoding_time_bin_size, laps_decoding_time_bin_size_override=laps_decoding_time_bin_size,
         needs_recompute_heuristics=True, force_recompute_all_decoding=True,
