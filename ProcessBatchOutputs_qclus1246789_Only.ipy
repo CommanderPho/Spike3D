@@ -66,7 +66,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-08-29'
+BATCH_DAY_DATE: str = '2026-09-01'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -134,9 +134,9 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
-    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+    # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
-    'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+    # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
 }
 
 # %%
@@ -154,7 +154,7 @@ included_session_contexts = [
     # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'), # 2025-08-22 - Decided to discard because the positions are shifted between 'x' and 'lin_pos', and that manifests on the pf peaks.
     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'), #
     # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), # 2025-08-22 - Decided that this session is bad. The context decoder returns short for nearly all non-lap period pre-delta, and additionally there aren't many replays.
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), #TODO 2026-09-01 08:44: - [ ] APOGEE CURRENT SINGLE-SESS testing
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), # 2025-10-20 - Fixed position tracking issues in MATLAB. 2024-10-04 - very bad position tracking data (jumping around everywhere at high frequency)
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), # 2025-10-20 - Fixed position tracking issues in MATLAB. 2024-10-01 - bad laps, Bad Laps "3"/"4" - don't see lap 1/2        
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
@@ -193,8 +193,8 @@ _time_checkpoint('build_concrete_session_folders')
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
-active_phase = ProcessingScriptPhases.final_run
+active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
@@ -253,36 +253,36 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 
 
 
-# =============================================================================
-# VARIANT: track-body primary peaks only (Phase 2 — requires Phase 1 base pickle)
-# Run Phase 1 (active config above) first. To run Phase 2: uncomment this block
-# and comment out the active base-suffix lines above.
-# =============================================================================
-## INPUTS: active_phase_dict, included_qclu_values, minimum_inclusion_fr_Hz, job_suffix
-base_suffix = active_phase_dict.get('override_custom_pickle_suffix', "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0")
-track_body_suffix = f"{base_suffix}-trackBodyPeakOnly"
-active_phase_dict['override_custom_pickle_suffix'] = base_suffix # LOAD from base
-active_phase_dict['override_custom_pickle_output_suffix'] = track_body_suffix  # SAVE variant
-# job_suffix = f"{track_body_suffix}_tbin_75ms"
-job_suffix = f"{job_suffix}-trackBodyPeakOnly"
-export_filename_extra_suffix_parts = ['variant_trackBodyPeakOnly'] # parser-safe (key_value form): appended to collected_outputs export filenames to avoid overwriting base-run exports
-active_phase_dict['batch_session_completion_handler_kwargs'] = {
-    **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),
-    'apply_track_body_aclu_filter': True,
-    'track_body_filter_minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
-    'track_body_filter_included_qclu_values': included_qclu_values,
-    'export_filename_extra_suffix_parts': export_filename_extra_suffix_parts,
-}
-# Narrow force-recompute to downstream only (base DirectionalLaps is loaded then sliced):
-active_phase_dict['force_recompute_override_computations_includelist'] = [
-    'merged_directional_placefields', 'directional_decoders_decode_continuous',
-    'directional_decoders_evaluate_epochs', 'directional_decoders_epoch_heuristic_scoring',
-    'rank_order_shuffle_analysis', 'perform_wcorr_shuffle_analysis',
-    'jonathan_firing_rate_analysis', 'long_short_fr_indicies_analyses',
-    'long_short_endcap_analysis', 'long_short_decoding_analyses',
-    'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
-    # match active extended_computations_include_includelist minus pf_computation / split_to_directional_laps
-]
+# # =============================================================================
+# # VARIANT: track-body primary peaks only (Phase 2 — requires Phase 1 base pickle)
+# # Run Phase 1 (active config above) first. To run Phase 2: uncomment this block
+# # and comment out the active base-suffix lines above.
+# # =============================================================================
+# ## INPUTS: active_phase_dict, included_qclu_values, minimum_inclusion_fr_Hz, job_suffix
+# base_suffix = active_phase_dict.get('override_custom_pickle_suffix', "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0")
+# track_body_suffix = f"{base_suffix}-trackBodyPeakOnly"
+# active_phase_dict['override_custom_pickle_suffix'] = base_suffix # LOAD from base
+# active_phase_dict['override_custom_pickle_output_suffix'] = track_body_suffix  # SAVE variant
+# # job_suffix = f"{track_body_suffix}_tbin_75ms"
+# job_suffix = f"{job_suffix}-trackBodyPeakOnly"
+# export_filename_extra_suffix_parts = ['variant_trackBodyPeakOnly'] # parser-safe (key_value form): appended to collected_outputs export filenames to avoid overwriting base-run exports
+# active_phase_dict['batch_session_completion_handler_kwargs'] = {
+#     **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),
+#     'apply_track_body_aclu_filter': True,
+#     'track_body_filter_minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
+#     'track_body_filter_included_qclu_values': included_qclu_values,
+#     'export_filename_extra_suffix_parts': export_filename_extra_suffix_parts,
+# }
+# # Narrow force-recompute to downstream only (base DirectionalLaps is loaded then sliced):
+# active_phase_dict['force_recompute_override_computations_includelist'] = [
+#     'merged_directional_placefields', 'directional_decoders_decode_continuous',
+#     'directional_decoders_evaluate_epochs', 'directional_decoders_epoch_heuristic_scoring',
+#     'rank_order_shuffle_analysis', 'perform_wcorr_shuffle_analysis',
+#     'jonathan_firing_rate_analysis', 'long_short_fr_indicies_analyses',
+#     'long_short_endcap_analysis', 'long_short_decoding_analyses',
+#     'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
+#     # match active extended_computations_include_includelist minus pf_computation / split_to_directional_laps
+# ]
 
 
 # ==================================================================================================================== #
