@@ -54,10 +54,10 @@ from neuropy.utils.result_context import IdentifyingContext
 from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
 _time_checkpoint('session_formats:KDiba')
 
-from pyphoplacecellanalysis.General.Batch.concrete_session_folder import ConcreteSessionFolder
+from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder
 _time_checkpoint('concrete_session_folder')
 
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script, get_running_python, KDIBA_RELEASE_GIT_BRANCH
 _time_checkpoint('pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
@@ -88,6 +88,14 @@ collected_outputs_path.mkdir(exist_ok=True)
 assert collected_outputs_path.exists()
 print(f'collected_outputs_path: {collected_outputs_path}')
 _time_checkpoint('paths:collected_outputs_path')
+
+known_workenv_repos_root_paths = [Path('/scratch/kdiba_root/kdiba99/halechr/repos/Spike3DEnv_KDibaVersion'), Path(r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv'), Path('~/repos/Spike3DWorkEnv').expanduser()]
+workenv_repos_root = find_first_extant_path(known_workenv_repos_root_paths)
+active_venv_path, python_executable, activate_script_path = get_running_python()
+print(f'workenv_repos_root: {workenv_repos_root}')
+print(f'venv_activate_path: {activate_script_path}')
+print(f'git_branch: {KDIBA_RELEASE_GIT_BRANCH}')
+_time_checkpoint('paths:kdiba_release_branch_config')
 
 # %% [markdown]
 # ## Build Processing Scripts:
@@ -120,23 +128,23 @@ _time_checkpoint('paths:collected_outputs_path')
 phase_any_run_custom_user_completion_functions_dict = {
     'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
     'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
-    "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
-# # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
-    "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
-    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
-    'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
-    # 'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
-    # 'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
-    'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
-    'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
-    'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
-    # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
-    # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
-    'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-    # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
-    # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
-    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
-    # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+#     "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
+# # # # # # #     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
+#     "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
+#     'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
+#     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
+#     # 'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+#     # 'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
+#     'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
+#     'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
+#     'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
+#     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
+#     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
+#     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+#     # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
+#     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+#     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+#     # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
 }
 
 # %%
@@ -438,6 +446,9 @@ batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session
                                                                                         # custom_user_completion_function_template_code=custom_user_completion_function_template_code,
                                                                                         # fail_on_exception = True, 
                                                                                         fail_on_exception = False, # 2025-08-27 - Default,
+                                                                                        venv_activate_path=str(activate_script_path),
+                                                                                        workenv_repos_root=str(workenv_repos_root),
+                                                                                        git_branch=KDIBA_RELEASE_GIT_BRANCH,
                                                                                         **active_phase_dict
                                                                                     )
 _time_checkpoint('generate_batch_single_session_scripts')
@@ -474,14 +485,14 @@ else:
 
 
 if (platform.system() == 'Windows'):
-    powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name='run_scripts')
+    powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name='run_scripts', activate_path=str(activate_script_path), python_executable=str(python_executable))
     _time_checkpoint('build_windows_powershell_run_script')
     # print(f'powershell_script_path: {powershell_script_path}')
     # display(fullwidth_path_widget(powershell_script_path, file_name_label='powershell_script_path:'))
     print(f"powershell_script_path: '{powershell_script_path}'\n")
 
     if also_show_figure_script_outputs or active_phase_dict['should_perform_figure_generation_to_file']:
-        powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name='run_figure_scripts')
+        powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name='run_figure_scripts', activate_path=str(activate_script_path), python_executable=str(python_executable))
         # display(fullwidth_path_widget(powershell_figures_script_path, file_name_label='powershell_figures_script_path:'))
         print(f"powershell_figures_script_path: '{powershell_figures_script_path}'\n")
 

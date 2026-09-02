@@ -54,7 +54,7 @@ from neuropy.utils.result_context import IdentifyingContext
 from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
 _time_checkpoint('session_formats:KDiba')
 
-from pyphoplacecellanalysis.General.Batch.concrete_session_folder import ConcreteSessionFolder
+from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder
 _time_checkpoint('concrete_session_folder')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
