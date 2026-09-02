@@ -458,3 +458,5 @@ _smoke_pbe_replay_out/2026-07-08_smoke-dandi_nwb_ER1_000978_SingleDay__withNorma
 _smoke_pbe_replay_out/2026-07-08_smoke-dandi_nwb_ER1_000978_SingleDay__withNormalComputedReplays-qclu_\[1, 2, 4, 6, 7, 9]-frateThresh_5.0-(replay_decoded_posteriors)_tbin-0.06.h5
 _smoke_pbe_replay_out/smoke_log.txt
 _smoke_pbe_replay_out/_posterior_images_smoke/pbe/contextual_pf2D/greyscale_shared_norm/p_x_given_n\[000].png
+EXTERNAL/PhoDibaPaper2024Book/*_cutoff_date-2025-10-02_ALL_GOOD_csv_files_list.csv
+EXTERNAL/PhoDibaPaper2024Book/*_ALL_GOOD_csv_files_list.csv
