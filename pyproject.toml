@@ -37,7 +37,6 @@ dependencies = [
     "param>=1.13.0,<3",
     "pyflakes>=3.0.1,<4",
     "neptune>=1.2.0,<2",
-    "nptyping[complete]>=2.5.0,<3",
     "pyqt-checkbox-table-widget>=0.0.14,<0.0.15",
     "patchworklib>=0.6.1,<0.7",
     "flexitext",
@@ -187,6 +186,7 @@ dependencies = [
     "replay_trajectory_classification",
     "cupy-cuda13x>=13.6.0,<14",
     "polars>=1.36.1",
+    "nptyping>=2.5.0",
 ]
 
 [project.scripts]
