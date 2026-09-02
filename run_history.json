@@ -1,41 +1,16 @@
-[
-  {
-    "EndTime": "5/12/2026 12:00:06 PM",
-    "StartTime": "5/12/2026 11:59:49 AM",
-    "PythonStatus": {
-      "status": "SessionBatchProgress.FAILED",
-      "session_complete_identifier": "bapun_RatN_Day4OpenField__bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued",
-      "session_context": "bapun_RatN_Day4OpenField",
-      "job_suffix": "_bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued",
-      "errors": "CapturedException('bapun', traceback=H:\\TEMP\\Spike3DEnv_ExploreUpgrade\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Batch\\NonInteractiveProcessing.py:100<fn: batch_load_session>: KeyError: 'bapun')",
-      "log_file": "W:\\Data\\Output\\gen_scripts\\run_bapun_RatN_Day4OpenField\\debug_2026-05-12_12-05-05.Apogee.bapun.RatN.Day4OpenField._bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued.log",
-      "completion_time": "2026-05-12 12:00:05.939548",
-      "session_basedir": "W:/Data/Bapun/RatN/Day4OpenField"
-    },
-    "Duration": "00:00:17.5558765",
-    "ScriptPath": "W:\\Data\\Output\\gen_scripts\\run_bapun_RatN_Day4OpenField\\run_bapun_RatN_Day4OpenField__bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued.py"
+{
+  "Duration": "00:44:51.3822442",
+  "EndTime": "9/1/2026 9:08:52 AM",
+  "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-10_12-58-3\\run_kdiba_vvp01_two_2006-4-10_12-58-3__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.py",
+  "PythonStatus": {
+    "status": "SessionBatchProgress.COMPLETED",
+    "session_complete_identifier": "kdiba_vvp01_two_2006-4-10_12-58-3__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final",
+    "session_context": "kdiba_vvp01_two_2006-4-10_12-58-3",
+    "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final",
+    "errors": null,
+    "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_vvp01_two_2006-4-10_12-58-3\\debug_2026-09-01_08-09-18.Apogee.kdiba.vvp01.two.2006-4-10_12-58-3._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.log",
+    "completion_time": "2026-09-01 09:08:49.345977",
+    "session_basedir": "W:/Data/KDIBA/vvp01/two/2006-4-10_12-58-3"
   },
-  {
-    "StartTime": "5/12/2026 12:00:07 PM",
-    "PythonStatus": null,
-    "Duration": "00:00:11.8588735",
-    "EndTime": "5/12/2026 12:00:19 PM",
-    "ScriptPath": "W:\\Data\\Output\\gen_scripts\\run_bapun_RatU_Day5OpenfieldSD\\run_bapun_RatU_Day5OpenfieldSD__bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued.py"
-  },
-  {
-    "EndTime": "5/12/2026 12:00:34 PM",
-    "PythonStatus": {
-      "status": "SessionBatchProgress.FAILED",
-      "session_complete_identifier": "bapun_RatS_Day5TwoNovel__bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued",
-      "session_context": "bapun_RatS_Day5TwoNovel",
-      "job_suffix": "_bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued",
-      "errors": "CapturedException('bapun', traceback=H:\\TEMP\\Spike3DEnv_ExploreUpgrade\\Spike3DWorkEnv\\pyPhoPlaceCellAnalysis\\src\\pyphoplacecellanalysis\\General\\Batch\\NonInteractiveProcessing.py:100<fn: batch_load_session>: KeyError: 'bapun')",
-      "log_file": "W:\\Data\\Output\\gen_scripts\\run_bapun_RatS_Day5TwoNovel\\debug_2026-05-12_12-05-33.Apogee.bapun.RatS.Day5TwoNovel._bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued.log",
-      "completion_time": "2026-05-12 12:00:33.996655",
-      "session_basedir": "W:/Data/Bapun/RatS/Day5TwoNovel"
-    },
-    "Duration": "00:00:12.2454893",
-    "ScriptPath": "W:\\Data\\Output\\gen_scripts\\run_bapun_RatS_Day5TwoNovel\\run_bapun_RatS_Day5TwoNovel__bapun_withNormalComputedReplays-qclu_all-frateThresh_1.0_tbin_25ms_Continued.py",
-    "StartTime": "5/12/2026 12:00:22 PM"
-  }
-]
+  "StartTime": "9/1/2026 8:24:01 AM"
+}
