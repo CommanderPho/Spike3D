@@ -181,7 +181,6 @@ dependencies = [
     "vispy>=0.14.3",
     # "hippocampalswrdynamics",
     "silx>=2.2.0,<3",
-    "numpy==1.24.4",
     "pyrasite>=2.0",
     "track-linearization>=2.3.2",
     "vedo",
