@@ -89,7 +89,7 @@ assert collected_outputs_path.exists()
 print(f'collected_outputs_path: {collected_outputs_path}')
 _time_checkpoint('paths:collected_outputs_path')
 
-known_workenv_repos_root_paths = [Path('/scratch/kdiba_root/kdiba99/halechr/repos/Spike3DEnv_KDibaVersion'), Path(r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv'), Path('~/repos/Spike3DWorkEnv').expanduser()]
+known_workenv_repos_root_paths = [Path('/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'), Path(r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv'), Path('~/repos/Spike3DWorkEnv').expanduser()]
 workenv_repos_root = find_first_extant_path(known_workenv_repos_root_paths)
 active_venv_path, python_executable, activate_script_path = get_running_python()
 print(f'workenv_repos_root: {workenv_repos_root}')
