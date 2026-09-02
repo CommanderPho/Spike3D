@@ -193,8 +193,8 @@ _time_checkpoint('build_concrete_session_folders')
 # ACTIVE PHASE                                                                                                         #
 # ==================================================================================================================== #
 
-active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.clean_run
+active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
@@ -216,8 +216,8 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-# active_phase_dict['should_freeze_pipeline_updates'] = False
-active_phase_dict['should_create_vscode_workspace'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the 60ms results
+active_phase_dict['should_freeze_pipeline_updates'] = False
+# active_phase_dict['should_freeze_pipeline_updates'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the 60ms results
 
 # ## Default non-overriden for custom suffix:
 # active_phase_dict['override_custom_pickle_suffix'] = '' # default, None
