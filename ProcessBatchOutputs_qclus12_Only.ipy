@@ -57,7 +57,7 @@ _time_checkpoint('session_formats:KDiba')
 from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder
 _time_checkpoint('concrete_session_folder')
 
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script, get_running_python, KDIBA_RELEASE_GIT_BRANCH, DEFAULT_GL_WORKENV_REPOS_ROOT, DEFAULT_GL_VENV_ACTIVATE_PATH, DEFAULT_GL_VENV_PYTHON_EXECUTABLE
 _time_checkpoint('pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
@@ -76,7 +76,7 @@ BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the not
 # scripts_output_path = Path('output/gen_scripts/').resolve() # Apogee
 # # scripts_output_path = Path('/home/halechr/FastData/gen_scripts/').resolve() # Lab
 # assert scripts_output_path.exists()
-known_scripts_output_paths = [Path(v).resolve() for v in ['K:/scratch/gen_scripts', '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
+known_scripts_output_paths = [Path(v).resolve() for v in ['/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts', '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts', 'K:/scratch/gen_scripts', '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
 scripts_output_path = find_first_extant_path(known_scripts_output_paths)
 assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
 # fullwidth_path_widget(scripts_output_path, file_name_label='Scripts Output Path:')
@@ -88,6 +88,25 @@ collected_outputs_path.mkdir(exist_ok=True)
 assert collected_outputs_path.exists()
 print(f'collected_outputs_path: {collected_outputs_path}')
 _time_checkpoint('paths:collected_outputs_path')
+
+is_great_lakes_batch_target: bool = BATCH_DATE_TO_USE.endswith('_GL')
+if is_great_lakes_batch_target:
+    workenv_repos_root = Path(DEFAULT_GL_WORKENV_REPOS_ROOT)
+    batch_venv_activate_path = Path(DEFAULT_GL_VENV_ACTIVATE_PATH)
+    batch_venv_python_executable = Path(DEFAULT_GL_VENV_PYTHON_EXECUTABLE)
+    active_venv_path, python_executable, activate_script_path = get_running_python(debug_print=False)
+else:
+    known_workenv_repos_root_paths = [Path(DEFAULT_GL_WORKENV_REPOS_ROOT), Path(r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv'), Path('~/repos/Spike3DWorkEnv').expanduser()]
+    workenv_repos_root = find_first_extant_path(known_workenv_repos_root_paths)
+    active_venv_path, python_executable, activate_script_path = get_running_python()
+    batch_venv_activate_path = activate_script_path
+    batch_venv_python_executable = python_executable
+print(f'is_great_lakes_batch_target: {is_great_lakes_batch_target}')
+print(f'workenv_repos_root: {workenv_repos_root}')
+print(f'batch_venv_activate_path: {batch_venv_activate_path}')
+print(f'batch_venv_python_executable: {batch_venv_python_executable}')
+print(f'git_branch: {KDIBA_RELEASE_GIT_BRANCH}')
+_time_checkpoint('paths:kdiba_release_branch_config')
 
 # %% [markdown]
 # ## Build Processing Scripts:
@@ -439,6 +458,10 @@ batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session
                                                                                         # custom_user_completion_function_template_code=custom_user_completion_function_template_code,
                                                                                         # fail_on_exception = True, 
                                                                                         fail_on_exception = False, # 2025-08-27 - Default,
+                                                                                        venv_activate_path=str(batch_venv_activate_path),
+                                                                                        venv_python_executable=str(batch_venv_python_executable),
+                                                                                        workenv_repos_root=str(workenv_repos_root),
+                                                                                        git_branch=KDIBA_RELEASE_GIT_BRANCH,
                                                                                         **active_phase_dict
                                                                                     )
 _time_checkpoint('generate_batch_single_session_scripts')
@@ -475,14 +498,14 @@ else:
 
 
 if (platform.system() == 'Windows'):
-    powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name='run_scripts')
+    powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name='run_scripts', activate_path=str(activate_script_path), python_executable=str(python_executable))
     _time_checkpoint('build_windows_powershell_run_script')
     # print(f'powershell_script_path: {powershell_script_path}')
     # display(fullwidth_path_widget(powershell_script_path, file_name_label='powershell_script_path:'))
     print(f"powershell_script_path: '{powershell_script_path}'\n")
 
     if also_show_figure_script_outputs or active_phase_dict['should_perform_figure_generation_to_file']:
-        powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name='run_figure_scripts')
+        powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name='run_figure_scripts', activate_path=str(activate_script_path), python_executable=str(python_executable))
         # display(fullwidth_path_widget(powershell_figures_script_path, file_name_label='powershell_figures_script_path:'))
         print(f"powershell_figures_script_path: '{powershell_figures_script_path}'\n")
 
