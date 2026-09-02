@@ -437,6 +437,8 @@ batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session
                                                                                         # batch_session_completion_handler_kwargs=dict(enable_hdf5_output=False),
                                                                                         # custom_user_completion_functions=custom_user_completion_functions,
                                                                                         # custom_user_completion_function_template_code=custom_user_completion_function_template_code,
+                                                                                        # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate',  # <-- here
+                                                                                        venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv_modern/bin/activate',  # <-- #TODO 2026-09-02 15:46: - [ ] Override venv activate path for GL since I temporarily renamed it
                                                                                         # fail_on_exception = True, 
                                                                                         fail_on_exception = False, # 2025-08-27 - Default,
                                                                                         **active_phase_dict
