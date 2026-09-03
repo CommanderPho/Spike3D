@@ -193,8 +193,8 @@ _time_checkpoint('build_concrete_session_folders')
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
-active_phase = ProcessingScriptPhases.final_run
+active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
