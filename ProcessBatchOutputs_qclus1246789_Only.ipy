@@ -216,8 +216,8 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-# active_phase_dict['should_freeze_pipeline_updates'] = False
-active_phase_dict['should_freeze_pipeline_updates'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the all-cells results
+active_phase_dict['should_freeze_pipeline_updates'] = False
+# active_phase_dict['should_freeze_pipeline_updates'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the all-cells results
 
 # ## Default non-overriden for custom suffix:
 # active_phase_dict['override_custom_pickle_suffix'] = '' # default, None
@@ -282,7 +282,7 @@ active_phase_dict['force_recompute_override_computations_includelist'] = [
     'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
     # match active extended_computations_include_includelist minus pf_computation / split_to_directional_laps
 ]
-active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates` #TODO 2026-09-01 08:47: - [ ] Enabled for GL
+active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates` #TODO 2026-09-01 08:47: - [ ] AS NOT TO OVERWRITE the all-cells results
 
 
 # ==================================================================================================================== #

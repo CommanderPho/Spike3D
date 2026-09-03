@@ -254,37 +254,37 @@ job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_2.0"
 
 
 
-# # =============================================================================
-# # VARIANT: track-body primary peaks only (Phase 2 — requires Phase 1 base pickle)
-# # Run Phase 1 (active config above) first. To run Phase 2: uncomment this block
-# # and comment out the active base-suffix lines above.
-# # =============================================================================
-# ## INPUTS: active_phase_dict, included_qclu_values, minimum_inclusion_fr_Hz, job_suffix
-# base_suffix = active_phase_dict.get('override_custom_pickle_suffix', "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0")
-# track_body_suffix = f"{base_suffix}-trackBodyPeakOnly"
-# active_phase_dict['override_custom_pickle_suffix'] = base_suffix # LOAD from base
-# active_phase_dict['override_custom_pickle_output_suffix'] = track_body_suffix  # SAVE variant
-# # job_suffix = f"{track_body_suffix}_tbin_75ms"
-# job_suffix = f"{job_suffix}-trackBodyPeakOnly"
-# export_filename_extra_suffix_parts = ['variant_trackBodyPeakOnly'] # parser-safe (key_value form): appended to collected_outputs export filenames to avoid overwriting base-run exports
-# active_phase_dict['batch_session_completion_handler_kwargs'] = {
-#     **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),
-#     'apply_track_body_aclu_filter': True,
-#     'track_body_filter_minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
-#     'track_body_filter_included_qclu_values': included_qclu_values,
-#     'export_filename_extra_suffix_parts': export_filename_extra_suffix_parts,
-# }
-# # Narrow force-recompute to downstream only (base DirectionalLaps is loaded then sliced):
-# active_phase_dict['force_recompute_override_computations_includelist'] = [
-#     'merged_directional_placefields', 'directional_decoders_decode_continuous',
-#     'directional_decoders_evaluate_epochs', 'directional_decoders_epoch_heuristic_scoring',
-#     'rank_order_shuffle_analysis', 'perform_wcorr_shuffle_analysis',
-#     'jonathan_firing_rate_analysis', 'long_short_fr_indicies_analyses',
-#     'long_short_endcap_analysis', 'long_short_decoding_analyses',
-#     'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
-#     # match active extended_computations_include_includelist minus pf_computation / split_to_directional_laps
-# ]
-# active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates` #TODO 2026-09-01 08:47: - [ ] Enabled for GL
+# =============================================================================
+# VARIANT: track-body primary peaks only (Phase 2 — requires Phase 1 base pickle)
+# Run Phase 1 (active config above) first. To run Phase 2: uncomment this block
+# and comment out the active base-suffix lines above.
+# =============================================================================
+## INPUTS: active_phase_dict, included_qclu_values, minimum_inclusion_fr_Hz, job_suffix
+base_suffix = active_phase_dict.get('override_custom_pickle_suffix', "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0")
+track_body_suffix = f"{base_suffix}-trackBodyPeakOnly"
+active_phase_dict['override_custom_pickle_suffix'] = base_suffix # LOAD from base
+active_phase_dict['override_custom_pickle_output_suffix'] = track_body_suffix  # SAVE variant
+# job_suffix = f"{track_body_suffix}_tbin_75ms"
+job_suffix = f"{job_suffix}-trackBodyPeakOnly"
+export_filename_extra_suffix_parts = ['variant_trackBodyPeakOnly'] # parser-safe (key_value form): appended to collected_outputs export filenames to avoid overwriting base-run exports
+active_phase_dict['batch_session_completion_handler_kwargs'] = {
+    **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),
+    'apply_track_body_aclu_filter': True,
+    'track_body_filter_minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
+    'track_body_filter_included_qclu_values': included_qclu_values,
+    'export_filename_extra_suffix_parts': export_filename_extra_suffix_parts,
+}
+# Narrow force-recompute to downstream only (base DirectionalLaps is loaded then sliced):
+active_phase_dict['force_recompute_override_computations_includelist'] = [
+    'merged_directional_placefields', 'directional_decoders_decode_continuous',
+    'directional_decoders_evaluate_epochs', 'directional_decoders_epoch_heuristic_scoring',
+    'rank_order_shuffle_analysis', 'perform_wcorr_shuffle_analysis',
+    'jonathan_firing_rate_analysis', 'long_short_fr_indicies_analyses',
+    'long_short_endcap_analysis', 'long_short_decoding_analyses',
+    'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
+    # match active extended_computations_include_includelist minus pf_computation / split_to_directional_laps
+]
+active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates` #TODO 2026-09-01 08:47: - [ ] AS NOT TO OVERWRITE the all-cells results
 
 
 # ==================================================================================================================== #
@@ -296,10 +296,10 @@ num_shuffles: int = 1024
 drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
-laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
-# laps_decoding_time_bin_size = 0.075
+laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -309,20 +309,20 @@ laps_decoding_time_bin_size = 0.025
 
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
-ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.060
-# ripple_decoding_time_bin_size = 0.075
+ripple_decoding_time_bin_size = 0.075
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 # job_suffix='tbin_25ms'
 
 
 # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
-job_suffix = f"{job_suffix}_tbin_25ms"
+# job_suffix = f"{job_suffix}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_50ms"
 # job_suffix = f"{job_suffix}_tbin_60ms"
-# job_suffix = f"{job_suffix}_tbin_75ms"
+job_suffix = f"{job_suffix}_tbin_75ms"
 
 # END ________________________________________________________________________________________________________________ #
 
