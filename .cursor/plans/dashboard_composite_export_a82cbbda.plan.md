@@ -1,109 +1,61 @@
 ---
 name: Dashboard composite export
-overview: Change DataFrameFilter Copy/Save buttons to export a Python-composited PNG of filter controls + Plotly figure + filter-stats table (not just pio.to_image of the figure).
+overview: Minimally extend DataFrameFilter Copy/Save so both export a composite PNG (filter state + Plotly figure + stats table) by reusing existing export helpers instead of new renderers.
 todos:
-  - id: collect-controls
-    content: Add _collect_export_control_rows() for live filter/plot widget values
-    status: pending
-  - id: render-panels
-    content: Add matplotlib helpers for controls summary + table images
-    status: pending
-  - id: compose-png
-    content: Add _render_dashboard_export_png_bytes() stacking controls + figure + table via vertical_image_stack
-    status: pending
+  - id: get-png-bytes
+    content: Add thin _get_export_png_bytes() reusing figure_to_pil_image, get_df_filter_active_constraint_dict, add_boxed_adjacent_label, table_widget.data
+    status: completed
   - id: wire-buttons
-    content: Point Copy handler and Solara Save FileDownload at the composite PNG bytes
-    status: pending
+    content: Point Copy handler and Solara Save at _get_export_png_bytes with minimal signature tweak to _build_solera_file_download_widget
+    status: completed
 isProject: false
 ---
 
-# Dashboard composite Copy/Save export
+# Dashboard composite Copy/Save export (minimal)
 
 ## Goal
 
-Update `DataFrameFilter` so **Copy to Clipboard** and **Save Figure** export a single PNG that includes:
+Copy / Save export **filter controls + Plotly figure + filter-stats table** (not figure-only). Exclude hover preview and `output_widget`.
 
-1. Top filter controls (current selections)
-2. Central Plotly figure
-3. Bottom filter-stats table (`table_widget.data`)
+Constraint: **minimal edits**; reuse extant helpers; fix them only if needed for multiline labels.
 
-Exclude: hover-posterior preview and debug `output_widget`.
+## Reuse (do not reinvent)
 
-Approach: **Python composite** (reliable in Cursor/VS Code notebooks), reusing existing `pio.to_image` + clipboard JS + Solara download plumbing.
+| Need | Existing code |
+|------|----------------|
+| Filter control state | [`DataFrameFilter.get_df_filter_active_constraint_dict()`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/SpecificResults/PhoDiba2023Paper.py) (~L3398); also append plot df/variable + checked predicates |
+| Figure → PIL | [`figure_to_pil_image`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoCoreHelpers/src/pyphocorehelpers/plotting/media_output_helpers.py) (~L1752) |
+| Text band above/below image | [`ImageOperationsAndEffects.add_boxed_adjacent_label`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoCoreHelpers/src/pyphocorehelpers/plotting/media_output_helpers.py) (~L327) |
+| Stats table data | `self.table_widget.data` (already updated at ~L4418); format with `df.to_string()` |
+| Clipboard / download UX | Keep existing Copy JS path and Solara `FileDownload` — only swap the PNG byte source |
 
-## Where
+Do **not** change [`add_copy_save_action_buttons`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/Pho2D/plotly/Extensions/plotly_helpers.py). Do **not** add matplotlib panel renderers or `vertical_image_stack` unless `add_boxed_adjacent_label` cannot handle the needed text.
 
-Primary file: [`pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/SpecificResults/PhoDiba2023Paper.py`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/SpecificResults/PhoDiba2023Paper.py)
+## Changes (only these)
 
-Leverage: [`vertical_image_stack`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoCoreHelpers/src/pyphocorehelpers/plotting/media_output_helpers.py) in pyPhoCoreHelpers.
+### 1. One method on `DataFrameFilter`
 
-Do **not** change standalone [`add_copy_save_action_buttons`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/Pho2D/plotly/Extensions/plotly_helpers.py) (figure-only helper; no filter UI).
+`_get_export_png_bytes(self) -> bytes` in [`PhoDiba2023Paper.py`](h:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/pyPhoPlaceCellAnalysis/src/pyphoplacecellanalysis/SpecificResults/PhoDiba2023Paper.py):
 
-## Implementation
+1. `img = figure_to_pil_image(self.figure_widget, format='png', ...)` (preserve width/height kwargs from current Copy handler)
+2. Build a short multiline control summary from `get_df_filter_active_constraint_dict()` plus plot-df / plot-variable / predicate selector values
+3. `img = ImageOperationsAndEffects.add_boxed_adjacent_label(img, controls_text, image_edge='top', ...)` (light bg, dark text)
+4. `table_text = self.table_widget.data.to_string()` (fallback: `filtered_size_info_df` if data missing)
+5. `img = ImageOperationsAndEffects.add_boxed_adjacent_label(img, table_text, image_edge='bottom', ...)`
+6. Save PIL → PNG bytes
 
-```mermaid
-flowchart TD
-  click[Copy_or_Save_click]
-  render[render_dashboard_export_png_bytes]
-  controls[render_controls_summary_image]
-  figure[pio_to_image_figure_widget]
-  table[render_table_image]
-  stack[vertical_image_stack]
-  out[PNG_bytes]
-  copyPath[base64_ClipboardItem_JS]
-  savePath[Solara_FileDownload]
+### 2. Wire both buttons to that method
 
-  click --> render
-  render --> controls
-  render --> figure
-  render --> table
-  controls --> stack
-  figure --> stack
-  table --> stack
-  stack --> out
-  out --> copyPath
-  out --> savePath
-```
+- Copy (`_subfn_on_copy_button_click` ~L3228): replace `pio.to_image(...)` with `_get_export_png_bytes()`; leave clipboard JS untouched
+- `_build_solera_file_download_widget` (~L2620): add optional `get_png_bytes` callable; default remains `lambda: pio.to_image(fig, ...)` for any other callers; from `_setup_widgets_buttons` pass `get_png_bytes=self._get_export_png_bytes`
 
-### 1. Collect current control state
+### 3. Fix-as-needed only
 
-Add `_collect_export_control_rows(self) -> List[Tuple[str, str]]` that reads live widget values:
-
-- `replay_name_widget`, `time_bin_size_widget`
-- `active_filter_predicate_selector_widget.value` (checked predicates)
-- each widget in `custom_dynamic_filter_widgets_list` (description/value)
-- `active_plot_df_name_selector_widget`, `active_plot_variable_name_widget`
-
-Format multi-select values as comma-separated strings.
-
-### 2. Render control + table panels as images
-
-Add small helpers on `DataFrameFilter` (matplotlib Agg, no new deps):
-
-- `_render_controls_summary_image()` — white panel of labeled key/value rows matching the control panel content
-- `_render_dataframe_table_image(df)` — matplotlib table from `self.table_widget.data` when present (predicate impact table with `n_predicate_true_rows` etc.), else fall back to `filtered_size_info_df`
-
-Convert figures to PIL via buffer/`savefig`.
-
-### 3. Single export entry point
-
-Add `_render_dashboard_export_png_bytes(self) -> bytes`:
-
-1. Build controls image
-2. `pio.to_image(self.figure_widget, format='png', ...)` (keep existing width/height kwargs)
-3. Build table image from `self.table_widget.data`
-4. `vertical_image_stack([controls, figure, table], padding=...)`
-5. Return PNG bytes (`BytesIO`)
-
-### 4. Wire Copy and Save
-
-In `_setup_widgets_buttons` / `_subfn_on_copy_button_click` (~L3228): replace `pio.to_image(self.figure_widget, ...)` with `_render_dashboard_export_png_bytes()`; keep the existing base64 → canvas → `ClipboardItem` JS path.
-
-Update `_build_solera_file_download_widget` (~L2620) to accept a callable `get_png_bytes` (default can remain figure-only for any other callers). Pass `get_png_bytes=self._render_dashboard_export_png_bytes` from `_setup_widgets_buttons` so Save Figure downloads the same composite. Filename sync via `on_widget_update_filename` stays unchanged.
+If `add_boxed_adjacent_label` breaks on multiline (`\n`) text (PIL `.text` vs `.multiline_text` / `textsize`), make the **smallest** fix in that helper so stacked lines work for top/bottom bands. No broader refactor.
 
 ## Out of scope
 
-- DOM/`html2canvas` capture
-- Hover posterior / `output_widget`
-- Pixel-perfect widget chrome (dropdowns look like a text summary panel, not live HTML widgets)
-- Changes to `add_copy_save_action_buttons`
+- DOM / html2canvas
+- Pixel-perfect widget chrome
+- New matplotlib table/control renderers
+- Changes to standalone plotly action-button helper
