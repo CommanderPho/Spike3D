@@ -4,13 +4,13 @@ overview: Make batch scripts from ProcessBatchOutputs_qclus1246789_Only.ipy reli
 todos:
   - id: directional-shared-norm
     content: Add greyscale_shared_norm to directional_decoded_stacked_epoch_slices default custom_export_formats
-    status: pending
+    status: completed
   - id: harden-post-export
     content: "In post_export_build_combined_images: format fallback, skip-missing epochs, flush progress prints"
-    status: pending
+    status: completed
   - id: batch-combine-after-directional
     content: Call post_export after directional; MultiColor except prints full traceback and does not unconditional-raise; flush progress markers
-    status: pending
+    status: completed
 isProject: false
 ---
 
