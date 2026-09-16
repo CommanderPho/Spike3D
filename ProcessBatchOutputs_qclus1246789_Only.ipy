@@ -405,6 +405,17 @@ print(f'job_suffix: "{job_suffix}"')
 # ==================================================================================================================== #
 
 ## Build Slurm Scripts:
+# Derive venv paths from SPIKE3D_REPO_ROOT when exported (see GreatlakesBatchRunInstructions); else fall back to scratch.
+_default_spike3d_repo_root = '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+_spike3d_repo_root = Path(os.environ.get('SPIKE3D_REPO_ROOT', _default_spike3d_repo_root)).expanduser().resolve()
+_venv_activate_path = str(_spike3d_repo_root / 'Spike3D' / '.venv_modern' / 'bin' / 'activate')
+_vscode_python = str(_spike3d_repo_root / 'Spike3D' / '.venv_modern' / 'bin' / 'python')
+assert Path(_venv_activate_path).exists(), f"venv activate missing: {_venv_activate_path}"
+_from_env = 'SPIKE3D_REPO_ROOT' in os.environ
+print(f'Using Spike3D repo root: {_spike3d_repo_root} ({"from SPIKE3D_REPO_ROOT env" if _from_env else "fallback default"})')
+print(f'venv_activate_path: {_venv_activate_path}')
+print(f'vscode_default_interpreter_path: {_vscode_python}')
+
 session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context:a_session_folder.path for a_session_folder in good_session_concrete_folders}
 batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=included_session_contexts,
                                                                                         output_directory=scripts_output_path, use_separate_run_directories=True,
@@ -420,7 +431,9 @@ batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session
                                                                                         # custom_user_completion_functions=custom_user_completion_functions,
                                                                                         # custom_user_completion_function_template_code=custom_user_completion_function_template_code,
                                                                                         # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate',  # <-- here
-                                                                                        venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv_modern/bin/activate',  # <-- #TODO 2026-09-02 15:46: - [ ] Override venv activate path for GL since I temporarily renamed it
+                                                                                        # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv_modern/bin/activate',  # <-- #TODO 2026-09-02 15:46: - [ ] Override venv activate path for GL since I temporarily renamed it
+                                                                                        venv_activate_path=_venv_activate_path,
+                                                                                        vscode_default_interpreter_path=_vscode_python,
                                                                                         # fail_on_exception = True, 
                                                                                         fail_on_exception = False, # 2025-08-27 - Default,
                                                                                         **active_phase_dict

@@ -2,17 +2,19 @@
 
 ## Terminal 1: Generate the batch run scripts from `ProcessBatchOutputs_qclus1246789_Only.ipy`:
 ```bash
-cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
+export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+cd "${SPIKE3D_REPO_ROOT}/Spike3D"
 deactivate
-source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv_modern/bin/activate
+source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```
 
 ## Terminal 2: Paste the run scripts to start batch execution:
 ```bash
-cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
+export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+cd "${SPIKE3D_REPO_ROOT}/Spike3D"
 deactivate
-source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv_modern/bin/activate
+source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
 
 ```
 
@@ -21,7 +23,7 @@ source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.ven
 ```bash
 
 TARGET_PARENT='/tmpssd/halechr'
-SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
+export SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 
 if [ ! -d "${SPIKE3D_REPO_ROOT}" ]; then
     mkdir -p "${TARGET_PARENT}"
@@ -43,7 +45,7 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```bash
 
 TARGET_PARENT='/dev/shm/halechr'
-SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
+export SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 
 if [ ! -d "${SPIKE3D_REPO_ROOT}" ]; then
     mkdir -p "${TARGET_PARENT}"
