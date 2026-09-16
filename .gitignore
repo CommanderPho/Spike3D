@@ -460,3 +460,9 @@ _smoke_pbe_replay_out/smoke_log.txt
 _smoke_pbe_replay_out/_posterior_images_smoke/pbe/contextual_pf2D/greyscale_shared_norm/p_x_given_n\[000].png
 EXTERNAL/PhoDibaPaper2024Book/*_cutoff_date-2025-10-02_ALL_GOOD_csv_files_list.csv
 EXTERNAL/PhoDibaPaper2024Book/*_ALL_GOOD_csv_files_list.csv
+data/2026-09-14_P_Short_7_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
+data/2026-09-14_P_Short_7_0.075_PBE Individual Time Bins_PBE_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
+data/2026-09-15_P_Short_12_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
+data/2026-09-15_P_Short_12_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short_NEW.png
+data/2026-09-15_P_Short_12_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short_NoControls.png
+data/2026-09-15_P_Short_12_0.075_PBE Individual Time Bins_PBE_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
