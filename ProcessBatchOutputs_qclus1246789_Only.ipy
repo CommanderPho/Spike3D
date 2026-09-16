@@ -67,7 +67,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-09-16'
+BATCH_DAY_DATE: str = '2026-09-17'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -350,7 +350,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
                                                                                                                         # '_display_generalized_decoded_yellow_blue_marginal_epochs', 
                                                                                                                         '_display_directional_merged_pf_decoded_stacked_epoch_slices', # required for greyscale_shared_norm + combined/multi (runs even if MultiColor dies)
                                                                                                                         # '_display_decoded_trackID_marginal_hairy_position', 
-                                                                                                                        # '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # optional MultiColor / raw_rgba refresh
+                                                                                                                        '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # optional MultiColor / raw_rgba refresh
                                                                                                                         # '_display_measured_vs_decoded_occupancy_distributions',
                                                                                                                         # '_display_trial_to_trial_reliability',
                                                                                                                         # '_render_export_all_time_tracks',
