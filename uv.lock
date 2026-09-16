@@ -6718,15 +6718,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ihook"
-version = "0.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/44/ba/d3b86bf84ead73ce8a70a14681fc46f77626eb56a3776c55ce49b203b339/ihook-0.2.1.tar.gz", hash = "sha256:6f09a5f3d043097b30123082ebae7af42158a80a779fc49dfbbcd6966e0ac01a", size = 12212 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/0e/b2a79cdc4052fb47b95cfcfb599df5ba12104bb8386d1e698f05423844a3/ihook-0.2.1-py3-none-any.whl", hash = "sha256:5831159c49c4c13fe4cdd510e397f0485d76e9f0eeab0ea89e6939e66ea79c1c", size = 7476 },
-]
-
-[[package]]
 name = "imageio"
 version = "2.37.2"
 source = { registry = "https://pypi.org/simple" }
@@ -21789,23 +21780,17 @@ wheels = [
 [[package]]
 name = "pyqtinspect"
 version = "0.4.0"
-source = { directory = "../PyQtInspect-Open" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ihook" },
     { name = "psutil" },
     { name = "pyobjc-framework-cocoa", version = "11.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' and sys_platform == 'darwin'" },
     { name = "pyobjc-framework-cocoa", version = "12.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and sys_platform == 'darwin'" },
     { name = "pyqt5" },
     { name = "wingrab", marker = "sys_platform == 'win32'" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "ihook" },
-    { name = "psutil" },
-    { name = "pyobjc-framework-cocoa", marker = "sys_platform == 'darwin'" },
-    { name = "pyqt5" },
-    { name = "wingrab", marker = "sys_platform == 'win32'" },
+sdist = { url = "https://files.pythonhosted.org/packages/e7/74/cf78d203500a060e3e1044982d72a27f0f47f9693c22e7018d06f1dcda59/pyqtinspect-0.4.0.tar.gz", hash = "sha256:0770b102ef9aa842af6c9cc56d9a4a6e3fc283f83fcd748915f11faece156496", size = 4551108 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/55/75108a2005dde3d2966aee2f699a63531236664a1d0eba01522d84124dab/pyqtinspect-0.4.0-py3-none-any.whl", hash = "sha256:c1e3c556b19572e873d60fbfbd8cb584d736ac819c4b087eec6c87d30699a027", size = 4674556 },
 ]
 
 [[package]]
@@ -25105,7 +25090,7 @@ dev = [
     { name = "pylsp-rope", specifier = ">=0.1.17" },
     { name = "pylustrator", git = "https://github.com/CommanderPho/pylustrator.git" },
     { name = "pympler", specifier = "~=1.1" },
-    { name = "pyqtinspect", directory = "../PyQtInspect-Open" },
+    { name = "pyqtinspect", specifier = ">=0.4.0" },
     { name = "pyright", specifier = ">=1.1.396,<2" },
     { name = "python-lsp-server", specifier = ">=1.14.0" },
     { name = "qt-style-sheet-inspector", git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git?rev=master" },

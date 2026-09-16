@@ -255,7 +255,7 @@ ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main
 pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
 flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
 pylustrator = { git = "https://github.com/CommanderPho/pylustrator.git" }
-pyqtinspect = { path = "../PyQtInspect-Open", editable=false }
+# pyqtinspect = { path = "../PyQtInspect-Open", editable=false }
 neuropy = { path = "../NeuroPy", editable=true }
 # bayesian-changepoint-detection = { path = "../bayesian_changepoint_detection" }
 
