@@ -348,7 +348,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         # '_display_placefield_stable_formation_time_distribution',
                                                                                                                         # '_display_generalized_decoded_yellow_blue_marginal_epochs', 
-                                                                                                                        '_display_directional_merged_pf_decoded_stacked_epoch_slices', # required for greyscale_shared_norm + combined/multi (runs even if MultiColor dies)
+                                                                                                                        # '_display_directional_merged_pf_decoded_stacked_epoch_slices', # required for greyscale_shared_norm + combined/multi (runs even if MultiColor dies)
                                                                                                                         # '_display_decoded_trackID_marginal_hairy_position', 
                                                                                                                         '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # optional MultiColor / raw_rgba refresh
                                                                                                                         # '_display_measured_vs_decoded_occupancy_distributions',
