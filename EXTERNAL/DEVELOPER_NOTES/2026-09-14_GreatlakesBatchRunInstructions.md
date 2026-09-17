@@ -23,7 +23,7 @@ source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
 ```bash
 
 TARGET_PARENT='/tmpssd/halechr'
-export SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
+SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 
 if [ ! -d "${SPIKE3D_REPO_ROOT}" ]; then
     mkdir -p "${TARGET_PARENT}"
@@ -34,6 +34,7 @@ else
 fi
 
 ### Run:
+export SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 cd "${SPIKE3D_REPO_ROOT}/Spike3D"
 deactivate
 source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
@@ -45,7 +46,7 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```bash
 
 TARGET_PARENT='/dev/shm/halechr'
-export SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
+SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 
 if [ ! -d "${SPIKE3D_REPO_ROOT}" ]; then
     mkdir -p "${TARGET_PARENT}"
@@ -56,6 +57,7 @@ else
 fi
 
 ### Run:
+export SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 cd "${SPIKE3D_REPO_ROOT}/Spike3D"
 deactivate
 source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
