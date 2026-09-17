@@ -223,6 +223,20 @@ included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
 minimum_inclusion_fr_Hz = 2.0
 job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 
+## SLURM #SBATCH --job-name compaction (applied by build_slurm_job_name in pythonScriptTemplating.py):
+### First Part: e.g. 'job_kdiba_gor01_two_2006-6-12_16-53-46__withNormalCompute'...
+# remove 'job_' prefix since that's obvious
+# remove 'kdiba_'
+# remove 'two_' since that can be determined from just the session name ('2006-6-12_16-53-46')
+# → animal_session_name, e.g. 'gor01_2006-6-12_16-53-46'
+
+### Second Part (e.g. `job_suffix`): "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
+# if '_withNormalComputedReplays', don't include it at all since that's the default
+# format 'qclu_' -> 'q'
+# format 'frateThresh_2.0' -> 'fr_2'
+# Example full name: 'gor01_2006-6-12_16-53-46_q1246789_fr_2_tbin_75ms'
+
+
 # # # "_withNormalComputedReplays-frateThresh_0.5-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
 # active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_0.2"
 # included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
