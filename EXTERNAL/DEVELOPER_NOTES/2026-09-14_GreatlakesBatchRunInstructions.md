@@ -28,7 +28,7 @@ SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 if [ ! -d "${SPIKE3D_REPO_ROOT}" ]; then
     mkdir -p "${TARGET_PARENT}"
     # cp -R '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv' "${TARGET_PARENT}/"
-	rsync -a '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/' "${SPIKE3D_REPO_ROOT}"
+	rsync -ah --info=progress2 '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/' "${SPIKE3D_REPO_ROOT}"
 else
     echo "Using existing ${SPIKE3D_REPO_ROOT}"
 fi
@@ -51,7 +51,7 @@ SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 if [ ! -d "${SPIKE3D_REPO_ROOT}" ]; then
     mkdir -p "${TARGET_PARENT}"
     # cp -R '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv' "${TARGET_PARENT}/"
-	rsync -a '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/' "${SPIKE3D_REPO_ROOT}"
+	rsync -ah --info=progress2 '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/' "${SPIKE3D_REPO_ROOT}"
 else
     echo "Using existing ${SPIKE3D_REPO_ROOT}"
 fi
