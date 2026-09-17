@@ -61,6 +61,7 @@ export SPIKE3D_REPO_ROOT="${TARGET_PARENT}/Spike3D_ExploreEnv"
 cd "${SPIKE3D_REPO_ROOT}/Spike3D"
 deactivate
 source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
+# ipython ProcessBatchOutputs_qclus12_Only.ipy
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 
 ```
