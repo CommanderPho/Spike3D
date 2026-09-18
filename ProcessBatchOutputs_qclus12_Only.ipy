@@ -67,8 +67,8 @@ _time_checkpoint('batch_user_completion_helpers')
 
 
 BATCH_DAY_DATE: str = '2026-09-18'
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
@@ -424,12 +424,20 @@ print(f'job_suffix: "{job_suffix}"')
 # ==================================================================================================================== #
 
 ## Build Slurm Scripts:
-# Derive venv paths from SPIKE3D_REPO_ROOT when exported (see GreatlakesBatchRunInstructions); else fall back to scratch.
-_default_spike3d_repo_root = '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+# Derive venv paths from SPIKE3D_REPO_ROOT when exported (see GreatlakesBatchRunInstructions); else fall back by OS.
+_is_windows = (platform.system() == 'Windows')
+if _is_windows:
+    _default_spike3d_repo_root = r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv'
+    _venv_bin_dir, _python_name = 'Scripts', 'python.exe'
+else:
+    _default_spike3d_repo_root = '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+    _venv_bin_dir, _python_name = 'bin', 'python'
 _spike3d_repo_root = Path(os.environ.get('SPIKE3D_REPO_ROOT', _default_spike3d_repo_root)).expanduser().resolve()
-_venv_activate_path = str(_spike3d_repo_root / 'Spike3D' / '.venv_modern' / 'bin' / 'activate')
-_vscode_python = str(_spike3d_repo_root / 'Spike3D' / '.venv_modern' / 'bin' / 'python')
+_venv_dir = _spike3d_repo_root / 'Spike3D' / '.venv'
+_venv_activate_path = str(_venv_dir / _venv_bin_dir / 'activate')
+_vscode_python = str(_venv_dir / _venv_bin_dir / _python_name)
 assert Path(_venv_activate_path).exists(), f"venv activate missing: {_venv_activate_path}"
+assert Path(_vscode_python).exists(), f"venv python missing: {_vscode_python}"
 _from_env = 'SPIKE3D_REPO_ROOT' in os.environ
 print(f'Using Spike3D repo root: {_spike3d_repo_root} ({"from SPIKE3D_REPO_ROOT env" if _from_env else "fallback default"})')
 print(f'venv_activate_path: {_venv_activate_path}')
@@ -450,8 +458,7 @@ batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session
                                                                                         # custom_user_completion_functions=custom_user_completion_functions,
                                                                                         # custom_user_completion_function_template_code=custom_user_completion_function_template_code,
                                                                                         # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate',  # <-- here
-                                                                                        venv_activate_path=_venv_activate_path,  # <-- #TODO 2026-09-02 15:46: - [ ] Override venv activate path for GL since I temporarily renamed it
-                                                                                        # fail_on_exception = True, 
+                                                                                        venv_activate_path=_venv_activate_path,                                                                                        # fail_on_exception = True, 
                                                                                         fail_on_exception = False, # 2025-08-27 - Default,
                                                                                         **active_phase_dict
                                                                                     )
