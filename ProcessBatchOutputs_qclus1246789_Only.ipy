@@ -68,8 +68,8 @@ _time_checkpoint('batch_user_completion_helpers')
 
 
 BATCH_DAY_DATE: str = '2026-09-18'
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
@@ -95,28 +95,28 @@ _time_checkpoint('paths:collected_outputs_path')
 
 # %%
 # Get the generated code for user-contributed functions:
-# phase_any_run_custom_user_completion_functions_dict = None
-phase_any_run_custom_user_completion_functions_dict = {
-    # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
-    'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
-    # "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
-    # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
-    # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
-    # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
-    # 'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, #TODO 2026-09-15 14:20: - [ ] needed afterall, but with `needs_recompute_heuristics=False, force_recompute_all_decoding=False,`
-    # 'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
-    # 'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
-    # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
-    # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
-    # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
-    # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
-    # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
-    # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-    # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
-    # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
-    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
-    # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
-}
+phase_any_run_custom_user_completion_functions_dict = None
+# phase_any_run_custom_user_completion_functions_dict = {
+#     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
+#     'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+#     # "export_rank_order_results_completion_function": export_rank_order_results_completion_function, # ran 2024-09-26 3pm
+#     # "figures_rank_order_results_completion_function": figures_rank_order_results_completion_function,
+#     # "determine_session_t_delta_completion_function": determine_session_t_delta_completion_function,  # ran 2024-05-28 6am
+#     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
+#     # 'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, #TODO 2026-09-15 14:20: - [ ] needed afterall, but with `needs_recompute_heuristics=False, force_recompute_all_decoding=False,`
+#     # 'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+#     # 'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function,
+#     # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
+#     # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
+#     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function, 
+#     # 'compute_and_export_cell_first_spikes_characteristics_completion_function': compute_and_export_cell_first_spikes_characteristics_completion_function,
+#     # 'figures_plot_cell_first_spikes_characteristics_completion_function': figures_plot_cell_first_spikes_characteristics_completion_function,
+#     # 'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+#     # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
+#     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+#     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+#     # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+# }
 
 # %%
 
@@ -175,24 +175,47 @@ phase_any_run_custom_user_completion_functions_dict = {
 #     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
 # ]
 
+
+
 # ==================================================================================================================================================================================================================================================================================== #
 # TODO 2026-09-17 17:51: - [ ] active only                                                                                                                                                                                                                                             #
 # ==================================================================================================================================================================================================================================================================================== #
 
 # included_session_contexts = incorrectly_produced_multi_sessions #TODO 2026-09-17 17:51: - [ ] active only
-included_session_contexts = [
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'),
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'),
-    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
-]
+# included_session_contexts = [
+#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'),
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'),
+#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
+# ]
 
 ## Known Bad Sessions
 # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-07_11-26-53'), # OK -- NOT OKAY, has only 1 Short Lap in each direction
 # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_19-28-0'), # #TODO 2025-07-02 16:50: - [ ] BAD, messed up position.
 # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), # 2024-10-04 - very bad position tracking data (jumping around everywhere at high frequency)
 # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-09_17-29-30'), #TODO 2025-07-16 17:36: - [ ] Failed Wave1 - FailedWave3 -- DO NOT USE
+
+# ==================================================================================================================================================================================================================================================================================== #
+# TODO 2026-09-18 10:56: - [ ] 5h+ frozen sessions:                                                                                                                                                                                                                                    #
+# ==================================================================================================================================================================================================================================================================================== #
+
+## Fully frozen on pickle moving:
+kdiba_gor01_one_2006-6-08_14-26-15
+kdiba_pin01_one_fet11-01_12-58-54
+
+## 5h+ but computing something:
+kdiba_gor01_two_2006-6-07_16-40-19
+kdiba_gor01_two_2006-6-09_22-24-40
+
+included_session_contexts = [
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), #TODO 2026-09-18 11:00: - [ ] still running on GL
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), #TODO 2026-09-18 11:00: - [ ] still running on GL
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
+]
+
 
 
 ## Setup Functions:
@@ -221,8 +244,8 @@ _time_checkpoint('build_concrete_session_folders')
 # ACTIVE PHASE                                                                                                         #
 # ==================================================================================================================== #
 
-active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
+# active_phase = ProcessingScriptPhases.clean_run
+active_phase = ProcessingScriptPhases.continued_run
 # active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
@@ -330,8 +353,8 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-num_shuffles: int = 1024
-# num_shuffles: int = 128
+# num_shuffles: int = 1024
+num_shuffles: int = 128
 # drop_previous_result_and_compute_fresh = False
 drop_previous_result_and_compute_fresh: bool = True
 
@@ -377,7 +400,7 @@ active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
     'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
                                 compute_1D=True, compute_2D=False,
                                 drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
-    'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
+    'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, compute_2D=False),
 }
 # active_phase_dict['force_recompute_override_computations_includelist'] = list(active_phase_dict.get('force_recompute_override_computation_kwargs_dict', {}).keys())
 
