@@ -67,7 +67,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-09-18'
+BATCH_DAY_DATE: str = '2026-09-19'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -200,13 +200,13 @@ phase_any_run_custom_user_completion_functions_dict = None
 # TODO 2026-09-18 10:56: - [ ] 5h+ frozen sessions:                                                                                                                                                                                                                                    #
 # ==================================================================================================================================================================================================================================================================================== #
 
-## Fully frozen on pickle moving:
-kdiba_gor01_one_2006-6-08_14-26-15
-kdiba_pin01_one_fet11-01_12-58-54
+# ## Fully frozen on pickle moving:
+# kdiba_gor01_one_2006-6-08_14-26-15
+# kdiba_pin01_one_fet11-01_12-58-54
 
-## 5h+ but computing something:
-kdiba_gor01_two_2006-6-07_16-40-19
-kdiba_gor01_two_2006-6-09_22-24-40
+# ## 5h+ but computing something:
+# kdiba_gor01_two_2006-6-07_16-40-19
+# kdiba_gor01_two_2006-6-09_22-24-40
 
 included_session_contexts = [
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
