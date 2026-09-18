@@ -443,7 +443,12 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0, # Heuristic settings
         ),
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
-    'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute=True, debug_print=True, export_pkl=False),
+    # 'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute=True, debug_print=True, export_pkl=False),
+    'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=laps_decoding_time_bin_size, compute_2D=False, 
+                                                                                # force_recompute=True,
+                                                                                force_recompute=False,
+                                                                                debug_print=True, export_pkl=False,
+                                                                                ),
     'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
@@ -456,8 +461,13 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
                                                                                                                         # '_display_trial_to_trial_reliability',
                                                                                                                         # '_render_export_all_time_tracks',
                                                                                                                         ],
+                                                                                             display_function_kwargs_dict = {'_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay': dict(time_bin_size = ripple_decoding_time_bin_size, force_recompute=False, 
+                                                                                                                                                                                    # enable_laps_merged_export=False,
+                                                                                                                                                                                ), }, #TODO 2026-09-18 08:58: - [ ] Overrides for Apogee
+
                                                                                               # Passed into figures_plot_... as additional kwargs; consumed by post_export_build_combined_images after MultiColor (or after directional only when MultiColor is absent)
                                                                                               post_export_build_combined_images_kwargs=dict(epoch_name_list=['ripple'], included_epoch_idxs=None, progress_print=True, should_use_raw_rgba_export_image=False, should_add_col_row_labels=False),
+
                                                                                             ), # ['_display_directional_merged_pf_decoded_stacked_epoch_slices', '_display_generalized_decoded_yellow_blue_marginal_epochs', '_display_decoded_trackID_marginal_hairy_position', '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay']                                                    
 }
 
