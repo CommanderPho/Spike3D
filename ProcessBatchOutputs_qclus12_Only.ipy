@@ -113,8 +113,8 @@ phase_any_run_custom_user_completion_functions_dict = {
     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
     # 'export_decoded_context_uncertainty_by_position_completion_function': export_decoded_context_uncertainty_by_position_completion_function, #TODO 2026-08-28 11:07: - [ ] NOT REAL FUNCTION!?!
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
-    'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
-    'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+    # 'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
 }
 
 # %%
@@ -171,8 +171,8 @@ _time_checkpoint('build_concrete_session_folders')
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-active_phase = ProcessingScriptPhases.continued_run
-# active_phase = ProcessingScriptPhases.final_run
+# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
@@ -193,7 +193,7 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-active_phase_dict['should_freeze_pipeline_updates'] = False
+# active_phase_dict['should_freeze_pipeline_updates'] = False
 # active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates`
 
 # active_phase_dict['should_create_vscode_workspace'] = True
