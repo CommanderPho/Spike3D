@@ -67,7 +67,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-09-21'
+BATCH_DAY_DATE: str = '2026-09-22'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -260,8 +260,8 @@ _time_checkpoint('build_concrete_session_folders')
 
 # active_phase = ProcessingScriptPhases.clean_run
 # active_phase = ProcessingScriptPhases.continued_run
-active_phase = ProcessingScriptPhases.final_run
-# active_phase = ProcessingScriptPhases.figure_run
+# active_phase = ProcessingScriptPhases.final_run
+active_phase = ProcessingScriptPhases.figure_run
 
 
 # END ________________________________________________________________________________________________________________ #
@@ -281,7 +281,7 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-active_phase_dict['should_freeze_pipeline_updates'] = False
+# active_phase_dict['should_freeze_pipeline_updates'] = False
 # active_phase_dict['should_freeze_pipeline_updates'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the all-cells results
 
 # ## Default non-overriden for custom suffix:
@@ -367,8 +367,8 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-# num_shuffles: int = 1024
-num_shuffles: int = 128
+num_shuffles: int = 1024
+# num_shuffles: int = 128
 # drop_previous_result_and_compute_fresh = False
 drop_previous_result_and_compute_fresh: bool = True
 
