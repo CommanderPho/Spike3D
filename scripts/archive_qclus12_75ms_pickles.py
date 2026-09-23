@@ -31,7 +31,8 @@ from typing import List, Optional, Sequence, Tuple
 
 # Matches ProcessBatchOutputs_qclus12_Only.ipy active_phase_dict['override_custom_pickle_suffix']
 PARAMETER_SPECIFIER: str = "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0"
-ARCHIVE_SUFFIX: str = "2026-09-23_75ms"
+ARCHIVE_SUFFIX: str = "-tbin_75ms"
+# ARCHIVE_SUFFIX: str = "2026-09-23-tbin_75ms"
 
 # Relative session dirs under data root (KDIBA layout), matching included_session_contexts
 SESSION_REL_PATHS: List[str] = [
