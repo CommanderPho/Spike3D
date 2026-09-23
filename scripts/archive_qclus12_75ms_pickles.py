@@ -34,6 +34,10 @@ PARAMETER_SPECIFIER: str = "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2
 ARCHIVE_SUFFIX: str = "-tbin_75ms"
 # ARCHIVE_SUFFIX: str = "2026-09-23-tbin_75ms"
 
+include_h5_files: bool = False
+include_global_comps_pkl_files: bool = True
+
+
 # Relative session dirs under data root (KDIBA layout), matching included_session_contexts
 SESSION_REL_PATHS: List[str] = [
     "KDIBA/gor01/one/2006-6-08_14-26-15",
@@ -78,23 +82,34 @@ def find_data_root(explicit: Optional[Path] = None) -> Path:
 
 
 def archive_dest_path(src: Path, archive_suffix: str) -> Path:
-    """Append archive_suffix to stem: foo.pkl -> foo_{archive_suffix}.pkl"""
+    """Append archive_suffix to stem.
+
+    If archive_suffix already starts with ``-`` or ``_`` (e.g. ``-tbin_75ms``), concatenate as-is:
+      foo.pkl + ``-tbin_75ms`` -> foo-tbin_75ms.pkl
+    Otherwise insert an underscore:
+      foo.pkl + ``2026-09-23_75ms`` -> foo_2026-09-23_75ms.pkl
+    """
+    if archive_suffix.startswith(('-', '_')):
+        return src.with_stem(f"{src.stem}{archive_suffix}")
     return src.with_stem(f"{src.stem}_{archive_suffix}")
 
 
-def files_for_session(session_dir: Path, parameter_specifier: str) -> List[Path]:
+def files_for_session(session_dir: Path, parameter_specifier: str, *, include_global_comps_pkl: bool = False, include_h5: bool = False) -> List[Path]:
     """Canonical (non-tbin) paths for this parameter specifier.
 
     Names match python_template.py.j2 / _get_custom_filenames_from_computation_metadata:
-      loadedSessPickle{suffix}.pkl
-      output/global_computation_results{suffix}.pkl
-      pipeline{suffix}.h5  (custom h5; may be absent)
+      loadedSessPickle{suffix}.pkl  (always)
+      output/global_computation_results{suffix}.pkl  (if include_global_comps_pkl)
+      pipeline{suffix}.h5  (if include_h5; custom h5 may be absent)
     """
-    return [
+    out: List[Path] = [
         session_dir / f"loadedSessPickle{parameter_specifier}.pkl",
-        session_dir / "output" / f"global_computation_results{parameter_specifier}.pkl",
-        session_dir / "output" / f"pipeline{parameter_specifier}.h5",
     ]
+    if include_global_comps_pkl:
+        out.append(session_dir / "output" / f"global_computation_results{parameter_specifier}.pkl")
+    if include_h5:
+        out.append(session_dir / "output" / f"pipeline{parameter_specifier}.h5")
+    return out
 
 
 def try_move(src: Path, dest: Path, *, execute: bool) -> str:
@@ -113,14 +128,7 @@ def try_move(src: Path, dest: Path, *, execute: bool) -> str:
         return f"error:{type(e).__name__}: {e}"
 
 
-def process_sessions(
-    data_root: Path,
-    session_rel_paths: Sequence[str],
-    *,
-    parameter_specifier: str,
-    archive_suffix: str,
-    execute: bool,
-) -> Tuple[List[Tuple[str, Path, Path, str]], dict]:
+def process_sessions(data_root: Path, session_rel_paths: Sequence[str], *, parameter_specifier: str, archive_suffix: str, execute: bool, include_global_comps_pkl: bool = False, include_h5: bool = False) -> Tuple[List[Tuple[str, Path, Path, str]], dict]:
     results: List[Tuple[str, Path, Path, str]] = []
     counts = {
         "moved": 0,
@@ -139,7 +147,7 @@ def process_sessions(
             continue
         ## END if not session_dir.exists()...
 
-        for src in files_for_session(session_dir, parameter_specifier):
+        for src in files_for_session(session_dir, parameter_specifier, include_global_comps_pkl=include_global_comps_pkl, include_h5=include_h5):
             dest = archive_dest_path(src, archive_suffix)
             status = try_move(src, dest, execute=execute)
             results.append((rel, src, dest, status))
@@ -193,6 +201,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     print(f"data_root: {data_root}")
     print(f"parameter_specifier: {PARAMETER_SPECIFIER}")
     print(f"archive_suffix: {args.archive_suffix}")
+    print(f"include_global_comps_pkl_files: {include_global_comps_pkl_files}")
+    print(f"include_h5_files: {include_h5_files}")
     print(f"mode: {'EXECUTE (move)' if execute else 'DRY-RUN (no changes)'}")
     print(f"n_sessions: {len(SESSION_REL_PATHS)}")
     print("-" * 80)
@@ -203,6 +213,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         parameter_specifier=PARAMETER_SPECIFIER,
         archive_suffix=args.archive_suffix,
         execute=execute,
+        include_global_comps_pkl=include_global_comps_pkl_files,
+        include_h5=include_h5_files,
     )
 
     print("-" * 80)
