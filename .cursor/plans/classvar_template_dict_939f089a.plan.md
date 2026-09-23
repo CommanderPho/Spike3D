@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: verify
     content: Spot-check attrs fields exclude template_dict; get_plotly_template still works
-    status: in_progress
+    status: completed
 isProject: false
 ---
 
