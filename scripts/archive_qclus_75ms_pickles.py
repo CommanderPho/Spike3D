@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
-"""One-off archive of current (non-tbin-suffixed) qclus12 pipeline pickles before a 25ms clean_run.
+"""One-off archive of current (non-tbin-suffixed) pipeline pickles before a 25ms clean_run.
 
-Moves (does not copy) canonical pickles aside with suffix ``2026-09-23_75ms`` so the
+Moves (does not copy) canonical pickles aside with suffix ``-tbin_75ms`` so the
 upcoming batch can rewrite the cleared canonical paths.
 
-Sessions match ProcessBatchOutputs_qclus12_Only.ipy (active included_session_contexts).
-Pickle parameter suffix matches override_custom_pickle_suffix:
-  ``_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0``
+Sessions match ProcessBatchOutputs_qclus12_Only.ipy / ProcessBatchOutputs_qclus1246789_Only.ipy
+(active included_session_contexts — same list). Target qclus (pickle parameter suffix) is
+selected with ``--qclus``:
+
+  qclus12       -> ``_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0``
+  qclus1246789  -> ``_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0``
 
 Usage (on remote, e.g. GreatLakes)::
 
-    # Preview (default)
+    # Preview (default: qclus12, dry-run)
     python archive_qclus12_75ms_pickles.py
-    python archive_qclus12_75ms_pickles.py --dry-run
+    python archive_qclus12_75ms_pickles.py --qclus qclus12 --dry-run
 
-    # Apply moves
-    python archive_qclus12_75ms_pickles.py --execute
+    # Apply moves for qclus12
+    python archive_qclus12_75ms_pickles.py --qclus qclus12 --execute
+
+    # Apply moves for qclus1246789
+    python archive_qclus12_75ms_pickles.py --qclus qclus1246789 --execute
 
     # Explicit data root
-    python archive_qclus12_75ms_pickles.py --execute --data-root /nfs/turbo/umms-kdiba/Data
+    python archive_qclus12_75ms_pickles.py --qclus qclus1246789 --execute --data-root /nfs/turbo/umms-kdiba/Data
 """
 from __future__ import annotations
 
@@ -26,11 +32,14 @@ import argparse
 import shutil
 import sys
 from pathlib import Path
-from typing import List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 
-# Matches ProcessBatchOutputs_qclus12_Only.ipy active_phase_dict['override_custom_pickle_suffix']
-PARAMETER_SPECIFIER: str = "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0"
+# Matches active_phase_dict['override_custom_pickle_suffix'] in the ProcessBatchOutputs_*.ipy notebooks
+QCLUS_PARAMETER_SPECIFIERS: Dict[str, str] = {
+    "qclus12": "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0",
+    "qclus1246789": "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0",
+}
 ARCHIVE_SUFFIX: str = "-tbin_75ms"
 # ARCHIVE_SUFFIX: str = "2026-09-23-tbin_75ms"
 
@@ -164,7 +173,7 @@ def process_sessions(data_root: Path, session_rel_paths: Sequence[str], *, param
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Move qclus12 canonical pipeline pickles aside with a 75ms archive suffix."
+        description="Move canonical pipeline pickles aside with a 75ms archive suffix (qclus12 or qclus1246789)."
     )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument(
@@ -177,6 +186,13 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         "--execute",
         action="store_true",
         help="Actually shutil.move files.",
+    )
+    parser.add_argument(
+        "--qclus",
+        type=str,
+        choices=list(QCLUS_PARAMETER_SPECIFIERS.keys()),
+        default="qclus12",
+        help="Which qclus pickle parameter suffix to archive (default: qclus12).",
     )
     parser.add_argument(
         "--data-root",
@@ -197,9 +213,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parse_args(argv)
     execute: bool = bool(args.execute)
     data_root = find_data_root(args.data_root)
+    parameter_specifier: str = QCLUS_PARAMETER_SPECIFIERS[args.qclus]
 
     print(f"data_root: {data_root}")
-    print(f"parameter_specifier: {PARAMETER_SPECIFIER}")
+    print(f"qclus: {args.qclus}")
+    print(f"parameter_specifier: {parameter_specifier}")
     print(f"archive_suffix: {args.archive_suffix}")
     print(f"include_global_comps_pkl_files: {include_global_comps_pkl_files}")
     print(f"include_h5_files: {include_h5_files}")
@@ -210,7 +228,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     _results, counts = process_sessions(
         data_root,
         SESSION_REL_PATHS,
-        parameter_specifier=PARAMETER_SPECIFIER,
+        parameter_specifier=parameter_specifier,
         archive_suffix=args.archive_suffix,
         execute=execute,
         include_global_comps_pkl=include_global_comps_pkl_files,

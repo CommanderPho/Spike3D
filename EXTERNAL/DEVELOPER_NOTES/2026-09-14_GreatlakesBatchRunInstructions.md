@@ -79,9 +79,15 @@ export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_Expl
 cd "${SPIKE3D_REPO_ROOT}/Spike3D"
 deactivate
 source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
-python scripts/archive_qclus12_75ms_pickles.py --dry-run
 
-python scripts/archive_qclus12_75ms_pickles.py --execute
+## `qclus12`
+python scripts/archive_qclus_75ms_pickles.py --qclus qclus12 --dry-run
+python scripts/archive_qclus_75ms_pickles.py --qclus qclus12 --execute
+
+## `qclus1246789`:
+python scripts/archive_qclus_75ms_pickles.py --qclus qclus1246789 --dry-run
+python scripts/archive_qclus_75ms_pickles.py --qclus qclus1246789 --execute
+
 # or: --data-root /nfs/turbo/umms-kdiba/Data
 
 ```
