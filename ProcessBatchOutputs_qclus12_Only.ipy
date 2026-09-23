@@ -328,7 +328,7 @@ active_phase_dict['override_parameters_flat_keypaths_dict'] = {'rank_order_shuff
 
 active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': dict(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size, num_wcorr_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
-    # 'backup_previous_session_files_completion_function': dict(desired_suffix='Pre2024-11-21'),
+    'backup_previous_session_files_completion_function': dict(desired_suffix='2026-09-23_75ms'),
     'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),
