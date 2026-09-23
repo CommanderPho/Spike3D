@@ -34,7 +34,7 @@ PARAMETER_SPECIFIER: str = "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2
 ARCHIVE_SUFFIX: str = "-tbin_75ms"
 # ARCHIVE_SUFFIX: str = "2026-09-23-tbin_75ms"
 
-include_h5_files: bool = False
+include_h5_files: bool = True
 include_global_comps_pkl_files: bool = True
 
 
