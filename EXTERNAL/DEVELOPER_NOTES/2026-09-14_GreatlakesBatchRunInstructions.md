@@ -70,3 +70,18 @@ source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 
 ```
+
+
+# Temporary Pickle Copying Workarounds
+
+```bash
+export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+cd "${SPIKE3D_REPO_ROOT}/Spike3D"
+deactivate
+source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
+python scripts/archive_qclus12_75ms_pickles.py --dry-run
+
+python scripts/archive_qclus12_75ms_pickles.py --execute
+# or: --data-root /nfs/turbo/umms-kdiba/Data
+
+```
