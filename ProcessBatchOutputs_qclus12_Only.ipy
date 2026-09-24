@@ -66,7 +66,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-09-23'
+BATCH_DAY_DATE: str = '2026-09-24'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
