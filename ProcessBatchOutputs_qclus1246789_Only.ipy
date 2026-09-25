@@ -367,8 +367,8 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-num_shuffles: int = 1024
-# num_shuffles: int = 128
+# num_shuffles: int = 1024
+num_shuffles: int = 128
 # drop_previous_result_and_compute_fresh = False
 drop_previous_result_and_compute_fresh: bool = True
 
