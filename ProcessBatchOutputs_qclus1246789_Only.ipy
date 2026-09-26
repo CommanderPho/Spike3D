@@ -461,7 +461,8 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
                                                                                                                         # '_render_export_all_time_tracks',
                                                                                                                         ],
                                                                                              display_function_kwargs_dict = {'_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay': dict(time_bin_size = ripple_decoding_time_bin_size, force_recompute=False, 
-                                                                                                                                                                                    # enable_laps_merged_export=False,
+                                                                                                                                                                                    enable_laps_merged_export=False,
+                                                                                                                                                                                    delete_previous_outputs_folder=False, ## because there are no outputs for the sessions we're trying to get.
                                                                                                                                                                                 ), }, #TODO 2026-09-18 08:58: - [ ] Overrides for Apogee
 
                                                                                               # Passed into figures_plot_... as additional kwargs; consumed by post_export_build_combined_images after MultiColor (or after directional only when MultiColor is absent)
