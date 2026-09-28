@@ -67,7 +67,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-09-25'
+BATCH_DAY_DATE: str = '2026-09-28'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -460,7 +460,10 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
                                                                                                                         # '_display_trial_to_trial_reliability',
                                                                                                                         # '_render_export_all_time_tracks',
                                                                                                                         ],
-                                                                                             display_function_kwargs_dict = {'_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay': dict(time_bin_size = ripple_decoding_time_bin_size, force_recompute=False, 
+                                                                                             display_function_kwargs_dict = {'_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay': dict(
+                                                                                                                                                                                    # time_bin_size = ripple_decoding_time_bin_size,
+                                                                                                                                                                                    time_bin_size = 0.020, # 20ms, hardcoded
+                                                                                                                                                                                    force_recompute=False, 
                                                                                                                                                                                     enable_laps_merged_export=False,
                                                                                                                                                                                     delete_previous_outputs_folder=False, ## because there are no outputs for the sessions we're trying to get.
                                                                                                                                                                                 ), }, #TODO 2026-09-18 08:58: - [ ] Overrides for Apogee
