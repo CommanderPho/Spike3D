@@ -18,6 +18,16 @@ source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
 
 ```
 
+## `PostBatchCopyResults.ipynb` (Jupyter-Lab Terminal Post-hoc): build the AcrossSessions files for Jupyter Notebook:
+```bash
+export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+cd "${SPIKE3D_REPO_ROOT}/Spike3D"
+deactivate
+source "${SPIKE3D_REPO_ROOT}/Spike3D/.venv_modern/bin/activate"
+./scripts/unix/launch_jupyter_lab_with_remote_access.sh
+```
+
+
 
 ## Copy to Swap SSD `/tmpssd/` for speed:
 ```bash
