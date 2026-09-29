@@ -123,8 +123,9 @@ phase_any_run_custom_user_completion_functions_dict = {
     'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
     'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
     'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
-    'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function,
-    'export_session_h5_file_completion_function': export_session_h5_file_completion_function, # ran 2024-09-26 3pm
+    # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function,
+    'export_session_h5_file_completion_function': export_session_h5_file_completion_function,
+    # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
 }
 
 
@@ -292,8 +293,8 @@ if custom_phase_extended_computations_include_includelist is not None:
     active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
 # active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-active_phase_dict['should_freeze_pipeline_updates'] = False
-# active_phase_dict['should_freeze_pipeline_updates'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the all-cells results
+# active_phase_dict['should_freeze_pipeline_updates'] = False
+active_phase_dict['should_freeze_pipeline_updates'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the all-cells results
 
 # ## Default non-overriden for custom suffix:
 # active_phase_dict['override_custom_pickle_suffix'] = '' # default, None
@@ -442,7 +443,8 @@ active_phase_dict['override_parameters_flat_keypaths_dict'] = {'rank_order_shuff
 
 active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': dict(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size, num_wcorr_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
-    'backup_previous_session_files_completion_function': dict(desired_suffix='2026-09-23'),
+    'backup_previous_session_files_completion_function': dict(desired_suffix='2026-09-29'),
+    'export_session_h5_file_completion_function': dict(should_write_pipeline_h5=True, should_write_posterior_h5=True),
     'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),
