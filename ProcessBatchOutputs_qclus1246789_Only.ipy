@@ -122,7 +122,7 @@ phase_any_run_custom_user_completion_functions_dict = {
     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
     # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
     # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
-    # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
+    'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
     # 'compute_and_export_session_trial_by_trial_performance_completion_function': compute_and_export_session_trial_by_trial_performance_completion_function,
     'export_session_h5_file_completion_function': export_session_h5_file_completion_function,
     # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
