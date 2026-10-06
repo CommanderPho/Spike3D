@@ -4,13 +4,13 @@ overview: Rewrite the firing-rate and qclu aclu filter so the keep-mask stays al
 todos:
   - id: shared-helper
     content: Add filter_neuron_ids_by_frate_and_qclu in neuropy/analyses/placefields.py with length check, ratemap-order mask, and aligned qclu lookup
-    status: pending
+    status: completed
   - id: track-templates
     content: Point BaseTrackTemplates._perform_determine_decoder_aclus_filtered_by_qclu_and_frate at the helper and remove the TrackTemplates override
-    status: pending
+    status: completed
   - id: pfnd-twin
     content: Point PfND._perform_determine_pf_aclus_filtered_by_qclu_and_frate at the same helper
-    status: pending
+    status: completed
 isProject: false
 ---
 
