@@ -2476,7 +2476,7 @@ text_formatter.for_type(object, wide_pprint_jupyter)
 # # Beautiful Flexible 'pd.DataFrame' column access considering synonyms
 
 # %%
-time_col: str = TimeColumnAliasesProtocol.find_first_extant_suitable_columns_name(df, col_connonical_name='start', required_columns_synonym_dict={"start":{'begin','start_t','ripple_start_t'}, "stop":['end','stop_t']}, should_raise_exception_on_fail=False)
+time_col: str = TimeColumnAliasesProtocol.find_first_extant_suitable_columns_name(df, col_connonical_name='start', required_columns_synonym_dict={"start":['begin','start_t','ripple_start_t'], "stop":['end','stop_t']}, should_raise_exception_on_fail=False)
 assert time_col in df
 
 
