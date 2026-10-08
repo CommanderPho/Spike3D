@@ -4,16 +4,16 @@ overview: Rename the weighted-corr text overlay types to OverlayLabels*, move ra
 todos:
   - id: rename-classes-keys
     content: Rename OverlayLabelsPlotData + OverlayLabelsPaginatedPlotDataProvider; update keys/params/methods; History docstrings; no aliases
-    status: in_progress
+    status: completed
   - id: move-radon-text
     content: Draw/stack radon_text in overlay provider; strip text from RadonTransform callback; remove cross-provider reposition helpers
-    status: pending
+    status: completed
   - id: ensure-data-deps
     content: Expand single-controller columns from enable flags; register OverlayLabels for radon-only; soft-read both datasets; cover plot_decoded_epoch_slices_paginated
-    status: pending
+    status: completed
   - id: update-call-sites
     content: Update stacked_epoch_slices, PaginationMixins, LongShortTrackComparingDisplayFunctions, PendingNotebookCode; grep-verify; skip unrelated compute_weighted_correlations locals
-    status: pending
+    status: completed
 isProject: false
 ---
 
