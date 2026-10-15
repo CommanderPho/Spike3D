@@ -265,6 +265,14 @@ assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {g
 good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
 _time_checkpoint('paths: build_concrete_session_folders')
 
+try:
+    print('good_session_concrete_folders = [\n\t' + ',\n\t'.join([
+        f"ConcreteSessionFolder({v.context.get_initialization_code_string()}, Path({str(v.path)!r}))"
+        for v in good_session_concrete_folders
+    ]) + '\n]\n\n')
+except Exception as e:
+    print(f'WARN: failed to print pasteable good_session_concrete_folders: {e}')
+
 ## Different run configurations:
 # ==================================================================================================================== #
 # ACTIVE PHASE                                                                                                         #
