@@ -262,13 +262,13 @@ known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turb
 global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
-try:
-    print('good_session_concrete_folders = [\n\t' + ',\n\t'.join([
-        f"ConcreteSessionFolder({v.context.get_initialization_code_string()}, Path({str(v.path)!r}))"
-        for v in good_session_concrete_folders
-    ]) + '\n]\n\n')
-except Exception as e:
-    print(f'WARN: failed to print pasteable good_session_concrete_folders: {e}')
+# try:
+#     print('good_session_concrete_folders = [\n\t' + ',\n\t'.join([
+#         f"ConcreteSessionFolder({v.context.get_initialization_code_string()}, Path({str(v.path)!r}))"
+#         for v in good_session_concrete_folders
+#     ]) + '\n]\n\n')
+# except Exception as e:
+#     print(f'WARN: failed to print pasteable good_session_concrete_folders: {e}')
 
 # ## hardcoded for GL:
 # good_session_concrete_folders = [
