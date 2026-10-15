@@ -56,6 +56,7 @@ _time_checkpoint('IMPORTS: session_formats:KDiba')
 
 # from pyphoplacecellanalysis.General.Batch.concrete_session_folder import ConcreteSessionFolder 
 from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder #TODO 2026-09-01 18:40: - [ ] KDIBA2025
+from pyphoplacecellanalysis.General.Batch.concrete_session_folder import ConcreteSessionFolder
 _time_checkpoint('IMPORTS: concrete_session_folder')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
