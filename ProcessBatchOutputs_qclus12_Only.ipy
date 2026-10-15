@@ -313,7 +313,7 @@ job_suffix = f"{job_suffix}_tbin_25ms"
 
 active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
     'merged_directional_placefields': {'laps_decoding_time_bin_size': laps_decoding_time_bin_size, 'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size},
-    'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': False},
+    'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': True},
     'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz':minimum_inclusion_fr_Hz, 'included_qclu_values':included_qclu_values},
     'perform_wcorr_shuffle_analysis': dict(num_shuffles=num_shuffles, 
                                         #    drop_previous_result_and_compute_fresh=True,
