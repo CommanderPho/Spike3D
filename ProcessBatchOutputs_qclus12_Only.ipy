@@ -287,7 +287,7 @@ base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 
 force_recompute_override_computation_kwargs_dict = {
     'merged_directional_placefields': {'laps_decoding_time_bin_size': laps_decoding_time_bin_size, 'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size},
-    'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': True},
+    'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': True, 'n_jobs': 1},
     'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz, 'included_qclu_values': included_qclu_values},
     'perform_wcorr_shuffle_analysis': dict(num_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
     'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size=10.0, training_data_portion=5.0/6.0,
@@ -311,6 +311,7 @@ custom_user_completion_function_override_kwargs_dict = {
     'compute_and_export_session_trial_by_trial_performance_completion_function': dict(active_laps_decoding_time_bin_size=ripple_decoding_time_bin_size),
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': dict(ripple_decoding_time_bin_size_override=ripple_decoding_time_bin_size, laps_decoding_time_bin_size_override=laps_decoding_time_bin_size,
         needs_recompute_heuristics=True, force_recompute_all_decoding=True,
+        should_skip_radon_transform=True, n_jobs=1,
         save_hdf=False, allow_append_to_session_h5_file=False,
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0,
         ),
