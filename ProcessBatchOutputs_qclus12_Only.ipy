@@ -162,16 +162,32 @@ debug_print = True
 known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/media/halechr/BETAMAX/Data'), Path(r'/media/halechr/MAX/Data'), Path(r'W:/Data'), Path(r'/home/halechr/FastData'), Path(r'/Volumes/MoverNew/data')] # Path(r'/home/halechr/cloud/turbo/Data'), , Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/home/halechr/turbo/Data'), 
 global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
-good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
-_time_checkpoint('paths: build_concrete_session_folders')
+# good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
+# try:
+#     print('good_session_concrete_folders = [\n\t' + ',\n\t'.join([
+#         f"ConcreteSessionFolder({v.context.get_initialization_code_string()}, Path({str(v.path)!r}))"
+#         for v in good_session_concrete_folders
+#     ]) + '\n]\n\n')
+# except Exception as e:
+#     print(f'WARN: failed to print pasteable good_session_concrete_folders: {e}')
 
-try:
-    print('good_session_concrete_folders = [\n\t' + ',\n\t'.join([
-        f"ConcreteSessionFolder({v.context.get_initialization_code_string()}, Path({str(v.path)!r}))"
-        for v in good_session_concrete_folders
-    ]) + '\n]\n\n')
-except Exception as e:
-    print(f'WARN: failed to print pasteable good_session_concrete_folders: {e}')
+## hardcoded for GL:
+good_session_concrete_folders = [
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), Path('/nfs/turbo/umms-kdiba/KDIBA/gor01/one/2006-6-08_14-26-15')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), Path('/nfs/turbo/umms-kdiba/KDIBA/gor01/one/2006-6-09_1-22-43')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), Path('/nfs/turbo/umms-kdiba/KDIBA/gor01/one/2006-6-12_15-55-31')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), Path('/nfs/turbo/umms-kdiba/KDIBA/gor01/two/2006-6-07_16-40-19')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), Path('/nfs/turbo/umms-kdiba/KDIBA/gor01/two/2006-6-08_21-16-25')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), Path('/nfs/turbo/umms-kdiba/KDIBA/gor01/two/2006-6-09_22-24-40')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'), Path('/nfs/turbo/umms-kdiba/KDIBA/gor01/two/2006-6-12_16-53-46')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'), Path('/nfs/turbo/umms-kdiba/KDIBA/vvp01/two/2006-4-09_16-40-54')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), Path('/nfs/turbo/umms-kdiba/KDIBA/vvp01/two/2006-4-10_12-58-3')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), Path('/nfs/turbo/umms-kdiba/KDIBA/pin01/one/11-02_17-46-44')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), Path('/nfs/turbo/umms-kdiba/KDIBA/pin01/one/11-03_12-3-25')),
+        ConcreteSessionFolder(IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), Path('/nfs/turbo/umms-kdiba/KDIBA/pin01/one/fet11-01_12-58-54'))
+]
+
+_time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
