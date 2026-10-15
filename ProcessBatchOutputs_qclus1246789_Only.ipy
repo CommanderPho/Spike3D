@@ -35,7 +35,7 @@ def _print_timing_summary() -> None:
         pct = 100.0 * elapsed / total if total else 0.0
         print(f'  {elapsed:7.2f}s ({pct:5.1f}%)  {label}')
 
-_time_checkpoint('stdlib+numpy/pandas/tables')
+_time_checkpoint('IMPORTS: stdlib+numpy/pandas/tables')
 
 os.environ.setdefault('MPLBACKEND', 'Agg')
 if hasattr(os, 'getuid'):
@@ -48,23 +48,23 @@ os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
 from pyphocorehelpers.programming_helpers import copy_to_clipboard
-_time_checkpoint('path_helpers+copy_to_clipboard')
+_time_checkpoint('IMPORTS: path_helpers+copy_to_clipboard')
 
 from neuropy.utils.result_context import IdentifyingContext
 from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
-_time_checkpoint('session_formats:KDiba')
+_time_checkpoint('IMPORTS: session_formats:KDiba')
 
 # from pyphoplacecellanalysis.General.Batch.concrete_session_folder import ConcreteSessionFolder 
 from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder #TODO 2026-09-01 18:40: - [ ] KDIBA2025
-_time_checkpoint('concrete_session_folder')
+_time_checkpoint('IMPORTS: concrete_session_folder')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
-_time_checkpoint('pythonScriptTemplating')
+_time_checkpoint('IMPORTS: pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_session_h5_file_completion_function, export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_wcorr_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
-_time_checkpoint('batch_user_completion_helpers')
+_time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 BATCH_DAY_DATE: str = '2026-10-15'
@@ -263,7 +263,7 @@ known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turb
 global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
-_time_checkpoint('build_concrete_session_folders')
+_time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
