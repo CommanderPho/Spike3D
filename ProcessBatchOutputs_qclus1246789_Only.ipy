@@ -150,22 +150,22 @@ phase_any_run_custom_user_completion_functions_dict = None
 # ]
 
 
-# ## All Sessions:
-# all_included_session_contexts = [ 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
-# ]
-# included_session_contexts = all_included_session_contexts
+## All Sessions:
+all_included_session_contexts = [ 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
+]
+included_session_contexts = all_included_session_contexts
 
 # ==================================================================================================================================================================================================================================================================================== #
 # 2026-10-15 GL Completed Clean_run sessions                                                                                                                                                                                                                                           #
@@ -190,12 +190,12 @@ phase_any_run_custom_user_completion_functions_dict = None
 #     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'),
 # ]
 
-# ==================================================================================================================================================================================================================================================================================== #
-# 2026-10-15 12:43pm (batch 3):                                                                                                                                                                                                                                                        #
-# ==================================================================================================================================================================================================================================================================================== #
-included_session_contexts = [
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'),
-]
+# # ==================================================================================================================================================================================================================================================================================== #
+# # 2026-10-15 12:43pm (batch 3):                                                                                                                                                                                                                                                        #
+# # ==================================================================================================================================================================================================================================================================================== #
+# included_session_contexts = [
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'),
+# ]
 
 
 # correctly_produced_multi_sessions = [ 
@@ -303,8 +303,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # ==================================================================================================================== #
 
 # active_phase = ProcessingScriptPhases.clean_run
-active_phase = ProcessingScriptPhases.continued_run
-# active_phase = ProcessingScriptPhases.final_run
+# active_phase = ProcessingScriptPhases.continued_run
+active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
@@ -411,7 +411,7 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-# num_shuffles: int = 1024
+# num_shuffles: int = 128
 num_shuffles: int = 128
 # drop_previous_result_and_compute_fresh = False
 drop_previous_result_and_compute_fresh: bool = True
@@ -487,7 +487,7 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
         # needs_recompute_heuristics=True, force_recompute_all_decoding=True,
         needs_recompute_heuristics=True, force_recompute_all_decoding=False, #TODO 2026-09-15 14:19: - [ ] Disabled forced recompute in `compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function`
         should_skip_radon_transform=True, n_jobs=1,
-        save_hdf=False, allow_append_to_session_h5_file=False,
+        save_hdf=True, allow_append_to_session_h5_file=False,
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0, # Heuristic settings
         ),
     # 'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
@@ -501,10 +501,10 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         # '_display_placefield_stable_formation_time_distribution',
-                                                                                                                        '_display_generalized_decoded_yellow_blue_marginal_epochs', 
+                                                                                                                        # '_display_generalized_decoded_yellow_blue_marginal_epochs', 
                                                                                                                         # '_display_directional_merged_pf_decoded_stacked_epoch_slices', # optional independent-1D only; skipped when MultiColor is listed (same greyscale_shared_norm / mergedV / multi paths)
                                                                                                                         # '_display_decoded_trackID_marginal_hairy_position', 
-                                                                                                                        '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # sole source of greyscale_shared_norm + mergedV + combined/multi (competition-normalized)
+                                                                                                                        # '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # sole source of greyscale_shared_norm + mergedV + combined/multi (competition-normalized)
                                                                                                                         # '_display_measured_vs_decoded_occupancy_distributions',
                                                                                                                         # '_display_trial_to_trial_reliability',
                                                                                                                         # '_render_export_all_time_tracks',
