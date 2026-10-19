@@ -112,7 +112,48 @@ summary = vc.info("art.vectorcraft")
 
 `VectorCraftClient.run` returns one parsed JSON object per CLI step (`open` / `cmd` / `export`). Non-zero CLI exits raise `VectorCraftError`. Missing binary raises `CliNotFoundError`.
 
+## Live GUI control (`--control`)
+
+Start VectorCraft with a control port (loopback only; default used by discovery is **7979**):
+
+```powershell
+& "C:\Program Files\VectorCraft\vectorcraft.exe" --control 7979
+```
+
+Optional: `$env:VECTORCRAFT_CONTROL_PORT = "7979"` (or `VECTORCRAFT_CONTROL_PORTS` comma-separated).
+
+```python
+from vectorcraft_scripting import ObjectQuery, connect_first, discover_instances
+
+# Running instances that answer the control protocol
+instances = discover_instances()
+print([(i.port, i.pid) for i in instances])
+
+live = connect_first()  # raises NoInstanceError if none
+try:
+    docs = live.list_documents()
+    print([d.get("title") for d in docs])
+
+    tree = live.inspect_document(depth=0, child_limit=20)
+    paths = live.find_objects(ObjectQuery(kind="Path", min_width=100, max_width=400))
+    print(paths)
+finally:
+    live.close()
+```
+
+Discovery order: explicit ports → `VECTORCRAFT_CONTROL_PORT(S)` → `7979` → Windows listeners owned by `vectorcraft.exe`, each verified with `ui.inspect`.
+
+Live helpers:
+
+| Method | Role |
+|--------|------|
+| `list_documents()` | Open tabs via `document.activate` + `file.info` |
+| `inspect_document(...)` / `list_nodes(...)` | Layer tree / scoped nodes (`document.inspect`) |
+| `get_node(id)` | One node (`document.node`) |
+| `find_objects(ObjectQuery(...))` | `document.find` + client-side size/visibility/regex filters |
+
 ## Notes
 
 - Paths passed to `--in`, `--export`, and `file.place` are made absolute so Windows working-directory quirks do not matter.
-- Live GUI control (`vectorcraft --control PORT`) and MCP stdio are not wrapped in v1; use the CLI batch path above for automation.
+- Live control does not auto-launch the GUI; start VectorCraft with `--control` first.
+- MCP stdio is not wrapped; use the CLI batch path or the live TCP client above.

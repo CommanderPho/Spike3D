@@ -27,3 +27,25 @@ class CliNotFoundError(VectorCraftError):
         )
         super().__init__(message)
         self.searched = searched_list
+
+
+class ControlError(VectorCraftError):
+    """Raised when a live control-protocol request fails or the connection breaks."""
+
+    def __init__(self, message: str, *, method: Optional[str] = None, reply: Optional[dict] = None):
+        super().__init__(message)
+        self.method = method
+        self.reply = reply
+
+
+class NoInstanceError(VectorCraftError):
+    """Raised when no VectorCraft control server answers on the searched ports."""
+
+    def __init__(self, searched_ports: Sequence[int]):
+        ports = ", ".join(str(p) for p in searched_ports) if searched_ports else "(none)"
+        message = (
+            "No VectorCraft control instance found. Start the app with "
+            f"`vectorcraft --control PORT` (default 7979). Searched ports: {ports}"
+        )
+        super().__init__(message)
+        self.searched_ports = list(searched_ports)
