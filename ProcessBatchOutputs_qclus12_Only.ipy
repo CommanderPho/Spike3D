@@ -67,10 +67,10 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-10-15'
+BATCH_DAY_DATE: str = '2026-10-20'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
 # scripts_output_path = Path('/home/halechr/cloud/turbo/Data/Output/gen_scripts/').resolve() # Greatlakes
@@ -121,22 +121,23 @@ phase_any_run_custom_user_completion_functions_dict = None
 
 
 # Hardcoded included_session_contexts:
-included_session_contexts = [ 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), # 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), # 2025-07-17 02:23 DEFER- still finishing 'ProcessingScriptPhases.continued_run'
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), # 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), # 2025-07-17 03:03 DONE with 'ProcessingScriptPhases.continued_run' #   2025-07-17 02:23 DEFER- still finishing 'ProcessingScriptPhases.continued_run'
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'), #
-    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'), # 2025-08-22 - Decided to discard because the positions are shifted between 'x' and 'lin_pos', and that manifests on the pf peaks.
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'), #
-    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), # 2025-08-22 - Decided that this session is bad. The context decoder returns short for nearly all non-lap period pre-delta, and additionally there aren't many replays.
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'),
-    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), # 2025-10-20 - Fixed position tracking issues in MATLAB. 2024-10-04 - very bad position tracking data (jumping around everywhere at high frequency)
-    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), # 2025-10-20 - Fixed position tracking issues in MATLAB. 2024-10-01 - bad laps, Bad Laps "3"/"4" - don't see lap 1/2        
+## All Sessions:
+all_included_session_contexts = [ 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
 ]
+included_session_contexts = all_included_session_contexts
+
 ## Known Bad Sessions
 # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-07_11-26-53'), # OK -- NOT OKAY, has only 1 Short Lap in each direction
 # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_19-28-0'), # #TODO 2025-07-02 16:50: - [ ] BAD, messed up position.
@@ -278,7 +279,7 @@ override_parameters_flat_keypaths_dict = {
 
 custom_user_completion_function_override_kwargs_dict = {
     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': dict(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size, num_wcorr_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
-    'backup_previous_session_files_completion_function': dict(desired_suffix='2026-09-23'),
+    'backup_previous_session_files_completion_function': dict(desired_suffix='2026-10-20'),
     'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),

@@ -14,6 +14,16 @@ source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.ven
 ipython ProcessBatchOutputs_qclus12_Only.ipy
 ```
 
+
+```bash
+cd '/home/halechr/repos/Spike3D'
+deactivate
+source /home/halechr/repos/Spike3D/.venv/bin/activate
+# Optional: export SPIKE3D_REPO_ROOT='/home/halechr/repos'
+ipython ProcessBatchOutputs_qclus12_Only.ipy
+```
+
+
 This writes under `scripts_output_path` (typically turbo `.../Output/gen_scripts/`):
 
 - Per-session / per-phase Slurm + Python scripts (`*_Clean`, `*_Continued`, `*_Final` suffixes)
