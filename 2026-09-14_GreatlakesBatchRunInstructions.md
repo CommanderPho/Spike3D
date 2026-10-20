@@ -23,17 +23,21 @@ source /home/halechr/repos/Spike3D/.venv/bin/activate
 ipython ProcessBatchOutputs_qclus12_Only.ipy
 ```
 
+In `ProcessBatchOutputs_qclus12_Only.ipy`, set **`batch_execution_target`** before generating:
 
-This writes under `scripts_output_path` (typically turbo `.../Output/gen_scripts/`):
+- **`'slurm'`** — Great Lakes (default for GL batch tags such as `_GL`)
+- **`'linux_standalone'`** — Lab workstation (no `sbatch`; use `_Lab` batch tag)
 
-- Per-session / per-phase Slurm + Python scripts (`*_Clean`, `*_Continued`, `*_Final` suffixes)
-- `submit_phase_chains_<BATCH_DATE_TO_USE>.sh` — **primary** submit path (per-session `sbatch --dependency=afterok:...` chains)
-- `submit_phase_chains_<BATCH_DATE_TO_USE>.json` — manifest of session → phase → script path
+This writes under `scripts_output_path` (GL: turbo `.../Output/gen_scripts/`; Lab: often `/home/halechr/FastData/gen_scripts/`):
+
+- Per-session / per-phase run scripts + Python (`*_Clean`, `*_Continued`, `*_Final` suffixes)
+- `submit_phase_chains_<BATCH_DATE_TO_USE>.sh` — **primary** submit path
+- `submit_phase_chains_<BATCH_DATE_TO_USE>.json` — manifest (`execution_backend`: `slurm` or `bash`) of session → phase → script path
 - `retry_phase_chains_<BATCH_DATE_TO_USE>/retry_from_<phase>_<session>.sh` — resume from a failed phase without re-running earlier phases
 
-Flat per-phase `sbatch '...'` lines are still printed as a fallback; prefer the chained submit script.
+### Great Lakes: Terminal 2 (Slurm chains)
 
-### Terminal 2: Submit the chains
+Set `batch_execution_target = 'slurm'`. Flat per-phase `sbatch '...'` lines are still printed as a fallback; prefer the chained submit script.
 
 ```bash
 bash '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/submit_phase_chains_<BATCH_DATE_TO_USE>.sh'
@@ -47,18 +51,30 @@ squeue -u $USER
 sacct -u $USER --starttime=now-2days --format=JobID,JobName%40,State,ExitCode,Elapsed -P
 ```
 
+### Lab workstation: Terminal 2 (sequential bash, one session at a time)
+
+Set `batch_execution_target = 'linux_standalone'` and a `_Lab` `BATCH_DATE_TO_USE`. The generator writes non-SLURM `run_*.sh` scripts and a master chain script that runs **one session at a time**, with **clean → continued → final** sequential `bash` inside each session (no `sbatch`).
+
+```bash
+bash '/home/halechr/FastData/gen_scripts/submit_phase_chains_<BATCH_DATE_TO_USE>.sh'
+# Example: bash '/home/halechr/FastData/gen_scripts/submit_phase_chains_2026-10-20_Lab.sh'
+```
+
+Watch progress in the terminal, or tail log files next to each generated `run_*.sh`.
+
 ### On failure (do not re-run successful earlier phases)
 
-`afterok` cancels only that session’s later phases. Pickles from completed earlier phases stay on disk.
+Pickles from completed earlier phases stay on disk. A failed phase skips later phases for **that session only** (Slurm `afterok` on GL; `set -e` inside each session block on Lab).
 
-1. Identify the failed phase with `sacct`.
-2. Re-submit from that phase onward, e.g.:
+**Great Lakes:** identify the failed phase with `sacct`, then:
 
 ```bash
 bash '/nfs/turbo/umms-kdiba/Data/Output/gen_scripts/retry_phase_chains_<BATCH_DATE_TO_USE>/retry_from_continued_run_<session>.sh'
 ```
 
-Example: if `continued_run` failed after a successful `clean_run`, use `retry_from_continued_run_...sh` (requeues continued → final). Do **not** re-submit clean.
+**Lab:** use the same retry script names under `retry_phase_chains_<BATCH_DATE_TO_USE>/`; they run sequential `bash` (no `sbatch`).
+
+Example: if `continued_run` failed after a successful `clean_run`, use `retry_from_continued_run_...sh` (continued → final only). Do **not** re-submit clean.
 
 ### Notes
 
