@@ -66,10 +66,10 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-10-19'
+BATCH_DAY_DATE: str = '2026-10-20'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
 # scripts_output_path = Path('/home/halechr/cloud/turbo/Data/Output/gen_scripts/').resolve() # Greatlakes
@@ -148,39 +148,39 @@ phase_any_run_custom_user_completion_functions_dict = None
 # ]
 
 
-# ## All Sessions:
-# all_included_session_contexts = [ 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
-# ]
-# included_session_contexts = all_included_session_contexts
-
-
-## Recent stuck:
-included_session_contexts = [ 
+## All Sessions:
+all_included_session_contexts = [ 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
-    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
-    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
-    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
-    # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
-    # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
 ]
+included_session_contexts = all_included_session_contexts
+
+
+# ## Recent stuck:
+# included_session_contexts = [ 
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
+#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
+#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
+#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
+#     # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+#     # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
+#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
+#     # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
+#     # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
+# ]
 
 
 ## Setup Functions:
@@ -211,9 +211,9 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # ACTIVE PHASE                                                                                                         #
 # ==================================================================================================================== #
 
-# active_phase = ProcessingScriptPhases.clean_run
+active_phase = ProcessingScriptPhases.clean_run
 # active_phase = ProcessingScriptPhases.continued_run
-active_phase = ProcessingScriptPhases.final_run
+# active_phase = ProcessingScriptPhases.final_run
 # active_phase = ProcessingScriptPhases.figure_run
 
 
@@ -513,6 +513,10 @@ else:
     _default_spike3d_repo_root = '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
     _venv_bin_dir, _python_name = 'bin', 'python'
 _spike3d_repo_root = Path(os.environ.get('SPIKE3D_REPO_ROOT', _default_spike3d_repo_root)).expanduser().resolve()
+if not _spike3d_repo_root.exists():
+    _default_spike3d_repo_root = '/home/halechr/repos'
+_spike3d_repo_root = Path(os.environ.get('SPIKE3D_REPO_ROOT', _default_spike3d_repo_root)).expanduser().resolve()
+assert _spike3d_repo_root.exists(), f"_spike3d_repo_root: '{_spike3d_repo_root}' does not exist!"
 _venv_dir = _spike3d_repo_root / 'Spike3D' / '.venv'
 _venv_activate_path = str(_venv_dir / _venv_bin_dir / 'activate')
 _vscode_python = str(_venv_dir / _venv_bin_dir / _python_name)
