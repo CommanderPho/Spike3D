@@ -5,9 +5,11 @@
 # %autoreload 3
 import os
 import sys
+import shutil
 import platform
 import time
 from copy import deepcopy
+from fnmatch import fnmatch
 from typing import List, Dict, Optional, Union, Callable, Tuple
 from pathlib import Path
 import pathlib
@@ -75,46 +77,147 @@ SCRATCH_MUTABLE_EXTRA_GLOBS: List[str] = [
 ]
 
 
+def kdiba_session_relpath(context: IdentifyingContext) -> Path:
+    return Path('KDIBA').joinpath(context.animal, context.exper_name, context.session_name)
+
+
+def is_scratch_mutable_relpath(rel_path: Path, extra_globs: List[str]) -> bool:
+    rel_posix: str = Path(rel_path).as_posix()
+    name: str = Path(rel_path).name
+    for a_glob in extra_globs:
+        glob_posix: str = str(a_glob).replace('\\', '/')
+        if fnmatch(rel_posix, glob_posix) or fnmatch(name, Path(glob_posix).name):
+            return True
+    ## END for a_glob in extra_globs...
+
+    return False
+
+
+def find_turbo_session_basedir(a_folder: ConcreteSessionFolder, source_data_root: Path) -> Path:
+    """Prefer the logical Data/KDIBA path; fall back to the sibling /KDIBA tree that Data/KDIBA often symlinks to."""
+    rel: Path = kdiba_session_relpath(a_folder.context)
+    raw_candidates: List[Path] = [Path(source_data_root).joinpath(rel), Path(a_folder.path), Path(source_data_root).parent.joinpath(rel), Path('/nfs/turbo/umms-kdiba').joinpath(rel)]
+    candidates: List[Path] = []
+    seen: set = set()
+    for a_candidate in raw_candidates:
+        key: str = str(a_candidate)
+        if key not in seen:
+            seen.add(key)
+            candidates.append(a_candidate)
+    ## END for a_candidate in raw_candidates...
+
+    for a_candidate in candidates:
+        if a_candidate.exists():
+            return a_candidate
+    ## END for a_candidate in candidates...
+
+    return candidates[0]
+
+
+def ensure_scratch_symlink(dest_path: Path, target_path: Path, target_is_directory: bool = False) -> str:
+    dest_path = Path(dest_path)
+    target_path = Path(target_path)
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+    if dest_path.is_symlink():
+        current_target = Path(os.readlink(str(dest_path)))
+        if current_target == target_path:
+            return 'exists'
+        dest_path.unlink()
+    elif dest_path.exists():
+        return 'skip_real'
+    dest_path.symlink_to(target_path, target_is_directory=target_is_directory)
+    return 'created'
+
+
+def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newer_or_equal: bool) -> str:
+    dest_file.parent.mkdir(parents=True, exist_ok=True)
+    if dest_file.is_symlink():
+        dest_file.unlink()
+    if skip_if_dest_newer_or_equal and dest_file.exists() and dest_file.is_file() and (not dest_file.is_symlink()):
+        if (dest_file.stat().st_mtime >= src_file.stat().st_mtime) and (dest_file.stat().st_size == src_file.stat().st_size):
+            return 'skipped_newer'
+    shutil.copy2(src_file, dest_file)
+    return 'copied'
+
+
+def mirror_turbo_session_tree_to_scratch(turbo_basedir: Path, scratch_basedir: Path, extra_globs: List[str], skip_if_dest_newer_or_equal: bool = True) -> Dict[Path, Path]:
+    """Copy pickle/h5 mutables; recreate Turbo's other files/dirs as symlinks so raw .dat/.xml/.npy still resolve."""
+    copied: Dict[Path, Path] = {}
+    scratch_basedir.mkdir(parents=True, exist_ok=True)
+    scratch_basedir.joinpath('output').mkdir(parents=True, exist_ok=True)
+    if not turbo_basedir.exists():
+        print(f'  WARN: turbo session basedir missing: {turbo_basedir}')
+        return copied
+
+    def _handle_item(src_path: Path, dest_path: Path) -> None:
+        rel_path: Path = dest_path.relative_to(scratch_basedir)
+        if (src_path.name == 'output') and src_path.is_dir():
+            dest_path.mkdir(parents=True, exist_ok=True)
+            for a_child in src_path.iterdir():
+                _handle_item(a_child, dest_path.joinpath(a_child.name))
+            ## END for a_child in src_path.iterdir()...
+
+            return
+        if is_scratch_mutable_relpath(rel_path, extra_globs) and src_path.exists() and src_path.is_file():
+            status = copy_or_skip_mutable_file(src_path, dest_path, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
+            if status == 'copied':
+                copied[src_path] = dest_path
+                print(f'  copied:  {src_path} -> {dest_path}')
+            else:
+                print(f'  skipped: {src_path} -> {dest_path} (dest newer/equal)')
+            return
+        if src_path.is_symlink():
+            try:
+                link_target = src_path.resolve() if src_path.exists() else Path(os.readlink(str(src_path)))
+            except OSError:
+                link_target = Path(os.readlink(str(src_path)))
+            link_status = ensure_scratch_symlink(dest_path, link_target, target_is_directory=src_path.is_dir())
+            print(f'  linked:  {dest_path} -> {link_target} ({link_status})')
+            return
+        if src_path.is_dir():
+            try:
+                link_target = src_path.resolve()
+            except OSError:
+                link_target = src_path
+            link_status = ensure_scratch_symlink(dest_path, link_target, target_is_directory=True)
+            print(f'  linked:  {dest_path} -> {link_target} ({link_status})')
+            return
+        if src_path.is_file():
+            try:
+                link_target = src_path.resolve()
+            except OSError:
+                link_target = src_path
+            link_status = ensure_scratch_symlink(dest_path, link_target, target_is_directory=False)
+            print(f'  linked:  {dest_path} -> {link_target} ({link_status})')
+            return
+        print(f'  skipped: {src_path} (unhandled type)')
+
+    for a_item in turbo_basedir.iterdir():
+        _handle_item(a_item, scratch_basedir.joinpath(a_item.name))
+    ## END for a_item in turbo_basedir.iterdir()...
+
+    return copied
+
+
 def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[ConcreteSessionFolder], source_data_root: Path, scratch_data_root: Path, extra_globs: Optional[List[str]] = None, skip_if_dest_newer_or_equal: bool = True) -> Tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path], Dict[Path, Path]]:
-    """Copy pickle/h5 mutables from a read-only data root into a parallel scratch session tree."""
+    """Copy pickle/h5 mutables into a parallel scratch session tree and symlink remaining Turbo files into place."""
     extra_globs = extra_globs if extra_globs is not None else SCRATCH_MUTABLE_EXTRA_GLOBS
-    source_data_root = Path(source_data_root).resolve()
-    scratch_data_root = Path(scratch_data_root).resolve()
+    source_data_root = Path(source_data_root)
+    scratch_data_root = Path(scratch_data_root)
     scratch_session_folders: List[ConcreteSessionFolder] = []
     scratch_basedirs: Dict[IdentifyingContext, Path] = {}
     all_copied: Dict[Path, Path] = {}
 
     for a_folder in turbo_session_folders:
-        scratch_basedir: Path = convert_filelist_to_new_parent([a_folder.path.resolve()], original_parent_path=source_data_root, dest_parent_path=scratch_data_root)[0].resolve()
-        scratch_basedir.mkdir(parents=True, exist_ok=True)
-        scratch_basedir.joinpath('output').mkdir(parents=True, exist_ok=True)
-
-        source_files: List[Path] = a_folder.discover_syncable_result_files(include_preprocessing_npy=False, extra_globs=extra_globs)
-        planned_copydict: Dict[Path, Path] = build_cross_root_copydict(source_files, source_data_root=source_data_root, dest_data_root=scratch_data_root, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
-
+        turbo_basedir: Path = find_turbo_session_basedir(a_folder, source_data_root=source_data_root)
+        scratch_basedir: Path = scratch_data_root.joinpath(kdiba_session_relpath(a_folder.context))
         print(f'[SCRATCH STAGE] {a_folder.context}')
-        print(f'  turbo:   {a_folder.path}')
+        print(f'  turbo:   {turbo_basedir}')
         print(f'  scratch: {scratch_basedir}')
-        if planned_copydict:
-            copied_dict = copy_movedict(planned_copydict, print_progress=False)
-            all_copied.update(copied_dict)
-            for src_file, dest_file in copied_dict.items():
-                print(f'  copied:  {src_file} -> {dest_file}')
-            ## END for src_file, dest_file in copied_dict.items()...
-
-        else:
+        copied_dict = mirror_turbo_session_tree_to_scratch(turbo_basedir, scratch_basedir, extra_globs=extra_globs, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
+        all_copied.update(copied_dict)
+        if len(copied_dict) == 0:
             print('  copied:  (none)')
-
-        dest_files = convert_filelist_to_new_parent(source_files, original_parent_path=source_data_root, dest_parent_path=scratch_data_root) if source_files else []
-        for src_file, dest_file in zip(source_files, dest_files):
-            dest_path = Path(dest_file).resolve()
-            if src_file not in planned_copydict:
-                skip_reason = 'dest newer/equal' if dest_path.exists() else 'missing src'
-                print(f'  skipped: {src_file} -> {dest_path} ({skip_reason})')
-        ## END for src_file, dest_file in zip(source_files, dest_files)...
-
-        if len(source_files) == 0:
-            print('  skipped: (no mutable pickle/h5 sources found on turbo)')
 
         scratch_session_folders.append(ConcreteSessionFolder(a_folder.context, scratch_basedir))
         scratch_basedirs[a_folder.context] = scratch_basedir
@@ -607,19 +710,21 @@ print(f'vscode_default_interpreter_path: {_vscode_python}')
 
 required_local_pickle_name: str = f"loadedSessPickle{active_phase_dict['override_custom_pickle_suffix']}.pkl"
 if use_scratch_writes:
-    source_data_root: Path = Path(global_data_root_parent_path).resolve()
-    if source_data_root == scratch_data_root:
+    source_data_root: Path = Path(global_data_root_parent_path)
+    scratch_write_root: Path = SCRATCH_DATA_ROOT
+    if source_data_root.resolve() == scratch_write_root.resolve():
         print(f'[SCRATCH STAGE] session discovery root is already scratch ({source_data_root}); skipping turbo copy.')
-        session_global_data_root_parent_paths = {a_folder.context: scratch_data_root for a_folder in good_session_concrete_folders}
+        session_global_data_root_parent_paths = {a_folder.context: scratch_write_root for a_folder in good_session_concrete_folders}
+        global_data_root_parent_path = scratch_write_root
     else:
-        good_session_concrete_folders, _scratch_session_basedirs, staged_copied_files = stage_mutable_session_outputs_to_scratch(turbo_session_folders=turbo_session_concrete_folders, source_data_root=source_data_root, scratch_data_root=scratch_data_root, extra_globs=SCRATCH_MUTABLE_EXTRA_GLOBS, skip_if_dest_newer_or_equal=True)
-        session_global_data_root_parent_paths = {a_folder.context: scratch_data_root for a_folder in good_session_concrete_folders}
-        global_data_root_parent_path = scratch_data_root
+        good_session_concrete_folders, _scratch_session_basedirs, staged_copied_files = stage_mutable_session_outputs_to_scratch(turbo_session_folders=turbo_session_concrete_folders, source_data_root=source_data_root, scratch_data_root=scratch_write_root, extra_globs=SCRATCH_MUTABLE_EXTRA_GLOBS, skip_if_dest_newer_or_equal=True)
+        session_global_data_root_parent_paths = {a_folder.context: scratch_write_root for a_folder in good_session_concrete_folders}
+        global_data_root_parent_path = scratch_write_root
         print(f'[SCRATCH STAGE] copied {len(staged_copied_files)} file(s); retargeted global_data_root_parent_path -> {global_data_root_parent_path}')
         _time_checkpoint('paths: stage_mutable_session_outputs_to_scratch')
 
     for a_turbo_folder, a_scratch_folder in zip(turbo_session_concrete_folders, good_session_concrete_folders):
-        turbo_pickle = a_turbo_folder.path.joinpath(required_local_pickle_name)
+        turbo_pickle = find_turbo_session_basedir(a_turbo_folder, source_data_root=source_data_root).joinpath(required_local_pickle_name)
         scratch_pickle = a_scratch_folder.path.joinpath(required_local_pickle_name)
         if (not turbo_pickle.exists()) and (not scratch_pickle.exists()):
             print(f'WARN: required local pickle missing on turbo and scratch for {a_turbo_folder.context}: {required_local_pickle_name}')
