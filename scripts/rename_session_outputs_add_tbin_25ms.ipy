@@ -21,7 +21,8 @@ Usage::
     python scripts/rename_session_outputs_add_tbin_25ms.ipy --qclus qclus12 --execute --data-root /nfs/turbo/umms-kdiba/Data
 
 
-    ipython scripts/rename_session_outputs_add_tbin_25ms.ipy -- --qclus qclus1246789 --min-mtime 2026-10-19
+    ipython scripts/rename_session_outputs_add_tbin_25ms.ipy -- --qclus qclus1246789 --data-root /nfs/turbo/umms-kdiba/Data --min-mtime 2026-10-19
+    ipython scripts/rename_session_outputs_add_tbin_25ms.ipy -- --qclus qclus1246789 --data-root /nfs/turbo/umms-kdiba/Data --min-mtime 2026-10-19 --execute
 
 """
 from __future__ import annotations
