@@ -44,7 +44,7 @@ from pyphocorehelpers.programming_helpers import copy_to_clipboard
 from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
 import pyphoplacecellanalysis.General.Batch.runBatch
 from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SavingOptions
-from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme, build_decoding_time_bin_size_filename_suffix
 
 from neuropy.core.user_annotations import UserAnnotationsManager
 from pyphoplacecellanalysis.General.Batch.runBatch import SessionBatchProgress
@@ -290,7 +290,8 @@ ripple_decoding_time_bin_size = 0.050
 # job_suffix = f"{job_suffix}_tbin_25ms"
 job_suffix = f"{job_suffix}_tbin_50ms"
 
-
+## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
+active_phase_dict['decoding_time_bin_filename_suffix'] = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
 
 # END ________________________________________________________________________________________________________________ #
 

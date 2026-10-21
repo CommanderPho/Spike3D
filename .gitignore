@@ -471,3 +471,7 @@ tmp/pdfs/extract_scatter.py
 tmp/pdfs/extract_scatter2.py
 tmp/pdfs/page0_extract.json
 tmp/pdfs/ScatterOverTime_PBEs_render.png
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_laps_df.csv
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_laps_time_bin_df.csv
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_ripple_df.csv
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_ripple_time_bin_df.csv

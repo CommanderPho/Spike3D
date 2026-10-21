@@ -58,6 +58,7 @@ from pyphoplacecellanalysis.General.Batch.concrete_session_folder import Concret
 _time_checkpoint('IMPORTS: concrete_session_folder')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_session_phase_script_map, write_chained_submit_script, write_all_retry_from_phase_scripts, print_chain_status_hint
 _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
@@ -263,6 +264,9 @@ base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
+## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
+decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
+
 force_recompute_override_computation_kwargs_dict = {
     'merged_directional_placefields': {'laps_decoding_time_bin_size': laps_decoding_time_bin_size, 'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size},
     'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': True, 'n_jobs': 1},
@@ -384,6 +388,7 @@ for active_phase in phases_to_generate:
         active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
     active_phase_dict['override_custom_pickle_suffix'] = override_custom_pickle_suffix
+    active_phase_dict['decoding_time_bin_filename_suffix'] = decoding_time_bin_filename_suffix
     if shared_batch_session_completion_handler_kwargs:
         active_phase_dict['batch_session_completion_handler_kwargs'] = {
             **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),

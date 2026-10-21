@@ -58,6 +58,7 @@ from pyphoplacecellanalysis.General.Batch.concrete_session_folder import Concret
 _time_checkpoint('IMPORTS: concrete_session_folder')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix
 _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
@@ -66,7 +67,7 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
-BATCH_DAY_DATE: str = '2026-10-20'
+BATCH_DAY_DATE: str = '2026-10-21'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -164,23 +165,6 @@ all_included_session_contexts = [
     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
 ]
 included_session_contexts = all_included_session_contexts
-
-# ## Recent stuck:
-# included_session_contexts = [ 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
-#     # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
-#     # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
-#     # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
-#     # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
-# ]
-
 
 ## Setup Functions:
 force_recompute_override_computations_includelist = []
@@ -316,33 +300,6 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 # active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates` #TODO 2026-09-01 08:47: - [ ] AS NOT TO OVERWRITE the all-cells results
 
 
-
-# # ==================================================================================================================================================================================================================================================================================== #
-# # 2026-10-19 2:29pm - Sessions Frozen on Init with no progress                                                                                                                                                                                                                                #
-# # ==================================================================================================================================================================================================================================================================================== #
-
-# ## Correctly but slowly progressing:
-# 'gor01_2006-6-09_1-22-43_q1246789_fr_2_tbin_25ms_Final',
-
-# ## Not Progressing, frozen at init:
-# 'gor01_2006-6-08_14-26-15_q1246789_fr_2_tbin_25ms_Final',
-# 'gor01_2006-6-07_16-40-19_q1246789_fr_2_tbin_25ms_Final', # 'kdiba_gor01_two_2006-6-07_16-40-19'
-# 'gor01_2006-6-09_22-24-40_q1246789_fr_2_tbin_25ms_Final',
-# 'pin01_fet11-01_12-58-54_q1246789_fr_2_tbin_25ms_Final',
-
-
-# # Frozen with progress like: ```
-# # 2026-10-19 09:57:04,182 2026-10-19_09-10-04.gl3239.arc-ts.umich.edu.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final]  [INFO ]  ========================== runBatch STARTING ==========================
-# # 2026-10-19 09:57:04,182 2026-10-19_09-10-04.gl3239.arc-ts.umich.edu.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final]  [INFO ]  	global_data_root_parent_path: /nfs/turbo/umms-kdiba/Data
-# # 2026-10-19 09:57:04,182 2026-10-19_09-10-04.gl3239.arc-ts.umich.edu.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final]  [INFO ]  	session_context: kdiba_gor01_two_2006-6-07_16-40-19
-# # 2026-10-19 09:57:04,182 2026-10-19_09-10-04.gl3239.arc-ts.umich.edu.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final]  [INFO ]  	session_basedir: "/nfs/turbo/umms-kdiba/KDIBA/gor01/two/2006-6-07_16-40-19"
-# # 2026-10-19 09:57:04,182 2026-10-19_09-10-04.gl3239.arc-ts.umich.edu.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final]  [INFO ]  __________________________________________________________________
-# # 2026-10-19 09:57:04,182 2026-10-19_09-10-04.gl3239.arc-ts.umich.edu.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final]  [INFO ]  basedir: /nfs/turbo/umms-kdiba/KDIBA/gor01/two/2006-6-07_16-40-19
-# # 2026-10-19 09:57:04,182 2026-10-19_09-10-04.gl3239.arc-ts.umich.edu.kdiba.gor01.two.2006-6-07_16-40-19._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final]  [INFO ]  active_data_mode_name: kdiba
-# # ```
-# # even after 7+ hours
-
-
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
@@ -353,10 +310,10 @@ drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.020
-laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
-# laps_decoding_time_bin_size = 0.075
+laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -367,20 +324,23 @@ laps_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
 # ripple_decoding_time_bin_size = 0.020
-ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.060
-# ripple_decoding_time_bin_size = 0.075
+ripple_decoding_time_bin_size = 0.075
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 
 
 # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_20ms"
-job_suffix = f"{job_suffix}_tbin_25ms"
+# job_suffix = f"{job_suffix}_tbin_25ms"
 # job_suffix = f"{job_suffix}_tbin_50ms"
 # job_suffix = f"{job_suffix}_tbin_60ms"
-# job_suffix = f"{job_suffix}_tbin_75ms"
+job_suffix = f"{job_suffix}_tbin_75ms"
+
+## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
+active_phase_dict['decoding_time_bin_filename_suffix'] = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
 
 # END ________________________________________________________________________________________________________________ #
 

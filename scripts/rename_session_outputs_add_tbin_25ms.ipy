@@ -1,0 +1,277 @@
+# %%
+"""Rename existing 25ms session global pickle / pipeline HDF5 to canonical ``-tbin_25ms``.
+
+Targets that **lack** ``-tbin_``:
+
+  output/global_computation_results{qclu_suffix}.pkl  ->  ...-tbin_25ms.pkl
+  output/pipeline{qclu_suffix}.h5                     ->  ...-tbin_25ms.h5
+
+Does **not** rename ``loadedSessPickle{qclu_suffix}.pkl`` (shared across decoding bins).
+Does **not** touch unsuffixed ``loadedSessPickle.pkl`` / ``global_computation_results.pkl``
+(warns if present). Skip if dest exists, the name already has ``-tbin_``, or the file was last modified
+on or before ``2026-10-19`` (override with ``--min-mtime``).
+
+Dry-run by default; pass ``--execute`` to move.
+
+Usage::
+
+    ipython scripts/rename_session_outputs_add_tbin_25ms.ipy
+    ipython scripts/rename_session_outputs_add_tbin_25ms.ipy -- --qclus qclus1246789 --dry-run
+    ipython scripts/rename_session_outputs_add_tbin_25ms.ipy -- --qclus qclus1246789 --execute
+    python scripts/rename_session_outputs_add_tbin_25ms.ipy --qclus qclus12 --execute --data-root /nfs/turbo/umms-kdiba/Data
+
+
+    ipython scripts/rename_session_outputs_add_tbin_25ms.ipy -- --qclus qclus1246789 --min-mtime 2026-10-19
+
+"""
+from __future__ import annotations
+
+import argparse
+import shutil
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Sequence, Tuple
+
+
+# Matches active_phase_dict['override_custom_pickle_suffix'] in the ProcessBatchOutputs_*.ipy notebooks
+QCLUS_PARAMETER_SPECIFIERS: Dict[str, str] = {
+    "qclus12": "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0",
+    "qclus1246789": "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0",
+}
+TBIN_SUFFIX: str = "-tbin_25ms"
+MIN_MTIME: datetime = datetime(2026, 10, 19)  # only files modified later than this date
+
+
+# Relative session dirs under data root (KDIBA layout), matching included_session_contexts
+SESSION_REL_PATHS: List[str] = [
+    "KDIBA/gor01/one/2006-6-08_14-26-15",
+    "KDIBA/gor01/one/2006-6-09_1-22-43",
+    "KDIBA/gor01/one/2006-6-12_15-55-31",
+    "KDIBA/gor01/two/2006-6-07_16-40-19",
+    "KDIBA/gor01/two/2006-6-08_21-16-25",
+    "KDIBA/gor01/two/2006-6-09_22-24-40",
+    "KDIBA/gor01/two/2006-6-12_16-53-46",
+    "KDIBA/vvp01/two/2006-4-09_16-40-54",
+    "KDIBA/vvp01/two/2006-4-10_12-58-3",
+    "KDIBA/pin01/one/fet11-01_12-58-54",
+    "KDIBA/pin01/one/11-02_17-46-44",
+    "KDIBA/pin01/one/11-03_12-3-25",
+]
+
+KNOWN_DATA_ROOT_CANDIDATES: List[str] = [
+    "/nfs/turbo/umms-kdiba/Data",
+    "/home/halechr/FastData",
+    "/media/halechr/BETAMAX/Data",
+    "/media/halechr/MAX/Data",
+    "/Volumes/MoverNew/data",
+    "W:/Data",
+    "/Users/pho/data",
+]
+
+
+# %%
+def find_data_root(explicit: Optional[Path] = None) -> Path:
+    if explicit is not None:
+        root = explicit.resolve()
+        if not root.exists():
+            raise FileNotFoundError(f"--data-root does not exist: {root}")
+        return root
+    for candidate in KNOWN_DATA_ROOT_CANDIDATES:
+        p = Path(candidate)
+        if p.exists():
+            return p.resolve()
+    ## END for candidate in KNOWN_DATA_ROOT_CANDIDATES...
+    raise FileNotFoundError(
+        "No data root found. Pass --data-root explicitly. Tried:\n  "
+        + "\n  ".join(KNOWN_DATA_ROOT_CANDIDATES)
+    )
+
+
+def dest_with_tbin(src: Path, tbin_suffix: str = TBIN_SUFFIX) -> Path:
+    return src.with_stem(f"{src.stem}{tbin_suffix}")
+
+
+def files_for_session(session_dir: Path, parameter_specifier: str) -> List[Path]:
+    """Unsuffixed-by-tbin global pickle and pipeline h5 only (never local pickle)."""
+    return [
+        session_dir / "output" / f"global_computation_results{parameter_specifier}.pkl",
+        session_dir / "output" / f"pipeline{parameter_specifier}.h5",
+    ]
+
+
+def unsuffixed_warn_paths(session_dir: Path) -> List[Path]:
+    """Bare session files that this script must not rename."""
+    return [
+        session_dir / "loadedSessPickle.pkl",
+        session_dir / "output" / "global_computation_results.pkl",
+    ]
+
+
+def file_mtime(src: Path) -> datetime:
+    return datetime.fromtimestamp(src.stat().st_mtime)
+
+
+def try_move(src: Path, dest: Path, *, execute: bool, min_mtime: Optional[datetime] = None) -> str:
+    """Return status: moved | would_move | skipped_missing | skipped_dest_exists | skipped_already_tbin | skipped_too_old | error:..."""
+    if "-tbin_" in src.name:
+        return "skipped_already_tbin"
+    if not src.exists():
+        return "skipped_missing"
+    if min_mtime is not None:
+        src_mtime = file_mtime(src)
+        if src_mtime <= min_mtime:
+            return f"skipped_too_old:{src_mtime.isoformat(sep=' ', timespec='seconds')}"
+    if dest.exists():
+        return "skipped_dest_exists"
+    if not execute:
+        return "would_move"
+    try:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(src), str(dest))
+        return "moved"
+    except Exception as e:
+        return f"error:{type(e).__name__}: {e}"
+
+
+def process_sessions(data_root: Path, session_rel_paths: Sequence[str], *, parameter_specifier: str, tbin_suffix: str, execute: bool, min_mtime: Optional[datetime] = None) -> Tuple[List[Tuple[str, Path, Path, str]], dict]:
+    results: List[Tuple[str, Path, Path, str]] = []
+    counts = {
+        "moved": 0,
+        "would_move": 0,
+        "skipped_missing": 0,
+        "skipped_dest_exists": 0,
+        "skipped_already_tbin": 0,
+        "skipped_too_old": 0,
+        "error": 0,
+        "session_missing": 0,
+        "warned_unsuffixed": 0,
+    }
+
+    for rel in session_rel_paths:
+        session_dir = data_root / rel
+        if not session_dir.exists():
+            print(f"[SESSION MISSING] {session_dir}")
+            counts["session_missing"] += 1
+            continue
+        ## END if not session_dir.exists()...
+
+        for warn_path in unsuffixed_warn_paths(session_dir):
+            if warn_path.exists():
+                print(f"[WARN unsuffixed present, not renaming] {warn_path}")
+                counts["warned_unsuffixed"] += 1
+        ## END for warn_path in unsuffixed_warn_paths(session_dir)...
+
+        local_pkl = session_dir / f"loadedSessPickle{parameter_specifier}.pkl"
+        if local_pkl.exists():
+            print(f"[SKIP local pickle] {local_pkl}")
+
+        for src in files_for_session(session_dir, parameter_specifier):
+            dest = dest_with_tbin(src, tbin_suffix=tbin_suffix)
+            status = try_move(src, dest, execute=execute, min_mtime=min_mtime)
+            results.append((rel, src, dest, status))
+            if status.startswith("error:"):
+                counts["error"] += 1
+            elif status.startswith("skipped_too_old"):
+                counts["skipped_too_old"] += 1
+            else:
+                counts[status] = counts.get(status, 0) + 1
+            print(f"[{status}] {src}  ->  {dest}")
+        ## END for src in files_for_session(...)...
+    ## END for rel in session_rel_paths...
+
+    return results, counts
+
+
+def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Rename unsuffixed-by-tbin global pickle and pipeline HDF5 to -tbin_25ms (dry-run default)."
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Print planned moves only (default).",
+    )
+    mode.add_argument(
+        "--execute",
+        action="store_true",
+        help="Actually shutil.move files.",
+    )
+    parser.add_argument(
+        "--qclus",
+        type=str,
+        choices=list(QCLUS_PARAMETER_SPECIFIERS.keys()),
+        default="qclus1246789",
+        help="Which qclu pickle parameter suffix to rename (default: qclus1246789).",
+    )
+    parser.add_argument(
+        "--data-root",
+        type=Path,
+        default=None,
+        help="Override data root (otherwise first extant known path).",
+    )
+    parser.add_argument(
+        "--tbin-suffix",
+        type=str,
+        default=TBIN_SUFFIX,
+        help=f"Stem suffix to append (default: {TBIN_SUFFIX}).",
+    )
+    parser.add_argument(
+        "--min-mtime",
+        type=str,
+        default=MIN_MTIME.strftime("%Y-%m-%d"),
+        help="Only rename files last modified later than this local date/datetime (default: 2026-10-19).",
+    )
+    return parser.parse_args(argv)
+
+
+def parse_min_mtime(value: str) -> datetime:
+    for fmt in ("%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+        try:
+            return datetime.strptime(value, fmt)
+        except ValueError:
+            continue
+    ## END for fmt in ("%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S")...
+    raise ValueError(f"--min-mtime must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS, got: {value!r}")
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    args = parse_args(argv)
+    execute: bool = bool(args.execute)
+    data_root = find_data_root(args.data_root)
+    parameter_specifier: str = QCLUS_PARAMETER_SPECIFIERS[args.qclus]
+    min_mtime: datetime = parse_min_mtime(str(args.min_mtime))
+
+    print(f"data_root: {data_root}")
+    print(f"qclus: {args.qclus}")
+    print(f"parameter_specifier: {parameter_specifier}")
+    print(f"tbin_suffix: {args.tbin_suffix}")
+    print(f"min_mtime: {min_mtime.isoformat(sep=' ', timespec='seconds')} (skip files modified on or before this)")
+    print(f"mode: {'EXECUTE (move)' if execute else 'DRY-RUN (no changes)'}")
+    print(f"n_sessions: {len(SESSION_REL_PATHS)}")
+    print("-" * 80)
+
+    _results, counts = process_sessions(
+        data_root,
+        SESSION_REL_PATHS,
+        parameter_specifier=parameter_specifier,
+        tbin_suffix=args.tbin_suffix,
+        execute=execute,
+        min_mtime=min_mtime,
+    )
+
+    print("-" * 80)
+    print("SUMMARY:")
+    for k, v in counts.items():
+        print(f"  {k}: {v}")
+    ## END for k, v in counts.items()...
+    if not execute:
+        print("\nRe-run with --execute to apply moves.")
+    return 0 if counts["error"] == 0 else 1
+
+
+# %%
+if __name__ == "__main__":
+    sys.exit(main())

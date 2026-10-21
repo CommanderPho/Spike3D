@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""One-off archive of current (non-tbin-suffixed) pipeline pickles before a 25ms clean_run.
+"""Archive of 75ms *global* pickle and pipeline HDF5 (canonical ``-tbin_75ms`` names).
 
-Moves (does not copy) canonical pickles aside with suffix ``-tbin_75ms`` so the
-upcoming batch can rewrite the cleared canonical paths.
+After tbin-suffixed session outputs, 25ms files live at ``-tbin_25ms`` and 75ms files
+live at ``-tbin_75ms``. This script looks for the 75ms names and does **not** rewrite
+unsuffixed-by-tbin ``global_computation_results{qclu}.pkl`` / ``pipeline{qclu}.h5``
+(those are 25ms leftovers handled by ``rename_session_outputs_add_tbin_25ms.ipy``).
+
+Local ``loadedSessPickle{qclu}.pkl`` is shared across decoding bins and is skipped by
+default.
 
 Sessions match ProcessBatchOutputs_qclus12_Only.ipy / ProcessBatchOutputs_qclus1246789_Only.ipy
 (active included_session_contexts — same list). Target qclus (pickle parameter suffix) is
@@ -14,17 +19,17 @@ selected with ``--qclus``:
 Usage (on remote, e.g. GreatLakes)::
 
     # Preview (default: qclus12, dry-run)
-    python archive_qclus12_75ms_pickles.py
-    python archive_qclus12_75ms_pickles.py --qclus qclus12 --dry-run
+    python archive_qclus_75ms_pickles.py
+    python archive_qclus_75ms_pickles.py --qclus qclus12 --dry-run
 
     # Apply moves for qclus12
-    python archive_qclus12_75ms_pickles.py --qclus qclus12 --execute
+    python archive_qclus_75ms_pickles.py --qclus qclus12 --execute
 
     # Apply moves for qclus1246789
-    python archive_qclus12_75ms_pickles.py --qclus qclus1246789 --execute
+    python archive_qclus_75ms_pickles.py --qclus qclus1246789 --execute
 
     # Explicit data root
-    python archive_qclus12_75ms_pickles.py --qclus qclus1246789 --execute --data-root /nfs/turbo/umms-kdiba/Data
+    python archive_qclus_75ms_pickles.py --qclus qclus1246789 --execute --data-root /nfs/turbo/umms-kdiba/Data
 """
 from __future__ import annotations
 
@@ -43,6 +48,7 @@ QCLUS_PARAMETER_SPECIFIERS: Dict[str, str] = {
 ARCHIVE_SUFFIX: str = "-tbin_75ms"
 # ARCHIVE_SUFFIX: str = "2026-09-23-tbin_75ms"
 
+include_local_pkl_files: bool = False  # local pickle is tbin-independent (qclu/frate only)
 include_h5_files: bool = True
 include_global_comps_pkl_files: bool = True
 
@@ -93,31 +99,34 @@ def find_data_root(explicit: Optional[Path] = None) -> Path:
 def archive_dest_path(src: Path, archive_suffix: str) -> Path:
     """Append archive_suffix to stem.
 
+    If the source already has the tbin/archive suffix (canonical ``-tbin_75ms`` names),
+    append ``_archived`` instead of repeating ``-tbin_75ms``.
+
     If archive_suffix already starts with ``-`` or ``_`` (e.g. ``-tbin_75ms``), concatenate as-is:
       foo.pkl + ``-tbin_75ms`` -> foo-tbin_75ms.pkl
     Otherwise insert an underscore:
       foo.pkl + ``2026-09-23_75ms`` -> foo_2026-09-23_75ms.pkl
     """
+    if archive_suffix and (archive_suffix in src.stem):
+        return src.with_stem(f"{src.stem}_archived")
     if archive_suffix.startswith(('-', '_')):
         return src.with_stem(f"{src.stem}{archive_suffix}")
     return src.with_stem(f"{src.stem}_{archive_suffix}")
 
 
-def files_for_session(session_dir: Path, parameter_specifier: str, *, include_global_comps_pkl: bool = False, include_h5: bool = False) -> List[Path]:
-    """Canonical (non-tbin) paths for this parameter specifier.
+def files_for_session(session_dir: Path, parameter_specifier: str, *, include_local_pkl: bool = False, include_global_comps_pkl: bool = False, include_h5: bool = False, tbin_suffix: str = ARCHIVE_SUFFIX) -> List[Path]:
+    """75ms archive sources for this parameter specifier.
 
-    Names match python_template.py.j2 / _get_custom_filenames_from_computation_metadata:
-      loadedSessPickle{suffix}.pkl  (always)
-      output/global_computation_results{suffix}.pkl  (if include_global_comps_pkl)
-      pipeline{suffix}.h5  (if include_h5; custom h5 may be absent)
+    Local pickle is qclu/frate only (no tbin). Global pickle and pipeline h5 use canonical
+    ``-tbin_75ms`` names. Unsuffixed-by-tbin global/h5 are left for the 25ms rename script.
     """
-    out: List[Path] = [
-        session_dir / f"loadedSessPickle{parameter_specifier}.pkl",
-    ]
+    out: List[Path] = []
+    if include_local_pkl:
+        out.append(session_dir / f"loadedSessPickle{parameter_specifier}.pkl")
     if include_global_comps_pkl:
-        out.append(session_dir / "output" / f"global_computation_results{parameter_specifier}.pkl")
+        out.append(session_dir / "output" / f"global_computation_results{parameter_specifier}{tbin_suffix}.pkl")
     if include_h5:
-        out.append(session_dir / "output" / f"pipeline{parameter_specifier}.h5")
+        out.append(session_dir / "output" / f"pipeline{parameter_specifier}{tbin_suffix}.h5")
     return out
 
 
@@ -137,7 +146,7 @@ def try_move(src: Path, dest: Path, *, execute: bool) -> str:
         return f"error:{type(e).__name__}: {e}"
 
 
-def process_sessions(data_root: Path, session_rel_paths: Sequence[str], *, parameter_specifier: str, archive_suffix: str, execute: bool, include_global_comps_pkl: bool = False, include_h5: bool = False) -> Tuple[List[Tuple[str, Path, Path, str]], dict]:
+def process_sessions(data_root: Path, session_rel_paths: Sequence[str], *, parameter_specifier: str, archive_suffix: str, execute: bool, include_local_pkl: bool = False, include_global_comps_pkl: bool = False, include_h5: bool = False) -> Tuple[List[Tuple[str, Path, Path, str]], dict]:
     results: List[Tuple[str, Path, Path, str]] = []
     counts = {
         "moved": 0,
@@ -156,7 +165,7 @@ def process_sessions(data_root: Path, session_rel_paths: Sequence[str], *, param
             continue
         ## END if not session_dir.exists()...
 
-        for src in files_for_session(session_dir, parameter_specifier, include_global_comps_pkl=include_global_comps_pkl, include_h5=include_h5):
+        for src in files_for_session(session_dir, parameter_specifier, include_local_pkl=include_local_pkl, include_global_comps_pkl=include_global_comps_pkl, include_h5=include_h5, tbin_suffix=ARCHIVE_SUFFIX):
             dest = archive_dest_path(src, archive_suffix)
             status = try_move(src, dest, execute=execute)
             results.append((rel, src, dest, status))
@@ -173,7 +182,7 @@ def process_sessions(data_root: Path, session_rel_paths: Sequence[str], *, param
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Move canonical pipeline pickles aside with a 75ms archive suffix (qclus12 or qclus1246789)."
+        description="Archive 75ms global pickle and pipeline HDF5 (canonical -tbin_75ms names; does not rewrite unsuffixed 25ms leftovers)."
     )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument(
@@ -219,6 +228,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     print(f"qclus: {args.qclus}")
     print(f"parameter_specifier: {parameter_specifier}")
     print(f"archive_suffix: {args.archive_suffix}")
+    print(f"include_local_pkl_files: {include_local_pkl_files}")
     print(f"include_global_comps_pkl_files: {include_global_comps_pkl_files}")
     print(f"include_h5_files: {include_h5_files}")
     print(f"mode: {'EXECUTE (move)' if execute else 'DRY-RUN (no changes)'}")
@@ -231,6 +241,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         parameter_specifier=parameter_specifier,
         archive_suffix=args.archive_suffix,
         execute=execute,
+        include_local_pkl=include_local_pkl_files,
         include_global_comps_pkl=include_global_comps_pkl_files,
         include_h5=include_h5_files,
     )
