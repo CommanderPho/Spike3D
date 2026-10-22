@@ -253,7 +253,19 @@ phases_to_generate = [ProcessingScriptPhases.final_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.figure_run]
 
-batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
+# batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
+_batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-10-21_GL' -> 'GL'
+_batch_execution_target_from_host_tag = {
+    'GL': 'slurm',  # Great Lakes
+    'Lab': 'linux_standalone',  # Lab workstation, no sbatch
+    'Apogee': 'windows',  # Windows workstation, PowerShell
+}
+if _batch_host_tag in _batch_execution_target_from_host_tag:
+    batch_execution_target: str = _batch_execution_target_from_host_tag[_batch_host_tag]
+elif platform.system() == 'Windows':
+    batch_execution_target = 'windows'  # unknown tag, but this process is on Windows
+else:
+    raise AssertionError(f"Unknown BATCH_DATE_TO_USE host tag {_batch_host_tag!r} from {BATCH_DATE_TO_USE!r}; expected one of {list(_batch_execution_target_from_host_tag)}")
 
 # END ________________________________________________________________________________________________________________ #
 # Per-phase completion templates are built inside `for active_phase in phases_to_generate` from `phase_any_run_custom_user_completion_functions_dict_dict` (replace, never None).
