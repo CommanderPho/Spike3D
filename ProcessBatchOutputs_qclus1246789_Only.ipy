@@ -61,6 +61,7 @@ _time_checkpoint('IMPORTS: concrete_session_folder')
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import GreatlakesTurboToScratchHelpers # GL Turbo->Scratch workaround; drop when Turbo is R/W again
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_session_phase_script_map, write_chained_submit_script, write_all_retry_from_phase_scripts, print_chain_status_hint
 _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
@@ -114,16 +115,29 @@ _time_checkpoint('paths:collected_outputs_path')
 
 # %%
 # Get the generated code for user-contributed functions:
-# NOTE: `None` means "use the MAIN_get_template_string default mega set" (rank-order export/figures, alternative_replay, backup, inst-FR, PF-peaks, first-spikes, clusterless, ...). For the tbin-only 25ms→75ms recipe that set mutates the pipeline (alternative_replay nulls the decoding bins → save_custom wrote `-tbin_laps250ms_ripple25ms.pkl`) and rewrites the shared local pickle, so always pass an explicit dict here.
-# phase_any_run_custom_user_completion_functions_dict = None
-## tbin-only (75ms) completions: only the decoding-time-bin-dependent exports + session global pickle save.
-phase_any_run_custom_user_completion_functions_dict = {
-    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
-    'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
-    'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
-    'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
-    'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+# NOTE: never pass `None` into MAIN_get_template_string (that installs the mega set: rank-order, alternative_replay, backup, ...). Per-phase dicts below are the entire completion list (replace, not merge).
+# ==================================================================================================================================================================================================================================================================================== #
+# Multi-phase Chained user_completion_functions override                                                                                                                                                                                                                               #
+# ==================================================================================================================================================================================================================================================================================== #
+phase_any_run_custom_user_completion_functions_dict_dict = {
+    ProcessingScriptPhases.clean_run: {
+        'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+    },
+    ProcessingScriptPhases.continued_run: {
+        'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
+        'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
+        'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
+        'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+    },
+    ProcessingScriptPhases.final_run: {
+        'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
+        'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
+        'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+        'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
+        'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+    },
 }
+_is_kdiba_session: bool = True
 # phase_any_run_custom_user_completion_functions_dict = {
 #     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
 #     'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
@@ -221,83 +235,71 @@ _time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
-# ACTIVE PHASE                                                                                                         #
+# PHASES TO GENERATE (chained per-session submit; default is 75ms incremental final_run only)                          #
 # ==================================================================================================================== #
-# Post-rename 25ms → 75ms recipe:
-# - Do not set clean_run.
+# Post-rename 25ms → 75ms recipe (default `final_run` only):
+# - Do not set clean_run for the incremental 75ms recipe (uncomment the 3-phase list only for a full rebuild).
 # - Run scripts/rename_session_outputs_add_tbin_25ms.ipy --execute first so 25ms globals live at -tbin_25ms.
 # - Load existing qclu/frate loadedSessPickle (override_custom_pickle_suffix, no tbin).
-# - Do not rewrite that shared local pickle (should_save_local_pipeline_pkl=False; save_custom enable_save_pipeline_pkl=False). Freeze is the wrong lever — it would skip 75ms global compute.
+# - Do not rewrite that shared local pickle on continued/final (should_save_local_pipeline_pkl=False; save_custom enable_save_pipeline_pkl=False). Freeze is the wrong lever — it would skip 75ms global compute.
 # - Write global pickle/h5 as -tbin_75ms (decoding_time_bin_filename_suffix) so 25ms survives.
 # - Force-recompute only tbin-dependent globals (not FAT / rank-order / PF / jonathan).
 # - final_run may rewrite collected_outputs CSVs; those names already carry _tbin-0.075.
 
-# active_phase = ProcessingScriptPhases.clean_run
-# active_phase = ProcessingScriptPhases.continued_run
-active_phase = ProcessingScriptPhases.final_run
-# active_phase = ProcessingScriptPhases.figure_run
+phases_to_generate = [ProcessingScriptPhases.final_run]
+# phases_to_generate = [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
+# Single-phase fallback (uncomment to generate only one phase, no chain):
+# phases_to_generate = [ProcessingScriptPhases.clean_run]
+# phases_to_generate = [ProcessingScriptPhases.continued_run]
+# phases_to_generate = [ProcessingScriptPhases.figure_run]
 
+batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
 
 # END ________________________________________________________________________________________________________________ #
-custom_user_completion_functions_dict = active_phase.get_custom_user_completion_functions_dict(extra_run_functions=phase_any_run_custom_user_completion_functions_dict, is_kdiba_session=True)
-# custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict ## directly override the outputs:
+# Per-phase completion templates are built inside `for active_phase in phases_to_generate` from `phase_any_run_custom_user_completion_functions_dict_dict` (replace, never None).
 
-# print(f'custom_user_completion_functions_dict: {custom_user_completion_functions_dict}')
-custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict)
-_time_checkpoint('MAIN_get_template_string')
-# print(f'custom_user_completion_function_template_code: {custom_user_completion_function_template_code}')
-active_phase_dict = active_phase.get_run_configuration(custom_user_completion_function_template_code=custom_user_completion_function_template_code, extra_extended_computations_include_includelist=extra_extended_computations_include_includelist)
-_time_checkpoint('active_phase.get_run_configuration')
-
-## Completely replace with custom functions:
-if custom_phase_extended_computations_include_includelist is not None:
-    print(f'WARNING: custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist} is provided so only these extended_computation_fns will be used (overwritting the phase defaults!).')
-    active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
-else:
-    # 75ms tbin-only include list: keep local PF/laps validators (no-op if already in loaded pickle); skip jonathan/rank-order/PF-peaks/FAT.
-    active_phase_dict['extended_computations_include_includelist'] = [
-        'pf_computation', 'split_to_directional_laps',  # local; validators no-op if already in loaded pickle
-        'merged_directional_placefields',
-        'directional_decoders_decode_continuous',
-        'directional_decoders_evaluate_epochs',
-        'directional_decoders_epoch_heuristic_scoring',
-        'non_PBE_epochs_results',
-        'generalized_specific_epochs_decoding',
-        'perform_wcorr_shuffle_analysis',
-    ]
-
-# active_phase_dict['extended_computations_include_includelist'].remove('wcorr_shuffle_analysis')
-# active_phase_dict['should_freeze_pipeline_updates'] = False
-# active_phase_dict['should_freeze_pipeline_updates'] = True #TODO 2026-09-02 12:36: - [ ] AS NOT TO OVERWRITE the all-cells results
-# Freeze skips handler batch_extended_computations; do not use it to protect the 25ms local pickle.
-active_phase_dict['should_save_local_pipeline_pkl'] = False # load the shared qclu/frate loadedSessPickle; never rewrite it. Global `-tbin_75ms` pickle/h5 still save.
-active_phase_dict['skip_save_on_initial_load'] = True # also skip the end-of-batch_load_session local pickle write
-
-# ## Default non-overriden for custom suffix:
-# active_phase_dict['override_custom_pickle_suffix'] = '' # default, None
-# active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {}
+# 75ms tbin-only include list: keep local PF/laps validators (no-op if already in loaded pickle); skip jonathan/rank-order/PF-peaks/FAT.
+_tbin_only_extended_computations_include_includelist = [
+    'pf_computation', 'split_to_directional_laps',  # local; validators no-op if already in loaded pickle
+    'merged_directional_placefields',
+    'directional_decoders_decode_continuous',
+    'directional_decoders_evaluate_epochs',
+    'directional_decoders_epoch_heuristic_scoring',
+    'non_PBE_epochs_results',
+    'generalized_specific_epochs_decoding',
+    'perform_wcorr_shuffle_analysis',
+]
+_tbin_only_force_recompute_override_computations_includelist = [
+    'merged_directional_placefields',
+    'directional_decoders_decode_continuous',  # needed after 25→75ms placefields
+    'directional_decoders_evaluate_epochs',
+    'directional_decoders_epoch_heuristic_scoring',
+    'non_PBE_epochs_results',
+    'generalized_specific_epochs_decoding',
+    'perform_wcorr_shuffle_analysis',
+]
 
 # ==================================================================================================================== #
-# Custom Suffix and overrides                                                                                          #
+# Custom Suffix and overrides (shared across phases)                                                                   #
 # ==================================================================================================================== #
 
 # # # "_withNormalComputedReplays-frateThresh_5.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
-# active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_5.0"
+# override_custom_pickle_suffix = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_5.0"
 # included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
 # minimum_inclusion_fr_Hz = 5.0
-# job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
+# base_job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_5.0"
 
 # # # "_withNormalComputedReplays-frateThresh_2.0-qclu_[1, 2]" _______________________________________________ #
-# active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0"
+# override_custom_pickle_suffix = "_withNormalComputedReplays-qclu_[1, 2]-frateThresh_2.0"
 # included_qclu_values = [1, 2]
 # minimum_inclusion_fr_Hz = 2.0
-# job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_2.0"
+# base_job_suffix = f"_withNormalComputedReplays-qclu_12-frateThresh_2.0"
 
 # # "_withNormalComputedReplays-frateThresh_2.0-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
-active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0"
+override_custom_pickle_suffix = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0"
 included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
 minimum_inclusion_fr_Hz = 2.0
-job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
+base_job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 
 ## SLURM #SBATCH --job-name compaction (applied by build_slurm_job_name in pythonScriptTemplating.py):
 ### First Part: e.g. 'job_kdiba_gor01_two_2006-6-12_16-53-46__withNormalCompute'...
@@ -314,43 +316,30 @@ job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 
 
 # # # "_withNormalComputedReplays-frateThresh_0.5-qclu_[1, 2, 4, 6, 7, 8, 9]" _______________________________________________ #
-# active_phase_dict['override_custom_pickle_suffix'] = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_0.2"
+# override_custom_pickle_suffix = "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_0.2"
 # included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
 # minimum_inclusion_fr_Hz = 0.2
-# job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_0.2"
+# base_job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_0.2"
 
-
+# Shared batch_session_completion_handler_kwargs (track-body variant sets this; default empty):
+shared_batch_session_completion_handler_kwargs: Dict = {}
 # # =============================================================================
 # # VARIANT: track-body primary peaks only (Phase 2 — requires Phase 1 base pickle)
 # # Run Phase 1 (active config above) first. To run Phase 2: uncomment this block
 # # and comment out the active base-suffix lines above.
 # # =============================================================================
-# ## INPUTS: active_phase_dict, included_qclu_values, minimum_inclusion_fr_Hz, job_suffix
-# base_suffix = active_phase_dict.get('override_custom_pickle_suffix', "_withNormalComputedReplays-qclu_[1, 2, 4, 6, 7, 8, 9]-frateThresh_2.0")
+# base_suffix = override_custom_pickle_suffix
 # track_body_suffix = f"{base_suffix}-trackBodyPeakOnly"
-# active_phase_dict['override_custom_pickle_suffix'] = base_suffix # LOAD from base
-# active_phase_dict['override_custom_pickle_output_suffix'] = track_body_suffix  # SAVE variant
-# # job_suffix = f"{track_body_suffix}_tbin_75ms"
-# job_suffix = f"{job_suffix}-trackBodyPeakOnly"
+# override_custom_pickle_suffix = base_suffix # LOAD from base
+# override_custom_pickle_output_suffix = track_body_suffix  # SAVE variant — apply inside phase loop
+# base_job_suffix = f"{base_job_suffix}-trackBodyPeakOnly"
 # export_filename_extra_suffix_parts = ['variant_trackBodyPeakOnly'] # parser-safe (key_value form): appended to collected_outputs export filenames to avoid overwriting base-run exports
-# active_phase_dict['batch_session_completion_handler_kwargs'] = {
-#     **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),
+# shared_batch_session_completion_handler_kwargs = {
 #     'apply_track_body_aclu_filter': True,
 #     'track_body_filter_minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
 #     'track_body_filter_included_qclu_values': included_qclu_values,
 #     'export_filename_extra_suffix_parts': export_filename_extra_suffix_parts,
 # }
-# # Narrow force-recompute to downstream only (base DirectionalLaps is loaded then sliced):
-# active_phase_dict['force_recompute_override_computations_includelist'] = [
-#     'merged_directional_placefields', 'directional_decoders_decode_continuous',
-#     'directional_decoders_evaluate_epochs', 'directional_decoders_epoch_heuristic_scoring',
-#     'rank_order_shuffle_analysis', 'perform_wcorr_shuffle_analysis',
-#     'jonathan_firing_rate_analysis', 'long_short_fr_indicies_analyses',
-#     'long_short_endcap_analysis', 'long_short_decoding_analyses',
-#     'non_PBE_epochs_results', 'generalized_specific_epochs_decoding',
-#     # match active extended_computations_include_includelist minus pf_computation / split_to_directional_laps
-# ]
-# active_phase_dict['should_freeze_pipeline_updates'] = True # `should_freeze_pipeline_updates` #TODO 2026-09-01 08:47: - [ ] AS NOT TO OVERWRITE the all-cells results
 
 
 # ==================================================================================================================== #
@@ -385,19 +374,18 @@ ripple_decoding_time_bin_size = 0.075
 # ripple_decoding_time_bin_size = 0.025
 
 
-# job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
-# job_suffix = f"{job_suffix}_tbin_20ms"
-# job_suffix = f"{job_suffix}_tbin_25ms"
-# job_suffix = f"{job_suffix}_tbin_50ms"
-# job_suffix = f"{job_suffix}_tbin_60ms"
-job_suffix = f"{job_suffix}_tbin_75ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_20ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_60ms"
+base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
-active_phase_dict['decoding_time_bin_filename_suffix'] = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
+decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
 
 # END ________________________________________________________________________________________________________________ #
 
-active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
+force_recompute_override_computation_kwargs_dict = {
     'merged_directional_placefields': {'laps_decoding_time_bin_size': laps_decoding_time_bin_size, 'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size},
     'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': True, 'n_jobs': 1},
     'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz':minimum_inclusion_fr_Hz, 'included_qclu_values':included_qclu_values},
@@ -410,24 +398,12 @@ active_phase_dict['force_recompute_override_computation_kwargs_dict'] = {
                                 drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
     'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, compute_2D=False),
 }
-# active_phase_dict['force_recompute_override_computations_includelist'] = [] # empty list so that everything isn't forced to recompute each time. NEEDS TO BE CHANGED WHEN qclus/fr_Hz change
-# active_phase_dict['force_recompute_override_computations_includelist'] = ['directional_decoders_evaluate_epochs', 'directional_decoders_epoch_heuristic_scoring']
-if not active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('apply_track_body_aclu_filter', False):
-    ## 75ms tbin work only (not rank-order / FAT / jonathan / PF). Keep rank_order kwargs above but do not force-recompute it.
-    active_phase_dict['force_recompute_override_computations_includelist'] = [
-        'merged_directional_placefields',
-        'directional_decoders_decode_continuous',  # needed after 25→75ms placefields
-        'directional_decoders_evaluate_epochs',
-        'directional_decoders_epoch_heuristic_scoring',
-        'non_PBE_epochs_results',
-        'generalized_specific_epochs_decoding',
-        'perform_wcorr_shuffle_analysis',
-    ]
-
-active_phase_dict['override_parameters_flat_keypaths_dict'] = {'rank_order_shuffle_analysis.included_qclu_values': included_qclu_values, 'rank_order_shuffle_analysis.minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
+override_parameters_flat_keypaths_dict = {
+    'rank_order_shuffle_analysis.included_qclu_values': included_qclu_values,
+    'rank_order_shuffle_analysis.minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
 } # need to provide `override_parameters_flat_keypaths_dict`
 
-active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
+custom_user_completion_function_override_kwargs_dict = {
     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': dict(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size, num_wcorr_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
     'backup_previous_session_files_completion_function': dict(desired_suffix=f'{BATCH_DATE_TO_USE}'),
     'save_custom_session_files_completion_function': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=True, enable_save_h5=False, should_write_posterior_h5=True), #TODO 2026-09-29 12:21: - [ ] no posteriors needed. 75ms tbin-only run: do not rewrite the shared (qclu/frate) local loadedSessPickle; the handler already writes the `-tbin_75ms` global pickle. pipeline h5 export needs jonathan/`long_short_fr_indicies_analysis`, which is not in the tbin-only global results.
@@ -478,41 +454,15 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
 }
 
 # Track-body variant (Option 2): pass parser-safe export filename suffix into export-producing completion functions so their collected_outputs exports don't overwrite base-run files:
-_export_filename_extra_suffix_parts = active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('export_filename_extra_suffix_parts', None)
+_export_filename_extra_suffix_parts = shared_batch_session_completion_handler_kwargs.get('export_filename_extra_suffix_parts', None)
 if _export_filename_extra_suffix_parts:
     _export_suffix_kwarg = dict(export_filename_extra_suffix_parts=_export_filename_extra_suffix_parts)
     for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', 'save_custom_session_files_completion_function', 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function']:
-        active_phase_dict['custom_user_completion_function_override_kwargs_dict'][_a_fn_name] = {**active_phase_dict['custom_user_completion_function_override_kwargs_dict'].get(_a_fn_name, {}), **_export_suffix_kwarg}
+        custom_user_completion_function_override_kwargs_dict[_a_fn_name] = {**custom_user_completion_function_override_kwargs_dict.get(_a_fn_name, {}), **_export_suffix_kwarg}
     ## END for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', ...]...
 
-
-# ==================================================================================================================== #
-# Last-Chance Overrides                                                                                                #
-# ==================================================================================================================== #
-# # Interactive Debugging in Notebooks:
-# active_phase_dict.update(dict(should_use_neptune_logging=False, should_create_vscode_workspace=True, 
-# 	should_freeze_pipeline_updates=True,
-# ))
-
-# ## No custom suffix!
-# active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=False, should_use_neptune_logging=False, should_generate_run_notebooks=True, should_create_vscode_workspace=True, create_slurm_scripts=True,
-# ))
-
-
-# Custom Job Suffix that will not interfere with running jobs ________________________________________________________ #
-phase_job_suffix: str = active_phase_dict.pop('phase_job_suffix', None)
-if phase_job_suffix is not None:
-    job_suffix = f"{job_suffix}_{phase_job_suffix}" ## append phase to end of job_suffix
-active_phase_dict.update(dict(job_suffix=job_suffix,
-                               should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
-))
-print(f'job_suffix: "{job_suffix}"')
-
-# #TODO 2024-11-20 07:12: - [ ] Run with this, I hardcoded the parameter change for now
-# {'ripple_decoding_time_bin_size': 0.058}
-
-## Non-interactive batch computation in scripts
-# active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
+print(f'base_job_suffix: "{base_job_suffix}"')
+print(f'phases_to_generate: {[p.name for p in phases_to_generate]}')
 
 # END ________________________________________________________________________________________________________________ #
 
@@ -541,93 +491,158 @@ print(f'Using Spike3D repo root: {_spike3d_repo_root} ({"from SPIKE3D_REPO_ROOT 
 print(f'venv_activate_path: {_venv_activate_path}')
 print(f'vscode_default_interpreter_path: {_vscode_python}')
 
+print(f'batch_execution_target: {batch_execution_target}')
+
 if use_scratch_writes:
     ## GL Turbo->Scratch workaround: copy the load-only local pickle + writable global pickle + tiny sidecars onto scratch and retarget the job write root there.
-    good_session_concrete_folders, session_global_data_root_parent_paths, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run(turbo_session_folders=good_session_concrete_folders, source_data_root=global_data_root_parent_path, pickle_suffix=active_phase_dict.get('override_custom_pickle_suffix', ''), tbin_suffix=active_phase_dict.get('decoding_time_bin_filename_suffix', ''), skip_if_dest_newer_or_equal=True)
+    good_session_concrete_folders, session_global_data_root_parent_paths, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run(turbo_session_folders=good_session_concrete_folders, source_data_root=global_data_root_parent_path, pickle_suffix=override_custom_pickle_suffix, tbin_suffix=decoding_time_bin_filename_suffix, skip_if_dest_newer_or_equal=True)
     _time_checkpoint('paths: GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run')
 
-session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context:a_session_folder.path for a_session_folder in good_session_concrete_folders}
+session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
+effective_included_session_contexts = [c for c in included_session_contexts if c in session_basedirs_dict]
+if len(effective_included_session_contexts) != len(included_session_contexts):
+    print(f'WARN: generating for {len(effective_included_session_contexts)}/{len(included_session_contexts)} sessions with extant basedirs')
+
 print(f'[GENERATE] writing batch scripts under: {scripts_output_path}')
-batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=included_session_contexts, session_global_data_root_parent_paths=session_global_data_root_parent_paths,
-                                                                                        output_directory=scripts_output_path, use_separate_run_directories=True,
-                                                                                        # should_freeze_pipeline_updates=False, 
-                                                                                        # create_slurm_scripts=True, should_create_vscode_workspace=True,
-                                                                                        # extended_computations_include_includelist=extended_computations_include_includelist,
-                                                                                        # force_recompute_override_computations_includelist=force_recompute_override_computations_includelist, # ['split_to_directional_laps', 'rank_order_shuffle_analysis'],
-                                                                                        should_use_file_redirected_output_logging=True,
-                                                                                        # should_use_viztracer_logging=True,
-                                                                                        should_use_viztracer_logging=False,
-                                                                                        # should_perform_figure_generation_to_file=False,
-                                                                                        # batch_session_completion_handler_kwargs=dict(enable_hdf5_output=False),
-                                                                                        # custom_user_completion_functions=custom_user_completion_functions,
-                                                                                        # custom_user_completion_function_template_code=custom_user_completion_function_template_code,
-                                                                                        # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate',  # <-- here
-                                                                                        # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv_modern/bin/activate',  # <-- legacy GL override
-                                                                                        venv_activate_path=_venv_activate_path,
-                                                                                        vscode_default_interpreter_path=_vscode_python,
-                                                                                        # fail_on_exception = True, 
-                                                                                        fail_on_exception = False, # 2025-08-27 - Default,
-                                                                                        **active_phase_dict
-                                                                                    )
-_time_checkpoint('generate_batch_single_session_scripts')
+also_show_figure_script_outputs: bool = False
+
+def _try_copy_to_clipboard(code_str: str, label: str) -> None:
+    """Copy if a clipboard exists; on headless SSH/ipython just print a skip warning (commands are already printed)."""
+    try:
+        copy_to_clipboard(code_str, message_print=True)
+    except (NotImplementedError, OSError) as e:
+        print(f'WARN: clipboard unavailable ({label}); copy the printed commands manually. ({type(e).__name__}: {e})')
 
 
-# batch_scripts_collection.included_session_contexts, output_python_scripts, output_slurm_scripts
+max_parallel_executions = 1
+phase_collections: Dict[str, BatchScriptsCollection] = {}
+phases_ordered_names: List[str] = []
 
-output_python_scripts = batch_scripts_collection.output_python_scripts
-output_jupyter_notebooks = batch_scripts_collection.output_jupyter_notebooks
-output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
-vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
+for active_phase in phases_to_generate:
+    print(f"\n{'='*80}\nGENERATING PHASE: {active_phase.name}\n{'='*80}")
+    custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict_dict.get(active_phase, {})
+    custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict) # never None: None would install the mega set
+    print(f'completion_functions: {list(custom_user_completion_functions_dict.keys())}')
+    _time_checkpoint(f'MAIN_get_template_string:{active_phase.name}')
+    active_phase_dict = active_phase.get_run_configuration(custom_user_completion_function_template_code=custom_user_completion_function_template_code, extra_extended_computations_include_includelist=extra_extended_computations_include_includelist)
+    if custom_phase_extended_computations_include_includelist is not None:
+        print(f'WARNING: custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist} is provided so only these extended_computation_fns will be used (overwritting the phase defaults!).')
+        active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
 
-if vscode_workspace_path is not None:
-    print(f"vscode_workspace_path:: {vscode_workspace_path}")
+    active_phase_dict['override_custom_pickle_suffix'] = override_custom_pickle_suffix
+    active_phase_dict['decoding_time_bin_filename_suffix'] = decoding_time_bin_filename_suffix
+    if shared_batch_session_completion_handler_kwargs:
+        active_phase_dict['batch_session_completion_handler_kwargs'] = {
+            **active_phase_dict.get('batch_session_completion_handler_kwargs', {}),
+            **shared_batch_session_completion_handler_kwargs,
+        }
 
-print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
-computation_script_paths = [x[0] for x in output_python_scripts]
-generate_figures_script_paths = [x[1] for x in output_python_scripts]
-print(f'generate_figures_script_paths: {generate_figures_script_paths}')
+    active_phase_dict['force_recompute_override_computation_kwargs_dict'] = force_recompute_override_computation_kwargs_dict
+    active_phase_dict['override_parameters_flat_keypaths_dict'] = override_parameters_flat_keypaths_dict
+    active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = custom_user_completion_function_override_kwargs_dict
+
+    # Incremental 75ms recipe: do not freeze/restrict clean_run (pickle write allowed; phase defaults). continued/final load the shared local pickle and write only `-tbin_75ms` globals.
+    if active_phase.value != ProcessingScriptPhases.clean_run.value:
+        active_phase_dict['extended_computations_include_includelist'] = list(_tbin_only_extended_computations_include_includelist)
+        if not active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('apply_track_body_aclu_filter', False):
+            active_phase_dict['force_recompute_override_computations_includelist'] = list(_tbin_only_force_recompute_override_computations_includelist)
+        active_phase_dict['should_save_local_pipeline_pkl'] = False
+        active_phase_dict['skip_save_on_initial_load'] = True
+
+    phase_job_suffix: str = active_phase_dict.pop('phase_job_suffix', None)
+    current_job_suffix = base_job_suffix
+    if phase_job_suffix is not None:
+        current_job_suffix = f"{base_job_suffix}_{phase_job_suffix}"
+    active_phase_dict.update(dict(job_suffix=current_job_suffix,
+                                   should_use_neptune_logging=False,
+                                   create_slurm_scripts=(batch_execution_target == 'slurm'),
+                                   create_non_slurm_bash_scripts=(batch_execution_target == 'linux_standalone'),
+                                   should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
+    ))
+    print(f'job_suffix: "{current_job_suffix}"')
+    print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
+
+    batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=effective_included_session_contexts, session_global_data_root_parent_paths=session_global_data_root_parent_paths,
+                                                                                            output_directory=scripts_output_path, use_separate_run_directories=True,
+                                                                                            should_use_file_redirected_output_logging=True,
+                                                                                            should_use_viztracer_logging=False,
+                                                                                            # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate',  # <-- here
+                                                                                            # venv_activate_path='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv_modern/bin/activate',  # <-- legacy GL override
+                                                                                            venv_activate_path=_venv_activate_path,
+                                                                                            vscode_default_interpreter_path=_vscode_python,
+                                                                                            fail_on_exception=False, # 2025-08-27 - Default
+                                                                                            **active_phase_dict
+                                                                                        )
+    phase_collections[active_phase.name] = batch_scripts_collection
+    phases_ordered_names.append(active_phase.name)
+    _time_checkpoint(f'generate_batch_single_session_scripts:{active_phase.name}')
+
+    output_python_scripts = batch_scripts_collection.output_python_scripts
+    output_jupyter_notebooks = batch_scripts_collection.output_jupyter_notebooks
+    output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
+    output_non_slurm_bash_scripts = batch_scripts_collection.output_non_slurm_bash_scripts
+    vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
+    if vscode_workspace_path is not None:
+        print(f"vscode_workspace_path:: {vscode_workspace_path}")
+
+    computation_script_paths = [x[0] for x in output_python_scripts]
+    generate_figures_script_paths = [x[1] for x in output_python_scripts]
+    script_paths = generate_figures_script_paths if active_phase.is_figure_phase else computation_script_paths
+    print(f'generate_figures_script_paths: {generate_figures_script_paths}')
+    if output_jupyter_notebooks:
+        print('Generated jupyter notebooks:')
+        for a_notebook_path in output_jupyter_notebooks:
+            print(f'  {a_notebook_path}')
+        ## END for a_notebook_path in output_jupyter_notebooks...
+
+    if (platform.system() == 'Windows'):
+        powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}')
+        print(f"powershell_script_path ({active_phase.name}): '{powershell_script_path}'\n")
+        if also_show_figure_script_outputs or active_phase_dict.get('should_perform_figure_generation_to_file', False):
+            powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}')
+            print(f"powershell_figures_script_path: '{powershell_figures_script_path}'\n")
+
+    if (platform.system() != 'Windows'):
+        if batch_execution_target == 'linux_standalone':
+            bash_run_start_scripts: str = "\n".join([f"bash '{bash_script}'" for bash_script in output_non_slurm_bash_scripts.get('run', [])])
+            bash_figs_start_scripts: str = "\n".join([f"bash '{bash_script}'" for bash_script in output_non_slurm_bash_scripts.get('figs', [])])
+            if not active_phase.is_figure_phase:
+                print(f"{active_phase.name} - RunMain (flat fallback, sequential bash):")
+                print(bash_run_start_scripts)
+                print(f'\n\n')
+            if (active_phase.is_figure_phase or also_show_figure_script_outputs) and (len(bash_figs_start_scripts) > 0):
+                print(f"{active_phase.name} - Figures:")
+                print(bash_figs_start_scripts)
+                print(f'\n\n')
+        else:
+            sbatch_run_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts.get('run', [])])
+            sbatch_figs_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts.get('figs', [])])
+            if not active_phase.is_figure_phase:
+                print(f"{active_phase.name} - RunMain (flat fallback, no afterok):")
+                print(sbatch_run_start_slurm_scripts)
+                print(f'\n\n')
+            if (active_phase.is_figure_phase or also_show_figure_script_outputs) and (len(sbatch_figs_start_slurm_scripts) > 0):
+                print(f"{active_phase.name} - Figures:")
+                print(sbatch_figs_start_slurm_scripts)
+                print(f'\n\n')
+## END for active_phase in phases_to_generate...
 
 print('\n========== DESTINATION SUMMARY ==========')
 print(f'scripts_output_path: {scripts_output_path}')
 print(f'collected_outputs_path: {collected_outputs_path}')
 print(f'global_data_root_parent_path: {global_data_root_parent_path}')
-pickle_suffix: str = active_phase_dict.get('override_custom_pickle_suffix', '')
-tbin_suffix: str = active_phase_dict.get('decoding_time_bin_filename_suffix', '')
-print(f'override_custom_pickle_suffix: {pickle_suffix}')
-print(f'decoding_time_bin_filename_suffix: {tbin_suffix}')
+print(f'override_custom_pickle_suffix: {override_custom_pickle_suffix}')
+print(f'decoding_time_bin_filename_suffix: {decoding_time_bin_filename_suffix}')
 
-print('Generated run scripts:')
-for a_run_script_path in computation_script_paths:
-    print(f'  {a_run_script_path}')
-## END for a_run_script_path in computation_script_paths...
-
-print('Generated figures scripts:')
-for a_figures_script_path in generate_figures_script_paths:
-    print(f'  {a_figures_script_path}')
-## END for a_figures_script_path in generate_figures_script_paths...
-
-if output_jupyter_notebooks:
-    print('Generated jupyter notebooks:')
-    for a_notebook_path in output_jupyter_notebooks:
-        print(f'  {a_notebook_path}')
-    ## END for a_notebook_path in output_jupyter_notebooks...
-
-if isinstance(output_slurm_scripts, dict):
-    print('Generated slurm run scripts:')
-    for a_slurm_script_path in output_slurm_scripts.get('run', []):
-        print(f'  {a_slurm_script_path}')
-    ## END for a_slurm_script_path in output_slurm_scripts.get('run', [])...
-
-    print('Generated slurm figures scripts:')
-    for a_slurm_script_path in output_slurm_scripts.get('figs', []):
-        print(f'  {a_slurm_script_path}')
-    ## END for a_slurm_script_path in output_slurm_scripts.get('figs', [])...
-
-print('Per-session destinations (local pickle is load-only; global pickle is written):')
+_has_clean_run = any(p.value == ProcessingScriptPhases.clean_run.value for p in phases_to_generate)
+if _has_clean_run:
+    print('Per-session destinations (clean_run writes loadedSessPickle; later phases write output/global_computation_results{suffix}{tbin}.pkl):')
+else:
+    print('Per-session destinations (local pickle is load-only; global pickle is written):')
 for a_session_folder in good_session_concrete_folders:
     a_basedir = a_session_folder.path
-    local_pickle_path = a_basedir.joinpath(f'loadedSessPickle{pickle_suffix}.pkl')
-    global_pickle_path = a_basedir.joinpath('output', f'global_computation_results{pickle_suffix}{tbin_suffix}.pkl')
+    local_pickle_path = a_basedir.joinpath(f'loadedSessPickle{override_custom_pickle_suffix}.pkl')
+    global_pickle_path = a_basedir.joinpath('output', f'global_computation_results{override_custom_pickle_suffix}{decoding_time_bin_filename_suffix}.pkl')
     print(f'  {a_session_folder.context}')
     print(f'    basedir:        {a_basedir}')
     print(f'    load pickle:    {local_pickle_path}')
@@ -637,76 +652,23 @@ for a_session_folder in good_session_concrete_folders:
 
 print('========================================\n')
 
-# %%
-## INPUTS: active_phase, output_slurm_scripts, computation_script_paths, generate_figures_script_paths
-also_show_figure_script_outputs: bool = False
-
-# Maximum number of parallel script executions
-max_parallel_executions = 1
-# List of your script paths
-# if active_phase.value == ProcessingScriptPhases.figure_run:
-if active_phase.is_figure_phase:
-    print(f'fig mode!')
-    script_paths = generate_figures_script_paths
-else:
-    script_paths = computation_script_paths
-
-
-if (platform.system() == 'Windows'):
-    powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name='run_scripts')
-    _time_checkpoint('build_windows_powershell_run_script')
-    # print(f'powershell_script_path: {powershell_script_path}')
-    # display(fullwidth_path_widget(powershell_script_path, file_name_label='powershell_script_path:'))
-    print(f"powershell_script_path: '{powershell_script_path}'\n")
-
-    if also_show_figure_script_outputs or active_phase_dict['should_perform_figure_generation_to_file']:
-        powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name='run_figure_scripts')
-        # display(fullwidth_path_widget(powershell_figures_script_path, file_name_label='powershell_figures_script_path:'))
-        print(f"powershell_figures_script_path: '{powershell_figures_script_path}'\n")
-
-    print(f'\n\n')
-
-# # Function to perform the copy to clipboard action
-# def perform_copy_to_clipboard(code_to_copy: str):
-# 	payload = f"navigator.clipboard.writeText(`{code_to_copy}`)"
-# 	js_command = f"eval({payload})"
-# 	display(widgets.HTML(value=f'<img src onerror="{js_command}">'))
-
-# Function to execute code in terminal
-# def perform_execute(b):
-# 	# Use IPython's system command
-# 	display(Javascript(f'IPython.notebook.kernel.execute("!{sbatch_run_start_slurm_scripts}")'))
-     
-def _try_copy_to_clipboard(code_str: str, label: str) -> None:
-    """Copy if a clipboard exists; on headless SSH/ipython just print a skip warning (commands are already printed)."""
-    try:
-        copy_to_clipboard(code_str, message_print=True)
-    except (NotImplementedError, OSError) as e:
-        print(f'WARN: clipboard unavailable ({label}); copy the printed commands manually. ({type(e).__name__}: {e})')
-
-
-if (platform.system() != 'Windows'):
-    ## Linux Only: Slurm Scripts
-    # sbatch_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts])
-    sbatch_run_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts['run']])
-    sbatch_figs_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts['figs']])
-
-    if not active_phase.is_figure_phase:
-        print("RunMain:")
-        print(sbatch_run_start_slurm_scripts)
-        print(f'\n\n')
-        _try_copy_to_clipboard(sbatch_run_start_slurm_scripts, label='run')
-        _time_checkpoint('copy_to_clipboard:run')
-
-
-    if (active_phase.is_figure_phase or also_show_figure_script_outputs and (len(sbatch_figs_start_slurm_scripts)>0)):
-        print("Figures:")
-        print(sbatch_figs_start_slurm_scripts)
-        print(f'\n\n')
-        if (active_phase.is_figure_phase):
-            _try_copy_to_clipboard(sbatch_figs_start_slurm_scripts, label='figs')
-            _time_checkpoint('copy_to_clipboard:figs')
-
+# Per-session phase chains (primary submit path). Slurm: afterok; Lab: sequential bash one session at a time.
+if (platform.system() != 'Windows') and (len(phase_collections) > 0):
+    _phase_chain_backend: str = 'bash' if batch_execution_target == 'linux_standalone' else 'slurm'
+    _script_collection_key: str = _phase_chain_backend
+    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key=_script_collection_key)
+    chained_submit_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.sh'
+    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.json'
+    write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend)
+    retry_dir = scripts_output_path / f'retry_phase_chains_{BATCH_DATE_TO_USE}'
+    for _start_phase in phases_ordered_names[1:]:
+        write_all_retry_from_phase_scripts(chained_manifest_path, start_phase=_start_phase, out_dir=retry_dir, phases_ordered=phases_ordered_names)
+    ## END for _start_phase in phases_ordered_names[1:]...
+    print(f"\nChained submit (primary, {_phase_chain_backend}): bash '{chained_submit_path}'")
+    print(f"Retry scripts dir: '{retry_dir}'")
+    print_chain_status_hint(execution_backend=_phase_chain_backend)
+    _try_copy_to_clipboard(f"bash '{chained_submit_path}'", label='chained_submit')
+    _time_checkpoint('copy_to_clipboard:chained_submit')
 
 _print_timing_summary()
 
