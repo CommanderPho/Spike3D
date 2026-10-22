@@ -58,6 +58,7 @@ from pyphoplacecellanalysis.General.Batch.concrete_session_folder import Concret
 _time_checkpoint('IMPORTS: concrete_session_folder')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import GreatlakesTurboToScratchHelpers  # GL Turbo->Scratch workaround; drop when Turbo is R/W again
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_session_phase_script_map, write_chained_submit_script, write_all_retry_from_phase_scripts, print_chain_status_hint
 _time_checkpoint('IMPORTS: pythonScriptTemplating')
@@ -74,21 +75,37 @@ BATCH_DAY_DATE: str = '2026-10-20'
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
+# ==================================================================================================================== #
+# GL Turbo->Scratch workaround (set FORCE_SCRATCH_WRITES=False / comment out when Turbo is R/W again)                   #
+# ==================================================================================================================== #
+FORCE_SCRATCH_WRITES: bool = True  # set False when Turbo is writable again
+turbo_data_root, scratch_data_root, use_scratch_writes = GreatlakesTurboToScratchHelpers.detect_scratch_write_mode(force_scratch_writes=FORCE_SCRATCH_WRITES)
+print(f'FORCE_SCRATCH_WRITES: {FORCE_SCRATCH_WRITES}')
+print(f'turbo_data_root: {turbo_data_root}')
+print(f'scratch_data_root: {scratch_data_root}')
+print(f'use_scratch_writes: {use_scratch_writes}')
+
 # scripts_output_path = Path('/home/halechr/cloud/turbo/Data/Output/gen_scripts/').resolve() # Greatlakes
 # scripts_output_path = Path('output/gen_scripts/').resolve() # Apogee
 # # scripts_output_path = Path('/home/halechr/FastData/gen_scripts/').resolve() # Lab
 # assert scripts_output_path.exists()
-known_scripts_output_paths = [Path(v).resolve() for v in ['K:/scratch/gen_scripts', '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
-scripts_output_path = find_first_extant_path(known_scripts_output_paths)
+if use_scratch_writes:
+    scripts_output_path, collected_outputs_path = GreatlakesTurboToScratchHelpers.build_scratch_output_paths() # GL Turbo->Scratch workaround
+else:
+    known_scripts_output_paths = [Path(v).resolve() for v in ['K:/scratch/gen_scripts', '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
+    scripts_output_path = find_first_extant_path(known_scripts_output_paths)
+    collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
+    collected_outputs_path.mkdir(parents=True, exist_ok=True)
+
 assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
 # fullwidth_path_widget(scripts_output_path, file_name_label='Scripts Output Path:')
 print(f'scripts_output_path: {scripts_output_path}')
 _time_checkpoint('paths:scripts_output_path')
 
-collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
-collected_outputs_path.mkdir(exist_ok=True)
 assert collected_outputs_path.exists()
 print(f'collected_outputs_path: {collected_outputs_path}')
+if FORCE_SCRATCH_WRITES:
+    GreatlakesTurboToScratchHelpers.assert_output_paths_not_on_turbo(scripts_output_path, collected_outputs_path) # GL Turbo->Scratch workaround
 _time_checkpoint('paths:collected_outputs_path')
 
 # %% [markdown]
@@ -164,7 +181,9 @@ debug_print = True
 known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/media/halechr/BETAMAX/Data'), Path(r'/media/halechr/MAX/Data'), Path(r'W:/Data'), Path(r'/home/halechr/FastData'), Path(r'/Volumes/MoverNew/data')] # Path(r'/home/halechr/cloud/turbo/Data'), , Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/home/halechr/turbo/Data'), 
 global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
+print(f'global_data_root_parent_path (session discovery / read root): {global_data_root_parent_path}')
 good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
+session_global_data_root_parent_paths: Optional[Dict[IdentifyingContext, Path]] = None # per-session override of global_data_root_parent_path passed to generate_batch_single_session_scripts
 _time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
@@ -275,7 +294,7 @@ force_recompute_override_computation_kwargs_dict = {
     'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size=10.0, training_data_portion=5.0/6.0,
                                 compute_1D=True, compute_2D=False,
                                 drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
-    'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
+    'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, compute_2D=False),
 }
 
 override_parameters_flat_keypaths_dict = {
@@ -285,7 +304,7 @@ override_parameters_flat_keypaths_dict = {
 
 custom_user_completion_function_override_kwargs_dict = {
     'compute_and_export_session_alternative_replay_wcorr_shuffles_completion_function': dict(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size, num_wcorr_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
-    'backup_previous_session_files_completion_function': dict(desired_suffix='2026-10-20'),
+    'backup_previous_session_files_completion_function': dict(desired_suffix=f'{BATCH_DATE_TO_USE}'),
     'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),
@@ -297,7 +316,7 @@ custom_user_completion_function_override_kwargs_dict = {
         save_hdf=False, allow_append_to_session_h5_file=False,
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0,
         ),
-    'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute=True, debug_print=True, export_pkl=True),
+    'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=laps_decoding_time_bin_size, compute_2D=False, force_recompute=True, debug_print=True, export_pkl=True),
     'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         '_display_generalized_decoded_yellow_blue_marginal_epochs',
@@ -370,12 +389,28 @@ print(f'batch_execution_target: {batch_execution_target}')
 print(f'venv_activate_path: {_venv_activate_path}')
 print(f'vscode_default_interpreter_path: {_vscode_python}')
 
+if use_scratch_writes:
+    ## GL Turbo->Scratch workaround: copy the load-only local pickle + writable global pickle + tiny sidecars onto scratch and retarget the job write root there.
+    good_session_concrete_folders, session_global_data_root_parent_paths, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run(
+        turbo_session_folders=good_session_concrete_folders, source_data_root=global_data_root_parent_path,
+        pickle_suffix=override_custom_pickle_suffix, tbin_suffix=decoding_time_bin_filename_suffix, skip_if_dest_newer_or_equal=True)
+    _time_checkpoint('paths: GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run')
+
 session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
 effective_included_session_contexts = [c for c in included_session_contexts if c in session_basedirs_dict]
 if len(effective_included_session_contexts) != len(included_session_contexts):
     print(f'WARN: generating for {len(effective_included_session_contexts)}/{len(included_session_contexts)} sessions with extant basedirs')
 
 also_show_figure_script_outputs: bool = False
+
+def _try_copy_to_clipboard(code_str: str, label: str) -> None:
+    """Copy if a clipboard exists; on headless SSH/ipython just print a skip warning (commands are already printed)."""
+    try:
+        copy_to_clipboard(code_str, message_print=True)
+    except (NotImplementedError, OSError) as e:
+        print(f'WARN: clipboard unavailable ({label}); copy the printed commands manually. ({type(e).__name__}: {e})')
+
+
 max_parallel_executions = 1
 phase_collections: Dict[str, BatchScriptsCollection] = {}
 phases_ordered_names: List[str] = []
@@ -414,7 +449,7 @@ for active_phase in phases_to_generate:
     print(f'job_suffix: "{current_job_suffix}"')
     print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
 
-    batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=effective_included_session_contexts,
+    batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=effective_included_session_contexts, session_global_data_root_parent_paths=session_global_data_root_parent_paths,
                                                                                             output_directory=scripts_output_path, use_separate_run_directories=True,
                                                                                             should_use_file_redirected_output_logging=True,
                                                                                             should_use_viztracer_logging=False,
@@ -470,6 +505,27 @@ for active_phase in phases_to_generate:
                 print(f'\n\n')
 ## END for active_phase in phases_to_generate...
 
+print('\n========== DESTINATION SUMMARY ==========')
+print(f'scripts_output_path: {scripts_output_path}')
+print(f'collected_outputs_path: {collected_outputs_path}')
+print(f'global_data_root_parent_path: {global_data_root_parent_path}')
+print(f'override_custom_pickle_suffix: {override_custom_pickle_suffix}')
+print(f'decoding_time_bin_filename_suffix: {decoding_time_bin_filename_suffix}')
+
+print('Per-session destinations (clean_run writes loadedSessPickle; later phases write output/global_computation_results{suffix}{tbin}.pkl):')
+for a_session_folder in good_session_concrete_folders:
+    a_basedir = a_session_folder.path
+    local_pickle_path = a_basedir.joinpath(f'loadedSessPickle{override_custom_pickle_suffix}.pkl')
+    global_pickle_path = a_basedir.joinpath('output', f'global_computation_results{override_custom_pickle_suffix}{decoding_time_bin_filename_suffix}.pkl')
+    print(f'  {a_session_folder.context}')
+    print(f'    basedir:        {a_basedir}')
+    print(f'    local pickle:   {local_pickle_path}')
+    print(f'    write global:   {global_pickle_path}')
+    print(f'    collected_outputs: {collected_outputs_path}')
+## END for a_session_folder in good_session_concrete_folders...
+
+print('========================================\n')
+
 # Per-session phase chains (primary submit path). Slurm: afterok; Lab: sequential bash one session at a time.
 if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     _phase_chain_backend: str = 'bash' if batch_execution_target == 'linux_standalone' else 'slurm'
@@ -485,7 +541,7 @@ if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     print(f"\nChained submit (primary, {_phase_chain_backend}): bash '{chained_submit_path}'")
     print(f"Retry scripts dir: '{retry_dir}'")
     print_chain_status_hint(execution_backend=_phase_chain_backend)
-    copy_to_clipboard(f"bash '{chained_submit_path}'", message_print=True)
+    _try_copy_to_clipboard(f"bash '{chained_submit_path}'", label='chained_submit')
     _time_checkpoint('copy_to_clipboard:chained_submit')
 
 _print_timing_summary()
