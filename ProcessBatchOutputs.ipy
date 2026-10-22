@@ -216,7 +216,7 @@ active_phase = ProcessingScriptPhases.continued_run
 
 
 # END ________________________________________________________________________________________________________________ #
-# custom_user_completion_functions_dict = active_phase.get_custom_user_completion_functions_dict(extra_run_functions=phase_any_run_custom_user_completion_functions_dict)
+# custom_user_completion_functions_dict = active_phase.get_custom_user_completion_functions_dict(extra_run_functions=phase_any_run_custom_user_completion_functions_dict, is_kdiba_session=True)
 custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict ## directly override the outputs:
 
 # print(f'custom_user_completion_functions_dict: {custom_user_completion_functions_dict}')

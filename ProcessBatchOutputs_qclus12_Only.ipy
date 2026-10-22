@@ -113,7 +113,14 @@ _time_checkpoint('paths:collected_outputs_path')
 
 # %%
 # Get the generated code for user-contributed functions:
-phase_any_run_custom_user_completion_functions_dict = None
+# phase_any_run_custom_user_completion_functions_dict = None
+phase_any_run_custom_user_completion_functions_dict = {
+    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
+    'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
+    'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+    'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
+    'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+}
 # phase_any_run_custom_user_completion_functions_dict = {
 #     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
 #     'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
@@ -204,8 +211,8 @@ phases_to_generate = [
 batch_execution_target: str = 'linux_standalone'  # 'slurm' (Great Lakes) | 'linux_standalone' (Lab workstation, no sbatch)
 
 # END ________________________________________________________________________________________________________________ #
-# custom_user_completion_functions_dict = active_phase.get_custom_user_completion_functions_dict(extra_run_functions=phase_any_run_custom_user_completion_functions_dict)
-custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict ## directly override the outputs:
+custom_user_completion_functions_dict = active_phase.get_custom_user_completion_functions_dict(extra_run_functions=phase_any_run_custom_user_completion_functions_dict, is_kdiba_session=True)
+# custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict ## directly override the outputs:
 
 # print(f'custom_user_completion_functions_dict: {custom_user_completion_functions_dict}')
 custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict)
