@@ -237,7 +237,13 @@ phases_to_generate = [
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.final_run]
 
-batch_execution_target: str = 'linux_standalone'  # 'slurm' (Great Lakes) | 'linux_standalone' (Lab workstation, no sbatch)
+_batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-10-21_GL' -> 'GL'
+_batch_execution_target_from_host_tag = {
+    'GL': 'slurm',  # Great Lakes
+    'Lab': 'linux_standalone',  # Lab workstation, no sbatch
+}
+assert _batch_host_tag in _batch_execution_target_from_host_tag, f"Unknown BATCH_DATE_TO_USE host tag {_batch_host_tag!r} from {BATCH_DATE_TO_USE!r}; expected one of {list(_batch_execution_target_from_host_tag)}"
+batch_execution_target: str = _batch_execution_target_from_host_tag[_batch_host_tag]
 
 # END ________________________________________________________________________________________________________________ #
 # Per-phase completion templates are built inside `for active_phase in phases_to_generate` from `phase_any_run_custom_user_completion_functions_dict_dict` (replace, never None).
@@ -435,11 +441,19 @@ if len(effective_included_session_contexts) != len(included_session_contexts):
 also_show_figure_script_outputs: bool = False
 
 def _try_copy_to_clipboard(code_str: str, label: str) -> None:
-    """Copy if a clipboard exists; on headless SSH/ipython just print a skip warning (commands are already printed)."""
+    """Copy if a clipboard exists; on headless SSH/ipython print a marked block of `code_str` for manual copy."""
     try:
         copy_to_clipboard(code_str, message_print=True)
     except (NotImplementedError, OSError) as e:
-        print(f'WARN: clipboard unavailable ({label}); copy the printed commands manually. ({type(e).__name__}: {e})')
+        _banner: str = '=' * 80
+        print(f'WARN: clipboard unavailable ({label}); copy the block below manually. ({type(e).__name__}: {e})')
+        print(_banner)
+        print(f'BEGIN COPY ({label})')
+        print(_banner)
+        print(code_str)
+        print(_banner)
+        print(f'END COPY ({label})')
+        print(_banner)
 
 
 max_parallel_executions = 1

@@ -507,12 +507,19 @@ print(f'[GENERATE] writing batch scripts under: {scripts_output_path}')
 also_show_figure_script_outputs: bool = False
 
 def _try_copy_to_clipboard(code_str: str, label: str) -> None:
-    """Copy if a clipboard exists; on headless SSH/ipython just print a skip warning (commands are already printed)."""
+    """Copy if a clipboard exists; on headless SSH/ipython print a marked block of `code_str` for manual copy."""
     try:
         copy_to_clipboard(code_str, message_print=True)
     except (NotImplementedError, OSError) as e:
-        print(f'WARN: clipboard unavailable ({label}); copy the printed commands manually. ({type(e).__name__}: {e})')
-
+        _banner: str = '=' * 80
+        print(f'WARN: clipboard unavailable ({label}); copy the block below manually. ({type(e).__name__}: {e})')
+        print(_banner)
+        print(f'BEGIN COPY ({label})')
+        print(_banner)
+        print(code_str)
+        print(_banner)
+        print(f'END COPY ({label})')
+        print(_banner)
 
 max_parallel_executions = 1
 phase_collections: Dict[str, BatchScriptsCollection] = {}
