@@ -145,7 +145,12 @@ def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newe
     if dest_file.is_symlink():
         dest_file.unlink()
     if skip_if_dest_newer_or_equal and dest_file.exists() and dest_file.is_file() and (not dest_file.is_symlink()):
-        if (dest_file.stat().st_mtime >= src_file.stat().st_mtime) and (dest_file.stat().st_size == src_file.stat().st_size):
+        dest_stat = dest_file.stat()
+        src_stat = src_file.stat()
+        if dest_stat.st_mtime > src_stat.st_mtime:
+            dest_mtime_str: str = datetime.fromtimestamp(dest_stat.st_mtime).isoformat(sep=' ', timespec='seconds')
+            src_mtime_str: str = datetime.fromtimestamp(src_stat.st_mtime).isoformat(sep=' ', timespec='seconds')
+            print(f'  WARN: dest mtime newer than source; skipping copy (size ignored) dest={dest_file} dest_mtime={dest_mtime_str} dest_size={dest_stat.st_size} src={src_file} src_mtime={src_mtime_str} src_size={src_stat.st_size}')
             return 'skipped_newer'
     shutil.copy2(src_file, dest_file)
     return 'copied'
@@ -184,7 +189,7 @@ def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[Concret
                 all_copied[load_src] = load_dest
                 print(f'  copied local:  {load_src} -> {load_dest}')
             else:
-                print(f'  skipped local: {load_dest} (dest newer/equal)')
+                print(f'  skipped local: {load_dest} (dest mtime newer)')
 
         write_src = turbo_basedir.joinpath(writable_relpath)
         write_dest = scratch_basedir.joinpath(writable_relpath)
@@ -196,7 +201,7 @@ def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[Concret
                 all_copied[write_src] = write_dest
                 print(f'  copied global: {write_src} -> {write_dest}')
             else:
-                print(f'  skipped global: {write_dest} (dest newer/equal)')
+                print(f'  skipped global: {write_dest} (dest mtime newer)')
 
         scratch_session_folders.append(ConcreteSessionFolder(a_folder.context, scratch_basedir))
         scratch_basedirs[a_folder.context] = scratch_basedir
