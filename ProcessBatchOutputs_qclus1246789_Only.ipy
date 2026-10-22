@@ -140,6 +140,14 @@ def cleanup_leftover_scratch_symlinks(scratch_basedir: Path) -> int:
     return n_removed
 
 
+## Tiny read-only session-root sidecars that post-load code re-reads next to the pickle (e.g. `FINAL_FIX_GRID_BIN_BOUNDS` -> `{session}.position_info.mat`). Never .dat/.eeg/.clu/.fet, spikes.mat/spikeII.mat, .h5, or unused pickles.
+READONLY_SESSION_SIDECAR_SUFFIXES: Tuple[str, ...] = ('.position_info.mat', '.epochs_info.mat', '.xml',
+                                                      '.laps_info.mat', '.replay_info.mat', '.RippleDatabase.mat',
+                                                      '.probegroup.npy', '.pbe.npy', '.ripple.npy', '.mua.npy', '.position.npy')
+READONLY_SESSION_SIDECAR_STANDALONE_NAMES: Tuple[str, ...] = ('RippleDatabase.mat',)  # folder listing uses the bare name; loader uses `{session}.RippleDatabase.mat`
+REQUIRED_SESSION_SIDECAR_SUFFIXES: Tuple[str, ...] = ('.position_info.mat',)  # FINAL post-load asserts these exist
+
+
 def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newer_or_equal: bool) -> str:
     dest_file.parent.mkdir(parents=True, exist_ok=True)
     if dest_file.is_symlink():
@@ -157,7 +165,7 @@ def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newe
 
 
 def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[ConcreteSessionFolder], source_data_root: Path, scratch_data_root: Path, load_only_relpath: str, writable_relpath: str, skip_if_dest_newer_or_equal: bool = True) -> Tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path], Dict[Path, Path]]:
-    """Copy the local pickle and the writable global pickle as real files. Never symlink to Turbo, never stage .h5."""
+    """Copy the local pickle, the writable global pickle, and the tiny read-only session-root sidecars (`READONLY_SESSION_SIDECAR_SUFFIXES`) as real files. Never symlink to Turbo, never stage .h5."""
     source_data_root = Path(source_data_root)
     scratch_data_root = Path(scratch_data_root)
     ensure_scratch_kdiba_layout_symlink(scratch_data_root)
@@ -202,6 +210,31 @@ def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[Concret
                 print(f'  copied global: {write_src} -> {write_dest}')
             else:
                 print(f'  skipped global: {write_dest} (dest mtime newer)')
+
+        ## Tiny read-only sidecars re-read next to the pickle by post-load code (e.g. `{session}.position_info.mat` in FINAL_FIX_GRID_BIN_BOUNDS):
+        session_name: str = turbo_basedir.name  # matches `KDibaOldDataSessionFormat.get_session_name(basedir)`
+        sidecar_names: List[str] = [f'{session_name}{a_suffix}' for a_suffix in READONLY_SESSION_SIDECAR_SUFFIXES] + list(READONLY_SESSION_SIDECAR_STANDALONE_NAMES)
+        required_sidecar_names: List[str] = [f'{session_name}{a_suffix}' for a_suffix in REQUIRED_SESSION_SIDECAR_SUFFIXES]
+        n_sidecars_copied: int = 0
+        n_sidecars_skipped: int = 0
+        missing_sidecar_names: List[str] = []
+        for a_sidecar_name in sidecar_names:
+            sidecar_src = turbo_basedir.joinpath(a_sidecar_name)
+            sidecar_dest = scratch_basedir.joinpath(a_sidecar_name)
+            if not sidecar_src.is_file():
+                missing_sidecar_names.append(a_sidecar_name)
+                if a_sidecar_name in required_sidecar_names:
+                    print(f'  WARN: required sidecar missing on turbo (FINAL post-load will fail without it): {sidecar_src}')
+                continue
+            sidecar_status = copy_or_skip_mutable_file(sidecar_src, sidecar_dest, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
+            if sidecar_status == 'copied':
+                all_copied[sidecar_src] = sidecar_dest
+                n_sidecars_copied += 1
+            else:
+                n_sidecars_skipped += 1
+        ## END for a_sidecar_name in sidecar_names...
+
+        print(f'  sidecars: copied {n_sidecars_copied}, skipped {n_sidecars_skipped} (dest mtime newer), missing {len(missing_sidecar_names)}' + (f': {missing_sidecar_names}' if len(missing_sidecar_names) > 0 else ''))
 
         scratch_session_folders.append(ConcreteSessionFolder(a_folder.context, scratch_basedir))
         scratch_basedirs[a_folder.context] = scratch_basedir
