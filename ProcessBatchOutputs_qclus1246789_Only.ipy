@@ -115,17 +115,29 @@ def ensure_scratch_kdiba_layout_symlink(scratch_data_root: Path) -> Path:
     return scratch_kdiba
 
 
-def ensure_load_only_symlink(src_file: Path, dest_file: Path) -> str:
-    dest_file.parent.mkdir(parents=True, exist_ok=True)
-    if dest_file.is_symlink():
-        current_target = Path(os.readlink(str(dest_file)))
-        if (current_target == src_file) or (dest_file.exists() and dest_file.resolve() == src_file.resolve()):
-            return 'exists'
-        dest_file.unlink()
-    elif dest_file.exists():
-        return 'skip_real'
-    dest_file.symlink_to(src_file)
-    return 'created'
+def cleanup_leftover_scratch_symlinks(scratch_basedir: Path) -> int:
+    """Unlink symlinks left by the earlier per-file linking run (session dir + output/). Real files are kept."""
+    n_removed: int = 0
+    scratch_basedir = Path(scratch_basedir)
+    if not scratch_basedir.exists():
+        return n_removed
+    candidate_dirs: List[Path] = [scratch_basedir]
+    output_dir: Path = scratch_basedir.joinpath('output')
+    if output_dir.is_symlink():
+        output_dir.unlink()
+        n_removed += 1
+    elif output_dir.is_dir():
+        candidate_dirs.append(output_dir)
+    for a_dir in candidate_dirs:
+        for an_item in a_dir.iterdir():
+            if an_item.is_symlink():
+                an_item.unlink()
+                n_removed += 1
+        ## END for an_item in a_dir.iterdir()...
+
+    ## END for a_dir in candidate_dirs...
+
+    return n_removed
 
 
 def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newer_or_equal: bool) -> str:
@@ -140,7 +152,7 @@ def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newe
 
 
 def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[ConcreteSessionFolder], source_data_root: Path, scratch_data_root: Path, load_only_relpath: str, writable_relpath: str, skip_if_dest_newer_or_equal: bool = True) -> Tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path], Dict[Path, Path]]:
-    """Symlink the load-only local pickle; copy the writable global pickle. Never stage .h5."""
+    """Copy the local pickle and the writable global pickle as real files. Never symlink to Turbo, never stage .h5."""
     source_data_root = Path(source_data_root)
     scratch_data_root = Path(scratch_data_root)
     ensure_scratch_kdiba_layout_symlink(scratch_data_root)
@@ -152,10 +164,13 @@ def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[Concret
         turbo_basedir: Path = find_turbo_session_basedir(a_folder, source_data_root=source_data_root)
         scratch_basedir: Path = scratch_data_root.joinpath(kdiba_session_relpath(a_folder.context))
         scratch_basedir.mkdir(parents=True, exist_ok=True)
+        n_cleaned: int = cleanup_leftover_scratch_symlinks(scratch_basedir)
         scratch_basedir.joinpath('output').mkdir(parents=True, exist_ok=True)
         print(f'[SCRATCH STAGE] {a_folder.context}')
         print(f'  turbo:   {turbo_basedir}')
         print(f'  scratch: {scratch_basedir}')
+        if n_cleaned > 0:
+            print(f'  cleaned: {n_cleaned} leftover symlink(s)')
         if not turbo_basedir.exists():
             print(f'  WARN: turbo session basedir missing: {turbo_basedir}')
 
@@ -164,20 +179,24 @@ def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[Concret
         if not load_src.is_file():
             print(f'  missing load pickle: {load_src}')
         else:
-            load_status = ensure_load_only_symlink(load_src, load_dest)
-            print(f'  load pickle ({load_status}): {load_dest} -> {load_src}')
+            load_status = copy_or_skip_mutable_file(load_src, load_dest, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
+            if load_status == 'copied':
+                all_copied[load_src] = load_dest
+                print(f'  copied local:  {load_src} -> {load_dest}')
+            else:
+                print(f'  skipped local: {load_dest} (dest newer/equal)')
 
         write_src = turbo_basedir.joinpath(writable_relpath)
         write_dest = scratch_basedir.joinpath(writable_relpath)
         if not write_src.is_file():
-            print(f'  missing global pickle (ok, final_run will write): {write_dest}')
+            print(f'  missing global (ok, final_run will write): {write_dest}')
         else:
             status = copy_or_skip_mutable_file(write_src, write_dest, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
             if status == 'copied':
                 all_copied[write_src] = write_dest
-                print(f'  copied:  {write_src} -> {write_dest}')
+                print(f'  copied global: {write_src} -> {write_dest}')
             else:
-                print(f'  skipped: {write_dest} (dest newer/equal)')
+                print(f'  skipped global: {write_dest} (dest newer/equal)')
 
         scratch_session_folders.append(ConcreteSessionFolder(a_folder.context, scratch_basedir))
         scratch_basedirs[a_folder.context] = scratch_basedir
