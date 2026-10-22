@@ -10,7 +10,7 @@ Generate **all** compute phases once, then submit per-session `afterok` chains s
 cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
 deactivate
 source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate
-# Optional: export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
 ipython ProcessBatchOutputs_qclus12_Only.ipy
 ```
 
@@ -19,7 +19,7 @@ ipython ProcessBatchOutputs_qclus12_Only.ipy
 cd '/home/halechr/repos/Spike3D'
 deactivate
 source /home/halechr/repos/Spike3D/.venv/bin/activate
-# Optional: export SPIKE3D_REPO_ROOT='/home/halechr/repos'
+export SPIKE3D_REPO_ROOT='/home/halechr/repos'
 ipython ProcessBatchOutputs_qclus12_Only.ipy
 ```
 
@@ -100,3 +100,31 @@ deactivate
 source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate
 
 ```
+
+
+##
+
+
+
+### Terminal: Run `Final`-phase Only:
+```bash
+cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
+deactivate
+source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate
+export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+./scripts/unix/repos_pull_changes.sh
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_gor01_one_2006-6-08_14-26-15/run_kdiba_gor01_one_2006-6-08_14-26-15__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_gor01_one_2006-6-09_1-22-43/run_kdiba_gor01_one_2006-6-09_1-22-43__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_gor01_one_2006-6-12_15-55-31/run_kdiba_gor01_one_2006-6-12_15-55-31__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-07_16-40-19/run_kdiba_gor01_two_2006-6-07_16-40-19__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-08_21-16-25/run_kdiba_gor01_two_2006-6-08_21-16-25__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-09_22-24-40/run_kdiba_gor01_two_2006-6-09_22-24-40__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_gor01_two_2006-6-12_16-53-46/run_kdiba_gor01_two_2006-6-12_16-53-46__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_vvp01_two_2006-4-09_16-40-54/run_kdiba_vvp01_two_2006-4-09_16-40-54__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_vvp01_two_2006-4-10_12-58-3/run_kdiba_vvp01_two_2006-4-10_12-58-3__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_pin01_one_fet11-01_12-58-54/run_kdiba_pin01_one_fet11-01_12-58-54__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_pin01_one_11-02_17-46-44/run_kdiba_pin01_one_11-02_17-46-44__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_pin01_one_11-03_12-3-25/run_kdiba_pin01_one_11-03_12-3-25__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_75ms_Final.sh'
+```
+
+

@@ -59,6 +59,7 @@ from pyphoplacecellanalysis.General.Batch.concrete_session_folder import Concret
 _time_checkpoint('IMPORTS: concrete_session_folder')
 
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import GreatlakesTurboToScratchHelpers # GL Turbo->Scratch workaround; drop when Turbo is R/W again
 from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix
 _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
@@ -68,180 +69,6 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
-def kdiba_session_relpath(context: IdentifyingContext) -> Path:
-    return Path('KDIBA').joinpath(context.animal, context.exper_name, context.session_name)
-
-
-def build_scratch_stage_relpaths(pickle_suffix: str, tbin_suffix: str = '') -> Tuple[str, str]:
-    """Exact load-only local pickle and writable global pickle. No h5, no wildcards."""
-    pickle_suffix = pickle_suffix or ''
-    tbin_suffix = tbin_suffix or ''
-    load_only_relpath: str = f'loadedSessPickle{pickle_suffix}.pkl'
-    writable_relpath: str = f'output/global_computation_results{pickle_suffix}{tbin_suffix}.pkl'
-    return load_only_relpath, writable_relpath
-
-
-def find_turbo_session_basedir(a_folder: ConcreteSessionFolder, source_data_root: Path) -> Path:
-    """Prefer Data/KDIBA/...; fall back to the sibling /KDIBA tree that Data/KDIBA often symlinks to. Do not resolve()."""
-    rel: Path = kdiba_session_relpath(a_folder.context)
-    candidates: List[Path] = [Path(source_data_root).joinpath(rel), Path(a_folder.path), Path(source_data_root).parent.joinpath(rel), Path('/nfs/turbo/umms-kdiba').joinpath(rel)]
-    for a_candidate in candidates:
-        if a_candidate.exists():
-            return a_candidate
-    ## END for a_candidate in candidates...
-
-    return candidates[0]
-
-
-def ensure_scratch_kdiba_layout_symlink(scratch_data_root: Path) -> Path:
-    """One folder symlink matching Turbo: sibling KDIBA -> Data/KDIBA. Data/KDIBA stays a real writable directory."""
-    scratch_data_root = Path(scratch_data_root)
-    scratch_kdiba: Path = scratch_data_root.joinpath('KDIBA')
-    scratch_kdiba.mkdir(parents=True, exist_ok=True)
-    sibling_kdiba: Path = scratch_data_root.parent.joinpath('KDIBA')
-    if sibling_kdiba.is_symlink():
-        current_target = Path(os.readlink(str(sibling_kdiba)))
-        if current_target.resolve() != scratch_kdiba.resolve():
-            sibling_kdiba.unlink()
-            sibling_kdiba.symlink_to(scratch_kdiba, target_is_directory=True)
-            print(f'[SCRATCH STAGE] KDIBA symlink: {sibling_kdiba} -> {scratch_kdiba}')
-        else:
-            print(f'[SCRATCH STAGE] KDIBA symlink exists: {sibling_kdiba} -> {scratch_kdiba}')
-    elif sibling_kdiba.exists():
-        print(f'[SCRATCH STAGE] KDIBA sibling already exists (not a symlink): {sibling_kdiba}')
-    else:
-        sibling_kdiba.symlink_to(scratch_kdiba, target_is_directory=True)
-        print(f'[SCRATCH STAGE] KDIBA symlink: {sibling_kdiba} -> {scratch_kdiba}')
-    return scratch_kdiba
-
-
-def cleanup_leftover_scratch_symlinks(scratch_basedir: Path) -> int:
-    """Unlink symlinks left by the earlier per-file linking run (session dir + output/). Real files are kept."""
-    n_removed: int = 0
-    scratch_basedir = Path(scratch_basedir)
-    if not scratch_basedir.exists():
-        return n_removed
-    candidate_dirs: List[Path] = [scratch_basedir]
-    output_dir: Path = scratch_basedir.joinpath('output')
-    if output_dir.is_symlink():
-        output_dir.unlink()
-        n_removed += 1
-    elif output_dir.is_dir():
-        candidate_dirs.append(output_dir)
-    for a_dir in candidate_dirs:
-        for an_item in a_dir.iterdir():
-            if an_item.is_symlink():
-                an_item.unlink()
-                n_removed += 1
-        ## END for an_item in a_dir.iterdir()...
-
-    ## END for a_dir in candidate_dirs...
-
-    return n_removed
-
-
-## Tiny read-only session-root sidecars that post-load code re-reads next to the pickle (e.g. `FINAL_FIX_GRID_BIN_BOUNDS` -> `{session}.position_info.mat`). Never .dat/.eeg/.clu/.fet, spikes.mat/spikeII.mat, .h5, or unused pickles.
-READONLY_SESSION_SIDECAR_SUFFIXES: Tuple[str, ...] = ('.position_info.mat', '.epochs_info.mat', '.xml',
-                                                      '.laps_info.mat', '.replay_info.mat', '.RippleDatabase.mat',
-                                                      '.probegroup.npy', '.pbe.npy', '.ripple.npy', '.mua.npy', '.position.npy')
-READONLY_SESSION_SIDECAR_STANDALONE_NAMES: Tuple[str, ...] = ('RippleDatabase.mat',)  # folder listing uses the bare name; loader uses `{session}.RippleDatabase.mat`
-REQUIRED_SESSION_SIDECAR_SUFFIXES: Tuple[str, ...] = ('.position_info.mat',)  # FINAL post-load asserts these exist
-
-
-def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newer_or_equal: bool) -> str:
-    dest_file.parent.mkdir(parents=True, exist_ok=True)
-    if dest_file.is_symlink():
-        dest_file.unlink()
-    if skip_if_dest_newer_or_equal and dest_file.exists() and dest_file.is_file() and (not dest_file.is_symlink()):
-        dest_stat = dest_file.stat()
-        src_stat = src_file.stat()
-        if dest_stat.st_mtime > src_stat.st_mtime:
-            dest_mtime_str: str = datetime.fromtimestamp(dest_stat.st_mtime).isoformat(sep=' ', timespec='seconds')
-            src_mtime_str: str = datetime.fromtimestamp(src_stat.st_mtime).isoformat(sep=' ', timespec='seconds')
-            print(f'  WARN: dest mtime newer than source; skipping copy (size ignored) dest={dest_file} dest_mtime={dest_mtime_str} dest_size={dest_stat.st_size} src={src_file} src_mtime={src_mtime_str} src_size={src_stat.st_size}')
-            return 'skipped_newer'
-    shutil.copy2(src_file, dest_file)
-    return 'copied'
-
-
-def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[ConcreteSessionFolder], source_data_root: Path, scratch_data_root: Path, load_only_relpath: str, writable_relpath: str, skip_if_dest_newer_or_equal: bool = True) -> Tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path], Dict[Path, Path]]:
-    """Copy the local pickle, the writable global pickle, and the tiny read-only session-root sidecars (`READONLY_SESSION_SIDECAR_SUFFIXES`) as real files. Never symlink to Turbo, never stage .h5."""
-    source_data_root = Path(source_data_root)
-    scratch_data_root = Path(scratch_data_root)
-    ensure_scratch_kdiba_layout_symlink(scratch_data_root)
-    scratch_session_folders: List[ConcreteSessionFolder] = []
-    scratch_basedirs: Dict[IdentifyingContext, Path] = {}
-    all_copied: Dict[Path, Path] = {}
-
-    for a_folder in turbo_session_folders:
-        turbo_basedir: Path = find_turbo_session_basedir(a_folder, source_data_root=source_data_root)
-        scratch_basedir: Path = scratch_data_root.joinpath(kdiba_session_relpath(a_folder.context))
-        scratch_basedir.mkdir(parents=True, exist_ok=True)
-        n_cleaned: int = cleanup_leftover_scratch_symlinks(scratch_basedir)
-        scratch_basedir.joinpath('output').mkdir(parents=True, exist_ok=True)
-        print(f'[SCRATCH STAGE] {a_folder.context}')
-        print(f'  turbo:   {turbo_basedir}')
-        print(f'  scratch: {scratch_basedir}')
-        if n_cleaned > 0:
-            print(f'  cleaned: {n_cleaned} leftover symlink(s)')
-        if not turbo_basedir.exists():
-            print(f'  WARN: turbo session basedir missing: {turbo_basedir}')
-
-        load_src = turbo_basedir.joinpath(load_only_relpath)
-        load_dest = scratch_basedir.joinpath(load_only_relpath)
-        if not load_src.is_file():
-            print(f'  missing load pickle: {load_src}')
-        else:
-            load_status = copy_or_skip_mutable_file(load_src, load_dest, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
-            if load_status == 'copied':
-                all_copied[load_src] = load_dest
-                print(f'  copied local:  {load_src} -> {load_dest}')
-            else:
-                print(f'  skipped local: {load_dest} (dest mtime newer)')
-
-        write_src = turbo_basedir.joinpath(writable_relpath)
-        write_dest = scratch_basedir.joinpath(writable_relpath)
-        if not write_src.is_file():
-            print(f'  missing global (ok, final_run will write): {write_dest}')
-        else:
-            status = copy_or_skip_mutable_file(write_src, write_dest, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
-            if status == 'copied':
-                all_copied[write_src] = write_dest
-                print(f'  copied global: {write_src} -> {write_dest}')
-            else:
-                print(f'  skipped global: {write_dest} (dest mtime newer)')
-
-        ## Tiny read-only sidecars re-read next to the pickle by post-load code (e.g. `{session}.position_info.mat` in FINAL_FIX_GRID_BIN_BOUNDS):
-        session_name: str = turbo_basedir.name  # matches `KDibaOldDataSessionFormat.get_session_name(basedir)`
-        sidecar_names: List[str] = [f'{session_name}{a_suffix}' for a_suffix in READONLY_SESSION_SIDECAR_SUFFIXES] + list(READONLY_SESSION_SIDECAR_STANDALONE_NAMES)
-        required_sidecar_names: List[str] = [f'{session_name}{a_suffix}' for a_suffix in REQUIRED_SESSION_SIDECAR_SUFFIXES]
-        n_sidecars_copied: int = 0
-        n_sidecars_skipped: int = 0
-        missing_sidecar_names: List[str] = []
-        for a_sidecar_name in sidecar_names:
-            sidecar_src = turbo_basedir.joinpath(a_sidecar_name)
-            sidecar_dest = scratch_basedir.joinpath(a_sidecar_name)
-            if not sidecar_src.is_file():
-                missing_sidecar_names.append(a_sidecar_name)
-                if a_sidecar_name in required_sidecar_names:
-                    print(f'  WARN: required sidecar missing on turbo (FINAL post-load will fail without it): {sidecar_src}')
-                continue
-            sidecar_status = copy_or_skip_mutable_file(sidecar_src, sidecar_dest, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
-            if sidecar_status == 'copied':
-                all_copied[sidecar_src] = sidecar_dest
-                n_sidecars_copied += 1
-            else:
-                n_sidecars_skipped += 1
-        ## END for a_sidecar_name in sidecar_names...
-
-        print(f'  sidecars: copied {n_sidecars_copied}, skipped {n_sidecars_skipped} (dest mtime newer), missing {len(missing_sidecar_names)}' + (f': {missing_sidecar_names}' if len(missing_sidecar_names) > 0 else ''))
-
-        scratch_session_folders.append(ConcreteSessionFolder(a_folder.context, scratch_basedir))
-        scratch_basedirs[a_folder.context] = scratch_basedir
-    ## END for a_folder in turbo_session_folders...
-
-    return scratch_session_folders, scratch_basedirs, all_copied
-
 
 BATCH_DAY_DATE: str = '2026-10-21'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
@@ -249,26 +76,11 @@ BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the not
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
+# ==================================================================================================================== #
+# GL Turbo->Scratch workaround (set FORCE_SCRATCH_WRITES=False / comment out when Turbo is R/W again)                   #
+# ==================================================================================================================== #
 FORCE_SCRATCH_WRITES: bool = True  # set False when Turbo is writable again
-TURBO_DATA_ROOT = Path('/nfs/turbo/umms-kdiba/Data')
-SCRATCH_DATA_ROOT = Path('/scratch/kdiba_root/kdiba99/halechr/Data')
-SCRATCH_SCRIPTS_OUTPUT_PATH = SCRATCH_DATA_ROOT.joinpath('Output', 'gen_scripts')
-SCRATCH_COLLECTED_OUTPUTS_PATH = SCRATCH_DATA_ROOT.joinpath('Output', 'collected_outputs')
-SCRATCH_ANCHOR_PATH = Path('/scratch')  # GL indicator; Data/Output dirs may need creating
-
-turbo_data_root: Optional[Path] = TURBO_DATA_ROOT.resolve() if TURBO_DATA_ROOT.exists() else None
-scratch_data_root: Optional[Path] = None
-use_scratch_writes: bool = False
-if FORCE_SCRATCH_WRITES and (platform.system() != 'Windows') and SCRATCH_ANCHOR_PATH.exists():
-    try:
-        SCRATCH_DATA_ROOT.mkdir(parents=True, exist_ok=True)
-        scratch_data_root = SCRATCH_DATA_ROOT.resolve()
-        use_scratch_writes = scratch_data_root.exists()
-    except OSError as e:
-        print(f'WARN: could not create scratch data root {SCRATCH_DATA_ROOT}: {e}')
-        scratch_data_root = None
-        use_scratch_writes = False
-
+turbo_data_root, scratch_data_root, use_scratch_writes = GreatlakesTurboToScratchHelpers.detect_scratch_write_mode(force_scratch_writes=FORCE_SCRATCH_WRITES)
 print(f'FORCE_SCRATCH_WRITES: {FORCE_SCRATCH_WRITES}')
 print(f'turbo_data_root: {turbo_data_root}')
 print(f'scratch_data_root: {scratch_data_root}')
@@ -279,10 +91,7 @@ print(f'use_scratch_writes: {use_scratch_writes}')
 # # scripts_output_path = Path('/home/halechr/FastData/gen_scripts/').resolve() # Lab
 # assert scripts_output_path.exists()
 if use_scratch_writes:
-    scripts_output_path = SCRATCH_SCRIPTS_OUTPUT_PATH
-    scripts_output_path.mkdir(parents=True, exist_ok=True)
-    collected_outputs_path = SCRATCH_COLLECTED_OUTPUTS_PATH
-    collected_outputs_path.mkdir(parents=True, exist_ok=True)
+    scripts_output_path, collected_outputs_path = GreatlakesTurboToScratchHelpers.build_scratch_output_paths() # GL Turbo->Scratch workaround
 else:
     known_scripts_output_paths = [Path(v).resolve() for v in ['K:/scratch/gen_scripts', '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
@@ -297,12 +106,7 @@ _time_checkpoint('paths:scripts_output_path')
 assert collected_outputs_path.exists()
 print(f'collected_outputs_path: {collected_outputs_path}')
 if FORCE_SCRATCH_WRITES:
-    _scripts_path_str: str = str(scripts_output_path).replace('\\', '/')
-    _collected_path_str: str = str(collected_outputs_path).replace('\\', '/')
-    assert ('/nfs/turbo/' not in _scripts_path_str) and ('/cloud/turbo/' not in _scripts_path_str), f"FORCE_SCRATCH_WRITES is True but scripts_output_path is still on Turbo: {scripts_output_path}"
-    assert ('/nfs/turbo/' not in _collected_path_str) and ('/cloud/turbo/' not in _collected_path_str), f"FORCE_SCRATCH_WRITES is True but collected_outputs_path is still on Turbo: {collected_outputs_path}"
-    print(f'[SCRATCH WRITES] gen_scripts -> {scripts_output_path}')
-    print(f'[SCRATCH WRITES] collected_outputs -> {collected_outputs_path}')
+    GreatlakesTurboToScratchHelpers.assert_output_paths_not_on_turbo(scripts_output_path, collected_outputs_path) # GL Turbo->Scratch workaround
 _time_checkpoint('paths:collected_outputs_path')
 
 # %% [markdown]
@@ -410,8 +214,7 @@ global_data_root_parent_path = find_first_extant_path(known_global_data_root_par
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 print(f'global_data_root_parent_path (session discovery / read root): {global_data_root_parent_path}')
 good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
-turbo_session_concrete_folders: List[ConcreteSessionFolder] = list(good_session_concrete_folders)
-session_global_data_root_parent_paths: Optional[Dict[IdentifyingContext, Path]] = None
+session_global_data_root_parent_paths: Optional[Dict[IdentifyingContext, Path]] = None # per-session override of global_data_root_parent_path passed to generate_batch_single_session_scripts
 _time_checkpoint('paths: build_concrete_session_folders')
 
 
@@ -738,34 +541,10 @@ print(f'Using Spike3D repo root: {_spike3d_repo_root} ({"from SPIKE3D_REPO_ROOT 
 print(f'venv_activate_path: {_venv_activate_path}')
 print(f'vscode_default_interpreter_path: {_vscode_python}')
 
-required_local_pickle_name: str = f"loadedSessPickle{active_phase_dict['override_custom_pickle_suffix']}.pkl"
-scratch_load_only_relpath, scratch_writable_relpath = build_scratch_stage_relpaths(pickle_suffix=active_phase_dict.get('override_custom_pickle_suffix', ''), tbin_suffix=active_phase_dict.get('decoding_time_bin_filename_suffix', ''))
-print(f'scratch load-only pickle: {scratch_load_only_relpath}')
-print(f'scratch writable global pickle: {scratch_writable_relpath}')
 if use_scratch_writes:
-    source_data_root: Path = Path(global_data_root_parent_path)
-    scratch_write_root: Path = SCRATCH_DATA_ROOT
-    if source_data_root.resolve() == scratch_write_root.resolve():
-        print(f'[SCRATCH STAGE] session discovery root is already scratch ({source_data_root}); skipping turbo copy.')
-        session_global_data_root_parent_paths = {a_folder.context: scratch_write_root for a_folder in good_session_concrete_folders}
-        global_data_root_parent_path = scratch_write_root
-    else:
-        good_session_concrete_folders, _scratch_session_basedirs, staged_copied_files = stage_mutable_session_outputs_to_scratch(turbo_session_folders=turbo_session_concrete_folders, source_data_root=source_data_root, scratch_data_root=scratch_write_root, load_only_relpath=scratch_load_only_relpath, writable_relpath=scratch_writable_relpath, skip_if_dest_newer_or_equal=True)
-        session_global_data_root_parent_paths = {a_folder.context: scratch_write_root for a_folder in good_session_concrete_folders}
-        global_data_root_parent_path = scratch_write_root
-        print(f'[SCRATCH STAGE] copied {len(staged_copied_files)} file(s); retargeted global_data_root_parent_path -> {global_data_root_parent_path}')
-        _time_checkpoint('paths: stage_mutable_session_outputs_to_scratch')
-
-    for a_turbo_folder, a_scratch_folder in zip(turbo_session_concrete_folders, good_session_concrete_folders):
-        turbo_pickle = find_turbo_session_basedir(a_turbo_folder, source_data_root=source_data_root).joinpath(required_local_pickle_name)
-        scratch_pickle = a_scratch_folder.path.joinpath(required_local_pickle_name)
-        if (not turbo_pickle.exists()) and (not scratch_pickle.exists()):
-            print(f'WARN: required local pickle missing on turbo and scratch for {a_turbo_folder.context}: {required_local_pickle_name}')
-            print(f'  turbo pickle:   {turbo_pickle}')
-            print(f'  scratch pickle: {scratch_pickle}')
-    ## END for a_turbo_folder, a_scratch_folder in zip(turbo_session_concrete_folders, good_session_concrete_folders)...
-
-    print(f'global_data_root_parent_path (job write root): {global_data_root_parent_path}')
+    ## GL Turbo->Scratch workaround: copy the load-only local pickle + writable global pickle + tiny sidecars onto scratch and retarget the job write root there.
+    good_session_concrete_folders, session_global_data_root_parent_paths, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run(turbo_session_folders=good_session_concrete_folders, source_data_root=global_data_root_parent_path, pickle_suffix=active_phase_dict.get('override_custom_pickle_suffix', ''), tbin_suffix=active_phase_dict.get('decoding_time_bin_filename_suffix', ''), skip_if_dest_newer_or_equal=True)
+    _time_checkpoint('paths: GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run')
 
 session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context:a_session_folder.path for a_session_folder in good_session_concrete_folders}
 print(f'[GENERATE] writing batch scripts under: {scripts_output_path}')
