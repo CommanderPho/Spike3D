@@ -114,13 +114,42 @@ _time_checkpoint('paths:collected_outputs_path')
 # %%
 # Get the generated code for user-contributed functions:
 # phase_any_run_custom_user_completion_functions_dict = None
-phase_any_run_custom_user_completion_functions_dict = {
-    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
-    'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
-    'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
-    'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
-    'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+# ==================================================================================================================================================================================================================================================================================== #
+# Single-phase fallback (uncomment to generate only one phase, no chain):                                                                                                                                                                                                              #
+# ==================================================================================================================================================================================================================================================================================== #
+# phase_any_run_custom_user_completion_functions_dict = {
+#     'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
+#     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
+#     'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+#     'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
+#     'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+# }
+
+# ==================================================================================================================================================================================================================================================================================== #
+# Multi-phase Chained user_completion_functions override                                                                                                                                                                                                                               #
+# ==================================================================================================================================================================================================================================================================================== #
+phase_any_run_custom_user_completion_functions_dict_dict = {
+    ProcessingScriptPhases.clean_run: {
+        'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+    },
+    ProcessingScriptPhases.continued_run: {
+        'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
+        'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
+        # 'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+        'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
+        'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+    },
+    ProcessingScriptPhases.final_run: {
+        # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[0.075]
+        'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.075` CSVs + posteriors h5
+        'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
+        'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.075` CSVs
+        'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+    },
 }
+_is_kdiba_session: bool = True
+
+
 # phase_any_run_custom_user_completion_functions_dict = {
 #     # 'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
 #     'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
@@ -211,12 +240,7 @@ phases_to_generate = [
 batch_execution_target: str = 'linux_standalone'  # 'slurm' (Great Lakes) | 'linux_standalone' (Lab workstation, no sbatch)
 
 # END ________________________________________________________________________________________________________________ #
-custom_user_completion_functions_dict = active_phase.get_custom_user_completion_functions_dict(extra_run_functions=phase_any_run_custom_user_completion_functions_dict, is_kdiba_session=True)
-# custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict ## directly override the outputs:
-
-# print(f'custom_user_completion_functions_dict: {custom_user_completion_functions_dict}')
-custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict)
-_time_checkpoint('MAIN_get_template_string')
+# Per-phase completion templates are built inside `for active_phase in phases_to_generate` from `phase_any_run_custom_user_completion_functions_dict_dict` (replace, never None).
 
 # ==================================================================================================================== #
 # Custom Suffix and overrides (shared across phases)                                                                   #
@@ -424,6 +448,10 @@ phases_ordered_names: List[str] = []
 
 for active_phase in phases_to_generate:
     print(f"\n{'='*80}\nGENERATING PHASE: {active_phase.name}\n{'='*80}")
+    custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict_dict.get(active_phase, {})
+    custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict) # never None: None would install the mega set
+    print(f'completion_functions: {list(custom_user_completion_functions_dict.keys())}')
+    _time_checkpoint(f'MAIN_get_template_string:{active_phase.name}')
     active_phase_dict = active_phase.get_run_configuration(custom_user_completion_function_template_code=custom_user_completion_function_template_code, extra_extended_computations_include_includelist=extra_extended_computations_include_includelist)
     if custom_phase_extended_computations_include_includelist is not None:
         print(f'WARNING: custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist} is provided so only these extended_computation_fns will be used (overwritting the phase defaults!).')
