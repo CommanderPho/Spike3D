@@ -68,16 +68,17 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
-SCRATCH_MUTABLE_EXTRA_GLOBS: List[str] = [
-    'loadedSessPickle*.pkl',
-    'output/global_computation_results*.pkl',
-    'output/pipeline*.h5',
-    'output/pipeline_results*.h5',
-]
-
-
 def kdiba_session_relpath(context: IdentifyingContext) -> Path:
     return Path('KDIBA').joinpath(context.animal, context.exper_name, context.session_name)
+
+
+def build_scratch_stage_relpaths(pickle_suffix: str, tbin_suffix: str = '') -> Tuple[str, str]:
+    """Exact load-only local pickle and writable global pickle. No h5, no wildcards."""
+    pickle_suffix = pickle_suffix or ''
+    tbin_suffix = tbin_suffix or ''
+    load_only_relpath: str = f'loadedSessPickle{pickle_suffix}.pkl'
+    writable_relpath: str = f'output/global_computation_results{pickle_suffix}{tbin_suffix}.pkl'
+    return load_only_relpath, writable_relpath
 
 
 def find_turbo_session_basedir(a_folder: ConcreteSessionFolder, source_data_root: Path) -> Path:
@@ -114,6 +115,19 @@ def ensure_scratch_kdiba_layout_symlink(scratch_data_root: Path) -> Path:
     return scratch_kdiba
 
 
+def ensure_load_only_symlink(src_file: Path, dest_file: Path) -> str:
+    dest_file.parent.mkdir(parents=True, exist_ok=True)
+    if dest_file.is_symlink():
+        current_target = Path(os.readlink(str(dest_file)))
+        if (current_target == src_file) or (dest_file.exists() and dest_file.resolve() == src_file.resolve()):
+            return 'exists'
+        dest_file.unlink()
+    elif dest_file.exists():
+        return 'skip_real'
+    dest_file.symlink_to(src_file)
+    return 'created'
+
+
 def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newer_or_equal: bool) -> str:
     dest_file.parent.mkdir(parents=True, exist_ok=True)
     if dest_file.is_symlink():
@@ -125,9 +139,8 @@ def copy_or_skip_mutable_file(src_file: Path, dest_file: Path, skip_if_dest_newe
     return 'copied'
 
 
-def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[ConcreteSessionFolder], source_data_root: Path, scratch_data_root: Path, extra_globs: Optional[List[str]] = None, skip_if_dest_newer_or_equal: bool = True) -> Tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path], Dict[Path, Path]]:
-    """Copy pickle/h5 mutables into real scratch session folders. Do not walk/link the rest of the Turbo tree."""
-    extra_globs = extra_globs if extra_globs is not None else SCRATCH_MUTABLE_EXTRA_GLOBS
+def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[ConcreteSessionFolder], source_data_root: Path, scratch_data_root: Path, load_only_relpath: str, writable_relpath: str, skip_if_dest_newer_or_equal: bool = True) -> Tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path], Dict[Path, Path]]:
+    """Symlink the load-only local pickle; copy the writable global pickle. Never stage .h5."""
     source_data_root = Path(source_data_root)
     scratch_data_root = Path(scratch_data_root)
     ensure_scratch_kdiba_layout_symlink(scratch_data_root)
@@ -145,25 +158,26 @@ def stage_mutable_session_outputs_to_scratch(turbo_session_folders: List[Concret
         print(f'  scratch: {scratch_basedir}')
         if not turbo_basedir.exists():
             print(f'  WARN: turbo session basedir missing: {turbo_basedir}')
-        copied_this_session: int = 0
-        for a_glob in extra_globs:
-            for src_file in turbo_basedir.glob(a_glob):
-                if not src_file.is_file():
-                    continue
-                dest_file = scratch_basedir.joinpath(src_file.relative_to(turbo_basedir))
-                status = copy_or_skip_mutable_file(src_file, dest_file, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
-                if status == 'copied':
-                    all_copied[src_file] = dest_file
-                    copied_this_session += 1
-                    print(f'  copied:  {src_file} -> {dest_file}')
-                else:
-                    print(f'  skipped: {src_file} -> {dest_file} (dest newer/equal)')
-            ## END for src_file in turbo_basedir.glob(a_glob)...
 
-        ## END for a_glob in extra_globs...
+        load_src = turbo_basedir.joinpath(load_only_relpath)
+        load_dest = scratch_basedir.joinpath(load_only_relpath)
+        if not load_src.is_file():
+            print(f'  missing load pickle: {load_src}')
+        else:
+            load_status = ensure_load_only_symlink(load_src, load_dest)
+            print(f'  load pickle ({load_status}): {load_dest} -> {load_src}')
 
-        if copied_this_session == 0:
-            print('  copied:  (none)')
+        write_src = turbo_basedir.joinpath(writable_relpath)
+        write_dest = scratch_basedir.joinpath(writable_relpath)
+        if not write_src.is_file():
+            print(f'  missing global pickle (ok, final_run will write): {write_dest}')
+        else:
+            status = copy_or_skip_mutable_file(write_src, write_dest, skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal)
+            if status == 'copied':
+                all_copied[write_src] = write_dest
+                print(f'  copied:  {write_src} -> {write_dest}')
+            else:
+                print(f'  skipped: {write_dest} (dest newer/equal)')
 
         scratch_session_folders.append(ConcreteSessionFolder(a_folder.context, scratch_basedir))
         scratch_basedirs[a_folder.context] = scratch_basedir
@@ -655,6 +669,9 @@ print(f'venv_activate_path: {_venv_activate_path}')
 print(f'vscode_default_interpreter_path: {_vscode_python}')
 
 required_local_pickle_name: str = f"loadedSessPickle{active_phase_dict['override_custom_pickle_suffix']}.pkl"
+scratch_load_only_relpath, scratch_writable_relpath = build_scratch_stage_relpaths(pickle_suffix=active_phase_dict.get('override_custom_pickle_suffix', ''), tbin_suffix=active_phase_dict.get('decoding_time_bin_filename_suffix', ''))
+print(f'scratch load-only pickle: {scratch_load_only_relpath}')
+print(f'scratch writable global pickle: {scratch_writable_relpath}')
 if use_scratch_writes:
     source_data_root: Path = Path(global_data_root_parent_path)
     scratch_write_root: Path = SCRATCH_DATA_ROOT
@@ -663,7 +680,7 @@ if use_scratch_writes:
         session_global_data_root_parent_paths = {a_folder.context: scratch_write_root for a_folder in good_session_concrete_folders}
         global_data_root_parent_path = scratch_write_root
     else:
-        good_session_concrete_folders, _scratch_session_basedirs, staged_copied_files = stage_mutable_session_outputs_to_scratch(turbo_session_folders=turbo_session_concrete_folders, source_data_root=source_data_root, scratch_data_root=scratch_write_root, extra_globs=SCRATCH_MUTABLE_EXTRA_GLOBS, skip_if_dest_newer_or_equal=True)
+        good_session_concrete_folders, _scratch_session_basedirs, staged_copied_files = stage_mutable_session_outputs_to_scratch(turbo_session_folders=turbo_session_concrete_folders, source_data_root=source_data_root, scratch_data_root=scratch_write_root, load_only_relpath=scratch_load_only_relpath, writable_relpath=scratch_writable_relpath, skip_if_dest_newer_or_equal=True)
         session_global_data_root_parent_paths = {a_folder.context: scratch_write_root for a_folder in good_session_concrete_folders}
         global_data_root_parent_path = scratch_write_root
         print(f'[SCRATCH STAGE] copied {len(staged_copied_files)} file(s); retargeted global_data_root_parent_path -> {global_data_root_parent_path}')
@@ -757,17 +774,15 @@ if isinstance(output_slurm_scripts, dict):
         print(f'  {a_slurm_script_path}')
     ## END for a_slurm_script_path in output_slurm_scripts.get('figs', [])...
 
-print('Per-session write destinations (pickle/h5 land under scratch basedir when FORCE_SCRATCH_WRITES):')
+print('Per-session destinations (local pickle is load-only; global pickle is written):')
 for a_session_folder in good_session_concrete_folders:
     a_basedir = a_session_folder.path
     local_pickle_path = a_basedir.joinpath(f'loadedSessPickle{pickle_suffix}.pkl')
     global_pickle_path = a_basedir.joinpath('output', f'global_computation_results{pickle_suffix}{tbin_suffix}.pkl')
-    pipeline_h5_path = a_basedir.joinpath('output', f'pipeline{pickle_suffix}{tbin_suffix}.h5')
     print(f'  {a_session_folder.context}')
     print(f'    basedir:        {a_basedir}')
-    print(f'    local pickle:   {local_pickle_path}')
-    print(f'    global pickle:  {global_pickle_path}')
-    print(f'    pipeline h5:    {pipeline_h5_path}')
+    print(f'    load pickle:    {local_pickle_path}')
+    print(f'    write global:   {global_pickle_path}')
     print(f'    collected_outputs: {collected_outputs_path}')
 ## END for a_session_folder in good_session_concrete_folders...
 
