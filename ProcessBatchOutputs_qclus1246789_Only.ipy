@@ -885,6 +885,14 @@ if (platform.system() == 'Windows'):
 # 	# Use IPython's system command
 # 	display(Javascript(f'IPython.notebook.kernel.execute("!{sbatch_run_start_slurm_scripts}")'))
      
+def _try_copy_to_clipboard(code_str: str, label: str) -> None:
+    """Copy if a clipboard exists; on headless SSH/ipython just print a skip warning (commands are already printed)."""
+    try:
+        copy_to_clipboard(code_str, message_print=True)
+    except (NotImplementedError, OSError) as e:
+        print(f'WARN: clipboard unavailable ({label}); copy the printed commands manually. ({type(e).__name__}: {e})')
+
+
 if (platform.system() != 'Windows'):
     ## Linux Only: Slurm Scripts
     # sbatch_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts])
@@ -895,7 +903,7 @@ if (platform.system() != 'Windows'):
         print("RunMain:")
         print(sbatch_run_start_slurm_scripts)
         print(f'\n\n')
-        copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
+        _try_copy_to_clipboard(sbatch_run_start_slurm_scripts, label='run')
         _time_checkpoint('copy_to_clipboard:run')
 
 
@@ -904,7 +912,7 @@ if (platform.system() != 'Windows'):
         print(sbatch_figs_start_slurm_scripts)
         print(f'\n\n')
         if (active_phase.is_figure_phase):
-            copy_to_clipboard(sbatch_figs_start_slurm_scripts, message_print=True)
+            _try_copy_to_clipboard(sbatch_figs_start_slurm_scripts, label='figs')
             _time_checkpoint('copy_to_clipboard:figs')
 
 
