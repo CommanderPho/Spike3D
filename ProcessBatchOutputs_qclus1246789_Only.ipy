@@ -134,6 +134,7 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.05` CSVs + posteriors h5
         'compute_and_export_session_wcorr_shuffles_completion_function': compute_and_export_session_wcorr_shuffles_completion_function,
         'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.05` CSVs
+        'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
         'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
 }
@@ -242,7 +243,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # - Load existing qclu/frate loadedSessPickle (override_custom_pickle_suffix, no tbin) — the local pickle is tbin-independent.
 # - Do not rewrite that shared local pickle on continued/final (should_save_local_pipeline_pkl=False; save_custom enable_save_pipeline_pkl=False). Freeze is the wrong lever — it would skip the new-tbin global compute.
 # - Write global pickle/h5 as -tbin_{N}ms (decoding_time_bin_filename_suffix) so the existing 25ms globals survive.
-# - Globals are computed fresh (the -tbin_{N}ms global pickle does not exist yet), so phase-default includelists apply; no tbin-only restriction.
+# - Use the phase-default extended_computations includelists (jonathan / long_short / rank-order / PF-peaks / FAT / heuristics / wcorr all included). tbin-independent results already embedded in the local pickle validate and are skipped; they are re-saved into the -tbin_{N}ms global pickle.
+# - MUST force-recompute the tbin-dependent globals (`_tbin_dependent_force_recompute_override_computations_includelist`): the local loadedSessPickle embeds the 25ms global results and the validators only check that result keys exist (not which tbin they were computed at), so without the force list the "-tbin_{N}ms" global pickle would silently contain 25ms decoding.
 # - final_run may rewrite collected_outputs CSVs; those names carry _tbin-{N}.
 
 phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
@@ -268,6 +270,17 @@ else:
 
 # END ________________________________________________________________________________________________________________ #
 # Per-phase completion templates are built inside `for active_phase in phases_to_generate` from `phase_any_run_custom_user_completion_functions_dict_dict` (replace, never None).
+
+# tbin-dependent globals that must be recomputed at the new tbin even though 25ms versions are already present in the loaded local pickle (validators do not check tbin). Intersected with each phase's includelist inside the phase loop. tbin-independent globals (jonathan, long_short_*, rank_order, PF-peaks, FAT) are deliberately NOT listed and validate from the pickle.
+_tbin_dependent_force_recompute_override_computations_includelist = [
+    'merged_directional_placefields',
+    'directional_decoders_decode_continuous',  # needed after the merged placefields are re-decoded at the new tbin
+    'directional_decoders_evaluate_epochs',
+    'directional_decoders_epoch_heuristic_scoring',
+    'non_PBE_epochs_results',
+    'generalized_specific_epochs_decoding',
+    'perform_wcorr_shuffle_analysis',
+]
 
 # ==================================================================================================================== #
 # Custom Suffix and overrides (shared across phases)                                                                   #
@@ -422,7 +435,7 @@ custom_user_completion_function_override_kwargs_dict = {
                                                                                                                         # '_display_generalized_decoded_yellow_blue_marginal_epochs', 
                                                                                                                         # '_display_directional_merged_pf_decoded_stacked_epoch_slices', # optional independent-1D only; skipped when MultiColor is listed (same greyscale_shared_norm / mergedV / multi paths)
                                                                                                                         # '_display_decoded_trackID_marginal_hairy_position', 
-                                                                                                                        # '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # sole source of greyscale_shared_norm + mergedV + combined/multi (competition-normalized)
+                                                                                                                        '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # PBE/ripple decoded posterior images (final_run). sole source of greyscale_shared_norm + mergedV + combined/multi (competition-normalized)
                                                                                                                         # '_display_measured_vs_decoded_occupancy_distributions',
                                                                                                                         # '_display_trial_to_trial_reliability',
                                                                                                                         # '_render_export_all_time_tracks',
@@ -538,6 +551,10 @@ for active_phase in phases_to_generate:
 
     # New-tbin recipe reusing the 25ms local pickle: do not freeze/restrict clean_run (pickle write allowed; phase defaults). continued/final load the shared local pickle, never rewrite it, and write only `-tbin_{N}ms` globals.
     if active_phase.value != ProcessingScriptPhases.clean_run.value:
+        # Force-recompute the tbin-dependent globals present in this phase's includelist (the 25ms versions embedded in the local pickle would otherwise validate and be kept). Skipped for the track-body variant, which recomputes everything via its aclu filter.
+        if not active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('apply_track_body_aclu_filter', False):
+            _phase_includelist = active_phase_dict['extended_computations_include_includelist']
+            active_phase_dict['force_recompute_override_computations_includelist'] = [a_name for a_name in _tbin_dependent_force_recompute_override_computations_includelist if a_name in _phase_includelist]
         active_phase_dict['should_save_local_pipeline_pkl'] = False
         active_phase_dict['skip_save_on_initial_load'] = True
 
@@ -553,6 +570,7 @@ for active_phase in phases_to_generate:
     ))
     print(f'job_suffix: "{current_job_suffix}"')
     print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
+    print(f"force_recompute_override_computations_includelist: {active_phase_dict.get('force_recompute_override_computations_includelist', [])}")
 
     batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(global_data_root_parent_path, session_batch_basedirs=session_basedirs_dict, included_session_contexts=effective_included_session_contexts, session_global_data_root_parent_paths=session_global_data_root_parent_paths,
                                                                                             output_directory=scripts_output_path, use_separate_run_directories=True,
