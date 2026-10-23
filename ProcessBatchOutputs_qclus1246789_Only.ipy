@@ -71,9 +71,9 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-10-22'
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DAY_DATE: str = '2026-10-23'
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
@@ -193,18 +193,18 @@ _is_kdiba_session: bool = True
 
 ## All Sessions:
 all_included_session_contexts = [ 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
-    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
-    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
-    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
-    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
+    # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
+    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+    # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), #TODO 2026-10-23 12:16: - [ ] Running now because it has the most replays on Apogee
+    # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
+    # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), # #TODO 2026-10-23 12:09: - [ ] Done running all phases on Apogee
 ]
 included_session_contexts = all_included_session_contexts
 
@@ -246,8 +246,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # - Force-recompute only tbin-dependent globals (not FAT / rank-order / PF / jonathan).
 # - final_run may rewrite collected_outputs CSVs; those names already carry _tbin-0.075.
 
-phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
-# phases_to_generate = [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
+# phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
+phases_to_generate = [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
 # Single-phase fallback (uncomment to generate only one phase, no chain):
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
@@ -270,26 +270,26 @@ else:
 # END ________________________________________________________________________________________________________________ #
 # Per-phase completion templates are built inside `for active_phase in phases_to_generate` from `phase_any_run_custom_user_completion_functions_dict_dict` (replace, never None).
 
-# 75ms tbin-only include list: keep local PF/laps validators (no-op if already in loaded pickle); skip jonathan/rank-order/PF-peaks/FAT.
-_tbin_only_extended_computations_include_includelist = [
-    'pf_computation', 'split_to_directional_laps',  # local; validators no-op if already in loaded pickle
-    'merged_directional_placefields',
-    'directional_decoders_decode_continuous',
-    'directional_decoders_evaluate_epochs',
-    'directional_decoders_epoch_heuristic_scoring',
-    'non_PBE_epochs_results',
-    'generalized_specific_epochs_decoding',
-    'perform_wcorr_shuffle_analysis',
-]
-_tbin_only_force_recompute_override_computations_includelist = [
-    'merged_directional_placefields',
-    'directional_decoders_decode_continuous',  # needed after 25→75ms placefields
-    'directional_decoders_evaluate_epochs',
-    'directional_decoders_epoch_heuristic_scoring',
-    'non_PBE_epochs_results',
-    'generalized_specific_epochs_decoding',
-    'perform_wcorr_shuffle_analysis',
-]
+# # 75ms tbin-only include list: keep local PF/laps validators (no-op if already in loaded pickle); skip jonathan/rank-order/PF-peaks/FAT.
+# _tbin_only_extended_computations_include_includelist = [
+#     'pf_computation', 'split_to_directional_laps',  # local; validators no-op if already in loaded pickle
+#     'merged_directional_placefields',
+#     'directional_decoders_decode_continuous',
+#     'directional_decoders_evaluate_epochs',
+#     'directional_decoders_epoch_heuristic_scoring',
+#     'non_PBE_epochs_results',
+#     'generalized_specific_epochs_decoding',
+#     'perform_wcorr_shuffle_analysis',
+# ]
+# _tbin_only_force_recompute_override_computations_includelist = [
+#     'merged_directional_placefields',
+#     'directional_decoders_decode_continuous',  # needed after 25→75ms placefields
+#     'directional_decoders_evaluate_epochs',
+#     'directional_decoders_epoch_heuristic_scoring',
+#     'non_PBE_epochs_results',
+#     'generalized_specific_epochs_decoding',
+#     'perform_wcorr_shuffle_analysis',
+# ]
 
 # ==================================================================================================================== #
 # Custom Suffix and overrides (shared across phases)                                                                   #
@@ -364,10 +364,10 @@ drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.020
-# laps_decoding_time_bin_size = 0.025
+laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
-laps_decoding_time_bin_size = 0.075
+# laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -378,19 +378,19 @@ laps_decoding_time_bin_size = 0.075
 # ripple_decoding_time_bin_size = 0.058
 # job_suffix='tbin_58ms'
 # ripple_decoding_time_bin_size = 0.020
-# ripple_decoding_time_bin_size = 0.025
+ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.060
-ripple_decoding_time_bin_size = 0.075
+# ripple_decoding_time_bin_size = 0.075
 # job_suffix='tbin_50ms'
 # ripple_decoding_time_bin_size = 0.025
 
 
-# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
+base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
-base_job_suffix = f"{base_job_suffix}_tbin_75ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
 decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
@@ -423,7 +423,7 @@ custom_user_completion_function_override_kwargs_dict = {
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=None, custom_all_param_sweep_options=None, additional_session_context=None),
-    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=[0.075], custom_all_param_sweep_options=None, additional_session_context=None), # 75ms session-pickle run: do not re-decode 25ms/60ms
+    'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=[0.025, 0.050, 0.075], custom_all_param_sweep_options=None, additional_session_context=None), # 75ms session-pickle run: do not re-decode 25ms/60ms
     'compute_and_export_session_trial_by_trial_performance_completion_function': dict(active_laps_decoding_time_bin_size=ripple_decoding_time_bin_size),
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': dict(ripple_decoding_time_bin_size_override=ripple_decoding_time_bin_size, laps_decoding_time_bin_size_override=laps_decoding_time_bin_size,
         # needs_recompute_heuristics=True, force_recompute_all_decoding=True,
@@ -562,9 +562,9 @@ for active_phase in phases_to_generate:
 
     # Incremental 75ms recipe: do not freeze/restrict clean_run (pickle write allowed; phase defaults). continued/final load the shared local pickle and write only `-tbin_75ms` globals.
     if active_phase.value != ProcessingScriptPhases.clean_run.value:
-        active_phase_dict['extended_computations_include_includelist'] = list(_tbin_only_extended_computations_include_includelist)
-        if not active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('apply_track_body_aclu_filter', False):
-            active_phase_dict['force_recompute_override_computations_includelist'] = list(_tbin_only_force_recompute_override_computations_includelist)
+        # active_phase_dict['extended_computations_include_includelist'] = list(_tbin_only_extended_computations_include_includelist)
+        # if not active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('apply_track_body_aclu_filter', False):
+        #     active_phase_dict['force_recompute_override_computations_includelist'] = list(_tbin_only_force_recompute_override_computations_includelist)
         active_phase_dict['should_save_local_pipeline_pkl'] = False
         active_phase_dict['skip_save_on_initial_load'] = True
 
@@ -617,9 +617,20 @@ for active_phase in phases_to_generate:
     if (platform.system() == 'Windows'):
         powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}')
         print(f"powershell_script_path ({active_phase.name}): '{powershell_script_path}'\n")
+        if not active_phase.is_figure_phase:
+            win_run_start_scripts: str = "\n".join([f"& '{_vscode_python}' '{p}'" for p in script_paths])
+            print(f"{active_phase.name} - RunMain (Windows, per session):")
+            print(win_run_start_scripts)
+            print(f"\nAll sessions this phase:\npowershell -File '{powershell_script_path}'")
+            print(f'\n\n')
         if also_show_figure_script_outputs or active_phase_dict.get('should_perform_figure_generation_to_file', False):
             powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}')
             print(f"powershell_figures_script_path: '{powershell_figures_script_path}'\n")
+            win_figs_start_scripts: str = "\n".join([f"& '{_vscode_python}' '{p}'" for p in generate_figures_script_paths])
+            if len(win_figs_start_scripts) > 0:
+                print(f"{active_phase.name} - Figures (Windows, per session):")
+                print(win_figs_start_scripts)
+                print(f'\n\n')
 
     if (platform.system() != 'Windows'):
         if batch_execution_target == 'linux_standalone':
@@ -671,7 +682,7 @@ for a_session_folder in good_session_concrete_folders:
 
 print('========================================\n')
 
-# Per-session phase chains (primary submit path). Slurm: afterok; Lab: sequential bash one session at a time.
+# Per-session phase chains (primary submit path). Slurm: afterok; Lab: sequential bash one session at a time; Windows: sequential python.exe per session.
 if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     _phase_chain_backend: str = 'bash' if batch_execution_target == 'linux_standalone' else 'slurm'
     _script_collection_key: str = _phase_chain_backend
@@ -690,6 +701,30 @@ if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     print(f"Retry scripts dir: '{retry_dir}'")
     print_chain_status_hint(execution_backend=_phase_chain_backend)
     _try_copy_to_clipboard(f"bash '{chained_submit_path}'", label='chained_submit')
+    _time_checkpoint('copy_to_clipboard:chained_submit')
+elif (platform.system() == 'Windows') and (len(phase_collections) > 0):
+    _phase_chain_backend: str = 'powershell'
+    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key='python')
+    chained_submit_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.ps1'
+    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.json'
+    write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend, python_executable=_vscode_python)
+    retry_dir = scripts_output_path / f'retry_phase_chains_{BATCH_DATE_TO_USE}'
+    for _start_phase in phases_ordered_names[1:]:
+        write_all_retry_from_phase_scripts(chained_manifest_path, start_phase=_start_phase, out_dir=retry_dir, phases_ordered=phases_ordered_names)
+    ## END for _start_phase in phases_ordered_names[1:]...
+    print(f"\nChained submit (primary, powershell): powershell -File '{chained_submit_path}'")
+    print('\nPer-session phase chains (run in order; skip remaining phases on failure):')
+    for session_key, phase_paths in session_phase_scripts.items():
+        print(f"# === {session_key} ===")
+        for phase_name in phases_ordered_names:
+            if phase_name in phase_paths:
+                print(f"& '{_vscode_python}' '{phase_paths[phase_name]}'")
+        ## END for phase_name in phases_ordered_names...
+        print('')
+    ## END for session_key, phase_paths in session_phase_scripts.items()...
+    print(f"Retry scripts dir: '{retry_dir}'")
+    print_chain_status_hint(execution_backend=_phase_chain_backend)
+    _try_copy_to_clipboard(f"powershell -File '{chained_submit_path}'", label='chained_submit')
     _time_checkpoint('copy_to_clipboard:chained_submit')
 
 _print_timing_summary()

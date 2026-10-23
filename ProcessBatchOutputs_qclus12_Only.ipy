@@ -532,9 +532,20 @@ for active_phase in phases_to_generate:
     if (platform.system() == 'Windows'):
         powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}')
         print(f"powershell_script_path ({active_phase.name}): '{powershell_script_path}'\n")
+        if not active_phase.is_figure_phase:
+            win_run_start_scripts: str = "\n".join([f"& '{_vscode_python}' '{p}'" for p in script_paths])
+            print(f"{active_phase.name} - RunMain (Windows, per session):")
+            print(win_run_start_scripts)
+            print(f"\nAll sessions this phase:\npowershell -File '{powershell_script_path}'")
+            print(f'\n\n')
         if also_show_figure_script_outputs or active_phase_dict.get('should_perform_figure_generation_to_file', False):
             powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}')
             print(f"powershell_figures_script_path: '{powershell_figures_script_path}'\n")
+            win_figs_start_scripts: str = "\n".join([f"& '{_vscode_python}' '{p}'" for p in generate_figures_script_paths])
+            if len(win_figs_start_scripts) > 0:
+                print(f"{active_phase.name} - Figures (Windows, per session):")
+                print(win_figs_start_scripts)
+                print(f'\n\n')
 
     if (platform.system() != 'Windows'):
         if batch_execution_target == 'linux_standalone':
@@ -582,7 +593,7 @@ for a_session_folder in good_session_concrete_folders:
 
 print('========================================\n')
 
-# Per-session phase chains (primary submit path). Slurm: afterok; Lab: sequential bash one session at a time.
+# Per-session phase chains (primary submit path). Slurm: afterok; Lab: sequential bash one session at a time; Windows: sequential python.exe per session.
 if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     _phase_chain_backend: str = 'bash' if batch_execution_target == 'linux_standalone' else 'slurm'
     _script_collection_key: str = _phase_chain_backend
@@ -601,6 +612,30 @@ if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     print(f"Retry scripts dir: '{retry_dir}'")
     print_chain_status_hint(execution_backend=_phase_chain_backend)
     _try_copy_to_clipboard(f"bash '{chained_submit_path}'", label='chained_submit')
+    _time_checkpoint('copy_to_clipboard:chained_submit')
+elif (platform.system() == 'Windows') and (len(phase_collections) > 0):
+    _phase_chain_backend: str = 'powershell'
+    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key='python')
+    chained_submit_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.ps1'
+    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.json'
+    write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend, python_executable=_vscode_python)
+    retry_dir = scripts_output_path / f'retry_phase_chains_{BATCH_DATE_TO_USE}'
+    for _start_phase in phases_ordered_names[1:]:
+        write_all_retry_from_phase_scripts(chained_manifest_path, start_phase=_start_phase, out_dir=retry_dir, phases_ordered=phases_ordered_names)
+    ## END for _start_phase in phases_ordered_names[1:]...
+    print(f"\nChained submit (primary, powershell): powershell -File '{chained_submit_path}'")
+    print('\nPer-session phase chains (run in order; skip remaining phases on failure):')
+    for session_key, phase_paths in session_phase_scripts.items():
+        print(f"# === {session_key} ===")
+        for phase_name in phases_ordered_names:
+            if phase_name in phase_paths:
+                print(f"& '{_vscode_python}' '{phase_paths[phase_name]}'")
+        ## END for phase_name in phases_ordered_names...
+        print('')
+    ## END for session_key, phase_paths in session_phase_scripts.items()...
+    print(f"Retry scripts dir: '{retry_dir}'")
+    print_chain_status_hint(execution_backend=_phase_chain_backend)
+    _try_copy_to_clipboard(f"powershell -File '{chained_submit_path}'", label='chained_submit')
     _time_checkpoint('copy_to_clipboard:chained_submit')
 
 _print_timing_summary()
