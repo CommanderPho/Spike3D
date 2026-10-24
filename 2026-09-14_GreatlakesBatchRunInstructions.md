@@ -4,14 +4,14 @@
 
 Generate **all** compute phases once, then submit per-session `afterok` chains so a finished session advances to the next phase without waiting for the cohort.
 
-### Terminal 1: Generate scripts from `ProcessBatchOutputs_qclus12_Only.ipy`
+### Terminal 1: Generate scripts from `ProcessBatchOutputs_qclus1246789_Only.ipy`
 
 ```bash
 cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
 deactivate
 source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate
 export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
-ipython ProcessBatchOutputs_qclus12_Only.ipy
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```
 
 
@@ -20,7 +20,7 @@ cd '/home/halechr/repos/Spike3D'
 deactivate
 source /home/halechr/repos/Spike3D/.venv/bin/activate
 export SPIKE3D_REPO_ROOT='/home/halechr/repos'
-ipython ProcessBatchOutputs_qclus12_Only.ipy
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```
 
 In `ProcessBatchOutputs_qclus12_Only.ipy`, set **`batch_execution_target`** before generating:
