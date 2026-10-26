@@ -71,7 +71,7 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-10-23'
+BATCH_DAY_DATE: str = '2026-10-26'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -355,8 +355,8 @@ drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.020
-# laps_decoding_time_bin_size = 0.025
-laps_decoding_time_bin_size = 0.050
+laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
 # laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
@@ -366,18 +366,17 @@ laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.6
 # laps_decoding_time_bin_size = 0.75
 
-# ripple_decoding_time_bin_size = 0.058
-# job_suffix='tbin_58ms'
 # ripple_decoding_time_bin_size = 0.020
-# ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.050
+# ripple_decoding_time_bin_size = 0.058
 # ripple_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.075
 
 
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
-base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
