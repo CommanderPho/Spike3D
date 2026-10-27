@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: pipeline-batch-tests
     content: perform_* both registered, finalize renamed, probes both names (done). Remaining - tests for heuristic arrays, post_compute_metric, __setstate__/7-tuple load
-    status: in_progress
+    status: completed
 isProject: false
 ---
 
