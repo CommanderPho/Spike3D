@@ -11,6 +11,8 @@ cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
 deactivate
 source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate
 export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+git pull
+./scripts/unix/repos_pull_changes.sh
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```
 
