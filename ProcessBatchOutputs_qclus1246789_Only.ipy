@@ -318,7 +318,7 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-num_shuffles: int = 128
+num_shuffles: int = 150
 # num_shuffles: int = 1024
 # drop_previous_result_and_compute_fresh = False
 drop_previous_result_and_compute_fresh: bool = True
