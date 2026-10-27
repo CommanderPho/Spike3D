@@ -71,9 +71,9 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-10-26'
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DAY_DATE: str = '2026-10-27'
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 
@@ -248,7 +248,7 @@ _tbin_dependent_force_recompute_override_computations_includelist = [
     'directional_decoders_epoch_heuristic_scoring',
     'non_PBE_epochs_results',
     'generalized_specific_epochs_decoding',
-    'perform_wcorr_shuffle_analysis',
+    'epoch_score_shuffle_analysis',
 ]
 
 # ==================================================================================================================== #
@@ -358,9 +358,11 @@ force_recompute_override_computation_kwargs_dict = {
     'merged_directional_placefields': {'laps_decoding_time_bin_size': laps_decoding_time_bin_size, 'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size},
     'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': True, 'n_jobs': 1},
     'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz':minimum_inclusion_fr_Hz, 'included_qclu_values':included_qclu_values},
-    'perform_wcorr_shuffle_analysis': dict(num_shuffles=num_shuffles, 
+    'epoch_score_shuffle_analysis': dict(num_shuffles=num_shuffles,
                                         #    drop_previous_result_and_compute_fresh=True,
                                             drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh,
+                                            enable_heuristic_shuffle_scoring=True,
+                                            enable_radon_shuffle_scoring=False,
                                           ),
     'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
                                 compute_1D=True, compute_2D=False,
@@ -370,6 +372,9 @@ force_recompute_override_computation_kwargs_dict = {
 override_parameters_flat_keypaths_dict = {
     'rank_order_shuffle_analysis.included_qclu_values': included_qclu_values,
     'rank_order_shuffle_analysis.minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
+    'wcorr_shuffle_analysis.enable_heuristic_shuffle_scoring': True,
+    'wcorr_shuffle_analysis.enable_radon_shuffle_scoring': False,
+    'wcorr_shuffle_analysis.num_shuffles': num_shuffles,
 } # need to provide `override_parameters_flat_keypaths_dict`
 
 custom_user_completion_function_override_kwargs_dict = {
@@ -378,7 +383,7 @@ custom_user_completion_function_override_kwargs_dict = {
     'save_custom_session_files_completion_function': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=True, enable_save_h5=False, should_write_posterior_h5=True), #TODO 2026-09-29 12:21: - [ ] no posteriors needed. New-tbin run reusing the 25ms local pickle: do not rewrite the shared (qclu/frate) local loadedSessPickle; the handler already writes the `-tbin_{N}ms` global pickle.
     'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
-    'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None),
+    'compute_and_export_session_wcorr_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, with_data_name=None, num_shuffles=num_shuffles),
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=None, custom_all_param_sweep_options=None, additional_session_context=None),
     'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=[ripple_decoding_time_bin_size], custom_all_param_sweep_options=None, additional_session_context=None), # only decode the active tbin; do not re-decode other tbins (their globals already exist at their own -tbin_{N}ms)
     'compute_and_export_session_trial_by_trial_performance_completion_function': dict(active_laps_decoding_time_bin_size=ripple_decoding_time_bin_size),

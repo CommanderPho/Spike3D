@@ -212,9 +212,11 @@ def process_all_phases(
                     'minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz, 
                     'included_qclu_values': included_qclu_values
                 },
-                'perform_wcorr_shuffle_analysis': dict(
+                'epoch_score_shuffle_analysis': dict(
                     num_shuffles=num_shuffles, 
-                    drop_previous_result_and_compute_fresh=True
+                    drop_previous_result_and_compute_fresh=True,
+                    enable_heuristic_shuffle_scoring=True,
+                    enable_radon_shuffle_scoring=False,
                 ),
                 'non_PBE_epochs_results': dict(
                     epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, 
