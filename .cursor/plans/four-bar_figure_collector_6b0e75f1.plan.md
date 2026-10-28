@@ -4,13 +4,13 @@ overview: "Replace the ad-hoc `fig.savefig` in `plot_fig2_style_summary_four_bar
 todos:
   - id: wrap-collector-rc
     content: Wrap plot_fig2_style_summary_four_bar plotting in PhoPublicationFigureHelper.rc_context_kwargs + FigureCollector, post_hoc_append the create_plot container
-    status: pending
+    status: completed
   - id: replace-savefig
     content: Replace fig.savefig with build_and_write_to_file / AcrossSessionsVisualizations.output_figure (PDF+PNG; export_folder as optional FileOutputManager override)
-    status: pending
+    status: completed
   - id: return-collector
     content: Return collector and saved_paths while keeping existing fig/ax/render keys
-    status: pending
+    status: completed
 isProject: false
 ---
 
