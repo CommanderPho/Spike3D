@@ -7,13 +7,13 @@ todos:
     status: completed
   - id: load-prefer
     content: Load ripple_EpochScoreShuffle_df in _new_process_csv_files and fill missing session keys from legacy ripple_WCorrShuffle_df
-    status: in_progress
+    status: completed
   - id: transfer-cols
     content: Add AcrossSessionHelpers helper to discover shuffle z/p/n_extreme columns and best_overall_*_z
-    status: pending
+    status: completed
   - id: notebook
     content: Update archive notebook merge, time-bin transfer, and file_type inspection to use EpochScoreShuffle_df and extra score columns
-    status: pending
+    status: completed
 isProject: false
 ---
 
