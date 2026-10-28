@@ -341,10 +341,11 @@ drop_previous_result_and_compute_fresh: bool = True
 
 
 # laps_decoding_time_bin_size = None
+# laps_decoding_time_bin_size = 0.016
 # laps_decoding_time_bin_size = 0.020
 laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
-# laps_decoding_time_bin_size = 0.060
+laps_decoding_time_bin_size = 0.060
 # laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
@@ -357,10 +358,11 @@ laps_decoding_time_bin_size = 0.025
 ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
-# ripple_decoding_time_bin_size = 0.060
+ripple_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.075
 
 
+# base_job_suffix = f"{base_job_suffix}_tbin_16ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
 base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_50ms"
@@ -464,27 +466,53 @@ print(f'phases_to_generate: {[p.name for p in phases_to_generate]}')
 # BEGIN MAIN SCRIPT BODY                                                                                               #
 # ==================================================================================================================== #
 
-## Build Slurm Scripts:
-# Derive venv paths from SPIKE3D_REPO_ROOT when exported (see GreatlakesBatchRunInstructions); else fall back by OS.
+## Build batch run scripts (Slurm or linux_standalone bash):
+# Derive venv paths from SPIKE3D_REPO_ROOT when exported (see GreatlakesBatchRunInstructions); else probe common layouts.
 _is_windows = (platform.system() == 'Windows')
 if _is_windows:
-    _default_spike3d_repo_root = r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv'
     _venv_bin_dir, _python_name = 'Scripts', 'python.exe'
 else:
-    _default_spike3d_repo_root = '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
     _venv_bin_dir, _python_name = 'bin', 'python'
-_spike3d_repo_root = Path(os.environ.get('SPIKE3D_REPO_ROOT', _default_spike3d_repo_root)).expanduser().resolve()
-_venv_dir = _spike3d_repo_root / 'Spike3D' / '.venv'
-_venv_activate_path = str(_venv_dir / _venv_bin_dir / 'activate')
-_vscode_python = str(_venv_dir / _venv_bin_dir / _python_name)
-assert Path(_venv_activate_path).exists(), f"venv activate missing: {_venv_activate_path}"
-assert Path(_vscode_python).exists(), f"venv python missing: {_vscode_python}"
+_venv_activate_candidates: List[Path] = []
+if _is_windows:
+    _venv_activate_candidates.append(Path(r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv') / _venv_bin_dir / 'activate')
+else:
+    if 'SPIKE3D_REPO_ROOT' in os.environ:
+        _env_root = Path(os.environ['SPIKE3D_REPO_ROOT']).expanduser().resolve()
+        _venv_activate_candidates.append(_env_root / 'Spike3D' / '.venv' / _venv_bin_dir / 'activate')
+        _venv_activate_candidates.append(_env_root / '.venv' / _venv_bin_dir / 'activate')
+    _venv_activate_candidates.extend([
+        Path('/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv') / _venv_bin_dir / 'activate',
+        Path.cwd().resolve() / '.venv' / _venv_bin_dir / 'activate',
+        Path('~/repos/Spike3D/.venv').expanduser() / _venv_bin_dir / 'activate',
+    ])
+_venv_activate_path: Optional[str] = None
+_vscode_python: Optional[str] = None
+_spike3d_repo_root: Optional[Path] = None
+for _cand_activate in _venv_activate_candidates:
+    _cand_activate = _cand_activate.expanduser().resolve()
+    _cand_python = (_cand_activate.parent / _python_name).resolve()
+    if _cand_activate.exists() and _cand_python.exists():
+        _venv_activate_path = str(_cand_activate)
+        _vscode_python = str(_cand_python)
+        _spike3d_repo_root = _cand_activate.parent.parent.resolve()
+        break
+    ## END if _cand_activate.exists()...
+## END for _cand_activate in _venv_activate_candidates...
+if batch_execution_target == 'linux_standalone' and not _is_windows:
+    _lab_activate = Path('~/repos/Spike3D/.venv/bin/activate').expanduser().resolve()
+    _lab_python = (_lab_activate.parent / 'python').resolve()
+    if _lab_activate.exists() and _lab_python.exists():
+        _venv_activate_path = str(_lab_activate)
+        _vscode_python = str(_lab_python)
+        _spike3d_repo_root = _lab_activate.parent.parent.resolve()
+assert _venv_activate_path is not None and Path(_venv_activate_path).exists(), f"Could not resolve Spike3D venv activate (tried {len(_venv_activate_candidates)} candidates)"
+assert _vscode_python is not None and Path(_vscode_python).exists(), f"venv python missing for activate {_venv_activate_path}"
 _from_env = 'SPIKE3D_REPO_ROOT' in os.environ
-print(f'Using Spike3D repo root: {_spike3d_repo_root} ({"from SPIKE3D_REPO_ROOT env" if _from_env else "fallback default"})')
+print(f'Using Spike3D venv dir: {_spike3d_repo_root} ({"SPIKE3D_REPO_ROOT set" if _from_env else "probed path"})')
+print(f'batch_execution_target: {batch_execution_target}')
 print(f'venv_activate_path: {_venv_activate_path}')
 print(f'vscode_default_interpreter_path: {_vscode_python}')
-
-print(f'batch_execution_target: {batch_execution_target}')
 
 if use_scratch_writes:
     ## GL Turbo->Scratch workaround: copy the load-only local pickle + writable global pickle + tiny sidecars onto scratch and retarget the job write root there.
