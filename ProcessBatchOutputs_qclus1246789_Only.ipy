@@ -221,7 +221,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # Single-phase fallback (uncomment to generate only one phase, no chain):
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
-phases_to_generate = [ProcessingScriptPhases.final_run]
+# phases_to_generate = [ProcessingScriptPhases.final_run]
+phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
 # phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
@@ -318,7 +319,7 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-num_shuffles: int = 128
+num_shuffles: int = 256
 # num_shuffles: int = 1024
 # drop_previous_result_and_compute_fresh = False
 drop_previous_result_and_compute_fresh: bool = True
