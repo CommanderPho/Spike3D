@@ -137,6 +137,9 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
         # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
+    ProcessingScriptPhases.figure_run: {
+        'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
+    },
 }
 _is_kdiba_session: bool = True
 # %%
