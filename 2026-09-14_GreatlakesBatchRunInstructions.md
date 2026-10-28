@@ -16,13 +16,21 @@ git pull
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```
 
-
+## Lab Workstation:
 ```bash
 cd '/home/halechr/repos/Spike3D'
 deactivate
 source /home/halechr/repos/Spike3D/.venv/bin/activate
 export SPIKE3D_REPO_ROOT='/home/halechr/repos'
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
+```
+
+```
+cd '/home/halechr/repos/Spike3D'
+deactivate
+source /home/halechr/repos/Spike3D/.venv/bin/activate
+export SPIKE3D_REPO_ROOT='/home/halechr/repos'
+bash '/home/halechr/FastData/gen_scripts/submit_phase_chains_2026-10-28_GL.sh'
 ```
 
 In `ProcessBatchOutputs_qclus12_Only.ipy`, set **`batch_execution_target`** before generating:
