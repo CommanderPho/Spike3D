@@ -205,7 +205,6 @@ session_global_data_root_parent_paths: Optional[Dict[IdentifyingContext, Path]] 
 _time_checkpoint('paths: build_concrete_session_folders')
 
 
-
 ## Different run configurations:
 # ==================================================================================================================== #
 # PHASES TO GENERATE (chained per-session submit; default is new-tbin incremental continued_run + final_run)           #
@@ -225,8 +224,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.final_run]
-# phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
-phases_to_generate = [ProcessingScriptPhases.figure_run]
+phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
+# phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
 _batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-10-21_GL' -> 'GL'
@@ -329,8 +328,8 @@ drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.020
-laps_decoding_time_bin_size = 0.025
-# laps_decoding_time_bin_size = 0.050
+# laps_decoding_time_bin_size = 0.025
+laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
 # laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
@@ -341,16 +340,16 @@ laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.75
 
 # ripple_decoding_time_bin_size = 0.020
-ripple_decoding_time_bin_size = 0.025
-# ripple_decoding_time_bin_size = 0.050
+# ripple_decoding_time_bin_size = 0.025
+ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
 # ripple_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.075
 
 
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
-base_job_suffix = f"{base_job_suffix}_tbin_25ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
