@@ -225,8 +225,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.final_run]
-phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
-# phases_to_generate = [ProcessingScriptPhases.figure_run]
+# phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
+phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
 _batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-10-21_GL' -> 'GL'
@@ -329,28 +329,28 @@ drop_previous_result_and_compute_fresh: bool = True
 
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.020
-# laps_decoding_time_bin_size = 0.025
+laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
 # laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
-laps_decoding_time_bin_size = 0.500
+# laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
 # laps_decoding_time_bin_size = 1.5
 # laps_decoding_time_bin_size = 0.6
 # laps_decoding_time_bin_size = 0.75
 
 # ripple_decoding_time_bin_size = 0.020
-# ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
 # ripple_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.075
 
 
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
-base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
@@ -410,12 +410,12 @@ custom_user_completion_function_override_kwargs_dict = {
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         # '_display_placefield_stable_formation_time_distribution',
-                                                                                                                        # '_display_generalized_decoded_yellow_blue_marginal_epochs', 
+                                                                                                                        '_display_generalized_decoded_yellow_blue_marginal_epochs', 
                                                                                                                         # '_display_directional_merged_pf_decoded_stacked_epoch_slices', # optional independent-1D only; skipped when MultiColor is listed (same greyscale_shared_norm / mergedV / multi paths)
-                                                                                                                        # '_display_decoded_trackID_marginal_hairy_position', 
-                                                                                                                        # '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # PBE/ripple decoded posterior images (final_run). sole source of greyscale_shared_norm + mergedV + combined/multi (competition-normalized)
-                                                                                                                        # '_display_measured_vs_decoded_occupancy_distributions',
-                                                                                                                        # '_display_trial_to_trial_reliability',
+                                                                                                                        '_display_decoded_trackID_marginal_hairy_position', 
+                                                                                                                        '_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay', # PBE/ripple decoded posterior images (final_run). sole source of greyscale_shared_norm + mergedV + combined/multi (competition-normalized)
+                                                                                                                        '_display_measured_vs_decoded_occupancy_distributions',
+                                                                                                                        '_display_trial_to_trial_reliability',
                                                                                                                         # '_render_export_all_time_tracks',
                                                                                                                         ],
                                                                                              display_function_kwargs_dict = {'_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay': dict(
