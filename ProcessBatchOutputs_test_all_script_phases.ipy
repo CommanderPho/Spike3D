@@ -281,8 +281,9 @@ def process_all_phases(
             'should_freeze_pipeline_updates': True,
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
-            'should_generate_run_scripts': True,
-            'should_generate_run_notebooks': True,
+            'should_generate_run_scripts': (not active_phase.is_figure_phase),
+            'should_generate_figure_scripts': active_phase.is_figure_phase,
+            'should_generate_run_notebooks': (not active_phase.is_figure_phase),
             'should_create_vscode_workspace': True,
         })
 
@@ -311,8 +312,8 @@ def process_all_phases(
         if vscode_workspace_path is not None:
             print(f"VSCode workspace: {vscode_workspace_path}")
 
-        computation_script_paths = [x[0] for x in output_python_scripts]
-        generate_figures_script_paths = [x[1] for x in output_python_scripts]
+        computation_script_paths = [x[0] for x in output_python_scripts if x[0] is not None]
+        generate_figures_script_paths = [x[1] for x in output_python_scripts if (isinstance(x, (list, tuple)) and (x[1] is not None))]
 
         # Determine which scripts to run based on phase
         if active_phase.is_figure_phase:

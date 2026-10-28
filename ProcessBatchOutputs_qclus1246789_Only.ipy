@@ -544,7 +544,7 @@ for active_phase in phases_to_generate:
                                    should_use_neptune_logging=False,
                                    create_slurm_scripts=(batch_execution_target == 'slurm'),
                                    create_non_slurm_bash_scripts=(batch_execution_target == 'linux_standalone'),
-                                   should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
+                                   should_generate_run_scripts=(not active_phase.is_figure_phase), should_generate_figure_scripts=active_phase.is_figure_phase, should_generate_run_notebooks=(not active_phase.is_figure_phase), should_create_vscode_workspace=True,
     ))
     print(f'job_suffix: "{current_job_suffix}"')
     print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
@@ -573,8 +573,8 @@ for active_phase in phases_to_generate:
     if vscode_workspace_path is not None:
         print(f"vscode_workspace_path:: {vscode_workspace_path}")
 
-    computation_script_paths = [x[0] for x in output_python_scripts]
-    generate_figures_script_paths = [x[1] for x in output_python_scripts]
+    computation_script_paths = [x[0] for x in output_python_scripts if x[0] is not None]
+    generate_figures_script_paths = [x[1] for x in output_python_scripts if (isinstance(x, (list, tuple)) and (x[1] is not None))]
     script_paths = generate_figures_script_paths if active_phase.is_figure_phase else computation_script_paths
     print(f'generate_figures_script_paths: {generate_figures_script_paths}')
     if output_jupyter_notebooks:
@@ -655,7 +655,7 @@ print('========================================\n')
 if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     _phase_chain_backend: str = 'bash' if batch_execution_target == 'linux_standalone' else 'slurm'
     _script_collection_key: str = _phase_chain_backend
-    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key=_script_collection_key)
+    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key=_script_collection_key)  # figure_run -> figs
     chained_submit_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.sh'
     chained_manifest_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.json'
     write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend)
@@ -673,7 +673,7 @@ if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     _time_checkpoint('copy_to_clipboard:chained_submit')
 elif (platform.system() == 'Windows') and (len(phase_collections) > 0):
     _phase_chain_backend: str = 'powershell'
-    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key='python')
+    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key='python')  # figure_run -> figs
     chained_submit_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.ps1'
     chained_manifest_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.json'
     write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend, python_executable=_vscode_python)

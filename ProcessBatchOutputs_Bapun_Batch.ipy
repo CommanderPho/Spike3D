@@ -459,8 +459,9 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
             'skip_save_on_initial_load': True, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
             'should_use_neptune_logging': False,
             'create_slurm_scripts': True,
-            'should_generate_run_scripts': True,
-            'should_generate_run_notebooks': True,
+            'should_generate_run_scripts': (not active_phase.is_figure_phase),
+            'should_generate_figure_scripts': active_phase.is_figure_phase,
+            'should_generate_run_notebooks': (not active_phase.is_figure_phase),
             # 'should_generate_run_notebooks': False,
             'should_create_vscode_workspace': True,
             # 'preflight_bapun_batch_helpers_run_all': False, # Bapun-specific
@@ -497,8 +498,8 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
         # if vscode_workspace_path is not None:
         #     print(f"VSCode workspace: {vscode_workspace_path}")
 
-        computation_script_paths = [x[0] for x in output_python_scripts]
-        generate_figures_script_paths = [x[1] for x in output_python_scripts]
+        computation_script_paths = [x[0] for x in output_python_scripts if x[0] is not None]
+        generate_figures_script_paths = [x[1] for x in output_python_scripts if (isinstance(x, (list, tuple)) and (x[1] is not None))]
         run_slurm_paths = list(output_slurm_scripts.get('run', []))
         figs_slurm_paths = list(output_slurm_scripts.get('figs', []))
         run_job_ids: List[int] = []

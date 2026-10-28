@@ -348,7 +348,7 @@ active_phase_dict.update(dict(should_use_neptune_logging=False, should_create_vs
 phase_job_suffix: str = active_phase_dict.pop('phase_job_suffix', None)
 if phase_job_suffix is not None:
     job_suffix = f"{job_suffix}_{phase_job_suffix}" ## append phase to end of job_suffix
-active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=True, should_generate_run_notebooks=True, should_create_vscode_workspace=True,
+active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=(not active_phase.is_figure_phase), should_generate_figure_scripts=active_phase.is_figure_phase, should_generate_run_notebooks=(not active_phase.is_figure_phase), should_create_vscode_workspace=True,
 ))
 print(f'job_suffix: "{job_suffix}"')
 
@@ -397,8 +397,8 @@ if vscode_workspace_path is not None:
     print(f"vscode_workspace_path:: {vscode_workspace_path}")
 
 print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
-computation_script_paths = [x[0] for x in output_python_scripts]
-generate_figures_script_paths = [x[1] for x in output_python_scripts]
+computation_script_paths = [x[0] for x in output_python_scripts if x[0] is not None]
+generate_figures_script_paths = [x[1] for x in output_python_scripts if (isinstance(x, (list, tuple)) and (x[1] is not None))]
 print(f'generate_figures_script_paths: {generate_figures_script_paths}')
 
 # %%

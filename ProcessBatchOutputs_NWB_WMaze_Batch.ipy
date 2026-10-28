@@ -522,8 +522,9 @@ def process_all_phases(
             'should_use_viztracer_logging': False,
             'create_slurm_scripts': batch_execution_target == 'slurm',
             'create_non_slurm_bash_scripts': batch_execution_target == 'linux_standalone',
-            'should_generate_run_scripts': True,
-            'should_generate_run_notebooks': True,
+            'should_generate_run_scripts': (not active_phase.is_figure_phase),
+            'should_generate_figure_scripts': active_phase.is_figure_phase,
+            'should_generate_run_notebooks': (not active_phase.is_figure_phase),
             # 'should_generate_run_notebooks': False,
             'should_create_vscode_workspace': True,
             'preflight_bapun_batch_helpers_run_all': False, # NWB: laps/PBE/replays handled by NWBDataSessionFormat POSTLOAD, not BapunBatchHelpers
@@ -550,8 +551,8 @@ def process_all_phases(
         # if vscode_workspace_path is not None:
         #     print(f"VSCode workspace: {vscode_workspace_path}")
 
-        computation_script_paths = [x[0] for x in output_python_scripts]
-        generate_figures_script_paths = [x[1] for x in output_python_scripts]
+        computation_script_paths = [x[0] for x in output_python_scripts if x[0] is not None]
+        generate_figures_script_paths = [x[1] for x in output_python_scripts if (isinstance(x, (list, tuple)) and (x[1] is not None))]
         run_slurm_paths = list(output_slurm_scripts.get('run', []))
         figs_slurm_paths = list(output_slurm_scripts.get('figs', []))
         run_bash_paths = list(output_non_slurm_bash_scripts.get('run', []))
