@@ -49,6 +49,7 @@ os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 ## Pho's Custom Libraries:
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path, convert_filelist_to_new_parent, build_cross_root_copydict, copy_movedict
 from pyphocorehelpers.programming_helpers import copy_to_clipboard
+from pyphocorehelpers.print_helpers import get_now_rounded_time_str
 _time_checkpoint('IMPORTS: path_helpers+copy_to_clipboard')
 
 from neuropy.utils.result_context import IdentifyingContext
@@ -76,6 +77,7 @@ BATCH_DAY_DATE: str = '2026-10-29'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
+_batch_host_suffix: str = BATCH_DATE_TO_USE[len(BATCH_DAY_DATE):] if BATCH_DATE_TO_USE.startswith(BATCH_DAY_DATE) else f'_{BATCH_DATE_TO_USE}'
 
 # ==================================================================================================================== #
 # GL Turbo->Scratch workaround (set FORCE_SCRATCH_WRITES=False / comment out when Turbo is R/W again)                   #
@@ -701,14 +703,16 @@ for a_session_folder in good_session_concrete_folders:
 print('========================================\n')
 
 # Per-session phase chains (primary submit path). Slurm: afterok; Lab: sequential bash one session at a time; Windows: sequential python.exe per session.
+CHAIN_SUBMIT_STAMP: str = f'{get_now_rounded_time_str(rounded_minutes=5, time_separator="-")}{_batch_host_suffix}{base_job_suffix}' # e.g. submit_phase_chains_2026-10-28_02-30PM_GL_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_60ms.sh
+print(f'CHAIN_SUBMIT_STAMP: {CHAIN_SUBMIT_STAMP}')
 if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     _phase_chain_backend: str = 'bash' if batch_execution_target == 'linux_standalone' else 'slurm'
     _script_collection_key: str = _phase_chain_backend
     session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key=_script_collection_key)  # figure_run -> figs
-    chained_submit_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.sh'
-    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.json'
+    chained_submit_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.sh'
+    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.json'
     write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend)
-    retry_dir = scripts_output_path / f'retry_phase_chains_{BATCH_DATE_TO_USE}'
+    retry_dir = scripts_output_path / f'retry_phase_chains_{CHAIN_SUBMIT_STAMP}'
     for _start_phase in phases_ordered_names[1:]:
         write_all_retry_from_phase_scripts(chained_manifest_path, start_phase=_start_phase, out_dir=retry_dir, phases_ordered=phases_ordered_names)
     ## END for _start_phase in phases_ordered_names[1:]...
@@ -723,10 +727,10 @@ if (platform.system() != 'Windows') and (len(phase_collections) > 0):
 elif (platform.system() == 'Windows') and (len(phase_collections) > 0):
     _phase_chain_backend: str = 'powershell'
     session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key='python')  # figure_run -> figs
-    chained_submit_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.ps1'
-    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{BATCH_DATE_TO_USE}.json'
+    chained_submit_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.ps1'
+    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.json'
     write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend, python_executable=_vscode_python)
-    retry_dir = scripts_output_path / f'retry_phase_chains_{BATCH_DATE_TO_USE}'
+    retry_dir = scripts_output_path / f'retry_phase_chains_{CHAIN_SUBMIT_STAMP}'
     for _start_phase in phases_ordered_names[1:]:
         write_all_retry_from_phase_scripts(chained_manifest_path, start_phase=_start_phase, out_dir=retry_dir, phases_ordered=phases_ordered_names)
     ## END for _start_phase in phases_ordered_names[1:]...
