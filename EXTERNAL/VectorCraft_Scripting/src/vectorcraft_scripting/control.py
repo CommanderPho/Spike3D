@@ -34,6 +34,12 @@ class ControlConnection:
         self._reader = sock.makefile("r", encoding="utf-8", newline="\n")
 
 
+    @property
+    def is_open(self) -> bool:
+        """True while the socket is held; False after ``close()`` or a transport failure."""
+        return (self._sock is not None) and (self._reader is not None)
+
+
     def close(self) -> None:
         reader = self._reader
         self._reader = None

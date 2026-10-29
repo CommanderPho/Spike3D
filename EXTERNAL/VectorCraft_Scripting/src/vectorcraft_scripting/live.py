@@ -12,9 +12,10 @@ from .find import ObjectQuery, coerce_query, filter_nodes
 class LiveVectorCraft:
     """Talk to an already-running VectorCraft GUI via the JSON-lines control port."""
 
-    def __init__(self, host: str = DEFAULT_HOST, port: int = DEFAULT_CONTROL_PORT, *, connect_timeout: float = 0.5, request_timeout: float = 60.0, connection: Optional[ControlConnection] = None):
+    def __init__(self, host: str = DEFAULT_HOST, port: int = DEFAULT_CONTROL_PORT, *, connect_timeout: float = 0.5, request_timeout: float = 60.0, connection: Optional[ControlConnection] = None, auto_reconnect: bool = True):
         self.host = host
         self.port = int(port)
+        self.auto_reconnect = auto_reconnect
         if connection is not None:
             self._conn = connection
         else:
@@ -24,6 +25,27 @@ class LiveVectorCraft:
     @property
     def connection(self) -> ControlConnection:
         return self._conn
+
+
+    @property
+    def is_connected(self) -> bool:
+        """True while the underlying control socket is open (``close()`` or the app's 5-minute idle timeout make it False)."""
+        return self._conn.is_open
+
+
+    def reconnect(self) -> "LiveVectorCraft":
+        """Open a fresh control connection to the same host/port (the app closes idle connections after 5 minutes)."""
+        self._conn.connect()
+        return self
+
+
+    def ensure_connected(self) -> "LiveVectorCraft":
+        """Reconnect if the socket was closed; raises ``ControlError`` if ``auto_reconnect`` is off."""
+        if not self.is_connected:
+            if not self.auto_reconnect:
+                raise ControlError("control connection is closed (auto_reconnect=False); call reconnect()")
+            self.reconnect()
+        return self
 
 
     def close(self) -> None:
@@ -39,14 +61,17 @@ class LiveVectorCraft:
 
 
     def call(self, method: str, params: Optional[Mapping[str, Any]] = None) -> Any:
+        self.ensure_connected()
         return self._conn.call(method, params)
 
 
     def execute(self, command: str, params: Optional[Mapping[str, Any]] = None) -> Any:
+        self.ensure_connected()
         return self._conn.engine_execute(command, params)
 
 
     def ui_inspect(self) -> Any:
+        self.ensure_connected()
         return self._conn.ui_inspect()
 
 
