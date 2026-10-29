@@ -345,7 +345,7 @@ drop_previous_result_and_compute_fresh: bool = True
 # laps_decoding_time_bin_size = 0.020
 laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
-laps_decoding_time_bin_size = 0.060
+# laps_decoding_time_bin_size = 0.060
 # laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
@@ -358,7 +358,7 @@ laps_decoding_time_bin_size = 0.060
 ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
-ripple_decoding_time_bin_size = 0.060
+# ripple_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.075
 
 
