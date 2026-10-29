@@ -62,17 +62,32 @@ def coerce_query(query: Union[ObjectQuery, Mapping[str, Any]]) -> ObjectQuery:
     return ObjectQuery.from_mapping(query)
 
 
-def bounds_size(bounds: Any) -> Optional[tuple[float, float]]:
-    """Interpret node ``bounds`` as ``(width, height)`` from ``[x, y, w, h]`` (VectorCraft inspect style)."""
+def bounds_xywh(bounds: Any) -> Optional[Dict[str, float]]:
+    """Interpret node ``bounds`` as ``{x, y, width, height}``.
+
+    Accepts the dict form live ``document.inspect`` returns and the ``[x, y, w, h]`` list form.
+    """
     if bounds is None:
         return None
-    if not isinstance(bounds, (list, tuple)) or len(bounds) < 4:
+    if isinstance(bounds, dict):
+        try:
+            return dict(x=float(bounds['x']), y=float(bounds['y']), width=float(bounds['width']), height=float(bounds['height']))
+        except (KeyError, TypeError, ValueError):
+            return None
+    if isinstance(bounds, (list, tuple)) and len(bounds) >= 4:
+        try:
+            return dict(x=float(bounds[0]), y=float(bounds[1]), width=float(bounds[2]), height=float(bounds[3]))
+        except (TypeError, ValueError):
+            return None
+    return None
+
+
+def bounds_size(bounds: Any) -> Optional[tuple[float, float]]:
+    """Interpret node ``bounds`` as ``(width, height)`` from dict or ``[x, y, w, h]``."""
+    xywh = bounds_xywh(bounds)
+    if xywh is None:
         return None
-    try:
-        _x, _y, width, height = float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])
-    except (TypeError, ValueError):
-        return None
-    return (width, height)
+    return (xywh['width'], xywh['height'])
 
 
 def node_matches_query(node: Mapping[str, Any], query: ObjectQuery) -> bool:

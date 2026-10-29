@@ -151,6 +151,29 @@ Live helpers:
 | `inspect_document(...)` / `list_nodes(...)` | Layer tree / scoped nodes (`document.inspect`) |
 | `get_node(id)` | One node (`document.node`) |
 | `find_objects(ObjectQuery(...))` | `document.find` + client-side size/visibility/regex filters |
+| `find_by_name(name, exact=True)` | `document.find` by Layers-panel name |
+| `node_bounds(id)` | `{x, y, width, height}` from `document.node` |
+| `document_path()` | On-disk path of the active document |
+| `wait_for_background(timeout_sec=120)` | Poll `ui.inspect` until Background Save/Export jobs finish |
+| `save_copy(out_path)` | `file.saveCopy` then wait for background jobs; assert the file exists |
+| `backup_document()` | Copy into `<doc folder>/_BAK/<stem>_<date><ext>` (plus a `.vectorcraft` copy) |
+| `duplicate(ids)` / `unique_name(base)` / `place_file(path, rect, name=…)` | Duplicate, uniquify a Layers-panel name, `file.place` into a rect |
+| `undo_group(label)` | Context manager: `edit.undoGroup.begin` / `.end` |
+
+Replace named figure layers (backup first, then one undo step):
+
+```python
+from vectorcraft_scripting import connect_first, layer_geometry, replace_layers
+
+live = connect_first()
+layer_names = ['ScatterOverTime_Laps_perTimeBin.svg', 'ScatterOverTime_PBEs_perTimeBin.svg']
+layer_geom_df = layer_geometry(live, layer_names)
+rects = layer_geom_df[['x', 'y', 'width', 'height']].to_dict(orient='index')
+
+backup_paths = live.backup_document()
+with live.undo_group('Replace figure layers'):
+    replacement_df = replace_layers(live, rects, source_folder, expect_title=live.active_document_info()['title'])
+```
 
 ## Notes
 
