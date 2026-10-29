@@ -71,7 +71,7 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-10-28'
+BATCH_DAY_DATE: str = '2026-10-29'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -218,13 +218,13 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # - MUST force-recompute the tbin-dependent globals (`_tbin_dependent_force_recompute_override_computations_includelist`): the local loadedSessPickle embeds the 25ms global results and the validators only check that result keys exist (not which tbin they were computed at), so without the force list the "-tbin_{N}ms" global pickle would silently contain 25ms decoding.
 # - final_run may rewrite collected_outputs CSVs; those names carry _tbin-{N}.
 
-# phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
+phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
 # phases_to_generate = [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run]
 # Single-phase fallback (uncomment to generate only one phase, no chain):
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.final_run]
-phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
+# phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
 # phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
@@ -329,9 +329,9 @@ drop_previous_result_and_compute_fresh: bool = True
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.020
 # laps_decoding_time_bin_size = 0.025
-laps_decoding_time_bin_size = 0.050
+# laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
-# laps_decoding_time_bin_size = 0.075
+laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -341,17 +341,17 @@ laps_decoding_time_bin_size = 0.050
 
 # ripple_decoding_time_bin_size = 0.020
 # ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
+# ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
 # ripple_decoding_time_bin_size = 0.060
-# ripple_decoding_time_bin_size = 0.075
+ripple_decoding_time_bin_size = 0.075
 
 
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_25ms"
-base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_75ms"
+base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
 decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
