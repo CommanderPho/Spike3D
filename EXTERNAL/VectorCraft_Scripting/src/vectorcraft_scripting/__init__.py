@@ -5,7 +5,7 @@ from .discovery import LiveInstance, connect_first, discover_instances
 from .errors import CliNotFoundError, ControlError, NoInstanceError, VectorCraftError
 from .figures import export_plotly_figure, write_plotly_svg
 from .find import ObjectQuery, bounds_xywh
-from .layers import layer_geometry, replace_layers
+from .layers import Layers, layer_geometry, replace_layers
 from .live import LiveVectorCraft
 from .measure import intrinsic_size_pts
 from .place import PlaceSpec, place_into_template
@@ -14,6 +14,7 @@ __all__ = [
     "CliNotFoundError",
     "ControlError",
     "LiveInstance",
+    "Layers",
     "LiveVectorCraft",
     "NoInstanceError",
     "ObjectQuery",
