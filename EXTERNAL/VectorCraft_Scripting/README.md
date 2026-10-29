@@ -148,6 +148,8 @@ Live helpers:
 | Method | Role |
 |--------|------|
 | `list_documents()` | Open tabs via `document.activate` + `file.info` |
+| `assert_active_document(expected)` | Fail unless the active tab matches `expected` (title, filename, or stem) |
+| `select_document(name)` | Activate the open tab matching `name` (title, filename, or stem) |
 | `inspect_document(...)` / `list_nodes(...)` | Layer tree / scoped nodes (`document.inspect`) |
 | `get_node(id)` | One node (`document.node`) |
 | `find_objects(ObjectQuery(...))` | `document.find` + client-side size/visibility/regex filters |
@@ -170,9 +172,10 @@ layer_names = ['ScatterOverTime_Laps_perTimeBin.svg', 'ScatterOverTime_PBEs_perT
 layer_geom_df = layer_geometry(live, layer_names)
 rects = layer_geom_df[['x', 'y', 'width', 'height']].to_dict(orient='index')
 
-backup_paths = live.backup_document()
+live.select_document(expected_title)  # activate the matching open tab
+backup_paths = live.backup_document(expect_title=expected_title)
 with live.undo_group('Replace figure layers'):
-    replacement_df = replace_layers(live, rects, source_folder, expect_title=live.active_document_info()['title'])
+    replacement_df = replace_layers(live, rects, source_folder, expect_title=expected_title)
 ```
 
 ## Notes

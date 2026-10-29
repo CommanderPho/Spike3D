@@ -92,6 +92,61 @@ class LiveVectorCraft:
         return self.execute("file.info", {})
 
 
+    @staticmethod
+    def _document_name_aliases(*names: Optional[str]) -> set:
+        aliases = set()
+        for name in names:
+            if not name:
+                continue
+            text = str(name)
+            aliases.add(text)
+            path = Path(text)
+            aliases.add(path.name)
+            aliases.add(path.stem)
+        ## END for name in names...
+
+        return {a for a in aliases if a}
+
+
+    def _document_matches_name(self, expected: str, *, title: str = '', path: str = '') -> bool:
+        live_aliases = self._document_name_aliases(title, path)
+        expected_aliases = self._document_name_aliases(expected)
+        return not live_aliases.isdisjoint(expected_aliases)
+
+
+    def _active_document_identity(self) -> Tuple[Dict[str, Any], str, str]:
+        info = self.active_document_info()
+        assert isinstance(info, dict), f"file.info did not return a dict: {info!r}"
+        title: str = str(info.get('title') or '')
+        tree = self.inspect_document(depth=0, childLimit=0)
+        raw_path: str = str((tree.get('path') if isinstance(tree, dict) else '') or '')
+        return info, title, raw_path
+
+
+    def assert_active_document(self, expected: str) -> Dict[str, Any]:
+        """Fail unless the active tab is ``expected`` (``file.info`` title, on-disk filename, or either stem)."""
+        info, title, raw_path = self._active_document_identity()
+        assert self._document_matches_name(expected, title=title, path=raw_path), (
+            f"active document is {title!r} (path={Path(raw_path).name!r}), expected {expected!r} — activate the right tab first (live.list_documents())"
+        )
+        return info
+
+
+    def select_document(self, name: str) -> Dict[str, Any]:
+        """Activate the open tab matching ``name`` (title, filename, or stem). No-op if it is already active."""
+        info, title, raw_path = self._active_document_identity()
+        if self._document_matches_name(name, title=title, path=raw_path):
+            return info
+
+        documents = self.list_documents()
+        matches = [d for d in documents if self._document_matches_name(name, title=str(d.get('title') or ''), path=str(d.get('path') or ''))]
+        titles = [d.get('title') for d in documents]
+        assert matches, f"no open document matching {name!r}; open tabs: {titles}"
+        assert len(matches) == 1, f"multiple open documents match {name!r}: {[d.get('title') for d in matches]}"
+        self.activate_document(int(matches[0]['index']))
+        return self.assert_active_document(name)
+
+
     def _probe_document_at(self, index: int) -> Optional[Dict[str, Any]]:
         try:
             self.activate_document(index)
@@ -284,12 +339,15 @@ class LiveVectorCraft:
         return reply if isinstance(reply, dict) else {'result': reply}
 
 
-    def backup_document(self, date_str: Optional[str] = None, backup_subfolder: str = '_BAK', also_native_copy: bool = True) -> Dict[str, Path]:
+    def backup_document(self, date_str: Optional[str] = None, backup_subfolder: str = '_BAK', also_native_copy: bool = True, expect_title: Optional[str] = None) -> Dict[str, Path]:
         """Back up the active document into ``<doc folder>/_BAK/<stem>_<date><ext>`` (creating ``_BAK`` if needed).
 
         ``also_native_copy=True`` additionally writes a lossless ``<stem>_<date>.vectorcraft`` next to it, since a PDF/SVG-format
         copy of a PDF/SVG-backed document re-exports through that format and can lose VectorCraft-only state.
         """
+        if expect_title is not None:
+            self.assert_active_document(expect_title)
+
         def _subfn_unique_backup_path(backup_dir: Path, stem: str, dated: str, suffix: str) -> Path:
             candidate: Path = backup_dir.joinpath(f"{stem}_{dated}{suffix}")
             i: int = 0

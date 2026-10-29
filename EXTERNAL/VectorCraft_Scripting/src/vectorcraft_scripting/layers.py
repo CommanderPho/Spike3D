@@ -72,8 +72,8 @@ def layer_geometry(live: LiveVectorCraft, layer_names: Sequence[str]) -> Any:
     return layer_geom_df
 
 
-def replace_layers(live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str, float]], source_folder: Union[str, Path], *, expect_title: Optional[str] = None, backup_suffix: Optional[str] = None, new_suffix: str = '_PROGRAMMATIC', hide_original: bool = True, hide_backup: bool = True, allow_non_uniform_scaling: bool = False, aspect_tolerance: float = 0.01, link: bool = False) -> Any:
-    """For each layer in ``layer_rects``: duplicate the existing layer as a (hidden) backup, place the replacement file at the stored geometry, and report actual vs. target bounds."""
+def replace_layers(live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str, float]], source_folder: Union[str, Path], *, expect_title: Optional[str] = None, backup_layers: bool = True, backup_suffix: Optional[str] = None, new_suffix: str = '_PROGRAMMATIC', hide_original: bool = True, hide_backup: bool = True, allow_non_uniform_scaling: bool = False, aspect_tolerance: float = 0.01, link: bool = False) -> Any:
+    """For each layer in ``layer_rects``: optionally duplicate the existing layer as a (hidden) dated backup, place the replacement file at the stored geometry, and report actual vs. target bounds."""
     import pandas as pd
 
     def _subfn_uniform_fit_rect(target: Dict[str, float], source_size: Tuple[float, float]) -> Dict[str, float]:
@@ -82,12 +82,13 @@ def replace_layers(live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str,
         w, h = sw * scale, sh * scale
         return {'x': target['x'] + (target['width'] - w) / 2.0, 'y': target['y'] + (target['height'] - h) / 2.0, 'width': w, 'height': h}
 
-    info = live.active_document_info()
     if expect_title is not None:
-        assert info['title'] == expect_title, f"active document is {info['title']!r}, expected {expect_title!r} — activate the right tab first (live.list_documents())"
+        info = live.assert_active_document(expect_title)
+    else:
+        info = live.active_document_info()
     print(f"active document: {info.get('title')!r}  units={info.get('units')!r}")
 
-    dated: str = backup_suffix if backup_suffix is not None else datetime.now().strftime('%Y-%m-%d')
+    dated: Optional[str] = (backup_suffix if backup_suffix is not None else datetime.now().strftime('%Y-%m-%d')) if backup_layers else None
     search_path: Path = Path(source_folder)
     rows: List[Dict[str, Any]] = []
     for a_layer_name, a_layer_geom in layer_rects.items():
@@ -102,9 +103,10 @@ def replace_layers(live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str,
         backup_layer_name: Optional[str] = None
         backup_ids: List[Any] = []
         if existing_ids:
-            backup_layer_name = live.unique_name(f"{a_layer_name}_{dated}")
-            backup_ids = live.duplicate(existing_ids)
-            live.execute('object.setProps', {'ids': backup_ids, 'name': backup_layer_name, 'visible': (not hide_backup)})
+            if backup_layers:
+                backup_layer_name = live.unique_name(f"{a_layer_name}_{dated}")
+                backup_ids = live.duplicate(existing_ids)
+                live.execute('object.setProps', {'ids': backup_ids, 'name': backup_layer_name, 'visible': (not hide_backup)})
             if hide_original:
                 live.execute('object.setProps', {'ids': existing_ids, 'visible': False})
 
