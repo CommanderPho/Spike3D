@@ -718,8 +718,8 @@ if (platform.system() != 'Windows') and (len(phase_collections) > 0):
     ## END for _start_phase in phases_ordered_names[1:]...
     print(f"\nChained submit (primary, {_phase_chain_backend}): bash '{chained_submit_path}'")
     if _phase_chain_backend == 'slurm':
-        _cancel_path = chained_submit_path.with_name(chained_submit_path.name.replace('submit_phase_chains_', 'cancel_phase_chains_', 1))
-        print(f"Cancel remaining jobs: bash '{_cancel_path}'")
+        print(f"Cancel remaining jobs: bash '{chained_submit_path}' --cancel")
+        print(f"Chain status: bash '{chained_submit_path}' --status")
     print(f"Retry scripts dir: '{retry_dir}'")
     print_chain_status_hint(execution_backend=_phase_chain_backend)
     _try_copy_to_clipboard(f"bash '{chained_submit_path}'", label='chained_submit')
