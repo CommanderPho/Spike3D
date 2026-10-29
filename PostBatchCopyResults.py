@@ -27,6 +27,12 @@ Usage (on remote, e.g. Great Lakes)::
 
     # Explicit data root / dates
     python PostBatchCopyResults.py --run-main --execute --data-root /nfs/turbo/umms-kdiba/Data --batch-day-date 2026-10-29 --host-tag GL --result-date 2026-10-20
+
+
+    python PostBatchCopyResults.py --run-main --data-root /nfs/turbo/umms-kdiba/Data --batch-day-date 2026-10-29 --result-date 2026-10-29    
+
+    --execute 
+
 """
 from __future__ import annotations
 
