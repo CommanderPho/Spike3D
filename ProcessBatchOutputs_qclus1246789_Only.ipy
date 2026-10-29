@@ -131,7 +131,7 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
     ProcessingScriptPhases.final_run: {
-        'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+        # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
         # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[ripple_decoding_time_bin_size] (e.g. [0.050])
         'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.05` CSVs + posteriors h5
         'compute_and_export_session_epoch_score_shuffles_completion_function': compute_and_export_session_epoch_score_shuffles_completion_function,
@@ -140,7 +140,7 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
     ProcessingScriptPhases.figure_run: {
-        'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
+        # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
         'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
     },
 }
