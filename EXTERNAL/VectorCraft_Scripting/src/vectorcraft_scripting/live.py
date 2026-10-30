@@ -438,10 +438,15 @@ class LiveVectorCraft:
         return new_ids
 
 
-    def place_file(self, path: Union[str, Path], rect: Mapping[str, float], name: Optional[str] = None, crop: str = 'crop', link: bool = False) -> Tuple[List[Any], Dict[str, float]]:
-        """``file.place`` at ``rect`` (``[x, y, w, h]`` document points, artboard top-left), optionally rename, and read back the actual bounds."""
+    def place_file(self, path: Union[str, Path], rect: Mapping[str, float], name: Optional[str] = None, crop: Optional[str] = 'crop', link: bool = False) -> Tuple[List[Any], Dict[str, float]]:
+        """``file.place`` at ``rect`` (``[x, y, w, h]`` document points, artboard top-left), optionally rename, and read back the actual bounds.
+
+        ``crop=None`` omits the param: an SVG is then one group fitted by its art bounds, not a Clip Group framed to the viewBox.
+        """
         file_path: Path = Path(path)
-        params: Dict[str, Any] = {'path': str(file_path.resolve()), 'rect': [rect['x'], rect['y'], rect['width'], rect['height']], 'crop': crop, 'link': link}
+        params: Dict[str, Any] = {'path': str(file_path.resolve()), 'rect': [rect['x'], rect['y'], rect['width'], rect['height']], 'link': link}
+        if crop is not None:
+            params['crop'] = crop
         reply = self.execute('file.place', params)
         placed_ids: List[Any] = []
         if isinstance(reply, dict):

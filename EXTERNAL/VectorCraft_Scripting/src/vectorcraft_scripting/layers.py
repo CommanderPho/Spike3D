@@ -107,8 +107,7 @@ class Layers:
         """For each layer in ``layer_rects``: optionally duplicate the existing object as a (hidden) dated backup, place a ``*_PROGRAMMATIC`` sibling in the same parent as the source, hide the original, and report actual vs. target bounds.
 
         Idempotent: existing rows named ``{source}{new_suffix}`` are deleted first so re-runs do not stack copies.
-        Group / Clip Group sources (e.g. ``Fig3a.svg`` under ``Fig3a+b``) stay objects in that parent — ``layer.new`` cannot nest a Layer inside a Group.
-        Layer sources get a sibling Layer at the same level (e.g. ``C_Data.svg`` under ``Fig3c``). ``file.place`` always drops into the current Layer, so Groups are moved with ``layer.move`` after placing.
+        SVG replacements are placed as **one group** (no ``crop``, so VectorCraft does not wrap the file in a viewBox Clip Group). Nested Layer sources also get that group as a sibling — ``layer.new`` cannot put a Layer inside a Group such as ``Fig3a+b``. A sibling Layer is created only when the source itself is a top-level Layer (an object moved above a top-level Layer would be forced inside it).
         """
         def _subfn_uniform_fit_rect(target: Dict[str, float], source_size: Tuple[float, float]) -> Dict[str, float]:
             sw, sh = source_size
@@ -146,6 +145,9 @@ class Layers:
                 live.execute('layer.delete', {'ids': root_ids})
             return root_ids
 
+        def _subfn_place_crop(replacement_file: Path) -> Optional[str]:
+            return None if (replacement_file.suffix.lower() in ('.svg', '.svgz')) else 'crop'
+
         def _subfn_new_sibling_layer(layer_name: str, beside_id: Any) -> Any:
             live.execute('layer.setCurrent', {'id': beside_id})
             reply = live.execute('layer.new', {'name': layer_name, 'visible': True})
@@ -155,20 +157,44 @@ class Layers:
             live.execute('layer.setCurrent', {'id': new_id})
             return new_id
 
+        def _subfn_unwrap_clip_wrapper(placed_id: Any, name: str) -> Any:
+            """If ``file.place`` wrapped the SVG in a viewBox Clip Group, promote the single inner group and delete the shell."""
+            node = live.get_node(placed_id, summary=True, depth=1) or {}
+            if str(node.get('kind') or '') != 'Clip Group':
+                return placed_id
+            children = [c for c in (node.get('children') or node.get('layers') or []) if isinstance(c, dict) and ('id' in c)]
+            if len(children) != 1:
+                return placed_id
+            child_id = children[0]['id']
+            live.execute('layer.move', {'ids': [child_id], 'target': placed_id, 'place': 'above'})
+            live.execute('layer.delete', {'ids': [placed_id]})
+            live.execute('object.setProps', {'ids': [child_id], 'name': name})
+            return child_id
+
         def _subfn_place_as_sibling(new_layer_name: str, replacement_file: Path, place_rect: Dict[str, float], source_id: Optional[Any], source_kind: Optional[str], parent_by_id: Dict[Any, Dict[str, Any]]) -> Tuple[Any, List[Any], Dict[str, float]]:
-            if (source_id is not None) and cls._subfn_kind_is_layer(source_kind):
+            crop = _subfn_place_crop(replacement_file)
+            parent = parent_by_id.get(source_id) or {} if (source_id is not None) else {}
+            source_is_top_level_layer: bool = (source_id is not None) and cls._subfn_kind_is_layer(source_kind) and (parent.get('id') is None)
+            if source_is_top_level_layer:
                 new_layer_id = _subfn_new_sibling_layer(new_layer_name, source_id)
-                placed_ids, actual = live.place_file(replacement_file, place_rect, name=new_layer_name, link=link)
-                return new_layer_id, placed_ids, actual
+                placed_ids, actual = live.place_file(replacement_file, place_rect, name=new_layer_name, crop=crop, link=link)
+                placed_id = _subfn_unwrap_clip_wrapper(placed_ids[0], new_layer_name)
+                actual = live.node_bounds(placed_id)
+                return new_layer_id, [placed_id], actual
             if source_id is not None:
-                parent = parent_by_id.get(source_id) or {}
                 current_id = parent.get('id') if (parent.get('id') is not None) else source_id
                 live.execute('layer.setCurrent', {'id': current_id})
-                placed_ids, actual = live.place_file(replacement_file, place_rect, name=new_layer_name, link=link)
+                placed_ids, actual = live.place_file(replacement_file, place_rect, name=new_layer_name, crop=crop, link=link)
                 live.execute('layer.move', {'ids': placed_ids, 'target': source_id, 'place': 'above'})
-                return placed_ids[0], placed_ids, actual
-            placed_ids, actual = live.place_file(replacement_file, place_rect, name=new_layer_name, link=link)
-            return (placed_ids[0] if placed_ids else None), placed_ids, actual
+                placed_id = _subfn_unwrap_clip_wrapper(placed_ids[0], new_layer_name)
+                live.execute('layer.move', {'ids': [placed_id], 'target': source_id, 'place': 'above'})
+                actual = live.node_bounds(placed_id)
+                return placed_id, [placed_id], actual
+            placed_ids, actual = live.place_file(replacement_file, place_rect, name=new_layer_name, crop=crop, link=link)
+            placed_id = _subfn_unwrap_clip_wrapper(placed_ids[0], new_layer_name) if placed_ids else None
+            if placed_id is not None:
+                actual = live.node_bounds(placed_id)
+            return placed_id, ([placed_id] if placed_id is not None else placed_ids), actual
 
         if expect_title is not None:
             info = live.assert_active_document(expect_title)
