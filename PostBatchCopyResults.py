@@ -57,7 +57,12 @@ IPython to Avoid High Import Costs:
     pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-10-30'])
 
     
-
+    pbcr.main([
+        '--run-main',
+        '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data',
+        '--collected-outputs-path', '/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs',
+        '--scripts-output-path', '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts',
+    ])
 
 ```
 
@@ -105,6 +110,8 @@ Usage:
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-10-30 --result-date 2026-10-30
     python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data
     python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data
+    python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs
+
 """
 
 DEFAULT_BATCH_DAY_DATE: str = '2026-10-30'
@@ -249,19 +256,29 @@ def _print_copy_dict_summary(copy_dict, label: str) -> None:
         print(f'  ... ({n_items - 20} more)')
 
 
-def bootstrap_paths_and_sessions(batch_day_date: str, host_tag: str, result_date_to_use: str, cutoff_date: datetime, data_root: Optional[Path] = None, is_dryrun: bool = True, debug_print: bool = False) -> PostBatchCopyContext:
+def bootstrap_paths_and_sessions(batch_day_date: str, host_tag: str, result_date_to_use: str, cutoff_date: datetime, data_root: Optional[Path] = None, scripts_output_path: Optional[Path] = None, collected_outputs_path: Optional[Path] = None, is_dryrun: bool = True, debug_print: bool = False) -> PostBatchCopyContext:
     """Resolve machine-specific paths and session lists (notebook cell 2)."""
     batch_date_to_use: str = f'{batch_day_date}_{host_tag}'
 
-    known_scripts_output_paths = [Path(v).resolve() for v in KNOWN_SCRIPTS_OUTPUT_PATHS]
-    scripts_output_path = find_first_extant_path(known_scripts_output_paths)
-    assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
+    if scripts_output_path is not None:
+        scripts_output_path = Path(scripts_output_path).resolve()
+        if not scripts_output_path.exists():
+            raise FileNotFoundError(f'scripts_output_path does not exist: {scripts_output_path}')
+    else:
+        known_scripts_output_paths = [Path(v).resolve() for v in KNOWN_SCRIPTS_OUTPUT_PATHS]
+        scripts_output_path = find_first_extant_path(known_scripts_output_paths)
+        assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
     print(f'scripts_output_path: {scripts_output_path}')
 
-    known_collected_output_paths = [Path(v).resolve() for v in KNOWN_COLLECTED_OUTPUT_PATHS]
-    known_collected_output_paths.append(scripts_output_path.joinpath('../collected_outputs').resolve())
-    collected_outputs_path = find_first_extant_path(known_collected_output_paths)
-    Assert.path_exists(collected_outputs_path)
+    if collected_outputs_path is not None:
+        collected_outputs_path = Path(collected_outputs_path).resolve()
+        if not collected_outputs_path.exists():
+            raise FileNotFoundError(f'collected_outputs_path does not exist: {collected_outputs_path}')
+    else:
+        known_collected_output_paths = [Path(v).resolve() for v in KNOWN_COLLECTED_OUTPUT_PATHS]
+        known_collected_output_paths.append(scripts_output_path.joinpath('../collected_outputs').resolve())
+        collected_outputs_path = find_first_extant_path(known_collected_output_paths)
+        Assert.path_exists(collected_outputs_path)
     collected_outputs_path.mkdir(exist_ok=True)
     print(f'collected_outputs_path: {collected_outputs_path}')
 
@@ -832,6 +849,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument('--result-date', type=str, default=DEFAULT_RESULT_DATE, help=f'Result date for inst-FR / glob / cutoff default (default: {DEFAULT_RESULT_DATE}).')
     parser.add_argument('--cutoff-date', type=_parse_iso_date, default=None, help='H5 copy/glob cutoff date YYYY-MM-DD (default: --result-date).')
     parser.add_argument('--data-root', type=Path, default=None, help='Override data root (otherwise first extant known path).')
+    parser.add_argument('--scripts-output-path', type=Path, default=None, help='Override gen_scripts path (otherwise first extant known path).')
+    parser.add_argument('--collected-outputs-path', type=Path, default=None, help='Override collected_outputs path (otherwise first extant known path).')
     parser.add_argument('--copy-figures', action='store_true', help='With --run-main, copy gen_scripts figures into collected_figures.')
     parser.add_argument('--figures-export-date', type=str, default=None, help='batch_export_folder_date for figure copy (default: --batch-day-date).')
     parser.add_argument('--post-compute', action='store_true', help='With --run-main, run AcrossSessionsResults.post_compute_all_sessions_processing.')
@@ -869,6 +888,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         result_date_to_use=args.result_date,
         cutoff_date=cutoff_date,
         data_root=args.data_root,
+        scripts_output_path=args.scripts_output_path,
+        collected_outputs_path=args.collected_outputs_path,
         is_dryrun=is_dryrun,
         debug_print=args.debug_print,
     )
