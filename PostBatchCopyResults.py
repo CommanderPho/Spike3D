@@ -741,16 +741,15 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
     return planned_copydict, moved_files_dict
 
 
-def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, instantaneous_time_bin_size_seconds_list: Optional[List[float]] = None, dry_run: bool = False) -> Optional[Tuple]:
+def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, instantaneous_time_bin_size_seconds_list: Optional[List[float]] = None) -> Optional[Tuple]:
     """Merge session inst-FR exports into across-session pickles (notebook cell 27)."""
     if instantaneous_time_bin_size_seconds_list is None:
         instantaneous_time_bin_size_seconds_list = [0.001, 1000.0]
     result_date_to_use: str = ctx.result_date_to_use
-    effective_dry_run: bool = dry_run or ctx.is_dryrun
     print(f'RESULT_DATE_TO_USE: {result_date_to_use}')
     print(f'instantaneous_time_bin_size_seconds_list: {instantaneous_time_bin_size_seconds_list}')
-    print(f'dry_run: {effective_dry_run}')
-    across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path) = copy_session_inst_fr_data_to_across_session_pkl(RESULT_DATE_TO_USE=result_date_to_use, collected_outputs_path=ctx.collected_outputs_path, instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list, global_data_root_parent_path=ctx.global_data_root_parent_path, debug_print=ctx.debug_print, dry_run=effective_dry_run)
+    print(f'is_dryrun: {ctx.is_dryrun}')
+    across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path) = copy_session_inst_fr_data_to_across_session_pkl(RESULT_DATE_TO_USE=result_date_to_use, collected_outputs_path=ctx.collected_outputs_path, instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list, global_data_root_parent_path=ctx.global_data_root_parent_path, debug_print=ctx.debug_print, dry_run=ctx.is_dryrun)
     print(f'filelist_path: {filelist_path}')
     print(f'filedict_out_path: {filedict_out_path}')
     n_keys: int = len(across_sessions_recomputed_instantaneous_fr_dict) if across_sessions_recomputed_instantaneous_fr_dict is not None else 0
