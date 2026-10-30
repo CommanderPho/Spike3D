@@ -731,7 +731,7 @@ def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, 
     if ctx.is_dryrun:
         print('DRY-RUN: would copy_session_inst_fr_data_to_across_session_pkl(...)')
         return None
-    across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path) = copy_session_inst_fr_data_to_across_session_pkl(RESULT_DATE_TO_USE=result_date_to_use, collected_outputs_path=ctx.collected_outputs_path, instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list, debug_print=ctx.debug_print)
+    across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path) = copy_session_inst_fr_data_to_across_session_pkl(RESULT_DATE_TO_USE=result_date_to_use, collected_outputs_path=ctx.collected_outputs_path, instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list, global_data_root_parent_path=ctx.global_data_root_parent_path, debug_print=ctx.debug_print)
     print(f'filelist_path: {filelist_path}')
     print(f'filedict_out_path: {filedict_out_path}')
     n_keys: int = len(across_sessions_recomputed_instantaneous_fr_dict) if across_sessions_recomputed_instantaneous_fr_dict is not None else 0
