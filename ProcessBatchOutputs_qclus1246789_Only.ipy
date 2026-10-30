@@ -134,12 +134,13 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
     },
     ProcessingScriptPhases.final_run: {
         # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
-        # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[ripple_decoding_time_bin_size] (e.g. [0.050])
+        'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
+        'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[ripple_decoding_time_bin_size] (e.g. [0.050])
         'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.05` CSVs + posteriors h5
         'compute_and_export_session_epoch_score_shuffles_completion_function': compute_and_export_session_epoch_score_shuffles_completion_function,
         'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.05` CSVs
         # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
-        # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+        'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
     ProcessingScriptPhases.figure_run: {
         # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
@@ -326,8 +327,8 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-# num_shuffles: int = 128
-num_shuffles: int = 1024
+num_shuffles: int = 128
+# num_shuffles: int = 1024
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
@@ -350,9 +351,9 @@ drop_previous_result_and_compute_fresh: bool = True
 # laps_decoding_time_bin_size = 0.016
 # laps_decoding_time_bin_size = 0.020
 # laps_decoding_time_bin_size = 0.025
-# laps_decoding_time_bin_size = 0.050
+laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
-laps_decoding_time_bin_size = 0.075
+# laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -362,18 +363,18 @@ laps_decoding_time_bin_size = 0.075
 
 # ripple_decoding_time_bin_size = 0.020
 # ripple_decoding_time_bin_size = 0.025
-# ripple_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
 # ripple_decoding_time_bin_size = 0.060
-ripple_decoding_time_bin_size = 0.075
+# ripple_decoding_time_bin_size = 0.075
 
 
 # base_job_suffix = f"{base_job_suffix}_tbin_16ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_25ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
-base_job_suffix = f"{base_job_suffix}_tbin_75ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
 decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
