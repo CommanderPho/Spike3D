@@ -81,12 +81,21 @@ class Layers:
 
     @classmethod
     def replace_layers(cls, live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str, float]], source_folder: Union[str, Path], *, expect_title: Optional[str] = None, backup_layers: bool = True, backup_suffix: Optional[str] = None, new_suffix: str = '_PROGRAMMATIC', hide_original: bool = True, hide_backup: bool = True, allow_non_uniform_scaling: bool = False, aspect_tolerance: float = 0.01, link: bool = False) -> Any:
-        """For each layer in ``layer_rects``: optionally duplicate the existing layer as a (hidden) dated backup, place the replacement file at the stored geometry, and report actual vs. target bounds."""
+        """For each layer in ``layer_rects``: optionally duplicate the existing object as a (hidden) dated backup, create a sibling ``*_PROGRAMMATIC`` layer (made current so ``file.place`` does not drop into some other current layer), place the replacement file into it, hide the original, and report actual vs. target bounds."""
         def _subfn_uniform_fit_rect(target: Dict[str, float], source_size: Tuple[float, float]) -> Dict[str, float]:
             sw, sh = source_size
             scale: float = min(target['width'] / sw, target['height'] / sh)
             w, h = sw * scale, sh * scale
             return {'x': target['x'] + (target['width'] - w) / 2.0, 'y': target['y'] + (target['height'] - h) / 2.0, 'width': w, 'height': h}
+
+        def _subfn_new_destination_layer(layer_name: str, beside_id: Optional[Any]) -> Any:
+            if beside_id is not None:
+                live.execute('layer.setCurrent', {'id': beside_id})
+            reply = live.execute('layer.new', {'name': layer_name, 'visible': True})
+            assert isinstance(reply, dict) and ('id' in reply), f"layer.new did not return an id for {layer_name!r} (reply={reply!r})"
+            new_id = reply['id']
+            live.execute('layer.setCurrent', {'id': new_id})
+            return new_id
 
         if expect_title is not None:
             info = live.assert_active_document(expect_title)
@@ -108,13 +117,10 @@ class Layers:
 
             backup_layer_name: Optional[str] = None
             backup_ids: List[Any] = []
-            if existing_ids:
-                if backup_layers:
-                    backup_layer_name = live.unique_name(f"{a_layer_name}_{dated}")
-                    backup_ids = live.duplicate(existing_ids)
-                    live.execute('object.setProps', {'ids': backup_ids, 'name': backup_layer_name, 'visible': (not hide_backup)})
-                if hide_original:
-                    live.execute('object.setProps', {'ids': existing_ids, 'visible': False})
+            if existing_ids and backup_layers:
+                backup_layer_name = live.unique_name(f"{a_layer_name}_{dated}")
+                backup_ids = live.duplicate(existing_ids)
+                live.execute('object.setProps', {'ids': backup_ids, 'name': backup_layer_name, 'visible': (not hide_backup)})
 
             source_size = intrinsic_size_pts(replacement_file)
             target_rect: Dict[str, float] = dict(a_layer_geom)
@@ -136,10 +142,14 @@ class Layers:
                 warnings.warn(f"{a_layer_name!r}: could not read intrinsic size of '{replacement_file.suffix}' file; aspect not checked.")
 
             new_layer_name: str = f"{a_layer_name}{new_suffix}"
+            new_layer_id = _subfn_new_destination_layer(new_layer_name, existing_ids[0] if existing_ids else None)
             placed_ids, actual = live.place_file(replacement_file, place_rect, name=new_layer_name, link=link)
+            print(f"  {a_layer_name}: new layer {new_layer_name!r} id={new_layer_id} placed_ids={placed_ids}")
+            if hide_original and existing_ids:
+                live.execute('object.setProps', {'ids': existing_ids, 'visible': False})
 
             rows.append({'layer': a_layer_name, 'replacement_file': replacement_file.as_posix(), 'existing_ids': existing_ids, 'backup_layer': backup_layer_name, 'backup_ids': backup_ids,
-                         'new_layer': new_layer_name, 'placed_ids': placed_ids, 'source_w': (source_size or (None, None))[0], 'source_h': (source_size or (None, None))[1], 'aspect_ratio_error': aspect_ratio_error,
+                         'new_layer': new_layer_name, 'new_layer_id': new_layer_id, 'placed_ids': placed_ids, 'source_w': (source_size or (None, None))[0], 'source_h': (source_size or (None, None))[1], 'aspect_ratio_error': aspect_ratio_error,
                          'target_x': target_rect['x'], 'target_y': target_rect['y'], 'target_w': target_rect['width'], 'target_h': target_rect['height'],
                          'placed_x': place_rect['x'], 'placed_y': place_rect['y'], 'placed_w': place_rect['width'], 'placed_h': place_rect['height'],
                          'actual_x': actual['x'], 'actual_y': actual['y'], 'actual_w': actual['width'], 'actual_h': actual['height'],
@@ -155,5 +165,5 @@ def layer_geometry(live: LiveVectorCraft, layer_names: Sequence[str]) -> Any:
 
 
 def replace_layers(live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str, float]], source_folder: Union[str, Path], *, expect_title: Optional[str] = None, backup_layers: bool = True, backup_suffix: Optional[str] = None, new_suffix: str = '_PROGRAMMATIC', hide_original: bool = True, hide_backup: bool = True, allow_non_uniform_scaling: bool = False, aspect_tolerance: float = 0.01, link: bool = False) -> Any:
-    """For each layer in ``layer_rects``: optionally duplicate the existing layer as a (hidden) dated backup, place the replacement file at the stored geometry, and report actual vs. target bounds."""
+    """For each layer in ``layer_rects``: optionally duplicate the existing object as a (hidden) dated backup, create a sibling ``*_PROGRAMMATIC`` layer, place the replacement file into it, and report actual vs. target bounds."""
     return Layers.replace_layers(live, layer_rects, source_folder, expect_title=expect_title, backup_layers=backup_layers, backup_suffix=backup_suffix, new_suffix=new_suffix, hide_original=hide_original, hide_backup=hide_backup, allow_non_uniform_scaling=allow_non_uniform_scaling, aspect_tolerance=aspect_tolerance, link=link)
