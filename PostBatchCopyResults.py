@@ -69,6 +69,7 @@ from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSe
 Usage:
 
     python PostBatchCopyResults.py --run-copy-scratch-to-turbo --result-date 2026-10-29
+    python PostBatchCopyResults.py --run-copy-scratch-to-turbo --scratch-to-turbo-collected-outputs-only --result-date 2026-10-30
     python PostBatchCopyResults.py --run-clean-old-files
 
     ## For Scratch ('/scratch/kdiba_root/kdiba99/halechr/Data'):
@@ -605,24 +606,29 @@ def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute
     }
 
 
-def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_glob_patterns: Optional[List[str]] = None, include_preprocessing_npy: bool = False, skip_if_dest_newer_or_equal: bool = True, min_source_mtime_cutoff: Optional[datetime] = None, save_copydict_path: Optional[Path] = None) -> Tuple[Dict[Path, Path], Optional[Dict[Path, Path]]]:
+def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_glob_patterns: Optional[List[str]] = None, collected_output_glob_patterns: Optional[List[str]] = None, collected_outputs_only: bool = False, include_preprocessing_npy: bool = False, skip_if_dest_newer_or_equal: bool = True, min_source_mtime_cutoff: Optional[datetime] = None, save_copydict_path: Optional[Path] = None) -> Tuple[Dict[Path, Path], Optional[Dict[Path, Path]]]:
     """Copy newly generated session files from Great Lakes scratch session folders to the parallel Turbo tree.
 
     Discovers files under each included session on ``GreatlakesTurboToScratchHelpers.SCRATCH_DATA_ROOT`` using
-    ``file_glob_patterns`` (defaults to pipeline pickle/h5 plus epoch-score-shuffle standalone .pkl globs).
-    Also syncs epoch-score shuffle export CSVs from scratch ``Output/collected_outputs`` to Turbo
-    (``DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS``).
+    ``file_glob_patterns`` (defaults to pipeline pickle/h5 plus epoch-score-shuffle standalone .pkl globs), unless
+    ``collected_outputs_only=True`` (then session-folder sync is skipped).
+    Also syncs files under scratch ``Output/collected_outputs`` using ``collected_output_glob_patterns`` (defaults to
+    ``DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS``); when ``collected_outputs_only=True``, only that step runs.
     Maps destinations under ``GreatlakesTurboToScratchHelpers.TURBO_DATA_ROOT``, skipping Turbo files that are
     already newer than scratch unless ``skip_if_dest_newer_or_equal=False``. Optionally drops sources older than
     ``min_source_mtime_cutoff`` (defaults to ``ctx.cutoff_date``).
     """
     active_glob_patterns: List[str] = list(file_glob_patterns) if (file_glob_patterns is not None) else list(DEFAULT_SCRATCH_TO_TURBO_FILE_GLOBS)
+    active_collected_output_glob_patterns: List[str] = list(collected_output_glob_patterns) if (collected_output_glob_patterns is not None) else list(DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS)
     scratch_data_root: Path = GreatlakesTurboToScratchHelpers.SCRATCH_DATA_ROOT
     turbo_data_root: Path = GreatlakesTurboToScratchHelpers.TURBO_DATA_ROOT
     effective_min_mtime: Optional[datetime] = min_source_mtime_cutoff if (min_source_mtime_cutoff is not None) else ctx.cutoff_date
     print(f'scratch_data_root: {scratch_data_root}')
     print(f'turbo_data_root: {turbo_data_root}')
-    print(f'file_glob_patterns: {active_glob_patterns}')
+    print(f'collected_outputs_only: {collected_outputs_only}')
+    if not collected_outputs_only:
+        print(f'session file_glob_patterns: {active_glob_patterns}')
+    print(f'collected_output_glob_patterns: {active_collected_output_glob_patterns}')
     print(f'min_source_mtime_cutoff: {effective_min_mtime}')
     if not scratch_data_root.exists():
         print(f'WARN: scratch_data_root does not exist: {scratch_data_root}')
@@ -631,27 +637,28 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
         print(f'WARN: turbo_data_root does not exist: {turbo_data_root}')
         return {}, None
 
-    scratch_session_folders: List[ConcreteSessionFolder] = ConcreteSessionFolder.build_concrete_session_folders(scratch_data_root, ctx.included_session_contexts)
-    session_scratch_roots: Dict[IdentifyingContext, Path] = {a_folder.context: scratch_data_root for a_folder in scratch_session_folders}
-    print(f'n_scratch_session_folders: {len(scratch_session_folders)}')
-
-    planned_copydict: Dict[Path, Path] = ConcreteSessionFolder.build_cross_root_results_sync_copydict(
-        scratch_session_folders,
-        session_scratch_roots,
-        turbo_data_root,
-        include_preprocessing_npy=include_preprocessing_npy,
-        extra_globs=active_glob_patterns,
-        skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal,
-        debug_print=ctx.debug_print,
-    )
+    planned_copydict: Dict[Path, Path] = {}
+    if not collected_outputs_only:
+        scratch_session_folders: List[ConcreteSessionFolder] = ConcreteSessionFolder.build_concrete_session_folders(scratch_data_root, ctx.included_session_contexts)
+        session_scratch_roots: Dict[IdentifyingContext, Path] = {a_folder.context: scratch_data_root for a_folder in scratch_session_folders}
+        print(f'n_scratch_session_folders: {len(scratch_session_folders)}')
+        planned_copydict = ConcreteSessionFolder.build_cross_root_results_sync_copydict(
+            scratch_session_folders,
+            session_scratch_roots,
+            turbo_data_root,
+            include_preprocessing_npy=include_preprocessing_npy,
+            extra_globs=active_glob_patterns,
+            skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal,
+            debug_print=ctx.debug_print,
+        )
 
     scratch_collected_outputs_path: Path = scratch_data_root.joinpath('Output', 'collected_outputs')
     turbo_collected_outputs_path: Path = turbo_data_root.joinpath('Output', 'collected_outputs')
     if scratch_collected_outputs_path.is_dir() and turbo_collected_outputs_path.is_dir():
         collected_output_source_files: List[Path] = []
-        for a_glob_pattern in DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS:
+        for a_glob_pattern in active_collected_output_glob_patterns:
             collected_output_source_files.extend([a_path.resolve() for a_path in scratch_collected_outputs_path.glob(a_glob_pattern) if a_path.is_file()])
-        ## END for a_glob_pattern in DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS...
+        ## END for a_glob_pattern in active_collected_output_glob_patterns...
 
         collected_output_source_files = list(dict.fromkeys(collected_output_source_files))
         if len(collected_output_source_files) > 0:
@@ -661,10 +668,12 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
                 dest_data_root=turbo_collected_outputs_path.resolve(),
                 skip_if_dest_newer_or_equal=skip_if_dest_newer_or_equal,
             )
-            print(f'scratch collected_outputs shuffle CSV copydict: {len(collected_outputs_copydict)} file(s) from {scratch_collected_outputs_path}')
+            print(f'scratch collected_outputs copydict: {len(collected_outputs_copydict)} file(s) from {scratch_collected_outputs_path}')
             planned_copydict.update(collected_outputs_copydict)
+        elif collected_outputs_only:
+            print(f'WARN: collected_outputs_only but no files matched under {scratch_collected_outputs_path}')
     else:
-        print(f'WARN: skipping collected_outputs shuffle CSV sync (scratch={scratch_collected_outputs_path.exists()}, turbo={turbo_collected_outputs_path.exists()})')
+        print(f'WARN: skipping collected_outputs sync (scratch={scratch_collected_outputs_path.exists()}, turbo={turbo_collected_outputs_path.exists()})')
 
     n_before_cutoff: int = len(planned_copydict)
     planned_copydict = _filter_copydict_by_source_mtime_cutoff(planned_copydict, effective_min_mtime)
@@ -801,7 +810,9 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument('--archive-collected-outputs', action='store_true', help='With --run-clean-old-files, ensure collected_outputs/OLD exists (no file list unless later supplied).')
     parser.add_argument('--clean-cutoff-date', type=_parse_iso_date, default=None, help=f'Conditional-delete cutoff for --run-clean-old-files (default: {DEFAULT_CLEAN_CUTOFF_DATE}).')
     parser.add_argument('--debug-print', action='store_true', help='Enable debug printing.')
-    parser.add_argument('--scratch-to-turbo-glob', action='append', default=None, dest='scratch_to_turbo_globs', help='Glob relative to each scratch session folder (repeatable; default: pipeline pickle/h5 globs).')
+    parser.add_argument('--scratch-to-turbo-glob', action='append', default=None, dest='scratch_to_turbo_globs', help='Glob relative to each scratch session folder (repeatable; default: pipeline pickle/h5 globs). Ignored with --scratch-to-turbo-collected-outputs-only.')
+    parser.add_argument('--scratch-to-turbo-collected-output-glob', action='append', default=None, dest='scratch_to_turbo_collected_output_globs', help='Glob under scratch Output/collected_outputs (repeatable; default: DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS).')
+    parser.add_argument('--scratch-to-turbo-collected-outputs-only', action='store_true', help='With --run-copy-scratch-to-turbo, sync only collected_outputs globs (skip session-folder files).')
     parser.add_argument('--scratch-to-turbo-include-preprocessing-npy', action='store_true', help='With --run-copy-scratch-to-turbo, also sync session-stem *.npy preprocessing files.')
     parser.add_argument('--scratch-to-turbo-overwrite-newer-dest', action='store_true', help='With --run-copy-scratch-to-turbo, copy even when Turbo dest mtime is newer than scratch source.')
     return parser.parse_args(argv)
@@ -856,6 +867,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         run_copy_scratch_session_results_to_turbo(
             ctx,
             file_glob_patterns=args.scratch_to_turbo_globs,
+            collected_output_glob_patterns=args.scratch_to_turbo_collected_output_globs,
+            collected_outputs_only=bool(args.scratch_to_turbo_collected_outputs_only),
             include_preprocessing_npy=bool(args.scratch_to_turbo_include_preprocessing_npy),
             skip_if_dest_newer_or_equal=not bool(args.scratch_to_turbo_overwrite_newer_dest),
             save_copydict_path=scratch_to_turbo_copydict_path,
