@@ -33,6 +33,8 @@ Usage (on remote, e.g. Great Lakes)::
 
     python PostBatchCopyResults.py --run-main --data-root /nfs/turbo/umms-kdiba/Data --batch-day-date 2026-10-29 --result-date 2026-10-29    
     
+    python PostBatchCopyResults.py --run-clean-old-files --data-root /nfs/turbo/umms-kdiba/Data
+
     --execute 
 
 """
@@ -69,9 +71,10 @@ Usage:
     python PostBatchCopyResults.py --run-copy-scratch-to-turbo --result-date 2026-10-29
     python PostBatchCopyResults.py --run-clean-old-files
 
+    ## For Scratch ('/scratch/kdiba_root/kdiba99/halechr/Data'):
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-10-30 --result-date 2026-10-30
     python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data
-
+    python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data
 """
 
 DEFAULT_BATCH_DAY_DATE: str = '2026-10-30'
