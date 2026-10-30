@@ -91,8 +91,11 @@ DEFAULT_SCRATCH_TO_TURBO_FILE_GLOBS: List[str] = [
 ]
 
 DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS: List[str] = [
-    '*ripple_EpochScoreShuffle_df*.csv',
-    '*ripple_EpochScoreShuffle_ByShuffle_df*.csv',
+    '*.csv',
+    '*.h5',
+    '*.pkl',
+    # '*ripple_EpochScoreShuffle_df*.csv',
+    # '*ripple_EpochScoreShuffle_ByShuffle_df*.csv',
 ]
 
 KNOWN_SCRIPTS_OUTPUT_PATHS: List[str] = [
