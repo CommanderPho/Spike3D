@@ -92,7 +92,7 @@ print(f'use_scratch_writes: {use_scratch_writes}')
 # # scripts_output_path = Path('/home/halechr/FastData/gen_scripts/').resolve() # Lab
 # assert scripts_output_path.exists()
 if use_scratch_writes:
-    scripts_output_path, collected_outputs_path = GreatlakesTurboToScratchHelpers.build_scratch_output_paths() # GL Turbo->Scratch workaround
+    scripts_output_path, collected_outputs_path, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.build_scratch_output_paths() # GL Turbo->Scratch workaround
 else:
     known_scripts_output_paths = [Path(v).resolve() for v in ['K:/scratch/gen_scripts', '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
