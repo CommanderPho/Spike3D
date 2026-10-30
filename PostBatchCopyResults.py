@@ -37,6 +37,28 @@ Usage (on remote, e.g. Great Lakes)::
 
     --execute 
 
+IPython to Avoid High Import Costs:
+``bash
+    uv run ipython
+```
+
+```ipython
+    %load_ext autoreload
+    %autoreload 3
+    import PostBatchCopyResults as pbcr
+
+    ## your commands here:
+    pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-10-30'])
+
+
+    pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-10-30'])
+
+    
+
+
+```
+
+
 """
 from __future__ import annotations
 
@@ -71,6 +93,10 @@ Usage:
     python PostBatchCopyResults.py --run-copy-scratch-to-turbo --result-date 2026-10-29
     python PostBatchCopyResults.py --run-copy-scratch-to-turbo --scratch-to-turbo-collected-outputs-only --result-date 2026-10-30
     python PostBatchCopyResults.py --run-clean-old-files
+
+    pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-10-30'])
+
+
 
     ## For Scratch ('/scratch/kdiba_root/kdiba99/halechr/Data'):
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-10-30 --result-date 2026-10-30
