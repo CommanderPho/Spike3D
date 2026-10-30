@@ -47,6 +47,9 @@ IPython to Avoid High Import Costs:
     %autoreload 3
     import PostBatchCopyResults as pbcr
 
+    pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-10-30'])
+
+
     ## your commands here:
     pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-10-30'])
 
