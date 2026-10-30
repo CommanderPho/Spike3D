@@ -229,7 +229,7 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
-phases_to_generate = [ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
+phases_to_generate = [ProcessingScriptPhases.final_run]
 # phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
@@ -334,6 +334,10 @@ phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
     ProcessingScriptPhases.continued_run: {
         'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=True), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
     },
+    ProcessingScriptPhases.final_run: {
+            'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=True), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
+        },
+
 }
 
 
@@ -345,10 +349,10 @@ drop_previous_result_and_compute_fresh: bool = True
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.016
 # laps_decoding_time_bin_size = 0.020
-laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
-# laps_decoding_time_bin_size = 0.075
+laps_decoding_time_bin_size = 0.075
 # laps_decoding_time_bin_size = 0.250
 # laps_decoding_time_bin_size = 0.500
 # laps_decoding_time_bin_size = 1.0
@@ -357,19 +361,19 @@ laps_decoding_time_bin_size = 0.025
 # laps_decoding_time_bin_size = 0.75
 
 # ripple_decoding_time_bin_size = 0.020
-ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.025
 # ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
 # ripple_decoding_time_bin_size = 0.060
-# ripple_decoding_time_bin_size = 0.075
+ripple_decoding_time_bin_size = 0.075
 
 
 # base_job_suffix = f"{base_job_suffix}_tbin_16ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
-base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_75ms"
+base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
 decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
