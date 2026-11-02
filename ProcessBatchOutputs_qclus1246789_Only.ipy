@@ -307,22 +307,22 @@ drop_previous_result_and_compute_fresh: bool = True
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.016
 # laps_decoding_time_bin_size = 0.025
-laps_decoding_time_bin_size = 0.050
-# laps_decoding_time_bin_size = 0.060
+# laps_decoding_time_bin_size = 0.050
+laps_decoding_time_bin_size = 0.060
 # laps_decoding_time_bin_size = 0.075
 
 
 # ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
-# ripple_decoding_time_bin_size = 0.060
+# ripple_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.075
 
 
 # base_job_suffix = f"{base_job_suffix}_tbin_16ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_25ms"
-base_job_suffix = f"{base_job_suffix}_tbin_50ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_60ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+base_job_suffix = f"{base_job_suffix}_tbin_60ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
