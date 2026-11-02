@@ -31,7 +31,7 @@ Usage (on remote, e.g. Great Lakes)::
     python PostBatchCopyResults.py --run-main --execute --data-root /nfs/turbo/umms-kdiba/Data --batch-day-date 2026-10-29 --host-tag GL --result-date 2026-10-20
 
 
-    python PostBatchCopyResults.py --run-main --data-root /nfs/turbo/umms-kdiba/Data --batch-day-date 2026-10-29 --result-date 2026-10-29    
+    python PostBatchCopyResults.py --run-main --data-root /nfs/turbo/umms-kdiba/Data --batch-day-date 2026-10-30 --result-date 2026-10-30    
     
     python PostBatchCopyResults.py --run-clean-old-files --data-root /nfs/turbo/umms-kdiba/Data
 
@@ -62,6 +62,7 @@ IPython to Avoid High Import Costs:
         '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data',
         '--collected-outputs-path', '/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs',
         '--scripts-output-path', '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts',
+        '--result-date', '2026-10-30', '--batch-day-date', '2026-10-30',
     ])
 
 ```
@@ -114,9 +115,9 @@ Usage:
 
 """
 
-DEFAULT_BATCH_DAY_DATE: str = '2026-10-30'
+DEFAULT_BATCH_DAY_DATE: str = '2026-11-02'
 DEFAULT_HOST_TAG: str = 'GL'
-DEFAULT_RESULT_DATE: str = '2026-10-28'
+DEFAULT_RESULT_DATE: str = '2026-11-02'
 DEFAULT_CLEAN_CUTOFF_DATE: str = '2025-02-20'
 
 DEFAULT_SCRATCH_TO_TURBO_FILE_GLOBS: List[str] = [

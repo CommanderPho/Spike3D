@@ -72,7 +72,7 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-10-30'
+BATCH_DAY_DATE: str = '2026-11-02'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -100,6 +100,10 @@ else:
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
     collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
     collected_outputs_path.mkdir(parents=True, exist_ok=True)
+
+    known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/media/halechr/BETAMAX/Data'), Path(r'/media/halechr/MAX/Data'), Path(r'W:/Data'), Path(r'/home/halechr/FastData'), Path(r'/Volumes/MoverNew/data')] # Path(r'/home/halechr/cloud/turbo/Data'), , Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/home/halechr/turbo/Data'), 
+    global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
+
 
 assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
 # fullwidth_path_widget(scripts_output_path, file_name_label='Scripts Output Path:')
@@ -152,24 +156,6 @@ _is_kdiba_session: bool = True
 
 
 # Hardcoded included_session_contexts:
-# included_session_contexts = [ 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), # 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), # 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), # WAS WORKING 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), # 2025-07-17 02:23 DEFER- still finishing 'ProcessingScriptPhases.continued_run'
-#     # # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), # 
-#     # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), # 2025-07-17 03:03 DONE with 'ProcessingScriptPhases.continued_run' #   2025-07-17 02:23 DEFER- still finishing 'ProcessingScriptPhases.continued_run'
-#     # # IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'), #
-#     # # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'), # 2025-08-22 - Decided to discard because the positions are shifted between 'x' and 'lin_pos', and that manifests on the pf peaks.
-#     # # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'), #
-#     # # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), # 2025-08-22 - Decided that this session is bad. The context decoder returns short for nearly all non-lap period pre-delta, and additionally there aren't many replays.
-#     # # IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), #TODO 2026-09-01 08:44: - [ ] APOGEE CURRENT SINGLE-SESS testing
-#     # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), # 2025-10-20 - Fixed position tracking issues in MATLAB. 2024-10-04 - very bad position tracking data (jumping around everywhere at high frequency)
-#     # # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), # 2025-10-20 - Fixed position tracking issues in MATLAB. 2024-10-01 - bad laps, Bad Laps "3"/"4" - don't see lap 1/2        
-#     # # IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
-# ]
-
-
 ## All Sessions:
 all_included_session_contexts = [ 
     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
@@ -202,8 +188,12 @@ custom_phase_extended_computations_include_includelist = None
 active_global_batch_result_filename=f'global_batch_result_{BATCH_DATE_TO_USE}.pkl'
 
 debug_print = True
-known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/media/halechr/BETAMAX/Data'), Path(r'/media/halechr/MAX/Data'), Path(r'W:/Data'), Path(r'/home/halechr/FastData'), Path(r'/Volumes/MoverNew/data')] # Path(r'/home/halechr/cloud/turbo/Data'), , Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/home/halechr/turbo/Data'), 
-global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
+
+
+
+
+
+
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
 print(f'global_data_root_parent_path (session discovery / read root): {global_data_root_parent_path}')
 good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
@@ -225,12 +215,12 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # - final_run may rewrite collected_outputs CSVs; those names carry _tbin-{N}.
 
 # phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
-# phases_to_generate = [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
+phases_to_generate = [ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
 # Single-phase fallback (uncomment to generate only one phase, no chain):
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
-phases_to_generate = [ProcessingScriptPhases.final_run]
+# phases_to_generate = [ProcessingScriptPhases.final_run]
 # phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
@@ -305,23 +295,7 @@ base_job_suffix = f"_withNormalComputedReplays-qclu_1246789-frateThresh_2.0"
 
 # Shared batch_session_completion_handler_kwargs (track-body variant sets this; default empty):
 shared_batch_session_completion_handler_kwargs: Dict = {}
-# # =============================================================================
-# # VARIANT: track-body primary peaks only (Phase 2 — requires Phase 1 base pickle)
-# # Run Phase 1 (active config above) first. To run Phase 2: uncomment this block
-# # and comment out the active base-suffix lines above.
-# # =============================================================================
-# base_suffix = override_custom_pickle_suffix
-# track_body_suffix = f"{base_suffix}-trackBodyPeakOnly"
-# override_custom_pickle_suffix = base_suffix # LOAD from base
-# override_custom_pickle_output_suffix = track_body_suffix  # SAVE variant — apply inside phase loop
-# base_job_suffix = f"{base_job_suffix}-trackBodyPeakOnly"
-# export_filename_extra_suffix_parts = ['variant_trackBodyPeakOnly'] # parser-safe (key_value form): appended to collected_outputs export filenames to avoid overwriting base-run exports
-# shared_batch_session_completion_handler_kwargs = {
-#     'apply_track_body_aclu_filter': True,
-#     'track_body_filter_minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
-#     'track_body_filter_included_qclu_values': included_qclu_values,
-#     'export_filename_extra_suffix_parts': export_filename_extra_suffix_parts,
-# }
+
 
 
 # ==================================================================================================================== #
@@ -336,7 +310,7 @@ phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
         'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=True), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
     },
     ProcessingScriptPhases.final_run: {
-            'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=True), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
+        'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=True), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
         },
 
 }
@@ -346,24 +320,18 @@ phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
 drop_previous_result_and_compute_fresh: bool = True
 
 
-
 # laps_decoding_time_bin_size = None
 # laps_decoding_time_bin_size = 0.016
 # laps_decoding_time_bin_size = 0.020
-# laps_decoding_time_bin_size = 0.025
-laps_decoding_time_bin_size = 0.050
+laps_decoding_time_bin_size = 0.025
+# laps_decoding_time_bin_size = 0.050
 # laps_decoding_time_bin_size = 0.060
 # laps_decoding_time_bin_size = 0.075
-# laps_decoding_time_bin_size = 0.250
-# laps_decoding_time_bin_size = 0.500
-# laps_decoding_time_bin_size = 1.0
-# laps_decoding_time_bin_size = 1.5
-# laps_decoding_time_bin_size = 0.6
-# laps_decoding_time_bin_size = 0.75
+
 
 # ripple_decoding_time_bin_size = 0.020
-# ripple_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.058
 # ripple_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.075
@@ -371,8 +339,8 @@ ripple_decoding_time_bin_size = 0.050
 
 # base_job_suffix = f"{base_job_suffix}_tbin_16ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
-base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
 # base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
@@ -426,7 +394,7 @@ custom_user_completion_function_override_kwargs_dict = {
     'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=laps_decoding_time_bin_size, compute_2D=False, 
                                                                                 force_recompute=True,
                                                                                 # force_recompute=False,
-                                                                                debug_print=True, export_pkl=True,
+                                                                                debug_print=True, export_pkl=False,
                                                                                 ),
     'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
