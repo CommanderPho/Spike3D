@@ -154,10 +154,12 @@ ipython ## run ipython interactively
 >>>
 %load_ext autoreload
 %autoreload 3
-import PostBatchCopyResults as pbcr
+
 from datetime import datetime
 from pathlib import Path
 from collections import defaultdict
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionHelpers
+import PostBatchCopyResults as pbcr
 
 ctx = pbcr.PostBatchCopyContext.init_from_paths(
     batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
@@ -170,11 +172,12 @@ ctx = pbcr.PostBatchCopyContext.init_from_paths(
 
 ctx = pbcr.configure_run_main(ctx)
 
-from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionHelpers
+
 
 copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
+	global_data_root_parent_path=ctx.data_root,
     BATCH_DATE_TO_USE=ctx.batch_date_to_use,
-    cuttoff_date=datetime(2026, 9, 1),
+    cuttoff_date=datetime(2026, 11, 2),
     target_dir=ctx.collected_outputs_path,  # hypothetical dest; nothing copied if is_dry_run=True
     custom_file_globs_dict={
         'h5': '**/*.h5',
@@ -188,6 +191,24 @@ copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_
 )
 copy_dict
 # Group by session: keys are source Paths under each session's output/
+
+
+## Copy Inst Fr Outputs to Collected Outputs:
+### e.g. '/scratch/kdiba_root/kdiba99/halechr/Data/KDIBA/gor01/one/2006-6-09_1-22-43/output/2026-11-03_recomputed_inst_fr_comps_1000.0.pkl'
+copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
+	global_data_root_parent_path=ctx.data_root,
+    BATCH_DATE_TO_USE=ctx.batch_date_to_use,
+    cuttoff_date=datetime(2026, 11, 1),
+    target_dir=ctx.collected_outputs_path,  # hypothetical dest; nothing copied if is_dry_run=True
+    custom_file_globs_dict={
+        'pkl': '*_recomputed_inst_fr_comp*.pkl',
+    },
+    session_rel_search_dir='output/',
+    # session_rel_search_dir='output/',  # keeps raw session-root .mat/.xml out
+    is_dry_run=True,
+    debug_print=False,
+)
+copy_dict
 
 
 ```
