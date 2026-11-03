@@ -157,6 +157,7 @@ ipython ## run ipython interactively
 import PostBatchCopyResults as pbcr
 from datetime import datetime
 from pathlib import Path
+from collections import defaultdict
 
 ctx = pbcr.bootstrap_paths_and_sessions(
     batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
@@ -176,16 +177,42 @@ copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_
     cuttoff_date=datetime(2026, 9, 1),
     target_dir=ctx.collected_outputs_path,  # hypothetical dest; nothing copied if is_dry_run=True
     custom_file_globs_dict={
-        'h5': '*.h5',
-        'csv': '*.csv',
-        'pkl': '*.pkl',
+        'h5': '**/*.h5',
+        'csv': '**/*.csv',
+        'pkl': '**/*.pkl',
     },
-    session_rel_search_dir='output/',  # keeps raw session-root .mat/.xml out
+    session_rel_search_dir='/',
+    # session_rel_search_dir='output/',  # keeps raw session-root .mat/.xml out
     is_dry_run=True,
     debug_print=True,
 )
 copy_dict
 # Group by session: keys are source Paths under each session's output/
 
+
+```
+
+```python
+from collections import defaultdict
+
+deleted_file_list, archive_folder = pbcr.run_clean_old_files(
+    ctx,
+    archive_collected_outputs=False,
+    clean_cutoff_date=datetime(2025, 8, 1), # Files with mtime BEFORE this are candidates for conditional patterns
+)
+
+by_session = defaultdict(list)
+for p in deleted_file_list:
+    # session folder is typically .../animal/epoch/session_name
+    by_session[p.parent].append(p)
+
+for folder, paths in sorted(by_session.items(), key=lambda x: str(x[0])):
+    print(folder, len(paths))
+
+# Only paths whose mtime is before cutoff (conditional logic already did this for *.pkl/*.npy patterns;
+# always-delete tmp/bak may still appear regardless of age)
+ts = cutoff.timestamp()
+old_only = [p for p in deleted_file_list if p.stat().st_mtime < ts]
+old_only
 
 ```

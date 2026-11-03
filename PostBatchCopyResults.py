@@ -120,6 +120,23 @@ DEFAULT_HOST_TAG: str = 'GL'
 DEFAULT_RESULT_DATE: str = '2026-11-02'
 DEFAULT_CLEAN_CUTOFF_DATE: str = '2025-02-20'
 
+DEFAULT_CLEAN_ALWAYS_DELETE_PATTERNS: Dict[str, str] = {
+    '.pkltmp': '*.pkltmp',
+    '.pkl.bak': '*.pkl.bak',
+}
+
+DEFAULT_CLEAN_CONDITIONAL_DELETE_PATTERNS: Dict[str, str] = {
+    # '.pkl': '*.pkl',
+    'pipeline.pkl': '*loadedSessPickle*.pkl',
+    'global.pkl': '*global_computation_results*.pkl',
+    ## Numpy files:
+    'position.npy': '*.position.npy',
+    'mua.npy': '*.mua.npy',
+    'pbe.npy': '*.pbe.npy',
+    'non_pbe.npy': '*.non_pbe.npy',
+    'interpolated_spike_positions.npy': '*.interpolated_spike_positions.npy',
+}
+
 DEFAULT_SCRATCH_TO_TURBO_FILE_GLOBS: List[str] = [
     'loadedSessPickle*.pkl',
     'output/global_computation_results*.pkl',
@@ -758,36 +775,34 @@ def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, 
     return across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path)
 
 
-def run_clean_old_files(ctx: PostBatchCopyContext, archive_collected_outputs: bool = False, clean_cutoff_date: Optional[datetime] = None) -> Tuple[list, Optional[Path]]:
-    """Delete old backup files in session folders (notebook cell 70); optionally archive collected_outputs (cell 72)."""
-    always_delete_patterns = {
-        '.pkltmp': '*.pkltmp',
-        '.pkl.bak': '*.pkl.bak',
-    }
+def run_clean_old_files(ctx: PostBatchCopyContext, archive_collected_outputs: bool = False, clean_cutoff_date: Optional[datetime] = None,
+                        custom_file_globs_dict: Optional[Dict[str, str]] = None, session_rel_search_dir: Optional[str] = None) -> Tuple[list, Optional[Path]]:
+    """Delete old backup files in session folders (notebook cell 70); optionally archive collected_outputs (cell 72).
+
+    custom_file_globs_dict: when provided, **replaces** ``DEFAULT_CLEAN_CONDITIONAL_DELETE_PATTERNS`` for conditional
+        (mtime) deletion. Always-delete patterns (``.pkltmp`` / ``.pkl.bak``) are unchanged.
+    session_rel_search_dir: when set (e.g. ``'output/'``), only that relative folder under each session is scanned
+        (same resolution as export-copy helper). When None, legacy dual scan of session root + ``output/``.
+    """
+    always_delete_patterns = dict(DEFAULT_CLEAN_ALWAYS_DELETE_PATTERNS)
     # always_delete_patterns = {} # disable non-conditional deletes while the pipeline is running in batch
 
-    # Define patterns to conditionally delete
-    conditional_delete_patterns = {
-        # '.pkl': '*.pkl',
-        'pipeline.pkl': '*loadedSessPickle*.pkl',
-        'global.pkl': '*global_computation_results*.pkl',
-        ## Numpy files:
-        'position.npy': '*.position.npy',
-        'mua.npy': '*.mua.npy',
-        'pbe.npy': '*.pbe.npy',
-        'non_pbe.npy': '*.non_pbe.npy',
-        'interpolated_spike_positions.npy': '*.interpolated_spike_positions.npy',
-        'non_pbe.npy': '*.non_pbe.npy',
-    }
+    if custom_file_globs_dict is not None:
+        conditional_delete_patterns = dict(custom_file_globs_dict)
+        print(f'conditional_delete_patterns: custom_file_globs_dict ({len(conditional_delete_patterns)} key(s)): {list(conditional_delete_patterns.keys())}')
+    else:
+        conditional_delete_patterns = dict(DEFAULT_CLEAN_CONDITIONAL_DELETE_PATTERNS)
+        print(f'conditional_delete_patterns: DEFAULT_CLEAN_CONDITIONAL_DELETE_PATTERNS ({len(conditional_delete_patterns)} key(s))')
 
-    ## Numpy files:
+    print(f'session_rel_search_dir: {session_rel_search_dir!r} (None => legacy dual scan of session root + output/)')
+
+    ## Numpy files (not wired by default; merge into always/conditional dicts if needed):
     numpy_files_patterns = {
         'position.npy': '*.position.npy',
         'mua.npy': '*.mua.npy',
         'pbe.npy': '*.pbe.npy',
         'non_pbe.npy': '*.non_pbe.npy',
         'interpolated_spike_positions.npy': '*.interpolated_spike_positions.npy',
-        'non_pbe.npy': '*.non_pbe.npy',
         'ripple.npy': '*.ripple.npy',
     }
 
@@ -817,6 +832,7 @@ def run_clean_old_files(ctx: PostBatchCopyContext, archive_collected_outputs: bo
         conditional_delete_files_cutoff_date=conditional_delete_files_cutoff_date,
         is_dryrun=ctx.is_dryrun,
         debug_print=ctx.debug_print,
+        session_rel_search_dir=session_rel_search_dir,
     )
     n_deleted: int = len(deleted_file_list) if deleted_file_list is not None else 0
     print(f'deleted_file_list: {n_deleted} file(s) {"would be removed" if ctx.is_dryrun else "removed"}')
@@ -831,6 +847,17 @@ def run_clean_old_files(ctx: PostBatchCopyContext, archive_collected_outputs: bo
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+    def _subfn_parse_clean_conditional_glob(value: str) -> Tuple[str, str]:
+        """Parse ``desc:pattern`` CLI tokens for ``--clean-conditional-glob`` (first ``:`` separates key from glob)."""
+        if ':' not in value:
+            raise argparse.ArgumentTypeError(f'expected desc:pattern, got {value!r}')
+        desc, pattern = value.split(':', 1)
+        desc = desc.strip()
+        pattern = pattern.strip()
+        if not desc or not pattern:
+            raise argparse.ArgumentTypeError(f'expected non-empty desc:pattern, got {value!r}')
+        return desc, pattern
+
     parser = argparse.ArgumentParser(description='Post-batch copy of session outputs into collected_outputs / AcrossSession folders (headless GL SSH).')
     run_group = parser.add_argument_group('run groups')
     run_group.add_argument('--run-main', action='store_true', help='Copy session H5, write copydict, build combined tables.')
@@ -856,6 +883,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument('--plotting', action='store_true', help='With --run-main, save Agg firing-rate-index figure.')
     parser.add_argument('--archive-collected-outputs', action='store_true', help='With --run-clean-old-files, ensure collected_outputs/OLD exists (no file list unless later supplied).')
     parser.add_argument('--clean-cutoff-date', type=_parse_iso_date, default=None, help=f'Conditional-delete cutoff for --run-clean-old-files (default: {DEFAULT_CLEAN_CUTOFF_DATE}).')
+    parser.add_argument('--clean-session-rel-search-dir', type=str, default=None, help='With --run-clean-old-files, only scan this relative folder under each session (e.g. output/). Omit for legacy dual scan of session root + output/.')
+    parser.add_argument('--clean-conditional-glob', action='append', default=None, dest='clean_conditional_globs', type=_subfn_parse_clean_conditional_glob, help='With --run-clean-old-files, replace default conditional patterns with desc:pattern (repeatable; e.g. h5:**/*.h5).')
     parser.add_argument('--debug-print', action='store_true', help='Enable debug printing.')
     parser.add_argument('--scratch-to-turbo-glob', action='append', default=None, dest='scratch_to_turbo_globs', help='Glob relative to each scratch session folder (repeatable; default: pipeline pickle/h5 globs). Ignored with --scratch-to-turbo-collected-outputs-only.')
     parser.add_argument('--scratch-to-turbo-collected-output-glob', action='append', default=None, dest='scratch_to_turbo_collected_output_globs', help='Glob under scratch Output/collected_outputs (repeatable; default: DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS).')
@@ -924,7 +953,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
     if run_clean_flag:
         print('[run-clean-old-files]')
-        run_clean_old_files(ctx, archive_collected_outputs=args.archive_collected_outputs, clean_cutoff_date=clean_cutoff_date)
+        clean_custom_file_globs_dict: Optional[Dict[str, str]] = None
+        if args.clean_conditional_globs:
+            clean_custom_file_globs_dict = dict(args.clean_conditional_globs)
+        run_clean_old_files(
+            ctx,
+            archive_collected_outputs=args.archive_collected_outputs,
+            clean_cutoff_date=clean_cutoff_date,
+            custom_file_globs_dict=clean_custom_file_globs_dict,
+            session_rel_search_dir=args.clean_session_rel_search_dir,
+        )
 
     if not execute:
         print('\nRe-run with --execute to apply copies/deletes.')
