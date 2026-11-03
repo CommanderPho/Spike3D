@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: verify-rg
     content: rg + MAIN_get_template_string smoke import
-    status: in_progress
+    status: completed
 isProject: false
 ---
 
