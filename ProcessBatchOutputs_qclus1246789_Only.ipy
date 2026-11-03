@@ -72,7 +72,7 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-11-02'
+BATCH_DAY_DATE: str = '2026-11-03'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -305,26 +305,32 @@ drop_previous_result_and_compute_fresh: bool = True
 
 
 # laps_decoding_time_bin_size = None
+# ripple_decoding_time_bin_size = None
+# base_job_suffix = base_job_suffix
+
 # laps_decoding_time_bin_size = 0.016
-# laps_decoding_time_bin_size = 0.025
-# laps_decoding_time_bin_size = 0.050
-# laps_decoding_time_bin_size = 0.060
-laps_decoding_time_bin_size = 0.075
-
-
 # ripple_decoding_time_bin_size = 0.016
-# ripple_decoding_time_bin_size = 0.025
-# ripple_decoding_time_bin_size = 0.050
-# ripple_decoding_time_bin_size = 0.060
-ripple_decoding_time_bin_size = 0.075
-
-
 # base_job_suffix = f"{base_job_suffix}_tbin_16ms"
+
+# laps_decoding_time_bin_size = 0.020
+# ripple_decoding_time_bin_size = 0.020
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
-# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+
+laps_decoding_time_bin_size = 0.025
+ripple_decoding_time_bin_size = 0.025
+base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+
+# laps_decoding_time_bin_size = 0.050
+# ripple_decoding_time_bin_size = 0.050
 # base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+
+# laps_decoding_time_bin_size = 0.060
+# ripple_decoding_time_bin_size = 0.060
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
-base_job_suffix = f"{base_job_suffix}_tbin_75ms"
+
+# laps_decoding_time_bin_size = 0.075
+# ripple_decoding_time_bin_size = 0.075
+# base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
 decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
