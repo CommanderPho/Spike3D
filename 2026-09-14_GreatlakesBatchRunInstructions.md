@@ -138,3 +138,54 @@ sbatch '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts/run_kdiba_pi
 ```
 
 
+# `IPython Cleanup Instructions
+
+```bash
+cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
+deactivate
+source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate
+export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+git pull
+./scripts/unix/repos_pull_changes.sh
+ipython ## run ipython interactively
+```
+### IPython
+```python
+>>>
+%load_ext autoreload
+%autoreload 3
+import PostBatchCopyResults as pbcr
+from datetime import datetime
+from pathlib import Path
+
+ctx = pbcr.bootstrap_paths_and_sessions(
+    batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
+    cutoff_date=datetime(2026, 11, 2),
+    data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
+	scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
+	collected_outputs_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs'),
+    is_dryrun=True,
+)
+
+ctx = pbcr.configure_run_main(ctx)
+
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionHelpers
+
+copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
+    BATCH_DATE_TO_USE=ctx.batch_date_to_use,
+    cuttoff_date=datetime(2026, 9, 1),
+    target_dir=ctx.collected_outputs_path,  # hypothetical dest; nothing copied if is_dry_run=True
+    custom_file_globs_dict={
+        'h5': '*.h5',
+        'csv': '*.csv',
+        'pkl': '*.pkl',
+    },
+    session_rel_search_dir='output/',  # keeps raw session-root .mat/.xml out
+    is_dry_run=True,
+    debug_print=True,
+)
+copy_dict
+# Group by session: keys are source Paths under each session's output/
+
+
+```
