@@ -195,11 +195,14 @@ copy_dict
 
 ## Copy Inst Fr Outputs to Collected Outputs:
 ### e.g. '/scratch/kdiba_root/kdiba99/halechr/Data/KDIBA/gor01/one/2006-6-09_1-22-43/output/2026-11-03_recomputed_inst_fr_comps_1000.0.pkl'
+collected_outputs_day_date_folder: Path = ctx.collected_outputs_path.joinpath(str(ctx.batch_date_to_use))
+collected_outputs_day_date_folder.mkdir(exist_ok=True)
+print(f'collected_outputs_day_date_folder: "{collected_outputs_day_date_folder}"')
 copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
 	global_data_root_parent_path=ctx.global_data_root_parent_path,
     BATCH_DATE_TO_USE=ctx.batch_date_to_use,
     cuttoff_date=datetime(2026, 11, 1),
-    target_dir=ctx.collected_outputs_path,  # hypothetical dest; nothing copied if is_dry_run=True
+    target_dir=collected_outputs_day_date_folder,  # hypothetical dest; nothing copied if is_dry_run=True
     custom_file_globs_dict={
         'pkl': '*_recomputed_inst_fr_comp*.pkl',
     },
@@ -211,8 +214,72 @@ copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_
 copy_dict
 
 
+python PostBatchCopyResults.py --run-copy-sess-inst-fr --batch-day-date ... --result-date ... --host-tag GL ...
+
 ```
 
+## Inst Fr Copy
+```python
+%load_ext autoreload
+%autoreload 3
+
+from datetime import datetime
+from pathlib import Path
+from collections import defaultdict
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionHelpers
+import PostBatchCopyResults as pbcr
+
+## Copy Inst Fr → session-prefixed staging + merged across-session pickles (PostBatchCopyResults --run-copy-sess-inst-fr)
+# Prerequisite: same ctx as above (init_from_paths + configure_run_main)
+ctx: pbcr.PostBatchCopyContext = pbcr.PostBatchCopyContext.init_from_paths(
+    # batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
+	batch_day_date='2026-11-02', host_tag='GL', result_date_to_use='2026-11-02',
+    cutoff_date=datetime(2026, 11, 1),
+    data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
+	scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
+	collected_outputs_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs'),
+    is_dryrun=False,
+)
+
+ctx = pbcr.configure_run_main(ctx)
+ctx
+
+from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import copy_session_inst_fr_data_to_across_session_pkl
+
+instantaneous_time_bin_size_seconds_list = [0.001, 1000.0]  # same default as PostBatchCopyResults.py
+full_custom_suffix = f"{ctx.override_custom_pickle_suffix}-tbin_16ms"  # must match session output/*.pkl names
+
+print(f'RESULT_DATE_TO_USE: {ctx.result_date_to_use!r}')
+print(f'collected_outputs_path: "{ctx.collected_outputs_path}"')
+print(f'global_data_root_parent_path: "{ctx.global_data_root_parent_path}"')
+print(f'full_custom_suffix: {full_custom_suffix!r}')
+print(f'is_dryrun: {ctx.is_dryrun}')
+
+collected_outputs_day_date_folder: Path = ctx.collected_outputs_path.joinpath(str(ctx.batch_date_to_use))
+collected_outputs_day_date_folder.mkdir(exist_ok=True)
+print(f'collected_outputs_day_date_folder: "{collected_outputs_day_date_folder}"')
+
+across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path) = copy_session_inst_fr_data_to_across_session_pkl(
+    RESULT_DATE_TO_USE=ctx.result_date_to_use,
+    collected_outputs_path=collected_outputs_day_date_folder,
+    instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list,
+    global_data_root_parent_path=ctx.global_data_root_parent_path,
+    full_custom_suffix=full_custom_suffix,
+    dry_run=False,
+    debug_print=ctx.debug_print,
+)
+
+print(f'filelist_path: {filelist_path}')
+print(f'filedict_out_path: {filedict_out_path}')
+print(f'time bins in across dict: {list(across_sessions_recomputed_instantaneous_fr_dict.keys())}')
+# Merged outputs (when dry_run=False), e.g.:
+# {ctx.collected_outputs_path}/across_session_result_long_short_recomputed_inst_firing_rate_2026-11-03_1000.0.pkl
+across_sessions_recomputed_instantaneous_fr_dict
+
+
+```
+
+## Cleanup
 ```python
 ## Cleanup (mtime-based conditional delete). Differs from the export inventory above:
 ## - inventory/copy uses export-filename parsing + cuttoff_date
