@@ -241,6 +241,80 @@ class PostBatchCopyContext:
     debug_print: bool = False
 
 
+    @classmethod
+    def init_from_paths(cls, batch_day_date: str, host_tag: str, result_date_to_use: str, cutoff_date: datetime, data_root: Optional[Path] = None, scripts_output_path: Optional[Path] = None, collected_outputs_path: Optional[Path] = None, is_dryrun: bool = True, debug_print: bool = False) -> "PostBatchCopyContext":
+        """Resolve machine-specific paths and session lists (notebook cell 2)."""
+        batch_date_to_use: str = f'{batch_day_date}_{host_tag}'
+
+        if scripts_output_path is not None:
+            scripts_output_path = Path(scripts_output_path).resolve()
+            if not scripts_output_path.exists():
+                raise FileNotFoundError(f'scripts_output_path does not exist: {scripts_output_path}')
+        else:
+            known_scripts_output_paths = [Path(v).resolve() for v in KNOWN_SCRIPTS_OUTPUT_PATHS]
+            scripts_output_path = find_first_extant_path(known_scripts_output_paths)
+            assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
+        print(f'scripts_output_path: {scripts_output_path}')
+
+        if collected_outputs_path is not None:
+            collected_outputs_path = Path(collected_outputs_path).resolve()
+            if not collected_outputs_path.exists():
+                raise FileNotFoundError(f'collected_outputs_path does not exist: {collected_outputs_path}')
+        else:
+            known_collected_output_paths = [Path(v).resolve() for v in KNOWN_COLLECTED_OUTPUT_PATHS]
+            known_collected_output_paths.append(scripts_output_path.joinpath('../collected_outputs').resolve())
+            collected_outputs_path = find_first_extant_path(known_collected_output_paths)
+            Assert.path_exists(collected_outputs_path)
+        collected_outputs_path.mkdir(exist_ok=True)
+        print(f'collected_outputs_path: {collected_outputs_path}')
+
+        collected_figures_path = collected_outputs_path.parent.joinpath('collected_figures')
+        collected_figures_path.mkdir(exist_ok=True)
+        print(f'collected_figures_path: {collected_figures_path}')
+        Assert.path_exists(collected_figures_path)
+
+        all_session_contexts: List[IdentifyingContext] = UserAnnotationsManager.get_hardcoded_good_sessions()
+        excluded_session_keys: List[str] = []
+        excluded_session_contexts = [IdentifyingContext.try_init_from_session_key(session_str=v) for v in excluded_session_keys]
+        print(f'excluded_session_contexts: {excluded_session_contexts}')
+        included_session_contexts: List[IdentifyingContext] = [v for v in all_session_contexts if v not in excluded_session_contexts]
+        print(f'included_session_contexts: {included_session_contexts}')
+
+        all_known_session_contexts: List[IdentifyingContext] = UserAnnotationsManager.get_all_known_sessions()
+        if data_root is not None:
+            global_data_root_parent_path = data_root.resolve()
+            if not global_data_root_parent_path.exists():
+                raise FileNotFoundError(f'--data-root does not exist: {global_data_root_parent_path}')
+        else:
+            known_global_data_root_parent_paths = [Path(v) for v in KNOWN_GLOBAL_DATA_ROOT_PARENT_PATHS]
+            global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
+        assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
+        print(f'global_data_root_parent_path: {global_data_root_parent_path}')
+
+        all_known_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, all_known_session_contexts)
+        good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
+        session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
+
+        return cls(
+            batch_day_date=batch_day_date,
+            host_tag=host_tag,
+            batch_date_to_use=batch_date_to_use,
+            result_date_to_use=result_date_to_use,
+            cutoff_date=cutoff_date,
+            collected_outputs_path=collected_outputs_path,
+            collected_figures_path=collected_figures_path,
+            scripts_output_path=scripts_output_path,
+            global_data_root_parent_path=global_data_root_parent_path,
+            included_session_contexts=included_session_contexts,
+            all_known_session_contexts=all_known_session_contexts,
+            good_session_concrete_folders=good_session_concrete_folders,
+            all_known_session_concrete_folders=all_known_session_concrete_folders,
+            session_basedirs_dict=session_basedirs_dict,
+            is_dryrun=is_dryrun,
+            debug_print=debug_print,
+        )
+
+
 def _parse_iso_date(value: str) -> datetime:
     return datetime.strptime(value, '%Y-%m-%d')
 
@@ -258,76 +332,8 @@ def _print_copy_dict_summary(copy_dict, label: str) -> None:
 
 
 def bootstrap_paths_and_sessions(batch_day_date: str, host_tag: str, result_date_to_use: str, cutoff_date: datetime, data_root: Optional[Path] = None, scripts_output_path: Optional[Path] = None, collected_outputs_path: Optional[Path] = None, is_dryrun: bool = True, debug_print: bool = False) -> PostBatchCopyContext:
-    """Resolve machine-specific paths and session lists (notebook cell 2)."""
-    batch_date_to_use: str = f'{batch_day_date}_{host_tag}'
-
-    if scripts_output_path is not None:
-        scripts_output_path = Path(scripts_output_path).resolve()
-        if not scripts_output_path.exists():
-            raise FileNotFoundError(f'scripts_output_path does not exist: {scripts_output_path}')
-    else:
-        known_scripts_output_paths = [Path(v).resolve() for v in KNOWN_SCRIPTS_OUTPUT_PATHS]
-        scripts_output_path = find_first_extant_path(known_scripts_output_paths)
-        assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
-    print(f'scripts_output_path: {scripts_output_path}')
-
-    if collected_outputs_path is not None:
-        collected_outputs_path = Path(collected_outputs_path).resolve()
-        if not collected_outputs_path.exists():
-            raise FileNotFoundError(f'collected_outputs_path does not exist: {collected_outputs_path}')
-    else:
-        known_collected_output_paths = [Path(v).resolve() for v in KNOWN_COLLECTED_OUTPUT_PATHS]
-        known_collected_output_paths.append(scripts_output_path.joinpath('../collected_outputs').resolve())
-        collected_outputs_path = find_first_extant_path(known_collected_output_paths)
-        Assert.path_exists(collected_outputs_path)
-    collected_outputs_path.mkdir(exist_ok=True)
-    print(f'collected_outputs_path: {collected_outputs_path}')
-
-    collected_figures_path = collected_outputs_path.parent.joinpath('collected_figures')
-    collected_figures_path.mkdir(exist_ok=True)
-    print(f'collected_figures_path: {collected_figures_path}')
-    Assert.path_exists(collected_figures_path)
-
-    all_session_contexts: List[IdentifyingContext] = UserAnnotationsManager.get_hardcoded_good_sessions()
-    excluded_session_keys: List[str] = []
-    excluded_session_contexts = [IdentifyingContext.try_init_from_session_key(session_str=v) for v in excluded_session_keys]
-    print(f'excluded_session_contexts: {excluded_session_contexts}')
-    included_session_contexts: List[IdentifyingContext] = [v for v in all_session_contexts if v not in excluded_session_contexts]
-    print(f'included_session_contexts: {included_session_contexts}')
-
-    all_known_session_contexts: List[IdentifyingContext] = UserAnnotationsManager.get_all_known_sessions()
-    if data_root is not None:
-        global_data_root_parent_path = data_root.resolve()
-        if not global_data_root_parent_path.exists():
-            raise FileNotFoundError(f'--data-root does not exist: {global_data_root_parent_path}')
-    else:
-        known_global_data_root_parent_paths = [Path(v) for v in KNOWN_GLOBAL_DATA_ROOT_PARENT_PATHS]
-        global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
-    assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
-    print(f'global_data_root_parent_path: {global_data_root_parent_path}')
-
-    all_known_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, all_known_session_contexts)
-    good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
-    session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
-
-    return PostBatchCopyContext(
-        batch_day_date=batch_day_date,
-        host_tag=host_tag,
-        batch_date_to_use=batch_date_to_use,
-        result_date_to_use=result_date_to_use,
-        cutoff_date=cutoff_date,
-        collected_outputs_path=collected_outputs_path,
-        collected_figures_path=collected_figures_path,
-        scripts_output_path=scripts_output_path,
-        global_data_root_parent_path=global_data_root_parent_path,
-        included_session_contexts=included_session_contexts,
-        all_known_session_contexts=all_known_session_contexts,
-        good_session_concrete_folders=good_session_concrete_folders,
-        all_known_session_concrete_folders=all_known_session_concrete_folders,
-        session_basedirs_dict=session_basedirs_dict,
-        is_dryrun=is_dryrun,
-        debug_print=debug_print,
-    )
+    """Backward-compatible alias for ``PostBatchCopyContext.init_from_paths``."""
+    return PostBatchCopyContext.init_from_paths(batch_day_date=batch_day_date, host_tag=host_tag, result_date_to_use=result_date_to_use, cutoff_date=cutoff_date, data_root=data_root, scripts_output_path=scripts_output_path, collected_outputs_path=collected_outputs_path, is_dryrun=is_dryrun, debug_print=debug_print)
 
 
 def configure_run_main(ctx: PostBatchCopyContext) -> PostBatchCopyContext:
@@ -909,7 +915,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     cutoff_date: datetime = args.cutoff_date if args.cutoff_date is not None else _parse_iso_date(args.result_date)
     clean_cutoff_date: datetime = args.clean_cutoff_date if args.clean_cutoff_date is not None else _parse_iso_date(DEFAULT_CLEAN_CUTOFF_DATE)
 
-    ctx = bootstrap_paths_and_sessions(
+    ctx = PostBatchCopyContext.init_from_paths(
         batch_day_date=args.batch_day_date,
         host_tag=args.host_tag,
         result_date_to_use=args.result_date,

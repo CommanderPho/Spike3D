@@ -159,7 +159,7 @@ from datetime import datetime
 from pathlib import Path
 from collections import defaultdict
 
-ctx = pbcr.bootstrap_paths_and_sessions(
+ctx = pbcr.PostBatchCopyContext.init_from_paths(
     batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
     cutoff_date=datetime(2026, 11, 2),
     data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
@@ -193,13 +193,38 @@ copy_dict
 ```
 
 ```python
+## Cleanup (mtime-based conditional delete). Differs from the export inventory above:
+## - inventory/copy uses export-filename parsing + cuttoff_date
+## - cleanup uses filesystem mtime vs clean_cutoff_date
+## Prefer is_dryrun=True until the candidate list looks right; set False / --execute only to delete.
 from collections import defaultdict
 
+cutoff = datetime(2026, 10, 29) # Files with mtime BEFORE this are candidates for conditional patterns
+ctx = pbcr.PostBatchCopyContext.init_from_paths(
+    batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
+    cutoff_date=cutoff,
+    # data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
+	# scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
+	# collected_outputs_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs'),
+    is_dryrun=True,  # list only; set False to actually unlink
+)
+
+ctx = pbcr.configure_run_main(ctx)
+# custom_file_globs_dict replaces DEFAULT_CLEAN_CONDITIONAL_DELETE_PATTERNS (always-delete *.pkltmp / *.pkl.bak stay).
+# Prefer session_rel_search_dir='output/' so session-root raw/mat files and loadedSessPickle are not scanned.
 deleted_file_list, archive_folder = pbcr.run_clean_old_files(
     ctx,
     archive_collected_outputs=False,
-    clean_cutoff_date=datetime(2025, 8, 1), # Files with mtime BEFORE this are candidates for conditional patterns
+    clean_cutoff_date=cutoff,
+    custom_file_globs_dict={
+        'h5': '**/*.h5',
+        'csv': '**/*.csv',
+        'pkl': '**/*.pkl',
+    },
+    session_rel_search_dir='output/',
 )
+deleted_file_list
+
 
 by_session = defaultdict(list)
 for p in deleted_file_list:
@@ -209,10 +234,9 @@ for p in deleted_file_list:
 for folder, paths in sorted(by_session.items(), key=lambda x: str(x[0])):
     print(folder, len(paths))
 
-# Only paths whose mtime is before cutoff (conditional logic already did this for *.pkl/*.npy patterns;
+# Only paths whose mtime is before cutoff (conditional logic already did this for custom globs;
 # always-delete tmp/bak may still appear regardless of age)
-ts = cutoff.timestamp()
-old_only = [p for p in deleted_file_list if p.stat().st_mtime < ts]
+old_only = [p for p in deleted_file_list if p.stat().st_mtime < cutoff.timestamp()]
 old_only
 
 ```
