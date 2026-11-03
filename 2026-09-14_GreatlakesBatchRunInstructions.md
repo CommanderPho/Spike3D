@@ -175,7 +175,7 @@ ctx = pbcr.configure_run_main(ctx)
 
 
 copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
-	global_data_root_parent_path=ctx.data_root,
+	global_data_root_parent_path=ctx.global_data_root_parent_path,
     BATCH_DATE_TO_USE=ctx.batch_date_to_use,
     cuttoff_date=datetime(2026, 11, 2),
     target_dir=ctx.collected_outputs_path,  # hypothetical dest; nothing copied if is_dry_run=True
@@ -196,7 +196,7 @@ copy_dict
 ## Copy Inst Fr Outputs to Collected Outputs:
 ### e.g. '/scratch/kdiba_root/kdiba99/halechr/Data/KDIBA/gor01/one/2006-6-09_1-22-43/output/2026-11-03_recomputed_inst_fr_comps_1000.0.pkl'
 copy_dict, _ = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
-	global_data_root_parent_path=ctx.data_root,
+	global_data_root_parent_path=ctx.global_data_root_parent_path,
     BATCH_DATE_TO_USE=ctx.batch_date_to_use,
     cuttoff_date=datetime(2026, 11, 1),
     target_dir=ctx.collected_outputs_path,  # hypothetical dest; nothing copied if is_dry_run=True

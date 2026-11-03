@@ -469,7 +469,7 @@ def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute
         active_outputs_path.mkdir(exist_ok=True)
         print(f'active_outputs_path: "{active_outputs_path.as_posix()}"')
         copy_dict, moved_files_dict_files = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
-            global_data_root_parent_path=ctx.data_root,
+            global_data_root_parent_path=ctx.global_data_root_parent_path,
             BATCH_DATE_TO_USE=ctx.batch_date_to_use,
             cuttoff_date=ctx.cutoff_date,
             target_dir=active_outputs_path,
