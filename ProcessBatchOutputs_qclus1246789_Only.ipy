@@ -142,7 +142,7 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.05` CSVs + posteriors h5
         'compute_and_export_session_epoch_score_shuffles_completion_function': compute_and_export_session_epoch_score_shuffles_completion_function,
         'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.05` CSVs
-        # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
+        'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
         'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
     ProcessingScriptPhases.figure_run: {
@@ -284,8 +284,8 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-# num_shuffles: int = 128
-num_shuffles: int = 256
+num_shuffles: int = 128
+# num_shuffles: int = 256
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
