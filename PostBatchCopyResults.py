@@ -245,23 +245,6 @@ def _parse_iso_date(value: str) -> datetime:
     return datetime.strptime(value, '%Y-%m-%d')
 
 
-def _filter_copydict_by_source_mtime_cutoff(file_copydict: Dict[Path, Path], min_source_mtime_cutoff: Optional[datetime]) -> Dict[Path, Path]:
-    """Keep only entries whose source file mtime is on or after ``min_source_mtime_cutoff``."""
-    if min_source_mtime_cutoff is None:
-        return dict(file_copydict)
-    filtered_copydict: Dict[Path, Path] = {}
-    for src_file, dest_file in file_copydict.items():
-        src_path = Path(src_file).resolve()
-        if not src_path.is_file():
-            continue
-        src_mtime: datetime = datetime.fromtimestamp(src_path.stat().st_mtime)
-        if src_mtime >= min_source_mtime_cutoff:
-            filtered_copydict[src_path] = Path(dest_file).resolve()
-    ## END for src_file, dest_file in file_copydict.items()...
-
-    return filtered_copydict
-
-
 def _print_copy_dict_summary(copy_dict, label: str) -> None:
     n_items: int = len(copy_dict) if copy_dict is not None else 0
     print(f'{label}: {n_items} file(s)')
@@ -682,6 +665,22 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
     already newer than scratch unless ``skip_if_dest_newer_or_equal=False``. Optionally drops sources older than
     ``min_source_mtime_cutoff`` (defaults to ``ctx.cutoff_date``).
     """
+    def _subfn_filter_copydict_by_source_mtime_cutoff(file_copydict: Dict[Path, Path], min_source_mtime_cutoff: Optional[datetime]) -> Dict[Path, Path]:
+        """Keep only entries whose source file mtime is on or after ``min_source_mtime_cutoff``."""
+        if min_source_mtime_cutoff is None:
+            return dict(file_copydict)
+        filtered_copydict: Dict[Path, Path] = {}
+        for src_file, dest_file in file_copydict.items():
+            src_path = Path(src_file).resolve()
+            if not src_path.is_file():
+                continue
+            src_mtime: datetime = datetime.fromtimestamp(src_path.stat().st_mtime)
+            if src_mtime >= min_source_mtime_cutoff:
+                filtered_copydict[src_path] = Path(dest_file).resolve()
+        ## END for src_file, dest_file in file_copydict.items()...
+
+        return filtered_copydict
+
     active_glob_patterns: List[str] = list(file_glob_patterns) if (file_glob_patterns is not None) else list(DEFAULT_SCRATCH_TO_TURBO_FILE_GLOBS)
     active_collected_output_glob_patterns: List[str] = list(collected_output_glob_patterns) if (collected_output_glob_patterns is not None) else list(DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS)
     scratch_data_root: Path = GreatlakesTurboToScratchHelpers.SCRATCH_DATA_ROOT
@@ -740,7 +739,7 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
         print(f'WARN: skipping collected_outputs sync (scratch={scratch_collected_outputs_path.exists()}, turbo={turbo_collected_outputs_path.exists()})')
 
     n_before_cutoff: int = len(planned_copydict)
-    planned_copydict = _filter_copydict_by_source_mtime_cutoff(planned_copydict, effective_min_mtime)
+    planned_copydict = _subfn_filter_copydict_by_source_mtime_cutoff(planned_copydict, effective_min_mtime)
     print(f'scratch->turbo copydict: {len(planned_copydict)}/{n_before_cutoff} file(s) after min_source_mtime_cutoff filter')
     _print_copy_dict_summary(planned_copydict, 'scratch->turbo planned_copydict')
 
