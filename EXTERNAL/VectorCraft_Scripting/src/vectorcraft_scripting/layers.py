@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
+from .errors import ControlError
 from .find import ObjectQuery, bounds_xywh
 from .live import LiveVectorCraft
 from .measure import intrinsic_size_pts
@@ -104,9 +105,10 @@ class Layers:
 
     @classmethod
     def replace_layers(cls, live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str, float]], source_folder: Union[str, Path], *, expect_title: Optional[str] = None, backup_layers: bool = True, backup_suffix: Optional[str] = None, new_suffix: str = '_PROGRAMMATIC', hide_original: bool = True, hide_backup: bool = True, allow_non_uniform_scaling: bool = False, aspect_tolerance: float = 0.01, link: bool = False) -> Any:
-        """For each layer in ``layer_rects``: optionally duplicate the existing object as a (hidden) dated backup, place a ``*_PROGRAMMATIC`` sibling in the same parent as the source, hide the original, and report actual vs. target bounds.
+        """For each layer in ``layer_rects``: optionally duplicate the existing object into a root-level ``{date}_Backup`` layer as a (hidden) dated copy, place a ``*_PROGRAMMATIC`` sibling in the same parent as the source, hide the original, and report actual vs. target bounds.
 
         Idempotent: existing rows named ``{source}{new_suffix}`` are deleted first so re-runs do not stack copies.
+        Same-day re-runs reuse the existing top-level ``{date}_Backup`` layer and append new dated copies into it.
         SVG replacements are placed as **one group** (no ``crop``, so VectorCraft does not wrap the file in a viewBox Clip Group). Nested Layer sources also get that group as a sibling — ``layer.new`` cannot put a Layer inside a Group such as ``Fig3a+b``. A sibling Layer is created only when the source itself is a top-level Layer (an object moved above a top-level Layer would be forced inside it).
         """
         def _subfn_uniform_fit_rect(target: Dict[str, float], source_size: Tuple[float, float]) -> Dict[str, float]:
@@ -131,10 +133,80 @@ class Layers:
             ## END while (current_id is not None) and (current_id not in seen)...
             return False
 
+        def _subfn_inside_backup_root(node_id: Any, parent_by_id: Dict[Any, Dict[str, Any]]) -> bool:
+            """True when ``node_id`` lives under a top-level Layer whose name ends with ``_Backup``."""
+            seen = set()
+            current_id = node_id
+            while (current_id is not None) and (current_id not in seen):
+                seen.add(current_id)
+                parent = parent_by_id.get(current_id) or {}
+                parent_id = parent.get('id')
+                if parent_id is None:
+                    return False
+                if str(parent.get('name') or '').endswith('_Backup') and cls._subfn_kind_is_layer(parent.get('kind')):
+                    grand = parent_by_id.get(parent_id) or {}
+                    if grand.get('id') is None:
+                        return True
+                current_id = parent_id
+            ## END while (current_id is not None) and (current_id not in seen)...
+            return False
+
         def _subfn_pick_source(matches: List[Dict[str, Any]], parent_by_id: Dict[Any, Dict[str, Any]]) -> List[Dict[str, Any]]:
-            not_nested = [m for m in matches if (not _subfn_ancestor_has_suffix(m.get('id'), new_suffix, parent_by_id))]
-            chosen = not_nested if not_nested else list(matches)
+            not_backup = [m for m in matches if (not _subfn_inside_backup_root(m.get('id'), parent_by_id))]
+            not_nested = [m for m in not_backup if (not _subfn_ancestor_has_suffix(m.get('id'), new_suffix, parent_by_id))]
+            chosen = not_nested if not_nested else not_backup
             return chosen[:1]
+
+        def _subfn_find_top_level_layer_by_name(name: str) -> Optional[Any]:
+            tree = live.inspect_document(depth=1, childLimit=500)
+            for node in (tree.get('layers') or []):
+                if (not isinstance(node, dict)) or (node.get('id') is None):
+                    continue
+                if (str(node.get('name') or '') == name) and cls._subfn_kind_is_layer(node.get('kind')):
+                    return node.get('id')
+            ## END for node in (tree.get('layers') or [])...
+            return None
+
+        def _subfn_ensure_backup_root(dated: str) -> Tuple[Any, str]:
+            nonlocal backup_root_id, backup_root_name
+            if backup_root_id is not None:
+                return backup_root_id, (backup_root_name or '')
+            target_name: str = f"{dated}_Backup"
+            existing_id = _subfn_find_top_level_layer_by_name(target_name)
+            if existing_id is not None:
+                backup_root_id, backup_root_name = existing_id, target_name
+                return backup_root_id, backup_root_name
+            reply = live.execute('layer.new', {'name': target_name, 'visible': (not hide_backup)})
+            assert isinstance(reply, dict) and ('id' in reply), f"layer.new did not return an id for {target_name!r} (reply={reply!r})"
+            new_id = reply['id']
+            tree = live.inspect_document(depth=1, childLimit=500)
+            root_layers = [n for n in (tree.get('layers') or []) if isinstance(n, dict) and (n.get('id') is not None) and (n.get('id') != new_id)]
+            if root_layers:
+                live.execute('layer.move', {'ids': [new_id], 'target': root_layers[-1]['id'], 'place': 'below'})
+            backup_root_id, backup_root_name = new_id, target_name
+            return backup_root_id, backup_root_name
+
+        def _subfn_move_into(ids: List[Any], container_id: Any) -> None:
+            last_error: Optional[BaseException] = None
+            for place in ('inside', 'into'):
+                try:
+                    live.execute('layer.move', {'ids': ids, 'target': container_id, 'place': place})
+                    return
+                except ControlError as e:
+                    last_error = e
+            ## END for place in ('inside', 'into')...
+            node = live.get_node(container_id, summary=True, depth=1) or {}
+            children = [c for c in (node.get('children') or node.get('layers') or []) if isinstance(c, dict) and ('id' in c)]
+            if children:
+                live.execute('layer.move', {'ids': ids, 'target': children[-1]['id'], 'place': 'below'})
+                return
+            live.execute('layer.setCurrent', {'id': container_id})
+            try:
+                live.execute('layer.move', {'ids': ids, 'target': container_id, 'place': 'below'})
+            except ControlError as e:
+                if last_error is not None:
+                    raise last_error from e
+                raise
 
         def _subfn_delete_named(name: str, parent_by_id: Dict[Any, Dict[str, Any]]) -> List[Any]:
             matches = live.find_by_name(name, exact=True, limit=200)
@@ -205,6 +277,8 @@ class Layers:
         dated: Optional[str] = (backup_suffix if backup_suffix is not None else datetime.now().strftime('%Y-%m-%d')) if backup_layers else None
         search_path: Path = Path(source_folder)
         rows: List[Dict[str, Any]] = []
+        backup_root_id: Optional[Any] = None
+        backup_root_name: Optional[str] = None
         for a_layer_name, a_layer_geom in layer_rects.items():
             replacement_file: Path = search_path.joinpath(a_layer_name)
             assert replacement_file.exists(), f"replacement_file: '{replacement_file.as_posix()}' does not exist!"
@@ -230,10 +304,13 @@ class Layers:
 
             backup_layer_name: Optional[str] = None
             backup_ids: List[Any] = []
-            if existing_ids and backup_layers:
+            if existing_ids and backup_layers and (dated is not None):
+                backup_root_id, backup_root_name = _subfn_ensure_backup_root(dated)
                 backup_layer_name = live.unique_name(f"{a_layer_name}_{dated}")
                 backup_ids = live.duplicate(existing_ids)
                 live.execute('object.setProps', {'ids': backup_ids, 'name': backup_layer_name, 'visible': (not hide_backup)})
+                _subfn_move_into(backup_ids, backup_root_id)
+                parent_by_id = _subfn_inspect_parents()
 
             source_size = intrinsic_size_pts(replacement_file)
             target_rect: Dict[str, float] = dict(a_layer_geom)
@@ -255,12 +332,12 @@ class Layers:
                 warnings.warn(f"{a_layer_name!r}: could not read intrinsic size of '{replacement_file.suffix}' file; aspect not checked.")
 
             new_layer_id, placed_ids, actual = _subfn_place_as_sibling(new_layer_name, replacement_file, place_rect, source_id, source_kind, parent_by_id)
-            print(f"  {a_layer_name}: {new_layer_name!r} id={new_layer_id} parent={parent_name!r} placed_ids={placed_ids} deleted_ids={deleted_ids}")
+            print(f"  {a_layer_name}: {new_layer_name!r} id={new_layer_id} parent={parent_name!r} backup_root={backup_root_name!r} placed_ids={placed_ids} deleted_ids={deleted_ids}")
             if hide_original and existing_ids:
                 live.execute('object.setProps', {'ids': existing_ids, 'visible': False})
 
             rows.append({'layer': a_layer_name, 'replacement_file': replacement_file.as_posix(), 'existing_ids': existing_ids, 'source_kind': source_kind, 'parent_id': parent_id, 'parent_name': parent_name,
-                         'deleted_ids': deleted_ids, 'backup_layer': backup_layer_name, 'backup_ids': backup_ids,
+                         'deleted_ids': deleted_ids, 'backup_root': backup_root_name, 'backup_root_id': backup_root_id, 'backup_layer': backup_layer_name, 'backup_ids': backup_ids,
                          'new_layer': new_layer_name, 'new_layer_id': new_layer_id, 'placed_ids': placed_ids, 'source_w': (source_size or (None, None))[0], 'source_h': (source_size or (None, None))[1], 'aspect_ratio_error': aspect_ratio_error,
                          'target_x': target_rect['x'], 'target_y': target_rect['y'], 'target_w': target_rect['width'], 'target_h': target_rect['height'],
                          'placed_x': place_rect['x'], 'placed_y': place_rect['y'], 'placed_w': place_rect['width'], 'placed_h': place_rect['height'],
@@ -277,5 +354,5 @@ def layer_geometry(live: LiveVectorCraft, layer_names: Sequence[str]) -> Any:
 
 
 def replace_layers(live: LiveVectorCraft, layer_rects: Mapping[str, Mapping[str, float]], source_folder: Union[str, Path], *, expect_title: Optional[str] = None, backup_layers: bool = True, backup_suffix: Optional[str] = None, new_suffix: str = '_PROGRAMMATIC', hide_original: bool = True, hide_backup: bool = True, allow_non_uniform_scaling: bool = False, aspect_tolerance: float = 0.01, link: bool = False) -> Any:
-    """For each layer in ``layer_rects``: optionally duplicate the existing object as a (hidden) dated backup, place a ``*_PROGRAMMATIC`` sibling in the same parent as the source, and report actual vs. target bounds."""
+    """For each layer in ``layer_rects``: optionally duplicate the existing object into a root-level ``{date}_Backup`` layer as a (hidden) dated copy, place a ``*_PROGRAMMATIC`` sibling in the same parent as the source, and report actual vs. target bounds."""
     return Layers.replace_layers(live, layer_rects, source_folder, expect_title=expect_title, backup_layers=backup_layers, backup_suffix=backup_suffix, new_suffix=new_suffix, hide_original=hide_original, hide_backup=hide_backup, allow_non_uniform_scaling=allow_non_uniform_scaling, aspect_tolerance=aspect_tolerance, link=link)

@@ -162,7 +162,7 @@ Live helpers:
 | `duplicate(ids)` / `unique_name(base)` / `place_file(path, rect, name=…)` | Duplicate, uniquify a Layers-panel name, `file.place` into a rect |
 | `undo_group(label)` | Context manager: `edit.undoGroup.begin` / `.end` |
 
-Replace named figure layers (backup first, then one undo step):
+Replace named figure layers (filesystem backup first, then one undo step). With `backup_layers=True`, each source is duplicated into a root-level `{YYYY-MM-DD}_Backup` folder as `{name}_{date}` (same-day re-runs reuse that folder); `*_PROGRAMMATIC` replacements stay beside the original:
 
 ```python
 from vectorcraft_scripting import connect_first, layer_geometry, replace_layers
