@@ -286,7 +286,7 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # Common:                                                                                                              #
 # ==================================================================================================================== #
 # num_shuffles: int = 128
-num_shuffles: int = 1024
+num_shuffles: int = 256
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
