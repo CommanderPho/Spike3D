@@ -4,22 +4,22 @@ overview: Generalize `DecodingLocalityMeasures` (and the supporting `SparseGauss
 todos:
   - id: tests-2d-regression
     content: "FIRST: Add robust 2D regression unittests for SparseGaussianVolume + DecodingLocalityMeasures (synthetic fixtures, frozen numeric baselines, key/shape contracts) before any 1D code changes"
-    status: in_progress
+    status: completed
   - id: fields-dispatch
     content: Add spatial_ndim + optional ybins; update n_total_pos_bins / measured_positions_df / sigma defaults with 2D-preserving branches
-    status: pending
+    status: completed
   - id: sparse-1d
     content: Extend SparseGaussianVolume with 1D build_from_positions_1d and 1D multiply/marginal helpers; dispatch from _build_sampled_pos_with_gaussian_spread
-    status: pending
+    status: completed
   - id: normalize-init
     content: Branch perform_build_normalized_outputs for 1D; add init_from_1d_decode_result; leave init_from_decode_result 2D-only
-    status: pending
+    status: completed
   - id: locality-core
     content: Dimension-dispatch compute_locality_measures_for_posterior + df builders (1D peak prom + axis-0 reductions)
-    status: pending
+    status: completed
   - id: tests-1d-locality
     content: Add tests/test_decoding_locality_measures_1d.py for 1D metrics and shape dispatch; keep 2D regression suite green
-    status: pending
+    status: completed
 isProject: false
 ---
 
