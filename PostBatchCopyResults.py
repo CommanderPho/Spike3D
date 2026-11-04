@@ -37,6 +37,9 @@ Usage (on remote, e.g. Great Lakes)::
 
     --execute 
 
+    python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-04 --host-tag GL --result-date 2026-11-04 #  --execute
+
+
 IPython to Avoid High Import Costs:
 ``bash
     uv run ipython
@@ -62,7 +65,7 @@ IPython to Avoid High Import Costs:
         '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data',
         '--collected-outputs-path', '/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs',
         '--scripts-output-path', '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts',
-        '--result-date', '2026-10-30', '--batch-day-date', '2026-10-30',
+        '--result-date', '2026-11-04', '--batch-day-date', '2026-11-04',
     ])
 
 ```
@@ -94,6 +97,7 @@ from pyphocorehelpers.assertion_helpers import Assert
 from pyphocorehelpers.Filesystem.path_helpers import build_cross_root_copydict, copy_movedict, find_first_extant_path, save_copydict_to_text_file, save_filelist_to_text_file
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import GreatlakesTurboToScratchHelpers
 from pyphoplacecellanalysis.General.Batch.runBatch import BackupMethods, ConcreteSessionFolder, get_file_path_if_file_exists
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionHelpers, AcrossSessionsResults, AcrossSessionTables, AcrossSessionsVisualizations, OldFileArchiver, check_output_h5_files, copy_batch_output_figures_to_common_figures_dir, copy_session_inst_fr_data_to_across_session_pkl
 
 """
@@ -416,7 +420,59 @@ def _normalize_job_suffix_str(s: str) -> str:
     return s.replace(' ', '').replace(',', '').replace('[', '').replace(']', '')
 
 
-def pair_collected_h5_paths_to_sessions(included_session_contexts: List[IdentifyingContext], h5_paths: List[Path]) -> Tuple[List[IdentifyingContext], List[Path]]:
+def _decoding_time_bin_filename_suffix_for_ctx(ctx: PostBatchCopyContext) -> str:
+    return build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=ctx.laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ctx.ripple_decoding_time_bin_size)
+
+
+def _h5_filename_matches_session(h5_path: Path, session_name: str, batch_date_to_use: str) -> bool:
+    """Match dated ``{session}_pipeline...`` or root ``{batch}_{session}_pipeline...`` names (not loose substring)."""
+    filename: str = h5_path.name
+    if filename.startswith(f'{session_name}_'):
+        return True
+    if batch_date_to_use and filename.startswith(f'{batch_date_to_use}_{session_name}_'):
+        return True
+    return False
+
+
+def _resolve_parameterized_pipeline_h5_for_session_folder(a_session_folder: ConcreteSessionFolder, ctx: PostBatchCopyContext) -> Optional[Path]:
+    """Resolve the active parameterized ``pipeline_with...h5`` under a session ``output/`` folder."""
+    tbin_suffix: str = _decoding_time_bin_filename_suffix_for_ctx(ctx)
+    candidate_names: List[str] = [
+        f'pipeline{ctx.override_custom_pickle_suffix}{tbin_suffix}.h5',
+        f'pipeline{ctx.override_custom_pickle_suffix}.h5',
+    ]
+    for a_name in candidate_names:
+        found = get_file_path_if_file_exists(a_session_folder.output_folder.joinpath(a_name).resolve())
+        if found is not None and found.is_file() and found.stat().st_size > 10_000:
+            return found.resolve()
+    ## END for a_name in candidate_names...
+
+    filename_normalized_job_suffix: str = _normalize_job_suffix_str(ctx.override_custom_pickle_suffix)
+    glob_matches: List[Path] = sorted(a_session_folder.output_folder.glob('pipeline_with*.h5'), key=lambda p: p.stat().st_mtime if p.is_file() else 0.0, reverse=True)
+    for a_path in glob_matches:
+        if not a_path.is_file() or a_path.stat().st_size <= 10_000:
+            continue
+        if filename_normalized_job_suffix in _normalize_job_suffix_str(a_path.stem):
+            return a_path.resolve()
+    ## END for a_path in glob_matches...
+
+    return None
+
+
+def _resolve_parameterized_pipeline_h5_paths_from_session_folders(ctx: PostBatchCopyContext) -> List[Path]:
+    resolved_paths: List[Path] = []
+    for a_session_folder in ctx.good_session_concrete_folders:
+        a_path = _resolve_parameterized_pipeline_h5_for_session_folder(a_session_folder, ctx)
+        if a_path is not None:
+            resolved_paths.append(a_path)
+        else:
+            print(f'WARN: no parameterized pipeline H5 under {a_session_folder.output_folder} for {a_session_folder.context}')
+    ## END for a_session_folder in ctx.good_session_concrete_folders...
+
+    return resolved_paths
+
+
+def pair_collected_h5_paths_to_sessions(included_session_contexts: List[IdentifyingContext], h5_paths: List[Path], batch_date_to_use: str = '') -> Tuple[List[IdentifyingContext], List[Path]]:
     """Pair each session to an H5 whose filename contains ``session_name`` (replaces notebook .reverse() hack)."""
     paired_contexts: List[IdentifyingContext] = []
     paired_paths: List[Path] = []
@@ -425,7 +481,7 @@ def pair_collected_h5_paths_to_sessions(included_session_contexts: List[Identify
         session_name: str = a_ctxt.session_name
         match: Optional[Path] = None
         for a_path in unmatched_paths:
-            if session_name in a_path.name:
+            if _h5_filename_matches_session(a_path, session_name=session_name, batch_date_to_use=batch_date_to_use):
                 match = a_path
                 break
         ## END for a_path in unmatched_paths...
@@ -442,29 +498,35 @@ def pair_collected_h5_paths_to_sessions(included_session_contexts: List[Identify
 
 
 def collect_and_filter_collected_h5_paths(ctx: PostBatchCopyContext) -> List[Path]:
-    """Glob collected_outputs (root and ``{batch_date_to_use}/``) H5, filter by cutoff date and job suffix (cells 33–34, 36)."""
-    glob_patterns = [
-        f'{ctx.batch_date_to_use}_*_pipeline_with*.h5',
-        f'{ctx.result_date_to_use}_{ctx.host_tag}_*_pipeline_with*.h5',
-        '*_pipeline_with*.h5',
-    ]
-    search_roots: List[Path] = [ctx.collected_outputs_path, ctx.collected_outputs_path.joinpath(ctx.batch_date_to_use)]
+    """Glob collected_outputs (dated batch folder first, then prefixed root), else session ``output/`` (cells 33–34, 36)."""
     matching_files: List[Path] = []
-    for search_root in search_roots:
-        if not search_root.is_dir():
-            continue
-        for a_glob in glob_patterns:
-            matching_files = [a_path.resolve() for a_path in search_root.glob(a_glob) if a_path.is_file()]
-            if len(matching_files) > 0:
-                print(f'glob {search_root.as_posix()}/{a_glob!r} matched {len(matching_files)} file(s)')
-                break
-        ## END for a_glob in glob_patterns...
-        if len(matching_files) > 0:
-            break
-    ## END for search_root in search_roots...
+    dated_collected_dir: Path = ctx.collected_outputs_path.joinpath(ctx.batch_date_to_use)
+    if dated_collected_dir.is_dir():
+        for a_glob in ['*_pipeline_with*.h5', '*_pipeline_results*.h5']:
+            dated_matches = [a_path.resolve() for a_path in dated_collected_dir.glob(a_glob) if a_path.is_file()]
+            if len(dated_matches) > 0:
+                print(f'glob {dated_collected_dir.as_posix()}/{a_glob!r} matched {len(dated_matches)} file(s)')
+                matching_files.extend(dated_matches)
+        ## END for a_glob in ['*_pipeline_with*.h5', '*_pipeline_results*.h5']...
+
     if len(matching_files) == 0:
-        print('WARN: no collected_outputs pipeline_with*.h5 files found')
-        return []
+        root_glob_patterns = [
+            f'{ctx.batch_date_to_use}_*_pipeline_with*.h5',
+            f'{ctx.result_date_to_use}_{ctx.host_tag}_*_pipeline_with*.h5',
+        ]
+        for a_glob in root_glob_patterns:
+            matching_files = [a_path.resolve() for a_path in ctx.collected_outputs_path.glob(a_glob) if a_path.is_file()]
+            if len(matching_files) > 0:
+                print(f'glob {ctx.collected_outputs_path.as_posix()}/{a_glob!r} matched {len(matching_files)} file(s)')
+                break
+        ## END for a_glob in root_glob_patterns...
+
+    matching_files = list(dict.fromkeys(matching_files))
+    if len(matching_files) == 0:
+        print('WARN: no collected_outputs pipeline_with*.h5 files found; resolving from session output folders')
+        matching_files = _resolve_parameterized_pipeline_h5_paths_from_session_folders(ctx)
+        if len(matching_files) == 0:
+            return []
 
     output_h5_files_df: pd.DataFrame = check_output_h5_files(matching_files)
     if (output_h5_files_df is None) or output_h5_files_df.empty:
@@ -569,9 +631,10 @@ def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute
         if len(included_h5_paths) > 0:
             check_output_h5_files(included_h5_paths)
 
-        parameterized_h5_name: str = f'pipeline{ctx.override_custom_pickle_suffix}.h5'
+        tbin_suffix: str = _decoding_time_bin_filename_suffix_for_ctx(ctx)
+        print(f'parameterized pipeline H5 lookup: pipeline{ctx.override_custom_pickle_suffix}{tbin_suffix}.h5 (fallback: pipeline{ctx.override_custom_pickle_suffix}.h5)')
         custom_file_types_dict = {
-            'custom_h5': (lambda a_session_folder, _name=parameterized_h5_name: get_file_path_if_file_exists(a_session_folder.output_folder.joinpath(_name).resolve())),
+            'custom_h5': (lambda a_session_folder, _ctx=ctx: _resolve_parameterized_pipeline_h5_for_session_folder(a_session_folder, _ctx)),
         }
         copy_h5_dict = ConcreteSessionFolder.build_backup_copydict(
             ctx.good_session_concrete_folders,
@@ -649,7 +712,7 @@ def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute
     dated_copy_dict, dated_moved = _subfn_copy_session_h5_to_dated_collected()
     copy_h5_dict, moved_files_dict_h5_files, copydict_path = _subfn_copy_parameterized_h5_and_write_manifest()
     active_included_h5_paths = collect_and_filter_collected_h5_paths(ctx)
-    paired_contexts, paired_h5_paths = pair_collected_h5_paths_to_sessions(ctx.included_session_contexts, active_included_h5_paths)
+    paired_contexts, paired_h5_paths = pair_collected_h5_paths_to_sessions(ctx.included_session_contexts, active_included_h5_paths, batch_date_to_use=ctx.batch_date_to_use)
     print(f'paired {len(paired_contexts)} session(s) to {len(paired_h5_paths)} H5 file(s)')
     neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_df, output_path_dicts = build_and_save_combined_tables_for_ctx(ctx, paired_contexts, paired_h5_paths)
     copied_figures = _subfn_copy_batch_figures() if copy_figures else None
@@ -808,7 +871,7 @@ def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, 
 
     print('[run-copy-sess-inst-fr] building combined across-session tables (neuron_replay_stats_table.csv, ...)')
     active_included_h5_paths = collect_and_filter_collected_h5_paths(ctx)
-    paired_contexts, paired_h5_paths = pair_collected_h5_paths_to_sessions(ctx.included_session_contexts, active_included_h5_paths)
+    paired_contexts, paired_h5_paths = pair_collected_h5_paths_to_sessions(ctx.included_session_contexts, active_included_h5_paths, batch_date_to_use=ctx.batch_date_to_use)
     print(f'paired {len(paired_contexts)} session(s) to {len(paired_h5_paths)} H5 file(s) for combined tables')
     neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_df, output_path_dicts = build_and_save_combined_tables_for_ctx(ctx, paired_contexts, paired_h5_paths)
 
