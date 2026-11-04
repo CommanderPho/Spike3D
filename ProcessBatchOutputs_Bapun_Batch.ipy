@@ -450,7 +450,7 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
             # 'should_freeze_pipeline_updates': False, # False => the pipeline is allowed to update/recompute AND the generated run script saves the pipeline (and global results) when done (continued/final runs render saving_mode=TEMP_THEN_OVERWRITE)
             'should_freeze_pipeline_updates': True,
             'skip_save_on_initial_load': True, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
-            'should_use_neptune_logging': False,
+            'should_use_wandb_logging': False,
             'create_slurm_scripts': True,
             'should_generate_run_scripts': (not active_phase.is_figure_phase),
             'should_generate_figure_scripts': active_phase.is_figure_phase,

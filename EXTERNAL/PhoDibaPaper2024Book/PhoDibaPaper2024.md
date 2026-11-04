@@ -94,7 +94,7 @@ from pyphocorehelpers.function_helpers import function_attributes
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import build_session_t_delta, _new_process_csv_files, _old_process_csv_files
 
 debug_print: bool = False
-enable_neptune: bool = False
+enable_wandb: bool = False
 
 # TODAY_DAY_DATE: str = f"2024-09-03_Apogee"
 # TODAY_DAY_DATE: str = f"2024-09-03_GL"
@@ -105,42 +105,42 @@ print(f'TODAY_DAY_DATE: {TODAY_DAY_DATE}')
 
 types.session_str: TypeAlias = str # a unique session identifier
 
-if enable_neptune:
-    import neptune # for logging progress and results
-    from neptune.types import File
-    from pyphoplacecellanalysis.General.Batch.NeptuneAiHelpers import Neptuner, AutoValueConvertingNeptuneRun, set_environment_variables 
+if enable_wandb:
+    import wandb # for logging progress and results
+    # wandb File upload
+    from pyphoplacecellanalysis.General.Batch.WandbHelpers import WandbLogger, WandbRunHelper, set_wandb_environment_variables 
 
-    ## Gets the notebook filepath for Neptune:
+    ## Gets the notebook filepath for W&B:
     import IPython
     from pyphocorehelpers.programming_helpers import IPythonHelpers
     notebook_filepath: str = IPythonHelpers.try_find_notebook_filepath(IPython.extract_module_locals())
     assert Path(notebook_filepath).resolve().exists(), f"found notebook filepath: '{notebook_filepath}' does not exist"
     # notebook_filepath
 
-    neptune_kwargs = {'project':"commander.pho/PhoDibaLongShortAcrossSessions",
+    wandb_kwargs = {'project':"commander.pho/PhoDibaLongShortAcrossSessions",
     'api_token':"eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiIxOGIxODU2My1lZTNhLTQ2ZWMtOTkzNS02ZTRmNzM5YmNjNjIifQ=="}
             
-    neptuner = Neptuner(project_name=neptune_kwargs['project'], api_token=neptune_kwargs['api_token'])
+    wandb_logger = WandbLogger(project=wandb_kwargs['project'], api_token=wandb_kwargs['api_token'])
 
 
-    if neptuner.run is None:
-        neptuner.run = AutoValueConvertingNeptuneRun(project=neptuner.project_name, api_token=neptuner.api_token, dependencies="infer", source_files=[notebook_filepath])
+    if wandb_logger.run is None:
+        wandb_logger.run = WandbRunHelper(project=wandb_logger.project_name, api_token=wandb_logger.api_token, dependencies="infer", source_files=[notebook_filepath])
         params = {"TODAY_DAY_DATE": TODAY_DAY_DATE, "run_workstation": "Apogee"}
-        neptuner.run["parameters"] = params
-        neptuner.outputs = neptuner.run['outputs']
-        neptuner.figures = neptuner.outputs['figures']
+        wandb_logger.run["parameters"] = params
+        wandb_logger.outputs = wandb_logger.run['outputs']
+        wandb_logger.figures = wandb_logger.outputs['figures']
 
-    neptuner_run: AutoValueConvertingNeptuneRun = neptuner.run
+    wandb_run: WandbRunHelper = wandb_logger.run
     
-    # run = neptune.init_run(source_files=["**/*.dvc"])
+    # run = wandb.init(...)
 
     # # Pre-execution dataframe view:
     # run["dataset/global_batch_run_progress_df"].upload(File.as_html(global_batch_run.to_dataframe(expand_context=True, good_only=False))) # "path/to/test_preds.csv"
 
 else:
-    # no neptune:
-    neptuner = None    
-    neptuner_run = None
+    # no wandb:
+    wandb_logger = None    
+    wandb_run = None
 
 
 known_bad_sessions = [IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44')]
@@ -194,12 +194,12 @@ t_delta_csv_path = collected_outputs_directory.joinpath('../2024-01-18_GL_t_spli
 
 t_delta_df, t_delta_dict, (earliest_delta_aligned_t_start, latest_delta_aligned_t_end) = build_session_t_delta(t_delta_csv_path=t_delta_csv_path)
 
-if neptuner_run is not None:
-    _neptuner_run_parameters = dict(cuttoff_date=cuttoff_date, collected_outputs_directory=collected_outputs_directory.as_posix(), figures_folder=figures_folder.as_posix(),
+if wandb_run is not None:
+    _wandb_run_parameters = dict(cuttoff_date=cuttoff_date, collected_outputs_directory=collected_outputs_directory.as_posix(), figures_folder=figures_folder.as_posix(),
                            across_sessions_output_folder=across_sessions_output_folder.as_posix(), t_delta_csv_path=t_delta_csv_path.as_posix())
-    for k, v in _neptuner_run_parameters.items():
-        neptuner_run[f'parameters/{k}'] = v
-    _neptuner_run_parameters = {} # reset after writing
+    for k, v in _wandb_run_parameters.items():
+        wandb_run[f'parameters/{k}'] = v
+    _wandb_run_parameters = {} # reset after writing
 
 ## Find the files:
 csv_files = find_csv_files(collected_outputs_directory)
@@ -211,7 +211,7 @@ h5_sessions, parsed_h5_files_df = find_most_recent_files(found_session_export_pa
 ## OUTPUTS: csv_files, csv_sessions, parsed_csv_files_df
 ## OUTPUTS: h5_files, h5_sessions, parsed_h5_files_df
 
-_neptuner_run_parameters = dict(csv_files=csv_files, h5_files=h5_files, csv_sessions=csv_sessions, h5_sessions=h5_sessions)
+_wandb_run_parameters = dict(csv_files=csv_files, h5_files=h5_files, csv_sessions=csv_sessions, h5_sessions=h5_sessions)
 
 # #TODO 2024-03-02 12:12: - [ ] Could add weighted correlation if there is a dataframe for that and it's computed:
 _df_raw_variable_names = ['simple_pf_pearson_merged_df', 'weighted_corr_merged_df']
@@ -223,12 +223,12 @@ time_col_name_dict = {'laps': 'lap_start_t', 'ripple': 'ripple_start_t'} ## defa
 # fold older files:
 # {'laps_marginals_df': 'lap_start_t', 'ripple_marginals_df': 'ripple_start_t', 'laps_time_bin_marginals_df':'t_bin_center', 'ripple_time_bin_marginals_df':'t_bin_center'}
 
-if neptuner_run is not None:
-    _neptuner_run_parameters = _neptuner_run_parameters | dict(earliest_delta_aligned_t_start=earliest_delta_aligned_t_start, latest_delta_aligned_t_end=latest_delta_aligned_t_end,
+if wandb_run is not None:
+    _wandb_run_parameters = _wandb_run_parameters | dict(earliest_delta_aligned_t_start=earliest_delta_aligned_t_start, latest_delta_aligned_t_end=latest_delta_aligned_t_end,
                                      t_delta_df=t_delta_df)
-    for k, v in _neptuner_run_parameters.items():
-        neptuner_run[f'parsed/{k}'] = v
-    _neptuner_run_parameters = {} # reset after writing
+    for k, v in _wandb_run_parameters.items():
+        wandb_run[f'parsed/{k}'] = v
+    _wandb_run_parameters = {} # reset after writing
 
 ## NEW `parsed_csv_files_df1-based approach 2024-07-11 - 
 ## INPUTS: parsed_csv_files_df
@@ -387,15 +387,15 @@ final_csv_export_paths = export_across_session_CSVs(final_output_path=final_acro
 #  'AcrossSession_SimplePearson_Ripple_per-Epoch': WindowsPath('K:/scratch/across_sessions/2024-06-05_Apogee_AcrossSession_SimplePearson_Ripple_per-Epoch.csv'),
 #  'AcrossSession_AllScores_Ripple_per-Epoch': WindowsPath('K:/scratch/across_sessions/2024-06-05_Apogee_AcrossSession_AllScores_Ripple_per-Epoch.csv')}
 
-if neptuner_run is not None:
-    _neptuner_run_parameters = dict(across_sessions_parsed_csv_files_path=across_sessions_parsed_csv_files_path.as_posix(), final_across_session_summary_CSVs_output_path=final_across_session_summary_CSVs_output_path.as_posix(),
+if wandb_run is not None:
+    _wandb_run_parameters = dict(across_sessions_parsed_csv_files_path=across_sessions_parsed_csv_files_path.as_posix(), final_across_session_summary_CSVs_output_path=final_across_session_summary_CSVs_output_path.as_posix(),
                                        )
-    for k, v in _neptuner_run_parameters.items():
-        neptuner_run[f'output_files/{k}'] = v
-    _neptuner_run_parameters = {} # reset after writing
+    for k, v in _wandb_run_parameters.items():
+        wandb_run[f'output_files/{k}'] = v
+    _wandb_run_parameters = {} # reset after writing
 
     for k, v in final_csv_export_paths.items():
-        neptuner_run[f"output_files/{k}"].upload(v.resolve().as_posix())
+        wandb_run[f"output_files/{k}"].upload(v.resolve().as_posix())
         
 
 final_csv_export_paths
@@ -417,12 +417,12 @@ parsed_h5_files_df, h5_contexts_paths_dict = load_across_sessions_exported_h5_fi
 h5_session_contexts = list(h5_contexts_paths_dict.keys())
 included_h5_paths = list(h5_contexts_paths_dict.values())
 
-if neptuner_run is not None:
-    _neptuner_run_parameters = dict(parsed_h5_files_df=parsed_h5_files_df,
+if wandb_run is not None:
+    _wandb_run_parameters = dict(parsed_h5_files_df=parsed_h5_files_df,
                                        )
-    for k, v in _neptuner_run_parameters.items():
-        neptuner_run[f'parsed/{k}'] = v
-    _neptuner_run_parameters = {} # reset after writing
+    for k, v in _wandb_run_parameters.items():
+        wandb_run[f'parsed/{k}'] = v
+    _wandb_run_parameters = {} # reset after writing
 
 parsed_h5_files_df
 # h5_contexts_paths_dict
@@ -445,16 +445,16 @@ num_sessions = len(included_session_contexts)
                                                                                                                                                     should_restore_native_column_types=True, include_csv=True, include_pkl=True)
 
 
-if neptuner_run is not None:
-    _neptuner_run_parameters = dict(neuron_identities_table=neuron_identities_table, long_short_fr_indicies_analysis_table=long_short_fr_indicies_analysis_table, neuron_replay_stats_table=neuron_replay_stats_table,
+if wandb_run is not None:
+    _wandb_run_parameters = dict(neuron_identities_table=neuron_identities_table, long_short_fr_indicies_analysis_table=long_short_fr_indicies_analysis_table, neuron_replay_stats_table=neuron_replay_stats_table,
                                        num_sessions=num_sessions)
-    for k, v in _neptuner_run_parameters.items():
-        neptuner_run[f'parsed/{k}'] = v
-    _neptuner_run_parameters = {} # reset after writing
+    for k, v in _wandb_run_parameters.items():
+        wandb_run[f'parsed/{k}'] = v
+    _wandb_run_parameters = {} # reset after writing
 
     for output_name, a_paths_dict in output_path_dicts.items():
         for format_extension, an_output_path in a_paths_dict.items():
-            neptuner_run[f"output_files/{format_extension}/{output_name}"].upload(an_output_path.resolve().as_posix())
+            wandb_run[f"output_files/{format_extension}/{output_name}"].upload(an_output_path.resolve().as_posix())
 
 
 # {'neuron_identities_table': {'.csv': WindowsPath('K:/scratch/across_sessions/2024-06-05_Apogee/neuron_identities_table.csv'),
@@ -697,7 +697,7 @@ from pyphocorehelpers.programming_helpers import copy_image_to_clipboard
 
 def save_plotly(a_fig, a_fig_context):
     """ 
-    captures: TODAY_DAY_DATE, figures_folder, neptuner_run
+    captures: TODAY_DAY_DATE, figures_folder, wandb_run
     """
     fig_save_path: Path = figures_folder.joinpath('_'.join([TODAY_DAY_DATE, sanitize_filename_for_Windows(a_fig_context.get_description())])).resolve()
     figure_out_paths = {'.html': fig_save_path.with_suffix('.html'), '.png': fig_save_path.with_suffix('.png')}
@@ -708,13 +708,13 @@ def save_plotly(a_fig, a_fig_context):
     # print(file_uri_from_path(figure_out_paths['.png']))
     display(fullwidth_path_widget(figure_out_paths['.png'], file_name_label='.png'))
 
-    if neptuner_run is not None:
+    if wandb_run is not None:
         a_full_figure_path_key: str = a_fig_context.get_description(separator='/', include_property_names=True, key_value_separator=':') # .replace(' ', '_')
         # a_full_figure_path_key: str = a_fig_context.get_description(separator=':', include_property_names=True, key_value_separator='|')
         print(f'a_full_figure_path_key: "{a_full_figure_path_key}"')
-        # neptuner_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(a_fig)
-        neptuner_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(figure_out_paths['.html'].as_posix())
-        # neptuner.figures[f"{a_full_figure_path_key}"].upload(a_fig)
+        # wandb_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(a_fig)
+        wandb_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(figure_out_paths['.html'].as_posix())
+        # wandb_logger.figures[f"{a_full_figure_path_key}"].upload(a_fig)
         
     return figure_out_paths
 ```
@@ -1338,13 +1338,13 @@ def _save_matplotlib_fig(matplotlib_output_container: MatplotlibRenderPlots):
     a_saved_fig_path = matplotlib_output_container.saved_figures[0][0]
     assert a_saved_fig_path.exists()
 
-    if neptuner_run is not None:
+    if wandb_run is not None:
         a_full_figure_path_key: str = a_fig_context.get_description(separator='/', include_property_names=True, key_value_separator=':') # .replace(' ', '_')
         # a_full_figure_path_key: str = a_fig_context.get_description(separator=':', include_property_names=True, key_value_separator='|')
         print(f'a_full_figure_path_key: "{a_full_figure_path_key}"')
-        # neptuner_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(a_fig)
-        neptuner_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(a_saved_fig_path.as_posix())
-        # neptuner.figures[f"{a_full_figure_path_key}"].upload(a_fig)
+        # wandb_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(a_fig)
+        wandb_run['outputs']['figures'][f"{a_full_figure_path_key}"].upload(a_saved_fig_path.as_posix())
+        # wandb_logger.figures[f"{a_full_figure_path_key}"].upload(a_fig)
         
 
 %matplotlib inline
@@ -1431,7 +1431,7 @@ print(f'num_sessions: {num_sessions}')
 ```
 
 ```{code-cell} ipython3
-neptuner.stop()
+wandb_logger.stop()
 ```
 
 ## 2024-09-04 - Batch Output Files

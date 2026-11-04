@@ -502,7 +502,7 @@ for active_phase in phases_to_generate:
     if phase_job_suffix is not None:
         current_job_suffix = f"{base_job_suffix}_{phase_job_suffix}"
     active_phase_dict.update(dict(job_suffix=current_job_suffix,
-                                   should_use_neptune_logging=False,
+                                   should_use_wandb_logging=False,
                                    create_slurm_scripts=(batch_execution_target == 'slurm'),
                                    create_non_slurm_bash_scripts=(batch_execution_target == 'linux_standalone'),
                                    should_generate_run_scripts=(not active_phase.is_figure_phase), should_generate_figure_scripts=active_phase.is_figure_phase, should_generate_run_notebooks=(not active_phase.is_figure_phase), should_create_vscode_workspace=True,

@@ -333,12 +333,12 @@ active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = {
 # Last-Chance Overrides                                                                                                #
 # ==================================================================================================================== #
 # Interactive Debugging in Notebooks:
-active_phase_dict.update(dict(should_use_neptune_logging=False, should_create_vscode_workspace=True, 
+active_phase_dict.update(dict(should_use_wandb_logging=False, should_create_vscode_workspace=True, 
 	should_freeze_pipeline_updates=True,
 ))
 
 # ## No custom suffix!
-# active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=False, should_use_neptune_logging=False, should_generate_run_notebooks=True, should_create_vscode_workspace=True, create_slurm_scripts=True,
+# active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=False, should_use_wandb_logging=False, should_generate_run_notebooks=True, should_create_vscode_workspace=True, create_slurm_scripts=True,
 # ))
 
 
@@ -346,7 +346,7 @@ active_phase_dict.update(dict(should_use_neptune_logging=False, should_create_vs
 phase_job_suffix: str = active_phase_dict.pop('phase_job_suffix', None)
 if phase_job_suffix is not None:
     job_suffix = f"{job_suffix}_{phase_job_suffix}" ## append phase to end of job_suffix
-active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_neptune_logging=False, create_slurm_scripts=True, should_generate_run_scripts=(not active_phase.is_figure_phase), should_generate_figure_scripts=active_phase.is_figure_phase, should_generate_run_notebooks=(not active_phase.is_figure_phase), should_create_vscode_workspace=True,
+active_phase_dict.update(dict(job_suffix=job_suffix, should_freeze_pipeline_updates=True, should_use_wandb_logging=False, create_slurm_scripts=True, should_generate_run_scripts=(not active_phase.is_figure_phase), should_generate_figure_scripts=active_phase.is_figure_phase, should_generate_run_notebooks=(not active_phase.is_figure_phase), should_create_vscode_workspace=True,
 ))
 print(f'job_suffix: "{job_suffix}"')
 
@@ -354,8 +354,8 @@ print(f'job_suffix: "{job_suffix}"')
 # {'ripple_decoding_time_bin_size': 0.058}
 
 ## Non-interactive batch computation in scripts
-# active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
-# active_phase_dict.update(dict(should_use_neptune_logging=True, should_generate_run_notebooks=False))
+# active_phase_dict.update(dict(should_use_wandb_logging=True, should_generate_run_notebooks=False))
+# active_phase_dict.update(dict(should_use_wandb_logging=True, should_generate_run_notebooks=False))
 
 # END ________________________________________________________________________________________________________________ #
 

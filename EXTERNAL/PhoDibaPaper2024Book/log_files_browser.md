@@ -16,7 +16,7 @@ kernelspec:
 
 ## Log File: `your_log_file.log`
 
-```{literalinclude} data\neptune\commander.pho\PhoDibaBatchProcessing\logs\gor01=one=2006-6-07_11-26-53.log
+```{literalinclude} data\wandb\commander.pho\PhoDibaBatchProcessing\logs\gor01=one=2006-6-07_11-26-53.log
 :language: text
 ```
 
