@@ -57,6 +57,35 @@ class PhoDibaPaperVectorCraftHelper:
 		}
 
 
+	@classmethod
+	def replace_with_updated_images(cls, active_figure_name: str, **kwargs) -> Any:
+		from vectorcraft_scripting import connect_first, replace_layers
+
+		active_figure_export_folder_date: str = kwargs.pop('active_figure_export_folder_date', datetime.now().strftime('%Y-%m-%d'))
+		live = kwargs.pop('live', None)
+		backup_layers: bool = kwargs.pop('backup_layers', False)
+		print_backup_paths: bool = kwargs.pop('print_backup_paths', True)
+		if (live is None) or (not live.is_connected):
+			live = connect_first()
+
+		replacement_paths_dict = cls.replacement_paths_dict(active_figure_export_folder_date=active_figure_export_folder_date)
+		curr_fig_geom_dict = cls.figs_layer_geometry[active_figure_name]
+		curr_replacement_search_path: Path = replacement_paths_dict[active_figure_name]
+
+		live.select_document(active_figure_name)  # activate the matching open tab
+		live.assert_active_document(active_figure_name)  # fail before mutating if the wrong tab is active
+
+		backup_paths = live.backup_document(expect_title=active_figure_name)  # e.g. {'same_format': .../_BAK/Artboard 4_2026-10-29.pdf, 'vectorcraft': .../_BAK/Artboard 4_2026-10-29.vectorcraft}
+		if print_backup_paths:
+			print(f'backup_paths: {backup_paths}')
+
+		undo_day_date: str = datetime.now().strftime('%Y-%m-%d')
+		with live.undo_group(f'Replace figure layers ({undo_day_date})'):
+			replacement_df = replace_layers(live, curr_fig_geom_dict, curr_replacement_search_path, expect_title=active_figure_name, backup_layers=backup_layers, **kwargs)
+
+		return replacement_df
+
+
 # # %%
 # outputs_folder: Path = _notebook_dir.joinpath('outputs').resolve()
 # outputs_folder.mkdir(parents=True, exist_ok=True)
