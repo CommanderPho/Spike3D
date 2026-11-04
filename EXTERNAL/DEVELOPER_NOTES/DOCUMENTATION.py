@@ -11,7 +11,7 @@
 # %%
 from pyphoplacecellanalysis.General.Batch.NonInteractiveProcessing import batch_perform_all_plots
 
-_out = batch_perform_all_plots(curr_active_pipeline=curr_active_pipeline, enable_neptune=False)
+_out = batch_perform_all_plots(curr_active_pipeline=curr_active_pipeline, enable_wandb=False)
 
 # %% [markdown]
 # # 🖼️ `SpikeRaster2D`, `SpikeRaster3D`, and `Spike3DRasterWindowWidget`
