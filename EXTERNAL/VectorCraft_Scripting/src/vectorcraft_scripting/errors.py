@@ -32,10 +32,26 @@ class CliNotFoundError(VectorCraftError):
 class ControlError(VectorCraftError):
     """Raised when a live control-protocol request fails or the connection breaks."""
 
+    _CONNECTION_LOST_PREFIXES = (
+        "control connection failed during",
+        "control connection closed while awaiting",
+        "invalid JSON reply for",
+        "control connection is closed",
+    )
+
     def __init__(self, message: str, *, method: Optional[str] = None, reply: Optional[dict] = None):
         super().__init__(message)
         self.method = method
         self.reply = reply
+
+
+    @property
+    def is_connection_lost(self) -> bool:
+        """True for transport/socket failures (idle close, reset, empty reply); False for app-level ``ok: false`` errors."""
+        if isinstance(self.__cause__, OSError):
+            return True
+        message = str(self)
+        return any(message.startswith(prefix) for prefix in self._CONNECTION_LOST_PREFIXES)
 
 
 class NoInstanceError(VectorCraftError):

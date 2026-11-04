@@ -143,6 +143,8 @@ finally:
 
 Discovery order: explicit ports → `VECTORCRAFT_CONTROL_PORT(S)` → `7979` → Windows listeners owned by `vectorcraft.exe`, each verified with `ui.inspect`.
 
+With `auto_reconnect=True` (default), idle peer closes (~5 minutes on the app side) are recovered automatically: the next RPC reconnects and retries once. Pass `auto_reconnect=False` (or call `live.reconnect()` yourself) for strict fail-fast behavior.
+
 Live helpers:
 
 | Method | Role |
@@ -161,6 +163,21 @@ Live helpers:
 | `backup_document()` | Copy into `<doc folder>/_BAK/<stem>_<date><ext>` (plus a `.vectorcraft` copy) |
 | `duplicate(ids)` / `unique_name(base)` / `place_file(path, rect, name=…)` | Duplicate, uniquify a Layers-panel name, `file.place` into a rect |
 | `undo_group(label)` | Context manager: `edit.undoGroup.begin` / `.end` |
+| `TextHelpers.set_text_font_size_centered(live, ids, size_pt)` | Set Type objects to `size_pt` via `text.setStyle`, then `object.move` so each bounds center stays fixed (module alias: `set_text_font_size_centered`) |
+| `TextHelpers.group_text_by_font_size(live, limit=10000, effective=True)` | Find Type objects; group by run font size; each row has `id`, `name`, `text`, `sizes`, `runs` (module alias: `group_text_by_font_size`) |
+
+```python
+from vectorcraft_scripting import group_text_by_font_size, set_text_font_size_centered
+
+grouped = group_text_by_font_size(live)
+for size_pt, rows in sorted(grouped['by_size'].items()):
+    print(f'{size_pt:g} pt → {len(rows)} objects')
+    for r in rows[:50]:
+        print(f"  id={r['id']}  {r['text']!r}")
+
+with live.undo_group("Bump axis labels"):
+    set_text_font_size_centered(live, label_ids, size_pt=14)
+```
 
 Replace named figure layers (filesystem backup first, then one undo step). With `backup_layers=True`, each source is duplicated into a root-level `{YYYY-MM-DD}_Backup` folder as `{name}_{date}` (same-day re-runs reuse that folder); `*_PROGRAMMATIC` replacements stay beside the original:
 

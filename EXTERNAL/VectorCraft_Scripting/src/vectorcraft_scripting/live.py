@@ -6,7 +6,7 @@ import time
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Iterator, List, Mapping, Optional, Sequence, Tuple, Union
 
 from .control import DEFAULT_CONTROL_PORT, DEFAULT_HOST, ControlConnection
 from .errors import ControlError
@@ -14,7 +14,12 @@ from .find import ObjectQuery, bounds_xywh, coerce_query, filter_nodes
 
 
 class LiveVectorCraft:
-    """Talk to an already-running VectorCraft GUI via the JSON-lines control port."""
+    """Talk to an already-running VectorCraft GUI via the JSON-lines control port.
+
+    With ``auto_reconnect=True`` (default), a closed socket is reopened before the next RPC,
+    and a single transport failure (e.g. the app's ~5-minute idle close) is retried once
+    after reconnecting. Set ``auto_reconnect=False`` for strict fail-fast behavior.
+    """
 
     def __init__(self, host: str = DEFAULT_HOST, port: int = DEFAULT_CONTROL_PORT, *, connect_timeout: float = 0.5, request_timeout: float = 60.0, connection: Optional[ControlConnection] = None, auto_reconnect: bool = True):
         self.host = host
@@ -35,7 +40,7 @@ class LiveVectorCraft:
 
     @property
     def is_connected(self) -> bool:
-        """True while the underlying control socket is open (``close()`` or the app's 5-minute idle timeout make it False)."""
+        """True while the underlying control socket is held locally (``close()`` or a failed RPC clear it; idle peer close may leave this True until the next I/O)."""
         return self._conn.is_open
 
 
@@ -48,12 +53,27 @@ class LiveVectorCraft:
 
 
     def ensure_connected(self) -> "LiveVectorCraft":
-        """Reconnect if the socket was closed; raises ``ControlError`` if ``auto_reconnect`` is off."""
+        """Reconnect if the socket was closed; raises ``ControlError`` if ``auto_reconnect`` is off.
+
+        Does not detect a still-held but peer-closed socket; ``_with_auto_reconnect`` retries once after transport failure.
+        """
         if not self.is_connected:
             if not self.auto_reconnect:
                 raise ControlError("control connection is closed (auto_reconnect=False); call reconnect()")
             self.reconnect()
         return self
+
+
+    def _with_auto_reconnect(self, fn: Callable[[], Any]) -> Any:
+        """Run ``fn`` once; on a transport-level ``ControlError``, reconnect and retry once when ``auto_reconnect`` is on."""
+        self.ensure_connected()
+        try:
+            return fn()
+        except ControlError as exc:
+            if not self.auto_reconnect or not exc.is_connection_lost:
+                raise
+            self.reconnect()
+            return fn()
 
 
     def close(self) -> None:
@@ -69,18 +89,15 @@ class LiveVectorCraft:
 
 
     def call(self, method: str, params: Optional[Mapping[str, Any]] = None) -> Any:
-        self.ensure_connected()
-        return self._conn.call(method, params)
+        return self._with_auto_reconnect(lambda: self._conn.call(method, params))
 
 
     def execute(self, command: str, params: Optional[Mapping[str, Any]] = None) -> Any:
-        self.ensure_connected()
-        return self._conn.engine_execute(command, params)
+        return self._with_auto_reconnect(lambda: self._conn.engine_execute(command, params))
 
 
     def ui_inspect(self) -> Any:
-        self.ensure_connected()
-        return self._conn.ui_inspect()
+        return self._with_auto_reconnect(lambda: self._conn.ui_inspect())
 
 
     def activate_document(self, index: int) -> Any:
@@ -412,7 +429,7 @@ class LiveVectorCraft:
     def duplicate(self, ids: Sequence[Any]) -> List[Any]:
         """Duplicate ``ids`` in place and return the new ids (whatever the reply doesn't name is read from the selection)."""
         def _subfn_resolve_duplicate_command() -> Optional[str]:
-            catalogue = self.connection.engine_commands()
+            catalogue = self.call("engine.commands", {})
             catalogue_ids = {c.get('id') for c in catalogue if isinstance(c, dict)}
             for candidate in ('layer.duplicate', 'object.duplicate', 'edit.duplicate'):
                 if candidate in catalogue_ids:
