@@ -7,7 +7,7 @@ without requiring a Jupyter kernel.
 Run groups match the notebook cell tags (``run-main`` also includes the untagged copy/table pipeline):
 
   --run-main                 copy session H5 into collected_outputs, write copydict, build combined tables
-  --run-copy-sess-inst-fr    merge session inst-FR exports into across-session pickles
+  --run-copy-sess-inst-fr    merge session inst-FR exports into across-session pickles; build combined CSV/PKL tables under collected_outputs/{batch_day}_{host}/
   --run-copy-scratch-to-turbo  copy new session outputs from GL scratch session folders to Turbo
   --run-clean-old-files      delete/archive old backup files in session data folders
   --all                      run all groups (main, inst-FR, scratch->turbo, cleanup)
@@ -412,6 +412,110 @@ def configure_run_main(ctx: PostBatchCopyContext) -> PostBatchCopyContext:
     return ctx
 
 
+def _normalize_job_suffix_str(s: str) -> str:
+    return s.replace(' ', '').replace(',', '').replace('[', '').replace(']', '')
+
+
+def pair_collected_h5_paths_to_sessions(included_session_contexts: List[IdentifyingContext], h5_paths: List[Path]) -> Tuple[List[IdentifyingContext], List[Path]]:
+    """Pair each session to an H5 whose filename contains ``session_name`` (replaces notebook .reverse() hack)."""
+    paired_contexts: List[IdentifyingContext] = []
+    paired_paths: List[Path] = []
+    unmatched_paths: List[Path] = list(h5_paths)
+    for a_ctxt in included_session_contexts:
+        session_name: str = a_ctxt.session_name
+        match: Optional[Path] = None
+        for a_path in unmatched_paths:
+            if session_name in a_path.name:
+                match = a_path
+                break
+        ## END for a_path in unmatched_paths...
+        if match is not None:
+            paired_contexts.append(a_ctxt)
+            paired_paths.append(match)
+            unmatched_paths.remove(match)
+        else:
+            print(f'WARN: no H5 file matched session_name={session_name}')
+    ## END for a_ctxt in included_session_contexts...
+    if len(unmatched_paths) > 0:
+        print(f'WARN: {len(unmatched_paths)} unmatched H5 path(s): {[p.name for p in unmatched_paths]}')
+    return paired_contexts, paired_paths
+
+
+def collect_and_filter_collected_h5_paths(ctx: PostBatchCopyContext) -> List[Path]:
+    """Glob collected_outputs (root and ``{batch_date_to_use}/``) H5, filter by cutoff date and job suffix (cells 33–34, 36)."""
+    glob_patterns = [
+        f'{ctx.batch_date_to_use}_*_pipeline_with*.h5',
+        f'{ctx.result_date_to_use}_{ctx.host_tag}_*_pipeline_with*.h5',
+        '*_pipeline_with*.h5',
+    ]
+    search_roots: List[Path] = [ctx.collected_outputs_path, ctx.collected_outputs_path.joinpath(ctx.batch_date_to_use)]
+    matching_files: List[Path] = []
+    for search_root in search_roots:
+        if not search_root.is_dir():
+            continue
+        for a_glob in glob_patterns:
+            matching_files = [a_path.resolve() for a_path in search_root.glob(a_glob) if a_path.is_file()]
+            if len(matching_files) > 0:
+                print(f'glob {search_root.as_posix()}/{a_glob!r} matched {len(matching_files)} file(s)')
+                break
+        ## END for a_glob in glob_patterns...
+        if len(matching_files) > 0:
+            break
+    ## END for search_root in search_roots...
+    if len(matching_files) == 0:
+        print('WARN: no collected_outputs pipeline_with*.h5 files found')
+        return []
+
+    output_h5_files_df: pd.DataFrame = check_output_h5_files(matching_files)
+    if (output_h5_files_df is None) or output_h5_files_df.empty:
+        print('WARN: check_output_h5_files returned no rows')
+        return [Path(p) for p in matching_files]
+
+    output_h5_files_df['filename'] = output_h5_files_df['path'].map(lambda x: Path(x).name)
+    output_h5_files_df = output_h5_files_df.sort_values(['creation_time', 'modification_time', 'file_size'], ascending=[False, False, False], inplace=False)
+    if 'creation_time' in output_h5_files_df.columns:
+        active_output_h5_files_df = output_h5_files_df[output_h5_files_df['creation_time'] >= ctx.cutoff_date]
+    else:
+        active_output_h5_files_df = output_h5_files_df
+    active_included_h5_paths = active_output_h5_files_df['path'].map(lambda v: Path(v)).to_list()
+    print(f'after cutoff_date={ctx.cutoff_date}: {len(active_included_h5_paths)} H5 path(s)')
+
+    filename_normalized_job_suffix: str = _normalize_job_suffix_str(ctx.override_custom_pickle_suffix)
+    initial_included_h5_paths: int = len(active_included_h5_paths)
+    active_included_h5_paths = [a_path for a_path in active_included_h5_paths if (filename_normalized_job_suffix in _normalize_job_suffix_str(a_path.stem))]
+    print(f'including: {len(active_included_h5_paths)}/{initial_included_h5_paths} h5 paths for override_custom_pickle_suffix: {ctx.override_custom_pickle_suffix}')
+    return active_included_h5_paths
+
+
+def build_and_save_combined_tables_for_ctx(ctx: PostBatchCopyContext, paired_contexts: List[IdentifyingContext], paired_h5_paths: List[Path]) -> Tuple[Optional[pd.DataFrame], Optional[pd.DataFrame], Optional[pd.DataFrame], Optional[dict]]:
+    """``AcrossSessionTables.build_and_save_all_combined_tables`` plus CSV dtype re-read and remapping (cells 42, 45–46)."""
+    from pyphoplacecellanalysis.SpecificResults.PendingNotebookCode import _add_cell_remapping_category
+    assert (len(paired_contexts) == len(paired_h5_paths)), f'len(paired_contexts): {len(paired_contexts)} != len(paired_h5_paths): {len(paired_h5_paths)}'
+    if len(paired_contexts) == 0:
+        print('WARN: no paired session/H5 inputs; skipping combined tables')
+        return None, None, None, None
+
+    target_dir: Path = ctx.collected_outputs_path
+    assert target_dir.exists(), f'target_dir: "{target_dir}" does not exist!'
+    if ctx.is_dryrun:
+        print(f'DRY-RUN: would build_and_save_all_combined_tables for {len(paired_contexts)} session(s) under {target_dir} / {ctx.batch_date_to_use}')
+        for a_ctxt, a_path in zip(paired_contexts, paired_h5_paths):
+            print(f'  {a_ctxt}  ->  {a_path}')
+        ## END for a_ctxt, a_path in zip(paired_contexts, paired_h5_paths)...
+        return None, None, None, None
+
+    (neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_table), output_path_dicts = AcrossSessionTables.build_and_save_all_combined_tables(paired_contexts, paired_h5_paths, override_output_parent_path=target_dir, output_path_suffix=f'{ctx.batch_date_to_use}')
+    curr_collected_outputs_folder = Path(output_path_dicts['neuron_replay_stats_table']['.csv']).resolve().parent
+    print(f'combined tables folder: {curr_collected_outputs_folder}')
+
+    _curr_read_path = output_path_dicts['neuron_replay_stats_table']['.csv']
+    neuron_replay_stats_table = pd.read_csv(_curr_read_path, na_values=['', 'nan', 'np.nan', '<NA>'], dtype=NEURON_REPLAY_STATS_CSV_DTYPES, index_col='neuron_uid')
+    neuron_replay_stats_df = deepcopy(neuron_replay_stats_table)
+    neuron_replay_stats_df, (_non_disappearing_endcap_cells_df, _disappearing_endcap_cells_df, _minorly_changed_endcap_cells_df, significant_distant_remapping_endcap_cells_df) = _add_cell_remapping_category(neuron_replay_stats_df=neuron_replay_stats_df, loaded_track_limits=DEFAULT_LOADED_TRACK_LIMITS)
+    print(f'significant_distant_remapping_endcap_cells_df: {len(significant_distant_remapping_endcap_cells_df)} row(s)')
+    return neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_df, output_path_dicts
+
+
 def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute: bool = False, plotting: bool = False, figures_export_date: Optional[str] = None) -> Dict[str, object]:
     """Copy session H5 into collected_outputs, write copydict, and build combined tables.
 
@@ -434,33 +538,6 @@ def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute
         if len(args) > 0:
             _filename_list.extend([str(a_part) for a_part in args if a_part is not None])
         return separator_char.join(_filename_list)
-
-    def _subfn_normalize_str(s: str) -> str:
-        return s.replace(' ', '').replace(',', '').replace('[', '').replace(']', '')
-
-    def _subfn_pair_h5_paths_to_sessions(included_session_contexts: List[IdentifyingContext], h5_paths: List[Path]) -> Tuple[List[IdentifyingContext], List[Path]]:
-        """Pair each session to an H5 whose filename contains ``session_name`` (replaces notebook .reverse() hack)."""
-        paired_contexts: List[IdentifyingContext] = []
-        paired_paths: List[Path] = []
-        unmatched_paths: List[Path] = list(h5_paths)
-        for a_ctxt in included_session_contexts:
-            session_name: str = a_ctxt.session_name
-            match: Optional[Path] = None
-            for a_path in unmatched_paths:
-                if session_name in a_path.name:
-                    match = a_path
-                    break
-            ## END for a_path in unmatched_paths...
-            if match is not None:
-                paired_contexts.append(a_ctxt)
-                paired_paths.append(match)
-                unmatched_paths.remove(match)
-            else:
-                print(f'WARN: no H5 file matched session_name={session_name}')
-        ## END for a_ctxt in included_session_contexts...
-        if len(unmatched_paths) > 0:
-            print(f'WARN: {len(unmatched_paths)} unmatched H5 path(s): {[p.name for p in unmatched_paths]}')
-        return paired_contexts, paired_paths
 
     def _subfn_copy_session_h5_to_dated_collected() -> Tuple[dict, dict]:
         """Copy session ``*.h5`` into ``collected_outputs/{BATCH_DATE_TO_USE}/`` (cells 7–8)."""
@@ -525,72 +602,6 @@ def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute
             print(f'DRY-RUN: would copy_movedict({len(copy_h5_dict)} items) and write {moved_files_copydict_file_path}')
         return copy_h5_dict, moved_files_dict_h5_files, moved_files_copydict_file_path
 
-    def _subfn_collect_and_filter_collected_h5_paths() -> List[Path]:
-        """Glob collected_outputs H5, filter by cutoff date and job suffix (cells 33–34, 36)."""
-        glob_patterns = [
-            f'{ctx.batch_date_to_use}_*_pipeline_with*.h5',
-            f'{ctx.result_date_to_use}_{ctx.host_tag}_*_pipeline_with*.h5',
-            '*_pipeline_with*.h5',
-        ]
-        matching_files: List[Path] = []
-        for a_glob in glob_patterns:
-            matching_files = list(ctx.collected_outputs_path.glob(a_glob))
-            if len(matching_files) > 0:
-                print(f'glob {a_glob!r} matched {len(matching_files)} file(s)')
-                break
-        ## END for a_glob in glob_patterns...
-        if len(matching_files) == 0:
-            print('WARN: no collected_outputs pipeline_with*.h5 files found')
-            return []
-
-        output_h5_files_df: pd.DataFrame = check_output_h5_files(matching_files)
-        if (output_h5_files_df is None) or output_h5_files_df.empty:
-            print('WARN: check_output_h5_files returned no rows')
-            return [Path(p) for p in matching_files]
-
-        output_h5_files_df['filename'] = output_h5_files_df['path'].map(lambda x: Path(x).name)
-        output_h5_files_df = output_h5_files_df.sort_values(['creation_time', 'modification_time', 'file_size'], ascending=[False, False, False], inplace=False)
-        if 'creation_time' in output_h5_files_df.columns:
-            active_output_h5_files_df = output_h5_files_df[output_h5_files_df['creation_time'] >= ctx.cutoff_date]
-        else:
-            active_output_h5_files_df = output_h5_files_df
-        active_included_h5_paths = active_output_h5_files_df['path'].map(lambda v: Path(v)).to_list()
-        print(f'after cutoff_date={ctx.cutoff_date}: {len(active_included_h5_paths)} H5 path(s)')
-
-        filename_normalized_job_suffix: str = _subfn_normalize_str(ctx.override_custom_pickle_suffix)
-        initial_included_h5_paths: int = len(active_included_h5_paths)
-        active_included_h5_paths = [a_path for a_path in active_included_h5_paths if (filename_normalized_job_suffix in _subfn_normalize_str(a_path.stem))]
-        print(f'including: {len(active_included_h5_paths)}/{initial_included_h5_paths} h5 paths for override_custom_pickle_suffix: {ctx.override_custom_pickle_suffix}')
-        return active_included_h5_paths
-
-    def _subfn_build_and_save_combined_tables(paired_contexts: List[IdentifyingContext], paired_h5_paths: List[Path]) -> Tuple[Optional[pd.DataFrame], Optional[pd.DataFrame], Optional[pd.DataFrame], Optional[dict]]:
-        """``AcrossSessionTables.build_and_save_all_combined_tables`` plus CSV dtype re-read and remapping (cells 42, 45–46)."""
-        from pyphoplacecellanalysis.SpecificResults.PendingNotebookCode import _add_cell_remapping_category
-        assert (len(paired_contexts) == len(paired_h5_paths)), f'len(paired_contexts): {len(paired_contexts)} != len(paired_h5_paths): {len(paired_h5_paths)}'
-        if len(paired_contexts) == 0:
-            print('WARN: no paired session/H5 inputs; skipping combined tables')
-            return None, None, None, None
-
-        target_dir: Path = ctx.collected_outputs_path
-        assert target_dir.exists(), f'target_dir: "{target_dir}" does not exist!'
-        if ctx.is_dryrun:
-            print(f'DRY-RUN: would build_and_save_all_combined_tables for {len(paired_contexts)} session(s) under {target_dir} / {ctx.batch_date_to_use}')
-            for a_ctxt, a_path in zip(paired_contexts, paired_h5_paths):
-                print(f'  {a_ctxt}  ->  {a_path}')
-            ## END for a_ctxt, a_path in zip(paired_contexts, paired_h5_paths)...
-            return None, None, None, None
-
-        (neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_table), output_path_dicts = AcrossSessionTables.build_and_save_all_combined_tables(paired_contexts, paired_h5_paths, override_output_parent_path=target_dir, output_path_suffix=f'{ctx.batch_date_to_use}')
-        curr_collected_outputs_folder = Path(output_path_dicts['neuron_replay_stats_table']['.csv']).resolve().parent
-        print(f'combined tables folder: {curr_collected_outputs_folder}')
-
-        _curr_read_path = output_path_dicts['neuron_replay_stats_table']['.csv']
-        neuron_replay_stats_table = pd.read_csv(_curr_read_path, na_values=['', 'nan', 'np.nan', '<NA>'], dtype=NEURON_REPLAY_STATS_CSV_DTYPES, index_col='neuron_uid')
-        neuron_replay_stats_df = deepcopy(neuron_replay_stats_table)
-        neuron_replay_stats_df, (_non_disappearing_endcap_cells_df, _disappearing_endcap_cells_df, _minorly_changed_endcap_cells_df, significant_distant_remapping_endcap_cells_df) = _add_cell_remapping_category(neuron_replay_stats_df=neuron_replay_stats_df, loaded_track_limits=DEFAULT_LOADED_TRACK_LIMITS)
-        print(f'significant_distant_remapping_endcap_cells_df: {len(significant_distant_remapping_endcap_cells_df)} row(s)')
-        return neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_df, output_path_dicts
-
     def _subfn_copy_batch_figures() -> Optional[List[Path]]:
         """Copy gen_scripts batch figures into collected_figures (cell 15)."""
         export_date: str = figures_export_date if figures_export_date is not None else ctx.batch_day_date
@@ -637,10 +648,10 @@ def run_main(ctx: PostBatchCopyContext, copy_figures: bool = False, post_compute
     print(f'collected_outputs_path: "{ctx.collected_outputs_path.as_posix()}"')
     dated_copy_dict, dated_moved = _subfn_copy_session_h5_to_dated_collected()
     copy_h5_dict, moved_files_dict_h5_files, copydict_path = _subfn_copy_parameterized_h5_and_write_manifest()
-    active_included_h5_paths = _subfn_collect_and_filter_collected_h5_paths()
-    paired_contexts, paired_h5_paths = _subfn_pair_h5_paths_to_sessions(ctx.included_session_contexts, active_included_h5_paths)
+    active_included_h5_paths = collect_and_filter_collected_h5_paths(ctx)
+    paired_contexts, paired_h5_paths = pair_collected_h5_paths_to_sessions(ctx.included_session_contexts, active_included_h5_paths)
     print(f'paired {len(paired_contexts)} session(s) to {len(paired_h5_paths)} H5 file(s)')
-    neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_df, output_path_dicts = _subfn_build_and_save_combined_tables(paired_contexts, paired_h5_paths)
+    neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_df, output_path_dicts = build_and_save_combined_tables_for_ctx(ctx, paired_contexts, paired_h5_paths)
     copied_figures = _subfn_copy_batch_figures() if copy_figures else None
     graphics_output_dict = _subfn_run_post_compute_and_plotting(long_short_fr_indicies_analysis_table)
     return {
@@ -765,11 +776,13 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
     return planned_copydict, moved_files_dict
 
 
-def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, instantaneous_time_bin_size_seconds_list: Optional[List[float]] = None, full_custom_suffix: Optional[str] = None) -> Optional[Tuple]:
+def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, instantaneous_time_bin_size_seconds_list: Optional[List[float]] = None, full_custom_suffix: Optional[str] = None) -> Optional[Dict[str, object]]:
     """Merge session inst-FR exports into across-session pickles under ``collected_outputs/{batch_date_to_use}/`` (notebook cell 27).
 
     Staging: ``{batch_folder}/recomputed_inst_fr_comps/`` (no nested ``{result_date}/``).
     Merged pkls: ``{batch_folder}/across_session_result_long_short_recomputed_inst_firing_rate_{result_date}_{tbin}.pkl``.
+    Also writes combined across-session tables (``neuron_replay_stats_table.csv``, etc.) into the same batch folder
+    via ``AcrossSessionTables.build_and_save_all_combined_tables`` when matching pipeline H5 files are present.
     ``full_custom_suffix`` must match session ``output/*.pkl`` names; when None, derived from
     ``ctx.override_custom_pickle_suffix`` and ``ctx.laps_decoding_time_bin_size`` (e.g. ``...-tbin_25ms``).
     """
@@ -792,7 +805,25 @@ def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, 
     print(f'filedict_out_path: {filedict_out_path}')
     n_keys: int = len(across_sessions_recomputed_instantaneous_fr_dict) if across_sessions_recomputed_instantaneous_fr_dict is not None else 0
     print(f'across_sessions_recomputed_instantaneous_fr_dict keys: {n_keys}')
-    return across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path)
+
+    print('[run-copy-sess-inst-fr] building combined across-session tables (neuron_replay_stats_table.csv, ...)')
+    active_included_h5_paths = collect_and_filter_collected_h5_paths(ctx)
+    paired_contexts, paired_h5_paths = pair_collected_h5_paths_to_sessions(ctx.included_session_contexts, active_included_h5_paths)
+    print(f'paired {len(paired_contexts)} session(s) to {len(paired_h5_paths)} H5 file(s) for combined tables')
+    neuron_identities_table, long_short_fr_indicies_analysis_table, neuron_replay_stats_df, output_path_dicts = build_and_save_combined_tables_for_ctx(ctx, paired_contexts, paired_h5_paths)
+
+    return {
+        'across_sessions_recomputed_instantaneous_fr_dict': across_sessions_recomputed_instantaneous_fr_dict,
+        'moved_files_dict_files': moved_files_dict_files,
+        'inst_fr_filelist_path': filelist_path,
+        'inst_fr_filedict_out_path': filedict_out_path,
+        'paired_contexts': paired_contexts,
+        'paired_h5_paths': paired_h5_paths,
+        'neuron_identities_table': neuron_identities_table,
+        'long_short_fr_indicies_analysis_table': long_short_fr_indicies_analysis_table,
+        'neuron_replay_stats_df': neuron_replay_stats_df,
+        'output_path_dicts': output_path_dicts,
+    }
 
 
 def run_clean_old_files(ctx: PostBatchCopyContext, archive_collected_outputs: bool = False, clean_cutoff_date: Optional[datetime] = None,
@@ -881,7 +912,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Post-batch copy of session outputs into collected_outputs / AcrossSession folders (headless GL SSH).')
     run_group = parser.add_argument_group('run groups')
     run_group.add_argument('--run-main', action='store_true', help='Copy session H5, write copydict, build combined tables.')
-    run_group.add_argument('--run-copy-sess-inst-fr', action='store_true', help='Merge session inst-FR exports into across-session pickles.')
+    run_group.add_argument('--run-copy-sess-inst-fr', action='store_true', help='Merge session inst-FR exports; write combined tables under collected_outputs/{batch_day}_{host}/.')
     run_group.add_argument('--run-copy-scratch-to-turbo', action='store_true', help='Copy new session outputs from GL scratch session folders to Turbo.')
     run_group.add_argument('--run-clean-old-files', action='store_true', help='Delete old backup files in session data folders.')
     run_group.add_argument('--all', action='store_true', help='Run all groups: main, inst-FR, scratch->turbo, cleanup.')
