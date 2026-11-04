@@ -163,7 +163,7 @@ import PostBatchCopyResults as pbcr
 
 ctx = pbcr.PostBatchCopyContext.init_from_paths(
     batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
-    cutoff_date=datetime(2026, 11, 2),
+    cutoff_date=datetime(2026, 10, 29),
     data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
 	scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
 	collected_outputs_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs'),
@@ -234,7 +234,7 @@ import PostBatchCopyResults as pbcr
 ctx: pbcr.PostBatchCopyContext = pbcr.PostBatchCopyContext.init_from_paths(
     # batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
 	batch_day_date='2026-11-02', host_tag='GL', result_date_to_use='2026-11-02',
-    cutoff_date=datetime(2026, 11, 1),
+    cutoff_date=datetime(2026, 10, 29),
     data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
 	scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
 	collected_outputs_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs'),
@@ -243,6 +243,9 @@ ctx: pbcr.PostBatchCopyContext = pbcr.PostBatchCopyContext.init_from_paths(
 
 ctx = pbcr.configure_run_main(ctx)
 ctx
+
+## Preferred one-liner (batch folder + flat recomputed_inst_fr_comps/, no nested result-date):
+# across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, paths = pbcr.run_copy_sess_inst_fr_data_to_across_session_pkl(ctx, full_custom_suffix=f"{ctx.override_custom_pickle_suffix}-tbin_16ms")
 
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import copy_session_inst_fr_data_to_across_session_pkl
 
@@ -265,6 +268,7 @@ across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filel
     instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list,
     global_data_root_parent_path=ctx.global_data_root_parent_path,
     full_custom_suffix=full_custom_suffix,
+    nested_result_date_staging=False,  # parent is already .../{batch_date_to_use}; staging = .../recomputed_inst_fr_comps/
     dry_run=False,
     debug_print=ctx.debug_print,
 )
@@ -272,8 +276,9 @@ across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filel
 print(f'filelist_path: {filelist_path}')
 print(f'filedict_out_path: {filedict_out_path}')
 print(f'time bins in across dict: {list(across_sessions_recomputed_instantaneous_fr_dict.keys())}')
+# Staging: {collected_outputs_day_date_folder}/recomputed_inst_fr_comps/
 # Merged outputs (when dry_run=False), e.g.:
-# {ctx.collected_outputs_path}/across_session_result_long_short_recomputed_inst_firing_rate_2026-11-03_1000.0.pkl
+# {collected_outputs_day_date_folder}/across_session_result_long_short_recomputed_inst_firing_rate_2026-11-02_1000.0.pkl
 across_sessions_recomputed_instantaneous_fr_dict
 
 
@@ -287,10 +292,12 @@ across_sessions_recomputed_instantaneous_fr_dict
 ## Prefer is_dryrun=True until the candidate list looks right; set False / --execute only to delete.
 from collections import defaultdict
 
-cutoff = datetime(2026, 10, 29) # Files with mtime BEFORE this are candidates for conditional patterns
+cutoff = datetime(2025, 5, 1) # Files with mtime BEFORE this are candidates for conditional patterns
 ctx = pbcr.PostBatchCopyContext.init_from_paths(
     batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
     cutoff_date=cutoff,
+	# data_root=Path('/home/halechr/FastData/Data'),
+	# data_root=Path('/media/halechr/MAX/Data'),
     # data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
 	# scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
 	# collected_outputs_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs'),
@@ -305,11 +312,12 @@ deleted_file_list, archive_folder = pbcr.run_clean_old_files(
     archive_collected_outputs=False,
     clean_cutoff_date=cutoff,
     custom_file_globs_dict={
-        'h5': '**/*.h5',
-        'csv': '**/*.csv',
-        'pkl': '**/*.pkl',
+        'h5': '*.h5',
+        'csv': '*.csv',
+        'pkl': '*.pkl',
     },
-    session_rel_search_dir='output/',
+	session_rel_search_dir='output/',
+    # session_rel_search_dir='output/',
 )
 deleted_file_list
 

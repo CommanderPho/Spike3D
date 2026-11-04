@@ -765,15 +765,29 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
     return planned_copydict, moved_files_dict
 
 
-def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, instantaneous_time_bin_size_seconds_list: Optional[List[float]] = None) -> Optional[Tuple]:
-    """Merge session inst-FR exports into across-session pickles (notebook cell 27)."""
+def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, instantaneous_time_bin_size_seconds_list: Optional[List[float]] = None, full_custom_suffix: Optional[str] = None) -> Optional[Tuple]:
+    """Merge session inst-FR exports into across-session pickles under ``collected_outputs/{batch_date_to_use}/`` (notebook cell 27).
+
+    Staging: ``{batch_folder}/recomputed_inst_fr_comps/`` (no nested ``{result_date}/``).
+    Merged pkls: ``{batch_folder}/across_session_result_long_short_recomputed_inst_firing_rate_{result_date}_{tbin}.pkl``.
+    ``full_custom_suffix`` must match session ``output/*.pkl`` names; when None, derived from
+    ``ctx.override_custom_pickle_suffix`` and ``ctx.laps_decoding_time_bin_size`` (e.g. ``...-tbin_25ms``).
+    """
     if instantaneous_time_bin_size_seconds_list is None:
         instantaneous_time_bin_size_seconds_list = [0.001, 1000.0]
     result_date_to_use: str = ctx.result_date_to_use
+    active_outputs_path: Path = ctx.collected_outputs_path.joinpath(ctx.batch_date_to_use)
+    active_outputs_path.mkdir(exist_ok=True)
+    if full_custom_suffix is None:
+        tbin_ms: int = int(round(float(ctx.laps_decoding_time_bin_size) * 1000.0))
+        full_custom_suffix = f"{ctx.override_custom_pickle_suffix}-tbin_{tbin_ms}ms"
     print(f'RESULT_DATE_TO_USE: {result_date_to_use}')
+    print(f'active_outputs_path: "{active_outputs_path.as_posix()}"')
+    print(f'full_custom_suffix: {full_custom_suffix!r}')
     print(f'instantaneous_time_bin_size_seconds_list: {instantaneous_time_bin_size_seconds_list}')
     print(f'is_dryrun: {ctx.is_dryrun}')
-    across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path) = copy_session_inst_fr_data_to_across_session_pkl(RESULT_DATE_TO_USE=result_date_to_use, collected_outputs_path=ctx.collected_outputs_path, instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list, global_data_root_parent_path=ctx.global_data_root_parent_path, debug_print=ctx.debug_print, dry_run=ctx.is_dryrun)
+    print(f'staging path: "{active_outputs_path.joinpath("recomputed_inst_fr_comps").as_posix()}"')
+    across_sessions_recomputed_instantaneous_fr_dict, moved_files_dict_files, (filelist_path, filedict_out_path) = copy_session_inst_fr_data_to_across_session_pkl(RESULT_DATE_TO_USE=result_date_to_use, collected_outputs_path=active_outputs_path, instantaneous_time_bin_size_seconds_list=instantaneous_time_bin_size_seconds_list, global_data_root_parent_path=ctx.global_data_root_parent_path, full_custom_suffix=full_custom_suffix, nested_result_date_staging=False, debug_print=ctx.debug_print, dry_run=ctx.is_dryrun)
     print(f'filelist_path: {filelist_path}')
     print(f'filedict_out_path: {filedict_out_path}')
     n_keys: int = len(across_sessions_recomputed_instantaneous_fr_dict) if across_sessions_recomputed_instantaneous_fr_dict is not None else 0
