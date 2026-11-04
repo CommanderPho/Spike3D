@@ -92,9 +92,14 @@ print(f'use_scratch_writes: {use_scratch_writes}')
 # scripts_output_path = Path('output/gen_scripts/').resolve() # Apogee
 # # scripts_output_path = Path('/home/halechr/FastData/gen_scripts/').resolve() # Lab
 # assert scripts_output_path.exists()
+# GL: discover sessions on Turbo (read root); stage + write under scratch. Non-GL: single extant data root for both.
 if use_scratch_writes:
-    scripts_output_path, collected_outputs_path, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.build_scratch_output_paths() # GL Turbo->Scratch workaround
+    scripts_output_path, collected_outputs_path, scratch_write_root = GreatlakesTurboToScratchHelpers.build_scratch_output_paths() # GL Turbo->Scratch workaround
+    assert turbo_data_root is not None and turbo_data_root.exists(), f"use_scratch_writes=True but turbo_data_root missing/unusable: {turbo_data_root}"
+    session_discovery_data_root: Path = turbo_data_root  # Turbo: discover / stage source
+    global_data_root_parent_path = scratch_write_root  # scratch: job write root (after staging)
 else:
+    scratch_write_root = None
     known_scripts_output_paths = [Path(v).resolve() for v in ['K:/scratch/gen_scripts', '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts', '/home/halechr/cloud/turbo/Data/Output/gen_scripts/', '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs', '/home/halechr/FastData/gen_scripts/', 'output/gen_scripts/']]
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
     collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
@@ -102,6 +107,7 @@ else:
 
     known_global_data_root_parent_paths = [Path('/Users/pho/data'), Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/media/halechr/BETAMAX/Data'), Path(r'/media/halechr/MAX/Data'), Path(r'W:/Data'), Path(r'/home/halechr/FastData'), Path(r'/Volumes/MoverNew/data')] # Path(r'/home/halechr/cloud/turbo/Data'), , Path(r'/nfs/turbo/umms-kdiba/Data'), Path(r'/home/halechr/turbo/Data'), 
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
+    session_discovery_data_root = global_data_root_parent_path  # single root; no Turbo->scratch staging
 
 
 assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
@@ -198,9 +204,13 @@ active_global_batch_result_filename=f'global_batch_result_{BATCH_DATE_TO_USE}.pk
 
 debug_print = True
 
+assert session_discovery_data_root.exists(), f"session_discovery_data_root: {session_discovery_data_root} does not exist! Is the right computer's config commented out above?"
 assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
-print(f'global_data_root_parent_path (session discovery / read root): {global_data_root_parent_path}')
-good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
+print(f'session_discovery_data_root (Turbo / read root): {session_discovery_data_root}')
+print(f'global_data_root_parent_path (job write root): {global_data_root_parent_path}')
+good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(session_discovery_data_root, included_session_contexts)
+if len(good_session_concrete_folders) == 0:
+    print(f'WARN: discovered 0/{len(included_session_contexts)} sessions under session_discovery_data_root={session_discovery_data_root}; included_session_contexts={included_session_contexts}')
 session_global_data_root_parent_paths: Optional[Dict[IdentifyingContext, Path]] = None # per-session override of global_data_root_parent_path passed to generate_batch_single_session_scripts
 _time_checkpoint('paths: build_concrete_session_folders')
 
@@ -441,8 +451,8 @@ print(f'phases_to_generate: {[p.name for p in phases_to_generate]}')
 _, _venv_activate_path, _vscode_python = resolve_spike3d_batch_venv_paths(batch_execution_target)
 
 if use_scratch_writes:
-    ## GL Turbo->Scratch workaround: copy the load-only local pickle + writable global pickle + tiny sidecars onto scratch and retarget the job write root there.
-    good_session_concrete_folders, session_global_data_root_parent_paths, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run(turbo_session_folders=good_session_concrete_folders, source_data_root=global_data_root_parent_path, pickle_suffix=override_custom_pickle_suffix, tbin_suffix=decoding_time_bin_filename_suffix, skip_if_dest_newer_or_equal=True)
+    ## GL Turbo->Scratch workaround: copy from Turbo discovery root onto scratch; retarget job write root to scratch.
+    good_session_concrete_folders, session_global_data_root_parent_paths, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run(turbo_session_folders=good_session_concrete_folders, source_data_root=session_discovery_data_root, pickle_suffix=override_custom_pickle_suffix, tbin_suffix=decoding_time_bin_filename_suffix, scratch_data_root=scratch_write_root, skip_if_dest_newer_or_equal=True)
     _time_checkpoint('paths: GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run')
 
 session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
