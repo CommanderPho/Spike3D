@@ -162,14 +162,13 @@ from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSe
 import PostBatchCopyResults as pbcr
 
 ctx = pbcr.PostBatchCopyContext.init_from_paths(
-    batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
-    cutoff_date=datetime(2026, 10, 29),
+    batch_day_date='2026-11-04', host_tag='GL', result_date_to_use='2026-11-04',
+    cutoff_date=datetime(2026, 11, 2),
     data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
 	scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
 	collected_outputs_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs'),
     is_dryrun=True,
 )
-
 ctx = pbcr.configure_run_main(ctx)
 
 
@@ -249,7 +248,7 @@ ctx
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import copy_session_inst_fr_data_to_across_session_pkl
 
 instantaneous_time_bin_size_seconds_list = [0.001, 1000.0]  # same default as PostBatchCopyResults.py
-full_custom_suffix = f"{ctx.override_custom_pickle_suffix}-tbin_16ms"  # must match session output/*.pkl names
+full_custom_suffix = f"{ctx.override_custom_pickle_suffix}-tbin_25ms"  # must match session output/*.pkl names
 
 print(f'RESULT_DATE_TO_USE: {ctx.result_date_to_use!r}')
 print(f'collected_outputs_path: "{ctx.collected_outputs_path}"')
