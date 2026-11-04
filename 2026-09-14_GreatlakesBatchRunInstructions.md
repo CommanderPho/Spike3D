@@ -232,8 +232,7 @@ import PostBatchCopyResults as pbcr
 ## Copy Inst Fr → session-prefixed staging + merged across-session pickles (PostBatchCopyResults --run-copy-sess-inst-fr)
 # Prerequisite: same ctx as above (init_from_paths + configure_run_main)
 ctx: pbcr.PostBatchCopyContext = pbcr.PostBatchCopyContext.init_from_paths(
-    # batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
-	batch_day_date='2026-11-02', host_tag='GL', result_date_to_use='2026-11-02',
+    batch_day_date='2026-11-03', host_tag='GL', result_date_to_use='2026-11-03',
     cutoff_date=datetime(2026, 10, 29),
     data_root=Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
 	scripts_output_path=Path('/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts'),
