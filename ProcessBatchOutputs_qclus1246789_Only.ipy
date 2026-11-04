@@ -218,8 +218,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
-phases_to_generate = [ProcessingScriptPhases.final_run]
-# phases_to_generate = [ProcessingScriptPhases.figure_run]
+# phases_to_generate = [ProcessingScriptPhases.final_run]
+phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
 _batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-10-21_GL' -> 'GL'
