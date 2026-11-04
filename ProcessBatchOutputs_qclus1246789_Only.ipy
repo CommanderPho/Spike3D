@@ -297,7 +297,7 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-num_shuffles: int = 128
+num_shuffles: int = 64
 # num_shuffles: int = 256
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
@@ -373,7 +373,7 @@ override_parameters_flat_keypaths_dict = {
 
 custom_user_completion_function_override_kwargs_dict = {
     'backup_previous_session_files_completion_function': dict(desired_suffix=f'{BATCH_DATE_TO_USE}'),
-    'save_custom_session_files_completion_function': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=True, enable_save_h5=True, should_write_posterior_h5=False), #TODO 2026-09-29 12:21: - [ ] no posteriors needed. New-tbin run reusing the 25ms local pickle: do not rewrite the shared (qclu/frate) local loadedSessPickle; the handler already writes the `-tbin_{N}ms` global pickle.
+    'save_custom_session_files_completion_function': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=False, enable_save_h5=True, should_write_posterior_h5=False), #TODO 2026-09-29 12:21: - [ ] no posteriors needed. New-tbin run reusing the 25ms local pickle: do not rewrite the shared (qclu/frate) local loadedSessPickle; the handler already writes the `-tbin_{N}ms` global pickle.
     'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, should_purge_existing_shuffled_result=False, with_data_name=None, num_shuffles=num_shuffles), # DEFAULT: keeps shuffles loaded from curr_active_pipeline; continued_run overlay below purges and re-computes
