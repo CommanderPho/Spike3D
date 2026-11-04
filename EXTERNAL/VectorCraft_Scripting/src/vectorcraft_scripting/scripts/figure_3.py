@@ -1,17 +1,17 @@
 import sys
 from copy import deepcopy
 from typing import Dict, List, Tuple, Optional, Callable, Union, Any
-from collections import defaultdict
-from functools import partial
 from datetime import datetime
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
+# Same as VectorCraft_Scripting.ipynb: allow `python figure_3.py` from spike3d venv without editable install.
+_package_src: Path = Path(__file__).resolve().parents[2]
+if str(_package_src) not in sys.path:
+    sys.path.insert(0, str(_package_src))
 
 from pyphocorehelpers.assertion_helpers import Assert
 from pyphocorehelpers.print_helpers import print_keys_if_possible
-from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path, file_uri_from_path, sanitize_filename_for_Windows
+# from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path, file_uri_from_path, sanitize_filename_for_Windows
 
 
 from vectorcraft_scripting import (
@@ -26,10 +26,10 @@ from vectorcraft_scripting import (
     write_plotly_svg,
 )
 from vectorcraft_scripting import ObjectQuery, connect_first, discover_instances, NoInstanceError, LiveVectorCraft
-from Spike3D.EXTERNAL.VectorCraft_Scripting.src.vectorcraft_scripting.scripts.__init__ import PhoDibaPaperVectorCraftHelper
+# from Spike3D.EXTERNAL.VectorCraft_Scripting.src.vectorcraft_scripting.scripts.__init__ import PhoDibaPaperVectorCraftHelper
+from vectorcraft_scripting.scripts import PhoDibaPaperVectorCraftHelper
 
-
-active_figure_export_folder_date: str = '2026-11-04'
+active_figure_export_folder_date: str = datetime.now().strftime('%Y-%m-%d')
 replacement_paths_dict = PhoDibaPaperVectorCraftHelper.replacement_paths_dict(active_figure_export_folder_date=active_figure_export_folder_date)
 
 
