@@ -298,15 +298,15 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # Common:                                                                                                              #
 # ==================================================================================================================== #
 # num_shuffles: int = 64
-num_shuffles: int = 512
+num_shuffles: int = 1024
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
     ProcessingScriptPhases.continued_run: {
-        'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=False), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
+        'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=True), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
     },
     ProcessingScriptPhases.final_run: {
-        'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=False), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
+        'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_purge_existing_shuffled_result=True), ## drops all loaded shuffles from curr_active_pipeline and re-computes them
         },
 
 }
