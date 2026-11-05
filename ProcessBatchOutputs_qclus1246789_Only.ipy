@@ -298,7 +298,7 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # Common:                                                                                                              #
 # ==================================================================================================================== #
 # num_shuffles: int = 64
-num_shuffles: int = 1024
+num_shuffles: int = 512
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
@@ -327,9 +327,9 @@ drop_previous_result_and_compute_fresh: bool = True
 # ripple_decoding_time_bin_size = 0.020
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
 
-# laps_decoding_time_bin_size = 0.025
-# ripple_decoding_time_bin_size = 0.025
-# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+laps_decoding_time_bin_size = 0.025
+ripple_decoding_time_bin_size = 0.025
+base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 
 # laps_decoding_time_bin_size = 0.050
 # ripple_decoding_time_bin_size = 0.050
@@ -339,9 +339,9 @@ drop_previous_result_and_compute_fresh: bool = True
 # ripple_decoding_time_bin_size = 0.060
 # base_job_suffix = f"{base_job_suffix}_tbin_60ms"
 
-laps_decoding_time_bin_size = 0.075
-ripple_decoding_time_bin_size = 0.075
-base_job_suffix = f"{base_job_suffix}_tbin_75ms"
+# laps_decoding_time_bin_size = 0.075
+# ripple_decoding_time_bin_size = 0.075
+# base_job_suffix = f"{base_job_suffix}_tbin_75ms"
 
 ## Global pickle/h5 only (local loadedSessPickle stays qclu/frate):
 decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
