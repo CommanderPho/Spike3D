@@ -8,10 +8,7 @@ if str(_package_src) not in sys.path:
 
 from vectorcraft_scripting.scripts import PhoDibaPaperVectorCraftHelper
 
-# active_figure_name: str = 'Artboard 3.pdf'
-# active_figure_name: str = 'Artboard 4.pdf'
-active_figure_name: str = 'figS3_TimeBinDurationOnDecodingPerform.pdf'
-# active_figure_name: str = 'Figure S8 - Effect of Heuristic-filtering perTimeBin.pdf'
+active_figure_name: str = 'Artboard 3.pdf'
 
-replacement_df = PhoDibaPaperVectorCraftHelper.replace_with_updated_images(active_figure_name)
+replacement_df = PhoDibaPaperVectorCraftHelper.replace_with_updated_images(active_figure_name, backup_layers=False)
 replacement_df

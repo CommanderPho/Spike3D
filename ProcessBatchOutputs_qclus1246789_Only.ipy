@@ -71,7 +71,7 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-11-04'
+BATCH_DAY_DATE: str = '2026-11-05'
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
 BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
@@ -298,7 +298,7 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # Common:                                                                                                              #
 # ==================================================================================================================== #
 # num_shuffles: int = 64
-num_shuffles: int = 256
+num_shuffles: int = 1024
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {

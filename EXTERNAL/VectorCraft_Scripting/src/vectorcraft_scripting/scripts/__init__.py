@@ -11,14 +11,17 @@ class PhoDibaPaperVectorCraftHelper:
 	figs_layer_geometry = {
 		'Artboard 3.pdf': {
 			# 'Fig3a+b': {'x': 5.7407, 'y': 7.447218750000047, 'width': 129.1757, 'height': 241.66897968749993},
-			'Fig3a.svg': {'x': 9.3114859375, 'y': 11.197580273437529, 'width': 125.6046140625, 'height': 114.23601816406247},
-			'Fig3b.svg': {'x': 9.3114859375, 'y': 134.06868027343748, 'width': 125.60491406250001, 'height': 115.0475181640625},
+			# 'Fig3a.svg': {'x': 9.3114859375, 'y': 11.197580273437529, 'width': 125.6046140625, 'height': 114.23601816406247},
+			# 'Fig3b.svg': {'x': 9.3114859375, 'y': 134.06868027343748, 'width': 125.60491406250001, 'height': 115.0475181640625},
 			# 'fig3_c_data_diag_hist': {'x': 398.5329, 'y': 1.0249999999999773, 'width': 67.6481, 'height': 67.64910000000006},
 			# 'C_Data.svg': {'x': 201.5388, 'y': 26.771000000000072, 'width': 242.0228, 'height': 214.85709999999995}, # #TODO 2026-10-29 16:01: - [ ] REAL C_Data
 			# 'C_Data.svg': {'x': 157.8184, 'y': 8.176718749999964, 'width': 270.5089, 'height': 260.49027343750004}, #TODO 2026-10-29 16:01: - [ ] Fake C_Data from `StaticCParts`
-			'C_Data.svg': {'x': 195.46821037898118, 'y': 13.974207317621463, 'width': 234.9447490297146, 'height': 230.33770365816957}, # #TODO 2026-10-30 10:54: - [ ] Modified better boundaries placement
+			# 'C_Data.svg': {'x': 195.46821037898118, 'y': 13.974207317621463, 'width': 234.9447490297146, 'height': 230.33770365816957}, # #TODO 2026-10-30 10:54: - [ ] Modified better boundaries placement
 			# 'StaticCParts': {'x': 157.8184, 'y': 8.176718749999964, 'width': 270.5089, 'height': 260.49027343750004},
 			# 'Fig3c_data_diag_hist.svg': {'x': 398.5329, 'y': 1.0249999999999773, 'width': 67.6481, 'height': 67.64910000000006},
+			'Fig3a.svg': {'x': 7.207240551059736, 'y': 11.303056091924017, 'width': 141.5691034831413, 'height': 123.2184054937079}, #TODO 2026-11-04 16:23: - [ ] made a,b bigger
+			'Fig3b.svg': {'x': 10.322664649927113, 'y': 140.61747334878243, 'width': 138.45367938427393, 'height': 120.37885851954866}, #TODO 2026-11-04 16:23: - [ ] made a,b bigger
+			'C_Data.svg': {'x': 200.68600388183336, 'y': 12.468913253764363, 'width': 230.19288957126798, 'height': 230.19289854756727}, #TODO 2026-11-04 16:23: - [ ] made a,b bigger
 		},
 		'Artboard 4.pdf': {
 			'ScatterOverTime_Laps_perTimeBin.svg': {'x': 0.7921446789572979, 'y': 0.0, 'width': 388.47986937169003, 'height': 156.96156338250103},
@@ -49,11 +52,14 @@ class PhoDibaPaperVectorCraftHelper:
 	@classmethod
 	def replacement_paths_dict(cls, active_figure_export_folder_date: str = '2026-11-04'):
 		return {
-			'Artboard 3.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/2026-09-28 - EXPORTS FOR PUBLICATION/{active_figure_export_folder_date}/Figure 3 - FRI Scatter/_TEMP'),
-			'Artboard 4.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure 4 - P_Short Scatter over Time/{active_figure_export_folder_date}'),
+			'Artboard 2.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure 2 - XxC Bar/Inputs/{active_figure_export_folder_date}'),
+			# 'Artboard 3.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/2026-09-28 - EXPORTS FOR PUBLICATION/{active_figure_export_folder_date}/Figure 3 - FRI Scatter/_TEMP'),
+			# 'Artboard 4.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure 4 - P_Short Scatter over Time/{active_figure_export_folder_date}'),
+			'Artboard 3.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure 3 - FRI Scatter/Inputs/{active_figure_export_folder_date}'),
+			'Artboard 4.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure 4 - P_Short Scatter over Time/Inputs/{active_figure_export_folder_date}'),
 			'figS3_TimeBinDurationOnDecodingPerform.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure S3 - Effect of Time Bin Duration on Decoding Performance/Inputs/{active_figure_export_folder_date}'),
 			'Figure S8 - Effect of Heuristic-filtering perTimeBin.pdf': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure S8 - Effect of Heuristic-filtering P_Short Scatter over Time - perEpoch/Inputs/{active_figure_export_folder_date}'),
-			# 'Figure S9': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure S9 - Effect of Heuristic-filtering P_Short Scatter over Time - PerEpoch/Inputs/{active_figure_export_folder_date}'),
+			'Figure S9': Path(f'E:/Dropbox (Personal)/Active/Kamran Diba Lab/Pho-Kamran-Meetings/Pho Diba Paper 2023/Figures/UneditedSources/Figure S9 - Effect of Heuristic-filtering P_Short Scatter over Time - PerEpoch/Inputs/{active_figure_export_folder_date}'),
 		}
 
 
