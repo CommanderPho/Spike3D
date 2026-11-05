@@ -327,13 +327,13 @@ drop_previous_result_and_compute_fresh: bool = True
 # ripple_decoding_time_bin_size = 0.020
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
 
-laps_decoding_time_bin_size = 0.025
-ripple_decoding_time_bin_size = 0.025
-base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+# laps_decoding_time_bin_size = 0.025
+# ripple_decoding_time_bin_size = 0.025
+# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 
-# laps_decoding_time_bin_size = 0.050
-# ripple_decoding_time_bin_size = 0.050
-# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+laps_decoding_time_bin_size = 0.050
+ripple_decoding_time_bin_size = 0.050
+base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 
 # laps_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.060
