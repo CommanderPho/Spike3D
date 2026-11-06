@@ -218,8 +218,8 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # phases_to_generate = [ProcessingScriptPhases.clean_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run]
 # phases_to_generate = [ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run]
-phases_to_generate = [ProcessingScriptPhases.final_run]
-# phases_to_generate = [ProcessingScriptPhases.figure_run]
+# phases_to_generate = [ProcessingScriptPhases.final_run]
+phases_to_generate = [ProcessingScriptPhases.figure_run]
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
 _batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-10-21_GL' -> 'GL'
@@ -297,8 +297,8 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-# num_shuffles: int = 64
-num_shuffles: int = 1024
+num_shuffles: int = 64
+# num_shuffles: int = 1024
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
@@ -327,13 +327,13 @@ drop_previous_result_and_compute_fresh: bool = True
 # ripple_decoding_time_bin_size = 0.020
 # base_job_suffix = f"{base_job_suffix}_tbin_20ms"
 
-# laps_decoding_time_bin_size = 0.025
-# ripple_decoding_time_bin_size = 0.025
-# base_job_suffix = f"{base_job_suffix}_tbin_25ms"
+laps_decoding_time_bin_size = 0.025
+ripple_decoding_time_bin_size = 0.025
+base_job_suffix = f"{base_job_suffix}_tbin_25ms"
 
-laps_decoding_time_bin_size = 0.050
-ripple_decoding_time_bin_size = 0.050
-base_job_suffix = f"{base_job_suffix}_tbin_50ms"
+# laps_decoding_time_bin_size = 0.050
+# ripple_decoding_time_bin_size = 0.050
+# base_job_suffix = f"{base_job_suffix}_tbin_50ms"
 
 # laps_decoding_time_bin_size = 0.060
 # ripple_decoding_time_bin_size = 0.060
