@@ -211,11 +211,12 @@ _time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
-# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --tbin 0.050 --phases 23)                   #
+# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --tbin 0.050 --phases 23 --shuffles 64)    #
 # ==================================================================================================================== #
 # --tbin common values: 0.016/16ms, 0.020/20ms, 0.025/25ms (default), 0.050/50ms, 0.060/60ms, 0.075/75ms
 # --phases digit codes: 0=clean_run, 1=continued_run, 2=final_run, 3=figure_run
 # e.g. --phases 0123 (all), --phases 12 (continued+final), --phases 23 (final+figure); default 3
+# --shuffles: e.g. 64 (default), 1024
 _PHASE_DIGIT_MAP = {
     '0': ProcessingScriptPhases.clean_run,
     '1': ProcessingScriptPhases.continued_run,
@@ -225,6 +226,7 @@ _PHASE_DIGIT_MAP = {
 _cli_parser = argparse.ArgumentParser(add_help=False)
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
 _cli_parser.add_argument('--phases', type=str, default='3', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 3')
+_cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
 _cli_args, _ = _cli_parser.parse_known_args()
 
 # ==================================================================================================================== #
@@ -314,8 +316,8 @@ shared_batch_session_completion_handler_kwargs: Dict = {}
 # ==================================================================================================================== #
 # Common:                                                                                                              #
 # ==================================================================================================================== #
-num_shuffles: int = 64
-# num_shuffles: int = 1024
+num_shuffles: int = int(_cli_args.shuffles)
+print(f'cli --shuffles={_cli_args.shuffles!r} -> num_shuffles={num_shuffles}')
 
 # Per-phase overlay on `custom_user_completion_function_override_kwargs_dict` (shallow-merged per completion function in the phase loop). Omitted phases keep the shared defaults.
 phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {
