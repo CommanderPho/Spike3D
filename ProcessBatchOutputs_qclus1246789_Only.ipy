@@ -150,7 +150,7 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'compute_and_export_session_epoch_score_shuffles_completion_function': compute_and_export_session_epoch_score_shuffles_completion_function,
         'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.05` CSVs
         # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
-        # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+        'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
     ProcessingScriptPhases.figure_run: {
         # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
@@ -211,7 +211,7 @@ _time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
-# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --tbin 0.050 --phases 23 --shuffles 64)    #
+# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --tbin 0.025 --phases 23 --shuffles 128)    #
 # ==================================================================================================================== #
 # --tbin common values: 0.016/16ms, 0.020/20ms, 0.025/25ms (default), 0.050/50ms, 0.060/60ms, 0.075/75ms
 # --phases digit codes: 0=clean_run, 1=continued_run, 2=final_run, 3=figure_run
