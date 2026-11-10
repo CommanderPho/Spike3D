@@ -124,7 +124,7 @@ Usage:
 
 ## DESIRED:
 
-    python PostBatchCopyResults.py --run-copy-sess-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10 --session-file-glob 'loadedSessPickle*.pkl'
+    python PostBatchCopyResults.py --run-copy-sess-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10 --session-file-glob 'loadedSessPickle*.pkl' --modified-after 2026-11-06
     # session root (not output/): omit --session-file-rel-search-dir or pass '' / '.'
 
 """
@@ -361,6 +361,23 @@ def _print_copy_dict_summary(copy_dict, label: str) -> None:
     ## END for src, dest in list(copy_dict.items())[:20]...
     if n_items > 20:
         print(f'  ... ({n_items - 20} more)')
+
+
+def _filter_copydict_by_source_mtime_cutoff(file_copydict: Dict[Path, Path], min_source_mtime_cutoff: Optional[datetime]) -> Dict[Path, Path]:
+    """Keep only entries whose source file mtime is on or after ``min_source_mtime_cutoff``."""
+    if min_source_mtime_cutoff is None:
+        return dict(file_copydict)
+    filtered_copydict: Dict[Path, Path] = {}
+    for src_file, dest_file in file_copydict.items():
+        src_path = Path(src_file).resolve()
+        if not src_path.is_file():
+            continue
+        src_mtime: datetime = datetime.fromtimestamp(src_path.stat().st_mtime)
+        if src_mtime >= min_source_mtime_cutoff:
+            filtered_copydict[src_path] = Path(dest_file).resolve()
+    ## END for src_file, dest_file in file_copydict.items()...
+
+    return filtered_copydict
 
 
 def bootstrap_paths_and_sessions(batch_day_date: str, host_tag: str, result_date_to_use: str, cutoff_date: datetime, data_root: Optional[Path] = None, scripts_output_path: Optional[Path] = None, collected_outputs_path: Optional[Path] = None, is_dryrun: bool = True, debug_print: bool = False) -> PostBatchCopyContext:
@@ -783,22 +800,6 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
     already newer than scratch unless ``skip_if_dest_newer_or_equal=False``. Optionally drops sources older than
     ``min_source_mtime_cutoff`` (defaults to ``ctx.cutoff_date``).
     """
-    def _subfn_filter_copydict_by_source_mtime_cutoff(file_copydict: Dict[Path, Path], min_source_mtime_cutoff: Optional[datetime]) -> Dict[Path, Path]:
-        """Keep only entries whose source file mtime is on or after ``min_source_mtime_cutoff``."""
-        if min_source_mtime_cutoff is None:
-            return dict(file_copydict)
-        filtered_copydict: Dict[Path, Path] = {}
-        for src_file, dest_file in file_copydict.items():
-            src_path = Path(src_file).resolve()
-            if not src_path.is_file():
-                continue
-            src_mtime: datetime = datetime.fromtimestamp(src_path.stat().st_mtime)
-            if src_mtime >= min_source_mtime_cutoff:
-                filtered_copydict[src_path] = Path(dest_file).resolve()
-        ## END for src_file, dest_file in file_copydict.items()...
-
-        return filtered_copydict
-
     active_glob_patterns: List[str] = list(file_glob_patterns) if (file_glob_patterns is not None) else list(DEFAULT_SCRATCH_TO_TURBO_FILE_GLOBS)
     active_collected_output_glob_patterns: List[str] = list(collected_output_glob_patterns) if (collected_output_glob_patterns is not None) else list(DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS)
     scratch_data_root: Path = GreatlakesTurboToScratchHelpers.SCRATCH_DATA_ROOT
@@ -857,7 +858,7 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
         print(f'WARN: skipping collected_outputs sync (scratch={scratch_collected_outputs_path.exists()}, turbo={turbo_collected_outputs_path.exists()})')
 
     n_before_cutoff: int = len(planned_copydict)
-    planned_copydict = _subfn_filter_copydict_by_source_mtime_cutoff(planned_copydict, effective_min_mtime)
+    planned_copydict = _filter_copydict_by_source_mtime_cutoff(planned_copydict, effective_min_mtime)
     print(f'scratch->turbo copydict: {len(planned_copydict)}/{n_before_cutoff} file(s) after min_source_mtime_cutoff filter')
     _print_copy_dict_summary(planned_copydict, 'scratch->turbo planned_copydict')
 
@@ -876,12 +877,14 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
     return planned_copydict, moved_files_dict
 
 
-def run_copy_sess_files(ctx: PostBatchCopyContext, file_glob_patterns: Optional[List[str]] = None, session_rel_search_dir: str = '') -> Tuple[dict, Optional[dict]]:
+def run_copy_sess_files(ctx: PostBatchCopyContext, file_glob_patterns: Optional[List[str]] = None, session_rel_search_dir: str = '', modified_after: Optional[datetime] = None) -> Tuple[dict, Optional[dict]]:
     """Copy matching session-folder files into ``collected_outputs/{batch_date_to_use}/``.
 
     Wraps ``AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs``.
     Defaults to ``loadedSessPickle*.pkl`` under the session root (``session_rel_search_dir=''``).
     Use ``session_rel_search_dir='output/'`` to search each session's ``output/`` folder instead.
+    ``modified_after`` keeps only sources whose filesystem mtime is on/after that datetime
+    (also used as the helper ``cuttoff_date`` when set; otherwise ``ctx.cutoff_date``).
     """
     def _subfn_across_session_output_basename_fn_dated(session_context: Optional[IdentifyingContext], session_descr: Optional[str], basename: str, *args, separator_char: str = "_") -> str:
         """Builds dest basename for the dated collected_outputs subfolder (no BATCH_DATE_TO_USE prefix)."""
@@ -896,23 +899,37 @@ def run_copy_sess_files(ctx: PostBatchCopyContext, file_glob_patterns: Optional[
     custom_file_globs_dict: Dict[str, str] = {f'glob_{i}': a_glob for i, a_glob in enumerate(active_glob_patterns)}
     active_outputs_path: Path = ctx.collected_outputs_path.joinpath(ctx.batch_date_to_use)
     active_outputs_path.mkdir(exist_ok=True)
+    effective_cutoff_date: datetime = modified_after if (modified_after is not None) else ctx.cutoff_date
     print(f'BATCH_DATE_TO_USE: "{ctx.batch_date_to_use}"')
     print(f'active_outputs_path: "{active_outputs_path.as_posix()}"')
     print(f'session_rel_search_dir: {session_rel_search_dir!r}')
     print(f'session file_glob_patterns: {active_glob_patterns}')
+    print(f'modified_after: {modified_after}')
+    print(f'effective_cutoff_date: {effective_cutoff_date}')
     print(f'is_dryrun: {ctx.is_dryrun}')
-    copy_dict, moved_files_dict_files = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
+    # Always plan first (dry), then optionally mtime-filter, then copy — so --modified-after never copies stale sources.
+    copy_dict, _unused_moved = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
         global_data_root_parent_path=ctx.global_data_root_parent_path,
         BATCH_DATE_TO_USE=ctx.batch_date_to_use,
-        cuttoff_date=ctx.cutoff_date,
+        cuttoff_date=effective_cutoff_date,
         target_dir=active_outputs_path,
         custom_file_globs_dict=custom_file_globs_dict,
         session_rel_search_dir=session_rel_search_dir,
-        is_dry_run=ctx.is_dryrun,
+        is_dry_run=True,
         rename_backup_basename_fn=_subfn_across_session_output_basename_fn_dated,
         debug_print=ctx.debug_print,
     )
+    n_before_mtime_filter: int = len(copy_dict) if copy_dict is not None else 0
+    if modified_after is not None:
+        copy_dict = _filter_copydict_by_source_mtime_cutoff(copy_dict, modified_after)
+        print(f'session files copy_dict: {len(copy_dict)}/{n_before_mtime_filter} file(s) after modified_after mtime filter')
     _print_copy_dict_summary(copy_dict, 'session files copy_dict')
+    moved_files_dict_files = None
+    if ctx.is_dryrun:
+        print(f'DRY-RUN: would copy_movedict({len(copy_dict)} items) session files -> collected_outputs')
+    elif len(copy_dict) > 0:
+        moved_files_dict_files = copy_movedict(copy_dict)
+        print(f'copied: {len(moved_files_dict_files)} file(s)')
     return copy_dict, moved_files_dict_files
 
 
@@ -1080,6 +1097,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument('--debug-print', action='store_true', help='Enable debug printing.')
     parser.add_argument('--session-file-glob', '--session-file-globs', action='append', default=None, dest='session_file_globs', help='With --run-copy-sess-files, glob under each session search dir (repeatable; default: loadedSessPickle*.pkl). Also accepts a Python list literal.')
     parser.add_argument('--session-file-rel-search-dir', type=str, default='', help="With --run-copy-sess-files, relative folder under each session to search (default: '' = session root; use 'output/' for session output/).")
+    parser.add_argument('--modified-after', type=_parse_iso_date, default=None, help='With --run-copy-sess-files, only copy sources whose filesystem mtime is on/after YYYY-MM-DD (also used as helper cutoff when set).')
     parser.add_argument('--scratch-to-turbo-glob', action='append', default=None, dest='scratch_to_turbo_globs', help='Glob relative to each scratch session folder (repeatable; default: pipeline pickle/h5 globs). Ignored with --scratch-to-turbo-collected-outputs-only.')
     parser.add_argument('--scratch-to-turbo-collected-output-glob', action='append', default=None, dest='scratch_to_turbo_collected_output_globs', help='Glob under scratch Output/collected_outputs (repeatable; default: DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS).')
     parser.add_argument('--scratch-to-turbo-collected-outputs-only', action='store_true', help='With --run-copy-scratch-to-turbo, sync only collected_outputs globs (skip session-folder files).')
@@ -1133,7 +1151,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         run_main(ctx, copy_figures=args.copy_figures, post_compute=args.post_compute, plotting=args.plotting, figures_export_date=args.figures_export_date)
     if run_copy_sess_files_flag:
         print('[run-copy-sess-files]')
-        run_copy_sess_files(ctx, file_glob_patterns=_expand_session_file_glob_cli_values(args.session_file_globs), session_rel_search_dir=args.session_file_rel_search_dir)
+        run_copy_sess_files(ctx, file_glob_patterns=_expand_session_file_glob_cli_values(args.session_file_globs), session_rel_search_dir=args.session_file_rel_search_dir, modified_after=args.modified_after)
     if run_inst_fr_flag:
         print('[run-copy-sess-inst-fr]')
         run_copy_sess_inst_fr_data_to_across_session_pkl(ctx)
