@@ -215,7 +215,7 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # ==================================================================================================================== #
 # --tbin common values: 0.016/16ms, 0.020/20ms, 0.025/25ms (default), 0.050/50ms, 0.060/60ms, 0.075/75ms
 # --phases digit codes: 0=clean_run, 1=continued_run, 2=final_run, 3=figure_run
-# e.g. --phases 0123 (all), --phases 12 (continued+final), --phases 23 (final+figure); default 3
+# e.g. --phases 0123 (all), --phases 12 (continued+final), --phases 23 (final+figure); default 2
 # --shuffles: e.g. 64 (default), 1024
 _PHASE_DIGIT_MAP = {
     '0': ProcessingScriptPhases.clean_run,

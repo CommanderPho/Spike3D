@@ -7,6 +7,7 @@ without requiring a Jupyter kernel.
 Run groups match the notebook cell tags (``run-main`` also includes the untagged copy/table pipeline):
 
   --run-main                 copy session H5 into collected_outputs, write copydict, build combined tables
+  --run-copy-sess-files      copy session-folder files matching --session-file-glob into collected_outputs/{batch_day}_{host}/
   --run-copy-sess-inst-fr    merge session inst-FR exports into across-session pickles; build combined CSV/PKL tables under collected_outputs/{batch_day}_{host}/
   --run-copy-scratch-to-turbo  copy new session outputs from GL scratch session folders to Turbo
   --run-clean-old-files      delete/archive old backup files in session data folders
@@ -20,6 +21,7 @@ Usage (on remote, e.g. Great Lakes)::
 
     # Apply
     python PostBatchCopyResults.py --run-main --execute
+    python PostBatchCopyResults.py --run-copy-sess-files --execute --session-file-glob 'loadedSessPickle*.pkl'
     python PostBatchCopyResults.py --run-copy-sess-inst-fr --execute
     python PostBatchCopyResults.py --run-copy-scratch-to-turbo --execute
     python PostBatchCopyResults.py --all --execute
@@ -75,6 +77,7 @@ IPython to Avoid High Import Costs:
 from __future__ import annotations
 
 import argparse
+import ast
 import os
 import sys
 from copy import deepcopy
@@ -117,11 +120,18 @@ Usage:
     python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-10-30 --result-date 2026-10-30
 
+
+
+## DESIRED:
+
+    python PostBatchCopyResults.py --run-copy-sess-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10 --session-file-glob 'loadedSessPickle*.pkl'
+    # session root (not output/): omit --session-file-rel-search-dir or pass '' / '.'
+
 """
 
-DEFAULT_BATCH_DAY_DATE: str = '2026-11-02'
+DEFAULT_BATCH_DAY_DATE: str = '2026-11-10'
 DEFAULT_HOST_TAG: str = 'GL'
-DEFAULT_RESULT_DATE: str = '2026-11-02'
+DEFAULT_RESULT_DATE: str = '2026-11-10'
 DEFAULT_CLEAN_CUTOFF_DATE: str = '2025-02-20'
 
 DEFAULT_CLEAN_ALWAYS_DELETE_PATTERNS: Dict[str, str] = {
@@ -321,6 +331,24 @@ class PostBatchCopyContext:
 
 def _parse_iso_date(value: str) -> datetime:
     return datetime.strptime(value, '%Y-%m-%d')
+
+
+def _expand_session_file_glob_cli_values(values: Optional[List[str]]) -> List[str]:
+    """Flatten ``--session-file-glob`` values; accept a single Python-list literal like ``['loadedSessPickle*.pkl']``."""
+    if not values:
+        return ['loadedSessPickle*.pkl']
+    expanded: List[str] = []
+    for value in values:
+        text: str = str(value).strip()
+        if text.startswith('[') and text.endswith(']'):
+            parsed = ast.literal_eval(text)
+            if not isinstance(parsed, (list, tuple)) or (len(parsed) > 0 and not all(isinstance(x, str) for x in parsed)):
+                raise ValueError(f'--session-file-glob list literal must be a list of strings, got {text!r}')
+            expanded.extend([str(x) for x in parsed])
+        else:
+            expanded.append(text)
+    ## END for value in values...
+    return expanded
 
 
 def _print_copy_dict_summary(copy_dict, label: str) -> None:
@@ -848,6 +876,46 @@ def run_copy_scratch_session_results_to_turbo(ctx: PostBatchCopyContext, file_gl
     return planned_copydict, moved_files_dict
 
 
+def run_copy_sess_files(ctx: PostBatchCopyContext, file_glob_patterns: Optional[List[str]] = None, session_rel_search_dir: str = '') -> Tuple[dict, Optional[dict]]:
+    """Copy matching session-folder files into ``collected_outputs/{batch_date_to_use}/``.
+
+    Wraps ``AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs``.
+    Defaults to ``loadedSessPickle*.pkl`` under the session root (``session_rel_search_dir=''``).
+    Use ``session_rel_search_dir='output/'`` to search each session's ``output/`` folder instead.
+    """
+    def _subfn_across_session_output_basename_fn_dated(session_context: Optional[IdentifyingContext], session_descr: Optional[str], basename: str, *args, separator_char: str = "_") -> str:
+        """Builds dest basename for the dated collected_outputs subfolder (no BATCH_DATE_TO_USE prefix)."""
+        if session_context is not None:
+            session_descr = session_context.session_name
+        _filename_list = [session_descr, basename]
+        if len(args) > 0:
+            _filename_list.extend([str(a_part) for a_part in args if a_part is not None])
+        return separator_char.join(_filename_list)
+
+    active_glob_patterns: List[str] = list(file_glob_patterns) if file_glob_patterns else ['loadedSessPickle*.pkl']
+    custom_file_globs_dict: Dict[str, str] = {f'glob_{i}': a_glob for i, a_glob in enumerate(active_glob_patterns)}
+    active_outputs_path: Path = ctx.collected_outputs_path.joinpath(ctx.batch_date_to_use)
+    active_outputs_path.mkdir(exist_ok=True)
+    print(f'BATCH_DATE_TO_USE: "{ctx.batch_date_to_use}"')
+    print(f'active_outputs_path: "{active_outputs_path.as_posix()}"')
+    print(f'session_rel_search_dir: {session_rel_search_dir!r}')
+    print(f'session file_glob_patterns: {active_glob_patterns}')
+    print(f'is_dryrun: {ctx.is_dryrun}')
+    copy_dict, moved_files_dict_files = AcrossSessionHelpers._copy_exported_files_from_session_folder_to_collected_outputs(
+        global_data_root_parent_path=ctx.global_data_root_parent_path,
+        BATCH_DATE_TO_USE=ctx.batch_date_to_use,
+        cuttoff_date=ctx.cutoff_date,
+        target_dir=active_outputs_path,
+        custom_file_globs_dict=custom_file_globs_dict,
+        session_rel_search_dir=session_rel_search_dir,
+        is_dry_run=ctx.is_dryrun,
+        rename_backup_basename_fn=_subfn_across_session_output_basename_fn_dated,
+        debug_print=ctx.debug_print,
+    )
+    _print_copy_dict_summary(copy_dict, 'session files copy_dict')
+    return copy_dict, moved_files_dict_files
+
+
 def run_copy_sess_inst_fr_data_to_across_session_pkl(ctx: PostBatchCopyContext, instantaneous_time_bin_size_seconds_list: Optional[List[float]] = None, full_custom_suffix: Optional[str] = None) -> Optional[Dict[str, object]]:
     """Merge session inst-FR exports into across-session pickles under ``collected_outputs/{batch_date_to_use}/`` (notebook cell 27).
 
@@ -984,6 +1052,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Post-batch copy of session outputs into collected_outputs / AcrossSession folders (headless GL SSH).')
     run_group = parser.add_argument_group('run groups')
     run_group.add_argument('--run-main', action='store_true', help='Copy session H5, write copydict, build combined tables.')
+    run_group.add_argument('--run-copy-sess-files', action='store_true', help='Copy session-folder files matching --session-file-glob into collected_outputs/{batch_day}_{host}/.')
     run_group.add_argument('--run-copy-sess-inst-fr', action='store_true', help='Merge session inst-FR exports; write combined tables under collected_outputs/{batch_day}_{host}/.')
     run_group.add_argument('--run-copy-scratch-to-turbo', action='store_true', help='Copy new session outputs from GL scratch session folders to Turbo.')
     run_group.add_argument('--run-clean-old-files', action='store_true', help='Delete old backup files in session data folders.')
@@ -1009,6 +1078,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument('--clean-session-rel-search-dir', type=str, default=None, help='With --run-clean-old-files, only scan this relative folder under each session (e.g. output/). Omit for legacy dual scan of session root + output/.')
     parser.add_argument('--clean-conditional-glob', action='append', default=None, dest='clean_conditional_globs', type=_subfn_parse_clean_conditional_glob, help='With --run-clean-old-files, replace default conditional patterns with desc:pattern (repeatable; e.g. h5:**/*.h5).')
     parser.add_argument('--debug-print', action='store_true', help='Enable debug printing.')
+    parser.add_argument('--session-file-glob', '--session-file-globs', action='append', default=None, dest='session_file_globs', help='With --run-copy-sess-files, glob under each session search dir (repeatable; default: loadedSessPickle*.pkl). Also accepts a Python list literal.')
+    parser.add_argument('--session-file-rel-search-dir', type=str, default='', help="With --run-copy-sess-files, relative folder under each session to search (default: '' = session root; use 'output/' for session output/).")
     parser.add_argument('--scratch-to-turbo-glob', action='append', default=None, dest='scratch_to_turbo_globs', help='Glob relative to each scratch session folder (repeatable; default: pipeline pickle/h5 globs). Ignored with --scratch-to-turbo-collected-outputs-only.')
     parser.add_argument('--scratch-to-turbo-collected-output-glob', action='append', default=None, dest='scratch_to_turbo_collected_output_globs', help='Glob under scratch Output/collected_outputs (repeatable; default: DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS).')
     parser.add_argument('--scratch-to-turbo-collected-outputs-only', action='store_true', help='With --run-copy-scratch-to-turbo, sync only collected_outputs globs (skip session-folder files).')
@@ -1023,11 +1094,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     is_dryrun: bool = not execute
 
     run_main_flag: bool = bool(args.run_main or args.all)
+    run_copy_sess_files_flag: bool = bool(args.run_copy_sess_files)
     run_inst_fr_flag: bool = bool(args.run_copy_sess_inst_fr or args.all)
     run_scratch_to_turbo_flag: bool = bool(args.run_copy_scratch_to_turbo or args.all)
     run_clean_flag: bool = bool(args.run_clean_old_files or args.all)
-    if not (run_main_flag or run_inst_fr_flag or run_scratch_to_turbo_flag or run_clean_flag):
-        print('No run group specified. Use --run-main, --run-copy-sess-inst-fr, --run-copy-scratch-to-turbo, --run-clean-old-files, or --all.')
+    if not (run_main_flag or run_copy_sess_files_flag or run_inst_fr_flag or run_scratch_to_turbo_flag or run_clean_flag):
+        print('No run group specified. Use --run-main, --run-copy-sess-files, --run-copy-sess-inst-fr, --run-copy-scratch-to-turbo, --run-clean-old-files, or --all.')
         return 2
 
     cutoff_date: datetime = args.cutoff_date if args.cutoff_date is not None else _parse_iso_date(args.result_date)
@@ -1053,12 +1125,15 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     print(f'job_suffix: {ctx.job_suffix}')
     print(f'n_included_sessions: {len(ctx.included_session_contexts)}')
     print(f'mode: {"EXECUTE" if execute else "DRY-RUN (no changes)"}')
-    print(f'run_main: {run_main_flag}  run_copy_sess_inst_fr: {run_inst_fr_flag}  run_copy_scratch_to_turbo: {run_scratch_to_turbo_flag}  run_clean_old_files: {run_clean_flag}')
+    print(f'run_main: {run_main_flag}  run_copy_sess_files: {run_copy_sess_files_flag}  run_copy_sess_inst_fr: {run_inst_fr_flag}  run_copy_scratch_to_turbo: {run_scratch_to_turbo_flag}  run_clean_old_files: {run_clean_flag}')
     print('-' * 80)
 
     if run_main_flag:
         print('[run-main]')
         run_main(ctx, copy_figures=args.copy_figures, post_compute=args.post_compute, plotting=args.plotting, figures_export_date=args.figures_export_date)
+    if run_copy_sess_files_flag:
+        print('[run-copy-sess-files]')
+        run_copy_sess_files(ctx, file_glob_patterns=_expand_session_file_glob_cli_values(args.session_file_globs), session_rel_search_dir=args.session_file_rel_search_dir)
     if run_inst_fr_flag:
         print('[run-copy-sess-inst-fr]')
         run_copy_sess_inst_fr_data_to_across_session_pkl(ctx)
