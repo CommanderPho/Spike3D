@@ -58,6 +58,8 @@ IPython to Avoid High Import Costs:
     %autoreload 3
     import PostBatchCopyResults as pbcr
 
+    pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-11-10', '--execute'])
+
     pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-11-10'])
 
 
