@@ -72,9 +72,9 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-11-09'
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DAY_DATE: str = '2026-11-10'
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 _batch_host_suffix: str = BATCH_DATE_TO_USE[len(BATCH_DAY_DATE):] if BATCH_DATE_TO_USE.startswith(BATCH_DAY_DATE) else f'_{BATCH_DATE_TO_USE}'
@@ -225,7 +225,7 @@ _PHASE_DIGIT_MAP = {
 }
 _cli_parser = argparse.ArgumentParser(add_help=False)
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
-_cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 3')
+_cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
 _cli_args, _ = _cli_parser.parse_known_args()
 
@@ -377,7 +377,7 @@ custom_user_completion_function_override_kwargs_dict = {
     'save_custom_session_files_completion_function': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=True, enable_save_h5=True, should_write_posterior_h5=True), #TODO 2026-09-29 12:21: - [ ] no posteriors needed. New-tbin run reusing the 25ms local pickle: do not rewrite the shared (qclu/frate) local loadedSessPickle; the handler already writes the `-tbin_{N}ms` global pickle.
     'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
-    'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=False, should_purge_existing_shuffled_result=False, with_data_name=None, num_shuffles=num_shuffles), # DEFAULT: keeps shuffles loaded from curr_active_pipeline; continued_run overlay below purges and re-computes
+    'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, should_purge_existing_shuffled_result=False, with_data_name=None, num_shuffles=num_shuffles), # DEFAULT: keeps shuffles loaded from curr_active_pipeline; continued_run overlay below purges and re-computes
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=None, custom_all_param_sweep_options=None, additional_session_context=None),
     'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=[ripple_decoding_time_bin_size], custom_all_param_sweep_options=None, additional_session_context=None), # only decode the active tbin; do not re-decode other tbins (their globals already exist at their own -tbin_{N}ms)
     'compute_and_export_session_trial_by_trial_performance_completion_function': dict(active_laps_decoding_time_bin_size=ripple_decoding_time_bin_size),
