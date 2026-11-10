@@ -72,9 +72,9 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
 
-BATCH_DAY_DATE: str = '2026-11-06'
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
+BATCH_DAY_DATE: str = '2026-11-09'
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
+# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
 # BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
 _batch_host_suffix: str = BATCH_DATE_TO_USE[len(BATCH_DAY_DATE):] if BATCH_DATE_TO_USE.startswith(BATCH_DAY_DATE) else f'_{BATCH_DATE_TO_USE}'
@@ -225,7 +225,7 @@ _PHASE_DIGIT_MAP = {
 }
 _cli_parser = argparse.ArgumentParser(add_help=False)
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
-_cli_parser.add_argument('--phases', type=str, default='3', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 3')
+_cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 3')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
 _cli_args, _ = _cli_parser.parse_known_args()
 
