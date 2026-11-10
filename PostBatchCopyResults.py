@@ -44,6 +44,12 @@ Usage (on remote, e.g. Great Lakes)::
 
 IPython to Avoid High Import Costs:
 ``bash
+    cd '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D'
+    deactivate
+    source /scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/activate
+    export SPIKE3D_REPO_ROOT='/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv'
+    git pull
+    ./scripts/unix/repos_pull_changes.sh
     uv run ipython
 ```
 
@@ -52,14 +58,14 @@ IPython to Avoid High Import Costs:
     %autoreload 3
     import PostBatchCopyResults as pbcr
 
-    pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-10-30'])
+    pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-11-10'])
 
 
     ## your commands here:
-    pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-10-30'])
+    pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-11-10'])
 
 
-    pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-10-30'])
+    pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-11-10'])
 
     
     pbcr.main([
@@ -115,10 +121,10 @@ Usage:
 
 
     ## For Scratch ('/scratch/kdiba_root/kdiba99/halechr/Data'):
-    python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-10-30 --result-date 2026-10-30
+    python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-10 --result-date 2026-11-10
     python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data
     python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data
-    python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-10-30 --result-date 2026-10-30
+    python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10
 
 
 
@@ -853,7 +859,7 @@ class PostBatchCopyContext:
         ``self.override_custom_pickle_suffix`` and ``self.laps_decoding_time_bin_size`` (e.g. ``...-tbin_25ms``).
         """
         if instantaneous_time_bin_size_seconds_list is None:
-            instantaneous_time_bin_size_seconds_list = [0.001, 1000.0]
+            instantaneous_time_bin_size_seconds_list = [1000.0]  # skip 0.001 (heavy); only epoch-scale 1000.0s bins
         result_date_to_use: str = self.result_date_to_use
         active_outputs_path: Path = self.collected_outputs_path.joinpath(self.batch_date_to_use)
         active_outputs_path.mkdir(exist_ok=True)
