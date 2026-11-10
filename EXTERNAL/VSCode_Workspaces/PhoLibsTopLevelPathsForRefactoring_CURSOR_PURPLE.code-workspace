@@ -15,6 +15,9 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy"
+        },
+        {
+            "path": "C:/Users/pho/repos/PhoGlobusHelpers"
         }
     ],
     "settings": {
