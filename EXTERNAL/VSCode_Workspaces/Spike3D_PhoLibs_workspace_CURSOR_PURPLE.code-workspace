@@ -323,6 +323,7 @@
         "github.showAvatar": false,
         "problems.visibility": false,
         "python.languageServer": "None",
+        "specstory.cloudSync.enabled": "never",
     },
     "tasks": {
         "version": "2.0.0",
