@@ -144,13 +144,13 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
     },
     ProcessingScriptPhases.final_run: {
         # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
-        'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
+        # 'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
         'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # desired_shared_decoding_time_bin_sizes=[ripple_decoding_time_bin_size] (e.g. [0.050])
         'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.05` CSVs + posteriors h5
         'compute_and_export_session_epoch_score_shuffles_completion_function': compute_and_export_session_epoch_score_shuffles_completion_function,
         'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.05` CSVs
         # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
-        'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
+        # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
     ProcessingScriptPhases.figure_run: {
         # 'kdiba_session_post_fixup_completion_function': kdiba_session_post_fixup_completion_function,
@@ -357,7 +357,7 @@ force_recompute_override_computation_kwargs_dict = {
                                         #    drop_previous_result_and_compute_fresh=True,
                                             drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh,
                                             enable_heuristic_shuffle_scoring=True,
-                                            enable_radon_shuffle_scoring=False,
+                                            enable_radon_shuffle_scoring=True,
                                           ),
     'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
                                 compute_1D=True, compute_2D=False,
@@ -375,7 +375,8 @@ override_parameters_flat_keypaths_dict = {
 custom_user_completion_function_override_kwargs_dict = {
     'backup_previous_session_files_completion_function': dict(desired_suffix=f'{BATCH_DATE_TO_USE}'),
     'save_custom_session_files_completion_function': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=True, enable_save_h5=True, should_write_posterior_h5=True), #TODO 2026-09-29 12:21: - [ ] no posteriors needed. New-tbin run reusing the 25ms local pickle: do not rewrite the shared (qclu/frate) local loadedSessPickle; the handler already writes the `-tbin_{N}ms` global pickle.
-    'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
+    # 'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[0.001, 1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
+    'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
     'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
     'compute_and_export_session_epoch_score_shuffles_completion_function': dict(should_skip_previous_saved_shuffles=True, should_purge_existing_shuffled_result=False, with_data_name=None, num_shuffles=num_shuffles), # DEFAULT: keeps shuffles loaded from curr_active_pipeline; continued_run overlay below purges and re-computes
     # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': dict(save_hdf=True, desired_shared_decoding_time_bin_sizes=None, custom_all_param_sweep_options=None, additional_session_context=None),
@@ -384,7 +385,7 @@ custom_user_completion_function_override_kwargs_dict = {
     'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': dict(ripple_decoding_time_bin_size_override=ripple_decoding_time_bin_size, laps_decoding_time_bin_size_override=laps_decoding_time_bin_size,
         # needs_recompute_heuristics=True, force_recompute_all_decoding=True,
         needs_recompute_heuristics=True, force_recompute_all_decoding=False, #TODO 2026-09-15 14:19: - [ ] Disabled forced recompute in `compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function`
-        should_skip_radon_transform=True, n_jobs=1,
+        should_skip_radon_transform=False, n_jobs=1,
         save_hdf=True, allow_append_to_session_h5_file=False,
         max_ignore_bins=2, same_thresh_cm=10.7, max_jump_distance_cm=60.0, # Heuristic settings
         ),
