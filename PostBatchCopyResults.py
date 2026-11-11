@@ -64,11 +64,20 @@ IPython to Avoid High Import Costs:
 
 
     ## your commands here:
-    pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-11-10'])
+    pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-11-11'])
 
     ## clean-old-files on Scratch (GL) — dry-run by default; add '--execute' to apply
-    pbcr.main(['--run-clean-old-files', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data'])
-    # pbcr.main(['--run-clean-old-files', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--execute'])
+    ## Drop older session output/ recomputed_inst_fr_comps (keep files modified on/after --clean-cutoff-date):
+    pbcr.main([
+        '--run-clean-old-files',
+        # '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', ## SCRATCH
+        '--data-root', '/nfs/turbo/umms-kdiba/Data', ## TURBO
+        '--clean-session-rel-search-dir', 'output/',
+        '--clean-cutoff-date', '2026-11-11',  # keep today's exports; delete older mtimes
+        '--clean-conditional-glob', 'inst_fr_pkl:*recomputed_inst_fr_comps*.pkl',
+        '--clean-conditional-glob', 'inst_fr_h5:*recomputed_inst_fr_comps*.h5',
+    ])
+    # ... same args + '--execute' to apply
 
     pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-11-10'])
 
@@ -128,7 +137,7 @@ Usage:
     ## For Scratch ('/scratch/kdiba_root/kdiba99/halechr/Data'):
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-10 --result-date 2026-11-10
     python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data
-    python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data
+    python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data --clean-cutoff-date 2026-11-01
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10
 
 
