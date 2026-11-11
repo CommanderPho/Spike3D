@@ -384,7 +384,7 @@ override_parameters_flat_keypaths_dict = {
     'rank_order_shuffle_analysis.included_qclu_values': included_qclu_values,
     'rank_order_shuffle_analysis.minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
     'wcorr_shuffle_analysis.enable_heuristic_shuffle_scoring': True,
-    'wcorr_shuffle_analysis.enable_radon_shuffle_scoring': False,
+    'wcorr_shuffle_analysis.enable_radon_shuffle_scoring': True,
     'wcorr_shuffle_analysis.num_shuffles': num_shuffles,
 } # need to provide `override_parameters_flat_keypaths_dict`
 
