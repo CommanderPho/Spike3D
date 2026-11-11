@@ -66,6 +66,9 @@ IPython to Avoid High Import Costs:
     ## your commands here:
     pbcr.main(['--run-copy-scratch-to-turbo', '--scratch-to-turbo-collected-outputs-only', '--result-date', '2026-11-10'])
 
+    ## clean-old-files on Scratch (GL) — dry-run by default; add '--execute' to apply
+    pbcr.main(['--run-clean-old-files', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data'])
+    # pbcr.main(['--run-clean-old-files', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--execute'])
 
     pbcr.main(['--run-copy-sess-inst-fr', '--data-root', '/scratch/kdiba_root/kdiba99/halechr/Data', '--result-date', '2026-11-10'])
 
@@ -137,9 +140,12 @@ Usage:
 
 """
 
-DEFAULT_BATCH_DAY_DATE: str = '2026-11-10'
+def _today_iso_date() -> str:
+    """Return today's local date as ``YYYY-MM-DD`` (used as default for ``--batch-day-date`` / ``--result-date``)."""
+    return datetime.now().strftime('%Y-%m-%d')
+
+
 DEFAULT_HOST_TAG: str = 'GL'
-DEFAULT_RESULT_DATE: str = '2026-11-10'
 DEFAULT_CLEAN_CUTOFF_DATE: str = '2025-02-20'
 
 DEFAULT_CLEAN_ALWAYS_DELETE_PATTERNS: Dict[str, str] = {
@@ -1108,9 +1114,10 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     mode.add_argument('--dry-run', action='store_true', default=True, help='Print planned copies/deletes only (default).')
     mode.add_argument('--execute', action='store_true', help='Actually copy / write / delete files.')
 
-    parser.add_argument('--batch-day-date', type=str, default=DEFAULT_BATCH_DAY_DATE, help=f'Batch day date used in BATCH_DATE_TO_USE (default: {DEFAULT_BATCH_DAY_DATE}).')
+    today_iso: str = _today_iso_date()
+    parser.add_argument('--batch-day-date', type=str, default=today_iso, help=f'Batch day date used in BATCH_DATE_TO_USE (default: today, currently {today_iso}).')
     parser.add_argument('--host-tag', type=str, default=DEFAULT_HOST_TAG, help=f'Host tag appended to BATCH_DATE_TO_USE (default: {DEFAULT_HOST_TAG}).')
-    parser.add_argument('--result-date', type=str, default=DEFAULT_RESULT_DATE, help=f'Result date for inst-FR / glob / cutoff default (default: {DEFAULT_RESULT_DATE}).')
+    parser.add_argument('--result-date', type=str, default=today_iso, help=f'Result date for inst-FR / glob / cutoff default (default: today, currently {today_iso}).')
     parser.add_argument('--cutoff-date', type=_parse_iso_date, default=None, help='H5 copy/glob cutoff date YYYY-MM-DD (default: --result-date).')
     parser.add_argument('--data-root', type=Path, default=None, help='Override data root (otherwise first extant known path).')
     parser.add_argument('--scripts-output-path', type=Path, default=None, help='Override gen_scripts path (otherwise first extant known path).')
