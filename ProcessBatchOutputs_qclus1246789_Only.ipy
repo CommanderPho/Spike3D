@@ -70,14 +70,35 @@ from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpe
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
+# ==================================================================================================================================================================================================================================================================================== #
+# CALL EXAMPLES:                                                                                                                                                                                                                                                                       #
+# ==================================================================================================================================================================================================================================================================================== #
+""" ## CALL EXAMPLES:
+
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --shuffles 512
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --shuffles 512 --phases 23
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --phases 012 ## clean run
+
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Lab
 
 
-BATCH_DAY_DATE: str = '2026-11-12'
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Apogee' # used for filenames throught the notebook
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_GL' # used for filenames throught the notebook
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Lab' # used for filenames throught the notebook
-# BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_rMBP' # used for filenames throught the notebook
+"""
+
+# --date / --computer set BATCH_DATE_TO_USE; --tbin / --phases / --shuffles used later
+# e.g. ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee
+_cli_parser = argparse.ArgumentParser(add_help=False)
+_cli_parser.add_argument('--date', type=str, default='2026-11-12', help='Batch day date YYYY-MM-DD used in BATCH_DATE_TO_USE. Default: 2026-11-12')
+_cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee', 'GL', 'Lab', 'rMBP'], help='Host tag appended to BATCH_DATE_TO_USE. Default: GL')
+_cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
+_cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
+_cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
+_cli_args, _ = _cli_parser.parse_known_args()
+
+BATCH_DAY_DATE: str = _cli_args.date
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_{_cli_args.computer}' # used for filenames throught the notebook
 _batch_host_suffix: str = BATCH_DATE_TO_USE[len(BATCH_DAY_DATE):] if BATCH_DATE_TO_USE.startswith(BATCH_DAY_DATE) else f'_{BATCH_DATE_TO_USE}'
+print(f'cli --date={_cli_args.date!r} --computer={_cli_args.computer!r} -> BATCH_DATE_TO_USE={BATCH_DATE_TO_USE!r}')
 
 # ==================================================================================================================== #
 # GL Turbo->Scratch workaround (set FORCE_SCRATCH_WRITES=False / comment out when Turbo is R/W again)                   #
@@ -211,7 +232,7 @@ _time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
-# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --tbin 0.025 --phases 23 --shuffles 128)    #
+# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee --tbin 0.025 --phases 23 --shuffles 128) #
 # ==================================================================================================================== #
 # --tbin common values: 0.016/16ms, 0.020/20ms, 0.025/25ms (default), 0.050/50ms, 0.060/60ms, 0.075/75ms
 # --phases digit codes: 0=clean_run, 1=continued_run, 2=final_run, 3=figure_run
@@ -223,11 +244,6 @@ _PHASE_DIGIT_MAP = {
     '2': ProcessingScriptPhases.final_run,
     '3': ProcessingScriptPhases.figure_run,
 }
-_cli_parser = argparse.ArgumentParser(add_help=False)
-_cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
-_cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
-_cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
-_cli_args, _ = _cli_parser.parse_known_args()
 
 # ==================================================================================================================== #
 # PHASES TO GENERATE (chained per-session submit)                                                                      #
