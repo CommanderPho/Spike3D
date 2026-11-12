@@ -22,6 +22,7 @@ cd '/home/halechr/repos/Spike3D'
 deactivate
 source /home/halechr/repos/Spike3D/.venv/bin/activate
 export SPIKE3D_REPO_ROOT='/home/halechr/repos'
+./scripts/unix/repos_pull_changes.sh
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```
 
