@@ -67,7 +67,7 @@ _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_epoch_score_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_variables_evaluation_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 # ==================================================================================================================================================================================================================================================================================== #
@@ -170,6 +170,7 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ripple/laps `_tbin-0.05` CSVs + posteriors h5
         'compute_and_export_session_epoch_score_shuffles_completion_function': compute_and_export_session_epoch_score_shuffles_completion_function,
         'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.05` CSVs
+        'export_decoded_variables_evaluation_completion_function': export_decoded_variables_evaluation_completion_function, # context-uncertainty + Fig5 occupancy CSVs; after generalized_decode so EpochComputations is populated
         # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
         # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
@@ -412,7 +413,8 @@ custom_user_completion_function_override_kwargs_dict = {
                                                                                 # force_recompute=False,
                                                                                 debug_print=True, export_pkl=False,
                                                                                 ),
-    'export_decoded_context_uncertainty_by_position_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
+    # 'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
+    'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=False),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         # '_display_placefield_stable_formation_time_distribution',
@@ -442,7 +444,7 @@ custom_user_completion_function_override_kwargs_dict = {
 _export_filename_extra_suffix_parts = shared_batch_session_completion_handler_kwargs.get('export_filename_extra_suffix_parts', None)
 if _export_filename_extra_suffix_parts:
     _export_suffix_kwarg = dict(export_filename_extra_suffix_parts=_export_filename_extra_suffix_parts)
-    for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', 'save_custom_session_files_completion_function', 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function']:
+    for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', 'save_custom_session_files_completion_function', 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function', 'export_decoded_variables_evaluation_completion_function']:
         custom_user_completion_function_override_kwargs_dict[_a_fn_name] = {**custom_user_completion_function_override_kwargs_dict.get(_a_fn_name, {}), **_export_suffix_kwarg}
     ## END for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', ...]...
 
