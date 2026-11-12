@@ -189,6 +189,8 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
     },
 }
 # --only recipes: applied later as a non-destructive overlay (default phase dict above stays the source of truth for normal runs).
+# Shared SLURM envelope for all --only modes (lighter than full final_run: 12h / ~82GB):
+_ONLY_MODE_SLURM_DEFAULTS: Dict = dict(slurm_time='3:00:00', slurm_mem='40000m', should_use_largemem=False)
 _ONLY_MODE_RECIPES: Dict[str, Dict] = {
     'export_decoded_variables_evaluation': {
         'completion_fn_name': 'export_decoded_variables_evaluation_completion_function',
@@ -316,6 +318,7 @@ if _only_key is not None:
     print(f'  should_freeze_pipeline_updates: {_only_recipe.get("should_freeze_pipeline_updates", False)}')
     if 'force_recompute_override_computations_includelist' in _only_recipe:
         print(f'  force_recompute_override_computations_includelist: {_only_recipe["force_recompute_override_computations_includelist"]}')
+    print(f'  slurm defaults (--only): time={_ONLY_MODE_SLURM_DEFAULTS["slurm_time"]!r} mem={_ONLY_MODE_SLURM_DEFAULTS["slurm_mem"]!r} largemem={_ONLY_MODE_SLURM_DEFAULTS["should_use_largemem"]}')
     print(f'  note: local loadedSessPickle not rewritten; global -tbin pickle may update IF_CHANGED after prereq compute')
 ## END if _only_key is not None...
 
@@ -557,6 +560,9 @@ for active_phase in phases_to_generate:
         if _only_recipe_for_phase.get('should_freeze_pipeline_updates', False):
             active_phase_dict['should_freeze_pipeline_updates'] = True  # template: should_compute=False + SavingOptions.NEVER for local AND global pickles
             print(f'--only={_only_key!r}: forcing should_freeze_pipeline_updates=True (will not rewrite session or global computation pickles)')
+        # Lighter SLURM envelope for single-export recipes (recipe keys override shared defaults when present):
+        active_phase_dict.update({**_ONLY_MODE_SLURM_DEFAULTS, **{k: _only_recipe_for_phase[k] for k in ('slurm_time', 'slurm_mem', 'should_use_largemem') if k in _only_recipe_for_phase}})
+        print(f'--only={_only_key!r}: slurm_time={active_phase_dict["slurm_time"]!r} slurm_mem={active_phase_dict["slurm_mem"]!r} should_use_largemem={active_phase_dict["should_use_largemem"]}')
     ## END if _only_key is not None...
 
     active_phase_dict['override_custom_pickle_suffix'] = override_custom_pickle_suffix
