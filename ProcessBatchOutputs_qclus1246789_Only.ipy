@@ -67,7 +67,7 @@ _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_epoch_score_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_variables_evaluation_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_variables_evaluation_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, figures_export_laps_correct_decoder_side_by_side_completion_function
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 # ==================================================================================================================================================================================================================================================================================== #
@@ -87,6 +87,10 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --compute
 # aliases: --only export_decoded_variables_evaluation_completion_function
 # computes EpochComputations prereqs then exports context-uncertainty + Fig5 occupancy CSVs only
 
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer GL --tbin 0.025 --only figures_export_laps_correct_decoder_side_by_side
+# aliases: --only figures_export_laps_correct_decoder_side_by_side_completion_function
+# ensures DirectionalLaps / DirectionalMergedDecoders / DirectionalDecodersEpochsEvaluations (compute-if-missing, no force-recompute) then exports 4-decoder GT-boxed lap PNG only
+
 """
 
 # --date / --computer set BATCH_DATE_TO_USE; --tbin / --phases / --shuffles / --only used later
@@ -97,7 +101,7 @@ _cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee'
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
 _cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
-_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Currently: export_decoded_variables_evaluation [= export_decoded_variables_evaluation_completion_function]. Forces final_run + that completion function alone; computes split_to_directional_laps / non_PBE_epochs_results / generalized_specific_epochs_decoding so EpochComputations exists at --tbin. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
+_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Recipes: export_decoded_variables_evaluation [= ..._completion_function]; figures_export_laps_correct_decoder_side_by_side [= ..._completion_function]. Forces final_run + that completion function alone with recipe-specific prereq computations. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
 _cli_args, _ = _cli_parser.parse_known_args()
 
 BATCH_DAY_DATE: str = _cli_args.date
@@ -196,8 +200,20 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'should_freeze_pipeline_updates': False,  # must compute globals; local pickle still never rewritten (should_save_local_pipeline_pkl=False on final_run)
         'description': 'final_run + EpochComputations prereqs (split_to_directional_laps / non_PBE_epochs_results / generalized_specific_epochs_decoding) + export_decoded_variables_evaluation_completion_function only (context-uncertainty + Fig5 occupancy CSVs)',
     },
+    'figures_export_laps_correct_decoder_side_by_side': {
+        'completion_fn_name': 'figures_export_laps_correct_decoder_side_by_side_completion_function',
+        'completion_fn': figures_export_laps_correct_decoder_side_by_side_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        # Display needs DirectionalLaps + DirectionalDecodersEpochsEvaluations; chain: split -> merged -> evaluate_epochs:
+        'extended_computations_include_includelist': ['split_to_directional_laps', 'merged_directional_placefields', 'directional_decoders_evaluate_epochs'],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,  # compute missing globals; do not freeze
+        'force_recompute_override_computations_includelist': [],  # compute-if-missing only (skip default tbin force-recompute for merged/evaluate_epochs)
+        'description': 'final_run + DirectionalLaps/MergedDecoders/DirectionalDecodersEpochsEvaluations prereqs (compute-if-missing) + figures_export_laps_correct_decoder_side_by_side_completion_function only (4-decoder GT-boxed lap PNG)',
+    },
 }
 _ONLY_MODE_RECIPES['export_decoded_variables_evaluation_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_variables_evaluation']
+_ONLY_MODE_RECIPES['figures_export_laps_correct_decoder_side_by_side_completion_function'] = _ONLY_MODE_RECIPES['figures_export_laps_correct_decoder_side_by_side']
 _is_kdiba_session: bool = True
 # %%
 
@@ -298,7 +314,9 @@ if _only_key is not None:
     print(f'  completion_functions: [{_only_recipe["completion_fn_name"]}]')
     print(f'  custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist}')
     print(f'  should_freeze_pipeline_updates: {_only_recipe.get("should_freeze_pipeline_updates", False)}')
-    print(f'  note: local loadedSessPickle not rewritten; global -tbin pickle may update IF_CHANGED after EpochComputations compute')
+    if 'force_recompute_override_computations_includelist' in _only_recipe:
+        print(f'  force_recompute_override_computations_includelist: {_only_recipe["force_recompute_override_computations_includelist"]}')
+    print(f'  note: local loadedSessPickle not rewritten; global -tbin pickle may update IF_CHANGED after prereq compute')
 ## END if _only_key is not None...
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
@@ -565,6 +583,10 @@ for active_phase in phases_to_generate:
         if not active_phase_dict.get('batch_session_completion_handler_kwargs', {}).get('apply_track_body_aclu_filter', False):
             _phase_includelist = active_phase_dict['extended_computations_include_includelist']
             active_phase_dict['force_recompute_override_computations_includelist'] = [a_name for a_name in _tbin_dependent_force_recompute_override_computations_includelist if a_name in _phase_includelist]
+        # --only recipes may pin force_recompute (e.g. [] = compute-if-missing only; skip default tbin force-recompute intersection):
+        if _only_key is not None and ('force_recompute_override_computations_includelist' in _ONLY_MODE_RECIPES[_only_key]):
+            active_phase_dict['force_recompute_override_computations_includelist'] = list(_ONLY_MODE_RECIPES[_only_key]['force_recompute_override_computations_includelist'])
+            print(f'--only={_only_key!r}: force_recompute_override_computations_includelist={active_phase_dict["force_recompute_override_computations_includelist"]}')
         active_phase_dict['should_save_local_pipeline_pkl'] = False
         active_phase_dict['skip_save_on_initial_load'] = True
 
