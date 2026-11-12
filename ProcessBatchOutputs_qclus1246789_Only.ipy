@@ -82,10 +82,13 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --phases 012 ## clean run
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Lab
 
+## Single-export recipes (do not edit the default phase completion dicts):
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer GL --tbin 0.025 --only export_decoded_variables_evaluation
+# aliases: --only export_decoded_variables_evaluation_completion_function
 
 """
 
-# --date / --computer set BATCH_DATE_TO_USE; --tbin / --phases / --shuffles used later
+# --date / --computer set BATCH_DATE_TO_USE; --tbin / --phases / --shuffles / --only used later
 # e.g. ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee
 _cli_parser = argparse.ArgumentParser(add_help=False)
 _cli_parser.add_argument('--date', type=str, default=datetime.now().strftime('%Y-%m-%d'), help='Batch day date YYYY-MM-DD used in BATCH_DATE_TO_USE. Default: today')
@@ -93,6 +96,7 @@ _cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee'
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
 _cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
+_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Currently: export_decoded_variables_evaluation [= export_decoded_variables_evaluation_completion_function]. Forces final_run, empty extended_computations includelist, and that completion function alone. Requires EpochComputations already in the loaded global pickle at --tbin.')
 _cli_args, _ = _cli_parser.parse_known_args()
 
 BATCH_DAY_DATE: str = _cli_args.date
@@ -179,6 +183,18 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
     },
 }
+# --only recipes: applied later as a non-destructive overlay (default phase dict above stays the source of truth for normal runs).
+_ONLY_MODE_RECIPES: Dict[str, Dict] = {
+    'export_decoded_variables_evaluation': {
+        'completion_fn_name': 'export_decoded_variables_evaluation_completion_function',
+        'completion_fn': export_decoded_variables_evaluation_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        'extended_computations_include_includelist': [],  # load pickle + run completion only; needs EpochComputations already present
+        'extra_extended_computations_include_includelist': [],
+        'description': 'final_run + export_decoded_variables_evaluation_completion_function only (context-uncertainty + Fig5 occupancy CSVs); no other completion exports / no phase3 recomputes',
+    },
+}
+_ONLY_MODE_RECIPES['export_decoded_variables_evaluation_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_variables_evaluation']
 _is_kdiba_session: bool = True
 # %%
 
@@ -239,6 +255,7 @@ _time_checkpoint('paths: build_concrete_session_folders')
 # --phases digit codes: 0=clean_run, 1=continued_run, 2=final_run, 3=figure_run
 # e.g. --phases 0123 (all), --phases 12 (continued+final), --phases 23 (final+figure); default 2
 # --shuffles: e.g. 64 (default), 1024
+# --only: optional single-export recipe (e.g. export_decoded_variables_evaluation); overrides phases/completions/extended includelist for this generate only
 _PHASE_DIGIT_MAP = {
     '0': ProcessingScriptPhases.clean_run,
     '1': ProcessingScriptPhases.continued_run,
@@ -256,6 +273,29 @@ for _d in str(_cli_args.phases):
     phases_to_generate.append(_PHASE_DIGIT_MAP[_d])
 ## END for _d in str(_cli_args.phases)...
 print(f'cli --phases={_cli_args.phases!r} -> phases_to_generate={[p.value for p in phases_to_generate]}')
+
+# Optional --only overlay: narrow this generate pass without editing the default phase completion dicts above.
+_only_key: Optional[str] = (str(_cli_args.only).strip() if _cli_args.only is not None else None) or None
+if _only_key is not None:
+    if _only_key not in _ONLY_MODE_RECIPES:
+        raise ValueError(f'Unknown --only={_only_key!r}; known recipes: {sorted(set(_ONLY_MODE_RECIPES.keys()))}')
+    _only_recipe: Dict = _ONLY_MODE_RECIPES[_only_key]
+    _cli_phases_before_only = [p.value for p in phases_to_generate]
+    phases_to_generate = list(_only_recipe['phases'])
+    if _cli_phases_before_only != [p.value for p in phases_to_generate]:
+        print(f'WARN: --only={_only_key!r} overrides --phases {_cli_args.phases!r} ({_cli_phases_before_only}) -> {[p.value for p in phases_to_generate]}')
+    for _phase in phases_to_generate:
+        phase_any_run_custom_user_completion_functions_dict_dict[_phase] = {
+            _only_recipe['completion_fn_name']: _only_recipe['completion_fn'],
+        }
+    ## END for _phase in phases_to_generate...
+    custom_phase_extended_computations_include_includelist = list(_only_recipe['extended_computations_include_includelist'])
+    extra_extended_computations_include_includelist = list(_only_recipe.get('extra_extended_computations_include_includelist', []))
+    print(f'cli --only={_only_key!r}: {_only_recipe["description"]}')
+    print(f'  completion_functions: [{_only_recipe["completion_fn_name"]}]')
+    print(f'  custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist}')
+    print(f'  prerequisite: EpochComputations must already exist in the loaded global pickle at --tbin')
+## END if _only_key is not None...
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
 _batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-10-21_GL' -> 'GL'
