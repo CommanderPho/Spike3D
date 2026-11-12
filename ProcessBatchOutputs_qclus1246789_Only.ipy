@@ -191,7 +191,8 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'phases': [ProcessingScriptPhases.final_run],
         'extended_computations_include_includelist': [],  # load pickle + run completion only; needs EpochComputations already present
         'extra_extended_computations_include_includelist': [],
-        'description': 'final_run + export_decoded_variables_evaluation_completion_function only (context-uncertainty + Fig5 occupancy CSVs); no other completion exports / no phase3 recomputes',
+        'should_freeze_pipeline_updates': True,  # load-only: should_compute=False + SavingOptions.NEVER for local AND global pickles
+        'description': 'final_run + export_decoded_variables_evaluation_completion_function only (context-uncertainty + Fig5 occupancy CSVs); freeze pipeline updates so local/global pickles are never rewritten',
     },
 }
 _ONLY_MODE_RECIPES['export_decoded_variables_evaluation_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_variables_evaluation']
@@ -294,6 +295,7 @@ if _only_key is not None:
     print(f'cli --only={_only_key!r}: {_only_recipe["description"]}')
     print(f'  completion_functions: [{_only_recipe["completion_fn_name"]}]')
     print(f'  custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist}')
+    print(f'  should_freeze_pipeline_updates: {_only_recipe.get("should_freeze_pipeline_updates", False)} (local+global pickle save NEVER)')
     print(f'  prerequisite: EpochComputations must already exist in the loaded global pickle at --tbin')
 ## END if _only_key is not None...
 
@@ -529,6 +531,13 @@ for active_phase in phases_to_generate:
     if custom_phase_extended_computations_include_includelist is not None:
         print(f'WARNING: custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist} is provided so only these extended_computation_fns will be used (overwritting the phase defaults!).')
         active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
+
+    if _only_key is not None:
+        _only_recipe_for_phase: Dict = _ONLY_MODE_RECIPES[_only_key]
+        if _only_recipe_for_phase.get('should_freeze_pipeline_updates', False):
+            active_phase_dict['should_freeze_pipeline_updates'] = True  # template: should_compute=False + SavingOptions.NEVER for local AND global pickles
+            print(f'--only={_only_key!r}: forcing should_freeze_pipeline_updates=True (will not rewrite session or global computation pickles)')
+    ## END if _only_key is not None...
 
     active_phase_dict['override_custom_pickle_suffix'] = override_custom_pickle_suffix
     active_phase_dict['decoding_time_bin_filename_suffix'] = decoding_time_bin_filename_suffix
