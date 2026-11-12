@@ -85,6 +85,7 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --compute
 ## Single-export recipes (do not edit the default phase completion dicts):
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer GL --tbin 0.025 --only export_decoded_variables_evaluation
 # aliases: --only export_decoded_variables_evaluation_completion_function
+# computes EpochComputations prereqs then exports context-uncertainty + Fig5 occupancy CSVs only
 
 """
 
@@ -96,7 +97,7 @@ _cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee'
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
 _cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
-_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Currently: export_decoded_variables_evaluation [= export_decoded_variables_evaluation_completion_function]. Forces final_run, empty extended_computations includelist, and that completion function alone. Requires EpochComputations already in the loaded global pickle at --tbin.')
+_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Currently: export_decoded_variables_evaluation [= export_decoded_variables_evaluation_completion_function]. Forces final_run + that completion function alone; computes split_to_directional_laps / non_PBE_epochs_results / generalized_specific_epochs_decoding so EpochComputations exists at --tbin. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
 _cli_args, _ = _cli_parser.parse_known_args()
 
 BATCH_DAY_DATE: str = _cli_args.date
@@ -189,10 +190,11 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'completion_fn_name': 'export_decoded_variables_evaluation_completion_function',
         'completion_fn': export_decoded_variables_evaluation_completion_function,
         'phases': [ProcessingScriptPhases.final_run],
-        'extended_computations_include_includelist': [],  # load pickle + run completion only; needs EpochComputations already present
+        # Same prereqs as generalized_decode_epochs_dict_and_export_results_completion_function uses to populate EpochComputations:
+        'extended_computations_include_includelist': ['split_to_directional_laps', 'non_PBE_epochs_results', 'generalized_specific_epochs_decoding'],
         'extra_extended_computations_include_includelist': [],
-        'should_freeze_pipeline_updates': True,  # load-only: should_compute=False + SavingOptions.NEVER for local AND global pickles
-        'description': 'final_run + export_decoded_variables_evaluation_completion_function only (context-uncertainty + Fig5 occupancy CSVs); freeze pipeline updates so local/global pickles are never rewritten',
+        'should_freeze_pipeline_updates': False,  # must compute globals; local pickle still never rewritten (should_save_local_pipeline_pkl=False on final_run)
+        'description': 'final_run + EpochComputations prereqs (split_to_directional_laps / non_PBE_epochs_results / generalized_specific_epochs_decoding) + export_decoded_variables_evaluation_completion_function only (context-uncertainty + Fig5 occupancy CSVs)',
     },
 }
 _ONLY_MODE_RECIPES['export_decoded_variables_evaluation_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_variables_evaluation']
@@ -295,8 +297,8 @@ if _only_key is not None:
     print(f'cli --only={_only_key!r}: {_only_recipe["description"]}')
     print(f'  completion_functions: [{_only_recipe["completion_fn_name"]}]')
     print(f'  custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist}')
-    print(f'  should_freeze_pipeline_updates: {_only_recipe.get("should_freeze_pipeline_updates", False)} (local+global pickle save NEVER)')
-    print(f'  prerequisite: EpochComputations must already exist in the loaded global pickle at --tbin')
+    print(f'  should_freeze_pipeline_updates: {_only_recipe.get("should_freeze_pipeline_updates", False)}')
+    print(f'  note: local loadedSessPickle not rewritten; global -tbin pickle may update IF_CHANGED after EpochComputations compute')
 ## END if _only_key is not None...
 
 # batch_execution_target: str = 'slurm'  # GL default; 'linux_standalone' for Lab bash
