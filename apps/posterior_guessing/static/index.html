@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2D Posterior Guessing</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Posterior Guessing</div>
+    <label class="bundle-picker">
+      Bundle
+      <select id="bundleSelect"></select>
+    </label>
+    <div class="score-box" id="scoreBox" hidden>
+      <span id="scorePrimary"></span>
+      <span id="scoreSecondary"></span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel scrub-panel">
+      <div class="scrub-row">
+        <button type="button" id="prevBin" title="Previous bin">←</button>
+        <input type="range" id="binSlider" min="0" max="0" value="0" />
+        <button type="button" id="nextBin" title="Next bin">→</button>
+      </div>
+      <div class="meta-row">
+        <span id="binLabel">Bin —</span>
+        <span id="spikeLabel">Spikes —</span>
+        <span class="hint">Paint on the blank canvas, then press <kbd>Enter</kbd> to reveal</span>
+      </div>
+    </section>
+
+    <section class="panel paint-panel">
+      <div class="panel-title">Your posterior estimate</div>
+      <div class="canvas-wrap">
+        <canvas id="paintCanvas" width="480" height="384"></canvas>
+        <canvas id="truthCanvas" width="480" height="384" class="overlay" hidden></canvas>
+      </div>
+      <div class="paint-controls">
+        <label>Brush <input type="range" id="brushSize" min="1" max="8" value="3" /></label>
+        <label>Strength <input type="range" id="brushStrength" min="1" max="20" value="8" /></label>
+        <button type="button" id="clearPaint">Clear</button>
+        <button type="button" id="revealBtn" disabled>Reveal (Enter)</button>
+      </div>
+      <div class="legend">
+        <span class="swatch user"></span> User (YlOrRd)
+        <span class="swatch truth"></span> True (Blues) — shown after Enter
+      </div>
+    </section>
+
+    <section class="panel cells-panel">
+      <div class="panel-title">Cells that fired in this bin</div>
+      <div id="tuningGrid" class="tuning-grid"></div>
+      <div id="emptyCells" class="empty" hidden>No spikes in this bin.</div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
