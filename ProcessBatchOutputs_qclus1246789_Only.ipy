@@ -221,37 +221,37 @@ _is_kdiba_session: bool = True
 
 
 # Hardcoded included_session_contexts:
-# ## All Sessions:
-# all_included_session_contexts = [ 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
-#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-09_17-29-30'), #TODO 2026-11-04 01:51: - [ ] Added session
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'), #TODO 2026-11-04 01:52: - [ ] Added session. # 2025-08-22 - Decided to discard because the positions are shifted between 'x' and 'lin_pos', and that manifests on the pf peaks.
-#     IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
-#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
-# ]
-# included_session_contexts = all_included_session_contexts
+## All Sessions:
+all_included_session_contexts = [ 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-09_1-22-43'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-12_15-55-31'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-08_21-16-25'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), 
+    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-12_16-53-46'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-09_17-29-30'), #TODO 2026-11-04 01:51: - [ ] Added session
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-09_16-40-54'),
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='one',session_name='2006-4-10_12-25-50'), #TODO 2026-11-04 01:52: - [ ] Added session. # 2025-08-22 - Decided to discard because the positions are shifted between 'x' and 'lin_pos', and that manifests on the pf peaks.
+    IdentifyingContext(format_name='kdiba',animal='vvp01',exper_name='two',session_name='2006-4-10_12-58-3'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-02_17-46-44'), 
+    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='11-03_12-3-25'), 
+]
+included_session_contexts = all_included_session_contexts
 
 # ## Slow Sessions Only:
 # 2026-11-12T23:37:11 66035107      COMPLETED   11:11:15                                               gor01_2006-6-08_14-26-15_q1246789_fr_2_tbin_25ms_Final      0:0
 # 2026-11-12T23:41:02 66035110        TIMEOUT   12:00:23                                               gor01_2006-6-07_16-40-19_q1246789_fr_2_tbin_25ms_Final      0:0
 # 2026-11-12T23:45:59 66035112        TIMEOUT   12:00:28                                               gor01_2006-6-09_22-24-40_q1246789_fr_2_tbin_25ms_Final      0:0
 # 2026-11-13T00:56:17 66035118        TIMEOUT   12:00:27                                                pin01_fet11-01_12-58-54_q1246789_fr_2_tbin_25ms_Final      0:0
-slow_sess_only_session_contexts = [ 
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), ## finished this time, but 11:11:15 (very close to 12h cutoff)
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), ##
-    IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), ##
-    IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), ## 
-]
-included_session_contexts = slow_sess_only_session_contexts
+# slow_sess_only_session_contexts = [ 
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='one',session_name='2006-6-08_14-26-15'), ## finished this time, but 11:11:15 (very close to 12h cutoff)
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-07_16-40-19'), ##
+#     IdentifyingContext(format_name='kdiba',animal='gor01',exper_name='two',session_name='2006-6-09_22-24-40'), ##
+#     IdentifyingContext(format_name='kdiba',animal='pin01',exper_name='one',session_name='fet11-01_12-58-54'), ## 
+# ]
+# included_session_contexts = slow_sess_only_session_contexts
 
 
 ## Setup Functions:
