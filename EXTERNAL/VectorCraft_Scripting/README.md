@@ -195,6 +195,60 @@ with live.undo_group('Replace figure layers'):
     replacement_df = replace_layers(live, rects, source_folder, expect_title=expected_title)
 ```
 
+## Record and replay changes
+
+Record a series of changes made to an object, then apply them to a similar object via script — in the same document or a different one. Two complementary routes:
+
+### Route A: record GUI edits (native Actions, `.vcactions`)
+
+Wraps VectorCraft's Actions panel recorder. Edits made by hand inside the block are recorded; playback is selection/id-relative, so **select the similar target object first** (`select_ids`) before playing.
+
+```python
+from vectorcraft_scripting import Actions, connect_first
+
+live = connect_first()
+with Actions.record_action(live, name='Bump axis labels'):
+    ...  # make the edits by hand in the VectorCraft GUI now
+Actions.save(live, 'bump_labels.vcactions', set_index=0)
+
+# Later, on a similar figure: activate its tab, select the similar object, play.
+target = live.find_by_name('ScatterOverTime_PBEs_perTimeBin.svg', exact=True)
+Actions.play(live, action='Bump axis labels', target_document='Other Figure.pdf', select_ids=[m['id'] for m in target])
+
+# Reuse a saved set in a fresh session:
+Actions.load(live, 'bump_labels.vcactions')
+```
+
+`Actions.batch(live, commands, folder, ...)` runs explicit steps on every file in a folder (`action.batch`).
+
+### Route B: record scripted edits (JSON recipe, id-independent)
+
+`CommandRecorder` wraps `live.execute` for the duration of a `with` block and captures every mutating command (including `TextHelpers` / `replace_layers` helpers). Object references are stored as name/kind/text/bounds descriptors instead of raw ids, so the recipe replays onto similar objects in another document.
+
+```python
+from vectorcraft_scripting import CommandRecorder, TextHelpers, connect_first, load_recipe, replay_recipe, save_recipe
+
+live = connect_first()
+with CommandRecorder(live) as rec:
+    with live.undo_group('Bump axis tick labels'):
+        TextHelpers.set_text_font_size_centered(live, text_axis_tick_label_ids, size_pt=8)
+save_recipe(rec.recipe, 'bump_labels.json')
+
+# Replay onto similar objects in another open document (backup first, ONE undo step):
+replay_recipe(live, load_recipe('bump_labels.json'), target_document='Other Figure.pdf')
+
+# Same-document replay onto different objects: resolve them yourself and pass id_map:
+replay_recipe(live, rec.recipe, id_map={old_id: new_id for old_id, new_id in pairs}, backup=True)
+```
+
+Resolution order per object: explicit `id_map` entry → exact name (+kind) match → for Type objects, text match disambiguated by nearest recorded bounds. Ambiguous or unresolved descriptors fail loudly; pass `id_map` for those cases. Replay runs through `command.batch`: one undo step, full rollback on the first error.
+
+Caveats:
+- Geometry-derived deltas (e.g. the corrective `object.move` inside `set_text_font_size_centered`) replay exactly as recorded — correct for same-size similar objects, not re-derived for other sizes.
+- Steps that create objects (`file.place`, `layer.new`, …) reference ids that only exist in the source document; replaying those onto another document needs an explicit `id_map`.
+- `.vcactions` playback (Route A) bakes in the recorded absolute ids/coordinates: a recorded `select.set` re-selects the original ids, so `select_ids` cannot redirect an action that captured its own selection. Route A is reliable for re-running on the same document/ids; prefer Route B recipes for cross-document portability.
+- `ui.inspect` exposes the Actions panel's recorded steps as `[command, params]` pairs (`ui.action_sets[].actions[].steps`), so a recorded action can be read back and converted into Route B steps if needed.
+
 ## Notes
 
 - Paths passed to `--in`, `--export`, and `file.place` are made absolute so Windows working-directory quirks do not matter.

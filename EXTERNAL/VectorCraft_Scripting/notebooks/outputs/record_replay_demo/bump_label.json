@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "source_document": "test_input_figure_scratch.svg",
+  "recorded_at": "2026-11-13T17:13:33",
+  "objects": {
+    "332": {
+      "name": " dominant Cells on each track",
+      "kind": "Type",
+      "bounds": {
+        "x": 159.69105348167093,
+        "y": 53.499617130266614,
+        "width": 184.42674681980859,
+        "height": 15.640624067746103
+      },
+      "text": " dominant Cells on each track"
+    }
+  },
+  "steps": [
+    {
+      "command": "edit.undoGroup.begin",
+      "params": {
+        "label": "Demo: bump label size"
+      }
+    },
+    {
+      "command": "text.setStyle",
+      "params": {
+        "ids": [
+          332
+        ],
+        "size": 15.999999165534973
+      }
+    },
+    {
+      "command": "object.move",
+      "params": {
+        "ids": [
+          332
+        ],
+        "dx": -13.17333984375,
+        "dy": 0.693359375
+      }
+    },
+    {
+      "command": "edit.undoGroup.end",
+      "params": {}
+    }
+  ]
+}
