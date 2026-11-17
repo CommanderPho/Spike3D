@@ -195,6 +195,35 @@ with live.undo_group('Replace figure layers'):
     replacement_df = replace_layers(live, rects, source_folder, expect_title=expected_title)
 ```
 
+### Replace by a selected origin point
+
+When bounding-box replace drifts (different margins/axes), Direct-Select a registration path point on the **existing** object, capture it, then Direct-Select the **corresponding** point on the replacement and align:
+
+```python
+from vectorcraft_scripting import capture_origin_from_selection, connect_first, replace_by_origin
+
+live = connect_first()
+
+# 1) Direct-Select the destination anchor on the object being replaced, then:
+target_origin = capture_origin_from_selection(live)
+
+# 2) Direct-Select the matching anchor on the replacement (same doc or another open tab), then:
+source_origin = capture_origin_from_selection(live)
+
+with live.undo_group('Replace by origin point'):
+    result = replace_by_origin(live, target_origin, source_origin, hide_target=True)
+```
+
+To place a file so a known source-space point lands on a canvas point (no interactive second selection):
+
+```python
+from vectorcraft_scripting import place_file_at_origin
+
+placed_ids, place_rect, actual = place_file_at_origin(
+    live, 'new_panel.svg', target_xy=target_origin.xy, source_origin_xy=(24.5, 71.4), scale=1.0,
+)
+```
+
 ## Record and replay changes
 
 Record a series of changes made to an object, then apply them to a similar object via script — in the same document or a different one. Two complementary routes:
