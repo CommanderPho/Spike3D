@@ -75,33 +75,38 @@ _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 # ==================================================================================================================================================================================================================================================================================== #
 """ ## CALL EXAMPLES:
 
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --shuffles 512
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --shuffles 512 --phases 23
+## 2026-11-18: re-export (decoded_posteriors).h5 only (+ Pseudo2D under decoder key 'pseudo2D'):
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer GL --tbin 0.025 --only export_decoded_posteriors_h5
+# aliases: --only save_custom_session_files_completion_function / export_decoded_posteriors_h5_completion_function
+# ensures DirectionalLaps / DirectionalMergedDecoders / DirectionalDecodersEpochsEvaluations (compute-if-missing) then writes collected_outputs `(decoded_posteriors).h5` only (no pipeline/global pickle rewrite)
+
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --shuffles 512
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --shuffles 512 --phases 23
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --phases 012 ## clean run
 
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Lab
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer Apogee
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer Lab
 
 ## Single-export recipes (do not edit the default phase completion dicts):
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer GL --tbin 0.025 --only export_decoded_variables_evaluation
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer GL --tbin 0.025 --only export_decoded_variables_evaluation
 # aliases: --only export_decoded_variables_evaluation_completion_function
 # computes EpochComputations prereqs then exports context-uncertainty + Fig5 occupancy CSVs only
 
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer GL --tbin 0.025 --only figures_export_laps_correct_decoder_side_by_side
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer GL --tbin 0.025 --only figures_export_laps_correct_decoder_side_by_side
 # aliases: --only figures_export_laps_correct_decoder_side_by_side_completion_function
 # ensures DirectionalLaps / DirectionalMergedDecoders / DirectionalDecodersEpochsEvaluations (compute-if-missing, no force-recompute) then exports 4-decoder GT-boxed lap PNG only
 
 """
 
 # --date / --computer set BATCH_DATE_TO_USE; --tbin / --phases / --shuffles / --only used later
-# e.g. ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee
+# e.g. ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer Apogee
 _cli_parser = argparse.ArgumentParser(add_help=False)
 _cli_parser.add_argument('--date', type=str, default=datetime.now().strftime('%Y-%m-%d'), help='Batch day date YYYY-MM-DD used in BATCH_DATE_TO_USE. Default: today')
 _cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee', 'GL', 'Lab', 'rMBP'], help='Host tag appended to BATCH_DATE_TO_USE. Default: GL')
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
 _cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
-_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Recipes: export_decoded_variables_evaluation [= ..._completion_function]; figures_export_laps_correct_decoder_side_by_side [= ..._completion_function]. Forces final_run + that completion function alone with recipe-specific prereq computations. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
+_cli_parser.add_argument('--only', type=str, default='export_decoded_posteriors_h5', help='Optional single-export recipe overlay (does not permanently change default phase dicts). Default: export_decoded_posteriors_h5 (2026-11-18 Pseudo2D H5 re-export). Pass none/full to disable. Recipes: export_decoded_posteriors_h5; export_decoded_variables_evaluation; figures_export_laps_correct_decoder_side_by_side. Forces final_run + that completion function alone with recipe-specific prereq computations. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
 _cli_args, _ = _cli_parser.parse_known_args()
 
 BATCH_DAY_DATE: str = _cli_args.date
@@ -192,6 +197,18 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
 # Shared SLURM envelope for all --only modes (lighter than full final_run: 12h / ~82GB):
 _ONLY_MODE_SLURM_DEFAULTS: Dict = dict(slurm_time='3:00:00', slurm_mem='40000m', should_use_largemem=False)
 _ONLY_MODE_RECIPES: Dict[str, Dict] = {
+    'export_decoded_posteriors_h5': {
+        'completion_fn_name': 'save_custom_session_files_completion_function',
+        'completion_fn': save_custom_session_files_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        # Needs DirectionalLaps + DirectionalMergedDecoders (Pseudo2D) + DirectionalDecodersEpochsEvaluations (1D posteriors):
+        'extended_computations_include_includelist': ['split_to_directional_laps', 'merged_directional_placefields', 'directional_decoders_evaluate_epochs'],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,  # compute missing globals; local pickle still never rewritten
+        'force_recompute_override_computations_includelist': [],  # compute-if-missing only (skip default tbin force-recompute)
+        'completion_fn_override_kwargs': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=False, enable_save_h5=False, should_write_posterior_h5=True),  # collected_outputs `(decoded_posteriors).h5` only (+ Pseudo2D)
+        'description': 'final_run + DirectionalLaps/MergedDecoders/DirectionalDecodersEpochsEvaluations prereqs (compute-if-missing) + save_custom_session_files_completion_function posterior H5 only (decoded_posteriors.h5 with 1D + Pseudo2D; no pipeline/global pickle/h5 rewrite)',
+    },
     'export_decoded_variables_evaluation': {
         'completion_fn_name': 'export_decoded_variables_evaluation_completion_function',
         'completion_fn': export_decoded_variables_evaluation_completion_function,
@@ -214,6 +231,8 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'description': 'final_run + DirectionalLaps/MergedDecoders/DirectionalDecodersEpochsEvaluations prereqs (compute-if-missing) + figures_export_laps_correct_decoder_side_by_side_completion_function only (4-decoder GT-boxed lap PNG)',
     },
 }
+_ONLY_MODE_RECIPES['export_decoded_posteriors_h5_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_posteriors_h5']
+_ONLY_MODE_RECIPES['save_custom_session_files_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_posteriors_h5']
 _ONLY_MODE_RECIPES['export_decoded_variables_evaluation_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_variables_evaluation']
 _ONLY_MODE_RECIPES['figures_export_laps_correct_decoder_side_by_side_completion_function'] = _ONLY_MODE_RECIPES['figures_export_laps_correct_decoder_side_by_side']
 _is_kdiba_session: bool = True
@@ -283,13 +302,13 @@ _time_checkpoint('paths: build_concrete_session_folders')
 
 ## Different run configurations:
 # ==================================================================================================================== #
-# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-12 --computer Apogee --tbin 0.025 --phases 23 --shuffles 128) #
+# CLI kwargs (IPython: ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer Apogee --tbin 0.025 --phases 23 --shuffles 128) #
 # ==================================================================================================================== #
 # --tbin common values: 0.016/16ms, 0.020/20ms, 0.025/25ms (default), 0.050/50ms, 0.060/60ms, 0.075/75ms
 # --phases digit codes: 0=clean_run, 1=continued_run, 2=final_run, 3=figure_run
 # e.g. --phases 0123 (all), --phases 12 (continued+final), --phases 23 (final+figure); default 2
 # --shuffles: e.g. 64 (default), 1024
-# --only: optional single-export recipe (e.g. export_decoded_variables_evaluation); overrides phases/completions/extended includelist for this generate only
+# --only: optional single-export recipe (default export_decoded_posteriors_h5); pass none/full to use default phase completion dicts
 _PHASE_DIGIT_MAP = {
     '0': ProcessingScriptPhases.clean_run,
     '1': ProcessingScriptPhases.continued_run,
@@ -310,10 +329,15 @@ print(f'cli --phases={_cli_args.phases!r} -> phases_to_generate={[p.value for p 
 
 # Optional --only overlay: narrow this generate pass without editing the default phase completion dicts above.
 _only_key: Optional[str] = (str(_cli_args.only).strip() if _cli_args.only is not None else None) or None
+_only_recipe: Optional[Dict] = None
+if _only_key is not None and _only_key.lower() in ('none', 'full', 'off', 'false', '0'):
+    print(f'cli --only={_only_key!r}: disabled (full phase completion dicts)')
+    _only_key = None
+## END if _only_key is not None and _only_key.lower() in ('none', 'full', 'off', 'false', '0')...
 if _only_key is not None:
     if _only_key not in _ONLY_MODE_RECIPES:
         raise ValueError(f'Unknown --only={_only_key!r}; known recipes: {sorted(set(_ONLY_MODE_RECIPES.keys()))}')
-    _only_recipe: Dict = _ONLY_MODE_RECIPES[_only_key]
+    _only_recipe = _ONLY_MODE_RECIPES[_only_key]
     _cli_phases_before_only = [p.value for p in phases_to_generate]
     phases_to_generate = list(_only_recipe['phases'])
     if _cli_phases_before_only != [p.value for p in phases_to_generate]:
@@ -525,6 +549,16 @@ if _export_filename_extra_suffix_parts:
     for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', 'save_custom_session_files_completion_function', 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function', 'export_decoded_variables_evaluation_completion_function']:
         custom_user_completion_function_override_kwargs_dict[_a_fn_name] = {**custom_user_completion_function_override_kwargs_dict.get(_a_fn_name, {}), **_export_suffix_kwarg}
     ## END for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', ...]...
+
+# --only recipe kwargs (applied here after the shared kwargs dict exists; default phase dicts stay untouched):
+if _only_recipe is not None:
+    _recipe_completion_fn_override_kwargs: Dict = _only_recipe.get('completion_fn_override_kwargs', None) or {}
+    if _recipe_completion_fn_override_kwargs:
+        _fn_name_for_kwargs: str = _only_recipe['completion_fn_name']
+        custom_user_completion_function_override_kwargs_dict[_fn_name_for_kwargs] = {**custom_user_completion_function_override_kwargs_dict.get(_fn_name_for_kwargs, {}), **_recipe_completion_fn_override_kwargs}
+        print(f'--only={_only_key!r} completion_fn_override_kwargs[{_fn_name_for_kwargs}]: {_recipe_completion_fn_override_kwargs}')
+    ## END if _recipe_completion_fn_override_kwargs...
+## END if _only_recipe is not None...
 
 
 print(f'base_job_suffix: "{base_job_suffix}"')
