@@ -4825,6 +4825,18 @@ wheels = [
 ]
 
 [[package]]
+name = "figure-scale"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/45/f2/47d93572a203cdbff2afc83a52285bbc8ddb2a72deac59a09109e723a93d/figure_scale-0.1.0.tar.gz", hash = "sha256:7f86f94cac55f4e16802b1a620624282b4f40c718b0943695ca12558c52a1fb1", size = 34623, upload-time = "2025-07-05T18:09:19.287Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d6/1a/a7355b93f4ee8aead44d08d13dfdacf364a2044a1dc1a08af4b75d9a26c6/figure_scale-0.1.0-py3-none-any.whl", hash = "sha256:79f3dd264830813b605a799f1aef5fca0ced7d8e330dd37306b78d37d2250009", size = 7844, upload-time = "2025-07-05T18:09:18.113Z" },
+]
+
+[[package]]
 name = "figurl"
 version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -14907,6 +14919,45 @@ wheels = [
 ]
 
 [[package]]
+name = "pylustrator"
+version = "1.3.2"
+source = { editable = "../pylustrator" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "natsort" },
+    { name = "numpy" },
+    { name = "pyqt5" },
+    { name = "pyqt5-qt5" },
+    { name = "qtawesome" },
+    { name = "qtpy" },
+    { name = "scikit-image" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "matplotlib", specifier = "==3.8.4" },
+    { name = "natsort", specifier = ">=2.0.0" },
+    { name = "numpy", specifier = ">=1.0.3" },
+    { name = "pyqt5", specifier = ">=5.6" },
+    { name = "pyqt5-qt5", specifier = "==5.15.2" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.2.0,<8.0.0" },
+    { name = "qtawesome", specifier = ">=0.5.0" },
+    { name = "qtpy", specifier = ">=2.4.3" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.11" },
+    { name = "scikit-image", specifier = ">=0.7.0" },
+    { name = "ty", marker = "extra == 'dev'", specifier = ">=0.0.10" },
+]
+provides-extras = ["dev", "test"]
+
+[package.metadata.requires-dev]
+docs = [
+    { name = "mock", specifier = ">=5.2.0" },
+    { name = "nbsphinx", specifier = ">=0.9.8" },
+    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
+    { name = "sphinxcontrib-bibtex", specifier = ">=2.6.5" },
+]
+
+[[package]]
 name = "pymanopt"
 version = "2.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -21690,6 +21741,7 @@ dependencies = [
     { name = "dill", extra = ["graph"] },
     { name = "diptest" },
     { name = "elephant" },
+    { name = "figure-scale" },
     { name = "findpeaks" },
     { name = "hdf5plugin" },
     { name = "importlib-resources", version = "6.5.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -21749,6 +21801,7 @@ requires-dist = [
     { name = "dill", extras = ["graph"], specifier = "==0.3.5.1" },
     { name = "diptest", specifier = ">=0.12.0" },
     { name = "elephant", specifier = ">=0.11.2,<0.12" },
+    { name = "figure-scale", specifier = ">=0.1.0" },
     { name = "findpeaks", specifier = ">=2.4.4,<3" },
     { name = "hdf5plugin", specifier = ">=4.1.1,<5" },
     { name = "importlib-resources", specifier = ">=6.5.2" },
@@ -25041,6 +25094,7 @@ dependencies = [
     { name = "dill", extra = ["graph"] },
     { name = "diptest" },
     { name = "fastdtw" },
+    { name = "figure-scale" },
     { name = "findpeaks" },
     { name = "flexitext" },
     { name = "flox", version = "0.9.10", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -25136,6 +25190,7 @@ dependencies = [
     { name = "pyflakes" },
     { name = "pygwalker" },
     { name = "pyjson5" },
+    { name = "pylustrator" },
     { name = "pymanopt" },
     { name = "pyopencl", version = "2025.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "pyopencl", version = "2026.1.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
@@ -25289,6 +25344,7 @@ requires-dist = [
     { name = "dill", extras = ["graph"], specifier = "==0.3.5.1" },
     { name = "diptest", specifier = ">=0.12.0" },
     { name = "fastdtw", specifier = ">=0.3.4,<0.4" },
+    { name = "figure-scale", specifier = ">=0.1.0" },
     { name = "findpeaks", specifier = ">=2.5.4,<3" },
     { name = "flexitext", git = "https://github.com/CommanderPho/flexitext.git?rev=main" },
     { name = "flox", specifier = ">=0.9.8,<0.10" },
@@ -25378,6 +25434,7 @@ requires-dist = [
     { name = "pyflakes", specifier = ">=3.0.1,<4" },
     { name = "pygwalker", specifier = ">=0.4.9.15" },
     { name = "pyjson5", specifier = ">=1.6.8,<2" },
+    { name = "pylustrator", editable = "../pylustrator" },
     { name = "pymanopt", specifier = ">=2.2.1" },
     { name = "pyopencl", specifier = ">=2025.1" },
     { name = "pyopengl", specifier = ">=3.1.6,<4" },
