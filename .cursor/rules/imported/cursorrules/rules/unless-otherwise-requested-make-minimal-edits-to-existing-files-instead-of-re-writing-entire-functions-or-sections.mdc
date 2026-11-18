@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+unless otherwise requested, make minimal edits to existing files instead of re-writing entire functions or sections.

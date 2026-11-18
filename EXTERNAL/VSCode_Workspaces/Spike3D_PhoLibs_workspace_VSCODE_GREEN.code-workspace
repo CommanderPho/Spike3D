@@ -135,7 +135,8 @@
         "editor.autoClosingQuotes": "beforeWhitespace",
         "python.analysis.exclude": [
             "**/EXTERNAL",
-            "**/LibrariesExamples"
+            "**/LibrariesExamples", 
+            "**/.venv*",
         ],
         "python.venvPaths": [
             "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D"
@@ -180,7 +181,7 @@
                     "tooltip": "Launch PyQtGraph examples browser",
                     "color": "#d4e6ec",
                     "useVsCodeApi": false,
-                    "command": "cd ${workspaceFolder} && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
                 },
                 {
                     "name": "ViTables Launch",
@@ -229,7 +230,15 @@
             "markupPreview": false,
             "codeSource": true,
             "codeOutput": false
-        }
+        },
+        "cursorpyright.analysis.exclude": [
+            "**/EXTERNAL",
+            "**/LibrariesExamples",
+            "**/.venv*"
+        ],
+        "cursorpyright.analysis.extraPaths": [],
+        "cursorpyright.analysis.logLevel": "Trace",
+        "cursorpyright.analysis.stubPath": ""
     },
     "tasks": {
         "version": "2.0.0",

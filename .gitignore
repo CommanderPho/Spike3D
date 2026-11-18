@@ -1,3 +1,4 @@
+slurm-*.out
 SCRATCH/_temp_parsed_paths_df.csv
 .ipynb_checkpoints
 Environment/GreatLakes/viz3d
@@ -411,3 +412,91 @@ data/timeline_exported_stack.pdf
 data/trial_to_trial_reliability.png
 data/trial_to_trial_reliability.svg
 main_graphics_layout_widget.png
+data/all_timeline_tracks_exported_stack.pdf
+.UV_venv.zip
+2025-10-27_output.prof
+.specstory
+EXTERNAL/PhoDibaPaper2024Book/rotated_figure.svg
+.groupedtimelineinclude
+EXTERNAL/PhoDibaPaper2024Book/2025-11-20_Apogee_cutoff_date-2025-10-02_ALL_GOOD_csv_files_list.csv
+*_pos_df.csv
+output.pdf
+test.csv
+*_widget_*.png
+data/*_tracks_exported_stack.pdf
+max_across_all_prev_epochs_per_pos_frame.npy
+non_local_PBE_non_moving_epochs_df.csv
+scripts/library_analysis.csv
+Cell output 740 \[DW].csv
+flat_prominence_2d_peaks_df.csv
+2026-01-08_posteriors_data.npz
+NOTEBOOK_RUN_LOGS
+LibrariesExamples/Silx/example_data/example_t_bin_masks.npy
+.cursorindexingignore.bak
+exports
+burst_detection_results.png
+InteractivePipelineLoadFromPickle_Bapun_RatK_D4OpenField_2026-02-18T17-27-54-622Z_tags_export.json
+.vscode/groupbookmarks
+.cursorindexingignore*
+2026-03-10_EXPORTED_NOTEBOOK_SCRIPTS
+EXTERNAL/DEVELOPER_NOTES/SCRATCHPADS/scratchpads/__globalScratchpads__/wrap_selected_py_code_into_function
+.qt_for_python
+data/2026-03-18_peak_promenences_debugging.npz
+EXTERNAL/DEVELOPER_NOTES/SCRATCHPADS/scratchpads/__globalScratchpads__
+EXTERNAL/DEVELOPER_NOTES/SCRATCHPADS/scratchpads
+templating/uv_deps_switcher/backups/pyproject.toml.bak
+binned_occupancy_comparisons.svg
+
+# uv-deps-switcher
+**/templating/uv_deps_switcher/backups
+optimized_burst_detection.png
+run_history.csv
+run_history.json
+screenshot.png
+SingleDayWTrackLearning/EXTERNAL/Screenshots/ProgrammaticDisplayFunctionTesting
+_smoke_pbe_replay_out/2026-07-08_smoke-dandi_nwb_ER1_000978_SingleDay__withNormalComputedReplays-qclu_\[1, 2, 4, 6, 7, 9]-frateThresh_5.0-(pbe_decoded_posteriors)_tbin-0.06.h5
+_smoke_pbe_replay_out/2026-07-08_smoke-dandi_nwb_ER1_000978_SingleDay__withNormalComputedReplays-qclu_\[1, 2, 4, 6, 7, 9]-frateThresh_5.0-(replay_decoded_posteriors)_tbin-0.06.h5
+_smoke_pbe_replay_out/smoke_log.txt
+_smoke_pbe_replay_out/_posterior_images_smoke/pbe/contextual_pf2D/greyscale_shared_norm/p_x_given_n\[000].png
+EXTERNAL/PhoDibaPaper2024Book/*_cutoff_date-2025-10-02_ALL_GOOD_csv_files_list.csv
+EXTERNAL/PhoDibaPaper2024Book/*_ALL_GOOD_csv_files_list.csv
+data/2026-09-14_P_Short_7_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
+data/2026-09-14_P_Short_7_0.075_PBE Individual Time Bins_PBE_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
+data/2026-09-15_P_Short_12_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
+data/2026-09-15_P_Short_12_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short_NEW.png
+data/2026-09-15_P_Short_12_0.075_Lap Individual Time Bins_laps_per_time_bin_scatter+hist_pre-post-delta_P_Short_NoControls.png
+data/2026-09-15_P_Short_12_0.075_PBE Individual Time Bins_PBE_per_time_bin_scatter+hist_pre-post-delta_P_Short.png
+_debug_heatmap.png
+tmp/pdfs/extract_scatter.py
+tmp/pdfs/extract_scatter2.py
+tmp/pdfs/page0_extract.json
+tmp/pdfs/ScatterOverTime_PBEs_render.png
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_laps_df.csv
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_laps_time_bin_df.csv
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_ripple_df.csv
+EXTERNAL/PhoDibaPaper2024Book/outputs/filtered_all_sessions_ripple_time_bin_df.csv
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110310-j6966t6j/run-j6966t6j.wandb
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110310-j6966t6j/files/config.yaml
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110310-j6966t6j/files/requirements.txt
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110310-j6966t6j/files/wandb-metadata.json
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110310-j6966t6j/files/wandb-summary.json
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110349-7p3n3xxc/run-7p3n3xxc.wandb
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110349-7p3n3xxc/files/requirements.txt
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110349-7p3n3xxc/files/wandb-metadata.json
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110451-o4dnr7xb/run-o4dnr7xb.wandb
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110451-o4dnr7xb/files/config.yaml
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110451-o4dnr7xb/files/requirements.txt
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110451-o4dnr7xb/files/wandb-metadata.json
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110451-o4dnr7xb/files/wandb-summary.json
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110827-t4xrk45f/run-t4xrk45f.wandb
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110827-t4xrk45f/files/requirements.txt
+EXTERNAL/PhoDibaPaper2024Book/wandb/run-20261104_110827-t4xrk45f/files/wandb-metadata.json
+_tmp_compare_svg.py
+_tmp_compare_svg2.py
+_tmp_compare_svg3.py
+_tmp_test_bg_export.py
+_tmp_test_bg_pub.py
+.cursor/chats/.gitignore
+.cursor/chats/.project.json
+.cursor/chats/cli/config.toml
+_tmp_bg_pub_test.svg

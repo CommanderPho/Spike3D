@@ -1,0 +1,27 @@
+---
+description: Python for loops should have a comment indicating their closing line
+globs: **/*.*py*
+alwaysApply: true
+---
+
+## Python for-loop closing comments
+
+When writing or editing Python code, close every `for` loop with a trailing comment on the same indentation level as the `for` statement, followed by a blank line before the next statement.
+
+Format:
+`## END for <loop-variable> in <iterable>...`
+
+Rules:
+- Use `##` (double hash), not `#`
+- Mirror the loop header (variable names and iterable expression)
+- End with `...` (three dots)
+- Put the comment immediately after the loop body (same indent as `for`)
+- Always leave one empty line after the comment
+
+Example:
+```python
+for xdf_path in xdf_paths:
+    process(xdf_path)
+## END for xdf_path in xdf_paths...
+next_step()
+```

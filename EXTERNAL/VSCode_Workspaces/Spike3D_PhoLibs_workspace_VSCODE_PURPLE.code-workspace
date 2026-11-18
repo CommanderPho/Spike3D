@@ -22,6 +22,7 @@
         "jupyter.askForKernelRestart": true,
         "jupyter.debugJustMyCode": true,
         "files.exclude": {
+            "\"**/.mypy_cache": true,
             "**/.classpath": true,
             "**/.DS_Store": true,
             "**/.factorypath": true,
@@ -45,7 +46,7 @@
             "editor.lineHighlightBorder": "#b09fd11f",
             "activityBar.background": "#37234b",
             "titleBar.activeBackground": "#8453c7",
-            "titleBar.activeForeground": "#000000",
+            "titleBar.activeForeground": "#ffffff",
             "scrollbarSlider.background": "#a210ff57",
             "scrollbarSlider.hoverBackground": "#8800ff82",
             "scrollbarSlider.activeBackground": "#8100ffdf",
@@ -117,6 +118,7 @@
         "qtForPython.uic.path": "C:\\Users\\pho\\repos\\Spike3DWorkEnv\\Spike3D\\.venv\\Scripts\\pyuic5.exe",
         "python.autoComplete.extraPaths": [],
         "git.ignoreLimitWarning": true,
+        "git.enabled": false,
         "qtForPython.uic.options": [
             "-o",
             "${resourceDirname}${pathSeparator}Uic_AUTOGEN_${resourceBasenameNoExtension}.py",
@@ -221,7 +223,21 @@
                     "tooltip": "Launch PyQtGraph examples browser",
                     "color": "#d4e6ec",
                     "useVsCodeApi": false,
-                    "command": "cd ${workspaceFolder} && poetry run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples\\PyQtPlot\\PyQtPlot_EXAMPLES.py\""
+                },
+                {
+                    "name": "Silx Examples",
+                    "tooltip": "Launch Silx examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/Silx/Silx_EXAMPLES.py\""
+                },
+                {
+                    "name": "Vispy Examples",
+                    "tooltip": "Launch Vispy examples browser",
+                    "color": "#d4e6ec",
+                    "useVsCodeApi": false,
+                    "command": "cd ${workspaceFolder} && uv run python \"LibrariesExamples/vispy/vispy_EXAMPLES.py\""
                 },
                 {
                     "name": "ViTables Launch",
@@ -277,7 +293,17 @@
         ],
         "cursorpyright.analysis.extraPaths": [],
         "cursorpyright.analysis.logLevel": "Trace",
-        "cursorpyright.analysis.stubPath": ""
+        "cursorpyright.analysis.stubPath": "",
+        "versionStatusBar.extensionsToShow": [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "ms-python.debugpy",
+            "ms-toolsai.jupyter",
+            "phohale.pho-vscode-jupyter-cell-tags",
+            "ms-toolsai.datawrangler",
+            "phohale.version-status-bar",
+        ],
+        "pieces.cloudCapabilities": "Blended",
     },
     "tasks": {
         "version": "2.0.0",
@@ -347,7 +373,19 @@
             "ionide.discoverpanel",
             "astallinger.sourcetrail",
             "phohale.pho-vs-code-url-scheme-grabber",
-            "kawamataryo.copy-python-dotted-path"
+            "kawamataryo.copy-python-dotted-path",
+            "toughtype.pydance",
+            "gediminaszlatkus.ctags-companion",
+            "fabiospampinato.vscode-highlight",
+            "waylongleon.navigation-history",
+            "mohanrajoria.clip-vault",
+            "seanho.daily-git-progress",
+            "thoughtphotography.cursor-indexing-limiter",
+            "ambitiouscoder.function-name-search",
+            "codeque.codeque",
+            "joshskidmore2025.keycheat",
+            "ast-grep.ast-grep-vscode",
+            "phil294.search-plusplus"
         ]
     }
 }

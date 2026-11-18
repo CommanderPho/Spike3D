@@ -1,0 +1,14 @@
+[tool.uv.sources]
+qt_style_sheet_inspector = { git = "https://github.com/CommanderPho/qt_style_sheet_inspector.git", rev = "master" }
+neuropy = {git = "https://github.com/CommanderPho/NeuroPy.git", rev = "release/pho-diba-2025-paper"}
+pyphocorehelpers = {git = "https://github.com/CommanderPho/pyPhoCoreHelpers.git", rev = "release/pho-diba-2025-paper"}
+pyphoplacecellanalysis = {git = "https://github.com/CommanderPho/pyPhoPlaceCellAnalysis.git", rev = "release/pho-diba-2025-paper"}
+mpl-multitab = { git = "https://github.com/CommanderPho/mpl-multitab.git", rev = "pho_compat" }
+ansi2html = { git = "https://github.com/CommanderPho/ansi2html.git", rev = "main" }
+vedo = { git = "https://github.com/CommanderPho/vedo.git", rev = "release/pho-working" }
+pybursts = { git = "https://github.com/CommanderPho/pybursts.git", rev = "master" }
+flexitext = { git = "https://github.com/CommanderPho/flexitext.git", rev = "main" }
+# maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
+# pyqtinspect = "^0.3.6"
+# silx = {git = "https://github.com/CommanderPho/silx.git", rev = "develop"}
+

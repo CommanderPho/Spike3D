@@ -1,0 +1,3 @@
+# Exported decoder payloads (regenerate via eqn_debugger_export.py)
+*.zarr/
+*.zarr

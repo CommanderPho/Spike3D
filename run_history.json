@@ -1,0 +1,16 @@
+{
+  "EndTime": "10/23/2026 9:59:20 AM",
+  "PythonStatus": {
+    "status": "SessionBatchProgress.COMPLETED",
+    "session_complete_identifier": "kdiba_pin01_one_11-03_12-3-25__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final",
+    "session_context": "kdiba_pin01_one_11-03_12-3-25",
+    "job_suffix": "_withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final",
+    "errors": null,
+    "log_file": "K:\\scratch\\gen_scripts\\run_kdiba_pin01_one_11-03_12-3-25\\debug_2026-10-23_09-10-25.Apogee.kdiba.pin01.one.11-03_12-3-25._withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final.log",
+    "completion_time": "2026-10-23 09:59:16.756195",
+    "session_basedir": "W:/Data/KDIBA/pin01/one/11-03_12-3-25"
+  },
+  "Duration": "00:04:21.1410534",
+  "StartTime": "10/23/2026 9:54:59 AM",
+  "ScriptPath": "K:\\scratch\\gen_scripts\\run_kdiba_pin01_one_11-03_12-3-25\\run_kdiba_pin01_one_11-03_12-3-25__withNormalComputedReplays-qclu_1246789-frateThresh_2.0_tbin_25ms_Final.py"
+}
