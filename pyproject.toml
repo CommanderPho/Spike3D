@@ -191,6 +191,8 @@ dependencies = [
     "wandb>=0.26.1",
     "weave>=0.52.17",
     "diptest>=0.12.0",
+    "figure-scale>=0.1.0",
+    "pylustrator",
 ]
 
 [project.scripts]
@@ -264,6 +266,7 @@ neuropy = { path = "../NeuroPy", editable=true }
 maxlikespy = { git = "https://github.com/CommanderPho/maxlikespy" }
 replayswitchinghmm = { path = "../ReplaySwitchingHMM" }
 spyglass = {path = "../spyglass", editable=true}
+pylustrator = { path = "../pylustrator", editable = true }
 
 
 [tool.poetry.dependencies]
