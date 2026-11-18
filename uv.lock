@@ -14919,45 +14919,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pylustrator"
-version = "1.3.2"
-source = { editable = "../pylustrator" }
-dependencies = [
-    { name = "matplotlib" },
-    { name = "natsort" },
-    { name = "numpy" },
-    { name = "pyqt5" },
-    { name = "pyqt5-qt5" },
-    { name = "qtawesome" },
-    { name = "qtpy" },
-    { name = "scikit-image" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "matplotlib", specifier = "==3.8.4" },
-    { name = "natsort", specifier = ">=2.0.0" },
-    { name = "numpy", specifier = ">=1.0.3" },
-    { name = "pyqt5", specifier = ">=5.6" },
-    { name = "pyqt5-qt5", specifier = "==5.15.2" },
-    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.2.0,<8.0.0" },
-    { name = "qtawesome", specifier = ">=0.5.0" },
-    { name = "qtpy", specifier = ">=2.4.3" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.11" },
-    { name = "scikit-image", specifier = ">=0.7.0" },
-    { name = "ty", marker = "extra == 'dev'", specifier = ">=0.0.10" },
-]
-provides-extras = ["dev", "test"]
-
-[package.metadata.requires-dev]
-docs = [
-    { name = "mock", specifier = ">=5.2.0" },
-    { name = "nbsphinx", specifier = ">=0.9.8" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
-    { name = "sphinxcontrib-bibtex", specifier = ">=2.6.5" },
-]
-
-[[package]]
 name = "pymanopt"
 version = "2.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -25190,7 +25151,6 @@ dependencies = [
     { name = "pyflakes" },
     { name = "pygwalker" },
     { name = "pyjson5" },
-    { name = "pylustrator" },
     { name = "pymanopt" },
     { name = "pyopencl", version = "2025.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "pyopencl", version = "2026.1.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
@@ -25434,7 +25394,6 @@ requires-dist = [
     { name = "pyflakes", specifier = ">=3.0.1,<4" },
     { name = "pygwalker", specifier = ">=0.4.9.15" },
     { name = "pyjson5", specifier = ">=1.6.8,<2" },
-    { name = "pylustrator", editable = "../pylustrator" },
     { name = "pymanopt", specifier = ">=2.2.1" },
     { name = "pyopencl", specifier = ">=2025.1" },
     { name = "pyopengl", specifier = ">=3.1.6,<4" },
