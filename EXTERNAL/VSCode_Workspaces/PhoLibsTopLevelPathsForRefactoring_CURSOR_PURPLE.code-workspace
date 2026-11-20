@@ -15,15 +15,6 @@
         {
             "name": "neuropy",
             "path": "../../../NeuroPy"
-        },
-        {
-            "path": "C:/Users/pho/repos/PhoGlobusHelpers"
-        },
-        {
-            "path": "C:/Users/pho/repos/matlab-to-neuropy-exporter"
-        },
-        {
-            "path": "../../../pylustrator"
         }
     ],
     "settings": {
