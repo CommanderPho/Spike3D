@@ -67,7 +67,7 @@ _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_epoch_score_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_variables_evaluation_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, figures_export_laps_correct_decoder_side_by_side_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_variables_evaluation_completion_function, compute_and_export_kdiba_train_test_position_error_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, figures_export_laps_correct_decoder_side_by_side_completion_function
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 # ==================================================================================================================================================================================================================================================================================== #
@@ -96,6 +96,11 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --compute
 # aliases: --only figures_export_laps_correct_decoder_side_by_side_completion_function
 # ensures DirectionalLaps / DirectionalMergedDecoders / DirectionalDecodersEpochsEvaluations (compute-if-missing, no force-recompute) then exports 4-decoder GT-boxed lap PNG only
 
+## TrainTestSplit held-out lap position-error CSVs (compute-if-missing + export):
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-20 --computer GL --tbin 0.025 --only export_train_test_pos_err
+# aliases: --only compute_and_export_kdiba_train_test_position_error_completion_function / export_kdiba_train_test_pos_err
+# ensures split_to_directional_laps / merged_directional_placefields / directional_train_test_split then exports *(train_test_pos_err)_tbin-*.csv + *_agg*
+
 """
 
 # --date / --computer set BATCH_DATE_TO_USE; --tbin / --phases / --shuffles / --only used later
@@ -106,7 +111,7 @@ _cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee'
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
 _cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
-_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Recipes: export_decoded_posteriors_h5; export_decoded_variables_evaluation; figures_export_laps_correct_decoder_side_by_side (aliases: ..._completion_function). Forces final_run + that completion function alone with recipe-specific prereq computations. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
+_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Recipes: export_decoded_posteriors_h5; export_decoded_variables_evaluation; figures_export_laps_correct_decoder_side_by_side; export_train_test_pos_err (aliases: ..._completion_function). Forces final_run + that completion function alone with recipe-specific prereq computations. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
 _cli_args, _ = _cli_parser.parse_known_args()
 
 BATCH_DAY_DATE: str = _cli_args.date
@@ -230,11 +235,24 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'force_recompute_override_computations_includelist': [],  # compute-if-missing only (skip default tbin force-recompute for merged/evaluate_epochs)
         'description': 'final_run + DirectionalLaps/MergedDecoders/DirectionalDecodersEpochsEvaluations prereqs (compute-if-missing) + figures_export_laps_correct_decoder_side_by_side_completion_function only (4-decoder GT-boxed lap PNG)',
     },
+    'export_train_test_pos_err': {
+        'completion_fn_name': 'compute_and_export_kdiba_train_test_position_error_completion_function',
+        'completion_fn': compute_and_export_kdiba_train_test_position_error_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        # TrainTestSplit needs DirectionalLaps + TrackTemplates (merged) then directional_train_test_split:
+        'extended_computations_include_includelist': ['split_to_directional_laps', 'merged_directional_placefields', 'directional_train_test_split'],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,  # compute missing TrainTestSplit; local pickle still never rewritten
+        'force_recompute_override_computations_includelist': [],  # compute-if-missing only
+        'description': 'final_run + DirectionalLaps/MergedDecoders/TrainTestSplit prereqs (compute-if-missing) + compute_and_export_kdiba_train_test_position_error_completion_function only (*(train_test_pos_err)_tbin-*.csv + *_agg*)',
+    },
 }
 _ONLY_MODE_RECIPES['export_decoded_posteriors_h5_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_posteriors_h5']
 _ONLY_MODE_RECIPES['save_custom_session_files_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_posteriors_h5']
 _ONLY_MODE_RECIPES['export_decoded_variables_evaluation_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_variables_evaluation']
 _ONLY_MODE_RECIPES['figures_export_laps_correct_decoder_side_by_side_completion_function'] = _ONLY_MODE_RECIPES['figures_export_laps_correct_decoder_side_by_side']
+_ONLY_MODE_RECIPES['compute_and_export_kdiba_train_test_position_error_completion_function'] = _ONLY_MODE_RECIPES['export_train_test_pos_err']
+_ONLY_MODE_RECIPES['export_kdiba_train_test_pos_err'] = _ONLY_MODE_RECIPES['export_train_test_pos_err']
 _is_kdiba_session: bool = True
 # %%
 
@@ -510,9 +528,11 @@ custom_user_completion_function_override_kwargs_dict = {
                                                                                 force_recompute=True,
                                                                                 # force_recompute=False,
                                                                                 debug_print=True, export_pkl=False,
+                                                                                train_test_laps_decoding_time_bin_size=laps_decoding_time_bin_size,  # held-out TrainTestSplit position-error CSVs (same tbin as FAT/perfmnc)
                                                                                 ),
     # 'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=False),
+    'compute_and_export_kdiba_train_test_position_error_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute_directional_train_test_split_result=False, debug_print=True),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         # '_display_placefield_stable_formation_time_distribution',
@@ -542,7 +562,7 @@ custom_user_completion_function_override_kwargs_dict = {
 _export_filename_extra_suffix_parts = shared_batch_session_completion_handler_kwargs.get('export_filename_extra_suffix_parts', None)
 if _export_filename_extra_suffix_parts:
     _export_suffix_kwarg = dict(export_filename_extra_suffix_parts=_export_filename_extra_suffix_parts)
-    for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', 'save_custom_session_files_completion_function', 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function', 'export_decoded_variables_evaluation_completion_function']:
+    for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', 'save_custom_session_files_completion_function', 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function', 'export_decoded_variables_evaluation_completion_function', 'compute_and_export_kdiba_train_test_position_error_completion_function']:
         custom_user_completion_function_override_kwargs_dict[_a_fn_name] = {**custom_user_completion_function_override_kwargs_dict.get(_a_fn_name, {}), **_export_suffix_kwarg}
     ## END for _a_fn_name in ['generalized_decode_epochs_dict_and_export_results_completion_function', ...]...
 
