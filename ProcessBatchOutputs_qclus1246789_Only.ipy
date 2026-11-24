@@ -247,9 +247,9 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         # TrainTestSplit needs DirectionalLaps + TrackTemplates (merged) then directional_train_test_split:
         'extended_computations_include_includelist': ['split_to_directional_laps', 'merged_directional_placefields', 'directional_train_test_split'],
         'extra_extended_computations_include_includelist': [],
-        'should_freeze_pipeline_updates': False,  # compute missing TrainTestSplit; local pickle still never rewritten
-        'force_recompute_override_computations_includelist': [],  # compute-if-missing only
-        'description': 'final_run + DirectionalLaps/MergedDecoders/TrainTestSplit prereqs (compute-if-missing) + compute_and_export_kdiba_train_test_position_error_completion_function only (*(train_test_pos_err)_tbin-*.csv + *_agg*)',
+        'should_freeze_pipeline_updates': False,  # force-recompute TrainTestSplit; local pickle still never rewritten
+        'force_recompute_override_computations_includelist': ['directional_train_test_split'],  # force recompute TrainTestSplit (e.g. new 9/10 train fraction)
+        'description': 'final_run + DirectionalLaps/MergedDecoders/TrainTestSplit prereqs (force-recompute TrainTestSplit) + compute_and_export_kdiba_train_test_position_error_completion_function only (*(train_test_pos_err)_tbin-*.csv + *_agg*)',
     },
     'figures_export_2d_position_over_time': {
         'completion_fn_name': 'figures_export_2d_position_over_time_completion_function',
@@ -508,7 +508,7 @@ force_recompute_override_computation_kwargs_dict = {
                                             enable_heuristic_shuffle_scoring=True,
                                             enable_radon_shuffle_scoring=True,
                                           ),
-    'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 5.0/6.0,
+    'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size = 10.0, training_data_portion = 9.0/10.0,
                                 compute_1D=True, compute_2D=False,
                                 drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
     'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, compute_2D=False),
@@ -548,7 +548,7 @@ custom_user_completion_function_override_kwargs_dict = {
                                                                                 ),
     # 'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=False),
-    'compute_and_export_kdiba_train_test_position_error_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute_directional_train_test_split_result=False, debug_print=True),
+    'compute_and_export_kdiba_train_test_position_error_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute_directional_train_test_split_result=True, debug_print=True),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         # '_display_placefield_stable_formation_time_distribution',
