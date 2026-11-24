@@ -102,7 +102,7 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-23 --compute
 # exports collected_outputs `{BATCH_DATE}-{session}_2d_xy_position_over_time.png`
 
 ## TrainTestSplit held-out lap position-error CSVs (compute-if-missing + export):
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-20 --computer GL --tbin 0.025 --only export_train_test_pos_err
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-23 --computer GL --tbin 0.075 --only export_train_test_pos_err
 # aliases: --only compute_and_export_kdiba_train_test_position_error_completion_function / export_kdiba_train_test_pos_err
 # ensures split_to_directional_laps / merged_directional_placefields / directional_train_test_split then exports *(train_test_pos_err)_tbin-*.csv + *_agg*
 
