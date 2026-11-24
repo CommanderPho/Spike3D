@@ -97,12 +97,12 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --compute
 # ensures DirectionalLaps / DirectionalMergedDecoders / DirectionalDecodersEpochsEvaluations (compute-if-missing, no force-recompute) then exports 4-decoder GT-boxed lap PNG only
 
 ## Measured 2D (x, y) trajectory colored by time (no decoder prereqs; freezes pickle updates):
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-23 --computer GL --only figures_export_2d_position_over_time
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-24 --computer GL --only figures_export_2d_position_over_time
 # aliases: --only figures_export_2d_position_over_time_completion_function
 # exports collected_outputs `{BATCH_DATE}-{session}_2d_xy_position_over_time.png`
 
 ## TrainTestSplit held-out lap position-error CSVs (compute-if-missing + export):
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-23 --computer GL --tbin 0.075 --only export_train_test_pos_err
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-24 --computer GL --tbin 0.075 --only export_train_test_pos_err
 # aliases: --only compute_and_export_kdiba_train_test_position_error_completion_function / export_kdiba_train_test_pos_err
 # ensures split_to_directional_laps / merged_directional_placefields / directional_train_test_split then exports *(train_test_pos_err)_tbin-*.csv + *_agg*
 
