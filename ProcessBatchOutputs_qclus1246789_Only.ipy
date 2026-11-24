@@ -93,6 +93,9 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --compute
 # computes EpochComputations prereqs then exports context-uncertainty + Fig5 occupancy CSVs only
 
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-18 --computer GL --tbin 0.025 --only figures_export_laps_correct_decoder_side_by_side
+
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-24 --computer GL --tbin 0.075 --only figures_export_laps_correct_decoder_side_by_side
+
 # aliases: --only figures_export_laps_correct_decoder_side_by_side_completion_function
 # ensures DirectionalLaps / DirectionalMergedDecoders / DirectionalDecodersEpochsEvaluations (compute-if-missing, no force-recompute) then exports 4-decoder GT-boxed lap PNG only
 
@@ -238,6 +241,7 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'extra_extended_computations_include_includelist': [],
         'should_freeze_pipeline_updates': False,  # compute missing globals; do not freeze
         'force_recompute_override_computations_includelist': [],  # compute-if-missing only (skip default tbin force-recompute for merged/evaluate_epochs)
+        'completion_fn_override_kwargs': dict(min_num_unique_active_neurons_per_time_bin=1),  # low-firing bin dimming threshold (default 1)
         'description': 'final_run + DirectionalLaps/MergedDecoders/DirectionalDecodersEpochsEvaluations prereqs (compute-if-missing) + figures_export_laps_correct_decoder_side_by_side_completion_function only (4-decoder GT-boxed lap PNG)',
     },
     'export_train_test_pos_err': {
@@ -249,6 +253,7 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'extra_extended_computations_include_includelist': [],
         'should_freeze_pipeline_updates': False,  # force-recompute TrainTestSplit; local pickle still never rewritten
         'force_recompute_override_computations_includelist': ['directional_train_test_split'],  # force recompute TrainTestSplit (e.g. new 9/10 train fraction)
+        'completion_fn_override_kwargs': dict(min_num_unique_active_neurons_per_time_bin=1),  # low-firing bin mask threshold for pos-err metrics (default 1)
         'description': 'final_run + DirectionalLaps/MergedDecoders/TrainTestSplit prereqs (force-recompute TrainTestSplit) + compute_and_export_kdiba_train_test_position_error_completion_function only (*(train_test_pos_err)_tbin-*.csv + *_agg*)',
     },
     'figures_export_2d_position_over_time': {
@@ -548,7 +553,8 @@ custom_user_completion_function_override_kwargs_dict = {
                                                                                 ),
     # 'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=False),
-    'compute_and_export_kdiba_train_test_position_error_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute_directional_train_test_split_result=True, debug_print=True),
+    'compute_and_export_kdiba_train_test_position_error_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute_directional_train_test_split_result=True, min_num_unique_active_neurons_per_time_bin=1, debug_print=True),
+    'figures_export_laps_correct_decoder_side_by_side_completion_function': dict(min_num_unique_active_neurons_per_time_bin=1),
     # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=['_display_decoded_trackID_marginal_hairy_position', '_display_generalized_decoded_yellow_blue_marginal_epochs', ]),
     'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(included_figures_names=[
                                                                                                                         # '_display_placefield_stable_formation_time_distribution',
