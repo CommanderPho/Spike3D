@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: phase5-verification-benchmarks
     content: Add offscreen Qt benchmark and crash-resilience regression tests verifying single-pass signals, <5ms frame times at 15s-2000s windows, and bounds/OOM safety
-    status: in_progress
+    status: completed
 isProject: false
 ---
 
