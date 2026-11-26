@@ -23,8 +23,24 @@ deactivate
 source /home/halechr/repos/Spike3D/.venv/bin/activate
 export SPIKE3D_REPO_ROOT='/home/halechr/repos'
 ./scripts/unix/repos_pull_changes.sh
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-27 --computer Lab --tbin 0.075 --phases 12
+
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy
 ```
+
+
+## Apogee:
+```ps1
+cd "H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D"
+deactivate
+& "H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/Activate.ps1"
+$env:SPIKE3D_REPO_ROOT = "H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv"
+
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-27 --computer Apogee --tbin 0.075 --phases 12
+
+```
+
+
 
 ```
 cd '/home/halechr/repos/Spike3D'
