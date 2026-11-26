@@ -120,7 +120,7 @@ from pyphocorehelpers.assertion_helpers import Assert
 from pyphocorehelpers.Filesystem.path_helpers import build_cross_root_copydict, copy_movedict, find_first_extant_path, save_copydict_to_text_file, save_filelist_to_text_file
 from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import GreatlakesTurboToScratchHelpers
 from pyphoplacecellanalysis.General.Batch.runBatch import BackupMethods, ConcreteSessionFolder, get_file_path_if_file_exists
-from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix, parse_decoding_time_bin_size_str
 from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionHelpers, AcrossSessionsResults, AcrossSessionTables, AcrossSessionsVisualizations, OldFileArchiver, check_output_h5_files, copy_batch_output_figures_to_common_figures_dir, copy_session_inst_fr_data_to_across_session_pkl
 
 """
@@ -136,7 +136,7 @@ Usage:
 
     ## For Scratch ('/scratch/kdiba_root/kdiba99/halechr/Data'):
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-10 --result-date 2026-11-10
-    python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data
+    python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-26 --host-tag GL --result-date 2026-11-26 --tbin 0.025 --execute
     python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data --clean-cutoff-date 2026-11-01
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10
 
@@ -357,7 +357,7 @@ class PostBatchCopyContext:
     # ==================================================================================================================== #
 
 
-    def configure_run_main(self) -> "PostBatchCopyContext":
+    def configure_run_main(self, decoding_time_bin_size: Optional[float] = None) -> "PostBatchCopyContext":
         """Active qclu / frate / tbin job suffix (notebook cell 3, tag ``run-main``)."""
         active_phase_dict = {}
         # ==================================================================================================================== #
@@ -403,20 +403,22 @@ class PostBatchCopyContext:
         # Common:                                                                                                              #
         # ==================================================================================================================== #
 
+        _resolved_tbin: float = float(decoding_time_bin_size) if (decoding_time_bin_size is not None) else 0.025
         # laps_decoding_time_bin_size = None
-        laps_decoding_time_bin_size = 0.025
+        laps_decoding_time_bin_size = _resolved_tbin
         # laps_decoding_time_bin_size = 0.050
         # laps_decoding_time_bin_size = 0.075
         # laps_decoding_time_bin_size = 0.5
 
-        ripple_decoding_time_bin_size = 0.025
+        ripple_decoding_time_bin_size = _resolved_tbin
         # ripple_decoding_time_bin_size = 0.050
         # ripple_decoding_time_bin_size = 0.058
         # ripple_decoding_time_bin_size = 0.075
 
+        _tbin_ms: int = int(round(float(laps_decoding_time_bin_size) * 1000.0))
         # job_suffix = f"{active_phase_dict['override_custom_pickle_suffix']}_tbin_25ms"
         # job_suffix = f"{job_suffix}_tbin_20ms"
-        job_suffix = f"{job_suffix}_tbin_25ms"
+        job_suffix = f"{job_suffix}_tbin_{_tbin_ms}ms"
         # job_suffix = f"{job_suffix}_tbin_50ms"
         # job_suffix = f"{job_suffix}_tbin_60ms"
         # job_suffix = f"{job_suffix}_tbin_75ms"
@@ -509,13 +511,17 @@ class PostBatchCopyContext:
 
 
     def pair_collected_h5_paths_to_sessions(self, h5_paths: List[Path], included_session_contexts: Optional[List[IdentifyingContext]] = None, batch_date_to_use: Optional[str] = None) -> Tuple[List[IdentifyingContext], List[Path]]:
-        """Pair each session to its parameterized pipeline H5 (collected_outputs rename or session ``output/`` path)."""
-        def _subfn_h5_path_matches_session(h5_path: Path, session_name: str, batch_date_to_use: str) -> bool:
-            """Match collected ``{session}_pipeline...``, root ``{batch}_{session}_...``, or session ``output/`` layout."""
+        """Pair each session to its parameterized pipeline H5 (collected_outputs rename, ``(pipeline_results).h5``, or session ``output/`` path)."""
+        def _subfn_h5_path_matches_session(h5_path: Path, a_ctxt: IdentifyingContext, batch_date_to_use: str) -> bool:
+            """Match collected ``{session}_pipeline...``, root ``{batch}_{session}_...``, ``{batch}-{session_descr}__...-(pipeline_results).h5``, or session ``output/`` layout."""
             filename: str = h5_path.name
-            if filename.startswith(f'{session_name}_'):
+            session_name: str = a_ctxt.session_name
+            session_descr: str = a_ctxt.get_description(separator='_')
+            if filename.startswith(f'{session_name}_') or filename.startswith(f'{session_descr}_'):
                 return True
-            if batch_date_to_use and filename.startswith(f'{batch_date_to_use}_{session_name}_'):
+            if batch_date_to_use and (filename.startswith(f'{batch_date_to_use}_{session_name}_') or filename.startswith(f'{batch_date_to_use}-{session_descr}_')):
+                return True
+            if (f'-{session_descr}__' in filename) or (f'_{session_name}__' in filename):
                 return True
             path_posix: str = h5_path.resolve().as_posix()
             if f'/{session_name}/' in path_posix:
@@ -534,10 +540,11 @@ class PostBatchCopyContext:
             session_name: str = a_ctxt.session_name
             match: Optional[Path] = None
             for a_path in unmatched_paths:
-                if _subfn_h5_path_matches_session(a_path, session_name=session_name, batch_date_to_use=batch_date_to_use):
+                if _subfn_h5_path_matches_session(a_path, a_ctxt=a_ctxt, batch_date_to_use=batch_date_to_use):
                     match = a_path.resolve()
                     break
             ## END for a_path in unmatched_paths...
+
             if match is None:
                 a_session_folder = context_to_folder.get(a_ctxt)
                 if a_session_folder is not None:
@@ -550,6 +557,7 @@ class PostBatchCopyContext:
             else:
                 print(f'WARN: no H5 file matched session_name={session_name}')
         ## END for a_ctxt in included_session_contexts...
+
         if len(unmatched_paths) > 0:
             print(f'WARN: {len(unmatched_paths)} unmatched H5 path(s): {[p.as_posix() for p in unmatched_paths[:5]]}{" ..." if len(unmatched_paths) > 5 else ""}')
         return paired_contexts, paired_paths
@@ -571,24 +579,27 @@ class PostBatchCopyContext:
 
         matching_files: List[Path] = []
         dated_collected_dir: Path = self.collected_outputs_path.joinpath(self.batch_date_to_use)
+        dated_glob_patterns = ['*_pipeline_with*.h5', '*_pipeline_results*.h5', '*(pipeline_results)*.h5']
         if dated_collected_dir.is_dir():
-            for a_glob in ['*_pipeline_with*.h5', '*_pipeline_results*.h5']:
+            for a_glob in dated_glob_patterns:
                 dated_matches = [a_path.resolve() for a_path in dated_collected_dir.glob(a_glob) if a_path.is_file()]
                 if len(dated_matches) > 0:
                     print(f'glob {dated_collected_dir.as_posix()}/{a_glob!r} matched {len(dated_matches)} file(s)')
                     matching_files.extend(dated_matches)
-            ## END for a_glob in ['*_pipeline_with*.h5', '*_pipeline_results*.h5']...
+            ## END for a_glob in dated_glob_patterns...
 
         if len(matching_files) == 0:
             root_glob_patterns = [
+                f'{self.batch_date_to_use}-*-(pipeline_results)*.h5',
+                f'{self.result_date_to_use}_{self.host_tag}-*-(pipeline_results)*.h5',
                 f'{self.batch_date_to_use}_*_pipeline_with*.h5',
                 f'{self.result_date_to_use}_{self.host_tag}_*_pipeline_with*.h5',
             ]
             for a_glob in root_glob_patterns:
-                matching_files = [a_path.resolve() for a_path in self.collected_outputs_path.glob(a_glob) if a_path.is_file()]
-                if len(matching_files) > 0:
-                    print(f'glob {self.collected_outputs_path.as_posix()}/{a_glob!r} matched {len(matching_files)} file(s)')
-                    break
+                root_matches = [a_path.resolve() for a_path in self.collected_outputs_path.glob(a_glob) if a_path.is_file()]
+                if len(root_matches) > 0:
+                    print(f'glob {self.collected_outputs_path.as_posix()}/{a_glob!r} matched {len(root_matches)} file(s)')
+                    matching_files.extend(root_matches)
             ## END for a_glob in root_glob_patterns...
 
         matching_files = list(dict.fromkeys(matching_files))
@@ -1127,6 +1138,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument('--batch-day-date', type=str, default=today_iso, help=f'Batch day date used in BATCH_DATE_TO_USE (default: today, currently {today_iso}).')
     parser.add_argument('--host-tag', type=str, default=DEFAULT_HOST_TAG, help=f'Host tag appended to BATCH_DATE_TO_USE (default: {DEFAULT_HOST_TAG}).')
     parser.add_argument('--result-date', type=str, default=today_iso, help=f'Result date for inst-FR / glob / cutoff default (default: today, currently {today_iso}).')
+    parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025.')
     parser.add_argument('--cutoff-date', type=_parse_iso_date, default=None, help='H5 copy/glob cutoff date YYYY-MM-DD (default: --result-date).')
     parser.add_argument('--data-root', type=Path, default=None, help='Override data root (otherwise first extant known path).')
     parser.add_argument('--scripts-output-path', type=Path, default=None, help='Override gen_scripts path (otherwise first extant known path).')
@@ -1168,6 +1180,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     cutoff_date: datetime = args.cutoff_date if args.cutoff_date is not None else _parse_iso_date(args.result_date)
     clean_cutoff_date: datetime = args.clean_cutoff_date if args.clean_cutoff_date is not None else _parse_iso_date(DEFAULT_CLEAN_CUTOFF_DATE)
 
+    cli_tbin: Optional[float] = parse_decoding_time_bin_size_str(args.tbin)
     ctx = PostBatchCopyContext.init_from_paths(
         batch_day_date=args.batch_day_date,
         host_tag=args.host_tag,
@@ -1179,7 +1192,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         is_dryrun=is_dryrun,
         debug_print=args.debug_print,
     )
-    ctx = ctx.configure_run_main()
+    ctx = ctx.configure_run_main(decoding_time_bin_size=cli_tbin)
 
     print('-' * 80)
     print(f'BATCH_DATE_TO_USE: {ctx.batch_date_to_use}')

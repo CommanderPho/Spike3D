@@ -109,6 +109,12 @@ ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-24 --compute
 # aliases: --only compute_and_export_kdiba_train_test_position_error_completion_function / export_kdiba_train_test_pos_err
 # ensures split_to_directional_laps / merged_directional_placefields / directional_train_test_split then exports *(train_test_pos_err)_tbin-*.csv + *_agg*
 
+## Paper Figure 2 & Figure 3 per-session exports (inst_fr 1000.0s pkl/h5 + extended PF peak CSV + pipeline_results.h5):
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-26 --computer GL --tbin 0.025 --only export_paper_fig2_fig3
+# aliases: --only export_fig2_fig3 / paper_fig2_fig3
+# follow-up across-session merge + combined tables (writes across_session_result_long_short_recomputed_inst_firing_rate_{DATE}_1000.0.pkl + neuron_replay_stats_table.csv):
+# python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-26 --host-tag GL --result-date 2026-11-26 --tbin 0.025 --execute
+
 ## Status / cancel of a previously generated Slurm chain (no regenerate/submit; finds newest matching submit_phase_chains_*.sh):
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-27 --computer GL --tbin 0.075 --phases 12 --status
 ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-27 --computer GL --tbin 0.075 --phases 12 --cancel
@@ -124,7 +130,7 @@ _cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee'
 _cli_parser.add_argument('--tbin', type=str, default='0.025', help='Decoding time bin size in seconds (e.g. 0.025) or ms token (e.g. 25ms). Default: 0.025')
 _cli_parser.add_argument('--phases', type=str, default='2', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 2')
 _cli_parser.add_argument('--shuffles', type=int, default=64, help='num_shuffles for rank-order / epoch-score shuffles. Default: 64')
-_cli_parser.add_argument('--only', type=str, default=None, help='Optional single-export recipe overlay (does not permanently change default phase dicts). Recipes: export_decoded_posteriors_h5; export_decoded_variables_evaluation; figures_export_laps_correct_decoder_side_by_side; figures_export_2d_position_over_time; export_train_test_pos_err (aliases: ..._completion_function). Forces final_run + that completion function alone with recipe-specific prereq computations. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
+_cli_parser.add_argument('--only', type=str, default=None, help='Optional targeted-export recipe overlay (does not permanently change default phase dicts). Recipes: export_decoded_posteriors_h5; export_decoded_variables_evaluation; figures_export_laps_correct_decoder_side_by_side; figures_export_2d_position_over_time; export_train_test_pos_err; export_paper_fig2_fig3 (aliases: export_fig2_fig3, paper_fig2_fig3, ..._completion_function). Forces final_run + recipe completion function(s) with recipe-specific prereq computations. Local loadedSessPickle is never rewritten; global -tbin pickle may be updated IF_CHANGED.')
 _cli_parser.add_argument('--status', action='store_true', help='Do not generate/submit: find newest matching submit_phase_chains_*.sh for this --computer/--tbin/--date and run it with --status (Slurm only).')
 _cli_parser.add_argument('--cancel', action='store_true', help='Do not generate/submit: find newest matching submit_phase_chains_*.sh for this --computer/--tbin/--date and run it with --cancel (Slurm only).')
 _cli_args, _ = _cli_parser.parse_known_args()
@@ -277,6 +283,25 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'force_recompute_override_computations_includelist': [],
         'description': 'final_run + figures_export_2d_position_over_time_completion_function only (maze-plane x,y trajectory colored by time PNG; freezes pickle updates)',
     },
+    'export_paper_fig2_fig3': {
+        'completion_functions': {
+            'compute_and_export_session_instantaneous_spike_rates_completion_function': compute_and_export_session_instantaneous_spike_rates_completion_function,
+            'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
+            'save_custom_session_files_completion_function': save_custom_session_files_completion_function,
+        },
+        'phases': [ProcessingScriptPhases.final_run],
+        # Prereqs for InstantaneousSpikeRateGroupsComputation + full neuron_replay_stats_df (1D/2D PF peaks + TrialByTrialActivity) + pipeline_results.h5:
+        'extended_computations_include_includelist': ['pf_computation', 'pfdt_computation', 'long_short_decoding_analyses', 'long_short_fr_indicies_analyses', 'jonathan_firing_rate_analysis', 'long_short_post_decoding', 'ratemap_peaks_prominence2d', 'long_short_inst_spike_rate_groups', 'split_to_directional_laps', 'merged_directional_placefields', 'extended_pf_peak_information'],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,  # compute-if-missing; local loadedSessPickle still never rewritten
+        'force_recompute_override_computations_includelist': [],  # compute-if-missing only (skip heavy decoder/shuffle tbin force-recompute)
+        'completion_fn_override_kwargs_dict': {
+            'compute_and_export_session_instantaneous_spike_rates_completion_function': dict(instantaneous_time_bin_size_seconds_list=[1000.0], epoch_handling_mode='UseAllEpochsMode', save_hdf=True, save_pickle=True, save_across_session_hdf=False),
+            'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(save_csv=True, save_json=False),
+            'save_custom_session_files_completion_function': dict(enable_save_pipeline_pkl=False, enable_save_global_computations_pkl=False, enable_save_h5=True, should_write_posterior_h5=False),
+        },
+        'description': 'final_run + Fig2/Fig3 prereqs (compute-if-missing) + inst_fr (1000.0s pkl/h5) + extended_pf_peak CSV + pipeline_results.h5 (for PostBatchCopyResults.py --run-copy-sess-inst-fr -> across_session_inst_fr pkl + neuron_replay_stats_table.csv)',
+    },
 }
 _ONLY_MODE_RECIPES['export_decoded_posteriors_h5_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_posteriors_h5']
 _ONLY_MODE_RECIPES['save_custom_session_files_completion_function'] = _ONLY_MODE_RECIPES['export_decoded_posteriors_h5']
@@ -285,6 +310,8 @@ _ONLY_MODE_RECIPES['figures_export_laps_correct_decoder_side_by_side_completion_
 _ONLY_MODE_RECIPES['compute_and_export_kdiba_train_test_position_error_completion_function'] = _ONLY_MODE_RECIPES['export_train_test_pos_err']
 _ONLY_MODE_RECIPES['export_kdiba_train_test_pos_err'] = _ONLY_MODE_RECIPES['export_train_test_pos_err']
 _ONLY_MODE_RECIPES['figures_export_2d_position_over_time_completion_function'] = _ONLY_MODE_RECIPES['figures_export_2d_position_over_time']
+_ONLY_MODE_RECIPES['export_fig2_fig3'] = _ONLY_MODE_RECIPES['export_paper_fig2_fig3']
+_ONLY_MODE_RECIPES['paper_fig2_fig3'] = _ONLY_MODE_RECIPES['export_paper_fig2_fig3']
 _is_kdiba_session: bool = True
 # %%
 
@@ -388,15 +415,15 @@ if _only_key is not None:
     phases_to_generate = list(_only_recipe['phases'])
     if _cli_phases_before_only != [p.value for p in phases_to_generate]:
         print(f'WARN: --only={_only_key!r} overrides --phases {_cli_args.phases!r} ({_cli_phases_before_only}) -> {[p.value for p in phases_to_generate]}')
+    _recipe_completion_functions_dict: Dict[str, Callable] = dict(_only_recipe['completion_functions']) if ('completion_functions' in _only_recipe) else {_only_recipe['completion_fn_name']: _only_recipe['completion_fn']}
     for _phase in phases_to_generate:
-        phase_any_run_custom_user_completion_functions_dict_dict[_phase] = {
-            _only_recipe['completion_fn_name']: _only_recipe['completion_fn'],
-        }
+        phase_any_run_custom_user_completion_functions_dict_dict[_phase] = dict(_recipe_completion_functions_dict)
     ## END for _phase in phases_to_generate...
+
     custom_phase_extended_computations_include_includelist = list(_only_recipe['extended_computations_include_includelist'])
     extra_extended_computations_include_includelist = list(_only_recipe.get('extra_extended_computations_include_includelist', []))
     print(f'cli --only={_only_key!r}: {_only_recipe["description"]}')
-    print(f'  completion_functions: [{_only_recipe["completion_fn_name"]}]')
+    print(f'  completion_functions: {list(_recipe_completion_functions_dict.keys())}')
     print(f'  custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist}')
     print(f'  should_freeze_pipeline_updates: {_only_recipe.get("should_freeze_pipeline_updates", False)}')
     if 'force_recompute_override_computations_includelist' in _only_recipe:
@@ -607,6 +634,14 @@ if _only_recipe is not None:
         custom_user_completion_function_override_kwargs_dict[_fn_name_for_kwargs] = {**custom_user_completion_function_override_kwargs_dict.get(_fn_name_for_kwargs, {}), **_recipe_completion_fn_override_kwargs}
         print(f'--only={_only_key!r} completion_fn_override_kwargs[{_fn_name_for_kwargs}]: {_recipe_completion_fn_override_kwargs}')
     ## END if _recipe_completion_fn_override_kwargs...
+    _recipe_completion_fn_override_kwargs_dict: Dict[str, Dict] = _only_recipe.get('completion_fn_override_kwargs_dict', None) or {}
+    if _recipe_completion_fn_override_kwargs_dict:
+        for _fn_name_for_kwargs, _fn_override_kwargs in _recipe_completion_fn_override_kwargs_dict.items():
+            custom_user_completion_function_override_kwargs_dict[_fn_name_for_kwargs] = {**custom_user_completion_function_override_kwargs_dict.get(_fn_name_for_kwargs, {}), **dict(_fn_override_kwargs)}
+            print(f'--only={_only_key!r} completion_fn_override_kwargs_dict[{_fn_name_for_kwargs}]: {_fn_override_kwargs}')
+        ## END for _fn_name_for_kwargs, _fn_override_kwargs in _recipe_completion_fn_override_kwargs_dict.items()...
+
+    ## END if _recipe_completion_fn_override_kwargs_dict...
     _recipe_force_recompute_computation_kwargs_dict: Dict = _only_recipe.get('force_recompute_override_computation_kwargs_dict', None) or {}
     if _recipe_force_recompute_computation_kwargs_dict:
         for _comp_name, _comp_kwargs in _recipe_force_recompute_computation_kwargs_dict.items():

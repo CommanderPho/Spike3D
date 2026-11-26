@@ -21662,10 +21662,10 @@ requires-dist = [
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.24,<0.25" },
     { name = "mkdocstrings-python", specifier = "~=1.9" },
     { name = "neuropy", editable = "../NeuroPy" },
-    { name = "numba", specifier = ">=0.57,<0.62" },
-    { name = "numpy", specifier = ">=1.23.2,<2" },
+    { name = "numba", specifier = ">=0.60,<0.69" },
+    { name = "numpy", specifier = ">=1.26,<3" },
     { name = "objsize", specifier = ">=0.6.1,<0.7" },
-    { name = "pandas", specifier = ">=1.5.3,<3.0.0" },
+    { name = "pandas", specifier = "==1.5.3" },
     { name = "umap-learn", specifier = ">=0.5.9.post2" },
 ]
 
