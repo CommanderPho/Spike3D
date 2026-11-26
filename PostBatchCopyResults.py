@@ -134,11 +134,12 @@ Usage:
 
 
 
-    ## For Scratch ('/scratch/kdiba_root/kdiba99/halechr/Data'):
+    ## Scratch is the default write root when FORCE_SCRATCH_WRITES=True (auto: <data-root>/Output/{gen_scripts,collected_outputs}):
     python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-10 --result-date 2026-11-10
     python PostBatchCopyResults.py --run-copy-sess-inst-fr --data-root /scratch/kdiba_root/kdiba99/halechr/Data --batch-day-date 2026-11-26 --host-tag GL --result-date 2026-11-26 --tbin 0.025 --execute
     python PostBatchCopyResults.py --run-clean-old-files --data-root /scratch/kdiba_root/kdiba99/halechr/Data --clean-cutoff-date 2026-11-01
-    python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10
+    # optional explicit overrides (still must not be Turbo while FORCE_SCRATCH_WRITES=True):
+    # python PostBatchCopyResults.py --run-main --data-root /scratch/kdiba_root/kdiba99/halechr/Data --collected-outputs-path /scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs --batch-day-date 2026-11-10 --result-date 2026-11-10
 
 
 
@@ -190,38 +191,42 @@ DEFAULT_SCRATCH_TO_TURBO_COLLECTED_OUTPUT_FILE_GLOBS: List[str] = [
     # '*ripple_EpochScoreShuffle_ByShuffle_df*.csv',
 ]
 
+# Prefer Scratch Output trees first (GL Turbo is often R/O; match ProcessBatchOutputs_qclus1246789_Only.ipy FORCE_SCRATCH_WRITES).
+FORCE_SCRATCH_WRITES: bool = True  # set False when Turbo is writable again / intentionally using Turbo outputs
+
 KNOWN_SCRIPTS_OUTPUT_PATHS: List[str] = [
+    '/scratch/kdiba_root/kdiba99/halechr/Data/Output/gen_scripts',
+    'K:/scratch/gen_scripts',
+    '/home/halechr/FastData/gen_scripts/',
+    'output/gen_scripts/',
     '/Users/pho/repo/Pho Secondary Workspace/Spike3DEnv/cloud/turbo/Data/Output/gen_scripts',
     '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
     '/Users/pho/University of Michigan Dropbox/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs',
-    '/home/halechr/FastData/gen_scripts/',
-    'output/gen_scripts/',
-    'K:/scratch/gen_scripts',
 ]
 
 KNOWN_COLLECTED_OUTPUT_PATHS: List[str] = [
-    '/nfs/turbo/umms-kdiba/Data/Output/collected_outputs',
-    '/home/halechr/FastData/collected_outputs/',
-    '/home/halechr/cloud/turbo/Data/Output/collected_outputs',
+    '/scratch/kdiba_root/kdiba99/halechr/Data/Output/collected_outputs',
     r'K:/scratch/collected_outputs',
+    '/home/halechr/FastData/collected_outputs/',
     '/Users/pho/data/collected_outputs',
-    'output/gen_scripts/',
+    'output/collected_outputs/',
     '/Volumes/SwapSSD/Data/collected_outputs',
     '/Users/pho/Dropbox (University of Michigan)/MED-DibaLabDropbox/Data/Pho/Outputs/output/collected_outputs',
     r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/output/collected_outputs',
-    '/home/halechr/FastData/collected_outputs/',
+    '/nfs/turbo/umms-kdiba/Data/Output/collected_outputs',
     '/home/halechr/cloud/turbo/Data/Output/collected_outputs',
 ]
 
 KNOWN_GLOBAL_DATA_ROOT_PARENT_PATHS: List[str] = [
-    '/home/halechr/cloud/turbo/Data',
+    '/scratch/kdiba_root/kdiba99/halechr/Data',
+    r'/home/halechr/FastData',
     '/Users/pho/data',
-    r'/nfs/turbo/umms-kdiba/Data',
     r'/media/halechr/BETAMAX/Data',
     r'/media/halechr/MAX/Data',
     r'W:/Data',
-    r'/home/halechr/FastData',
     r'/Volumes/MoverNew/data',
+    '/home/halechr/cloud/turbo/Data',
+    r'/nfs/turbo/umms-kdiba/Data',
 ]
 
 NEURON_REPLAY_STATS_CSV_DTYPES: Dict[str, str] = {
@@ -280,35 +285,13 @@ class PostBatchCopyContext:
 
     @classmethod
     def init_from_paths(cls, batch_day_date: str, host_tag: str, result_date_to_use: str, cutoff_date: datetime, data_root: Optional[Path] = None, scripts_output_path: Optional[Path] = None, collected_outputs_path: Optional[Path] = None, is_dryrun: bool = True, debug_print: bool = False) -> "PostBatchCopyContext":
-        """Resolve machine-specific paths and session lists (notebook cell 2)."""
+        """Resolve machine-specific paths and session lists (notebook cell 2). Prefer Scratch Output trees when ``FORCE_SCRATCH_WRITES``."""
         batch_date_to_use: str = f'{batch_day_date}_{host_tag}'
-
-        if scripts_output_path is not None:
-            scripts_output_path = Path(scripts_output_path).resolve()
-            if not scripts_output_path.exists():
-                raise FileNotFoundError(f'scripts_output_path does not exist: {scripts_output_path}')
-        else:
-            known_scripts_output_paths = [Path(v).resolve() for v in KNOWN_SCRIPTS_OUTPUT_PATHS]
-            scripts_output_path = find_first_extant_path(known_scripts_output_paths)
-            assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
-        print(f'scripts_output_path: {scripts_output_path}')
-
-        if collected_outputs_path is not None:
-            collected_outputs_path = Path(collected_outputs_path).resolve()
-            if not collected_outputs_path.exists():
-                raise FileNotFoundError(f'collected_outputs_path does not exist: {collected_outputs_path}')
-        else:
-            known_collected_output_paths = [Path(v).resolve() for v in KNOWN_COLLECTED_OUTPUT_PATHS]
-            known_collected_output_paths.append(scripts_output_path.joinpath('../collected_outputs').resolve())
-            collected_outputs_path = find_first_extant_path(known_collected_output_paths)
-            Assert.path_exists(collected_outputs_path)
-        collected_outputs_path.mkdir(exist_ok=True)
-        print(f'collected_outputs_path: {collected_outputs_path}')
-
-        collected_figures_path = collected_outputs_path.parent.joinpath('collected_figures')
-        collected_figures_path.mkdir(exist_ok=True)
-        print(f'collected_figures_path: {collected_figures_path}')
-        Assert.path_exists(collected_figures_path)
+        turbo_data_root, scratch_data_root, use_scratch_writes = GreatlakesTurboToScratchHelpers.detect_scratch_write_mode(force_scratch_writes=FORCE_SCRATCH_WRITES)
+        print(f'FORCE_SCRATCH_WRITES: {FORCE_SCRATCH_WRITES}')
+        print(f'turbo_data_root: {turbo_data_root}')
+        print(f'scratch_data_root: {scratch_data_root}')
+        print(f'use_scratch_writes: {use_scratch_writes}')
 
         all_session_contexts: List[IdentifyingContext] = UserAnnotationsManager.get_hardcoded_good_sessions()
         excluded_session_keys: List[str] = []
@@ -318,15 +301,54 @@ class PostBatchCopyContext:
         print(f'included_session_contexts: {included_session_contexts}')
 
         all_known_session_contexts: List[IdentifyingContext] = UserAnnotationsManager.get_all_known_sessions()
+        # Prefer unresolved Scratch write root so Output/ stays under /scratch/... even when Data resolves onto /gpfs/accounts/...:
         if data_root is not None:
-            global_data_root_parent_path = data_root.resolve()
+            global_data_root_parent_path = Path(data_root)
             if not global_data_root_parent_path.exists():
                 raise FileNotFoundError(f'--data-root does not exist: {global_data_root_parent_path}')
+        elif use_scratch_writes:
+            global_data_root_parent_path = GreatlakesTurboToScratchHelpers.SCRATCH_DATA_ROOT
         else:
             known_global_data_root_parent_paths = [Path(v) for v in KNOWN_GLOBAL_DATA_ROOT_PARENT_PATHS]
             global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
         assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist! Is the right computer's config commented out above?"
         print(f'global_data_root_parent_path: {global_data_root_parent_path}')
+
+        # Scripts / collected_outputs: Scratch Output/{gen_scripts,collected_outputs} when FORCE_SCRATCH_WRITES (unless CLI overrides):
+        if (scripts_output_path is None) and (collected_outputs_path is None) and use_scratch_writes:
+            scripts_output_path, collected_outputs_path, _scratch_write_root = GreatlakesTurboToScratchHelpers.build_scratch_output_paths(global_data_root=global_data_root_parent_path)
+            GreatlakesTurboToScratchHelpers.assert_output_paths_not_on_turbo(scripts_output_path, collected_outputs_path)
+        else:
+            if scripts_output_path is not None:
+                scripts_output_path = Path(scripts_output_path)
+                if not scripts_output_path.exists():
+                    raise FileNotFoundError(f'scripts_output_path does not exist: {scripts_output_path}')
+            else:
+                known_scripts_output_paths = [Path(v) for v in KNOWN_SCRIPTS_OUTPUT_PATHS]
+                scripts_output_path = find_first_extant_path(known_scripts_output_paths)
+                assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist! Is the right computer's config commented out above?"
+
+            if collected_outputs_path is not None:
+                collected_outputs_path = Path(collected_outputs_path)
+                if not collected_outputs_path.exists():
+                    raise FileNotFoundError(f'collected_outputs_path does not exist: {collected_outputs_path}')
+            else:
+                known_collected_output_paths = [Path(v) for v in KNOWN_COLLECTED_OUTPUT_PATHS]
+                known_collected_output_paths.append(scripts_output_path.joinpath('../collected_outputs'))
+                collected_outputs_path = find_first_extant_path(known_collected_output_paths)
+                Assert.path_exists(collected_outputs_path)
+            if FORCE_SCRATCH_WRITES:
+                GreatlakesTurboToScratchHelpers.assert_output_paths_not_on_turbo(scripts_output_path, collected_outputs_path)
+        ## END if (scripts_output_path is None) and (collected_outputs_path is None) and use_scratch_writes...
+
+        print(f'scripts_output_path: {scripts_output_path}')
+        collected_outputs_path.mkdir(exist_ok=True)
+        print(f'collected_outputs_path: {collected_outputs_path}')
+
+        collected_figures_path = collected_outputs_path.parent.joinpath('collected_figures')
+        collected_figures_path.mkdir(exist_ok=True)
+        print(f'collected_figures_path: {collected_figures_path}')
+        Assert.path_exists(collected_figures_path)
 
         all_known_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, all_known_session_contexts)
         good_session_concrete_folders = ConcreteSessionFolder.build_concrete_session_folders(global_data_root_parent_path, included_session_contexts)
