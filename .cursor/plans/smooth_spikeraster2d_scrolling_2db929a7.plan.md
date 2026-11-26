@@ -7,16 +7,16 @@ todos:
     status: completed
   - id: phase2-signal-and-data-cleanup
     content: Fix CustomLinearRegionItem/Render2DScrollWindowPlot 2x-4x signal emissions, unify PyQtGraph tracks onto setXLink, make LiveWindowedData lazy, static-upload 2D time curves, and silence hot-path debug prints
-    status: in_progress
+    status: completed
   - id: phase3-fast-lod-spike-raster
     content: Eliminate 2x-3x duplicate scatter additions and build FastCullableSpikeRasterItem with O(log N) searchsorted culling + tiled RGBA spike-density LOD mipmap
-    status: pending
+    status: completed
   - id: phase4-pyqtgraph-decoded-tracks
     content: Build TiledPosteriorHeatmapItem, add native PyQtGraph ContinuousDecode and Marginal docked tracks (with pinned marginal labels, red lin_pos curve, and wheel eventFilter), and throttle Matplotlib fallback with draw_idle
-    status: pending
+    status: completed
   - id: phase5-verification-benchmarks
     content: Add offscreen Qt benchmark and crash-resilience regression tests verifying single-pass signals, <5ms frame times at 15s-2000s windows, and bounds/OOM safety
-    status: pending
+    status: in_progress
 isProject: false
 ---
 
