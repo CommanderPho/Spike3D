@@ -4,22 +4,22 @@ overview: Complete SpyglassClusterlessDecoder (powered by LorenFrankLab/non_loca
 todos:
   - id: nld-adapters-1d2d-fit-predict
     content: Implement PfNDSyncedNLDEnvironment (1D/2D), unit-free PfND builder, speed-filtered active-electrode training, split fit/batched-epoch predict with window pooling, and C-order posterior helpers in spyglass_clusterless_adapters.py
-    status: pending
+    status: completed
   - id: spyglass-decoder-dropin
     content: Complete SpyglassClusterlessDecoder (fit-once lifecycle, 1D+2D decode_specific_epochs with BinningContainers/sliding/single-bin & optional spikes_df, C-order reshape, marginals, from_session, and compact pickling) in spyglass_clusterless_decoder.py
-    status: pending
+    status: completed
   - id: rtc-decoder-fixes
     content: Apply C-order 2D reshape/flatten, continuous ClusterlessDecoder option with movement_var, non-mutating multiunits keep-mask, optional spikes_df, marginals, and from_session to ClusterlessRTCPositionDecoder & rtc_clusterless_adapters.py
-    status: pending
+    status: completed
   - id: pipeline-standalone-registration
     content: Enable standalone 1D+2D clusterless decoding with on-demand unit-free PfND and fallback pf1D_Decoder/pf2D_Decoder slot population in DefaultComputationFunctions.py
-    status: pending
+    status: completed
   - id: minimal-zero-neuron-and-context-guards
     content: Add minimal zero-neuron guards in NeuroPy (dataSession.py, SessionSelectionAndFiltering.py, placefields.py) and multi-context clusterless resolution guards in PendingNotebookCode.py
-    status: pending
+    status: completed
   - id: verify-clusterless-test-suite
     content: Run and expand unit/integration tests for 1D+2D NLD & RTC decoding, non-square 2D coordinate accuracy, arbitrary epoch binning, and zero-neuron standalone sessions
-    status: pending
+    status: completed
 isProject: false
 ---
 
