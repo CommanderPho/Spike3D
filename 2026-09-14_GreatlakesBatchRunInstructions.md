@@ -36,7 +36,7 @@ deactivate
 & "H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/Activate.ps1"
 $env:SPIKE3D_REPO_ROOT = "H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv"
 
-ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-27 --computer Apogee --tbin 0.075 --phases 12
+ipython ProcessBatchOutputs_qclus1246789_Only.ipy -- --date 2026-11-28 --computer Apogee --tbin 0.075 --phases 12
 
 ```
 
