@@ -67,7 +67,7 @@ _time_checkpoint('IMPORTS: pythonScriptTemplating')
 
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
 from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_epoch_score_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_variables_evaluation_completion_function, compute_and_export_kdiba_train_test_position_error_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, figures_export_laps_correct_decoder_side_by_side_completion_function, figures_export_continuous_4decoder_rasters_and_context_completion_function, figures_export_2d_position_over_time_completion_function
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import kdiba_session_post_fixup_completion_function, generalized_decode_epochs_dict_and_export_results_completion_function, export_decoded_variables_evaluation_completion_function, compute_and_export_kdiba_train_test_position_error_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, figures_export_laps_correct_decoder_side_by_side_completion_function, figures_export_continuous_4decoder_rasters_and_context_completion_function, figures_export_2d_position_over_time_completion_function, compute_and_export_pbe_flickering_completion_function
 _time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 # ==================================================================================================================================================================================================================================================================================== #
@@ -217,6 +217,7 @@ phase_any_run_custom_user_completion_functions_dict_dict = {
         'compute_and_export_session_epoch_score_shuffles_completion_function': compute_and_export_session_epoch_score_shuffles_completion_function,
         'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function, # FAT `_tbin-0.05` CSVs
         'export_decoded_variables_evaluation_completion_function': export_decoded_variables_evaluation_completion_function, # context-uncertainty + Fig5 occupancy CSVs; after generalized_decode so EpochComputations is populated
+        'compute_and_export_pbe_flickering_completion_function': compute_and_export_pbe_flickering_completion_function, # `(pbe_flickering_df)` / `(pbe_flickering_bouts_df)` CSVs
         # 'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, # PBE/ripple decoded posterior images (`_display_decoded_trackID_weighted_position_posterior_withMultiColorOverlay` at the active tbin); must follow `generalized_decode_epochs_dict_and_export_results_completion_function` so the decoded epochs are at the right tbin
         # 'save_custom_session_files_completion_function': save_custom_session_files_completion_function, # global pickle only (enable_save_pipeline_pkl=False, enable_save_h5=False below)
     },
@@ -290,6 +291,17 @@ _ONLY_MODE_RECIPES: Dict[str, Dict] = {
         'completion_fn_override_kwargs': dict(min_num_spikes_per_bin_to_be_considered_active=1, min_num_unique_active_neurons_per_time_bin=1),  # low-firing bin mask thresholds for pos-err metrics (defaults)
         'description': 'final_run + DirectionalLaps/MergedDecoders/TrainTestSplit prereqs (force-recompute TrainTestSplit) + compute_and_export_kdiba_train_test_position_error_completion_function only (*(train_test_pos_err)_tbin-*.csv + *_agg*)',
     },
+    'export_pbe_flickering': {
+        'completion_fn_name': 'compute_and_export_pbe_flickering_completion_function',
+        'completion_fn': compute_and_export_pbe_flickering_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        'extended_computations_include_includelist': ['split_to_directional_laps', 'merged_directional_placefields', 'pbe_flickering_analysis'],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,
+        'force_recompute_override_computations_includelist': ['pbe_flickering_analysis'],
+        'completion_fn_override_kwargs': dict(conf_thresh=0.65, strict_conf_thresh=0.75, include_laps_control=True, force_recompute=True, debug_print=False),
+        'description': 'final_run + DirectionalLaps/MergedDecoders/pbe_flickering_analysis prereqs + compute_and_export_pbe_flickering_completion_function only (*(pbe_flickering_df)_tbin-*.csv + *(pbe_flickering_bouts_df)_tbin-*.csv)',
+    },
     'figures_export_2d_position_over_time': {
         'completion_fn_name': 'figures_export_2d_position_over_time_completion_function',
         'completion_fn': figures_export_2d_position_over_time_completion_function,
@@ -330,6 +342,8 @@ _ONLY_MODE_RECIPES['export_kdiba_train_test_pos_err'] = _ONLY_MODE_RECIPES['expo
 _ONLY_MODE_RECIPES['figures_export_2d_position_over_time_completion_function'] = _ONLY_MODE_RECIPES['figures_export_2d_position_over_time']
 _ONLY_MODE_RECIPES['export_fig2_fig3'] = _ONLY_MODE_RECIPES['export_paper_fig2_fig3']
 _ONLY_MODE_RECIPES['paper_fig2_fig3'] = _ONLY_MODE_RECIPES['export_paper_fig2_fig3']
+_ONLY_MODE_RECIPES['pbe_flickering'] = _ONLY_MODE_RECIPES['export_pbe_flickering']
+_ONLY_MODE_RECIPES['compute_and_export_pbe_flickering_completion_function'] = _ONLY_MODE_RECIPES['export_pbe_flickering']
 _is_kdiba_session: bool = True
 # %%
 
@@ -476,6 +490,7 @@ _tbin_dependent_force_recompute_override_computations_includelist = [
     'non_PBE_epochs_results',
     'generalized_specific_epochs_decoding',
     'epoch_score_shuffle_analysis',
+    'pbe_flickering_analysis',
 ]
 
 # ==================================================================================================================== #
@@ -609,6 +624,7 @@ custom_user_completion_function_override_kwargs_dict = {
                                                                                 ),
     # 'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
     'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=False),
+    'compute_and_export_pbe_flickering_completion_function': dict(decoding_time_bin_size=ripple_decoding_time_bin_size, conf_thresh=0.65, strict_conf_thresh=0.75, include_laps_control=True, force_recompute=False, debug_print=False),
     'compute_and_export_kdiba_train_test_position_error_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, force_recompute_directional_train_test_split_result=True, min_num_spikes_per_bin_to_be_considered_active=1, min_num_unique_active_neurons_per_time_bin=1, debug_print=True),
     'figures_export_laps_correct_decoder_side_by_side_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, min_num_spikes_per_bin_to_be_considered_active=1, min_num_unique_active_neurons_per_time_bin=1),
     'figures_export_continuous_4decoder_rasters_and_context_completion_function': dict(active_laps_decoding_time_bin_size=laps_decoding_time_bin_size, context_decoding_time_bin_size=0.075, min_num_spikes_per_bin_to_be_considered_active=1, min_num_unique_active_neurons_per_time_bin=1),
