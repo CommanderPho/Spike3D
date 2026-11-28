@@ -1,121 +1,83 @@
-# %% [markdown]
-# # Bapun-only batch driver (`format_name='bapun'`)
-# Standalone entry script for processing **Bapun** sessions in batch. Do not mix KDIBA `IdentifyingContext` entries here — `ConcreteSessionFolder.build_concrete_session_folders` requires a single `format_name` per run.
-# Session keys should match `BapunDataSessionFormatRegisteredClass._get_session_specific_parameters` in NeuroPy `BapunDataSessionFormat.py`.
-
 # %%
-%config IPCompleter.use_jedi = False
-%pdb off
-# %load_ext autoreload
-# %autoreload 3
+# Bapun-only batch driver (`format_name='bapun'`). Same CLI / chained-submit UX as ProcessBatchOutputs_qclus1246789_Only.ipy.
+# Do not mix KDIBA IdentifyingContext entries — ConcreteSessionFolder / basedirs require a single format_name per run.
+#
+# CALL EXAMPLES:
+#   ipython ProcessBatchOutputs_Bapun_Batch.ipy -- --date 2026-11-27 --computer GL --tbin 0.050 --phases 12
+#   ipython ProcessBatchOutputs_Bapun_Batch.ipy -- --date 2026-11-27 --computer GL --tbin 0.050 --phases 123
+#   ipython ProcessBatchOutputs_Bapun_Batch.ipy -- --date 2026-11-27 --computer GL --only export_bapun_train_test
+#   ipython ProcessBatchOutputs_Bapun_Batch.ipy -- --date 2026-11-27 --computer GL --tbin 0.050 --phases 12 --status
+#   ipython ProcessBatchOutputs_Bapun_Batch.ipy -- --date 2026-11-27 --computer Lab --phases 12
+#
 import os
 import sys
-import re
-import json
-import time
 import platform
-import subprocess
+import time
+import argparse
+import re
 from copy import deepcopy
-from typing import List, Dict, Optional, Union, Callable
+from typing import List, Dict, Optional, Union, Callable, Tuple
 from pathlib import Path
-import pathlib
 import numpy as np
 import pandas as pd
-import tables as tb
-from copy import deepcopy
-from datetime import datetime, timedelta
-from attrs import define, field, Factory
+from datetime import datetime
 
-# # required to enable non-blocking interaction:
-# %gui qt5 ## TODO 2024-01-18 - this causes kernel to crash when running notebook remotely via VSCode's ssh remote
+_t0: float = time.perf_counter()
+_timing_log: List[tuple] = []
 
-## Pho's Custom Libraries:
+def _time_checkpoint(label: str) -> None:
+    global _t0
+    elapsed = time.perf_counter() - _t0
+    _timing_log.append((label, elapsed))
+    print(f'[TIMING] {label}: {elapsed:.2f}s')
+    _t0 = time.perf_counter()
+
+def _print_timing_summary() -> None:
+    total = sum(e for _, e in _timing_log)
+    print(f'\n[TIMING SUMMARY] total={total:.2f}s across {len(_timing_log)} checkpoints:')
+    for label, elapsed in sorted(_timing_log, key=lambda x: -x[1]):
+        pct = 100.0 * elapsed / total if total else 0.0
+        print(f'  {elapsed:7.2f}s ({pct:5.1f}%)  {label}')
+    ## END for label, elapsed in sorted(_timing_log, key=lambda x: -x[1])...
+
+_time_checkpoint('IMPORTS: stdlib+numpy/pandas')
+
+os.environ.setdefault('MPLBACKEND', 'Agg')
+if hasattr(os, 'getuid'):
+    os.environ.setdefault('MPLCONFIGDIR', f'/tmp/mpl-cache-{os.getuid()}')
+os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+
 from pyphocorehelpers.Filesystem.path_helpers import find_first_extant_path
+from pyphocorehelpers.print_helpers import get_now_rounded_time_str
+_time_checkpoint('IMPORTS: path_helpers')
 
-# Jupyter interactivity:
-from IPython.display import display
-
-# pyPhoPlaceCellAnalysis:
-# NeuroPy (Diba Lab Python Repo) Loading — keep format imports so registries are populated.
-from neuropy.core.session.Formats.BaseDataSessionFormats import DataSessionFormatRegistryHolder
-from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
-from neuropy.core.session.Formats.Specific.KDibaOldDataSessionFormat import KDibaOldDataSessionFormatRegisteredClass
-from neuropy.core.session.Formats.Specific.RachelDataSessionFormat import RachelDataSessionFormat
-from neuropy.core.session.Formats.Specific.HiroDataSessionFormat import HiroDataSessionFormatRegisteredClass
-
-## For computation parameters:
 from neuropy.utils.result_context import IdentifyingContext
-from neuropy.core.session.Formats.BaseDataSessionFormats import find_local_session_paths
-from neuropy.core import Epoch
+from neuropy.core.session.Formats.Specific.BapunDataSessionFormat import BapunDataSessionFormatRegisteredClass
+_time_checkpoint('IMPORTS: session_formats:Bapun')
 
-from pyphocorehelpers.programming_helpers import copy_to_clipboard
+from pyphoplacecellanalysis.General.Batch.concrete_session_folder import ConcreteSessionFolder
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases, BatchScriptsCollection, generate_batch_single_session_scripts, build_windows_powershell_run_script, resolve_spike3d_batch_venv_paths, try_copy_to_clipboard, try_execute_shell_command
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import GreatlakesTurboToScratchHelpers
+from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import build_decoding_time_bin_size_filename_suffix, parse_decoding_time_bin_size_str
+from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_session_phase_script_map, write_chained_submit_script, write_all_retry_from_phase_scripts, print_chain_status_hint, run_matching_chained_submit_mode
+_time_checkpoint('IMPORTS: pythonScriptTemplating')
 
-from pyphoplacecellanalysis.General.Pipeline.Stages.Loading import saveData, loadData
-import pyphoplacecellanalysis.General.Batch.runBatch
-from pyphoplacecellanalysis.General.Batch.runBatch import BatchRun, BatchResultDataframeAccessor, run_diba_batch, BatchComputationProcessOptions, BatchSessionCompletionHandler, SavingOptions
-from pyphoplacecellanalysis.General.Pipeline.NeuropyPipeline import PipelineSavingScheme
-
-from neuropy.core.user_annotations import UserAnnotationsManager
-from pyphoplacecellanalysis.General.Batch.runBatch import SessionBatchProgress
-from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import AcrossSessionsResults, AcrossSessionTables, AcrossSessionsVisualizations
-
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import build_vscode_workspace, build_windows_powershell_run_script
-
-from pyphoplacecellanalysis.General.Batch.runBatch import PipelineCompletionResult, BatchSessionCompletionHandler
-
-from pyphocorehelpers.Filesystem.metadata_helpers import FilesystemMetadata, get_file_metadata
-from pyphocorehelpers.Filesystem.path_helpers import discover_data_files, generate_copydict, copy_movedict, copy_file, save_copydict_to_text_file, read_copydict_from_text_file, invert_filedict
-from pyphoplacecellanalysis.General.Batch.runBatch import get_file_str_if_file_exists
-from pyphoplacecellanalysis.SpecificResults.AcrossSessionResults import check_output_h5_files, copy_files_in_filelist_to_dest
-from pyphoplacecellanalysis.General.Batch.runBatch import ConcreteSessionFolder, BackupMethods
-
-# from pyphocorehelpers.gui.Jupyter.simple_widgets import fullwidth_path_widget, filesystem_path_folder_contents_widget
-
-import inspect
-from jinja2 import Template
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string, write_test_script
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import export_rank_order_results_completion_function, figures_rank_order_results_completion_function, determine_session_t_delta_completion_function, perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, compute_and_export_session_epoch_score_shuffles_completion_function, compute_and_export_session_instantaneous_spike_rates_completion_function, compute_and_export_session_extended_placefield_peak_information_completion_function, backup_previous_session_files_completion_function, compute_and_export_session_trial_by_trial_performance_completion_function, save_custom_session_files_completion_function, compute_and_export_cell_first_spikes_characteristics_completion_function, figures_plot_cell_first_spikes_characteristics_completion_function
-from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_pickle_clusterless_decoder_completion_function, compute_and_pickle_spyglass_clusterless_decoder_completion_function, figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function, compute_and_export_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_train_test_decoder_error_distance_completion_function, figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function, figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import ProcessingScriptPhases
-
-from pyphoplacecellanalysis.General.Batch.pythonScriptTemplating import BatchScriptsCollection, generate_batch_single_session_scripts
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import MAIN_get_template_string
+from pyphoplacecellanalysis.General.Batch.BatchJobCompletion.UserCompletionHelpers.batch_user_completion_helpers import (
+    backup_previous_session_files_completion_function,
+    generalized_decode_epochs_dict_and_export_results_completion_function,
+    figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+    compute_and_export_bapun_train_test_decoder_error_distance_completion_function,
+    figures_plot_bapun_train_test_decoder_error_distance_completion_function,
+    compute_and_pickle_clusterless_decoder_completion_function,
+    compute_and_pickle_spyglass_clusterless_decoder_completion_function,
+    figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function,
+    figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function,
+)
+_time_checkpoint('IMPORTS: batch_user_completion_helpers')
 
 
-def build_bapun_pickle_suffix(included_qclu_values: List[int], minimum_inclusion_fr_Hz: float) -> str:
-    return f"_withNormalComputedReplays-qclu_{included_qclu_values}-frateThresh_{minimum_inclusion_fr_Hz}"
-
-
-def filter_bapun_session_paths(included_session_contexts: List[IdentifyingContext], good_session_concrete_folders) -> tuple[List[IdentifyingContext], list]:
-    """Return filtered (contexts, folders), skipping unregistered or missing on-disk sessions with warnings."""
-    session_folder_by_context = {a_session_folder.context: a_session_folder for a_session_folder in good_session_concrete_folders}
-    filtered_contexts: List[IdentifyingContext] = []
-    filtered_folders = []
-    for curr_session_context in included_session_contexts:
-        a_session_folder = session_folder_by_context.get(curr_session_context)
-        if a_session_folder is None:
-            print(f"WARN: skipping {curr_session_context}: not registered in Bapun build_session_basedirs_dict (no known data path)")
-            continue
-        basedir = Path(a_session_folder.path)
-        if not basedir.is_dir():
-            print(f"WARN: skipping {a_session_folder.context}: {basedir} (directory missing)")
-            continue
-        xml_files = list(basedir.glob('*.xml'))
-        if len(xml_files) == 0:
-            print(f"WARN: skipping {a_session_folder.context}: {basedir} (no .xml file)")
-            continue
-        if len(xml_files) > 1:
-            print(f"WARN: {a_session_folder.context}: multiple .xml files in {basedir}")
-        filtered_contexts.append(curr_session_context)
-        filtered_folders.append(a_session_folder)
-    if len(filtered_contexts) == 0:
-        raise FileNotFoundError("Bapun session preflight failed: no valid session paths remain after filtering included_session_contexts.")
-    skipped_count = len(included_session_contexts) - len(filtered_contexts)
-    if skipped_count > 0:
-        print(f"Bapun session preflight: proceeding with {len(filtered_contexts)}/{len(included_session_contexts)} sessions ({skipped_count} skipped due to missing paths).")
-    return filtered_contexts, filtered_folders
-
-
-def resolve_bapun_session_folder_and_root(curr_session_context: IdentifyingContext, known_global_data_root_parent_paths: List[Path], debug_print: bool = False) -> tuple[Optional[Path], Optional[Path]]:
+def resolve_bapun_session_folder_and_root(curr_session_context: IdentifyingContext, known_global_data_root_parent_paths: List[Path], debug_print: bool = False) -> Tuple[Optional[Path], Optional[Path]]:
     """Return (global_data_root_parent_path, session_basedir) for the first known root where the session folder exists."""
     for candidate_root in known_global_data_root_parent_paths:
         if not candidate_root.exists():
@@ -134,11 +96,12 @@ def resolve_bapun_session_folder_and_root(curr_session_context: IdentifyingConte
             return candidate_root.resolve(), session_basedir.resolve()
         if debug_print:
             print(f'  {curr_session_context}: skip root {candidate_root} ({session_basedir} not a directory)')
+    ## END for candidate_root in known_global_data_root_parent_paths...
     return None, None
 
 
-def build_bapun_concrete_session_folders_per_root(included_session_contexts: List[IdentifyingContext], known_global_data_root_parent_paths: List[Path], debug_print: bool = False) -> tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path]]:
-    """Resolve each session's data root independently by trying known_global_data_root_parent_paths in priority order (fast -> slow)."""
+def build_bapun_concrete_session_folders_per_root(included_session_contexts: List[IdentifyingContext], known_global_data_root_parent_paths: List[Path], debug_print: bool = False) -> Tuple[List[ConcreteSessionFolder], Dict[IdentifyingContext, Path]]:
+    """Resolve each session's data root independently (fast -> slow). Skip sessions without an extant folder."""
     good_session_concrete_folders: List[ConcreteSessionFolder] = []
     session_global_data_root_parent_paths: Dict[IdentifyingContext, Path] = {}
     print('Per-session global_data_root_parent_path resolution:')
@@ -148,487 +111,565 @@ def build_bapun_concrete_session_folders_per_root(included_session_contexts: Lis
             if debug_print:
                 print(f'  {curr_session_context}: no extant folder on any known root')
             continue
+        xml_files = list(session_basedir.glob('*.xml'))
+        if len(xml_files) == 0:
+            print(f'WARN: skipping {curr_session_context}: {session_basedir} (no .xml file)')
+            continue
         good_session_concrete_folders.append(ConcreteSessionFolder(curr_session_context, session_basedir))
         session_global_data_root_parent_paths[curr_session_context] = resolved_root
         print(f'  {curr_session_context} -> {resolved_root}')
+    ## END for curr_session_context in included_session_contexts...
     return good_session_concrete_folders, session_global_data_root_parent_paths
 
 
-def submit_slurm_scripts(slurm_script_paths: List[str]) -> List[int]:
-    job_ids = []
-    for slurm_script in slurm_script_paths:
-        result = subprocess.run(f"sbatch '{slurm_script}'", shell=True, check=True, capture_output=True, text=True)
-        match = re.search(r'Submitted batch job (\d+)', result.stdout)
-        if match is None:
-            raise RuntimeError(f"Could not parse sbatch job ID from stdout={result.stdout!r} stderr={result.stderr!r}")
-        job_id = int(match.group(1))
-        job_ids.append(job_id)
-        print(f"Submitted job {job_id}: {slurm_script}")
-    return job_ids
+# --date / --computer set BATCH_DATE_TO_USE; --tbin / --phases / --shuffles / --only used later
+_cli_parser = argparse.ArgumentParser(add_help=False)
+_cli_parser.add_argument('--date', type=str, default=datetime.now().strftime('%Y-%m-%d'), help='Batch day date YYYY-MM-DD used in BATCH_DATE_TO_USE. Default: today')
+_cli_parser.add_argument('--computer', type=str, default='GL', choices=['Apogee', 'GL', 'Lab', 'rMBP'], help='Host tag appended to BATCH_DATE_TO_USE. Default: GL')
+_cli_parser.add_argument('--tbin', type=str, default='0.050', help='Ripple/epoch decoding time bin size in seconds (e.g. 0.050) or ms token (e.g. 50ms). Default: 0.050')
+_cli_parser.add_argument('--laps-tbin', type=str, default='0.250', dest='laps_tbin', help='Laps / train-test decoding time bin size. Default: 0.250')
+_cli_parser.add_argument('--phases', type=str, default='12', help='Phase digits to generate: 0=clean, 1=continued, 2=final, 3=figure. Default: 12')
+_cli_parser.add_argument('--shuffles', type=int, default=1024, help='num_shuffles for shuffle analyses when enabled. Default: 1024')
+_cli_parser.add_argument('--only', type=str, default=None, help='Optional targeted-export recipe overlay. Recipes: export_bapun_train_test; pickle_clusterless; pickle_spyglass_clusterless; figures_bapun_train_test; figures_bapun_clusterless; figures_bapun_spyglass_clusterless')
+_cli_parser.add_argument('--status', action='store_true', help='Do not generate/submit: find newest matching submit_phase_chains_*.sh and run --status')
+_cli_parser.add_argument('--cancel', action='store_true', help='Do not generate/submit: find newest matching submit_phase_chains_*.sh and run --cancel')
+_cli_args, _ = _cli_parser.parse_known_args()
+if bool(_cli_args.status) and bool(_cli_args.cancel):
+    raise SystemExit('ERROR: --status and --cancel are mutually exclusive.')
 
+BATCH_DAY_DATE: str = _cli_args.date
+# Distinct from KDIBA `{date}_{computer}` so collected_outputs never collide:
+BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Bapun_{_cli_args.computer}'
+_batch_host_suffix: str = f'_Bapun_{_cli_args.computer}'
+print(f'cli --date={_cli_args.date!r} --computer={_cli_args.computer!r} -> BATCH_DATE_TO_USE={BATCH_DATE_TO_USE!r}')
 
-def wait_for_slurm_jobs(job_ids: List[int], poll_seconds: int = 60) -> None:
-    if len(job_ids) == 0:
-        return
-    job_id_str = ','.join(str(j) for j in job_ids)
-    print(f"Waiting for Slurm jobs: {job_id_str}")
-    while True:
-        result = subprocess.run(f"squeue -j {job_id_str} -h", shell=True, capture_output=True, text=True)
-        if len(result.stdout.strip()) == 0:
-            break
-        running_count = len([line for line in result.stdout.strip().splitlines() if line.strip()])
-        print(f"  still running ({running_count} jobs)...")
-        time.sleep(poll_seconds)
-    sacct_result = subprocess.run(f"sacct -j {job_id_str} --format=JobID,State,ExitCode,Elapsed -P", shell=True, capture_output=True, text=True)
-    print(sacct_result.stdout)
-    for line in sacct_result.stdout.splitlines()[1:]:
-        if any(bad_state in line for bad_state in ['FAILED', 'CANCELLED', 'TIMEOUT', 'OUT_OF_MEMORY', 'NODE_FAIL']):
-            raise RuntimeError(f"Slurm job(s) failed:\n{sacct_result.stdout}")
+# ==================================================================================================================== #
+# GL Turbo->Scratch workaround (set FORCE_SCRATCH_WRITES=False / comment out when Turbo is R/W again)                   #
+# ==================================================================================================================== #
+FORCE_SCRATCH_WRITES: bool = True
+turbo_data_root, scratch_data_root, use_scratch_writes = GreatlakesTurboToScratchHelpers.detect_scratch_write_mode(force_scratch_writes=FORCE_SCRATCH_WRITES)
+print(f'FORCE_SCRATCH_WRITES: {FORCE_SCRATCH_WRITES}')
+print(f'turbo_data_root: {turbo_data_root}')
+print(f'scratch_data_root: {scratch_data_root}')
+print(f'use_scratch_writes: {use_scratch_writes}')
 
-
-def write_phase_manifest(phase_name: str, run_slurm_paths: List[str], figs_slurm_paths: List[str], run_job_ids: List[int], figs_job_ids: List[int], manifest_output_dir: Path) -> None:
-    manifest_output_dir.mkdir(parents=True, exist_ok=True)
-    manifest = {'phase': phase_name, 'run_slurm_paths': run_slurm_paths, 'figs_slurm_paths': figs_slurm_paths, 'run_job_ids': run_job_ids, 'figs_job_ids': figs_job_ids}
-    manifest_path = manifest_output_dir / f'manifest_{phase_name}.json'
-    with open(manifest_path, 'w') as manifest_file:
-        json.dump(manifest, manifest_file, indent=2)
-    if len(run_slurm_paths) > 0:
-        submit_run_path = manifest_output_dir / f'submit_{phase_name}_run.sh'
-        with open(submit_run_path, 'w') as submit_run_file:
-            submit_run_file.write('\n'.join([f"sbatch '{p}'" for p in run_slurm_paths]) + '\n')
-        print(f"Wrote submit script: {submit_run_path}")
-    if len(figs_slurm_paths) > 0:
-        submit_figs_path = manifest_output_dir / f'submit_{phase_name}_figs.sh'
-        with open(submit_figs_path, 'w') as submit_figs_file:
-            submit_figs_file.write('\n'.join([f"sbatch '{p}'" for p in figs_slurm_paths]) + '\n')
-        print(f"Wrote submit script: {submit_figs_path}")
-    print(f"Wrote phase manifest: {manifest_path}")
-
-
-def execute_code_block(code_block: str, wait_for_completion: bool = True, poll_seconds: int = 60) -> List[int]:
-    """Parse sbatch lines from a code block, submit each script, and optionally wait for completion."""
-    slurm_paths = []
-    for line in code_block.strip().splitlines():
-        line = line.strip()
-        if not line.startswith('sbatch '):
-            continue
-        match = re.search(r"sbatch '([^']+)'", line)
-        if match is not None:
-            slurm_paths.append(match.group(1))
-    job_ids = submit_slurm_scripts(slurm_paths)
-    if wait_for_completion:
-        wait_for_slurm_jobs(job_ids, poll_seconds=poll_seconds)
-    return job_ids
-
-
-def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_session_contexts: List[IdentifyingContext], phase_any_run_custom_user_completion_functions_dict: Dict, bapun_figure_custom_user_completion_functions_dict: Dict = None,
-                        force_recompute_override_computations_includelist: List = None, extra_extended_computations_include_includelist: List = None, custom_phase_extended_computations_include_includelist: List = None, included_qclu_values: List = None,
-                        minimum_inclusion_fr_Hz: float = 1.0, num_shuffles: int = 1024, drop_previous_result_and_compute_fresh: bool = True, laps_decoding_time_bin_size: float = 0.250, ripple_decoding_time_bin_size: float = 0.050,
-                        enable_auto_code_block_execution: bool = False, max_parallel_executions: int = 1, also_show_figure_script_outputs: bool = False, wait_between_phases: bool = True,
-                        copy_commands_to_clipboard: bool = False, slurm_poll_seconds: int = 60, phases_to_run: List[ProcessingScriptPhases] = None,
-    ):
-    """
-    Process all phases of the batch computation pipeline automatically.
-
-    Args:
-        batch_day_date: Date string for the batch
-        batch_date_to_use: Full batch identifier string
-        included_session_contexts: List of session contexts to process
-        phase_any_run_custom_user_completion_functions_dict: Custom completion functions
-        bapun_figure_custom_user_completion_functions_dict: Figure-phase-only completion functions merged on figure_run
-        force_recompute_override_computations_includelist: List of computations to force recompute
-        extra_extended_computations_include_includelist: Additional extended computations (default: position_decoding_spyglass_clusterless)
-        custom_phase_extended_computations_include_includelist: Custom phase computations
-        included_qclu_values: Quality cluster values to include
-        minimum_inclusion_fr_Hz: Minimum firing rate threshold
-        num_shuffles: Number of shuffles for analysis
-        drop_previous_result_and_compute_fresh: Whether to recompute from scratch
-        laps_decoding_time_bin_size: Time bin size for laps decoding
-        ripple_decoding_time_bin_size: Time bin size for ripple decoding
-        enable_auto_code_block_execution: Whether to auto-submit generated Slurm scripts and wait for completion
-        max_parallel_executions: Maximum parallel script executions (Windows PowerShell only)
-        also_show_figure_script_outputs: Whether to print figure sbatch commands during compute phases
-        wait_between_phases: Whether to wait for user input between phases (manual mode only)
-        copy_commands_to_clipboard: Whether to copy sbatch commands to clipboard (manual fallback)
-        slurm_poll_seconds: Poll interval when waiting for Slurm jobs
-        phases_to_run: Specific phases to run (if None, runs all phases)
-    """
-    if not enable_auto_code_block_execution and wait_between_phases is False:
-        wait_between_phases = True
-        print("Manual mode: enabling wait_between_phases because enable_auto_code_block_execution=False")
-
-    # Set default values
-    if force_recompute_override_computations_includelist is None:
-        force_recompute_override_computations_includelist = []
-    if extra_extended_computations_include_includelist is None:
-        extra_extended_computations_include_includelist = ['position_decoding_spyglass_clusterless']
-    if included_qclu_values is None:
-        included_qclu_values = [1, 2]
-    if phases_to_run is None:
-        # Default: skip clean_run (full reload); start from continued_run unless you need a fresh pipeline rebuild.
-        phases_to_run = [
-            ProcessingScriptPhases.continued_run,
-            ProcessingScriptPhases.final_run,
-            ProcessingScriptPhases.figure_run
-        ]
-    if bapun_figure_custom_user_completion_functions_dict is None:
-        bapun_figure_custom_user_completion_functions_dict = {}
-
-    # Setup paths
+if use_scratch_writes:
+    scripts_output_path, collected_outputs_path, scratch_write_root = GreatlakesTurboToScratchHelpers.build_scratch_output_paths()
+    assert turbo_data_root is not None and turbo_data_root.exists(), f"use_scratch_writes=True but turbo_data_root missing/unusable: {turbo_data_root}"
+    session_discovery_data_root: Path = turbo_data_root
+    global_data_root_parent_path = scratch_write_root
+else:
+    scratch_write_root = None
     known_scripts_output_paths = [Path(v).resolve() for v in [
+        'K:/scratch/gen_scripts',
         '/home/halechr/FastData/Output/gen_scripts',
         '/nfs/turbo/umms-kdiba/Pho/Output/gen_scripts',
         '/home/halechr/cloud/turbo/Data/Output/gen_scripts/',
-        Path(r"W:/Data/Output/gen_scripts"),
+        Path(r'W:/Data/Output/gen_scripts'),
+        'output/gen_scripts/',
     ]]
     scripts_output_path = find_first_extant_path(known_scripts_output_paths)
-    assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist!"
-    batch_manifest_dir = scripts_output_path / f'bapun_batch_{batch_date_to_use}'
-    batch_manifest_dir.mkdir(parents=True, exist_ok=True)
-
     collected_outputs_path = scripts_output_path.joinpath('../collected_outputs').resolve()
-    collected_outputs_path.mkdir(exist_ok=True)
-
-    print(f'scripts_output_path: {scripts_output_path}')
-    print(f'batch_manifest_dir: {batch_manifest_dir}')
-    print(f'collected_outputs_path: {collected_outputs_path}')
-    print(f'sys.executable: {sys.executable}')
-
-    # Per-session data roots: list order = storage priority (fast -> slow). Comment/uncomment blocks per machine.
-    known_global_data_root_parent_paths = [
-        Path(r'W:/Data'), 
+    collected_outputs_path.mkdir(parents=True, exist_ok=True)
+    known_global_data_root_parent_paths = [Path(v).resolve() for v in [
+        Path(r'W:/Data'),
         Path(r'/home/halechr/FastData'),
         Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
-        # Path('/Users/pho/data'),
         Path(r'/nfs/turbo/umms-kdiba/Data'),
-        # Path(r'/media/halechr/MAX/Data'),
-        # Path(r'/Volumes/MoverNew/data')
-    ]
+        Path('/Users/pho/data'),
+        Path(r'/media/halechr/MAX/Data'),
+        Path(r'/Volumes/MoverNew/data'),
+    ]]
     global_data_root_parent_path = find_first_extant_path(known_global_data_root_parent_paths)
-    assert global_data_root_parent_path.exists(), f"global_data_root_parent_path: {global_data_root_parent_path} does not exist!"
-    print(f'global_data_root_parent_path (fallback default): {global_data_root_parent_path}')
+    session_discovery_data_root = global_data_root_parent_path
 
-    known_vscode_default_interpreter_paths = [Path(v).expanduser() for v in [
-        '/scratch/kdiba_root/kdiba99/halechr/repos/Spike3D_ExploreEnv/Spike3D/.venv/bin/python',
-        r'H:/TEMP/Spike3DEnv_ExploreUpgrade/Spike3DWorkEnv/Spike3D/.venv/Scripts/python.exe', 
-        r'C:/Users/pho/repos/Spike3DWorkEnv/Spike3D/.venv_UV/Scripts/python',
-        '~/repos/Spike3D/.venv/bin/python',
-        # '/home/halechr/repos/Spike3D/.venv/bin/python',
+assert scripts_output_path.exists(), f"scripts_output_path: {scripts_output_path} does not exist!"
+print(f'scripts_output_path: {scripts_output_path}')
+assert collected_outputs_path.exists()
+print(f'collected_outputs_path: {collected_outputs_path}')
+if FORCE_SCRATCH_WRITES:
+    GreatlakesTurboToScratchHelpers.assert_output_paths_not_on_turbo(scripts_output_path, collected_outputs_path)
+_time_checkpoint('paths:scripts+collected_outputs')
 
-    ]] + [Path(sys.executable).resolve()]
-    vscode_default_interpreter_path = find_first_extant_path(known_vscode_default_interpreter_paths)
-    assert vscode_default_interpreter_path.exists(), f"vscode_default_interpreter_path: {vscode_default_interpreter_path} does not exist!"
-    print(f'vscode_default_interpreter_path: {vscode_default_interpreter_path}')
-
-    good_session_concrete_folders, session_global_data_root_parent_paths = build_bapun_concrete_session_folders_per_root(included_session_contexts=included_session_contexts, known_global_data_root_parent_paths=known_global_data_root_parent_paths, debug_print=True)
-    included_session_contexts, good_session_concrete_folders = filter_bapun_session_paths(included_session_contexts, good_session_concrete_folders)
-    session_global_data_root_parent_paths = {a_session_folder.context: session_global_data_root_parent_paths[a_session_folder.context] for a_session_folder in good_session_concrete_folders}
-
-    # bapun_pickle_suffix = build_bapun_pickle_suffix(included_qclu_values=included_qclu_values, minimum_inclusion_fr_Hz=minimum_inclusion_fr_Hz)
-    bapun_pickle_suffix = '' # No pickle suffix, use default name
-
-    job_suffix = f"_bapun{bapun_pickle_suffix}_tbin_25ms"
-    print(f'bapun_pickle_suffix: "{bapun_pickle_suffix}"')
-    print(f'base job_suffix: "{job_suffix}"')
-
-    # Process each phase
-    for phase_idx, active_phase in enumerate(phases_to_run):
-        print(f"\n{'='*80}")
-        print(f"PROCESSING PHASE {phase_idx + 1}/{len(phases_to_run)}: {active_phase.name}")
-        print(f"{'='*80}")
-
-        # Get custom completion functions
-        active_override_dict = dict(phase_any_run_custom_user_completion_functions_dict)
-        if active_phase.is_figure_phase:
-            active_override_dict = active_override_dict | bapun_figure_custom_user_completion_functions_dict
-        custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(
-            BATCH_DATE_TO_USE=batch_date_to_use,
-            collected_outputs_path=collected_outputs_path,
-            override_custom_user_completion_functions_dict=active_override_dict
-        )
-
-        # Get phase configuration
-        active_phase_dict = active_phase.get_run_configuration(
-            custom_user_completion_function_template_code=custom_user_completion_function_template_code,
-            extra_extended_computations_include_includelist=extra_extended_computations_include_includelist
-        )
-
-        # Apply custom computations if provided
-        if custom_phase_extended_computations_include_includelist is not None:
-            print(f'WARNING: Using custom extended computations: {custom_phase_extended_computations_include_includelist}')
-            active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
-
-        # Setup phase-specific parameters
-        active_phase_dict.update({
-            'vscode_default_interpreter_path': str(vscode_default_interpreter_path.as_posix()),
-            'should_freeze_pipeline_updates': False,
-            'override_custom_pickle_suffix': bapun_pickle_suffix,
-            'force_recompute_override_computation_kwargs_dict': {
-                'merged_directional_placefields': {
-                    'laps_decoding_time_bin_size': laps_decoding_time_bin_size,
-                    'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size
-                },
-                'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': False},
-                'rank_order_shuffle_analysis': {
-                    'num_shuffles': num_shuffles,
-                    'skip_laps': False,
-                    'minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
-                    'included_qclu_values': included_qclu_values
-                },
-                'epoch_score_shuffle_analysis': dict(
-                    num_shuffles=num_shuffles,
-                    drop_previous_result_and_compute_fresh=True,
-                    enable_heuristic_shuffle_scoring=True,
-                    enable_radon_shuffle_scoring=False,
-                ),
-                'non_PBE_epochs_results': dict(
-                    epochs_decoding_time_bin_size=ripple_decoding_time_bin_size,
-                    frame_divide_bin_size=10.0,
-                    training_data_portion=5.0/6.0,
-                                        compute_1D=True,
-                    compute_2D=False,
-                    drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh,
-                    skip_training_test_split=True
-                ),
-                'generalized_specific_epochs_decoding': dict(
-                    epochs_decoding_time_bin_size=ripple_decoding_time_bin_size,
-                    drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh
-                ),
-            },
-            'force_recompute_override_computations_includelist': force_recompute_override_computations_includelist,
-            'override_parameters_flat_keypaths_dict': {
-                'rank_order_shuffle_analysis.included_qclu_values': included_qclu_values,
-                'rank_order_shuffle_analysis.minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
-            },
-            'custom_user_completion_function_override_kwargs_dict': {
-                'compute_and_export_session_extended_placefield_peak_information_completion_function': dict(
-                    save_csv=True,
-                    save_json=False
-                ),
-                'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': dict(
-                    ripple_decoding_time_bin_size_override=ripple_decoding_time_bin_size,
-                    laps_decoding_time_bin_size_override=laps_decoding_time_bin_size,
-                    needs_recompute_heuristics=True,
-                    force_recompute_all_decoding=True,
-                    save_hdf=False,
-                    allow_append_to_session_h5_file=False,
-                    max_ignore_bins=2,
-                    same_thresh_cm=10.7,
-                    max_jump_distance_cm=60.0,
-                ),
-                'generalized_decode_epochs_dict_and_export_results_completion_function': dict(
-                    epochs_decoding_time_bin_size=ripple_decoding_time_bin_size,
-                    force_recompute=drop_previous_result_and_compute_fresh,
-                    debug_print=True
-                ),
-                'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': dict(
-                    training_data_portion=9.0/10.0,
-                    laps_decoding_time_bin_size=laps_decoding_time_bin_size,
-                    debug_print=False
-                ),
-                'export_decoded_variables_evaluation_completion_function': dict(time_bin_size=laps_decoding_time_bin_size, show_pos_by_ctxt_joint_figure=True),
-                'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
-                'compute_and_pickle_clusterless_decoder_completion_function': dict(), 
-                'compute_and_pickle_spyglass_clusterless_decoder_completion_function': dict(pickle_spyglass_clusterless_decoder=True, force_recompute=True, debug_print=False),
-                'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': dict(),
-                'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': dict(
-                    training_data_portion=9.0/10.0,
-                    laps_decoding_time_bin_size=laps_decoding_time_bin_size,
-                    debug_print=False
-                ),
-            }
-        })
-
-        # Add phase-specific job suffix
-        phase_job_suffix = active_phase_dict.pop('phase_job_suffix', None)
-        current_job_suffix = job_suffix
-        if phase_job_suffix is not None:
-            current_job_suffix = f"{job_suffix}_{phase_job_suffix}"
-
-        active_phase_dict.update({
-            'job_suffix': current_job_suffix,
-            # Compute phases must NOT freeze (skips compute/save). Figure phase freezes to avoid recompute.
-            'should_freeze_pipeline_updates': bool(active_phase.is_figure_phase),
-            'skip_save_on_initial_load': True, # False => save the session pickle immediately after the initial pipeline load/rebuild (before extended computations), so a session pickle exists even if later computations fail
-            'should_use_wandb_logging': False,
-            'create_slurm_scripts': True,
-            'should_generate_run_scripts': (not active_phase.is_figure_phase),
-            'should_generate_figure_scripts': active_phase.is_figure_phase,
-            'should_generate_run_notebooks': (not active_phase.is_figure_phase),
-            # 'should_generate_run_notebooks': False,
-            'should_create_vscode_workspace': True,
-            # 'preflight_bapun_batch_helpers_run_all': False, # Bapun-specific
-            'preflight_bapun_batch_helpers_run_all': True, # Bapun-specific
-        })
-
-        print(f'Phase: {active_phase.name}')
-        print(f'Job suffix: "{current_job_suffix}"')
-        print(f'Extended computations: {active_phase_dict["extended_computations_include_includelist"]}')
-
-        # Generate scripts for this phase
-        session_basedirs_dict = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
-
-        # For format_name='bapun', each generated `run_*.py` (and matching temp notebook) passes preflight_bapun_batch_helpers_run_all so `run_specific_batch` runs `BapunBatchHelpers.run_all(curr_active_pipeline)` after `batch_load_session` and before batch completion helpers; `figures_*.py` skips that preflight (see pyphoplacecellanalysis General.Batch.runBatch / pythonScriptTemplating).
-
-        batch_scripts_collection = generate_batch_single_session_scripts(
-            global_data_root_parent_path,
-            session_batch_basedirs=session_basedirs_dict,
-            included_session_contexts=included_session_contexts,
-            session_global_data_root_parent_paths=session_global_data_root_parent_paths,
-            output_directory=scripts_output_path,
-            use_separate_run_directories=True,
-            should_use_file_redirected_output_logging=True,
-            batch_script_subdirectory=active_phase.name,
-            **active_phase_dict
-        )
-
-        output_python_scripts = batch_scripts_collection.output_python_scripts
-        output_jupyter_notebooks = batch_scripts_collection.output_jupyter_notebooks
-        output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
-        vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
-        batch_scripts_root_directory = batch_scripts_collection.batch_scripts_root_directory
-
-        # if vscode_workspace_path is not None:
-        #     print(f"VSCode workspace: {vscode_workspace_path}")
-
-        computation_script_paths = [x[0] for x in output_python_scripts if x[0] is not None]
-        generate_figures_script_paths = [x[1] for x in output_python_scripts if (isinstance(x, (list, tuple)) and (x[1] is not None))]
-        run_slurm_paths = list(output_slurm_scripts.get('run', []))
-        figs_slurm_paths = list(output_slurm_scripts.get('figs', []))
-        run_job_ids: List[int] = []
-        figs_job_ids: List[int] = []
-
-        if platform.system() == 'Windows':
-            script_paths = generate_figures_script_paths if active_phase.is_figure_phase else computation_script_paths
-            powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}', batch_scripts_root_directory=batch_scripts_root_directory)
-            print(f"PowerShell script: '{powershell_script_path}'")
-            if also_show_figure_script_outputs or active_phase_dict['should_perform_figure_generation_to_file']:
-                powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}', batch_scripts_root_directory=batch_scripts_root_directory)
-                print(f"PowerShell figures script: '{powershell_figures_script_path}'")
-
-        else:
-            phase_manifest_dir = batch_manifest_dir / active_phase.name
-            if len(run_slurm_paths) > 0:
-                sbatch_run_start_slurm_scripts = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in run_slurm_paths])
-                print(f"\n{active_phase.name} - RunMain:")
-                print(sbatch_run_start_slurm_scripts)
-                if copy_commands_to_clipboard and not enable_auto_code_block_execution:
-                    _ = copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)  # non-fatal on headless GL
-                if enable_auto_code_block_execution:
-                    print(f'Submitting {active_phase.name} run scripts...')
-                    run_job_ids = submit_slurm_scripts(run_slurm_paths)
-                    wait_for_slurm_jobs(run_job_ids, poll_seconds=slurm_poll_seconds)
-
-            if active_phase.is_figure_phase or also_show_figure_script_outputs:
-                if len(figs_slurm_paths) > 0:
-                    sbatch_figs_start_slurm_scripts = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in figs_slurm_paths])
-                    print(f"\n{active_phase.name} - Figures:")
-                    print(sbatch_figs_start_slurm_scripts)
-                    if copy_commands_to_clipboard and active_phase.is_figure_phase and not enable_auto_code_block_execution:
-                        _ = copy_to_clipboard(sbatch_figs_start_slurm_scripts, message_print=True)  # non-fatal on headless GL
-                    if enable_auto_code_block_execution and active_phase.is_figure_phase:
-                        print(f'Submitting {active_phase.name} figure scripts...')
-                        figs_job_ids = submit_slurm_scripts(figs_slurm_paths)
-                        wait_for_slurm_jobs(figs_job_ids, poll_seconds=slurm_poll_seconds)
-
-            write_phase_manifest(phase_name=active_phase.name, run_slurm_paths=run_slurm_paths, figs_slurm_paths=figs_slurm_paths, run_job_ids=run_job_ids, figs_job_ids=figs_job_ids, manifest_output_dir=phase_manifest_dir)
-
-        print(f"Completed phase: {active_phase.name}")
-
-        # Wait between phases if requested (except for the last phase)
-        if wait_between_phases and phase_idx < len(phases_to_run) - 1:
-            response = input(f"\nPhase {active_phase.name} completed. Press Enter to continue to next phase, or 'q' to quit: ")
-            if response.lower() == 'q':
-                print("Processing stopped by user.")
-                break
-
-    print(f"\n{'='*80}")
-    print("ALL PHASES COMPLETED")
-    print(f"{'='*80}")
-
+# %% [markdown]
+# ## Build Processing Scripts:
 
 # %%
-# Configuration parameters — Bapun-only batch (distinct tag from KDIBA runs).
-BATCH_DAY_DATE: str = '2026-11-27'
-BATCH_DATE_TO_USE = f'{BATCH_DAY_DATE}_Bapun_GL'  # used for filenames throughout the batch
-
-# Get the generated code for user-contributed functions (no kdiba_session_post_fixup — KDIBA / .mat specific).
-phase_any_run_custom_user_completion_functions_dict = {
-    'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
-    # 'perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function': perform_sweep_decoding_time_bin_sizes_marginals_dfs_completion_function, # ran 2024-09-26 3pm
-    # 'compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function': compute_and_export_decoders_epochs_decoding_and_evaluation_dfs_completion_function, # ran 2024-09-26 3pm
-    # 'compute_and_export_session_extended_placefield_peak_information_completion_function': compute_and_export_session_extended_placefield_peak_information_completion_function,
-    'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
-    'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': compute_and_export_bapun_train_test_decoder_error_distance_completion_function, 
-    'compute_and_pickle_clusterless_decoder_completion_function': compute_and_pickle_clusterless_decoder_completion_function, ## CLUSTERLESS
-    'compute_and_pickle_spyglass_clusterless_decoder_completion_function': compute_and_pickle_spyglass_clusterless_decoder_completion_function, ## SPYGLASS CLUSTERLESS
+# Per-phase completion lists (replace, never None). No kdiba_session_post_fixup.
+phase_any_run_custom_user_completion_functions_dict_dict = {
+    ProcessingScriptPhases.clean_run: {
+        'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
+    },
+    ProcessingScriptPhases.continued_run: {
+        'backup_previous_session_files_completion_function': backup_previous_session_files_completion_function,
+        'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+        'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': compute_and_export_bapun_train_test_decoder_error_distance_completion_function,
+        'compute_and_pickle_clusterless_decoder_completion_function': compute_and_pickle_clusterless_decoder_completion_function,
+        'compute_and_pickle_spyglass_clusterless_decoder_completion_function': compute_and_pickle_spyglass_clusterless_decoder_completion_function,
+    },
+    ProcessingScriptPhases.final_run: {
+        'generalized_decode_epochs_dict_and_export_results_completion_function': generalized_decode_epochs_dict_and_export_results_completion_function,
+        'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': compute_and_export_bapun_train_test_decoder_error_distance_completion_function,
+        'compute_and_pickle_clusterless_decoder_completion_function': compute_and_pickle_clusterless_decoder_completion_function,
+        'compute_and_pickle_spyglass_clusterless_decoder_completion_function': compute_and_pickle_spyglass_clusterless_decoder_completion_function,
+    },
+    ProcessingScriptPhases.figure_run: {
+        'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
+        'figures_plot_bapun_train_test_decoder_error_distance_completion_function': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
+        'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function,
+        'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function,
+    },
 }
 
-bapun_figure_custom_user_completion_functions_dict = {
-    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function,
-    'figures_plot_bapun_train_test_decoder_error_distance_completion_function': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
-    'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function, ## CLUSTERLESS
-    'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function, ## SPYGLASS CLUSTERLESS
+_ONLY_MODE_SLURM_DEFAULTS: Dict = dict(slurm_time='6:00:00', slurm_mem='40000m', should_use_largemem=False)
+_ONLY_MODE_RECIPES: Dict[str, Dict] = {
+    'export_bapun_train_test': {
+        'completion_fn_name': 'compute_and_export_bapun_train_test_decoder_error_distance_completion_function',
+        'completion_fn': compute_and_export_bapun_train_test_decoder_error_distance_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        'extended_computations_include_includelist': [],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,
+        'force_recompute_override_computations_includelist': [],
+        'completion_fn_override_kwargs': dict(training_data_portion=9.0/10.0, save_csv=True, evaluate_context_decoder=True, debug_print=False),
+        'description': 'final_run + compute_and_export_bapun_train_test_decoder_error_distance_completion_function only (train/test + context decoder CSVs)',
+    },
+    'pickle_clusterless': {
+        'completion_fn_name': 'compute_and_pickle_clusterless_decoder_completion_function',
+        'completion_fn': compute_and_pickle_clusterless_decoder_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        'extended_computations_include_includelist': [],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,
+        'force_recompute_override_computations_includelist': [],
+        'description': 'final_run + compute_and_pickle_clusterless_decoder_completion_function only',
+    },
+    'pickle_spyglass_clusterless': {
+        'completion_fn_name': 'compute_and_pickle_spyglass_clusterless_decoder_completion_function',
+        'completion_fn': compute_and_pickle_spyglass_clusterless_decoder_completion_function,
+        'phases': [ProcessingScriptPhases.final_run],
+        'extended_computations_include_includelist': ['position_decoding_spyglass_clusterless'],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': False,
+        'force_recompute_override_computations_includelist': [],
+        'completion_fn_override_kwargs': dict(pickle_spyglass_clusterless_decoder=True, force_recompute=True, debug_print=False),
+        'description': 'final_run + spyglass clusterless pickle (+ position_decoding_spyglass_clusterless prereq)',
+    },
+    'figures_bapun_train_test': {
+        'completion_fn_name': 'figures_plot_bapun_train_test_decoder_error_distance_completion_function',
+        'completion_fn': figures_plot_bapun_train_test_decoder_error_distance_completion_function,
+        'phases': [ProcessingScriptPhases.figure_run],
+        'extended_computations_include_includelist': [],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': True,
+        'force_recompute_override_computations_includelist': [],
+        'description': 'figure_run + figures_plot_bapun_train_test_decoder_error_distance_completion_function only',
+    },
+    'figures_bapun_clusterless': {
+        'completion_fn_name': 'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function',
+        'completion_fn': figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function,
+        'phases': [ProcessingScriptPhases.figure_run],
+        'extended_computations_include_includelist': [],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': True,
+        'force_recompute_override_computations_includelist': [],
+        'description': 'figure_run + figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function only',
+    },
+    'figures_bapun_spyglass_clusterless': {
+        'completion_fn_name': 'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function',
+        'completion_fn': figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function,
+        'phases': [ProcessingScriptPhases.figure_run],
+        'extended_computations_include_includelist': [],
+        'extra_extended_computations_include_includelist': [],
+        'should_freeze_pipeline_updates': True,
+        'force_recompute_override_computations_includelist': [],
+        'description': 'figure_run + figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function only',
+    },
 }
+_ONLY_MODE_RECIPES['compute_and_export_bapun_train_test_decoder_error_distance_completion_function'] = _ONLY_MODE_RECIPES['export_bapun_train_test']
+_ONLY_MODE_RECIPES['compute_and_pickle_clusterless_decoder_completion_function'] = _ONLY_MODE_RECIPES['pickle_clusterless']
+_ONLY_MODE_RECIPES['compute_and_pickle_spyglass_clusterless_decoder_completion_function'] = _ONLY_MODE_RECIPES['pickle_spyglass_clusterless']
+_ONLY_MODE_RECIPES['figures_plot_bapun_train_test_decoder_error_distance_completion_function'] = _ONLY_MODE_RECIPES['figures_bapun_train_test']
+_ONLY_MODE_RECIPES['figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function'] = _ONLY_MODE_RECIPES['figures_bapun_clusterless']
+_ONLY_MODE_RECIPES['figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function'] = _ONLY_MODE_RECIPES['figures_bapun_spyglass_clusterless']
 
-# Keys align with BapunDataSessionFormatRegisteredClass._get_session_specific_parameters (NeuroPy BapunDataSessionFormat.py).
-included_session_contexts = [
-    # ## OpenField Contexts:
-    IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day4Openfield'),
+# Keys align with BapunDataSessionFormatRegisteredClass._get_session_specific_parameters / build_session_basedirs_dict.
+all_included_session_contexts = [
+    IdentifyingContext(format_name='bapun', animal='RatJ', session_name='Day4Openfield'),
     IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day4Openfield'),
     IdentifyingContext(format_name='bapun', animal='RatN', session_name='Day4OpenField'),
     IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day1OpenField'),
     IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day4OpenField'),
     IdentifyingContext(format_name='bapun', animal='RatU', session_name='Day5Openfield'),
-    # # IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day5OpenfieldSD'), # Legacy duplicate context if your on-disk layout still uses the old session_name stem
-
-    ## TwoNovel Contexts:
-    IdentifyingContext(format_name='bapun',animal='RatJ', session_name='Day3TwoNovel'),
-    IdentifyingContext(format_name='bapun',animal='RatK', session_name='Day3TwoNovel'),
-    #IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
-    #IdentifyingContext(format_name='bapun',animal='RatU', session_name='Day3TwoNovel'), ## #TODO 2026-06-21 06:23: - [ ] Disable because running in notebook interactively
+    IdentifyingContext(format_name='bapun', animal='RatJ', session_name='Day3TwoNovel'),
+    IdentifyingContext(format_name='bapun', animal='RatK', session_name='Day3TwoNovel'),
+    # IdentifyingContext(format_name='bapun', animal='RatS', session_name='Day5TwoNovel'),
+    # IdentifyingContext(format_name='bapun', animal='RatU', session_name='Day3TwoNovel'),
 ]
+included_session_contexts = all_included_session_contexts
 
-# %%
-# Main execution - manual mode: generate scripts, print sbatch commands, write submit_*.sh manifests (no auto-submit)
-# On Great Lakes login nodes clipboard is unavailable — keep copy_commands_to_clipboard=False and use printed sbatch / submit_*.sh.
-enable_auto_code_block_execution: bool = False
+force_recompute_override_computations_includelist = []
+extra_extended_computations_include_includelist = ['position_decoding_spyglass_clusterless']
+custom_phase_extended_computations_include_includelist = None
 
-process_all_phases(
-    batch_day_date=BATCH_DAY_DATE,
-    batch_date_to_use=BATCH_DATE_TO_USE,
-    included_session_contexts=included_session_contexts,
-    phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
-    bapun_figure_custom_user_completion_functions_dict=bapun_figure_custom_user_completion_functions_dict,
-    force_recompute_override_computations_includelist=[],
-    custom_phase_extended_computations_include_includelist=['position_decoding_spyglass_clusterless'],
-    included_qclu_values=[1, 2, 4, 6, 7, 8, 9],
-    minimum_inclusion_fr_Hz=1.0,
-    num_shuffles=1024,
-    drop_previous_result_and_compute_fresh=True,
-    laps_decoding_time_bin_size=0.250,
-    ripple_decoding_time_bin_size=0.050,
-    enable_auto_code_block_execution=enable_auto_code_block_execution,
-    max_parallel_executions=1,
-    also_show_figure_script_outputs=False,
-    wait_between_phases=True,
-    copy_commands_to_clipboard=False,
-    slurm_poll_seconds=60,
-    # phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
-    # phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
-    phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
-)
+debug_print = True
 
-# %%
-# Alternative: auto-submit mode (requires sbatch from an interactive Great Lakes login node)
-# process_all_phases(
-#     batch_day_date=BATCH_DAY_DATE,
-#     batch_date_to_use=BATCH_DATE_TO_USE,
-#     included_session_contexts=included_session_contexts,
-#     phase_any_run_custom_user_completion_functions_dict=phase_any_run_custom_user_completion_functions_dict,
-#     bapun_figure_custom_user_completion_functions_dict=bapun_figure_custom_user_completion_functions_dict,
-#     phases_to_run=[ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],
-#     enable_auto_code_block_execution=True,
-#     wait_between_phases=False,
-#     copy_commands_to_clipboard=False,
-# )
+# Bapun multi-root discovery (folders can live on scratch vs turbo independently):
+_bapun_known_data_roots = [Path(v).resolve() for v in [
+    Path(r'W:/Data'),
+    Path(r'/home/halechr/FastData'),
+    Path('/scratch/kdiba_root/kdiba99/halechr/Data'),
+    Path(r'/nfs/turbo/umms-kdiba/Data'),
+    Path('/Users/pho/data'),
+]]
+if use_scratch_writes and turbo_data_root is not None:
+    # Prefer turbo for discovery when staging; also try scratch if already staged:
+    _bapun_known_data_roots = [turbo_data_root.resolve(), scratch_write_root.resolve()] + [p for p in _bapun_known_data_roots if p not in (turbo_data_root.resolve(), scratch_write_root.resolve())]
+
+good_session_concrete_folders, session_global_data_root_parent_paths = build_bapun_concrete_session_folders_per_root(included_session_contexts=included_session_contexts, known_global_data_root_parent_paths=_bapun_known_data_roots, debug_print=True)
+if len(good_session_concrete_folders) == 0:
+    raise FileNotFoundError(f'Bapun session preflight failed: 0/{len(included_session_contexts)} sessions have extant folders with .xml under {_bapun_known_data_roots}')
+print(f'Bapun session preflight: proceeding with {len(good_session_concrete_folders)}/{len(included_session_contexts)} sessions')
+_time_checkpoint('paths: build_bapun_concrete_session_folders_per_root')
+
+_PHASE_DIGIT_MAP = {
+    '0': ProcessingScriptPhases.clean_run,
+    '1': ProcessingScriptPhases.continued_run,
+    '2': ProcessingScriptPhases.final_run,
+    '3': ProcessingScriptPhases.figure_run,
+}
+
+phases_to_generate = []
+for _d in str(_cli_args.phases):
+    if _d not in _PHASE_DIGIT_MAP:
+        raise ValueError(f'Unknown --phases digit {_d!r} in {_cli_args.phases!r}; expected only 0/1/2/3')
+    phases_to_generate.append(_PHASE_DIGIT_MAP[_d])
+## END for _d in str(_cli_args.phases)...
+print(f'cli --phases={_cli_args.phases!r} -> phases_to_generate={[p.value for p in phases_to_generate]}')
+
+_only_key: Optional[str] = (str(_cli_args.only).strip() if _cli_args.only is not None else None) or None
+_only_recipe: Optional[Dict] = None
+if _only_key is not None:
+    if _only_key not in _ONLY_MODE_RECIPES:
+        raise ValueError(f'Unknown --only={_only_key!r}; known recipes: {sorted(set(_ONLY_MODE_RECIPES.keys()))}')
+    _only_recipe = _ONLY_MODE_RECIPES[_only_key]
+    _cli_phases_before_only = [p.value for p in phases_to_generate]
+    phases_to_generate = list(_only_recipe['phases'])
+    if _cli_phases_before_only != [p.value for p in phases_to_generate]:
+        print(f'WARN: --only={_only_key!r} overrides --phases {_cli_args.phases!r} ({_cli_phases_before_only}) -> {[p.value for p in phases_to_generate]}')
+    _recipe_completion_functions_dict: Dict[str, Callable] = dict(_only_recipe['completion_functions']) if ('completion_functions' in _only_recipe) else {_only_recipe['completion_fn_name']: _only_recipe['completion_fn']}
+    for _phase in phases_to_generate:
+        phase_any_run_custom_user_completion_functions_dict_dict[_phase] = dict(_recipe_completion_functions_dict)
+    ## END for _phase in phases_to_generate...
+    custom_phase_extended_computations_include_includelist = list(_only_recipe['extended_computations_include_includelist'])
+    extra_extended_computations_include_includelist = list(_only_recipe.get('extra_extended_computations_include_includelist', []))
+    print(f'cli --only={_only_key!r}: {_only_recipe["description"]}')
+    print(f'  completion_functions: {list(_recipe_completion_functions_dict.keys())}')
+    print(f'  custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist}')
+## END if _only_key is not None...
+
+_batch_host_tag: str = BATCH_DATE_TO_USE.rsplit('_', 1)[-1]  # e.g. '2026-11-27_Bapun_GL' -> 'GL'
+_batch_execution_target_from_host_tag = {
+    'GL': 'slurm',
+    'Lab': 'linux_standalone',
+    'Apogee': 'windows',
+    'rMBP': 'linux_standalone',
+}
+if _batch_host_tag in _batch_execution_target_from_host_tag:
+    batch_execution_target: str = _batch_execution_target_from_host_tag[_batch_host_tag]
+elif platform.system() == 'Windows':
+    batch_execution_target = 'windows'
+else:
+    raise AssertionError(f"Unknown BATCH_DATE_TO_USE host tag {_batch_host_tag!r} from {BATCH_DATE_TO_USE!r}; expected one of {list(_batch_execution_target_from_host_tag)}")
+
+# Bapun typically uses the default loadedSessPickle (no qclu/frate suffix):
+override_custom_pickle_suffix = ''
+included_qclu_values = [1, 2, 4, 6, 7, 8, 9]
+minimum_inclusion_fr_Hz = 1.0
+base_job_suffix = f'_bapun_q{"".join(str(q) for q in included_qclu_values)}_fr_{minimum_inclusion_fr_Hz:g}'
+
+num_shuffles: int = int(_cli_args.shuffles)
+print(f'cli --shuffles={_cli_args.shuffles!r} -> num_shuffles={num_shuffles}')
+
+drop_previous_result_and_compute_fresh: bool = True
+
+cli_tbin: Optional[float] = parse_decoding_time_bin_size_str(_cli_args.tbin)
+cli_laps_tbin: Optional[float] = parse_decoding_time_bin_size_str(_cli_args.laps_tbin)
+print(f'cli --tbin={_cli_args.tbin!r} -> cli_tbin={cli_tbin}')
+print(f'cli --laps-tbin={_cli_args.laps_tbin!r} -> cli_laps_tbin={cli_laps_tbin}')
+
+ripple_decoding_time_bin_size = cli_tbin if cli_tbin is not None else 0.050
+laps_decoding_time_bin_size = cli_laps_tbin if cli_laps_tbin is not None else 0.250
+_tbin_ms = int(round(float(ripple_decoding_time_bin_size) * 1000.0))
+base_job_suffix = f'{base_job_suffix}_tbin_{_tbin_ms}ms'
+
+decoding_time_bin_filename_suffix: str = build_decoding_time_bin_size_filename_suffix(laps_decoding_time_bin_size=laps_decoding_time_bin_size, ripple_decoding_time_bin_size=ripple_decoding_time_bin_size)
+
+force_recompute_override_computation_kwargs_dict = {
+    'merged_directional_placefields': {'laps_decoding_time_bin_size': laps_decoding_time_bin_size, 'ripple_decoding_time_bin_size': ripple_decoding_time_bin_size},
+    'directional_decoders_evaluate_epochs': {'should_skip_radon_transform': False},
+    'rank_order_shuffle_analysis': {'num_shuffles': num_shuffles, 'skip_laps': False, 'minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz, 'included_qclu_values': included_qclu_values},
+    'epoch_score_shuffle_analysis': dict(num_shuffles=num_shuffles, drop_previous_result_and_compute_fresh=True, enable_heuristic_shuffle_scoring=True, enable_radon_shuffle_scoring=False),
+    'non_PBE_epochs_results': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, frame_divide_bin_size=10.0, training_data_portion=5.0/6.0, compute_1D=True, compute_2D=False, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh, skip_training_test_split=True),
+    'generalized_specific_epochs_decoding': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, drop_previous_result_and_compute_fresh=drop_previous_result_and_compute_fresh),
+}
+override_parameters_flat_keypaths_dict = {
+    'rank_order_shuffle_analysis.included_qclu_values': included_qclu_values,
+    'rank_order_shuffle_analysis.minimum_inclusion_fr_Hz': minimum_inclusion_fr_Hz,
+}
+
+custom_user_completion_function_override_kwargs_dict = {
+    'backup_previous_session_files_completion_function': dict(desired_suffix=f'{BATCH_DATE_TO_USE}'),
+    'generalized_decode_epochs_dict_and_export_results_completion_function': dict(epochs_decoding_time_bin_size=ripple_decoding_time_bin_size, force_recompute=drop_previous_result_and_compute_fresh, debug_print=True),
+    'compute_and_export_bapun_train_test_decoder_error_distance_completion_function': dict(training_data_portion=9.0/10.0, laps_decoding_time_bin_size=laps_decoding_time_bin_size, debug_print=False),
+    'compute_and_pickle_clusterless_decoder_completion_function': dict(),
+    'compute_and_pickle_spyglass_clusterless_decoder_completion_function': dict(pickle_spyglass_clusterless_decoder=True, force_recompute=True, debug_print=False),
+    'figures_plot_generalized_decode_epochs_dict_and_export_results_completion_function': dict(),
+    'figures_plot_bapun_train_test_decoder_error_distance_completion_function': dict(training_data_portion=9.0/10.0, laps_decoding_time_bin_size=laps_decoding_time_bin_size, debug_print=False),
+    'figures_plot_bapun_clusterless_train_test_decoder_error_distance_completion_function': dict(),
+    'figures_plot_bapun_spyglass_clusterless_train_test_decoder_error_distance_completion_function': dict(training_data_portion=9.0/10.0, laps_decoding_time_bin_size=laps_decoding_time_bin_size, debug_print=False),
+}
+
+phase_custom_user_completion_function_override_kwargs_dict_dict: Dict = {}
+
+if _only_recipe is not None:
+    _recipe_completion_fn_override_kwargs: Dict = _only_recipe.get('completion_fn_override_kwargs', None) or {}
+    if _recipe_completion_fn_override_kwargs:
+        _fn_name_for_kwargs: str = _only_recipe['completion_fn_name']
+        custom_user_completion_function_override_kwargs_dict[_fn_name_for_kwargs] = {**custom_user_completion_function_override_kwargs_dict.get(_fn_name_for_kwargs, {}), **_recipe_completion_fn_override_kwargs}
+        print(f'--only={_only_key!r} completion_fn_override_kwargs[{_fn_name_for_kwargs}]: {_recipe_completion_fn_override_kwargs}')
+    ## END if _recipe_completion_fn_override_kwargs...
+## END if _only_recipe is not None...
+
+print(f'base_job_suffix: "{base_job_suffix}"')
+print(f'phases_to_generate: {[p.name for p in phases_to_generate]}')
+
+if bool(_cli_args.status) or bool(_cli_args.cancel):
+    _chain_mode: str = 'status' if bool(_cli_args.status) else 'cancel'
+    _phase_chain_backend: str = 'powershell' if batch_execution_target == 'windows' else ('bash' if batch_execution_target == 'linux_standalone' else 'slurm')
+    print(f'cli --{_chain_mode}: looking up chained submit under {scripts_output_path} (host_suffix={_batch_host_suffix!r}, job_suffix={base_job_suffix!r}, batch_date_to_use={BATCH_DATE_TO_USE!r})')
+    run_matching_chained_submit_mode(scripts_output_path, host_suffix=_batch_host_suffix, job_suffix=base_job_suffix, mode=_chain_mode, batch_date_to_use=BATCH_DATE_TO_USE, execution_backend=_phase_chain_backend)  # type: ignore[arg-type]
+    _print_timing_summary()
+    raise SystemExit(0)
+
+# ==================================================================================================================== #
+# BEGIN MAIN SCRIPT BODY                                                                                               #
+# ==================================================================================================================== #
+
+_, _venv_activate_path, _vscode_python = resolve_spike3d_batch_venv_paths(batch_execution_target)
+
+if use_scratch_writes:
+    good_session_concrete_folders, session_global_data_root_parent_paths, global_data_root_parent_path = GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run(turbo_session_folders=good_session_concrete_folders, source_data_root=session_discovery_data_root, pickle_suffix=override_custom_pickle_suffix, tbin_suffix=decoding_time_bin_filename_suffix, scratch_data_root=scratch_write_root, skip_if_dest_newer_or_equal=True)
+    _time_checkpoint('paths: GreatlakesTurboToScratchHelpers.stage_sessions_for_scratch_run')
+
+session_basedirs_dict: Dict[IdentifyingContext, Path] = {a_session_folder.context: a_session_folder.path for a_session_folder in good_session_concrete_folders}
+effective_included_session_contexts = [c for c in included_session_contexts if c in session_basedirs_dict]
+if len(effective_included_session_contexts) != len(included_session_contexts):
+    print(f'WARN: generating for {len(effective_included_session_contexts)}/{len(included_session_contexts)} sessions with extant basedirs')
+
+# Fallback write root for generate_batch_single_session_scripts when session_global_data_root_parent_paths is used:
+if global_data_root_parent_path is None or (not Path(global_data_root_parent_path).exists()):
+    global_data_root_parent_path = next(iter(session_global_data_root_parent_paths.values())) if len(session_global_data_root_parent_paths) > 0 else session_discovery_data_root
+
+print(f'[GENERATE] writing batch scripts under: {scripts_output_path}')
+also_show_figure_script_outputs: bool = False
+max_parallel_executions = 1
+phase_collections: Dict[str, BatchScriptsCollection] = {}
+phases_ordered_names: List[str] = []
+
+for active_phase in phases_to_generate:
+    print(f"\n{'='*80}\nGENERATING PHASE: {active_phase.name}\n{'='*80}")
+    custom_user_completion_functions_dict = phase_any_run_custom_user_completion_functions_dict_dict.get(active_phase, {})
+    custom_user_completion_function_template_code, custom_user_completion_functions_dict = MAIN_get_template_string(BATCH_DATE_TO_USE=BATCH_DATE_TO_USE, collected_outputs_path=collected_outputs_path, override_custom_user_completion_functions_dict=custom_user_completion_functions_dict)
+    print(f'completion_functions: {list(custom_user_completion_functions_dict.keys())}')
+    _time_checkpoint(f'MAIN_get_template_string:{active_phase.name}')
+    active_phase_dict = active_phase.get_run_configuration(custom_user_completion_function_template_code=custom_user_completion_function_template_code, extra_extended_computations_include_includelist=extra_extended_computations_include_includelist)
+    if custom_phase_extended_computations_include_includelist is not None:
+        print(f'WARNING: custom_phase_extended_computations_include_includelist: {custom_phase_extended_computations_include_includelist} is provided so only these extended_computation_fns will be used (overwritting the phase defaults!).')
+        active_phase_dict['extended_computations_include_includelist'] = custom_phase_extended_computations_include_includelist
+
+    if _only_key is not None:
+        _only_recipe_for_phase: Dict = _ONLY_MODE_RECIPES[_only_key]
+        if _only_recipe_for_phase.get('should_freeze_pipeline_updates', False):
+            active_phase_dict['should_freeze_pipeline_updates'] = True
+            print(f'--only={_only_key!r}: forcing should_freeze_pipeline_updates=True')
+        active_phase_dict.update({**_ONLY_MODE_SLURM_DEFAULTS, **{k: _only_recipe_for_phase[k] for k in ('slurm_time', 'slurm_mem', 'should_use_largemem') if k in _only_recipe_for_phase}})
+    ## END if _only_key is not None...
+
+    # Compute phases must compute/save; figure phase freezes:
+    if active_phase.is_figure_phase:
+        active_phase_dict['should_freeze_pipeline_updates'] = True
+    elif _only_key is None:
+        active_phase_dict['should_freeze_pipeline_updates'] = False
+
+    active_phase_dict['override_custom_pickle_suffix'] = override_custom_pickle_suffix
+    active_phase_dict['decoding_time_bin_filename_suffix'] = decoding_time_bin_filename_suffix
+    active_phase_dict['force_recompute_override_computation_kwargs_dict'] = force_recompute_override_computation_kwargs_dict
+    active_phase_dict['override_parameters_flat_keypaths_dict'] = override_parameters_flat_keypaths_dict
+    active_phase_dict['force_recompute_override_computations_includelist'] = list(force_recompute_override_computations_includelist)
+
+    _phase_custom_user_completion_function_override_kwargs_dict = deepcopy(custom_user_completion_function_override_kwargs_dict)
+    _phase_kwarg_overrides: Dict = phase_custom_user_completion_function_override_kwargs_dict_dict.get(active_phase, {})
+    for _a_fn_name, _a_fn_kwargs in _phase_kwarg_overrides.items():
+        _phase_custom_user_completion_function_override_kwargs_dict[_a_fn_name] = {**_phase_custom_user_completion_function_override_kwargs_dict.get(_a_fn_name, {}), **_a_fn_kwargs}
+    ## END for _a_fn_name, _a_fn_kwargs in _phase_kwarg_overrides.items()...
+    active_phase_dict['custom_user_completion_function_override_kwargs_dict'] = _phase_custom_user_completion_function_override_kwargs_dict
+
+    if active_phase.value != ProcessingScriptPhases.clean_run.value:
+        if _only_key is not None and ('force_recompute_override_computations_includelist' in _ONLY_MODE_RECIPES[_only_key]):
+            active_phase_dict['force_recompute_override_computations_includelist'] = list(_ONLY_MODE_RECIPES[_only_key]['force_recompute_override_computations_includelist'])
+        active_phase_dict['should_save_local_pipeline_pkl'] = False
+        active_phase_dict['skip_save_on_initial_load'] = True
+
+    phase_job_suffix: str = active_phase_dict.pop('phase_job_suffix', None)
+    current_job_suffix = base_job_suffix
+    if phase_job_suffix is not None:
+        current_job_suffix = f'{base_job_suffix}_{phase_job_suffix}'
+    active_phase_dict.update(dict(
+        job_suffix=current_job_suffix,
+        should_use_wandb_logging=False,
+        create_slurm_scripts=(batch_execution_target == 'slurm'),
+        create_non_slurm_bash_scripts=(batch_execution_target == 'linux_standalone'),
+        should_generate_run_scripts=(not active_phase.is_figure_phase),
+        should_generate_figure_scripts=active_phase.is_figure_phase,
+        should_generate_run_notebooks=(not active_phase.is_figure_phase),
+        should_create_vscode_workspace=True,
+        # Bapun run_*.py preflight (skipped automatically for figures_*.py in templating):
+        preflight_bapun_batch_helpers_run_all=(not active_phase.is_figure_phase),
+    ))
+    print(f'job_suffix: "{current_job_suffix}"')
+    print(f"extended_computations_include_includelist: {active_phase_dict['extended_computations_include_includelist']}")
+    print(f"should_freeze_pipeline_updates: {active_phase_dict.get('should_freeze_pipeline_updates')}")
+
+    batch_scripts_collection: BatchScriptsCollection = generate_batch_single_session_scripts(
+        global_data_root_parent_path,
+        session_batch_basedirs=session_basedirs_dict,
+        included_session_contexts=effective_included_session_contexts,
+        session_global_data_root_parent_paths=session_global_data_root_parent_paths,
+        output_directory=scripts_output_path,
+        use_separate_run_directories=True,
+        should_use_file_redirected_output_logging=True,
+        should_use_viztracer_logging=False,
+        venv_activate_path=_venv_activate_path,
+        vscode_default_interpreter_path=_vscode_python,
+        fail_on_exception=False,
+        **active_phase_dict,
+    )
+    phase_collections[active_phase.name] = batch_scripts_collection
+    phases_ordered_names.append(active_phase.name)
+    _time_checkpoint(f'generate_batch_single_session_scripts:{active_phase.name}')
+
+    output_python_scripts = batch_scripts_collection.output_python_scripts
+    output_jupyter_notebooks = batch_scripts_collection.output_jupyter_notebooks
+    output_slurm_scripts = batch_scripts_collection.output_slurm_scripts
+    output_non_slurm_bash_scripts = batch_scripts_collection.output_non_slurm_bash_scripts
+    vscode_workspace_path = batch_scripts_collection.vscode_workspace_path
+    if vscode_workspace_path is not None:
+        print(f'vscode_workspace_path:: {vscode_workspace_path}')
+
+    computation_script_paths = [x[0] for x in output_python_scripts if x[0] is not None]
+    generate_figures_script_paths = [x[1] for x in output_python_scripts if (isinstance(x, (list, tuple)) and (x[1] is not None))]
+    script_paths = generate_figures_script_paths if active_phase.is_figure_phase else computation_script_paths
+    print(f'generate_figures_script_paths: {generate_figures_script_paths}')
+    if output_jupyter_notebooks:
+        print('Generated jupyter notebooks:')
+        for a_notebook_path in output_jupyter_notebooks:
+            print(f'  {a_notebook_path}')
+        ## END for a_notebook_path in output_jupyter_notebooks...
+
+    if platform.system() == 'Windows':
+        powershell_script_path = build_windows_powershell_run_script(script_paths, max_concurrent_jobs=max_parallel_executions, script_name=f'run_scripts_{active_phase.name}')
+        print(f"powershell_script_path ({active_phase.name}): '{powershell_script_path}'\n")
+        if not active_phase.is_figure_phase:
+            win_run_start_scripts: str = "\n".join([f"& '{_vscode_python}' '{p}'" for p in script_paths])
+            print(f'{active_phase.name} - RunMain (Windows, per session):')
+            print(win_run_start_scripts)
+            print(f"\nAll sessions this phase:\npowershell -File '{powershell_script_path}'")
+            print(f'\n\n')
+        if also_show_figure_script_outputs or active_phase_dict.get('should_perform_figure_generation_to_file', False):
+            powershell_figures_script_path = build_windows_powershell_run_script(generate_figures_script_paths, max_concurrent_jobs=1, script_name=f'run_figure_scripts_{active_phase.name}')
+            print(f"powershell_figures_script_path: '{powershell_figures_script_path}'\n")
+    else:
+        if batch_execution_target == 'linux_standalone':
+            bash_run_start_scripts: str = "\n".join([f"bash '{bash_script}'" for bash_script in output_non_slurm_bash_scripts.get('run', [])])
+            bash_figs_start_scripts: str = "\n".join([f"bash '{bash_script}'" for bash_script in output_non_slurm_bash_scripts.get('figs', [])])
+            if not active_phase.is_figure_phase:
+                print(f'{active_phase.name} - RunMain (flat fallback, sequential bash):')
+                print(bash_run_start_scripts)
+                print(f'\n\n')
+            if (active_phase.is_figure_phase or also_show_figure_script_outputs) and (len(bash_figs_start_scripts) > 0):
+                print(f'{active_phase.name} - Figures:')
+                print(bash_figs_start_scripts)
+                print(f'\n\n')
+        else:
+            sbatch_run_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts.get('run', [])])
+            sbatch_figs_start_slurm_scripts: str = "\n".join([f"sbatch '{slurm_script}'" for slurm_script in output_slurm_scripts.get('figs', [])])
+            if not active_phase.is_figure_phase:
+                print(f'{active_phase.name} - RunMain (flat fallback, no afterok):')
+                print(sbatch_run_start_slurm_scripts)
+                print(f'\n\n')
+            if (active_phase.is_figure_phase or also_show_figure_script_outputs) and (len(sbatch_figs_start_slurm_scripts) > 0):
+                print(f'{active_phase.name} - Figures:')
+                print(sbatch_figs_start_slurm_scripts)
+                print(f'\n\n')
+## END for active_phase in phases_to_generate...
+
+print('\n========== DESTINATION SUMMARY ==========')
+print(f'scripts_output_path: {scripts_output_path}')
+print(f'collected_outputs_path: {collected_outputs_path}')
+print(f'global_data_root_parent_path: {global_data_root_parent_path}')
+print(f'override_custom_pickle_suffix: {override_custom_pickle_suffix!r}')
+print(f'decoding_time_bin_filename_suffix: {decoding_time_bin_filename_suffix}')
+for a_session_folder in good_session_concrete_folders:
+    a_basedir = a_session_folder.path
+    local_pickle_path = a_basedir.joinpath(f'loadedSessPickle{override_custom_pickle_suffix}.pkl')
+    global_pickle_path = a_basedir.joinpath('output', f'global_computation_results{override_custom_pickle_suffix}{decoding_time_bin_filename_suffix}.pkl')
+    print(f'  {a_session_folder.context}')
+    print(f'    basedir:        {a_basedir}')
+    print(f'    load pickle:    {local_pickle_path}')
+    print(f'    write global:   {global_pickle_path}')
+    print(f'    data root:      {session_global_data_root_parent_paths.get(a_session_folder.context)}')
+## END for a_session_folder in good_session_concrete_folders...
+print('========================================\n')
+
+CHAIN_SUBMIT_STAMP: str = f'{get_now_rounded_time_str(rounded_minutes=5, time_separator="-")}{_batch_host_suffix}{base_job_suffix}'
+print(f'CHAIN_SUBMIT_STAMP: {CHAIN_SUBMIT_STAMP}')
+if (platform.system() != 'Windows') and (len(phase_collections) > 0):
+    _phase_chain_backend: str = 'bash' if batch_execution_target == 'linux_standalone' else 'slurm'
+    _script_collection_key: str = _phase_chain_backend
+    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key=_script_collection_key)
+    chained_submit_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.sh'
+    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.json'
+    write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend)
+    retry_dir = scripts_output_path / f'retry_phase_chains_{CHAIN_SUBMIT_STAMP}'
+    for _start_phase in phases_ordered_names[1:]:
+        write_all_retry_from_phase_scripts(chained_manifest_path, start_phase=_start_phase, out_dir=retry_dir, phases_ordered=phases_ordered_names)
+    ## END for _start_phase in phases_ordered_names[1:]...
+    print(f"\nChained submit (primary, {_phase_chain_backend}): bash '{chained_submit_path}'")
+    if _phase_chain_backend == 'slurm':
+        print(f"Cancel remaining jobs: bash '{chained_submit_path}' --cancel")
+        print(f"Chain status: bash '{chained_submit_path}' --status")
+    print(f"Retry scripts dir: '{retry_dir}'")
+    print_chain_status_hint(execution_backend=_phase_chain_backend)
+    _chained_submit_shell_cmd = f"bash '{chained_submit_path}'"
+    try_copy_to_clipboard(_chained_submit_shell_cmd, label='chained_submit')
+    _time_checkpoint('copy_to_clipboard:chained_submit')
+    try_execute_shell_command(_chained_submit_shell_cmd, label='chained_submit')
+    _time_checkpoint('try_execute:chained_submit')
+elif (platform.system() == 'Windows') and (len(phase_collections) > 0):
+    _phase_chain_backend: str = 'powershell'
+    session_phase_scripts = build_session_phase_script_map(phase_collections, script_kind='run', script_collection_key='python')
+    chained_submit_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.ps1'
+    chained_manifest_path = scripts_output_path / f'submit_phase_chains_{CHAIN_SUBMIT_STAMP}.json'
+    write_chained_submit_script(session_phase_scripts, out_path=chained_submit_path, phases_ordered=phases_ordered_names, manifest_path=chained_manifest_path, batch_date_to_use=BATCH_DATE_TO_USE, phase_chain_backend=_phase_chain_backend, python_executable=_vscode_python)
+    retry_dir = scripts_output_path / f'retry_phase_chains_{CHAIN_SUBMIT_STAMP}'
+    for _start_phase in phases_ordered_names[1:]:
+        write_all_retry_from_phase_scripts(chained_manifest_path, start_phase=_start_phase, out_dir=retry_dir, phases_ordered=phases_ordered_names)
+    ## END for _start_phase in phases_ordered_names[1:]...
+    print(f"\nChained submit (primary, powershell): powershell -File '{chained_submit_path}'")
+    print(f"Retry scripts dir: '{retry_dir}'")
+    print_chain_status_hint(execution_backend=_phase_chain_backend)
+    try_copy_to_clipboard(f"powershell -File '{chained_submit_path}'", label='chained_submit')
+    _time_checkpoint('copy_to_clipboard:chained_submit')
+
+_print_timing_summary()
