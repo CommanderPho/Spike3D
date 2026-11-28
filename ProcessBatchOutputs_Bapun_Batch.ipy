@@ -513,7 +513,7 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
                 print(f"\n{active_phase.name} - RunMain:")
                 print(sbatch_run_start_slurm_scripts)
                 if copy_commands_to_clipboard and not enable_auto_code_block_execution:
-                    copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)
+                    _ = copy_to_clipboard(sbatch_run_start_slurm_scripts, message_print=True)  # non-fatal on headless GL
                 if enable_auto_code_block_execution:
                     print(f'Submitting {active_phase.name} run scripts...')
                     run_job_ids = submit_slurm_scripts(run_slurm_paths)
@@ -525,7 +525,7 @@ def process_all_phases(batch_day_date: str, batch_date_to_use: str, included_ses
                     print(f"\n{active_phase.name} - Figures:")
                     print(sbatch_figs_start_slurm_scripts)
                     if copy_commands_to_clipboard and active_phase.is_figure_phase and not enable_auto_code_block_execution:
-                        copy_to_clipboard(sbatch_figs_start_slurm_scripts, message_print=True)
+                        _ = copy_to_clipboard(sbatch_figs_start_slurm_scripts, message_print=True)  # non-fatal on headless GL
                     if enable_auto_code_block_execution and active_phase.is_figure_phase:
                         print(f'Submitting {active_phase.name} figure scripts...')
                         figs_job_ids = submit_slurm_scripts(figs_slurm_paths)
@@ -591,6 +591,7 @@ included_session_contexts = [
 
 # %%
 # Main execution - manual mode: generate scripts, print sbatch commands, write submit_*.sh manifests (no auto-submit)
+# On Great Lakes login nodes clipboard is unavailable — keep copy_commands_to_clipboard=False and use printed sbatch / submit_*.sh.
 enable_auto_code_block_execution: bool = False
 
 process_all_phases(
@@ -611,7 +612,7 @@ process_all_phases(
     max_parallel_executions=1,
     also_show_figure_script_outputs=False,
     wait_between_phases=True,
-    copy_commands_to_clipboard=True,
+    copy_commands_to_clipboard=False,
     slurm_poll_seconds=60,
     # phases_to_run=[ProcessingScriptPhases.continued_run],  # prepend clean_run only for full reload from scratch
     # phases_to_run=[ProcessingScriptPhases.clean_run, ProcessingScriptPhases.continued_run, ProcessingScriptPhases.final_run, ProcessingScriptPhases.figure_run],  # prepend clean_run only for full reload from scratch
